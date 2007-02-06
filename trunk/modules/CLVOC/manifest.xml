@@ -1,0 +1,23 @@
+<module>
+<label>CLVOC</label>
+<name>Glossary</name>
+<description><![CDATA[
+Provides a glossary tool for Claroline. Mainly aimed to
+language learning, but also suitable as a dictionary tool.
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.gif</icon>
+<type>tool</type>
+<entry>entry.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLVOC</web>
+</author>
+<requirements>
+<claroline>
+<version>1.8</version>
+</claroline>
+</requirements>
+</module>
