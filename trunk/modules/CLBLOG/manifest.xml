@@ -1,0 +1,24 @@
+<module>
+<label>CLBLOG</label>
+<name>Blog Tool</name>
+<description><![CDATA[
+Blog tool for Claroline. At this time posting is reserved to the course manager.
+In the future student will also be allowed to post.
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.gif</icon>
+<type>tool</type>
+<group>true</group>
+<entry>entry.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLVOC</web>
+</author>
+<requirements>
+<claroline>
+<version>1.8</version>
+</claroline>
+</requirements>
+</module>
