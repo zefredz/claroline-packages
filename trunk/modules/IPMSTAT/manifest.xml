@@ -1,0 +1,28 @@
+<module rev="$Id$">
+  <label>IPMSTAT</label>
+  <name>Statistiques iCampus</name>
+  <version>1.0.0</version>
+  <state>beta</state>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>index.php</entry>
+  <icon>statistics.gif</icon>
+
+  <description><![CDATA[
+     This module compute stats for  IPM
+]]></description>
+
+  <author>
+     <name>Christophe Gesché</name>
+     <email>moosh@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+  <context>
+    <platform />
+  </context>
+  <requirements>
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+ </requirements>
+</module>
