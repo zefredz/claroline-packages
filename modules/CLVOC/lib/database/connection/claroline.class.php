@@ -35,8 +35,8 @@
             }
             else
             {
-                $this->errmsg = @mysql_error() != '' ? @mysql_error() : 'Unknown Error';
-                $this->errno = @mysql_errno() != 0 ? @mysql_errno() : 0;
+                $this->errmsg = @claro_sql_error() != '' ? @claro_sql_error() : 'Unknown Error';
+                $this->errno = @claro_sql_errno() != 0 ? @claro_sql_errno() : 0;
             }
         }
         
@@ -71,7 +71,7 @@
         {
             $res = claro_sql_query( $sql );
             
-            if( @mysql_errno() != 0 )
+            if( @claro_sql_errno() != 0 )
             {
                 $this->setError();
 
