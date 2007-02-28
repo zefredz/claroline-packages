@@ -65,9 +65,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 {
     $output = '';
     
-    $output .= '<h1>'. get_lang('Help')
-            .'</h1>' . "\n"
-            ;
+    $output .= claro_html_tool_title( get_lang( 'Help' ) );
     
     if ( true == $dispError )
     {
