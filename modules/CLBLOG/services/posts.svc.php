@@ -64,6 +64,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     $connection = new Claroline_Database_Connection;
     $bp = new Blog_Post( $connection, $GLOBALS['blogTables'] );
     $bc = new Blog_Comment( $connection, $GLOBALS['blogTables'] );
+    $san = new HTML_Sanitizer;
 }
 // }}}
 // {{{ CONTROLLER
@@ -114,21 +115,21 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
         : ''
         ;
         
-    $postTitle = blog_sanitize_html( $postTitle );
+    $postTitle = $san->sanitize( $postTitle );
         
     $postChapo = isset( $_REQUEST['postChapo'] )
         ? trim( $_REQUEST['postChapo'] )
         : ''
         ;
         
-    $postChapo = blog_sanitize_html( $postChapo );
+    $postChapo = $san->sanitize( $postChapo );
         
     $postContents = isset( $_REQUEST['postContents'] )
         ? trim( $_REQUEST['postContents'] )
         : ''
         ;
         
-    $postContents = blog_sanitize_html( $postContents );
+    $postContents = $san->sanitize( $postContents );
         
     $commentId = isset( $_REQUEST['commentId'] )
         ? (int) $_REQUEST['commentId']
@@ -140,7 +141,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
         : ''
         ;
         
-    $commentContents = blog_sanitize_html( $commentContents );
+    $commentContents = $san->sanitize( $commentContents );
     
     // Check postId and load post
     if ( ! is_null( $postId ) && ! $bp->postExists( $postId ) )
@@ -788,12 +789,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="postChapo">'.get_lang( 'Header' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="postChapo" cols="60" rows="3">'.blog_sanitize_html( $postChapo ).'</textarea>' . "\n"
+                . '<textarea name="postChapo" cols="60" rows="3">'.$san->sanitize( $postChapo ).'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label>' . "\n"
                 . '<div style="width=60%">' . "\n"
-                . '<textarea name="postContents" cols="60" rows="10">'.blog_sanitize_html( $postContents ).'</textarea>' . "\n"
+                . '<textarea name="postContents" cols="60" rows="10">'.$san->sanitize( $postContents ).'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -912,7 +913,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . '<fieldset id="editPost">' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="commentContents">'.get_lang( 'Comment' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="commentContents" cols="60" rows="10">'.blog_sanitize_html( $commentContents ).'</textarea>' . "\n"
+                . '<textarea name="commentContents" cols="60" rows="10">'.$san->sanitize( $commentContents ).'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
