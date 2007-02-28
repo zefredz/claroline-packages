@@ -1,0 +1,24 @@
+<module>
+  <label>ADSENSE</label>
+  <name>Google AdSense</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <default_dock>campusFooterCenter</default_dock>
+  <type>applet</type>
+
+  <description>
+    This plugin allow users admin to easily integrate Google AdSense to his campus.
+  </description>
+
+  <author>
+     <name>Sebastien Piraux</name>
+     <email>seb@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>
