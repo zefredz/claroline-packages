@@ -652,12 +652,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 {
     $output = '';
     
-    $output .= '<h1>'
-        . '<img src="'. get_icon('blog.gif').'" alt="'
-        . get_lang('Blog').'" />'
-        . get_lang('Blog Tool')
-        .'</h1>' . "\n"
-        ;
+    $output .= claro_html_tool_title( get_lang('Blog') );
             
     if ( true == $dispError )
     {
@@ -785,7 +780,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . '</legend>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="postTitle">'.get_lang( 'Title' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<input name="postTitle" value="'.htmlspecialchars( $postTitle ).'" type="text" />' . "\n"
+                . '<input name="postTitle" value="'.htmlspecialchars( $postTitle ).'" type="text" size="80" />' . "\n"
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="postChapo">'.get_lang( 'Header' ).'&nbsp;:&nbsp;</label>' . "\n"
