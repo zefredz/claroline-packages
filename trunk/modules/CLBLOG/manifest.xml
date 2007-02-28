@@ -1,6 +1,6 @@
 <module>
 <label>CLBLOG</label>
-<name>Blog Tool</name>
+<name>Blog</name>
 <description><![CDATA[
 Blog tool for Claroline. At this time posting is reserved to the course manager.
 In the future student will also be allowed to post.
