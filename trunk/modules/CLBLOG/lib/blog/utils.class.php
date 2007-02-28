@@ -8,6 +8,10 @@
     
     function blog_sanitize_html( $str, $key = null )
     {
-        return HTML_Sanitizer::sanitize( $str );
+        static $san = null;
+        
+        if ( is_null( $san ) ) $san = new HTML_Sanitizer;
+        
+        return $san->sanitize( $str );
     }
 ?>
