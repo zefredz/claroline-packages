@@ -23,11 +23,11 @@ if( !strstr($_SERVER['HTTP_USER_AGENT'], 'Firefox') || get_conf('spreadff_show_i
 
     $html .= "\n\n"
     .   '<!-- Spread Firefox -->' . "\n"
-    .   '<p align="center">'
+    .   '<div align="center">'
     .   '<a href="'.get_conf('spreadff_link').'">'
     .   '<img border="0" alt="" title="" src="'.get_conf('spreadff_img_url').'"/>'
     .   '</a>'
-    .   '</p>' . "\n"
+    .   '</div>' . "\n"
     .   '<!-- Spread Firefox -->' . "\n\n";
 
 }
