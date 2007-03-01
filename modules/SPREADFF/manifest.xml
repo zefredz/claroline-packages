@@ -1,0 +1,24 @@
+<module>
+  <label>SPREADFF</label>
+  <name>Spread Firefox</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <default_dock>campusHomePageRightMenu</default_dock>
+  <type>applet</type>
+
+  <description>
+    This plugin shows spread firefox link
+  </description>
+
+  <author>
+     <name>Sebastien Piraux</name>
+     <email>seb@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>
