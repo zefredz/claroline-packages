@@ -29,6 +29,7 @@ array ( 'google_ad_client'
       , 'google_ad_width'      
       , 'google_ad_height'
       , 'google_ad_type'
+      , 'google_cpa_choice'
       , 'google_ad_channel' 
       );
 
@@ -92,7 +93,16 @@ array ( 'label'       => 'Type'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
       );
-      
+
+$conf_def_property_list['google_cpa_choice'] =
+array ( 'label'       => 'CPA choice'
+      , 'description' => 'google_cpa_choice value'
+      , 'default'     => ''
+      , 'type'        => 'string'
+      , 'display'     => TRUE
+      , 'readonly'    => FALSE
+      );
+            
 $conf_def_property_list['google_ad_channel'] =
 array ( 'label'       => 'Channel'
       , 'description' => 'google_ad_channel value'
@@ -106,8 +116,8 @@ array ( 'label'       => 'Channel'
  
 $conf_def_property_list['google_ad_borderColor'] =
 array ( 'label'       => 'Border color'
-      , 'description' => 'ex : BCBCBC'
-      , 'default'     => 'BCBCBC'
+      , 'description' => 'ex : EDF1E3'
+      , 'default'     => 'EDF1E3'
       , 'type'        => 'regexp'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
@@ -126,8 +136,8 @@ array ( 'label'       => 'Background color'
 
 $conf_def_property_list['google_ad_linkColor'] =
 array ( 'label'       => 'Links color:'
-      , 'description' => 'ex : 336699'
-      , 'default'     => '336699'
+      , 'description' => 'ex : 669933'
+      , 'default'     => '669933'
       , 'type'        => 'regexp'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
@@ -136,8 +146,8 @@ array ( 'label'       => 'Links color:'
       
 $conf_def_property_list['google_ad_urlColor'] =
 array ( 'label'       => 'URL color'
-      , 'description' => 'ex : 800000'
-      , 'default'     => '800000'
+      , 'description' => 'ex : 336699'
+      , 'default'     => '336699'
       , 'type'        => 'regexp'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
@@ -146,8 +156,8 @@ array ( 'label'       => 'URL color'
 
 $conf_def_property_list['google_ad_textColor'] =
 array ( 'label'       => 'Text color'
-      , 'description' => 'ex : 6F6F6F'
-      , 'default'     => '6F6F6F'
+      , 'description' => 'ex : 444444'
+      , 'default'     => '444444'
       , 'type'        => 'regexp'
       , 'display'     => TRUE
       , 'readonly'    => FALSE 
