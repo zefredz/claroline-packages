@@ -653,7 +653,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     $output = '';
     
     $output .= claro_html_tool_title( get_lang('Blog') );
-            
+
     if ( true == $dispError )
     {
         // display error
@@ -788,8 +788,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<div style="width=60%">' . "\n"
-                . '<textarea name="postContents" cols="60" rows="10">'.$san->sanitize( $postContents ).'</textarea>' . "\n"
+                . '<textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -842,7 +841,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>'."\n"
                 . '<p class="postChapo">%apply(blog_sanitize_html,chapo)%</p>'."\n"
-                . '<p class="postContents">%apply(blog_sanitize_html,contents)%</p>'."\n"
+                . '<div class="postContents">%apply(blog_sanitize_html,contents)%</div>'."\n"
                 . '</div>'
                 ;
             
