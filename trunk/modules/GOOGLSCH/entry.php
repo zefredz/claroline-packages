@@ -36,9 +36,9 @@ $html = "\n\n"
 
 .	 '<!-- Google search -->' . "\n"
 .	 '<form method="get" action="http://www.google.com/search" id="googleSearch">' . "\n"
-.	 '<div style="padding: 10px 5px; margin: 5px 0; text-align: center;">' . "\n"
-.	 '<input type="text" name="q" id="q" size="15" maxlength="255" value="" style="'.$searchBoxStyle.'" />' . "\n"
-.	 '<input type="submit" value="'.get_lang('Ok').'" />'
+.	 '<div style="padding: 10px 5px; margin: 5px 0;">' . "\n"
+.	 '<input type="text" name="q" id="q" size="12" maxlength="255" value="" style="'.$searchBoxStyle.'" />' . "\n"
+.	 '<input type="submit" value="' .get_lang('Ok'). '" />'
 .    '<br />' . "\n"
 ;
 
@@ -75,7 +75,7 @@ else
 
 $html .= '</div>' . "\n"
 .	 '</form>' . "\n"
-.	 '<!-- Google -->' . "\n\n"
+.	 '<!-- Google search -->' . "\n\n"
 ;
 
 $claro_buffer->append($html);
