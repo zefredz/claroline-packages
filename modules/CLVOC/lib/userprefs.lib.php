@@ -1,6 +1,6 @@
 <?php  // $Id$
     
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+    // vim: expandtab sw=4 ts=4 sts=4:
 	
 	define ('USER_PREFS_GET_VALUE',     'USER_PREFS_GET_VALUE' );
     define ('USER_PREFS_GET_ALL',       'USER_PREFS_GET_ALL' );
