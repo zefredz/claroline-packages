@@ -1,16 +1,23 @@
 <?php  // $Id$
     
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+    // vim: expandtab sw=4 ts=4 sts=4:
+    // vim>600: set foldmethod=marker:
+
+    if ( count( get_included_files() ) == 1 )
+    {
+        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+    }
 
     /**
-     * @author  Frederic Minne <zefredz@claroline.net>
-     * @copyright Copyright &copy; 2006-2007, Frederic Minne
-     * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
-     * @version 1.0
-     * @package CLBLOG
+     * Help service for Blog
+     *
+     * @version     1.9 $Revision$
+     * @copyright   2001-2007 Universite catholique de Louvain (UCL)
+     * @author      Frederic Minne <zefredz@claroline.net>
+     * @license     http://www.gnu.org/copyleft/gpl.html
+     *              GNU GENERAL PUBLIC LICENSE
+     * @package     CLBLOG
      */
-
-if ( count( get_included_files() ) == 1 ) die( '---' );
 
 // {{{ SCRIPT INITIALISATION
 { 

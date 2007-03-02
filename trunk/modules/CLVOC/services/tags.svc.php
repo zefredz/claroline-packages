@@ -1,6 +1,12 @@
 <?php  // $Id$
     
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+    // vim: expandtab sw=4 ts=4 sts=4:
+    // vim>600: set foldmethod=marker:
+
+    if ( count( get_included_files() ) == 1 )
+    {
+        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+    }
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 

@@ -1,6 +1,12 @@
 <?php // $Id$
 
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+    // vim: expandtab sw=4 ts=4 sts=4:
+    // vim>600: set foldmethod=marker:
+
+    if ( count( get_included_files() ) == 1 )
+    {
+        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+    }
     
     if ( count( get_included_files() ) == 1 ) die( '---' );
 
@@ -35,6 +41,7 @@
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/highlighter.class.php';
+    require_once dirname(__FILE__) . '/../lib/html/sanitizer.class.php';
 }
 // }}}
 
@@ -43,6 +50,7 @@
     $connection = new Claroline_Database_Connection;
     $text = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
     $list = new Glossary_Dictionary_List( $connection, $GLOBALS['glossaryTables'] );
+    $san = new HTML_Sanitizer;
 }
 // }}}
 
@@ -810,7 +818,7 @@
             // highlighter
             $content = $text->getContent();
             $wordList = $text->getWordList();
-            $content = htmlspecialchars( $content );
+            $content = $san->sanitize( $content );
             
             if (! empty( $wordList ) )
             {
