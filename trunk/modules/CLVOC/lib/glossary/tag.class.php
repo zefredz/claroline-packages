@@ -45,7 +45,7 @@
                 return false;
             }
             
-            $sql = "INSERT INTO " . $this->tableList['glossary_tags'] . " \n"
+            $sql = "INSERT INTO `" . $this->tableList['glossary_tags'] . "` \n"
                 . "SET name = '" .addslashes($tag). "', \n"
                 . "description = '" .addslashes($description). "'"
                 ;
@@ -71,7 +71,7 @@
         {
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->tableList['glossary_tags'] . " \n"
+            $sql = "DELETE FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 . "WHERE id = " . (int) $tagId
                 ;
                 
@@ -83,7 +83,7 @@
             }
             else
             {
-                $sql = "DELETE FROM " . $this->tableList['glossary_tags_entries'] . " \n"
+                $sql = "DELETE FROM `" . $this->tableList['glossary_tags_entries'] . "` \n"
                     . "WHERE id = " . (int) $tagId
                     ;
                 
@@ -104,7 +104,7 @@
         {
             $this->connection->connect();
             
-            $sql = "UPDATE " . $this->tableList['glossary_tags'] . " \n"
+            $sql = "UPDATE `" . $this->tableList['glossary_tags'] . "` \n"
                 . "SET name = '" .addslashes($tag). "', \n"
                 . "description = '" .addslashes($description). "' \n"
                 . "WHERE id = " . (int) $tagId
@@ -125,7 +125,7 @@
         { 
             $this->connection->connect();
             
-            $sql = "INSERT INTO " . $this->tableList['glossary_tags_entries'] . " \n"
+            $sql = "INSERT INTO `" . $this->tableList['glossary_tags_entries'] . "` \n"
                 . "SET tagId = " .(int) $tagId. ", \n"
                 . "entryId = " . (int) $itemId
                 ;
@@ -145,7 +145,7 @@
         {
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->tableList['glossary_tags_entries'] . " \n"
+            $sql = "DELETE FROM `" . $this->tableList['glossary_tags_entries'] . "` \n"
                 . "WHERE tagId = " .(int) $tagId. " \n"
                 . "AND entryId = " . (int) $itemId
                 ;
@@ -178,14 +178,14 @@
         {
             $sql = "SELECT W.name AS word, D.definition AS def, T.tagId AS tagId, \n"
                 . "WD.id AS entryId, DC.name as dictName, T.id AS relId "
-                . "FROM " . $this->tableList['glossary_tags_entries'] . " AS T\n"
-                . "LEFT JOIN " . $this->tableList['glossary_word_definitions'] . " AS WD\n"
+                . "FROM `" . $this->tableList['glossary_tags_entries'] . "` AS T\n"
+                . "LEFT JOIN `" . $this->tableList['glossary_word_definitions'] . "` AS WD\n"
                 . "ON T.entryId = WD.id "
-                . "LEFT JOIN " . $this->tableList['glossary_definitions'] . " AS D\n"
+                . "LEFT JOIN `" . $this->tableList['glossary_definitions'] . "` AS D\n"
                 . "ON D.id = WD.definitionId "
-                . "LEFT JOIN " . $this->tableList['glossary_words'] . " AS W\n"
+                . "LEFT JOIN `" . $this->tableList['glossary_words'] . "` AS W\n"
                 . "ON W.id = WD.wordId "
-                . "LEFT JOIN " . $this->tableList['glossary_dictionaries'] . " AS DC\n"
+                . "LEFT JOIN `" . $this->tableList['glossary_dictionaries'] . "` AS DC\n"
                 . "ON DC.id = WD.dictionaryId "
                 . "WHERE T.tagId = " . (int) $tagId
                 ;
@@ -199,10 +199,10 @@
             $this->connection->connect();
             
             $sql = "SELECT W.name AS wordName, D.definition as definition \n"
-                . "FROM " .$this->tableList['glossary_word_definitions']." AS WD\n"
-                . "LEFT JOIN " .$this->tableList['glossary_words']." AS W " . "\n"
+                . "FROM `" .$this->tableList['glossary_word_definitions']."` AS WD\n"
+                . "LEFT JOIN `" .$this->tableList['glossary_words']."` AS W " . "\n"
                 . "ON W.id = WD.wordId \n"
-                . "LEFT JOIN " .$this->tableList['glossary_definitions']." AS W " . "\n"
+                . "LEFT JOIN `" .$this->tableList['glossary_definitions']."` AS W " . "\n"
                 . "ON D.id = WD.definitionId \n"
                 . "WHERE WD.id = ".(int)$entryId
                 ;
@@ -220,8 +220,8 @@
             $this->connection->connect();
             
             $sql = "SELECT T.id, T.name "
-                . "FROM " . $this->tableList['glossary_tags_entries'] . " AS TE \n"
-                . "INNER JOIN " . $this->tableList['glossary_tags'] . " AS T \n"
+                . "FROM `" . $this->tableList['glossary_tags_entries'] . "` AS TE \n"
+                . "INNER JOIN `" . $this->tableList['glossary_tags'] . "` AS T \n"
                 . "ON TE.tagId = T.id \n"
                 . "WHERE TE.entryId = " . (int) $itemId
                 ;
@@ -238,7 +238,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id, name, description "
-                . "FROM " . $this->tableList['glossary_tags'] . " \n"
+                . "FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 ;
                 
             return $this->connection->getAllRowsFromQuery( $sql );
@@ -254,7 +254,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id "
-                . "FROM " . $this->tableList['glossary_tags'] . " \n"
+                . "FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 . "WHERE name = '" . addslashes($tag ) . "'"
                 ;
                     
@@ -271,7 +271,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id "
-                . "FROM " . $this->tableList['glossary_tags'] . " \n"
+                . "FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 . "WHERE name = '" . addslashes($tag ) . "'"
                 ;
                 
@@ -288,7 +288,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id "
-                . "FROM " . $this->tableList['glossary_tags'] . " \n"
+                . "FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 . "WHERE id = " . (int)$tagId
                 ;
                 
@@ -300,8 +300,8 @@
             $this->connection->connect();
             
             $sql = "SELECT T.name, count(TE.tagId) AS nbr "
-                . "FROM " . $this->tableList['glossary_tags_entries'] . " AS TE \n"
-                . "LEFT JOIN " . $this->tableList['glossary_tags'] . " AS T \n"
+                . "FROM `" . $this->tableList['glossary_tags_entries'] . "` AS TE \n"
+                . "LEFT JOIN `" . $this->tableList['glossary_tags'] . "` AS T \n"
                 . "ON TE.tagId = T.id \n"
                 . "GROUP BY TE.tagId\n"
                 ;
@@ -322,7 +322,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id, name, description "
-                . "FROM " . $this->tableList['glossary_tags'] . " \n"
+                . "FROM `" . $this->tableList['glossary_tags'] . "` \n"
                 . "WHERE id = " . (int)$tagId
                 ;
                 

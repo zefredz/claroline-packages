@@ -33,10 +33,10 @@
         {
             $this->connection->connect();
             
-            $sql = "INSERT INTO " . $this->config['blog_comments'] . " "
-                . "SET userId = ".(int) $userId.", "
-                . "contents = '".addslashes($contents)."', "
-                . "ctime = '".date( "Y-m-d H:i:s" )."', "
+            $sql = "INSERT INTO `" . $this->config['blog_comments'] . "`\n"
+                . "SET userId = ".(int) $userId.",\n"
+                . "contents = '".addslashes($contents)."',\n"
+                . "ctime = '".date( "Y-m-d H:i:s" )."',\n"
                 . "postId = ".(int) $postId
                 ;
                 
@@ -58,11 +58,11 @@
         {
             $this->connection->connect();
             
-            $sql = "UPDATE " . $this->config['blog_comments'] . " "
-                . "SET userId = ".(int) $userId.", "
-                . "contents = '".addslashes($contents)."', "
-                . "ctime = '".date( "Y-m-d H:i:s" )."', "
-                . "postId = ".(int) $postId . " "
+            $sql = "UPDATE `" . $this->config['blog_comments'] . "`\n"
+                . "SET userId = ".(int) $userId.",\n"
+                . "contents = '".addslashes($contents)."', \n"
+                . "ctime = '".date( "Y-m-d H:i:s" )."',\n"
+                . "postId = ".(int) $postId . "\n"
                 . "WHERE id = " . (int) $id
                 ;
                 
@@ -84,9 +84,9 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
-                . "FROM " . $this->config['blog_comments'] . " "
-                . "WHERE postId = " . (int) $postId . " "
+            $sql = "SELECT * \n"
+                . "FROM `" . $this->config['blog_comments'] . "`\n"
+                . "WHERE postId = " . (int) $postId . "\n"
                 . "ORDER BY id ASC"
                 ;
 
@@ -107,7 +107,7 @@
             $this->connection->connect();
             
             $sql = "SELECT * \n"
-                . "FROM " . $this->config['blog_comments'] . " \n"
+                . "FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE id = " . (int) $id . " \n"
                 . "ORDER BY id ASC"
                 ;
@@ -128,8 +128,8 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
-                . "FROM " . $this->config['blog_comments'] . " "
+            $sql = "SELECT * \n"
+                . "FROM `" . $this->config['blog_comments'] . "`\n"
                 . "ORDER BY id ASC"
                 ;
 
@@ -156,7 +156,7 @@
         {
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->config['blog_comments'] . " "
+            $sql = "DELETE FROM `" . $this->config['blog_comments'] . "`\n"
                 . "WHERE id = " . (int) $id
                 ;
                 
@@ -176,7 +176,7 @@
         {
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->config['blog_comments'] . " "
+            $sql = "DELETE FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE postId = " . (int) $postId
                 ;
                 
@@ -196,7 +196,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT count(*) FROM " . $this->config['blog_comments'] . " \n"
+            $sql = "SELECT count(*) FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE postId = " . (int) $postId
                 ;
             
@@ -208,7 +208,7 @@
             $this->connection->connect();
             
             $sql = "SELECT * "
-                . "FROM " . $this->config['blog_comments'] . " "
+                . "FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE id = " . (int) $id
                 ;
 

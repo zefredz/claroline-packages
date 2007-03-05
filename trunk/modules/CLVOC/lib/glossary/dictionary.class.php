@@ -54,10 +54,10 @@
                 ;
                 
             $sql = "SELECT W.name, D.definition, W.id AS wordId, D.id AS definitionId " . "\n"
-                . "FROM ". $this->tableList['glossary_word_definitions']." AS WD " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_words']." AS W " . "\n"
+                . "FROM `". $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_words']."` AS W " . "\n"
                 . "ON W.id = WD.wordId " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_definitions']." AS D " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_definitions']."` AS D " . "\n"
                 . "ON D.id = WD.definitionId " . "\n"
                 . $where . " " . "\n"
                 . "ORDER BY UPPER(W.name) ASC" . "\n"
@@ -88,10 +88,10 @@
             $where = "WHERE WD.dictionaryId IN (". implode(',', $dictIdList ) .")";
                 
             $sql = "SELECT W.name, D.definition, W.id AS wordId, D.id AS definitionId " . "\n"
-                . "FROM ". $this->tableList['glossary_word_definitions']." AS WD " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_words']." AS W " . "\n"
+                . "FROM `". $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_words']."` AS W " . "\n"
                 . "ON W.id = WD.wordId " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_definitions']." AS D " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_definitions']."` AS D " . "\n"
                 . "ON D.id = WD.definitionId " . "\n"
                 . $where . " " . "\n"
                 . "ORDER BY UPPER(W.name) ASC" . "\n"
@@ -126,7 +126,7 @@
             $this->connection->connect();
                  
             $sql = "SELECT name " . "\n"
-                . "FROM ".$this->tableList['glossary_words']." " . "\n"
+                . "FROM `".$this->tableList['glossary_words']."` " . "\n"
                 . "WHERE id = ". (int) $wordId . "\n"
                 ;
                 
@@ -152,7 +152,7 @@
             $this->connection->connect();
                  
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE wordId = ". (int) $wordId . " \n"
                 . "AND dictionaryId = " . (int) $dictionaryId
                 ;
@@ -170,7 +170,7 @@
             $this->connection->connect();
                  
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE wordId = ". (int) $wordId . " \n"
                 . "AND dictionaryId = " . (int) $this->dictionaryId
                 ;
@@ -192,7 +192,7 @@
             
             // check if the word is in the dictionary            
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_words']." " . "\n"
+                . "FROM `".$this->tableList['glossary_words']."` " . "\n"
                 . "WHERE name = '".addslashes( $word )."'" . "\n"
                 ; 
                 
@@ -211,8 +211,7 @@
             // word not in dictionary
             if ( is_null( $wordId ) )
             {
-                $sql = "INSERT INTO " . "\n"
-                    .$this->tableList['glossary_words'] . "\n"
+                $sql = "INSERT INTO `" . $this->tableList['glossary_words'] . "`\n"
                     ." SET name = '". addslashes( $word ) . "'" . "\n"
                     ;
                 $this->connection->executeQuery( $sql );
@@ -232,7 +231,7 @@
             
             // check if the definition is in the dictionary            
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_definitions']."` " . "\n"
                 . "WHERE definition = '".addslashes( $definition )."'" . "\n"
                 ; 
                 
@@ -250,8 +249,7 @@
                 
             if ( is_null( $defId ) )
             {
-                $sql = "INSERT INTO " . "\n"
-                    . $this->tableList['glossary_definitions'] . "\n"
+                $sql = "INSERT INTO `" . $this->tableList['glossary_definitions'] . "`\n"
                     . " SET definition = '" . addslashes( $definition ) . "'" . "\n"
                     ;
                 $this->connection->executeQuery( $sql );
@@ -266,7 +264,7 @@
             }
             
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE definitionId = " . (int) $defId . " " . "\n"
                 . "AND wordId = " . (int) $wordId . "\n"
                 ;
@@ -290,7 +288,7 @@
                 
             if ( is_null( $wdId ) )
             {
-                $sql = "INSERT INTO ".$this->tableList['glossary_word_definitions']." " . "\n"
+                $sql = "INSERT INTO `".$this->tableList['glossary_word_definitions']."` " . "\n"
                     . "SET wordId = ". (int) $wordId . ", " . "\n"
                     . "definitionId = ". (int) $defId . "\n"
                     ;
@@ -321,7 +319,7 @@
         {
             $this->connection->connect();
             
-            $sql = "UPDATE ".$this->tableList['glossary_words']." " . "\n"
+            $sql = "UPDATE `".$this->tableList['glossary_words']."` " . "\n"
                 . "SET name = '". addslashes( $newWord ) . "' " . "\n"
                 . "WHERE id = " . (int) $wordId . "\n"
                 ;
@@ -348,7 +346,7 @@
             $this->connection->connect();
             
             $sql = "DELETE " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE wordId = " . (int) $wordId . "\n"
                 ;
                 
@@ -373,8 +371,8 @@
         	
         	// delete words without definitions
         	$sql = "SELECT W.id "
-        		. "FROM " . $this->tableList['glossary_words']." AS W " . "\n"
-        		. "LEFT JOIN " . $this->tableList['glossary_word_definitions']." AS WD " . "\n"
+        		. "FROM `" . $this->tableList['glossary_words']."` AS W " . "\n"
+        		. "LEFT JOIN `" . $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
         		. "ON W.id = WD.wordId" . "\n"
         		. "WHERE WD.wordId IS NULL" . "\n"
 				;
@@ -384,7 +382,7 @@
 			if ( count( $results ) > 0 )
 			{
 			
-				$sql = "DELETE FROM " . $this->tableList['glossary_words']." " . "\n"
+				$sql = "DELETE FROM `" . $this->tableList['glossary_words']."` " . "\n"
 					. "WHERE id IN(" . implode(',', $results ) . ") " . "\n"
 					;
 				
@@ -398,8 +396,8 @@
             
             // delete definitions without words
             $sql = "SELECT D.id "
-        		. "FROM " . $this->tableList['glossary_definitions']." AS D " . "\n"
-        		. "LEFT JOIN " . $this->tableList['glossary_word_definitions']." AS WD " . "\n"
+        		. "FROM `" . $this->tableList['glossary_definitions']."` AS D " . "\n"
+        		. "LEFT JOIN `" . $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
         		. "ON D.id = WD.definitionId" . "\n"
         		. "WHERE WD.definitionId IS NULL" . "\n"
 				;
@@ -409,7 +407,7 @@
 			if ( count( $results ) > 0 )
 			{
 			
-				$sql = "DELETE FROM " . $this->tableList['glossary_definitions']." " . "\n"
+				$sql = "DELETE FROM `" . $this->tableList['glossary_definitions']."` " . "\n"
 					. "WHERE id IN(" . implode(',', $results ) . ") " . "\n"
 					;
 				
@@ -423,8 +421,8 @@
             
             // delete orphan entries : missing definition
             $sql = "SELECT WD.id "
-        		. "FROM " . $this->tableList['glossary_word_definitions']." AS WD " . "\n"
-        		. "LEFT JOIN " . $this->tableList['glossary_definitions']." AS D " . "\n"
+        		. "FROM `" . $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+        		. "LEFT JOIN `" . $this->tableList['glossary_definitions']."` AS D " . "\n"
         		. "ON D.id = WD.definitionId" . "\n"
         		. "WHERE D.id IS NULL" . "\n"
 				;
@@ -434,7 +432,7 @@
 			if ( count( $results ) > 0 )
 			{
 			
-				$sql = "DELETE FROM " . $this->tableList['glossary_word_definitions']." " . "\n"
+				$sql = "DELETE FROM `" . $this->tableList['glossary_word_definitions']."` " . "\n"
 					. "WHERE id IN(" . implode(',', $results ) . ") " . "\n"
 					;
 				
@@ -448,8 +446,8 @@
             
             // delete orphan entries : missing word
             $sql = "SELECT WD.id "
-        		. "FROM " . $this->tableList['glossary_word_definitions']." AS WD " . "\n"
-        		. "LEFT JOIN " . $this->tableList['glossary_words']." AS W " . "\n"
+        		. "FROM `" . $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+        		. "LEFT JOIN `" . $this->tableList['glossary_words']."` AS W " . "\n"
         		. "ON W.id = WD.wordId" . "\n"
         		. "WHERE W.id IS NULL" . "\n"
 				;
@@ -459,7 +457,7 @@
 			if ( count( $results ) > 0 )
 			{
 			
-				$sql = "DELETE FROM " . $this->tableList['glossary_word_definitions']." " . "\n"
+				$sql = "DELETE FROM `" . $this->tableList['glossary_word_definitions']."` " . "\n"
 					. "WHERE id IN(" . implode(',', $results ) . ") " . "\n"
 					;
 				
@@ -484,7 +482,7 @@
             $this->connection->connect();
 
             $sql = "SELECT definition " . "\n"
-                . "FROM ".$this->tableList['glossary_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_definitions']."` " . "\n"
                 . "WHERE id = ". (int) $defId . "\n"
                 ;
 
@@ -510,7 +508,7 @@
             $this->connection->connect();
 
             $sql = "SELECT id " . "\n"
-                . "FROM ".$this->tableList['glossary_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_definitions']."` " . "\n"
                 . "WHERE definition = '" . addslashes( $def ) . "'" . "\n"
                 ;
 
@@ -536,7 +534,7 @@
         {
             $this->connection->connect();
             
-            $sql = "UPDATE ".$this->tableList['glossary_definitions']." " . "\n"
+            $sql = "UPDATE `".$this->tableList['glossary_definitions']."` " . "\n"
                 . "SET definition = '". addslashes( $newDefinition ) . "' " . "\n"
                 . "WHERE id = " . (int) $defId . "\n"
                 ;
@@ -563,7 +561,7 @@
             $this->connection->connect();
             
             $sql = "DELETE " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE definitionId = " . (int) $defId . "\n"
                 ;
                 
@@ -594,7 +592,7 @@
             
             // delete the relation line in ditionary
             $sql = "DELETE " . "\n"
-                . "FROM ".$this->tableList['glossary_word_definitions']." " . "\n"
+                . "FROM `".$this->tableList['glossary_word_definitions']."` " . "\n"
                 . "WHERE definitionId = " . (int) $defId . " " . "\n"
                 . "AND wordId = " . (int) $wordId . "\n"
                 ;
@@ -624,7 +622,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id " . "\n"
-                . "FROM " . $this->tableList['glossary_words'] . " " . "\n"
+                . "FROM `" . $this->tableList['glossary_words'] . "` " . "\n"
                 . "WHERE name = '" . $wordName . "'" . "\n"
                 ;
                 
@@ -643,7 +641,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id " . "\n"
-                . "FROM " . $this->tableList['glossary_words'] . " " . "\n"
+                . "FROM `" . $this->tableList['glossary_words'] . "` " . "\n"
                 . "WHERE name = '" . $wordName . "'" . "\n"
                 ;
                 
@@ -674,10 +672,10 @@
                 ;
                 
             $sql = "SELECT W.name, D.definition, W.id AS wordId, D.id AS definitionId " . "\n"
-                . "FROM ". $this->tableList['glossary_word_definitions']." AS WD " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_words']." AS W " . "\n"
+                . "FROM `". $this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_words']."` AS W " . "\n"
                 . "ON W.id = WD.wordId " . "\n"
-                . "INNER JOIN ". $this->tableList['glossary_definitions']." AS D " . "\n"
+                . "INNER JOIN `". $this->tableList['glossary_definitions']."` AS D " . "\n"
                 . "ON D.id = WD.definitionId " . "\n"
                 . "WHERE WD.wordId = " . (int) $wordId . " " . "\n"
                 . $and . "\n"
@@ -698,7 +696,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id, name " . "\n"
-                . "FROM " . $this->tableList['glossary_words']." " . "\n"
+                . "FROM `" . $this->tableList['glossary_words']."` " . "\n"
                 . "ORDER BY LENGTH(name) DESC" . "\n"
                 ;
                 
@@ -782,7 +780,7 @@
                 $this->connection->connect();
                 
                 $sql = "SELECT WD.wordId " . "\n"
-                    . "FROM ".$this->tableList['glossary_word_definitions']." AS WD " . "\n"
+                    . "FROM `".$this->tableList['glossary_word_definitions']."` AS WD " . "\n"
                     . "WHERE WD.definitionId = " . (int) $defId . "\n"
                     ;
                     
@@ -807,7 +805,7 @@
                     if ( is_array( $wordList ) && !empty( $wordList ) )
                     {
                         $sql = "SELECT W.name " . "\n"
-                            . "FROM ".$this->tableList['glossary_words']." AS W " . "\n"
+                            . "FROM `".$this->tableList['glossary_words']."` AS W " . "\n"
                             . "WHERE W.id " . "\n"
                             . "IN " . '(' . implode(',', $wordList ) . ')' . "\n"
                             . " ORDER BY UPPER(W.name) ASC" . "\n"

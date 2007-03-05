@@ -180,7 +180,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id, title, content, wordList " ."\n"
-                . "FROM ".$this->tableList['glossary_texts']." " ."\n"
+                . "FROM `".$this->tableList['glossary_texts']."` \n"
                 . "WHERE id = " . (int) $this->getId() ."\n"
                 ; 
                 
@@ -209,7 +209,7 @@
                 }
                 
                 $sql = "SELECT dictionaryId " ."\n"
-                    . "FROM ".$this->tableList['glossary_text_dictionaries']." " ."\n"
+                    . "FROM `".$this->tableList['glossary_text_dictionaries']."` \n"
                     . "WHERE textId = " . (int) $this->getId() ."\n"
                     ;
                 
@@ -237,8 +237,7 @@
             if ( 0 == $this->id )
             {
                 // insert
-                $sql = "INSERT INTO " ."\n"
-                    . $this->tableList['glossary_texts'] ."\n"
+                $sql = "INSERT INTO `" . $this->tableList['glossary_texts'] ."`\n"
                     . " SET title = '". addslashes( $this->title ) . "', " ."\n"
                     . "content = '". addslashes( $this->content ) . "'" ."\n"
                     ;
@@ -256,8 +255,7 @@
                 
                 if ( ! is_null( $this->dictionaryId ) )
                 {
-                    $sql = "INSERT INTO " ."\n"
-                        . $this->tableList['glossary_text_dictionaries'] ."\n"
+                    $sql = "INSERT INTO `" . $this->tableList['glossary_text_dictionaries'] ."` \n"
                         . " SET textId = ". (int) $textId . ", " ."\n"
                         . "dictionaryId = ". (int) $this->dictionaryId . "\n"
                         ;
@@ -272,8 +270,7 @@
             else
             {
                 // update
-                $sql = "UPDATE " ."\n"
-                    . $this->tableList['glossary_texts'] ."\n"
+                $sql = "UPDATE `" . $this->tableList['glossary_texts'] ."`\n"
                     . " SET title = '". addslashes( $this->title ) . "', " ."\n"
                     . "wordList = '". addslashes( implode( '|', $this->wordList ) ) . "', " ."\n"
                     . "content = '". addslashes( $this->content ) . "' " ."\n"
@@ -290,22 +287,20 @@
                 if ( ! is_null( $this->dictionaryId ) )
                 {
                     $sql = "SELECT textId "
-                        . "FROM " . $this->tableList['glossary_text_dictionaries'] ." \n"
+                        . "FROM `" . $this->tableList['glossary_text_dictionaries'] ."` \n"
                         . "WHERE textId = ". (int) $this->getId() . "\n"
                         ;
                         
                     if ( $this->connection->queryReturnsResult( $sql ) )
                     {  
-                        $sql = "UPDATE " ."\n"
-                            . $this->tableList['glossary_text_dictionaries'] ."\n"
+                        $sql = "UPDATE `" . $this->tableList['glossary_text_dictionaries'] ."`\n"
                             . " SET dictionaryId = ". (int) $this->getDictionaryId() . " \n"
                             . "WHERE textId = ". (int) $this->getId() . "\n"
                             ;
                     }
                     else
                     {
-                        $sql = "INSERT INTO " ."\n"
-                            . $this->tableList['glossary_text_dictionaries'] ."\n"
+                        $sql = "INSERT INTO `" . $this->tableList['glossary_text_dictionaries'] ."`\n"
                             . " SET textId = ". (int) $this->getId() . ", " ."\n"
                             . "dictionaryId = ". (int) $this->getDictionaryId() . "\n"
                             ;
@@ -332,7 +327,7 @@
             $this->connection->connect();
             
             $sql = "DELETE " ."\n"
-                . "FROM ".$this->tableList['glossary_texts']." " ."\n"
+                . "FROM `".$this->tableList['glossary_texts']."`\n"
                 . "WHERE id = " . (int) $this->id ."\n"
                 ;
             
@@ -347,7 +342,7 @@
                 if ( ! is_null( $this->dictionaryId ) )
                 {
                     $sql = "DELETE " . "\n"
-                        . "FROM " . $this->tableList['glossary_text_dictionariess'] ."\n"
+                        . "FROM `" . $this->tableList['glossary_text_dictionariess'] ."`\n"
                         . "WHERE textId = ". (int) $this->getId() . "\n"
                         ;
                         
@@ -372,7 +367,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id, title, content " ."\n"
-                . "FROM ".$this->tableList['glossary_texts'] ."\n"
+                . "FROM `".$this->tableList['glossary_texts'] ."`\n"
                 ; 
                 
             $textList = $this->connection->getAllRowsFromQuery( $sql );
@@ -395,7 +390,7 @@
             $this->connection->connect();
             
             $sql = "SELECT dictionaryId "
-                . "FROM " .$this->tableList['glossary_text_dictionaries'] ." \n"
+                . "FROM `" .$this->tableList['glossary_text_dictionaries'] ."` \n"
                 . "WHERE textId = " . (int) $textId
                 ;
                 
