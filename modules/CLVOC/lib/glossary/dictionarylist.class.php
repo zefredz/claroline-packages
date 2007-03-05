@@ -51,8 +51,8 @@
             $this->connection->connect();
             
             $sql = "SELECT D.id, D.name, D.description, T.parentId " . "\n"
-                . "FROM " . $this->tableList['glossary_dictionary_tree']. " AS T \n"
-                . "INNER JOIN " . $this->tableList['glossary_dictionaries'] . " AS D \n"
+                . "FROM `" . $this->tableList['glossary_dictionary_tree']. "` AS T \n"
+                . "INNER JOIN `" . $this->tableList['glossary_dictionaries'] . "` AS D \n"
                 . "ON D.id = T.itemId \n"
                 . "WHERE T.parentId = " . (int) $this->rootId
                 ;
@@ -91,15 +91,15 @@
             }
             
             $sql = "SELECT id " . "\n"
-                . "FROM " . $this->tableList['glossary_dictionaries'] . " AS D " . "\n"
+                . "FROM `" . $this->tableList['glossary_dictionaries'] . "` AS D " . "\n"
                 . "WHERE id = " . (int) $dictId  . "\n"
                 ;
                 
             if ( is_null( $dictId ) || ! $this->connection->queryReturnsResult( $sql ) )
             {
-                $sql = "INSERT INTO " . $this->tableList['glossary_dictionaries'] . " " . "\n"
-                    . "SET name = '" . addslashes( $name ) . "', " . "\n"
-                    . "description = '" . addslashes( $description ) . "' " . "\n"
+                $sql = "INSERT INTO `" . $this->tableList['glossary_dictionaries'] . "`\n"
+                    . "SET name = '" . addslashes( $name ) . "', \n"
+                    . "description = '" . addslashes( $description ) . "'\n"
                     ;
                     
                 $this->connection->executeQuery( $sql );
@@ -113,9 +113,9 @@
                 
                 if ( ! is_null( $parentId ) )
                 {
-                    $sql = "INSERT INTO " . $this->tableList['glossary_dictionary_tree'] . " " . "\n" 
+                    $sql = "INSERT INTO `" . $this->tableList['glossary_dictionary_tree'] . "`\n"
                         . "SET parentId = " . (int) $parentId . ", " . "\n"
-                        . "itemId = " . (int) $dictId . " " . "\n"
+                        . "itemId = " . (int) $dictId . "\n"
                         ;
                         
                     $this->connection->executeQuery( $sql );
@@ -130,7 +130,7 @@
             }
             else
             {
-                $sql = "UPDATE " . $this->tableList['glossary_dictionaries'] . " " . "\n"
+                $sql = "UPDATE `" . $this->tableList['glossary_dictionaries'] . "`\n"
                     . "SET name = '" . addslashes( $name ) . "', " . "\n"
                     . "description = '" . addslashes( $description ) . "' " . "\n"
                     . "WHERE id = " . (int) $dictId  . "\n"
@@ -164,8 +164,8 @@
             $this->connection->connect();
             
             $sql = "SELECT D.id, D.name, D.description, T.parentId " . "\n"
-                . "FROM " . $this->tableList['glossary_dictionary_tree']. " AS T \n"
-                . "INNER JOIN " . $this->tableList['glossary_dictionaries'] . " AS D \n"
+                . "FROM `" . $this->tableList['glossary_dictionary_tree']. "` AS T \n"
+                . "INNER JOIN `" . $this->tableList['glossary_dictionaries'] . "` AS D \n"
                 . "ON D.id = T.itemId \n"
                 . "WHERE D.id = " . (int) $dictId . "\n"
                 ;
@@ -194,8 +194,8 @@
             $this->connection->connect();
             
             $sql = "SELECT D.id, D.name, D.description, T.parentId " . "\n"
-                . "FROM " . $this->tableList['glossary_dictionary_tree']. " AS T \n"
-                . "INNER JOIN " . $this->tableList['glossary_dictionaries'] . " AS D \n"
+                . "FROM `" . $this->tableList['glossary_dictionary_tree']. "` AS T \n"
+                . "INNER JOIN `" . $this->tableList['glossary_dictionaries'] . "` AS D \n"
                 . "ON D.id = T.itemId \n"
                 . "ORDER BY D.id ASC"
                 ;
@@ -227,14 +227,14 @@
             
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->tableList['glossary_dictionaries'] . " " . "\n"
-                . "WHERE id = "  . (int) $dictId  . " " . "\n"
+            $sql = "DELETE FROM `" . $this->tableList['glossary_dictionaries'] . "`\n"
+                . "WHERE id = "  . (int) $dictId
                 ;
                 
             $this->connection->executeQuery( $sql );
             
-            $sql = "DELETE FROM " . $this->tableList['glossary_dictionary_tree'] . " " . "\n"
-                . "WHERE itemId = "  . (int) $dictId  . " " . "\n"
+            $sql = "DELETE FROM `" . $this->tableList['glossary_dictionary_tree'] . "`\n"
+                . "WHERE itemId = "  . (int) $dictId
                 ;
                 
             return $this->connection->executeQuery( $sql );
@@ -250,7 +250,7 @@
             $this->connection->connect();
             
             $sql = "SELECT id " . "\n"
-                . "FROM " . $this->tableList['glossary_dictionaries'] . " AS D " . "\n"
+                . "FROM `" . $this->tableList['glossary_dictionaries'] . "` AS D \n"
                 . "WHERE id = " . (int) $dictionaryId  . "\n"
                 ;
                 

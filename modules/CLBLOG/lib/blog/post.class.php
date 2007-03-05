@@ -33,7 +33,7 @@
         {
             $this->connection->connect();
             
-            $sql = "INSERT INTO " . $this->config['blog_posts'] . " "
+            $sql = "INSERT INTO `" . $this->config['blog_posts'] . "` "
                 . "SET userId = ".(int) $userId.", "
                 . "groupId = ".(int) $groupId.", "
                 . "title = '".addslashes($title)."', "
@@ -60,7 +60,7 @@
         {
             $this->connection->connect();
             
-            $sql = "UPDATE " . $this->config['blog_posts'] . " "
+            $sql = "UPDATE `" . $this->config['blog_posts'] . "` "
                 . "SET userId = ".(int) $userId.", "
                 . "groupId = ".(int) $groupId.", "
                 . "title = '".addslashes($title)."', "
@@ -88,7 +88,7 @@
             $this->connection->connect();
             
             $sql = "SELECT * "
-                . "FROM " . $this->config['blog_posts'] . " "
+                . "FROM `" . $this->config['blog_posts'] . "` "
                 . "WHERE id = " . (int) $postId
                 ;
 
@@ -100,7 +100,7 @@
             $this->connection->connect();
             
             $sql = "SELECT * "
-                . "FROM " . $this->config['blog_posts'] . " "
+                . "FROM `" . $this->config['blog_posts'] . "` "
                 . "WHERE id = " . (int) $postId
                 ;
 
@@ -112,7 +112,7 @@
             $this->connection->connect();
             
             $sql = "SELECT * "
-                . "FROM " . $this->config['blog_posts'] . " "
+                . "FROM `" . $this->config['blog_posts'] . "` "
                 . "ORDER BY id DESC"
                 ;
 
@@ -123,7 +123,7 @@
         {
             $this->connection->connect();
             
-            $sql = "DELETE FROM " . $this->config['blog_posts'] . " "
+            $sql = "DELETE FROM `" . $this->config['blog_posts'] . "` "
                 . "WHERE id = " . (int) $id
                 ;
                 
