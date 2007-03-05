@@ -31,7 +31,7 @@ array ( 'showUserId'
 // MAIN
 $conf_def_property_list['refreshTime'] =
 array ( 'label'       => 'Refresh time'
-      , 'description' => '15 is a good value for this.'
+      , 'description' => '15 is a good value for this. Will not work if bigger than php session lifetime (see server configuration)'
       , 'default'     => '15'
       , 'unit'        => 'minutes'
       , 'type'        => 'string'
