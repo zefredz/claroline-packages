@@ -23,7 +23,7 @@
     // load plugIt! API for module integration
     require_once dirname(__FILE__) . '/lib/plugit.lib.php';
     require_once dirname(__FILE__) . '/lib/access.lib.php';
-    require_once dirname(__FILE__) . '/lib/icon.lib.php';
+    require_once get_path('includePath') . '/lib/icon.lib.php';
     
     // load service architecture
     require_once dirname(__FILE__) . '/lib/service/dispatcher.class.php';
