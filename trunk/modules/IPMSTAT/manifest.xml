@@ -1,4 +1,4 @@
-<module rev="$Id$">
+<module>
   <label>IPMSTAT</label>
   <name>Statistiques iCampus</name>
   <version>1.0.0</version>
@@ -13,7 +13,7 @@
 ]]></description>
 
   <author>
-     <name>Christophe Gesché</name>
+     <name>Christophe Gesche</name>
      <email>moosh@claroline.net</email>
      <web>http://www.claroline.net</web>
   </author>
