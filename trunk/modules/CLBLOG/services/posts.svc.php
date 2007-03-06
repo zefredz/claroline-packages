@@ -933,7 +933,7 @@
                 ;
             
             $output .= '<h3>' 
-                . ( $action === 'rqAddComment' ? get_lang('Post your comment') : get_lang('Edit comment') ) 
+                . ( $action === 'rqEditComment' ? get_lang('Edit comment') : get_lang('Post your comment') )
                 . '</h3>' . "\n"
                 . $commentForm
                 ;
