@@ -13,7 +13,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  */
 $conf_def['config_code'] = 'CLONLINE';
 $conf_def['config_file'] = 'CLONLINE.conf.php';
-$conf_def['config_name'] = 'Google AdSense';
+$conf_def['config_name'] = 'Who is online';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
