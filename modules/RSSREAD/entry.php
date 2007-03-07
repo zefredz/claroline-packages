@@ -40,7 +40,7 @@ if( false !== $rs = $rss->get( get_conf('feedUrl') ) )
 
     foreach( $rs['items'] as $item )
     {
-        $html .= '<a href="' . $item['link'] . '">' . $item['title'] . '</a><br />' . "\n";
+        $html .= '- <a href="' . $item['link'] . '">' . $item['title'] . '</a><br />' . "\n";
     }
 
     $html .= '</p>' . "\n";
