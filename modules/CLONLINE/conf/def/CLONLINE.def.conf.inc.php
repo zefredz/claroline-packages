@@ -26,6 +26,7 @@ $conf_def['section']['display']['description']= '';
 $conf_def['section']['display']['properties'] =
 array ( 'showUserId'
       , 'showEmail'
+      , 'showStatus'
       );
 
 // MAIN
@@ -59,5 +60,15 @@ array ( 'label'       => 'Show user email'
       , 'readonly'    => FALSE
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );         
-               
+
+$conf_def_property_list['showStatus'] =
+array ( 'label'       => 'Show user status'
+      , 'description' => ''
+      , 'default'     => TRUE
+      , 'type'        => 'boolean'
+      , 'display'     => TRUE
+      , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );  
+                     
 ?>
