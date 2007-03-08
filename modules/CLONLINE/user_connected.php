@@ -19,9 +19,8 @@ require_once $includePath . '/lib/pager.lib.php';
 require_once $includePath . '/lib/user.lib.php';
 
 $nameTools   = get_lang('User(s) online');
-$userPerPage = get_conf('usersPerPage' , 10);
+$userPerPage = get_conf('usersPerPage');
 
-// should stay the same as session time on server
 
 $tbl = claro_sql_get_tbl(array('user_online','user'), array('course'=>null));
 
@@ -55,7 +54,9 @@ include($includePath.'/claro_init_header.inc.php');
 
 echo claro_html_tool_title($nameTools);
 
-echo '<p>' . get_lang('User(s) active(s) for the last %time minute(s) :', array('%time' => get_conf('refreshTime'))) . '</p>' . "\n";
+// Refresh time should not be less thant 10 minutes
+$refreshTime = max(10, (int)(ini_get('session.gc_maxlifetime')/60));
+echo '<p>' . get_lang('List of active users for the last %time minutes :', array('%time' => $refreshTime)) . '</p>' . "\n";
 
 echo $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
 
@@ -84,10 +85,20 @@ foreach($userList as $user)
 
     if( get_conf('showUserId') ) echo  '<td align="center">' . $user['user_id'] . '</td>' . "\n";
 
-    echo '<td>' . $user['lastname'] . '</td>' . "\n";
-    echo '<td>' . $user['firstname'] . '</td>' . "\n";
+    echo '<td>' . ( !empty($user['lastname'])?$user['lastname']:'&nbsp;')  . '</td>' . "\n";
+    echo '<td>' . ( !empty($user['firstname'])?$user['firstname']:'&nbsp;')  . '</td>' . "\n";
 
-    if( get_conf('showEmail') ) echo '<td>' . $user['email'] . '</td>' . "\n";
+    if( get_conf('showEmail') ) 
+    {
+        if( !empty($user['email']) )
+        {
+            echo '<td><a href="mailto:'. $user['email'] .'">' . $user['email'] . '</a></td>' . "\n";
+        }
+        else
+        {
+            echo '<td>-</td>' . "\n";
+        }
+    }
     
     if( get_conf('showStatus') ) echo '<td>' . ( $user['isCourseCreator']?get_lang('Course creator'):get_lang('User')) . '</td>' . "\n";    
     

@@ -12,6 +12,8 @@
  */
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
+include_once claro_get_conf_repository().'CLONLINE.conf.php'; 
+
 // We are logged in and must notice the last action date
 $tbl = claro_sql_get_tbl('user_online', array('course'=>null));
 
@@ -94,9 +96,12 @@ class Login_listener extends EventDriven
      */
     function refresh_login_DB()
     {
+        // Refresh time should not be less thant 10 minutes
+        $refreshTime = max(10, (int)(ini_get('session.gc_maxlifetime')/60));
+        
         $sql = "DELETE
                 FROM `" . $this->tblUserOnline . "`
-                WHERE `last_action` < DATE_SUB( NOW() , INTERVAL " . get_conf('refreshTime') . " MINUTE )";
+                WHERE `last_action` < DATE_SUB( NOW() , INTERVAL " . $refreshTime . " MINUTE )";
                 
         claro_sql_query($sql);
     }
