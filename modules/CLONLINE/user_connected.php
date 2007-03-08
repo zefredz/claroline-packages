@@ -11,6 +11,7 @@
  *
  */
 //$tlabelReq = 'CLONLINE';
+$cidReset = TRUE;
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
@@ -28,6 +29,7 @@ $sql = "SELECT U.`nom`                  AS `lastname`,
                U.`prenom`               AS `firstname`,
                U.`email`                AS `email`,
                U.`user_id`              AS `user_id`,
+               U.`isCourseCreator`      AS `isCourseCreator`,
                O.`last_action`          AS `last_action`
           FROM `" . $tbl['user_online'] . "` AS O,
                `" . $tbl['user'] . "`        AS U
@@ -45,36 +47,35 @@ $myPager->set_sort_key($pagerSortKey, $pagerSortDir);
 $userList = $myPager->get_result_list();
 $sortUrlList = $myPager->get_sort_url_list($_SERVER['PHP_SELF']);
 
-//----------------------------------
-// DISPLAY
-//----------------------------------
-
-//Display Claroline top banner
+/*
+ * Output
+ */
 
 include($includePath.'/claro_init_header.inc.php');
 
-//display title
+echo claro_html_tool_title($nameTools);
 
-echo claro_html_tool_title($nameTools)
-//display desc message.
-.    get_lang('User(s) active(s) for the last %time minute(s) :', array('%time' => get_conf('refreshTime')))
+echo '<p>' . get_lang('User(s) active(s) for the last %time minute(s) :', array('%time' => get_conf('refreshTime'))) . '</p>' . "\n";
 
-//Display Pager list
-
-.    $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
+echo $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
 
 .    "\n" . '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n";
 
-if( get_conf('showUserId') ) echo '<th><a href="' . $sortUrlList['user_id'     ] . '">' .  get_lang('No.')          . '</a></th>' . "\n";
+if( get_conf('showUserId') ) echo '<th><a href="' . $sortUrlList['user_id'] . '">' .  get_lang('No.') . '</a></th>' . "\n";
 
-echo '<th><a href="' . $sortUrlList['lastname'    ] . '">' .  get_lang('Last Name')    . '</a></th>' . "\n"
-.    '<th><a href="' . $sortUrlList['firstname'   ] . '">' .  get_lang('First Name')   . '</a></th>' . "\n";
+echo '<th><a href="' . $sortUrlList['lastname'] . '">' .  get_lang('Last Name')    . '</a></th>' . "\n"
+.    '<th><a href="' . $sortUrlList['firstname'] . '">' .  get_lang('First Name')   . '</a></th>' . "\n";
 
-if( get_conf('showEmail') ) echo '<th><a href="' . $sortUrlList['email'       ] . '">' .  get_lang('Email')        . '</a></th>' . "\n";
+if( get_conf('showEmail') ) echo '<th><a href="' . $sortUrlList['email'] . '">' .  get_lang('Email') . '</a></th>' . "\n";
 
-echo '</tr>' . "\n\n" . '<tbody>' . "\n";
+if( get_conf('showStatus') ) echo '<th><a href="' . $sortUrlList['isCourseCreator'] . '">' .  get_lang('Status') . '</a></th>' . "\n";
+
+
+echo '</tr>' . "\n" 
+.    '</thead>' . "\n"
+.    '<tbody>' . "\n\n";
 
 
 foreach($userList as $user)
@@ -88,19 +89,16 @@ foreach($userList as $user)
 
     if( get_conf('showEmail') ) echo '<td>' . $user['email'] . '</td>' . "\n";
     
+    if( get_conf('showStatus') ) echo '<td>' . ( $user['isCourseCreator']?get_lang('Course creator'):get_lang('User')) . '</td>' . "\n";    
+    
     echo '</tr>' . "\n\n";
 }
 
-//end table...
 echo '</tbody>' . "\n"
 .    '</table>' . "\n"
-
-//pager
-
 .    $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
 ;
 
-//display Claroline footer
 
 include $includePath . '/claro_init_footer.inc.php';
 
