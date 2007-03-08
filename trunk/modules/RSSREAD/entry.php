@@ -13,7 +13,7 @@
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
-$tlabelReq = 'RSSREAD';
+//$tlabelReq = 'RSSREAD';
 include_once claro_get_conf_repository().'RSSREAD.conf.php';
 
 require_once get_path('incRepositorySys') . '/lib/lastRSS/lastRSS.php';
@@ -47,7 +47,7 @@ if( false !== $rs = $rss->get( get_conf('feedUrl') ) )
 }
 else
 {
-    $html .= '<p>' . get_lang('Error : cannot read RSS feed') . '</p>' . "\n";
+    if( $is_platformAdmin ) $html .= '<p>' . get_lang('Error : cannot read RSS feed') . '</p>' . "\n";
 }
 
 $claro_buffer->append($html);

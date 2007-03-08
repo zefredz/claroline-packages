@@ -13,7 +13,7 @@
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
-$tlabelReq = 'SPREADFF';
+//$tlabelReq = 'SPREADFF';
 include_once claro_get_conf_repository().'SPREADFF.conf.php';
 
 $html = '';

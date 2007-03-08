@@ -12,10 +12,10 @@
  */
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
-$tlabelReq = 'GOOGLSCH';
-add_module_lang_array($tlabelReq);
 
-$moduleUrl = get_module_url($tlabelReq);
+//$tlabelReq = 'GOOGLSCH';
+$moduleLabel = 'GOOGLSCH';
+$moduleUrl = get_module_url($moduleLabel);
 include_once claro_get_conf_repository().'GOOGLSCH.conf.php';
 
 // shorten another site url for better display (and google doesn't require the http)
