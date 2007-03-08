@@ -13,7 +13,7 @@
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
-$tlabelReq = 'SHOWIP';
+//$tlabelReq = 'SHOWIP';
 include_once claro_get_conf_repository().'SHOWIP.conf.php';
 
 $html = "\n\n"
@@ -25,7 +25,6 @@ $html = "\n\n"
 
 
 $claro_buffer->append($html);
-
 
 
 ?>

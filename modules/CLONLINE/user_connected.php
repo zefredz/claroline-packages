@@ -10,7 +10,8 @@
  * @package CLONLINE
  *
  */
-$tlabelReq = 'CLONLINE';
+//$tlabelReq = 'CLONLINE';
+
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
 require_once $includePath . '/lib/pager.lib.php';
