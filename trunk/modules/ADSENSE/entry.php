@@ -14,9 +14,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 require_once dirname(__FILE__) . '/adsense.class.php';
 
-$tlabelReq = 'ADSENSE';
-
-add_module_lang_array($tlabelReq);
+//$tlabelReq = 'ADSENSE';
 
 include_once claro_get_conf_repository().'ADSENSE.conf.php'; 
 
