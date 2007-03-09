@@ -22,9 +22,8 @@ require_once get_path('incRepositorySys') . '/lib/lastRSS/lastRSS.php';
 $rss = new lastRSS;
 
 // configure parser
-$rss->cache_dir = get_path('rootSys') . 'tmp/cache/';
+$rss->cache_dir = get_path('rootSys') . '/tmp/cache/';
 $rss->cache_time = get_conf('cacheTime')*60;
-$rss->items_limit = get_conf('itemsToShow');
 $rss->stripHTML = TRUE;
 
 if( get_conf('feedCharset') != '' ) $rss->cp = get_conf('feedCharset');
@@ -38,16 +37,29 @@ if( false !== $rs = $rss->get( get_conf('feedUrl') ) )
     $html .= '<p>' . "\n";
     $html .= '<strong>' . $feedTitle . '</strong><br />' . "\n";
 
+    $limit = get_conf('itemsToShow');
+    $i = 0;
     foreach( $rs['items'] as $item )
     {
-        $html .= '- <a href="' . $item['link'] . '">' . $item['title'] . '</a><br />' . "\n";
+        if( $i < $limit )
+        {
+            $html .= '- <a href="' . $item['link'] . '">' . $item['title'] . '</a><br />' . "\n";
+            $i++;
+        }
+        else
+        {
+            break;
+        }
     }
 
     $html .= '</p>' . "\n";
 }
 else
 {
-    if( $is_platformAdmin ) $html .= '<p>' . get_lang('Error : cannot read RSS feed') . '</p>' . "\n";
+    if( claro_is_platform_admin() )
+    {
+        $html .= '<p>' . get_lang('Error : cannot read RSS feed (Check feed url and if php setting "allow_url_fopen" is turned on).') . '</p>' . "\n";
+    }
 }
 
 $claro_buffer->append($html);
