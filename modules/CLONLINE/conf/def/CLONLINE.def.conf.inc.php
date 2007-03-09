@@ -62,7 +62,7 @@ array ( 'label'   => 'Number of users per page'
       , 'type'    => 'integer'
       , 'display'     => TRUE      
       , 'readonly'    => FALSE      
-      , 'acceptedValue' => array ('Min'=>'5')
+      , 'acceptedValue' => array ('min'=>'5')
       );                     
 
 ?>
