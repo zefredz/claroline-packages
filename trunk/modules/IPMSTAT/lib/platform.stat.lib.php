@@ -73,7 +73,7 @@ class toolStat
 {
     function get_current_scan_id()
     {
-        return date('mi');
+        return date('m');
     }
 
     function write_stat($code_cours, $resultArray, $passe)
@@ -129,7 +129,6 @@ INSERT INTO `" . $tbl ['stat_courses'] . "` SET
 
     function remove_stat_scan_session($passe)
     {
-
         $tbl = claro_sql_get_tbl2( array('stat_courses','stat_data_matrix'));
         $sqlWashMatrix = "DELETE
                           FROM  `" . $tbl ['stat_data_matrix'] . "`
@@ -260,6 +259,11 @@ function dircount($dirToScan)
 
 function claro_sql_get_tbl2( $tableList='%TBLPRIM', $contextData=null)
 {
+    return  claro_sql_get_tbl( $tableList, $contextData);
+}
+
+function zclaro_sql_get_tbl2( $tableList='%TBLPRIM', $contextData=null)
+{
     /**
      * If it's in a course, $courseId is set or $courseId is null but not claro_get_current_course_id()
      * if both are null, it's a main table
@@ -369,4 +373,39 @@ function claro_sql_get_tbl2( $tableList='%TBLPRIM', $contextData=null)
 }
 
 
+function collapse_result($resultExpand)
+{
+    $resultCollapsed['low']['content'] = 'low';
+    $resultCollapsed['low']['qty']=0;
+    $resultCollapsed['many']['content'] = 'many';
+    $resultCollapsed['many']['qty']=0;
+
+    foreach ($resultExpand as $res)
+    {
+        extract($res);
+        switch ($content)
+        {
+            case 0 :
+            case 1 :
+                $resultCollapsed['low']['qty'] += $qty;
+                break;
+            case 2 :
+                $resultCollapsed['2']['content'] = 2;
+                $resultCollapsed['2']['qty'] = $qty;
+                break;
+            case 3 :
+                $resultCollapsed['3']['content'] = 3;
+                $resultCollapsed['3']['qty'] = $qty;
+                break;
+            case 4 :
+                $resultCollapsed['4']['content'] = 4;
+                $resultCollapsed['4']['qty'] = $qty;
+                break;
+            default :
+                $resultCollapsed['many']['qty'] += $qty;
+        }
+
+    }
+    return $resultCollapsed;
+}
 ?>

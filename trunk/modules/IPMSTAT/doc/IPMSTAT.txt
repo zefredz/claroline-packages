@@ -1,0 +1,63 @@
+Cet  outil a été créé pour le besoin de l'IPM mais peut être exploité partout.
+ l'objectif est de mesurer l'évolution de l'utilisation des outils du campus.
+
+ Il a été observé que le schéma classique est de commencer par les outils transmisifs, puis logistiques, puis interactif pour finir par le combinatoire.
+
+ Le principe est de compter dans chaque cours les items de chaque outils
+
+ On ramènne alors un
+ "nombre d'item" par "outil" par "cours"
+
+ Ce qu'il faut ensuite transformer en
+
+ "nombre de cours" ayant le "même nombre d'item" pour un "outil"
+
+ Et finalement réduire l'étalement "même nombre d'item" à
+
+ Moins de 2
+ 2
+ 3
+ 4
+ plus de 4
+
+ Résultat à reporter en fichier csv.
+-------------------
+!Fonctionnement
+
+'''index.php''' propose 2 liens
+
+Run scan : scan.php
+Display results: results.php
+
+'''scan.php''' est un loop script qui traite une queue de traitement.
+Il s'arrete après n cours et se relance après m secondes.
+
+ $courseToScanByStep = get_conf('courseByStep',4);
+ $pauseByLoop = get_conf('pauseByLoop',1);
+
+ A chaque cours il execute une série de fonctions et il stock ce qu'il trouve dans une table de forme
+ Cours|tool|sonde_id|value|scanSessionId
+
+'''result.php'''
+Lit la table ci-dessus pour compiler l'information.
+et l'affiche avec une grille de donnée exportable en csv.
+
+--------------------
+Le problème.
+
+Cette fonctionalité génère un très grand nombre de données.
+Le scan a permis de résoudre le problème de la récolte
+Result pose encore des problèmes de pré-traitement.
+
+Option  : Ajouter une étape d'aménagement des données
+en ajoutant une table
+scanSessionId|tool|sonde_id|value|count
+
+Le problème est alors de savoir dans la première table les lignes prises en compte ou pas.
+On ne peut les supprimer car scan.php les regénèrerait.
+--------------------
+An attendant.
+J'ajoute un script resultIPM qui va collecter les données finale en plusieurs étapes.
+
+Principe . lire dans la table de résultat un résultat à la fois.
+

@@ -35,7 +35,7 @@ $tbl = claro_sql_get_tbl2(array('cours','stat_courses','stat_data_matrix','cours
 include './connector/IPMSTAT.install.php';
 $is_allowedToViewScan = claro_is_platform_admin();
 $passe = toolStat::get_current_scan_id();
-$courseToScanByStep = get_conf('courseByStep',4);
+$courseToScanByStep = get_conf('courseByStep',40);
 $pauseByLoop = get_conf('pauseByLoop',1);
 
 $courseQty = claro_get_course_quantity();

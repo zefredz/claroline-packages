@@ -4,7 +4,9 @@
   <version>1.0.0</version>
   <state>beta</state>
   <license>GPL</license>
-  <type>tool</type>
+  <type>applet</type>
+  <default_dock>campusAdmin</default_dock>
+
   <entry>index.php</entry>
   <icon>statistics.gif</icon>
 
