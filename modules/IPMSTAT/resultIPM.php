@@ -51,7 +51,7 @@ $courseLeft = claro_get_course_not_scanned_count($passe);
 $csvArroundText = '"';
 $csvSeparator = $csvArroundText . ',' . $csvArroundText;
 
-if ($outputFormat == 'html')
+if ($outputFormat=='html')
 {
     $menu[]=claro_html_cmd_link('index.php',get_lang('home'));
     $menu[]=claro_html_cmd_link('scan.php',get_lang('Run scan'));
@@ -76,18 +76,10 @@ if ($courseLeft > 0)
 }
 else
 {
-    $statGridTitle = toolStat::read_stat_column_names();
 
-    $statGrid = toolStat::read_stat_row();
-
-    if($dispDetail)
-    {
-
-        $statDataGrid = new claro_datagrid();
-        $statDataGrid->colTitleList = $statGridTitle;
-    }
+    //$statGridTitle = toolStat::read_stat_column_names();
     $statDigestDataGrid = new claro_datagrid();
-    $statDigestDataGrid->colTitleList = array_merge(array('content'=>'content'), $statGridTitle);
+    $statDigestDataGrid->colTitleList = array('content'=>'content','qty'=>'count');
 
     /** CVS EXPORT
 foreach ($statGrid as $course => $stats)
@@ -96,21 +88,37 @@ foreach ($statGrid as $course => $stats)
 }
 */
 
-    if($dispDetail )
+    $valueList = array(
+        'CLANN_QTY',
+        'CLDOC_QTY',
+        'CLCAL_QTY',
+        'CLFRM_QTY',
+        'CLDSC_QTY',
+        );
+
+    $valueList = toolStat::read_stat_column_names();
+
+    foreach ($valueList as $value)
     {
+        if (substr($value,-3,3)!='QTY') continue;
+        echo claro_html_tool_title($value);
+        $tbl = claro_sql_get_tbl2( array('stat_courses','stat_data_matrix'));
+        $sql = "SELECT content, count(course_code) qty
+                FROM  `" . $tbl ['stat_data_matrix'] . "` "
+        . "where valueName = '".$value."' "
+        . " GROUP BY content"
+        . " ORDER BY content"
+        ;
+
+        $statGrid = claro_sql_query_fetch_all_rows($sql);
+        $statGrid = collapse_result($statGrid);
+
         if ($outputFormat=='html')
         {
-            $statDataGrid->set_grid($statGrid);
-            echo $statDataGrid->render();
+            $statDigestDataGrid->set_grid($statGrid);
+            echo $statDigestDataGrid->render();
         }
     }
-
-    $statGrid = toolStat::read_stat_digest();
-
-    if ($outputFormat=='html')
-    {
-        $statDigestDataGrid->set_grid($statGrid);
-        echo $statDigestDataGrid->render();
-    }
 }
+
 ?>
