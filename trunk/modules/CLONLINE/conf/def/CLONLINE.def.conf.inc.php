@@ -15,6 +15,12 @@ $conf_def['config_code'] = 'CLONLINE';
 $conf_def['config_file'] = 'CLONLINE.conf.php';
 $conf_def['config_name'] = 'Who is online';
 
+ $conf_def['section']['main']['label']      = 'Main'; 	 
+ $conf_def['section']['main']['description']= ''; 	 
+ $conf_def['section']['main']['properties'] = 	 
+ array ( 'clonline_refreshTime' 	 
+       );
+
 $conf_def['section']['display']['label']      = 'Display';
 $conf_def['section']['display']['description']= '';
 $conf_def['section']['display']['properties'] =
@@ -23,6 +29,17 @@ array ( 'showUserId'
       , 'showStatus'
       , 'usersPerPage'
       );
+
+// MAIN 	 
+$conf_def_property_list['clonline_refreshTime'] = 	 
+ array ( 'label'       => 'Refresh time'
+       , 'description' => '5 is a good value for this. (Minimum 1 minute; Maximum 60 minutes)'
+       , 'default'     => '5' 	 
+       , 'unit'        => 'minutes' 	 
+       , 'type'        => 'integer' 	 
+        ,'acceptedValue' => array ( 'min'=> 1
+                                  , 'max'=> 60)       
+       );
 
 // DISPLAY
 $conf_def_property_list['showUserId'] =

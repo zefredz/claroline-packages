@@ -19,8 +19,8 @@ require_once $includePath . '/lib/pager.lib.php';
 require_once $includePath . '/lib/user.lib.php';
 
 $nameTools   = get_lang('User(s) online');
-$userPerPage = get_conf('usersPerPage');
 
+$userPerPage = get_conf('usersPerPage');
 
 $tbl = claro_sql_get_tbl(array('user_online','user'), array('course'=>null));
 
@@ -54,8 +54,9 @@ include($includePath.'/claro_init_header.inc.php');
 
 echo claro_html_tool_title($nameTools);
 
-// Refresh time should not be less thant 10 minutes
-$refreshTime = max(10, (int)(ini_get('session.gc_maxlifetime')/60));
+// Refresh time
+$refreshTime = get_conf('clonline_refreshTime',5);
+
 echo '<p>' . get_lang('List of active users for the last %time minutes :', array('%time' => $refreshTime)) . '</p>' . "\n";
 
 echo $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
