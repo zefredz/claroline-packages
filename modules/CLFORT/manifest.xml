@@ -1,0 +1,24 @@
+<module>
+  <label>CLFORT</label>
+  <name>Fortune applet</name>
+  <version>0.1</version> 
+  <license>GPL</license>
+  <type>applet</type>
+  <default_dock>campusFooterLeft</default_dock>
+   
+  <description>
+    This plugin allow to display fortune in Claroline dock
+  </description>
+  
+  <author>
+     <name>Frederic Minne</name>
+     <email>zefredz@gmail.com</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>

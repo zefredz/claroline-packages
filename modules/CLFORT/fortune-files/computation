@@ -1,0 +1,174 @@
+The remaining work to finish in order to reach your goal increases as the deadline approaches
+		-- Murphy's Laws of Computation n°1
+%
+Adding manpower to a late software project makes it later
+		-- Murphy's Laws of Computation n°2
+%
+A program generator creates programs that are more buggy than the program generator
+		-- Murphy's Laws of Computation n°3
+%
+There is never time to do it right, but always time to do it over
+		-- Murphy's Laws of Computation n°4
+%
+If there is ever the possibility of several things to go wrong, the one that will cause the most damage will be the one to go wrong
+		-- Murphy's Laws of Computation n°5
+%
+When all else fails, read the instructions
+		-- Murphy's Laws of Computation n°6
+%
+Any sufficiently advanced technology is indistinguishable from magic
+		-- Murphy's Laws of Computation n°7
+%
+Things get worse under pressure
+		-- Fundamental Law of Thermodynamics n°1
+%
+The first ninety percent of the task takes ninety percent of the time, and the last ten percent takes the other ninety percent
+		-- Fundamental Law of Thermodynamics n°2
+%
+The man who can smile when something goes wrong has thought of someone he can blame it on
+		-- Fundamental Law of Thermodynamics n°3
+%
+The higher the "higher-ups" are who have come to see your demo, the lower your chances are of giving a successful one
+		-- Fundamental Law of Thermodynamics n°4
+%
+Every task takes twice as long as you think it will take
+		-- Fundamental Law of Thermodynamics n°5
+%
+An ounce of image is worth a pound of performance
+		-- DSP Paradox (Nolans Placebo) n°1
+%
+Variables won't, constants aren't
+		-- DSP Paradox (Nolans Placebo) n°2
+%
+There is always one item on the screen menu that is mislabeled and should read : "ABANDON ALL HOPE, YE WHO ENTER HERE"
+		-- DSP Paradox (Nolans Placebo) n°3
+%
+A bad sector disk error or a head crash occurs only after you've done several hours of work without making a backup
+		-- DSP Paradox (Nolans Placebo) n°4
+%
+No matter how large and standard the marketplace is, IBM can redefine it
+		-- DSP Paradox (Nolans Placebo) n°5
+%
+The solution to a problem changes the problem
+		-- DSP Paradox (Nolans Placebo) n°6
+%
+Inside every complex and unworkable program is a useful routine stuggling to be free
+		-- DSP Paradox (Nolans Placebo) n°7
+%
+To study an application best, understand it thoroughly before you start
+		-- Educational Considerations n°1
+%
+Always keep a record of data, it indicates that you've been working
+		-- Educational Considerations n°2
+%
+Always draw your curves, then plot the data
+		-- Educational Considerations n°3
+%
+In case of doubt, make it sound convincing
+		-- Educational Considerations n°4
+%
+Program results should always be reproducible
+		-- Educational Considerations n°5
+%
+Don't believe in miracles
+		-- Educational Considerations n°6
+%
+It works better if you plug it in
+		-- Educational Considerations n°1
+%
+Build a system that even a fool can use, and only a fool will want to use it
+		-- Educational Considerations n°2
+%
+Blessed is the end user who expects nothing, for he/she will not be dissappointed
+		-- Educational Considerations n°3
+%
+Given any problem containing N equations, there will be atleast N+1 unknowns
+		-- SNAFU Equations (JB's Scholastic Laws) n°1
+%
+An object or bit of information most needed will be the least available
+		-- SNAFU Equations (JB's Scholastic Laws) n°2
+%
+Any device requiring service or adjustment will be the least accessible
+		-- SNAFU Equations (JB's Scholastic Laws) n°3
+%
+Interchangeable devices won't
+		-- SNAFU Equations (JB's Scholastic Laws) n°4
+%
+In any human endeavor, once you've exhausted all possibilities and fail, there will be one solution, simple and obvious, highly visible to everyone else
+		-- SNAFU Equations (JB's Scholastic Laws) n°5
+%
+Badness comes in waves
+		-- SNAFU Equations (JB's Scholastic Laws) n°6
+%
+At the source of every error that is blamed on the computer, you will find atleast two human errors, including the error of blaming it on the computer
+		-- SNAFU Equations (JB's Scholastic Laws) n°1
+%
+Any system which depends upon human reliability is unreliable
+		-- SNAFU Equations (JB's Scholastic Laws) n°2
+%
+Undetectable errors are infinite in variety, in contrast to detectable errors, which by definition are limited
+		-- SNAFU Equations (JB's Scholastic Laws) n°3
+%
+Investment in reliability will continue until it exceeds the probable cost of errors, or until someone insists on getting some useful work done
+		-- SNAFU Equations (JB's Scholastic Laws) n°4
+%
+The amount of expertise varies in inverse proportion to the number of statements understood by the general public
+		-- SNAFU Equations (JB's Scholastic Laws) n°5
+%
+After months of training and you finally understand all of a programs commands, a revised version arrives with an all new command structure
+		-- Thoreau's Theories of Adaption n°1
+%
+After designing a useful routine that gets around a familiar "bug" in the system, the system is revised, the "bug" is taken away, and you're left with a useless routine
+		-- Thoreau's Theories of Adaption n°2
+%
+Efforts in improving a programs "user-friendliness" invariably leads to improving the user's "computer literacy"
+		-- Thoreau's Theories of Adaption n°3
+%
+That's not a "bug", thats a feature ! 
+		-- Thoreau's Theories of Adaption n°4
+%
+An expert is the person who avoids the small errors while sweeping on to the grand fallacy
+		-- Thoreau's Theories of Adaption n°1
+%
+The first myth of management is that it exists
+		-- Thoreau's Theories of Adaption n°2
+%
+Any given program, when running, is obsolete
+		-- Thoreau's Theories of Adaption n°3
+%
+If a program is useful, it will have to be changed
+		-- Thoreau's Theories of Adaption n°4
+%
+If a program is useless, it will have to be documented
+		-- Thoreau's Theories of Adaption n°5
+%
+Any given program will expand to fill all available memory
+		-- Thoreau's Theories of Adaption n°6
+%
+The value of a program is proportional to the weight of its output
+		-- Thoreau's Theories of Adaption n°7
+%
+Program complexity grows until it exceeds the capability of the programmer who must maintain it
+		-- Thoreau's Theories of Adaption n°8
+%
+Make it possible for programmers to write programs in English, and you will find that programmers cannot write in English
+		-- Thoreau's Theories of Adaption n°9
+%
+Inside every large program is a small program struggling to get out
+		-- Thoreau's Theories of Adaption n°10
+%
+If builders built buildings the way programmers write programs, then the first woodpecker that came along would destroy civilization
+		-- Thoreau's Theories of Adaption n°11
+%
+A bad sector disk error occurs only after you've done several hours of work without performing a backup. 
+		-- Dr. Caligari's Come-Back
+%
+No matter how large and standardized the marketplaceis, IBM can redefine it. 
+		-- Estridge's Law
+%
+A program generator creates programs that are more ``buggy'' than the program generator. 
+		-- The Last One's Law of Program Generators
+%
+As soon as a still-to-be-finished computer task becomes a life-or-death situation, the power fails.
+		-- Wood's Axiom
+%
