@@ -19,11 +19,17 @@ if( isset($GLOBALS['_uid']) )
     // record last action time only if authed
     $tbl = claro_sql_get_tbl('user_online', array('course'=>null));
     
-    $sql = "UPDATE `" . $tbl['user_online'] . "`
-               SET `last_action` = '".date("Y-m-d H:i:s")."'
-             WHERE `user_id` = " . (int) $GLOBALS['_uid'];
+    $sql = "DELETE FROM `" . $tbl['user_online'] . "`
+            WHERE `user_id`=" . (int) $GLOBALS['_uid'];
 
     claro_sql_query($sql);
+
+    $sql = "INSERT INTO `" . $tbl['user_online'] . "`
+            SET `user_id` = " . (int) $GLOBALS['_uid'] . ",
+            `last_action` = '" . date('Y-m-d H:i:s') . "'";
+                
+    claro_sql_query($sql);
+
 }
 
 // declare event manager dependencies and listener
@@ -97,7 +103,7 @@ class Login_listener extends EventDriven
     function refresh_login_DB()
     {
         // Refresh time should not be less than 10 minutes
-        $refreshTime = max(10, (int)(ini_get('session.gc_maxlifetime')/60));
+        $refreshTime = get_conf('clonline_refreshTime',5);
         
         $sql = "DELETE
                 FROM `" . $this->tblUserOnline . "`
