@@ -20,10 +20,9 @@
     // load Claroline kernel
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
     
-    // load plugIt! API for module integration
-    require_once dirname(__FILE__) . '/lib/plugit.lib.php';
+    require_once get_path('includePath') . '/lib/embed.lib.php';
+    
     require_once dirname(__FILE__) . '/lib/access.lib.php';
-    require_once get_path('includePath') . '/lib/icon.lib.php';
     
     // load service architecture
     require_once dirname(__FILE__) . '/lib/service/dispatcher.class.php';
@@ -38,17 +37,12 @@
     // display mode
     claro_set_display_mode_available(true);
     
-    // define module table names
-    $blogTables = array(
-        'blog_posts' => 'blog_posts',
-        'blog_comments' => 'blog_comments'
-    );
-    // convert to Claroline course table names
-    $blogTables = claro_get_tbl_name_list_for_course( $blogTables, $_cid );
+    // get Claroline course table names
+    $blogTables = get_module_course_tbl( array( 'blog_posts', 'blog_comments' )
+        , claro_get_current_course_id() );
     
     // run course installer for on the fly table creation
-    $_installer = new ClarolineInstaller( dirname(__FILE__ ) );
-    $_installer->installDatabase( $_cid );
+    install_module_in_course( 'CLBLOG', claro_get_current_course_id() ) ;
     
     // global variables
     $moduleImageRepositoryWeb = './img';

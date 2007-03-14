@@ -234,6 +234,33 @@
         }
         
         /**
+         * Callback for PCRE
+         * @access private
+         * @param matches array
+         * @return string
+         * @see sanitizeURL
+         */
+        function _sanitizeSrcCallback( $matches )
+        {
+            return 'src="'.$this->sanitizeURL( $matches[1] ).'"';
+        }
+        
+        /**
+         * Remove potential flaws in href attributes
+         * @access  private
+         * @param   string html tag
+         * @return  string filtered html tag
+         */
+        function sanitizeSrc( $str )
+        {
+            $HTML_Sanitizer_URL = 'src="([^"]+)"';
+
+            return preg_replace_callback("/$HTML_Sanitizer_URL/i"
+                , array( &$this, '_sanitizeSrcCallback' )
+                , $str );
+        }
+        
+        /**
          * Remove dangerous attributes from html tags
          * @access  private
          * @param   string html tag
@@ -372,7 +399,21 @@
             
             $html = $this->sanitizeHref( $html );
             
+            $html = $this->sanitizeSrc( $html );
+            
             return $html;
         }
+    }
+    
+    function html_sanitize( $str )
+    {
+        static $san = null;
+        
+        if ( empty( $san ) )
+        {
+            $san = new HTML_Sanitizer;
+        }
+        
+        return $san->sanitize( $str );
     }
 ?>

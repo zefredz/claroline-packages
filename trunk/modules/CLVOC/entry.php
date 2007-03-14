@@ -19,10 +19,9 @@
     // load Claroline kernel
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
     
-    // load plugIt! API for module integration
-    require_once dirname(__FILE__) . '/lib/plugit.lib.php';
+    require_once get_path('includePath') . '/lib/embed.lib.php';
+    
     require_once dirname(__FILE__) . '/lib/access.lib.php';
-    require_once get_path('includePath') . '/lib/icon.lib.php';
     
     // load service architecture
     require_once dirname(__FILE__) . '/lib/service/dispatcher.class.php';
@@ -40,23 +39,23 @@
     claro_set_display_mode_available(true);
     
     // define module table names
-    $glossaryTables = array(
-        'glossary_words' => 'glossary_words',
-        'glossary_definitions' => 'glossary_definitions',
-        'glossary_texts' => 'glossary_texts',
-        'glossary_word_definitions' => 'glossary_word_definitions',
-        'glossary_dictionaries' => 'glossary_dictionaries',
-        'glossary_text_dictionaries' => 'glossary_text_dictionaries',
-        'glossary_dictionary_tree' => 'glossary_dictionary_tree',
-        'glossary_tags' => 'glossary_tags',
-        'glossary_tags_entries' => 'glossary_tags_entries'
+    $tblNameList = array(
+        'glossary_words',
+        'glossary_definitions',
+        'glossary_texts',
+        'glossary_word_definitions',
+        'glossary_dictionaries',
+        'glossary_text_dictionaries',
+        'glossary_dictionary_tree',
+        'glossary_tags',
+        'glossary_tags_entries'
     );
     // convert to Claroline course table names
-    $glossaryTables = claro_get_tbl_name_list_for_course( $glossaryTables, $_cid );
+    $glossaryTables = get_module_course_tbl( $tblNameList
+        , claro_get_current_course_id() );
     
     // run course installer for on the fly table creation
-    $_installer = new ClarolineInstaller( dirname(__FILE__ ) );
-    $_installer->installDatabase( $_cid );
+    install_module_in_course( 'CLVOC', claro_get_current_course_id() ) ;
     
     // global variables
     $moduleImageRepositoryWeb = './img';
