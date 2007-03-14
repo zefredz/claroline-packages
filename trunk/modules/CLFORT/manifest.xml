@@ -1,7 +1,7 @@
 <module>
   <label>CLFORT</label>
   <name>Fortune applet</name>
-  <version>0.1</version> 
+  <version>1.0-alpha</version> 
   <license>GPL</license>
   <type>applet</type>
   <default_dock>campusFooterLeft</default_dock>
