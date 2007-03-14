@@ -13,123 +13,28 @@
      * @package clfort
      *
      */
-     
-    define ( 'FORTUNE_DIRECTORY', dirname(__FILE__) . '/fortune-files' );
-    
-    define ( 'FORTUNE_FILE_LIST', FORTUNE_DIRECTORY . '/index.dat' );
-    
-    function listFortuneFiles()
-    {
-        $handle = opendir( FORTUNE_DIRECTORY );
-        $fileList = array();
-        $ignore = array( '.', '..', 'index.dat' );
-        while ( false !== ( $file = readdir( $handle ) ) )
-        {
-            if ( in_array( $file, $ignore ) )
-            {
-                continue;
-            }
-            else
-            {
-                $fileList[] = $file;
-            }
-        }
-        
-        return $fileList;
-    }
-    
-    function currentFileList()
-    {
-        if ( file_exists( FORTUNE_FILE_LIST ) )
-        {
-            $fileList = array();
-            
-            $contents = file( FORTUNE_FILE_LIST );
-            
-            foreach ( $contents as $file )
-            {
-                $file = trim( $file );
-                
-                if ( file_exists( FORTUNE_DIRECTORY . '/' . $file ) )
-                {
-                    $fileList[] = $file;
-                }
-            }
-            
-            return $fileList;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-    function checkFileList( $newList, $fortuneFileList )
-    {
-        $ret = array();
-        
-        foreach ( $newList as $file )
-        {
-            if ( in_array( $file, $fortuneFileList ) )
-            {
-                $ret[] = $file;
-            }
-        }
-        
-        return $ret;
-    }
-    
-    function writeFileList( $arr )
-    {
-        $contents = implode( "\n", $arr );
-        
-        $fd = fopen( FORTUNE_FILE_LIST );
-        fwrite( $fd, $contents );
-        fclose( $fd );
-    }
-    
-    function displayFileChooser( $fileList, $currentList )
-    {
-        $ret = '<form name="fortuneFiles" action="'
-            .$_SERVER['PHP_SELF'].'?cmd=saveList" method="get">'
-            ;
-            
-        $idx = 0;
-        
-        foreach ( $fileList as $file )
-        {
-            if ( false === $currentList || in_array( $file, $currentList ) )
-            {
-                $checked = ' checked="checked"';
-            }
-            else
-            {
-                $checked = '';
-            }
-            
-            $ret .= '<input type="checkbox" name="fortune['.$idx.']"'
-                . ' value="' . $file . '"'
-                . $checked.' />'
-                . htmlspecialchars( $file ) . '<br />' . "\n"
-                ;
-                
-            $idx++;
-        }
-        
-        $ret .= '<input type="submit" name="submit" value="'.get_lang('Ok').'" />';
-        
-        $ret .= '</form>';
-        
-        return $ret;
-    }
-    
+
     require_once '../../claroline/inc/claro_init_global.inc.php';
+    
+    require_once dirname(__FILE__) . '/include/lib.fortune.php';
+    
+    if ( ! claro_is_platform_admin() )
+    {
+        claro_die( 'Not allowed' );
+    }
     
     $messageList = array();
     $messageList['error'] = array();
     $messageList['info'] = array();
+    $dispAddFileForm = false;
     
-    $cmd = isset( $_REQUEST['cmd'] )
+    $allowedCommandList = array(
+        'saveList',
+        'exAddFile',
+        'rqAddFile'
+    );
+    
+    $cmd = isset( $_REQUEST['cmd'] ) && in_array( $_REQUEST['cmd'], $allowedCommandList )
         ? $_REQUEST['cmd']
         : ''
         ;
@@ -138,6 +43,26 @@
     {
         switch ( $cmd )
         {
+            case 'rqAddFile':
+            {
+                $dispAddFileForm = true;
+            } break;
+            case 'exAddFile':
+            {
+                require_once get_path('includePath') . '/lib/fileUpload.lib.php';
+                require_once get_path('includePath') . '/lib/file.lib.php';
+                
+                if ( ! treat_uploaded_file( $_FILES['fortuneFile']
+                    , FORTUNE_DIRECTORY
+                    , ''
+                    , 10000000 ) )
+                {
+                    $messageList['error'][] = claro_failure::get_last_failure();
+                }
+                
+                chdir( dirname(__FILE__) );
+                
+            } break;
             case 'saveList':
             {
                 $newFileList = isset ( $_REQUEST['fortune'] ) && is_array( $_REQUEST['fortune'] )
@@ -168,6 +93,22 @@
     require_once get_path('includePath') . '/claro_init_header.inc.php';
     
     echo claro_html_msg_list( $messageList );
+    
+    if ( $dispAddFileForm )
+    {
+        echo displayFileAdder();
+    }
+    else
+    {
+        echo '<p><a class="claroCmd" href="'
+            . $_SERVER['PHP_SELF'].'?cmd=rqAddFile">'
+            . '<img src="'.get_icon('new').'" alt="new" />'
+            . get_lang('Add file')
+            . '</a></p>'
+            ;
+    }
+    
+    echo '<br />';
     
     echo displayFileChooser( $fileList, $currentList );
     

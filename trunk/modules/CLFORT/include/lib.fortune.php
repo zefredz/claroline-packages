@@ -7,16 +7,15 @@
     define ( 'FORTUNE_DIRECTORY', dirname(__FILE__) . '/../fortune-files' );
 
     define ( 'FORTUNE_FILE_LIST', FORTUNE_DIRECTORY . '/index.dat' );
-
+    
     function listFortuneFiles()
     {
         $handle = opendir( FORTUNE_DIRECTORY );
         $fileList = array();
-        $ignore = array( '.', '..', 'index.dat' );
+        $ignore = array( '.', '..', 'index.dat', 'CVS' );
         while ( false !== ( $file = readdir( $handle ) ) )
         {
-            if ( in_array( $file, $ignore )
-                || is_dir( FORTUNE_DIRECTORY . '/' . $file ) )
+            if ( in_array( $file, $ignore ) )
             {
                 continue;
             }
@@ -82,8 +81,8 @@
     function displayFileChooser( $fileList, $currentList )
     {
         $ret = '<form name="fortuneFiles" action="'
-            .$_SERVER['PHP_SELF'].'?cmd=saveList" method="post">'
-            // . '<input type="hidden" name="cmd" value="saveList" />'
+            .$_SERVER['PHP_SELF'].'" method="post">'
+            . '<input type="hidden" name="cmd" value="saveList" />'
             ;
 
         $idx = 0;
@@ -107,6 +106,24 @@
 
             $idx++;
         }
+
+        $ret .= '<input type="submit" name="submit" value="'.get_lang('Ok').'" />';
+
+        $ret .= '</form>';
+
+        return $ret;
+    }
+
+    function displayFileAdder()
+    {
+        $ret = '<form name="fortuneFiles" action="'
+            .$_SERVER['PHP_SELF'].'" method="post"  enctype="multipart/form-data">'
+            . '<input type="hidden" name="cmd" value="exAddFile" />'
+            ;
+
+        $ret .= '<label for="fortuneFile">Choose File:</label>'
+            . '<input type="file" name="fortuneFile" id="fortuneFile" /><br />'
+            ;
 
         $ret .= '<input type="submit" name="submit" value="'.get_lang('Ok').'" />';
 
