@@ -86,9 +86,14 @@
             ;
 
         $idx = 0;
+        
+        $ret .= '<table class="claroTable">';
 
         foreach ( $fileList as $file )
         {
+            $ret .= '<tr><td>';
+            
+            
             if ( false === $currentList || in_array( $file, $currentList ) )
             {
                 $checked = ' checked="checked"';
@@ -101,11 +106,25 @@
             $ret .= '<input type="checkbox" name="fortune['.$idx.']"'
                 . ' value="' . $file . '"'
                 . $checked.' />'
-                . htmlspecialchars( $file ) . '<br />' . "\n"
+                . '</td><td>'
+                . htmlspecialchars( $file ) . '</td>'
                 ;
+                
+            $ret .= '<td>'
+                . '<a class="claroCmd" href="'
+                . $_SERVER['PHP_SELF'] .'?cmd=rqDeleteFile&amp;fileName='
+                . rawurlencode($file).'">'
+                . '<img src="'.get_icon('delete').'" alt="'.get_lang('Delete').'" />'
+                . '</a>'
+                . '</td>'
+                ;
+                
+            $ret .= '</tr>' . "\n";
 
             $idx++;
         }
+        
+        $ret .= '</table>';
 
         $ret .= '<input type="submit" name="submit" value="'.get_lang('Ok').'" />';
 
@@ -121,7 +140,7 @@
             . '<input type="hidden" name="cmd" value="exAddFile" />'
             ;
 
-        $ret .= '<label for="fortuneFile">Choose File:</label>'
+        $ret .= '<label for="fortuneFile">Choose File:</label><br />'
             . '<input type="file" name="fortuneFile" id="fortuneFile" /><br />'
             ;
 
@@ -130,5 +149,19 @@
         $ret .= '</form>';
 
         return $ret;
+    }
+    
+    function deleteFortuneFile( $file )
+    {
+        require_once get_path('includePath') . '/lib/fileManage.lib.php';
+        
+        if ( file_exists( FORTUNE_DIRECTORY . '/' . $file ) )
+        {
+            return claro_delete_file( FORTUNE_DIRECTORY . '/' . $file );
+        }
+        else
+        {
+            return claro_failure::set_failure('FILE_NOT_FOUND');
+        }
     }
 ?>

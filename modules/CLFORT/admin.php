@@ -27,15 +27,25 @@
     $messageList['error'] = array();
     $messageList['info'] = array();
     $dispAddFileForm = false;
+    $dispConfirmDeleteFile = false;
+    $dispFileList = true;
+    $dispAddLink = true;
     
     $allowedCommandList = array(
         'saveList',
         'exAddFile',
-        'rqAddFile'
+        'rqAddFile',
+        'rqDeleteFile',
+        'exDeleteFile'
     );
     
     $cmd = isset( $_REQUEST['cmd'] ) && in_array( $_REQUEST['cmd'], $allowedCommandList )
         ? $_REQUEST['cmd']
+        : ''
+        ;
+        
+    $fileToDelete = isset( $_REQUEST['fileName'] )
+        ? basename($_REQUEST['fileName'])
         : ''
         ;
         
@@ -46,6 +56,28 @@
             case 'rqAddFile':
             {
                 $dispAddFileForm = true;
+                $dispAddLink = false;
+            } break;
+            case 'rqDeleteFile':
+            {
+                $dispConfirmDeleteFile = true;
+                $dispFileList = false;
+                // $dispFileList = false;
+            } break;
+            case 'exDeleteFile':
+            {
+                if ( empty( $fileToDelete ) )
+                {
+                    $messageList['error'][] = get_lang('Missing file name');
+                }
+                elseif ( ! deleteFortuneFile( $fileToDelete ) )
+                {
+                    $messageList['error'][] = get_lang('Impossible to delete file');
+                }
+                else
+                {
+                    $messageList['info'][] = get_lang('File deleted');
+                }
             } break;
             case 'exAddFile':
             {
@@ -58,6 +90,10 @@
                     , 10000000 ) )
                 {
                     $messageList['error'][] = claro_failure::get_last_failure();
+                }
+                else
+                {
+                    $messageList['info'][] = get_lang( 'File added' );
                 }
                 
                 chdir( dirname(__FILE__) );
@@ -98,19 +134,47 @@
     {
         echo displayFileAdder();
     }
-    else
+    
+    if ( $dispConfirmDeleteFile )
     {
-        echo '<p><a class="claroCmd" href="'
-            . $_SERVER['PHP_SELF'].'?cmd=rqAddFile">'
-            . '<img src="'.get_icon('new').'" alt="new" />'
-            . get_lang('Add file')
-            . '</a></p>'
+        echo '<p>'
+            . get_lang( 'You are going to delete the following file : %file%'
+                , array( '%file%' => htmlspecialchars($fileToDelete) ) )
+            . '<br /><br />'
+            . "\n"
+            ;
+
+        echo get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
+            . '<a href="'
+            . $_SERVER['PHP_SELF']
+            . '?cmd=exDeleteFile&amp;&amp;fileName='
+            . rawurlencode($fileToDelete)
+            . '">'
+            . '['
+            . get_lang( 'Yes' )
+            . ']</a>&nbsp;'
+            . '<a href="'
+            . $_SERVER['PHP_SELF']
+            . '">['
+            . get_lang( 'No' )
+            . ']</a>' . '</p>'
+            . "\n"
             ;
     }
     
-    echo '<br />';
-    
-    echo displayFileChooser( $fileList, $currentList );
+    if ( $dispFileList )
+    {
+        if ( $dispAddLink )
+        {
+            echo '<p><a class="claroCmd" href="'
+                . $_SERVER['PHP_SELF'].'?cmd=rqAddFile">'
+                . '<img src="'.get_icon('new').'" alt="new" />'
+                . get_lang('Add file')
+                . '</a></p>'
+                ;
+        }
+        echo displayFileChooser( $fileList, $currentList );
+    }
     
     require_once get_path('includePath') . '/claro_init_footer.inc.php';
 ?>
