@@ -1,0 +1,60 @@
+A working program is one that has only unobserved bugs. 
+	-- Murphy's Laws of Computer Programming
+%
+Every non- trivial program has at least one bug 
+Corollary 1 - A sufficient condition for program triviality is that it have no bugs. 
+Corollary 2 - At least one bug will be observed after the author leaves the organization. 
+	-- Murphy's Laws of Computer Programming n°1
+%
+Bugs will appear in one part of a working program when another 'unrelated' part is modified. 
+	-- Murphy's Laws of Computer Programming n°2
+%
+The subtlest bugs cause the greatest damage and problems. 
+Corollary - A subtle bug will modify storage thereby masquerading as some other problem. 
+	-- Murphy's Laws of Computer Programming n°3
+%
+A 'debugged' program that crashes will wipe out source files on storage devices when there is the least available backup. 
+	-- Murphy's Laws of Computer Programming n°4
+%
+A hardware failure will cause system software to crash, and the customer engineer will blame the programmer. 
+	-- Murphy's Laws of Computer Programming n°5
+%
+A system software crash will cause hardware to act strangely and the programmers will blame the customer engineer. 
+	-- Murphy's Laws of Computer Programming n°6
+%
+Any given program, when running, is obsolete. 
+	-- Murphy's Laws of Computer Programming n°7
+%
+Any given program costs more and takes longer. 
+	-- Murphy's Laws of Computer Programming n°8
+%
+If a program is useful, it will have to be changed. 
+	-- Murphy's Laws of Computer Programming n°9
+%
+If a program is useless, it will have to be documented. 
+	-- Murphy's Laws of Computer Programming n°10
+%
+Any program will expand to fill available memory. 
+	-- Murphy's Laws of Computer Programming n°11
+%
+The value of a program is proportional to the weight of its output. 
+	-- Murphy's Laws of Computer Programming n°12
+%
+Program complexity grows until it exceeds the capabilities of the programmer who must maintain it. 
+	-- Murphy's Laws of Computer Programming n°13
+%
+Undetectable errors are infinite in variety, in contrast to detectable errors, which by definition are limited. 
+	-- Murphy's Laws of Computer Programming n°14
+%
+Adding manpower to a late software project makes it later. 
+	-- Murphy's Laws of Computer Programming n°15
+%
+Make it possible for programmers to write programs in English, and you will find that programmers can not write in English. 
+	-- Murphy's Laws of Computer Programming n°16
+%
+The documented interfaces between standard software modules will have undocumented quirks. 
+	-- Murphy's Laws of Computer Programming n°17
+%
+The probability of a hardware failure disappearing is inversely proportional to the distance between the computer and the customer engineer.
+	-- Murphy's Laws of Computer Programming n°18
+%
