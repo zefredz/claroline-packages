@@ -80,7 +80,8 @@
 
     function displayFileChooser( $fileList, $currentList )
     {
-        $ret = '<form name="fortuneFiles" action="'
+        $ret = '<h4>'.get_lang( 'Manage Fortune Files' ).'</h4>' . "\n";
+        $ret .= '<form name="fortuneFiles" action="'
             .$_SERVER['PHP_SELF'].'" method="post">'
             . '<input type="hidden" name="cmd" value="saveList" />'
             ;
@@ -135,7 +136,8 @@
 
     function displayFileAdder()
     {
-        $ret = '<form name="fortuneFiles" action="'
+        $ret = '<h4>'.get_lang( 'Add Fortune Files' ).'</h4>' . "\n";
+        $ret .= '<form name="fortuneFiles" action="'
             .$_SERVER['PHP_SELF'].'" method="post"  enctype="multipart/form-data">'
             . '<input type="hidden" name="cmd" value="exAddFile" />'
             ;
@@ -145,6 +147,12 @@
             ;
 
         $ret .= '<input type="submit" name="submit" value="'.get_lang('Ok').'" />';
+        
+        $ret .= '<a href="'.$_SERVER['PHP_SELF'].'">'
+            . '<input type="button" name="cancel" value="'
+            . get_lang('Cancel').'" onclick="window.location=\'\''
+            . $_SERVER['PHP_SELF'].'" /></a>'
+            ;
 
         $ret .= '</form>';
 
