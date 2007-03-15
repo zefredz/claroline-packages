@@ -14,6 +14,8 @@
      *
      */
 
+    $tlabelReq = 'CLFORT';
+
     require_once '../../claroline/inc/claro_init_global.inc.php';
     
     require_once dirname(__FILE__) . '/include/lib.fortune.php';
@@ -96,8 +98,6 @@
                     $messageList['info'][] = get_lang( 'File added' );
                 }
                 
-                chdir( dirname(__FILE__) );
-                
             } break;
             case 'saveList':
             {
@@ -127,6 +127,8 @@
     $currentList = currentFileList();
     
     require_once get_path('includePath') . '/claro_init_header.inc.php';
+    
+    echo claro_html_tool_title( get_lang('Fortune Applet') );
     
     echo claro_html_msg_list( $messageList );
     
