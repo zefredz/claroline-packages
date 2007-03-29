@@ -87,7 +87,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
+            $sql = "SELECT id "
                 . "FROM `" . $this->config['blog_posts'] . "` "
                 . "WHERE id = " . (int) $postId
                 ;
@@ -99,7 +99,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
+            $sql = "SELECT id, userId, groupId, title, chapo, contents, ctime "
                 . "FROM `" . $this->config['blog_posts'] . "` "
                 . "WHERE id = " . (int) $postId
                 ;
@@ -111,7 +111,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
+            $sql = "SELECT id, userId, groupId, title, chapo, contents, ctime "
                 . "FROM `" . $this->config['blog_posts'] . "` "
                 . "ORDER BY id DESC"
                 ;

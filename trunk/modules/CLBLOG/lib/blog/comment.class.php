@@ -84,7 +84,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * \n"
+            $sql = "SELECT id, userId, postId, contents, ctime \n"
                 . "FROM `" . $this->config['blog_comments'] . "`\n"
                 . "WHERE postId = " . (int) $postId . "\n"
                 . "ORDER BY id ASC"
@@ -106,7 +106,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * \n"
+            $sql = "SELECT id, userId, postId, contents, ctime \n"
                 . "FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE id = " . (int) $id . " \n"
                 . "ORDER BY id ASC"
@@ -128,7 +128,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * \n"
+            $sql = "SELECT id, userId, postId, contents, ctime \n"
                 . "FROM `" . $this->config['blog_comments'] . "`\n"
                 . "ORDER BY id ASC"
                 ;
@@ -207,7 +207,7 @@
         {
             $this->connection->connect();
             
-            $sql = "SELECT * "
+            $sql = "SELECT id "
                 . "FROM `" . $this->config['blog_comments'] . "` \n"
                 . "WHERE id = " . (int) $id
                 ;
