@@ -1,11 +1,17 @@
 $(document).ready(init);
 
+var msgTimeout;
+
 function init()
 {
     // attach events on elements
+    // form submission
     $("#cl_jchat_form").submit(submitMsg);  
-	
-	
+    // commands
+	$("#cl_jchat_cmd_logs").click(rqLogs);
+	$("#cl_jchat_cmd_archive").click(rqArchive);
+	$("#cl_jchat_cmd_flush").click(rqFlush);
+	$("#cl_jchat_cmd_closeLogs").click(closeLogs);
 	
 	
 	// hide some interface elements
@@ -33,7 +39,14 @@ function init()
 
 function rqRefresh()
 {
-    $.ajax({url: "index.php?cmd=rqRefresh", ifModified : true, success: function(response){exRefresh(response)}, dataType: "html"});
+    $.ajax({
+        url: "index.php?cmd=rqRefresh", 
+        ifModified: true, 
+        success: function(response){
+            exRefresh(response)
+            }, 
+
+        dataType: "html"});
 }
 
 function exRefresh(response)
@@ -54,18 +67,20 @@ function displayLogs(response)
     $("#cl_jchat_archives").show("slow");
 }	
 
-function hideLogs()
+function exHideLogs()
 {
     $("#cl_jchat_archives").hide("slow");
 }
 
 function showMsg(msg)
 {
+    clearTimeout(msgTimeout);
+    
     $("#cl_jchat_messageBox").empty();
     $("#cl_jchat_messageBox").append(msg);
     $("#cl_jchat_messageBox").show("slow");
     
-    setTimeout(hideMsg,refreshRate);
+    msgTimeout = setTimeout(hideMsg,refreshRate);
 }
 
 function hideMsg()
@@ -73,8 +88,9 @@ function hideMsg()
     $("#cl_jchat_messageBox").hide("slow");
 }
 
-// -- events
 
+// -- events
+// all these function must always return false to prevent 'standard' html tags behavior 
 function submitMsg() 
 { 
     if( $("#cl_jchat_msg").val().length > 0 )
@@ -97,3 +113,51 @@ function submitMsg()
     }
 }
 
+function rqLogs()
+{
+    $.ajax({
+        url: 'index.php?cmd=rqLogs', 
+        success: function(response){
+            displayLogs(response)
+            }, 
+        dataType: 'html'}); 
+
+    
+    return false;
+}
+
+
+function rqArchive()
+{
+    $.ajax({
+        url: 'index.php?cmd=rqArchive', 
+        success: function(response){
+            showMsg(response)
+            }, 
+        dataType: 'html'}); 
+
+    return false;
+}
+
+function rqFlush()
+{
+    if( confirm(lang["confirmFlush"]) )
+    {
+        $.ajax({
+            url: 'index.php?cmd=rqFlush', 
+            success: function(response){
+                showMsg(response)
+                }, 
+            dataType: 'html'});
+        
+        // refresh display
+        rqRefresh();
+    }
+    return false;
+}
+
+function closeLogs()
+{
+    exHideLogs();
+    return false;
+}
