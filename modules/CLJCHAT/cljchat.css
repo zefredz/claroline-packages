@@ -69,6 +69,7 @@
 {
     color: #cccccc;
     display: block;
+    border-bottom: 1px solid #EEEEEE;
 }
 
 .cl_jchat_msgLine
