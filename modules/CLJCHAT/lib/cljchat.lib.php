@@ -27,23 +27,33 @@ function jchat_display_message_list($onlyLastMsg = true)
 	$resetLastReceivedMsg = false;
 	
 	$html = '';
+	$previousDayTimestamp = 0;
+	
 	foreach( $messageList as $message )
 	{
+		if( get_days_from_timestamp($previousDayTimestamp) < get_days_from_timestamp($message['unixPostDate']) )
+		{
+		    $html .= "\n" . '<span class="cl_jchat_dayLimit">'.claro_html_localised_date(get_locale('dateFormatLong'), $message['unixPostDate']).'</span>' . "\n";
+		    
+		    $previousDayTimestamp = $message['unixPostDate'];
+		}
+			
 		if( $_SESSION['jchat_lastReceivedMsg'] < $message['unixPostDate'] )
 		{	
-			$spanClass = ' class="newLine"'; 
+			$spanClass = ' newLine'; 
 			$resetLastReceivedMsg = true;
 		}
 		else
 		{
-			$spanClass = ' ';	
+			$spanClass = '';	
 		}
 		
-		$html .= "\n" . '<span' . $spanClass . '>'.jchat_display_message($message).'</span>' . "\n";
+		$html .= "\n" . '<span class="cl_jchat_msgLine' . $spanClass . '">'.jchat_display_message($message).'</span>' . "\n";
 	}
-
+    
 	if( $resetLastReceivedMsg ) $_SESSION['jchat_lastReceivedMsg'] = time();
-
+    
+    
     sendHeader();	
    
 	return $html;
@@ -54,11 +64,9 @@ function jchat_display_message($message)
 	$html = '';
 	$chatLine = ereg_replace("(http://)(([[:punct:]]|[[:alnum:]])*)","<a href=\"\\0\" target=\"_blank\">\\2</a>",$message['message']);
 		
-	$html .= '<small>'
-	.	 '[' . claro_html_localised_date(get_locale('dateTimeFormatShort'), $message['unixPostDate']) . ']'
+	$html .= '<span class="cl_jchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostDate']) . '&nbsp;|</span>'
 	.	 ' <span class="cl_jchat_userName">' . utf8_encode($message['prenom'] . ' ' . $message['nom']) 
-	.	 '</span>&nbsp;: ' . $chatLine 
-	.	 '</small><br />' . "\n";
+	.	 '</span>&nbsp;: ' . $chatLine . "\n";
 	
 	return $html;
 }
@@ -147,5 +155,10 @@ function sendHeader()
     header("Cache-Control: no-cache, must-revalidate" );
     header("Pragma: no-cache" );
     header("Content-Type: text/xml; charset=utf-8");
+}
+
+function get_days_from_timestamp($timestamp)
+{
+    return floor($timestamp/86400);
 }
 ?>
