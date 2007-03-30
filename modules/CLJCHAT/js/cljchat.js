@@ -40,7 +40,7 @@ function init()
 function rqRefresh()
 {
     $.ajax({
-        url: "index.php?cmd=rqRefresh", 
+        url: "index.php?cmd=rqRefresh&cidReq=" + cidReq, 
         ifModified: true, 
         success: function(response){
             exRefresh(response)
@@ -96,7 +96,7 @@ function submitMsg()
     if( $("#cl_jchat_msg").val().length > 0 )
     {
         $.ajax({
-            url: "index.php?cmd=rqAdd", 
+            url: "index.php?cmd=rqAdd&cidReq=" + cidReq, 
             data: $(this.elements).serialize(), 
             success: function(response){
                 exRefresh(response);
@@ -116,7 +116,7 @@ function submitMsg()
 function rqLogs()
 {
     $.ajax({
-        url: 'index.php?cmd=rqLogs', 
+        url: "index.php?cmd=rqLogs&cidReq=" + cidReq, 
         success: function(response){
             displayLogs(response)
             }, 
@@ -130,7 +130,7 @@ function rqLogs()
 function rqArchive()
 {
     $.ajax({
-        url: 'index.php?cmd=rqArchive', 
+        url: "index.php?cmd=rqArchive&cidReq=" + cidReq, 
         success: function(response){
             showMsg(response)
             }, 
@@ -144,7 +144,7 @@ function rqFlush()
     if( confirm(lang["confirmFlush"]) )
     {
         $.ajax({
-            url: 'index.php?cmd=rqFlush', 
+            url: "index.php?cmd=rqFlush&cidReq=" + cidReq, 
             success: function(response){
                 showMsg(response)
                 }, 
