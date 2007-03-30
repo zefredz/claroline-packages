@@ -165,7 +165,7 @@ $htmlHeadXtra[] = '<script type="text/javascript">' . "\n"
 .    'var refreshRate = ' . (get_conf('refresh_display_rate',5)*1000) . ';' . "\n"
 .    'var cidReq = \'' . claro_get_current_course_id() . '\';' . "\n"
 .    'var lang = new Array();' . "\n"
-.    'lang["confirmFlush"] = "' . clean_str_for_javascript(get_lang('Are you sure to empty all the conversations ?')) . '";'
+.    'lang["confirmFlush"] = "' . clean_str_for_javascript(get_lang('Are you sure to delete all logs ?')) . '";'
 .	 '</script>';
 
 // tool javascript library
