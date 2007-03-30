@@ -1,5 +1,28 @@
-<?php
-
+<?php // $Id$
+if ( count( get_included_files() ) == 1 ) die( '---' );
+/**
+ * CLAROLINE
+ *
+ * @version 1.8 $Revision$
+ *
+ * @copyright (c) 2001-2006 Universite catholique de Louvain (UCL)
+ *
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ *
+ * @package CLJCHAT
+ *
+ * @author Claro Team <cvs@claroline.net>
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ */
+ 
+/**
+ * Add a message to chat
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @param string $message
+ * @return boolean
+ */ 
+ 
 function jchat_add_message($message)
 {
     global $tblJchat, $_uid;
@@ -20,6 +43,14 @@ function jchat_add_message($message)
     }
 }
 
+/**
+ * Get html to display the message list
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @param boolean $onlyLastMsg true : get only the messages posted after connection, false : get all recorded messages
+ * @return string html output
+ */ 
+ 
 function jchat_display_message_list($onlyLastMsg = true)
 {
     $messageList = jchat_get_message_list($onlyLastMsg);
@@ -27,12 +58,13 @@ function jchat_display_message_list($onlyLastMsg = true)
 	$resetLastReceivedMsg = false;
 	
 	$html = '';
-	$previousDayTimestamp = 0;
+	$previousDayTimestamp = 0; // keep track of the day of the last displayed message
 	
 	foreach( $messageList as $message )
 	{
 		if( get_days_from_timestamp($previousDayTimestamp) < get_days_from_timestamp($message['unixPostDate']) )
 		{
+		    // display day separator
 		    $html .= "\n" . '<span class="cl_jchat_dayLimit">'.claro_html_localised_date(get_locale('dateFormatLong'), $message['unixPostDate']).'</span>' . "\n";
 		    
 		    $previousDayTimestamp = $message['unixPostDate'];
@@ -51,6 +83,7 @@ function jchat_display_message_list($onlyLastMsg = true)
 		$html .= "\n" . '<span class="cl_jchat_msgLine' . $spanClass . '">'.jchat_display_message($message).'</span>' . "\n";
 	}
     
+    // keep track of the last display time 
 	if( $resetLastReceivedMsg ) $_SESSION['jchat_lastReceivedMsg'] = time();
     
     
@@ -59,26 +92,44 @@ function jchat_display_message_list($onlyLastMsg = true)
 	return $html;
 }
 
+/**
+ * Get html to display one message with clickable links
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @param array $message('unixPostDate','message','lastname','firstname','isCourseCreator')
+ * @return string html output for $message
+ */ 
+ 
 function jchat_display_message($message)
 {
-	$html = '';
-	$chatLine = ereg_replace("(http://)(([[:punct:]]|[[:alnum:]])*)","<a href=\"\\0\" target=\"_blank\">\\2</a>",$message['message']);
+	// transform url to clickable links
+	$chatLine = claro_parse_user_text($message['message']);
+
+    $html = '';
 		
 	$html .= '<span class="cl_jchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostDate']) . '&nbsp;|</span>'
-	.	 ' <span class="cl_jchat_userName">' . utf8_encode($message['prenom'] . ' ' . $message['nom']) 
+	.	 ' <span class="cl_jchat_userName">' . utf8_encode($message['firstname'] . ' ' . $message['lastname']) 
 	.	 '</span>&nbsp;: ' . $chatLine . "\n";
 	
 	return $html;
 }
 
+/**
+ * get message list from DB
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @param boolean $onlyLastMsg true : get only the messages posted after connection, false : get all recorded messages
+ * @return array array of message('unixPostDate','message','lastname','firstname','isCourseCreator')
+ */ 
+ 
 function jchat_get_message_list($onlyLastMsg = true)
 {
     global $tblJchat, $tblUser;
     
 	$sql = "SELECT UNIX_TIMESTAMP(JC.postDate) as unixPostDate, 
 				`JC`.`message`, 
-				`U`.`nom`,
-				`U`.`prenom`, 
+				`U`.`nom` as `lastname`,
+				`U`.`prenom` as `firstname`, 
 				`U`.`isCourseCreator` 
 			FROM `".$tblJchat."` as JC, 
 				`".$tblUser."` as U 
@@ -94,6 +145,13 @@ function jchat_get_message_list($onlyLastMsg = true)
 	
 }
 
+/**
+ * Delete all messages from DB
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @return boolean true if query was successfull
+ */ 
+ 
 function jchat_flush_message_list()
 {
     global $tblJchat;
@@ -103,6 +161,13 @@ function jchat_flush_message_list()
     return claro_sql_query($sql);
 }
 
+/**
+ * Generate a fil with all messages and copy it in the document tool
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @return mixed filename if successfull, false if failed
+ */ 
+ 
 function jchat_archive_message_list()
 {
     // Prepare archive file content
@@ -117,7 +182,7 @@ function jchat_archive_message_list()
     .    '</html>' . "\n";
 
     
-    $htmlContent = claro_parse_user_text( jchat_display_message_list(false) );
+    $htmlContent = jchat_display_message_list(false);
     
     $htmlContent = $htmlContentHeader . $htmlContent . $htmlContentFooter; 
     
@@ -148,6 +213,13 @@ function jchat_archive_message_list()
     }
 }
 
+/**
+ * Send header requested by ajax
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @return boolean true
+ */ 
+ 
 function sendHeader()
 {
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT" );
@@ -155,8 +227,17 @@ function sendHeader()
     header("Cache-Control: no-cache, must-revalidate" );
     header("Pragma: no-cache" );
     header("Content-Type: text/xml; charset=utf-8");
+    
+    return true;
 }
 
+/**
+ * Get the number of days equivalent to timestamp
+ *
+ * @author Sebastien Piraux <pir@cerdecam.be>
+ * @return boolean true
+ */ 
+ 
 function get_days_from_timestamp($timestamp)
 {
     return floor($timestamp/86400);
