@@ -138,15 +138,15 @@ if( $cmd == 'rqRefresh' )
 $cmdMenu = array();
 if( $is_allowedToEdit )
 {
-	$cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqLogs' . claro_url_relay_context('&amp;')
+	$cmdMenu[] = claro_html_cmd_link( '#'
                                     , get_lang('Show logs')
                                     , array('id' => 'cl_jchat_cmd_logs')
                                     );
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqArchive' . claro_url_relay_context('&amp;')
+    $cmdMenu[] = claro_html_cmd_link( '#'
                                     , get_lang('Store Chat')                                   
                                     , array('id' => 'cl_jchat_cmd_archive')
                                     );	
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqFlush' . claro_url_relay_context('&amp;')
+    $cmdMenu[] = claro_html_cmd_link( '#'
                                     , get_lang('Reset')                                   
                                     , array('id' => 'cl_jchat_cmd_flush')
                                     );	                                    			
@@ -193,7 +193,7 @@ if( claro_is_javascript_enabled() && $_uid )
     .	 '</div>' . "\n";
 
     // display form
-    echo '<form action="index.php?cmd=rqAdd" id="cl_jchat_form" method="GET" >' . "\n"
+    echo '<form action="index.php'.claro_url_relay_context('?').'" id="cl_jchat_form" method="GET" >' . "\n"
     .    claro_form_relay_context() . "\n"
     .    '<img src="'.get_module_url('CLJCHAT').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="cl_jchat_loading" width="16" height="16" />' . "\n"
     .    '<input id="cl_jchat_msg" type="text" name="message" maxlength="200" size="80" />' . "\n"
