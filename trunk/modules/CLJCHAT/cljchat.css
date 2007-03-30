@@ -10,6 +10,7 @@
     overflow: auto;
     padding: 10px;
     margin-bottom: 10px;
+    font-size: small;
 }
 
 #cl_jchat_messageBox
@@ -46,9 +47,31 @@
     overflow: auto;
     padding: 10px;
     margin: 0;
+    font-size: small;
 }
 
 #cl_jchat_loading
 {
     float: right;
+}
+
+.cl_jchat_userName
+{
+    color: #336699;
+}
+
+.cl_jchat_msgDate
+{
+    color: #cccccc;
+}
+
+.cl_jchat_dayLimit
+{
+    color: #cccccc;
+    display: block;
+}
+
+.cl_jchat_msgLine
+{
+    display: block;
 }
