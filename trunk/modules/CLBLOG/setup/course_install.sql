@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS __CL_COURSE__blog_posts (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__blog_posts` (
   id INT(11) NOT NULL AUTO_INCREMENT,
   userId int(11) unsigned NOT NULL default '0',
   groupId int(11) unsigned NOT NULL default '0',
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS __CL_COURSE__blog_posts (
   PRIMARY KEY(id)
 ) TYPE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS __CL_COURSE__blog_comments (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__blog_comments` (
   id INT(11) NOT NULL AUTO_INCREMENT,
   postId int(11) unsigned NOT NULL default '0',
   userId int(11) unsigned NOT NULL default '0',
