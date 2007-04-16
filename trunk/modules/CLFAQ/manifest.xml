@@ -1,0 +1,27 @@
+<module>
+  <label>CLFAQ</label>
+  <name>F.A.Q</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <icon>icon.gif</icon>
+  <type>tool</type>
+  <entry>entry.php</entry>
+
+  <description>
+     This is the original F.A.Q tool for the Claroline platform.
+  </description>
+
+  <author>
+     <name>Gr&#233;gory Koch</name>
+     <email>gregk84@gate71.be</email>
+     <web>http://www.claroline.net/module/CLFAQ/</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+      <configuration>
+      </configuration>
+    </claroline>
+  </requirements>
+ </module>
