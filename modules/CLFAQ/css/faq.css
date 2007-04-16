@@ -1,0 +1,95 @@
+/* Affichage de la liste */
+
+dt {
+ margin-bottom: 0.5em;
+}
+
+dd {
+ font-style:italic;
+}
+
+/* Formulaire */
+
+input.form, textarea.form, select.form {
+ width:400px;
+}
+
+input.buttom, input.buttom {
+ margin-left: .5em;
+ float:right;
+}
+
+/* Style des Catégories */
+
+.category {
+ font-weight:bold;
+ margin:1em 0 0.5em 0;
+}
+
+/* Style des Questions */
+
+.question {
+ text-indent:1em;
+}
+
+/* Messages d'erreurs */
+
+.error {
+ padding: 1em 0 1em 1.3em;
+ border-bottom:1px solid #cccccc;
+}
+
+/* Message d'informations ou de confirmations */
+
+.confirm {
+ padding: 1em 0 1em 1.3em;
+ color: green;
+ border-bottom:1px solid #cccccc;
+}
+
+.info {
+ padding: 1em 0 1em 1.3em;
+ color: green;
+ font-style:italic;
+ border-top:1px solid #cccccc;
+}
+
+/* Alignement des icones */
+
+.align_ico {
+position:absolute;
+left: 50%;
+}
+
+.return {
+padding-top: 0.8em;
+}
+
+/* Management category */
+
+table.management {
+width: 100%;
+}
+
+thead {
+text-align:center;
+}
+/**/
+th.col_static {
+width:100px;
+}
+
+td.category {
+ font-weight:bold;
+}
+
+td.center {
+text-align:center;
+}
+
+/* Description d'une catégorie */
+.description {
+ font-size:0.9em;
+font-weight:bold;
+ font-style:italic;
+}
