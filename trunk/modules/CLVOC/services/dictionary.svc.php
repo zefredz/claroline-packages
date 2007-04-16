@@ -110,10 +110,16 @@
         ? trim( $_REQUEST['def'] )
         : ''
         ;
-        
-    $synList = isset( $_REQUEST['synonymList'] ) 
+
+    /*$synList = isset( $_REQUEST['synonymList'] )
             && trim( $_REQUEST['synonymList'] ) != ''
         ? explode( ',', $_REQUEST['synonymList'] )
+        : NULL
+        ; */
+        
+    $synList = isset( $_REQUEST['synList'] )
+            && is_array( $_REQUEST['synList'] )
+        ? $_REQUEST['synList']
         : NULL
         ;
         
@@ -361,7 +367,7 @@
             $tmp = $dictionary->getSynonymList( $defId );
             if ( !empty ( $tmp ) )
             {
-                $synonymList = implode (', ', $tmp );
+                $synonymList = $tmp;
             }
             else
             {
@@ -532,7 +538,11 @@
             
             if ( !empty( $synList ) )
             {
-                $synList[] = $word;
+                if ( ! in_array( $word, $synList ) )
+                {
+                    $synList[] = $word;
+                }
+                
                 $dictionary->addSynonymList( $defId, $synList, $def );
             }
             
@@ -721,7 +731,7 @@
     {
         $output .= '<a href="'
             . $_SERVER['PHP_SELF'] 
-            . '?page=list&action=showDict&dictionaryId=' 
+            . '?page=list&amp;action=showDict&amp;dictionaryId='
             . (int) $dictionaryId
             . '" class="claroCmd">'
             . '<img src="'.get_icon('parent.gif').'" alt="[back]" />'
@@ -839,11 +849,24 @@
                 . '<label for="def">'.get_lang( 'Definition' ).'&nbsp;:&nbsp;</label>' . "\n"
                 . '<textarea name="def" cols="60" rows="5">'.$def.'</textarea>' . "\n"
                 . '</div>' . "\n"
-                . '<div class="row">' . "\n"
+                /*. '<div class="row">' . "\n"
                 . '<label for="synonymList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;'
                 . '</label>' . "\n"
                 . '<small><em>(' .get_lang('Coma separated word list'). ')</em></small><br />'
                 . '<textarea name="synonymList" cols="60" rows="5"></textarea>' . "\n"
+                . '</div>' . "\n"  */
+                . '<div class="row">' . "\n"
+                . '<label for="add_synList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;</label>'
+                . '<script type="text/javascript">'  . "\n"
+                . 'var synList = new ItemListObject(\'synList\');' . "\n"
+                . 'synList.addItemButton(\'synList\');' . "\n"
+                . '</script>' . "\n"
+                . '</div>'
+                . '<div class="row">' . "\n"
+                . '<label for="synList">&nbsp;</label>'
+                . '<table class="claroTable"><tbody id="synList">' . "\n"
+                . '</tbody></table>' . "\n"
+                . '<script type="text/javascript">synList.renderList(\'synList\');</script>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -1205,12 +1228,27 @@
                 . '<legend>' . get_lang( 'Edit definition' ) . '</legend>'
                 . '<div class="row">' . "\n"
                 . '<label for="def">'.get_lang( 'Definition' ).'&nbsp;:&nbsp;</label>'
-                . '<textarea name="def" cols="60" rows="5">'.$def.'</textarea>'
+                . '<textarea name="def"  id="def" cols="60" rows="5">'.$def.'</textarea>'
                 . '</div>' . "\n"
-                . '<div class="row">' . "\n"
+                /*. '<div class="row">' . "\n"
                 . '<label for="synonymList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;</label>'
                 . '<small><em>(' .get_lang('Coma separated word list'). ')</em></small><br>'
-                . '<textarea name="synonymList" cols="60" rows="5">' . htmlspecialchars( $synonymList ) . '</textarea>'
+                . '<textarea name="synonymList" id="synonymList" cols="60" rows="5">'
+                . htmlspecialchars( implode(', ', $synonymList ) ) . '</textarea>'
+                . '</div>' . "\n"        */
+                . '<div class="row">' . "\n"
+                . '<label for="add_synList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;</label>'
+                . '<script type="text/javascript">'  . "\n"
+                . 'var synList = new ItemListObject(\'synList\');' . "\n"
+                . 'synList.setItemList([\''. implode('\',\'', $synonymList ).'\'])' . "\n"
+                . 'synList.addItemButton(\'synList\');' . "\n"
+                . '</script>' . "\n"
+                . '</div>'
+                . '<div class="row">' . "\n"
+                . '<label for="synList">&nbsp;</label>'
+                . '<table class="claroTable"><tbody id="synList">' . "\n"
+                . '</tbody></table>' . "\n"
+                . '<script type="text/javascript">synList.renderList(\'synList\');</script>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'

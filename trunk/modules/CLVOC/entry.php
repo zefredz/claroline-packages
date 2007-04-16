@@ -78,8 +78,18 @@
     
     // instanciate display
     $display = new ClarolineScriptEmbed;
+        
+    $display->addHtmlHeader('<script type="text/javascript" src="'
+        .$moduleJavascriptRepositoryWeb.'/phpcompat.js"></script>');
+        
+    $display->addHtmlHeader('<script type="text/javascript" src="'
+        .$moduleJavascriptRepositoryWeb.'/claroline.js.php"></script>');
+        
     $display->addHtmlHeader('<script type="text/javascript" src="'
         .$moduleJavascriptRepositoryWeb.'/popup.js"></script>');
+        
+    $display->addHtmlHeader('<script type="text/javascript" src="'
+        .$moduleJavascriptRepositoryWeb.'/itemlist.js"></script>');
         
     $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
         .$moduleCssRepositoryWeb.'/form.css" media="all" />');
