@@ -1,34 +1,20 @@
-CREATE TABLE IF NOT EXISTS __CL_MAIN__agenda2_cours_events (
+CREATE TABLE IF NOT EXISTS __CL_MAIN__event (
 	`id` int(11) NOT NULL auto_increment,
-	`cours_id` varchar(200),
-	`starthour` time NOT NULL default '00:00:00',
-	`startday` date NOT NULL default '0000-00-00',
-	`endhour` time NOT NULL default '00:00:00',
-	`endday` date NOT NULL default '0000-00-00',
 	`title` varchar(200),
-	`content` text,
-	`author` varchar(200),
-	`type` varchar(200),
-	`visibility` enum('SHOW','HIDE') NOT NULL default 'SHOW',
+	`description` text,
+	`author_id` int(11),
+	`start_date` datetime NOT NULL default '0000-00-00 00:00:00',
+	`end_date` datetime NOT NULL default '0000-00-00 00:00:00',
+	`master_event_id` int(11),
 PRIMARY KEY (`id`)
 ) TYPE=MyISAM;
 
-CREATE TABLE `__CL_MAIN__agend2_shared_events` (
+CREATE TABLE IF NOT EXISTS`__CL_MAIN__rel_event_recipient` (
 	`id` int(11) NOT NULL auto_increment,
-	`user_id` int(11) NOT NULL,
-	`starthour` time NOT NULL default '00:00:00',
-	`startday` date NOT NULL default '0000-00-00',
-	`endhour` time NOT NULL default '00:00:00',
-	`endday` date NOT NULL default '0000-00-00',
-	`title` varchar(200),
-	`content` text,
-	`author` varchar(200),
-	`type` varchar(200),
+	`event_id` int(11),
+	`user_id` int(11),
+	`cours_id` varchar(200),
+	`group_id` int(11),
+	`visibility` enum('SHOW','HIDE') NOT NULL default 'SHOW',
 PRIMARY KEY (`id`)
 )TYPE= MYISAM ;
-
-CREATE TABLE `__CL_MAIN__agend2_events_type` (
-	`id` int(11) NOT NULL auto_increment,
-	`type` varchar(200),
-PRIMARY KEY (`id`)
-)TYPE = MYISAM ;

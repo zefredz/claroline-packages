@@ -7,9 +7,10 @@
 <license>GPL</license>
 <icon>/img/agenda.gif</icon>
 <type>tool</type>
-<entry>index.php</entry>
+<entry>agenda.php</entry>
 <author>
 <name>Michel-Marc</name>
+<email>info@claroline.net</email>
 <web>http://www.claroline.net</web>
 </author>
 <requirements>
