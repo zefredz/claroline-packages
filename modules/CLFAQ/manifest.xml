@@ -12,7 +12,7 @@
   </description>
 
   <author>
-     <name>Gr&#233;gory Koch</name>
+     <name>Gregory Koch</name>
      <email>gregk84@gate71.be</email>
      <web>http://www.claroline.net/module/CLFAQ/</web>
   </author>
@@ -20,8 +20,6 @@
   <requirements>
     <claroline>
       <version>1.8</version>
-      <configuration>
-      </configuration>
     </claroline>
   </requirements>
  </module>
