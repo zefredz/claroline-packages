@@ -1,0 +1,22 @@
+<module>
+  <label>W3CVALID</label>
+  <name>W3C validator</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <default_dock>campusFooterCenter</default_dock>
+  <type>applet</type>
+
+  <description>This plugin shows a link to valid the current page</description>
+
+  <author>
+     <name>Moosh</name>
+     <email>moosh@claroline.net</email>
+     <web>http://www.claroline.info</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+ </requirements>
+</module>
