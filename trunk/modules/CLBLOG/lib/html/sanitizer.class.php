@@ -27,7 +27,9 @@
     # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
     #
     # ***** END LICENSE BLOCK *****
-    
+
+if ( ! class_exists('HTML_Sanitizer') )
+{
     /**
      * @author  Frederic Minne <zefredz@claroline.net>
      * @copyright Copyright &copy; 2006-2007, Frederic Minne
@@ -50,6 +52,7 @@
         var $_allowObjects;
         var $_allowScript;
         var $_allowStyle;
+        var $_allowInlineStyle;
         var $_additionalTags;
         
         /**
@@ -71,6 +74,7 @@
             $this->_allowScript = false;
             $this->_allowObjects = false;
             $this->_allowStyle = false;
+            $this->_allowInlineStyle = false;
 
             $this->_allowedTags = '<a><br><b><h1><h2><h3><h4><h5><h6>'
                 . '<img><li><ol><p><strong><table><tr><td><th><u><ul><thead>'
@@ -135,7 +139,7 @@
         function allowStyle()
         {
             $this->_allowStyle = true;
-        }
+        }        
         
         /**
          * Helper to allow all javascript related tags and attributes
@@ -378,7 +382,32 @@
             
             $allowedTags .= $this->_additionalTags;
             
-            $str = strip_tags($str, $allowedTags );
+            // $str = strip_tags($str, $allowedTags );
+            
+            $str = $this->_stripTags( $str, $allowedTags );
+
+            return $str;
+        }
+        
+        function _stripTags( $str, $tagList )
+        {
+            $tagList = str_replace( '<', ''
+                , str_replace( '>', ''
+                , str_replace( '><', '|', $tagList ) ) );
+                
+            $closeTags = '~' . '\</('.$tagList.')([^\>\<]*)\>' . '~'; // close tag
+            
+            $str = preg_replace ( $closeTags, "[[/\\1]]", $str );
+                
+            $autoAndOpenTags = '~('
+                . '\<(?!'.$tagList.')[^\>\<]*(/){0,1}\>' // auto
+                . ')~';
+            
+            $str = preg_replace ( $autoAndOpenTags, '', $str );
+            
+            $closeTags = '~' . '\[\[/('.$tagList.')([^\]]*)\]\]' . '~'; // close tag
+
+            $str = preg_replace ( $closeTags, "</\\1>", $str );
 
             return $str;
         }
@@ -404,8 +433,11 @@
             return $html;
         }
     }
-    
-    function html_sanitize( $str )
+}
+
+if ( ! function_exists('html_sanitize_all') )
+{
+    function html_sanitize_all( $str )
     {
         static $san = null;
         
@@ -416,4 +448,5 @@
         
         return $san->sanitize( $str );
     }
+}
 ?>
