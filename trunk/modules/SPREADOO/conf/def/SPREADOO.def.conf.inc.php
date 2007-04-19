@@ -30,7 +30,7 @@ array ( 'spreadoo_img_url'
 $conf_def_property_list['spreadoo_img_url'] =
 array ( 'label'       => 'Image url'
       , 'description' => ''
-      , 'default'     => 'http://sfx-images.mozilla.org/affiliates/Buttons/firefox2/ff2b80x15.gif'
+      , 'default'     => 'http://marketing.openoffice.org/art/galleries/marketing/web_buttons/nicu/80x15_1.png'
       , 'type'        => 'string'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
@@ -39,7 +39,7 @@ array ( 'label'       => 'Image url'
 $conf_def_property_list['spreadoo_link'] =
 array ( 'label'       => 'Link'
       , 'description' => ''
-      , 'default'     => 'http://www.openoffice.org'
+      , 'default'     => 'http://www.openoffice.org/'
       , 'type'        => 'string'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
