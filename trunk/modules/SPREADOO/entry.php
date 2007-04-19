@@ -21,10 +21,10 @@ $html .= "\n\n"
 .   '<!-- Spread Open Office -->' . "\n"
 .   '<div align="center">'
 .   '<a href="'.get_conf('spreadoo_link').'">'
-.   '<img border="0" alt="" title="" src="'.get_conf('spreadoo_img_url').'"/>'
+.   '<img border="0" title="" src="'.get_conf('spreadoo_img_url').'" alt="OpenOffice.org" />'
 .   '</a>'
 .   '</div>' . "\n"
-.   '<!-- /Spread Open Office -->' . "\n\n";
+.   '<!-- Spread Open Office -->' . "\n\n";
 
 
 $claro_buffer->append($html);
