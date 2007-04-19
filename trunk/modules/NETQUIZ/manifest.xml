@@ -1,0 +1,25 @@
+<module>
+  <label>NETQUIZ</label>
+  <name>Netquiz</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <icon>icon.gif</icon>
+  <type>tool</type>
+  <entry>entry.php</entry>
+
+  <description>
+     This is the original Netquiz tool for the Claroline platform.
+  </description>
+
+  <author>
+     <name>Gregory Koch</name>
+     <email>gregk84@gate71.be</email>
+     <web>http://www.claroline.net/module/NETQUIZ/</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+  </requirements>
+ </module>
