@@ -133,6 +133,7 @@
         ? (int) $_REQUEST['dictionaryId']
         : NULL
         ;
+    // var_dump( $dictionaryId );
     
     /*if ( 'showText' == $action && is_null( $textId ) )
     {
@@ -210,8 +211,16 @@
             
             if ( !is_null( $wordId ) )
             {
-                $wordInDict = true;
                 $definitionList = $dict->getDefinitionList( $wordId );
+                
+                if ( ! empty( $definitionList ) )
+                {
+                    $wordInDict = true;
+                }
+                else
+                {
+                    $wordInDict = false;
+                }
             }
             else
             {
@@ -248,16 +257,28 @@
                 pushClaroMessage( "dictId:$dictionaryId" );
                 $dict->setId( $dictionaryId );
                 
-                $wordId = $dict->getWordId( $word );
+                // $wordId = $dict->getWordId( $word );
                 
                 $successfulyAdded = false;
                 
-                if ( is_null( $wordId ) )
+                $dict->addWord( $word, $definition );
+                
+                //if ( is_null( $wordId ) )
                 {
-                    if ( !empty( $definition ) )
+                    if ( !empty( $definition )  )
                     {
-                        $dict->addWord( $word, $definition );
-                        $successfulyAdded = true;
+                        if ( false !== $dict->addWord( $word, $definition ) )
+                        {
+                            $successfulyAdded = true;
+                            $dispText = true;
+                        }
+                        else
+                        {
+                            $dispError = true;
+                            $errorMsg .= get_lang( 'Cannot add "%word"'
+                                , array( '%word' => htmlspecialchars($word) ) ) . "<br />\n";
+                            $dispToolTitle = false;
+                        }
                     }
                     else
                     {
@@ -268,7 +289,7 @@
                 }
                 // 2. add word to word list
                 
-                if ( !is_null( $wordId ) || $successfulyAdded )
+                if ( $successfulyAdded )
                 {
                     $text->addWord( $word );
                     $text->save();

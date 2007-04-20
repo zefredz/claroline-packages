@@ -274,6 +274,8 @@
                 : " AND dictionaryId = ". (int) $this->dictionaryId
                 ; 
                 
+            // var_dump( $sql );
+                
             $result = $this->connection->getRowFromQuery( $sql );
             
             if ( $this->connection->hasError() )
@@ -668,7 +670,7 @@
                 
             $and = ( is_null( $this->dictionaryId ) ) 
                 ? ''
-                : " AND dictionaryId = ". (int) $this->dictionaryId . " " . "\n"
+                : " AND WD.dictionaryId = ". (int) $this->dictionaryId . " " . "\n"
                 ;
                 
             $sql = "SELECT W.name, D.definition, W.id AS wordId, D.id AS definitionId " . "\n"
@@ -677,10 +679,12 @@
                 . "ON W.id = WD.wordId " . "\n"
                 . "INNER JOIN `". $this->tableList['glossary_definitions']."` AS D " . "\n"
                 . "ON D.id = WD.definitionId " . "\n"
-                . "WHERE WD.wordId = " . (int) $wordId . " " . "\n"
-                . $and . "\n"
+                . "WHERE ( WD.wordId = " . (int) $wordId . " " . "\n"
+                . $and . ")\n"
                 . "ORDER BY UPPER(D.definition) ASC" . "\n"
                 ;
+                
+            // var_dump( $sql );
     
             $result = $this->connection->getAllRowsFromQuery( $sql );
             
