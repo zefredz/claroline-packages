@@ -25,17 +25,20 @@ require_once get_path('includePath') . "/lib/form.lib.php";
 require_once './lib/agenda.lib.php';
 require_once './lib/shared_event.lib.php';
 require_once get_path('clarolineRepositorySys') . '/linker/linker.inc.php';
+include_once claro_get_conf_repository().'CLAG2.conf.php';
 
 
-// Code métier
-$cours_id =  claro_get_current_course_id();
-$user_id    = claro_get_current_user_id(); //find the user ID
+/*==============================================================================
+ Main Code
+===============================================================================*/
 
-	/*
-	* DB tables definition
-	*/
-$tbl_cdb_names = claro_sql_get_course_tbl();
-$tbl_mdb_names = claro_sql_get_main_tbl();
+if ( ! claro_is_in_a_course() || !claro_is_course_allowed() ) claro_disp_auth_form(true);
+
+$course_id  	= claro_get_current_course_id();
+$user_id    	= claro_get_current_user_id(); //find the user ID
+
+$tbl_cdb_names 	= claro_sql_get_course_tbl();
+$tbl_mdb_names 	= claro_sql_get_main_tbl();
 	
 $tbl_group      = $tbl_cdb_names['group_team'];
 $tbl_groupUser  = $tbl_cdb_names['group_rel_team_user'];
@@ -43,22 +46,24 @@ $tbl_groupUser  = $tbl_cdb_names['group_rel_team_user'];
 $tbl_user       = $tbl_mdb_names['user'];
 $tbl_courseUser = $tbl_mdb_names['rel_course_user'];
 
+$is_allowedToEdit = claro_is_allowed_to_edit();
 
 $display_form=FALSE;
 $display_command = FALSE;
 $dialogBox='';
 $selectuser='';
+$exEditshevt='';
+$monthBar     = '';
 
+//function that clean the agenda DB
+if (get_conf('activate_auto_delete'))agenda_delete_old_event(get_conf('auto_delete_timestamp'));
 
-
-$is_allowedToEdit = claro_is_allowed_to_edit();
-
-if( !empty($_REQUEST['order']) )
-    $orderDirection = strtoupper($_REQUEST['order']);
-elseif( !empty($_SESSION['orderDirection']) )
-    $orderDirection = strtoupper($_SESSION['orderDirection']);
-else
-    $orderDirection = 'ASC';
+//get order by data
+if( !empty($_REQUEST['order']) ) $orderDirection = strtoupper($_REQUEST['order']);
+else	if( !empty($_SESSION['orderDirection']) )
+			$orderDirection = strtoupper($_SESSION['orderDirection']);
+		else
+			$orderDirection = 'ASC';
 
 $acceptedValues = array('DESC','ASC');
 
@@ -69,6 +74,7 @@ if( ! in_array($orderDirection, $acceptedValues) )
 
 $_SESSION['orderDirection'] = $orderDirection;
 
+//request data
 if ( isset($_REQUEST['cmd']) ) $cmd =$_REQUEST['cmd'];
 else 						   $cmd =NULL;
 
@@ -82,7 +88,7 @@ if ( isset($_REQUEST['description']) ) $description = trim($_REQUEST['descriptio
 else                               $description = '';
 
 if ( isset($_REQUEST['update_repeat']) ) $update_repeat = trim($_REQUEST['update_repeat']);
-else                               $update_repeat = '';
+else                               $update_repeat = 'this';
 
 if ( isset($_REQUEST['repeat']) ) $repeat = trim($_REQUEST['repeat']);
 else                             $repeat = 1;
@@ -90,10 +96,13 @@ else                             $repeat = 1;
 if ( isset($_REQUEST['visibility_set']) ) $visibility_set = trim($_REQUEST['visibility_set']);
 else                             $visibility_set = 'SHOW';
 
-if ( $is_allowedToEdit )
+if ( isset($_REQUEST['delete_item']) ) $delete_item = trim($_REQUEST['delete_item']);
+else                             $delete_item = 'this';
+
+if ( $is_allowedToEdit ) //options available only to course administrators
 {
     /*------------------------------------------------------------------------
-    EVENT ADD
+    COURS EVENT ADD
 	use only for an add request. 
     --------------------------------------------------------------------------*/
 	if ( 'exAdd' == $cmd )
@@ -101,13 +110,14 @@ if ( $is_allowedToEdit )
 		//date desting
 		$start_date = mktime($_REQUEST['fhour'],$_REQUEST['fminute'],0,$_REQUEST['fmonth'],$_REQUEST['fday'],$_REQUEST['fyear']);
 		$end_date   = mktime($_REQUEST['ahour'],$_REQUEST['aminute'],0,$_REQUEST['amonth'],$_REQUEST['aday'],$_REQUEST['ayear']);
+
 		if ($end_date < $start_date)
 		{
 			$dialogBox .= '<p>' . get_lang('Invalid Dates') . '</p>' . "\n";
 		}
 		else
 		{
-			$entryId = agenda_add_item($cours_id,$user_id,$title,$description, $start_date, $end_date, $repeat,$visibility_set) ; //send data to the D
+			$entryId = agenda_add_item($course_id,$user_id,$title,$description, $start_date, $end_date, $repeat,$visibility_set) ; //send data to the D
 		}
 		if ( $entryId != false )
 		{
@@ -126,7 +136,7 @@ if ( $is_allowedToEdit )
 
     if ( 'exDeleteAll' == $cmd )
     {
-        if ( agenda_delete_all_items($cours_id))
+        if ( agenda_delete_all_items($course_id))
         {
             $dialogBox .= '<p>' . get_lang('Event deleted from the agenda') . '</p>' . "\n";
         }
@@ -135,11 +145,11 @@ if ( $is_allowedToEdit )
             $dialogBox = '<p>' . get_lang('Unable to delete event from the agenda') . '</p>' . "\n";
         }
     }
+
 }//end of if allowed 
 
-$eventList = agenda_get_item_list($cours_id, $user_id, $orderDirection);
 
-if ($user_id!=NULL) //prevent unloged users to add events
+if (claro_is_user_authenticated()) //options available only to loged users
 {
     /*------------------------------------------------------------------------
     DELETE EVENT COMMAND
@@ -148,7 +158,7 @@ if ($user_id!=NULL) //prevent unloged users to add events
     if ( 'exDelete' == $cmd && !empty($id) )
     {
 
-        if ( agenda_delete_item($id) )
+        if ( agenda_delete_item($id,$delete_item) )
         {
             $dialogBox .= '<p>' . get_lang('Event deleted from the agenda') . '</p>' . "\n";
         }
@@ -176,7 +186,7 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		{
 			if ( !empty($id) )
 			{	
-				if ( agenda_update_item($id,$title,$description,$start_date,$end_date,$user_id,$cours_id,$update_repeat))
+				if ( agenda_update_item($id,$title,$description,$start_date,$end_date,$user_id,$course_id,$update_repeat,$visibility_set))
 				{
 					$dialogBox .= '<p>' . get_lang('Event updated into the agenda') . '</p>' . "\n";
 				}
@@ -187,7 +197,6 @@ if ($user_id!=NULL) //prevent unloged users to add events
 			}
 		}
 	}
-
 
 
 	/*-------------------------------------------------------------------------
@@ -232,7 +241,16 @@ if ($user_id!=NULL) //prevent unloged users to add events
             $editedEvent = agenda_get_item($id) ;
             $editedEvent['start_date'] = strtotime($editedEvent['old_start_date']);
 			$editedEvent['end_date'	 ] = strtotime($editedEvent['old_end_date']);
-            $nextCommand = 'exEdit';
+            if ($editedEvent['user_id']!=NULL || $editedEvent['group_id']!=NULL)
+			{
+				$exEditshevt = 'exEditshevt';
+				$nextCommand = 'exEditshevt';
+			}
+			else
+			{
+				$nextCommand = 'exEdit';
+			}
+			
         }
         else
         {
@@ -250,27 +268,31 @@ if ($user_id!=NULL) //prevent unloged users to add events
 			if ( 'rqAddshevt' == $cmd )$nextCommand = 'exAddshevt';
         }
         $display_form =TRUE;
-    } // end if cmd == 'rqEdit' && cmd == 'rqAdd'
+    }
 
 
     /*------------------------------------------------------------------------
-    SHARED EVENT ADD
+    SHARED EVENT ADD OR EDIT 
 	use only for an add request. 
     --------------------------------------------------------------------------*/
-	if ( 'exAddshevt' == $cmd )
+	if ( 'exAddshevt' == $cmd || 'exEditshevt'==$cmd)
     {
+		if ('exEditshevt'==$cmd)//When edit event it is easier to delete do old event and create a new one with the nex data
+		{
+			agenda_delete_item($id);
+		}
+
 		$user_idlist  = array();
 		$group_idlist = array();
-		if ( isset($_REQUEST['selected']) )
+		if ( isset($_REQUEST['selectedbox']) )
 		{
 			/*
 			 * Explode the values of selected in groups and users
 			 */
-	
-			foreach($_REQUEST['selected'] as $thisselected)
+//var_dump($_REQUEST);
+			foreach($_REQUEST['selectedbox'] as $this_selected)
 			{
-				list($type, $elmtId) = explode(':', $thisselected);
-	
+				list($type, $elmtId) = explode(':', $this_selected);	
 				switch($type)
 				{
 					case 'GROUP':
@@ -281,9 +303,8 @@ if ($user_id!=NULL) //prevent unloged users to add events
 					$user_idlist[] = $elmtId;
 					break;
 				}
-	
 			} // end while
-		} // end if - $_REQUEST['selected']
+		} // end if - $_REQUEST['selectedbox']
 
 		//date desting
 		$start_date = mktime($_REQUEST['fhour'],$_REQUEST['fminute'],0,$_REQUEST['fmonth'],$_REQUEST['fday'],$_REQUEST['fyear']);
@@ -296,7 +317,7 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		else
 		{
 			$user_idlist[]=$user_id;
-			$entryId = shared_add_item($cours_id,$user_id,$user_idlist,$group_idlist,$title,$description, $start_date, $end_date, $visibility_set) ; //send data to the D
+			$entryId = shared_add_item($course_id,$user_id,$user_idlist,$group_idlist,$title,$description, $start_date, $end_date, $visibility_set) ; //send data to the D
 		}
 		if ( $entryId != false )
         {
@@ -312,45 +333,6 @@ if ($user_id!=NULL) //prevent unloged users to add events
 	{
 		$display_command = TRUE;
 	} // end if diplayMainCommands
-
-
-	/*---------------------------------------------------------------------------
-	MAIN COMMANDS
-	---------------------------------------------------------------------------*/
-
-	if ( $is_allowedToEdit )
-	{
-		//Add event button
-		$cmdList[]=  '<a class="claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAdd">'
-		.            '<img src="./img/agenda.gif" alt="" />'
-		.            get_lang('Add an event')
-		.            '</a>';
-		
-		//remove all event button
-		if ( count($eventList) > 0 )
-		{
-			$cmdList[]=  '<a class= "claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeleteAll" '
-			.    ' onclick="if (confirm(\'' . clean_str_for_javascript(get_lang('Clear up event list')) . ' ? \')){return true;}else{return false;}">'
-			.    '<img src="./img/delete.gif" alt="" />'
-			. 	 get_lang('Clear up event list')
-			.    '</a>';
-		}
-		else
-		{
-			$cmdList[]=  '<span class="claroCmdDisabled" >'
-			.    '<img src="./img/delete.gif" alt="" />'
-			.    get_lang('Clear up event list')
-			.    '</span>'
-			;
-		}
-	}
-	
-	//Add shared event button
-	$cmdList[] = '<a class="claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAddshevt">'
-		.             '<img src="./img/announcement.gif" alt="" />'
-	.             get_lang('Event for selected users')
-	.             '</a>' . "\n"
-	;
 
 
 	/*---------------------------------------------------------------------------
@@ -419,14 +401,15 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		var f =    document.data;
 		var dat;
 	
-		var selected = f.elements['selected[]'];
+		var selectedbox = f.elements['selectedbox[]'];
 	
-		if (selected.length <    1) {
+		if (selectedbox.length <    1) {
 			alert(\"" . clean_str_for_javascript(get_lang('You must select some users')) . "\");
 			return false;
 		}
-		for    (var i=0; i<selected.length; i++)
-			selected[i].selected = selected[i].checked = true
+		for    (var i=0; i<selectedbox.length; i++)
+			selectedbox[i].selected = selectedbox[i].checked = true
+
 	
 		f.submit();
 		return false;
@@ -440,19 +423,17 @@ if ($user_id!=NULL) //prevent unloged users to add events
 	function called durring an add request.
 	tfis function recovers the informations used.
     --------------------------------------------------------------------------*/
-
-	if ($cmd == 'rqAddshevt')
+	if ($cmd == 'rqAddshevt'|| $exEditshevt == 'exEditshevt')
 	{
 		/*----------------------------------------
 		DISPLAY FORM    TO FILL 
 		--------------------------------------*/
-		
 		/*
 		* Get user    list of    this course
 		*/
 		if ( $is_allowedToEdit )
 		{
-			$singleUserList = get_user_cours_list($tbl_user,$tbl_courseUser,$cours_id);	
+			$singleUserList = get_user_course_list($tbl_user,$tbl_courseUser,$course_id);	
 			$userList = array();	
 			if ( is_array($singleUserList) && !empty($singleUserList) )
 			{
@@ -466,7 +447,7 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		/*
 		* Get group list of this course
 		*/
-		$groupSelect = get_group_cours_list($tbl_groupUser,$tbl_group);
+		$groupSelect = get_group_course_list($tbl_groupUser,$tbl_group);
 		$groupList = array();
 		if ( is_array($groupSelect) && !empty($groupSelect) )
 		{
@@ -475,8 +456,7 @@ if ($user_id!=NULL) //prevent unloged users to add events
 				$groupList[] = $groupData;
 			}
 		}
-	
-	
+
 		/*
 		* Create Form
 		*/
@@ -490,10 +470,10 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		.    '<tr valign="top" align="center">'
 		.    '<td>' . "\n"
 		.    '<p><b>' . get_lang('User list') . '</b></p>' . "\n"
-		.    '<select name="unselected[]" size="15" repeatple="repeatple">' . "\n"
+		.    '<select name="unselected[]" size="15" multiple="multiple">' . "\n"
 		;
 	
-		if ( $groupList )
+		if ( !empty($groupList) )
 		{
 			foreach( $groupList as $thisGroup )
 			{
@@ -520,6 +500,14 @@ if ($user_id!=NULL) //prevent unloged users to add events
 				;
 			}
 		}
+
+		if ($exEditshevt == 'exEditshevt') //recovers the previous user list
+		{
+			$old_group_id_list 	= get_shared_group_list($id);
+			$old_group_list 	= get_selected_group_list($tbl_groupUser,$tbl_group,$old_group_id_list);
+			$old_user_id_list 	= get_shared_user_list($id);
+			$old_user_list 		= get_selected_user_cours_list($tbl_user,$tbl_courseUser,$course_id,$old_user_id_list);
+		}
 		// WATCH OUT ! form elements are called by numbers "form.element[3]"...
 		// because select name contains "[]" causing a javascript
 		// element name problem List of selected users
@@ -527,16 +515,51 @@ if ($user_id!=NULL) //prevent unloged users to add events
 		$selectuser .= '</select>' . "\n"
 		.    '</td>' . "\n"
 		.    '<td valign="middle">' . "\n"
-		.    '<input type="button" onClick="move(this.form.elements[\'unselected[]\'],this.form.elements[\'selected[]\'])" value="   >>   " />' . "\n"
+		.    '<input type="button" onClick="move(this.form.elements[\'unselected[]\'],this.form.elements[\'selectedbox[]\'])" value="   >>   " />' . "\n"
 		.    '<p>&nbsp;</p>' . "\n"
-		.    '<input type="button" onClick="move(this.form.elements[\'selected[]\'],this.form.elements[\'unselected[]\'])" value="   <<   " />' . "\n"
+		.    '<input type="button" onClick="move(this.form.elements[\'selectedbox[]\'],this.form.elements[\'unselected[]\'])" value="   <<   " />' . "\n"
 		.    '</td>' . "\n"
 		.    '<td>' . "\n"
 		.    '<p>' . "\n"
 		.    '<b>' . get_lang('Selected Users') . '</b></p>' . "\n"
 		.    '<p>'
-		.    '<select name="selected[]" size="15" repeatple="repeatple" style="width:200" width="20">'
-		.    '</select>'
+		.    '<select name="selectedbox[]" size="15" multiple="multiple" style="width:200" width="20">';
+		if ( !empty($old_group_list) )
+		{
+			foreach($old_group_list as $this_old_group_list)
+			{
+				if ( !empty($this_old_group_list) )
+				{
+					foreach($this_old_group_list as $this_old_group )
+					{
+						$selectuser .= '<option value="GROUP:' . $this_old_group['id'] . '">'
+						.    '* ' . $this_old_group['name'] . ' (' . $this_old_group['userNb'] . ' ' . get_lang('Users') . ')'
+						.    '</option>' . "\n";
+					}
+				}
+			}
+		}
+		// display user list
+	
+		if (!empty($old_user_list))
+		{
+			foreach ( $old_user_list as $this_old_user_list )
+			{
+				if (!empty($this_old_user_list))
+				{	
+					foreach($this_old_user_list as $this_old_user)
+					{
+						if($this_old_user['uid']!=$user_id) //prevents repeated author
+						{
+							$selectuser .= '<option value="USER:' . $this_old_user['uid'] . '">'
+							.    ucwords(strtolower($this_old_user['lastName'] . ' ' . $this_old_user['firstName']))
+							.    '</option>' . "\n";
+						}
+					}
+				}
+			}
+		}
+		$selectuser .=    '</select>'
 		.    '</p>' . "\n"
 		.    '</td>' . "\n"
 		.    '</tr>' . "\n\n"
@@ -550,8 +573,59 @@ if ($user_id!=NULL) //prevent unloged users to add events
 	}
 }//end of if loged user
 
+$user_group_list = get_user_group_list($user_id, $tbl_groupUser);//get list of group where the user is registred
+$eventList = agenda_get_item_list($course_id, $user_id, $user_group_list, $orderDirection);//get event list
 
-/********************************************************************************************************************************************************************/
+if (claro_is_user_authenticated()) //options available only to loged users
+{
+	/*---------------------------------------------------------------------------
+	MAIN COMMANDS
+	---------------------------------------------------------------------------*/
+
+	if ( $is_allowedToEdit )
+	{
+		
+		//Add event button
+		$cmdList[]=  '<a class="claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAdd">'
+		.            '<img src="./img/agenda.gif" alt="" />'
+		.            get_lang('Add an event')
+		.            '</a>';
+		
+		//remove all event button
+		if ( count($eventList) > 0 )
+		{
+			$cmdList[]=  '<a class= "claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeleteAll" '
+			.    ' onclick="if (confirm(\'' . clean_str_for_javascript(get_lang('Clear up event list')) . ' ? \')){return true;}else{return false;}">'
+			.    '<img src="./img/delete.gif" alt="" />'
+			. 	 get_lang('Clear up event list')
+			.    '</a>';
+		}
+		else
+		{
+			$cmdList[]=  '<span class="claroCmdDisabled" >'
+			.    '<img src="./img/delete.gif" alt="" />'
+			.    get_lang('Clear up event list')
+			.    '</span>'
+			;
+		}
+	}
+	if (get_conf('activate_shared_event')=='TRUE') //activate this function
+	{
+		//Add shared event button
+		$cmdList[] = '<a class="claroCmd" href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAddshevt">'
+			.             '<img src="./img/announcement.gif" alt="" />'
+		.             get_lang('Event for selected users')
+		.             '</a>' . "\n"
+		;
+	}
+}
+
+
+/*==============================================================================
+ Display Code
+===============================================================================*/
+// Update interbredcrump
+$interbredcrump[] = array('url' => 'agenda.php','name' => 'Agenda2');
 
 //Inclusion du header et du banner Claroline
 
@@ -560,11 +634,11 @@ require_once get_path('includePath') . '/claro_init_header.inc.php';
 echo claro_html_tool_title(get_lang('Agenda'));
 
 
-// Code d’affichage
+// Display
 
 if ( $display_command ) echo '<p>' . claro_html_menu_horizontal($cmdList) . '</p>';
 
-echo($selectuser);
+echo($selectuser); //Display the select user box
 
 
     /*------------------------------------------------------------------------
@@ -572,7 +646,7 @@ echo($selectuser);
     --------------------------------------------------------------------------*/
 if ($display_form)
 {	
-	if ($cmd != 'rqAddshevt') //prevent errors when shared event
+	if ($cmd != 'rqAddshevt' && $exEditshevt !='exEditshevt') //prevent errors when shared event
 	{
 		echo '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">';
 	}
@@ -644,10 +718,12 @@ if ($display_form)
 		.    '</label>' . "\n"
 		.    '</td>' . "\n"
 		.    '<td>' . "\n"
-		. 	 get_lang('Yes') ."\n"
-		.	 '<input type="radio" name="update_repeat" value="true" CHECKED>' ."\n"
-		. 	 get_lang('No') ."\n"
-		.	 '<input type="radio" name="update_repeat" value="false">' ."\n"
+		. 	 get_lang('All') ."\n"
+		.	 '<input type="radio" name="update_repeat" value="all" CHECKED>' ."\n"
+		. 	 get_lang('This') ."\n"
+		.	 '<input type="radio" name="update_repeat" value="this">' ."\n"
+		. 	 get_lang('from this') ."\n"
+		.	 '<input type="radio" name="update_repeat" value="from_this">' ."\n"
 		.    '</td>' . "\n"
 		.    '</tr>' . "\n";
 	}
@@ -684,15 +760,13 @@ if ($display_form)
     .    '</table>' . "\n"
     .    '</form>' . "\n"
     ;
-}
+}//end if display_form
 
 
 if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox); //dislay messages
 
 
-$monthBar     = '';
-
-//Chgange display order
+//Change display order
 if ( count($eventList) < 1 )
 {
     echo "\n" . '<br /><blockquote>' . get_lang('No event in the agenda') . '</blockquote>' . "\n";
@@ -726,155 +800,165 @@ foreach ( $eventList as $thisEvent )
 	$endday		 = $end_date[0];
 	$endhour	 = $end_date[1];
 
-    if (('HIDE' == $thisEvent['visibility'] && $thisEvent['author_id']==$user_id) || 'SHOW' == $thisEvent['visibility'])
-    {
-        //modify style if the event is recently added since last login
-  /*      if (claro_is_user_authenticated() && $claro_notifier->is_a_notified_ressource(claro_get_current_course_id(), $date, claro_get_current_user_id(), claro_get_current_group_id(), claro_get_current_tool_id(), $thisEvent['id']))
-        {
-            $cssItem = 'item hot';
-        }
-        else
-        {
-            $cssItem = 'item';
-        }*/
-
-        $cssInvisible = '';
-        if ($thisEvent['visibility'] == 'HIDE')
-        {
-            $cssInvisible = ' invisible';
-        }
-
-        // TREAT "NOW" BAR CASE
-        if ( ! $nowBarAlreadyShowed )
-        if (( ( strtotime($thisEvent['start_date']) > time() ) &&  'ASC' == $orderDirection )
-        ||
-        ( ( strtotime($thisEvent['start_date']) < time() ) &&  'DESC' == $orderDirection )
-        )
-        {
-            if ($monthBar != date('m',time()))
-            {
-                $monthBar = date('m',time());
-
-                echo '<tr>' . "\n"
-                .    '<th class="superHeader" colspan="2" valign="top">' . "\n"
-                .    ucfirst(claro_html_localised_date('%B %Y', time()))
-                .    '</th>' . "\n"
-                .    '</tr>' . "\n"
-                ;
-            }
-
-
-            // 'NOW' Bar
-
-            echo '<tr>' . "\n"
-            .    '<td>' . "\n"
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'pixel.gif" width="20" alt=" " />'
-            .    '<span class="highlight">'
-            .    '<a name="today">'
-            .    '<i>'
-            .    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'))) . ' '
-            .    ucfirst(strftime( get_locale('timeNoSecFormat')))
-            .    ' -- '
-            .    get_lang('Now')
-            .    '</i>'
-            .    '</a>'
-            .    '</span>' . "\n"
-            .    '</td>' . "\n"
-            .    '</tr>' . "\n"
-            ;
-
-            $nowBarAlreadyShowed = true;
-        }
-
-        /*
-        * Display the month bar when the current month
-        * is different from the current month bar
-        */
-
-        if ( $monthBar != date( 'm', strtotime($startday) ) )
-        {
-            $monthBar = date('m', strtotime($startday));
-
-            echo '<tr>' . "\n"
-            .    '<th class="superHeader" valign="top">'
-            .    ucfirst(claro_html_localised_date('%B %Y', strtotime( $startday) ))
-            .    '</th>' . "\n"
-            .    '</tr>' . "\n"
-            ;
-        }
-
-        /*
-        * Display the event date
-        */
-		echo '<tr class="headerX" valign="top">' . "\n"
-		.    '<th>' . "\n"
-//		.    '<span class="'. $cssItem . $cssInvisible .'">' . "\n"
-		.    '<a href="#form" name="event' . $thisEvent['id'] . '"></a>' . "\n"
-		.    '<img src="' . get_path('imgRepositoryWeb') . 'agenda.gif" alt=" " />&nbsp;'
-		.	 get_lang('From') . ' '
-		.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'), strtotime($startday))) . ' '
-		.    ucfirst( strftime( get_locale('timeNoSecFormat'), strtotime($starthour))) . ' ';
-		if ( $startday !=$endday)
+	if ($thisEvent['group_id']==NULL || ($thisEvent['group_id']!=NULL && $thisEvent['author_id']!=$user_id)) //prevents an event to be repeated
+	{
+	
+		if (('HIDE' == $thisEvent['visibility'] && $thisEvent['author_id']==$user_id) || 'SHOW' == $thisEvent['visibility'])
 		{
-			echo get_lang('to') . ' '
-			.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'), strtotime($endday))) . ' ';
+			//modify style if the event is recently added since last login
+	  /*      if (claro_is_user_authenticated() && $claro_notifier->is_a_notified_ressource(claro_get_current_course_id(), $date, claro_get_current_user_id(), claro_get_current_group_id(), claro_get_current_tool_id(), $thisEvent['id']))
+			{
+				$cssItem = 'item hot';
+			}
+			else
+			{
+				$cssItem = 'item';
+			}*/
+	
+			$cssInvisible = '';
+			if ($thisEvent['visibility'] == 'HIDE')
+			{
+				$cssInvisible = ' invisible';
+			}
+	
+			// TREAT "NOW" BAR CASE
+			if ( ! $nowBarAlreadyShowed )
+			if (( ( strtotime($thisEvent['start_date']) > time() ) &&  'ASC' == $orderDirection )
+			||
+			( ( strtotime($thisEvent['start_date']) < time() ) &&  'DESC' == $orderDirection )
+			)
+			{
+				if ($monthBar != date('m',time()))
+				{
+					$monthBar = date('m',time());
+	
+					echo '<tr>' . "\n"
+					.    '<th class="superHeader" colspan="2" valign="top">' . "\n"
+					.    ucfirst(claro_html_localised_date('%B %Y', time()))
+					.    '</th>' . "\n"
+					.    '</tr>' . "\n"
+					;
+				}
+	
+	
+				// 'NOW' Bar
+	
+				echo '<tr>' . "\n"
+				.    '<td>' . "\n"
+				.    '<img src="' . get_path('imgRepositoryWeb') . 'pixel.gif" width="20" alt=" " />'
+				.    '<span class="highlight">'
+				.    '<a name="today">'
+				.    '<i>'
+				.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'))) . ' '
+				.    ucfirst(strftime( get_locale('timeNoSecFormat')))
+				.    ' -- '
+				.    get_lang('Now')
+				.    '</i>'
+				.    '</a>'
+				.    '</span>' . "\n"
+				.    '</td>' . "\n"
+				.    '</tr>' . "\n"
+				;
+	
+				$nowBarAlreadyShowed = true;
+			}
+	
+			/*
+			* Display the month bar when the current month
+			* is different from the current month bar
+			*/
+	
+			if ( $monthBar != date( 'm', strtotime($startday) ) )
+			{
+				$monthBar = date('m', strtotime($startday));
+	
+				echo '<tr>' . "\n"
+				.    '<th class="superHeader" valign="top">'
+				.    ucfirst(claro_html_localised_date('%B %Y', strtotime( $startday) ))
+				.    '</th>' . "\n"
+				.    '</tr>' . "\n"
+				;
+			}
+	
+			/*
+			* Display the event date
+			*/
+			echo '<tr class="headerX" valign="top">' . "\n"
+			.    '<th>' . "\n"
+	//		.    '<span class="'. $cssItem . $cssInvisible .'">' . "\n"
+			.    '<a href="#form" name="event' . $thisEvent['id'] . '"></a>' . "\n"
+			.    '<img src="' . get_path('imgRepositoryWeb') . 'agenda.gif" alt=" " />&nbsp;'
+			.	 get_lang('From') . ' '
+			.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'), strtotime($startday))) . ' '
+			.    ucfirst( strftime( get_locale('timeNoSecFormat'), strtotime($starthour))) . ' ';
+			if ( $startday !=$endday)
+			{
+				echo get_lang('to') . ' '
+				.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'), strtotime($endday))) . ' ';
+			}
+			else
+			{
+				echo	 get_lang('Until') . ' ';
+			}
+			echo ucfirst( strftime( get_locale('timeNoSecFormat'), strtotime($endhour))) . ' '
+			.    '</span>';
+	
+			/*
+			* Display the event description
+			*/
+	
+			echo '</th>' . "\n"
+			.    '</tr>' . "\n"
+			.    '<tr>' . "\n"
+			.    '<td>' . "\n"
+			.    '<div class="description ' . $cssInvisible . '">' . "\n"
+			.    ( empty($thisEvent['title']  ) ? '' : '<p><strong>' . htmlspecialchars($thisEvent['title']) . '</strong></p>' . "\n" )
+			.    ( empty($thisEvent['description']) ? '' :  claro_parse_user_text($thisEvent['description']) )
+			.    '</div>' . "\n"
+			;
 		}
-		else
+	
+		if ($thisEvent['author_id']==$user_id)
 		{
-			echo	 get_lang('Until') . ' ';
-		}
-		echo ucfirst( strftime( get_locale('timeNoSecFormat'), strtotime($endhour))) . ' '
-		.    '</span>';
-
-        /*
-        * Display the event description
-        */
-
-        echo '</th>' . "\n"
-        .    '</tr>' . "\n"
-        .    '<tr>' . "\n"
-        .    '<td>' . "\n"
-        .    '<div class="description ' . $cssInvisible . '">' . "\n"
-        .    ( empty($thisEvent['title']  ) ? '' : '<p><strong>' . htmlspecialchars($thisEvent['title']) . '</strong></p>' . "\n" )
-        .    ( empty($thisEvent['description']) ? '' :  claro_parse_user_text($thisEvent['description']) )
-        .    '</div>' . "\n"
-        ;
-
- //       echo linker_display_resource();
-    }
-
-	if ($thisEvent['author_id']==$user_id)
-    {
-        echo '<a href="' . $_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;id=' . $thisEvent['id'] . '">'
-        .    '<img src="./img/edit.gif" border="O" alt="' . get_lang('Modify') . '">'
-        .    '</a> '
-        .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;id=' . $thisEvent['id'] . '" '
-        .    'onclick="javascript:if(!confirm(\''
-        .    clean_str_for_javascript(get_lang('Delete') . ' ' . $thisEvent['title'].' ?')
-        .    '\')) {document.location=\'' . $_SERVER['PHP_SELF'] . '\'; return false}" >'
-        .    '<img src="./img/delete.gif" border="0" alt="' . get_lang('Delete') . '" />'
-        .    '</a>'
-        ;
-
-        //  Visibility
-        if ('SHOW' == $thisEvent['visibility'])
-        {
-            echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=mkHide&amp;id=' . $thisEvent['id'] . '">'
-            .    '<img src="./img/visible.gif" alt="' . get_lang('Invisible') . '" />'
-            .    '</a>' . "\n";
-        }
-        else
-        {
-            echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=mkShow&amp;id=' . $thisEvent['id'] . '">'
-            .    '<img src="./img/invisible.gif" alt="' . get_lang('Visible') . '" />'
-            .    '</a>' . "\n"
-            ;
-        }
-    }
-    echo '</td>'."\n"
-    .    '</tr>'."\n"
-    ;
-
+			echo '<a href="' . $_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;id=' . $thisEvent['id'] . '">'
+			.    '<img src="./img/edit.gif" border="O" alt="' . get_lang('Modify') . '">'
+			.    '</a> '
+			.    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;id=' . $thisEvent['id'] . '" '
+			.    'onclick="javascript:if(!confirm(\''
+			.    clean_str_for_javascript(get_lang('Delete') . ' ' . $thisEvent['title'].' ?')
+			.    '\')) {document.location=\'' . $_SERVER['PHP_SELF'] . '\'; return false}" >'
+			.    '<img src="./img/delete.gif" border="0" alt="' . get_lang('Delete') . '" />'
+			.    '</a>'
+			;
+	
+			//  Visibility
+			if ('SHOW' == $thisEvent['visibility'])
+			{
+				echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=mkHide&amp;id=' . $thisEvent['id'] . '">'
+				.    '<img src="./img/visible.gif" alt="' . get_lang('Invisible') . '" />'
+				.    '</a>' . "\n";
+			}
+			else
+			{
+				echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=mkShow&amp;id=' . $thisEvent['id'] . '">'
+				.    '<img src="./img/invisible.gif" alt="' . get_lang('Visible') . '" />'
+				.    '</a>' . "\n";
+			}
+			if ($thisEvent['master_event_id'] != NULL)
+			{
+				echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;id=' . $thisEvent['id'] . '&amp;delete_item=all" '
+				.    'onclick="javascript:if(!confirm(\''
+				.    clean_str_for_javascript(get_lang('Delete all related events') . ' ' . $thisEvent['title'].' ?')
+				.    '\')) {document.location=\'' . $_SERVER['PHP_SELF'] . '\'; return false}" >'
+				.    '<img src="./img/deleteall.gif" border="0" alt="' . get_lang('Delete all related events') . '" />'
+				.    '</a>'
+				;			
+			}
+		} //end of if is hide or allowed
+		echo '</td>'."\n"
+		.    '</tr>'."\n"
+		;
+	} //end of repeat control
 }   // end while
 
 echo '</table>';
