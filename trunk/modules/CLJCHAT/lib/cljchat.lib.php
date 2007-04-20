@@ -102,13 +102,16 @@ function jchat_display_message_list($onlyLastMsg = true)
  
 function jchat_display_message($message)
 {
-	// transform url to clickable links
-	$chatLine = claro_parse_user_text($message['message']);
+    $userName = $message['firstname'] . ' '. $message['lastname'];
+    if (strlen($userName) > get_conf('max_nick_length') ) $userName = $message['firstname'] . ' '. $message['lastname'][0] . '.';
 
+    // transform url to clickable links
+	$chatLine = claro_parse_user_text($message['message']);    
+    
     $html = '';
 		
 	$html .= '<span class="cl_jchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostDate']) . '&nbsp;|</span>'
-	.	 ' <span class="cl_jchat_userName">' . utf8_encode($message['firstname'] . ' ' . $message['lastname']) 
+	.	 ' <span class="cl_jchat_userName">' . utf8_encode($userName) 
 	.	 '</span>&nbsp;: ' . $chatLine . "\n";
 	
 	return $html;
