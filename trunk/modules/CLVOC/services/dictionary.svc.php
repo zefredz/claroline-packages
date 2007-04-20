@@ -199,6 +199,9 @@
             {
                 $word = $dictionary->getWord( $wordId );
                 $definitionList = $dictionary->getDefinitionList( $wordId );
+                
+                // var_dump( $definitionList );
+                
                 $synonymList = array();
                 foreach ( $definitionList as $definition )
                 {
