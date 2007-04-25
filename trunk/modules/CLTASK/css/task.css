@@ -1,0 +1,23 @@
+.priorityNone {
+	/* empty */
+}
+
+.priorityLow {
+	background-color: yellow;
+}
+
+.priorityMedium {
+	background-color: orange;
+}
+
+.priorityHigh {
+	background-color: red;
+}
+
+.dueDateExceeded {
+	background-color: red;
+}
+
+.taskEnded {
+	background-color: green;
+}

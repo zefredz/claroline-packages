@@ -1,0 +1,24 @@
+<module>
+  <label>CLTASK</label>
+  <name>TodoList</name>
+  <version>0.1</version> 
+  <license>GPL</license>
+  <type>tool</type>
+  <icon>icon.gif</icon>
+   
+  <description>
+    TodoList module for Claroline
+  </description>
+  
+  <author>
+     <name>Tanguy Delooz</name>
+     <email>tdelooz@gmail.com</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>

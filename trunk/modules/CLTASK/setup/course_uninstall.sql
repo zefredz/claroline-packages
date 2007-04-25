@@ -1,0 +1,1 @@
+DROP IF EXISTS `__CL_COURSE__cltask_tasks`;
