@@ -1,0 +1,22 @@
+<module>
+	<label>Countd</label>
+	<name>Countdown</name>
+	<default_dock>campusBannerRight</default_dock>
+	<type>Applet</type>
+
+	<description>
+		This plugin shows the tine remaning before an event
+	</description>
+
+	<author>
+		<name>Marc Lavergne</name>
+		<email>marc86.lavergne@gmail.com</email>
+		<web>http://www.claroline.net</web>
+	</author>
+
+	<requirements>
+		<claroline>
+			<version>1.8</version>
+		</claroline>
+	</requirements>
+</module>
