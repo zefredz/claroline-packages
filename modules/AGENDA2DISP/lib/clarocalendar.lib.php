@@ -133,16 +133,19 @@ class monthView
                             ) 
                        );
                                         }
+                                        //echo $dayNumber;
                     if ( $format == 'SHORT' ) 
                     {
-                        if ( isset($eventList) && count($dayEventList) > 0 )
-                            $content = '<b style="color:blue">'.$dayNumber.'</b>';
+                        if ( isset($eventList) && count($dayEventList) > 0 ){
+                            $content = '<b style="color:red">'.'<a href="' . $_SERVER['PHP_SELF'] .'?cmd=dayview&amp;refYear='.$refYear.'&amp;refMonth='.$refMonth.'&amp;refDay='.$dayNumber.'">';
+                            $content .= $dayNumber.'</a>'.'</b>';
+                            }
                         else
                             $content = $dayNumber;
                     }
                     else
                     {
-                        $content = '<p>'.$dayNumber.'</p>';
+                        $content = '<p><b>'.$dayNumber.'</b></p>';
                         if(isset($dayEventList)){
                              foreach($dayEventList as $thisEvent)
                              {
@@ -150,6 +153,7 @@ class monthView
                              }
                         }
                     }
+
                     $dayNumber++;
                 }
                 else
@@ -277,16 +281,16 @@ class weekView
             }
 
             echo  '<tr>' . "\n"
-                . '<td>' . "\n"
+                . '<td><b>' . "\n"
                 . claroDate::getFormateddateFromTimeStamp($dayDate,'Y-M-d') . "\n"
-                .'</td>' . "\n"
+                .'</b></td>' . "\n"
                 . '<td>' . "\n";
 
             if ( !empty($dayEventList) )
             {
                 foreach($dayEventList as $thisEvent)
-                {
-                    echo '<p>'.$thisEvent->getTitle().'</p>' . "\n";
+                { 
+                    echo '<p><b>'.claroDate::getFormatedDateFromTimeStamp($thisEvent->getStartDate()->getTimeStamp(), 'H:i').'  </b>'.$thisEvent->getTitle().'</p>' . "\n";
                 }
             }
             else
@@ -294,13 +298,13 @@ class weekView
                 echo '&nbsp;';
             }
 
-            echo  '</td>' . "\n";
+            echo  '</td>' . "\n". '<td>';
                 foreach($dayEventList as $thisEvent)
                 {
-                    echo '<td>'. $thisEvent->getUrl(). '</td>';
+                    echo '<p>'. $thisEvent->getUrl(). '</p>';
                 }
                 
-                echo '</tr>' . "\n";
+                echo '<td></tr>' . "\n";
         }
 
         echo '</table>' . "\n";
@@ -308,7 +312,7 @@ class weekView
     }
 }
     
-    /**
+/**
 * Class DayView
 */
 
@@ -344,7 +348,7 @@ class DayView
             .'&amp;refYear='.(claroDate::getYearFromTimeStamp($referenceDateForwards) )
             .'&amp;cmd=dayview'
             .'&amp;refDay='.(claroDate::getDayFromTimeStamp($referenceDateForwards) );
-
+            
         if( !empty($eventList) )
         {
             $dayEventList = claroEvent::sortList(claroEvent::filterListByDate($eventList, $dayStart, $dayEnd));
@@ -379,9 +383,9 @@ class DayView
              .'</center></th>'."\n";
         echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $forewardsURL . '">&gt;&gt;</a></center>';
         echo'</th></tr>'."\n";
-
         for ($i =  claroDate::getHourFromTimeStamp($startViewHour); $i <= claroDate::getHourFromTimeStamp($endViewHour); $i++)
         {	
+
             echo  '<tr valign="top">'  . "\n". '<td>';
             
             echo str_pad($i,2,"0", STR_PAD_LEFT); //display of a "0" if $i < 10
@@ -408,7 +412,12 @@ class DayView
                     echo  '&nbsp;';
                 }
             }
-            echo  '</td>'. '<td width="15%">'.'&nbsp;'.'</td>'.'</tr>';
+            echo  '</td>'. '<td width="15%">';
+            foreach ($hourEventList as $thisEvent)
+            {
+                echo '<p>'. $thisEvent->getUrl(). '</p>'; 
+            }
+            echo'</td>'.'</tr></tbody>';
         }
         echo '</table>';
        
@@ -429,6 +438,7 @@ class ListView
 
         $monthDateBar  = mktime(0,0,0, 01, 01, 1970); // Epoch
         $nowBarPainted = false;
+        $eventList = claroEvent::sortList($eventList) ;
 
         echo '<table class="claroTable" border="1">' . "\n";
 
@@ -446,8 +456,10 @@ class ListView
 
                     // MONTH BAR
                     echo '<tr>' . "\n"                    
-                    .    '<th class="superHeader" colspan="7" valign="top">' . "\n"
+                    .    '<th class="superHeader" width="500px" valign="top">' . "\n"
                     .    claroDate::getMonthNameFromTimeStamp($monthDateBar)
+                    .    ' '
+                    .    clarodate::getYearFromTimeStamp($monthDateBar)
                     .    '</th>' . "\n"
                     .    '</tr>' . "\n"
                     ;
@@ -467,7 +479,7 @@ class ListView
                     . '<td>'
                     . '<h4>'.htmlspecialchars($thisEvent->getTitle()) .'</h4>'
                     . $thisEvent->getComment()
-					. $thisEvent->getUrl()
+                    . '<p>'.$thisEvent->getUrl() . '</p>'
                     . '</td>' . "\n"
                     . '</tr>' . "\n";
             }
