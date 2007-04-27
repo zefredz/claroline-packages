@@ -13,10 +13,10 @@
  * @package CLDATE
  *
  * @author Claro Team <cvs@claroline.net>
+ * @autor Michel Carbone <michel_c12@yahoo.fr>
  */
 
 require_once 'claroevent.lib.php';
-//require_once 'clarodate.lib.php';
 
 
 /**
@@ -25,15 +25,21 @@ require_once 'claroevent.lib.php';
 
 class monthView
 {
+
     /**
-    * function that display the month view of $referenceDate with $eventList
-    * @param $referenceDate : object Date
-    * @param $eventList : eventlist to display in the view to paint
-    * @param $view : set the type of view needed by function MonthView
+    * function that display a month view of the agenda
+    *
+    * @param integer $referenceDate : timestamp
+    * @param array $eventList : eventlist to display in the view
+    * @param string $format : short or long view of a month
+    * @param string $view : set the type of view needed
+    * @param integer $refMonth
+    * @param integer $refYear
+    * @return echo html
      */
-    
     function monthViewDisplay( $referenceDate, $eventList, $format, $view, $refMonth=null, $refYear=null)
     {
+        $monthEventList = array();
         $titleName = get_lang('Month view');
 
         if ($view != 'yearview')
@@ -132,12 +138,12 @@ class monthView
                                         ) 
                             ) 
                        );
-                                        }
-                                        //echo $dayNumber;
+                      }
+
                     if ( $format == 'SHORT' ) 
                     {
                         if ( isset($eventList) && count($dayEventList) > 0 ){
-                            $content = '<b style="color:red">'.'<a href="' . $_SERVER['PHP_SELF'] .'?cmd=dayview&amp;refYear='.$refYear.'&amp;refMonth='.$refMonth.'&amp;refDay='.$dayNumber.'">';
+                            $content = '<b style="color:blue">'.'<a href="' . $_SERVER['PHP_SELF'] .'?cmd=dayview&amp;refYear='.$refYear.'&amp;refMonth='.$refMonth.'&amp;refDay='.$dayNumber.'">';
                             $content .= $dayNumber.'</a>'.'</b>';
                             }
                         else
@@ -145,13 +151,17 @@ class monthView
                     }
                     else
                     {
-                        $content = '<p><b>'.$dayNumber.'</b></p>';
+                        $content = '<table><tr>';
+                        $content .= '<p><b>'.$dayNumber.'</b></p></tr>';
                         if(isset($dayEventList)){
                              foreach($dayEventList as $thisEvent)
                              {
-                                 $content .= '<p>'.$thisEvent->getTitle().'</p>';
+                                 $content .= '<tr><p>'.'<a href="' . $_SERVER['PHP_SELF'] .'?cmd=dayview&amp;refYear='.$refYear.'&amp;refMonth='.$refMonth.'&amp;refDay='.$dayNumber.'">';
+                                 $content .= wordwrap($thisEvent->getTitle() , 12, "\n", 1) .'</a>'.'</p></tr>';
+                                
                              }
                         }
+                         $content .= '</table>';
                     }
 
                     $dayNumber++;
@@ -160,18 +170,25 @@ class monthView
                 {
                     $content = '&nbsp;';
                 }
-                echo '<td width="14%">'.$content.'</td>';
+                echo '<td width="14%" valign="bottom">'. $content .'</td>';
             }
             echo '</tr>' . "\n";
         }
         echo '</table>'. "\n";
     }
-        
-    
 }
 
 class YearView
 {
+
+    /**
+    * function that display a year view of the events of the agenda
+    * Use the monthViewDisplay function for the display of each month of the calendar
+    *
+    * @param integer $referenceDate : time stamp  for choose of the year to display
+    * @param array $eventList
+    * @return echo html
+    */
     function yearViewDisplay($referenceDate, $eventList)
     {
     
@@ -234,6 +251,14 @@ class YearView
 
 class weekView
 {
+
+    /**
+    * function that display a week view of the events of the agenda
+    *
+    * @param integer $referenceDate : time stamp  for choose of the week to display
+    * @param array $eventList
+    * @return echo html
+    */
     function weekViewDisplay($referenceDate, $eventList)
     {
         $refYear = claroDate::getYearFromTimeStamp($referenceDate);
@@ -266,7 +291,7 @@ class weekView
             
         echo  "\n";
         echo '<table class="claroTable" border="1">';
-        echo'<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $backwardsURL . '">&lt;&lt;</a></center>';
+        echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $backwardsURL . '">&lt;&lt;</a></center>';
 
         echo '<th class="superHeader" width="70%" valign="top"><center>'.get_lang('Week').' n&deg;'. claroDate::getWeekofYearFromTimeStamp($referenceDate).'</center></th>';
 
@@ -304,7 +329,7 @@ class weekView
                     echo '<p>'. $thisEvent->getUrl(). '</p>';
                 }
                 
-                echo '<td></tr>' . "\n";
+                echo '</tr>' . "\n";
         }
 
         echo '</table>' . "\n";
@@ -318,12 +343,17 @@ class weekView
 
 class DayView
 {
-
     /**
-    * function that display the day view of $referenceDate with $eventList
+    * function that display a day view of the events of the agenda
+    *
+    * @param integer $referenceDate : reference time stamp for choose of the day to display
+    * @param array $eventList
+    * @return echo html
     */
     function dayViewDisplay($referenceDate, $eventList)
     {
+        $dayEventList=array();
+        $hourEventList=array();
         echo '<h3>'. get_lang('Day View').'</h3>';
 
         $refYear  = claroDate::getYearFromTimeStamp($referenceDate);
@@ -430,6 +460,14 @@ class DayView
 
 class ListView
 {
+
+    /**
+    * function that display a list view of the events of the agenda
+    *
+    * @param integer $referenceDate : time stamp
+    * @param array $eventList
+    * @return echo html
+    */
     function listViewDisplay($referenceDate, $eventList)
     {
         echo '<h3>List View</h3>';
@@ -467,21 +505,38 @@ class ListView
 
                 if (  $thisEventDate > $now && ! $nowBarPainted )
                 {
-                    echo '<tr><td align="center"> -- '.get_lang('NOW').' -- </td></td>';
+                    //echo '<tr><td align="center"> -- '.get_lang('NOW').' -- </td></td>';
+                echo '<tr>' . "\n"
+				.    '<td align="center">' . "\n"
+				.    '<img src="' . get_path('imgRepositoryWeb') . 'pixel.gif" width="20" alt=" " />'
+				.    '<span class="highlight">'
+				.    '<a name="today">'
+				.    '<i>'
+				.    ucfirst(claro_html_localised_date( get_locale('dateFormatLong'))) . ' '
+				.    ucfirst(strftime( get_locale('timeNoSecFormat')))
+				.    ' -- '
+				.    get_lang('Now')
+				.    '</i>'
+				.    '</a>'
+				.    '</span>' . "\n"
+				.    '</td>' . "\n"
+				.    '</tr>' . "\n"
+				;
+
                     $nowBarPainted = true;
                 }
 
-                echo  '<tr>' . "\n"
-                    . '<th class="headerX">'.claroDate::getFormatedDateFromTimeStamp($thisEventDate, 'd M Y H:m').'</th>' . "\n"
-                    . '</tr>' . "\n";
+                echo'<tr>' . "\n"
+                .   '<th class="headerX">'.claroDate::getFormatedDateFromTimeStamp($thisEventDate, 'd M Y H:i').'</th>' . "\n"
+                .   '</tr>' . "\n";
 
-                echo  '<tr>' . "\n"
-                    . '<td>'
-                    . '<h4>'.htmlspecialchars($thisEvent->getTitle()) .'</h4>'
-                    . $thisEvent->getComment()
-                    . '<p>'.$thisEvent->getUrl() . '</p>'
-                    . '</td>' . "\n"
-                    . '</tr>' . "\n";
+                echo'<tr>' . "\n"
+                .   '<td>'
+                .   '<h4>'.htmlspecialchars($thisEvent->getTitle()) .'</h4>'
+                .   $thisEvent->getComment()
+                .   '<p>'.$thisEvent->getUrl() . '</p>'
+                .   '</td>' . "\n"
+                .   '</tr>' . "\n";
             }
         }
         else
