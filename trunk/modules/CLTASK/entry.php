@@ -43,11 +43,6 @@ $san->addAdditionalTags('<font>');
 $isAllowedToManage = claro_is_allowed_to_edit();
 
 
-// Set style
-$htmlHeadXtra[] = '<link rel="stylesheet" type="text/css" ' 
-    . 'href="./css/task.css" media="screen, projection, tv" />' . "\n";
-
-
 /**
  * INITIALISATION
  * (Anything from the outside is suspect)
@@ -189,6 +184,14 @@ else
 $visible = null;
 
 
+// URL FLAGS (LIST DISPLAY)
+$maskEndedTasks  = ( array_key_exists( 'maskEndedTasks', $_REQUEST ) 
+        && 'true' == $_REQUEST['maskEndedTasks'] )
+    ? true
+    : false
+    ;
+
+
 /**
  * COMMAND SECTION
  * 
@@ -222,13 +225,6 @@ $cmd = array_key_exists( 'cmd', $_REQUEST )
     : ''
     ;
     
-$task =& new Task;
-
-$buttonLine = array();
-
-$priorityName = array( '-', get_lang('Low'), get_lang('Medium'), get_lang('High') );
-$priorityStyle = array( 'priorityNone', 'priorityLow', 'priorityMedium', 'priorityHigh' );
-
 
 // CONTROL FLAGS
 $fatalError = false;
@@ -241,7 +237,7 @@ $deleteTask = false;
 $loadList = false;
 
 // DISPLAY FLAGS
-$dispBtnLine = true;
+$dispToolMenu = true;
 
 $dispList = false;
 $dispTask = false;
@@ -348,6 +344,10 @@ switch ( $cmd )
         $dispList = true;      
     }
 }
+
+
+// CRUD CONTROL with Task and TaskList objects
+$task =& new Task;
 
 
 // LOAD TASK
@@ -460,37 +460,12 @@ if ( $loadList )
 {
     $taskList =& new TaskList;
     
-    if ( false === ( $listArray = $taskList->loadAll( !$isAllowedToManage ) ) )
+    $listArray = $taskList->loadAll( !$isAllowedToManage, $maskEndedTasks );
+    
+    if ( false === ( $listArray ) )
     {
         $fatalError = true;
         $message = get_lang( 'Fatal error : could not load task list' );
-    }
-}
-
-
-// CONSTRUCTION OF THE BUTTON LINE (MENU)
-if ( $dispBtnLine )
-{
-    //if ( ! $dispList )
-    {
-        $buttonLine[] = '<a href="' . $_SERVER['PHP_SELF'] . '" ' 
-        .               'class="claroCmd">' 
-        .               '<img src="' . get_icon( 'info' ) . '" ' 
-        .               'alt="Task list" />' 
-        .               get_lang( 'Task list' )
-        .               '</a>'
-        ;
-    }
-    
-    if ( $isAllowedToManage )
-    {
-        $buttonLine[] = '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAddTask" ' 
-        .               'class="claroCmd">' 
-        .               '<img src="' . get_icon( 'new' ) . '" ' 
-        .               'alt="New task" />' 
-        .               get_lang( 'New task' )
-        .               '</a>'
-        ;
     }
 }
 
@@ -503,17 +478,20 @@ if ( $dispBtnLine )
  
 if ( $fatalError )
 {
-    claro_die($message);
+    claro_die( $message );
 }
  
-$toolName = get_lang('ToDo List');
-
 // Update interbredcrump
 $interbredcrump[] = array(
 	'url' => 'entry.php',
 	'name' => 'ToDo List'
 );
 
+// Set style
+$htmlHeadXtra[] = '<link rel="stylesheet" type="text/css" ' 
+    . 'href="./css/task.css" media="screen, projection, tv" />' . "\n";
+
+// Javascript
 $htmlHeadXtra[] = '<script type="text/javascript">
 function confirmTaskDelete(id){
 	if(confirm(\'' 
@@ -530,39 +508,175 @@ function confirmTaskDelete(id){
 }
 </script>';
 
-// Display header
+
+// DISPLAY HEADER
+
 require_once get_path('includePath') . '/claro_init_header.inc.php';
 
-// Display tool title
-echo claro_html_tool_title( array( 'mainTitle' => $toolName ) );
+
+// DISPLAY TOOL TITLE
+
+$toolName = get_lang( 'ToDo List' );
+$TitleArray = array();
+
+if ( $dispList )
+{
+    $TitleArray['mainTitle'] = $toolName;
+}
+
+if ( $dispTask )
+{
+	$TitleArray['supraTitle'] = $toolName;
+    $TitleArray['mainTitle'] = $task->getTitle();
+}
+
+if ( $dispForm )
+{
+	switch( $nextCmd )
+    {
+    	case 'exAddTask':
+        {
+        	$TitleArray['mainTitle'] = $toolName;
+            $TitleArray['subTitle'] = get_lang( 'Add a new task' );
+        }break;
+        
+        case 'exEditTask' :
+        {
+        	$TitleArray['supraTitle'] = $toolName;
+            $TitleArray['mainTitle'] = $task->getTitle();
+            $TitleArray['subTitle'] = get_lang ( 'Edit the task' );
+        }break;
+        
+        default :
+        {
+        	$TitleArray['mainTitle'] = $toolName;
+        }
+    }
+}
+
+if ( $dispConfirm )
+{
+	$TitleArray['supraTitle'] = $toolName;
+    $TitleArray['mainTitle'] = $task->getTitle();
+    $TitleArray['subTitle'] = get_lang ( 'Delete the task' );
+}
+
+echo claro_html_tool_title( $TitleArray );
+
+
+// DISPLAY MESSAGE
 
 if ( !empty( $message ) ) echo claro_html_message_box( $message );
 
-// DB Errors
-//if ( !$fatalError )
-//{
-	
-// Display message
-// if ( !empty( $message ) ) echo claro_html_message_box( $message );
 
-// Display button line
-echo '<p>'
-.    claro_html_menu_horizontal( $buttonLine )
-.    '</p>'
-;
+// DISPLAY TOOL MENU
+
+if ( $dispToolMenu )
+{
+	// Construction of the tool menu
+    $toolMenu = array();
+    
+    //if ( ! $dispList )
+    {
+        $toolMenu[] = '<a href="' . $_SERVER['PHP_SELF'] . '" ' 
+        .             'class="claroCmd">' 
+        .             '<img src="' . get_icon( 'info' ) . '" ' 
+        .             'alt="Task list" />' 
+        .             get_lang( 'Task list' )
+        .             '</a>'
+        ;
+    }
+    
+    if ( $isAllowedToManage )
+    {
+        $toolMenu[] = '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqAddTask" ' 
+        .             'class="claroCmd">' 
+        .             '<img src="' . get_icon( 'new' ) . '" ' 
+        .             'alt="New task" />' 
+        .             get_lang( 'New task' )
+        .             '</a>'
+        ;
+    }
+    
+    echo '<p>'
+    .    claro_html_menu_horizontal( $toolMenu )
+    .    '</p>'
+    ;  
+}
 
 
-// DISPLAY THE LIST OF TASKS ( in $listArray )
+// VARIABLES FOR DISPLAY
+
+$priorityName = array( 
+    '-', 
+    get_lang('Low'), 
+    get_lang('Medium'), 
+    get_lang('High') 
+);
+
+$priorityStyle = array( 
+    'priorityNone', 
+    'priorityLow', 
+    'priorityMedium',  
+    'priorityHigh' 
+);
+    
+$priorityIcon = array(
+    1 => 'priority_low', 
+    2 => 'priority_medium', 
+    3 => 'priority_high' 
+);
+
+
+// DISPLAY THE LIST OF TASKS
 
 if ( $dispList )
-//if ( $dispList OR $dispTask )
 {
-	echo '<table class="claroTable emphaseLine" width="100%" ' 
+	// Construction and display of the task list menu
+    //if ( $isAllowedToManage )
+    {
+        $taskListMenu = array(); 
+        
+        // Show all tasks ( when ended tasks are hidden )
+        $menuItem = ( $maskEndedTasks 
+            ? '<a href="' . $_SERVER['PHP_SELF'] . '?maskEndedTasks=false" ' 
+                . 'class="claroCmd">'
+            : '<span class="claroCmdDisabled">'
+            );
+        
+        $menuItem .= get_lang( 'Show all tasks' )
+            . ( $maskEndedTasks ? '</a>' : '</span>' )
+            ;
+        
+        $taskListMenu[] = $menuItem;
+            
+        // Hide ended tasks ( when all tasks are showed )
+        $menuItem = ( !$maskEndedTasks 
+            ? '<a href="' . $_SERVER['PHP_SELF'] . '?maskEndedTasks=true" '
+                . 'class="claroCmd">'
+            : '<span class="claroCmdDisabled">'
+            );
+        
+        $menuItem .= get_lang( 'Hide ended tasks' )
+            . ( !$maskEndedTasks ? '</a>' : '</span>' )
+            ;
+        
+        $taskListMenu[] = $menuItem;
+            
+        echo '<p>'
+        .    claro_html_menu_horizontal( $taskListMenu )
+        .    '</p>'
+        ;  
+    } 
+    
+    // Display of the task list
+    echo '<table class="claroTable emphaseLine" width="100%" ' 
     .    'summary="' . get_lang('Task list') . '">' 
     
     .    '<thead>' 
     .    '<tr class="headerX">' 
-    .    '<th>' . get_lang("Priority") . '</th>' 
+    //.    '<th>' . get_lang("Priority") . '</th>' 
+    .    '<th>&nbsp;</th>' 
     .    '<th>' . get_lang("Task") . '</th>' 
     .    '<th>' . get_lang("Due date") . '</th>'
     .    '<th>' . get_lang("Start date") . '</th>' 
@@ -590,25 +704,43 @@ if ( $dispList )
 		foreach ($listArray as $tsk)
 		{
 			echo '<tr' . ( $tsk['visible'] ? '' : ' class="invisible"' ) . '>' 
+            
             // priority
             .    '<td class="' . $priorityStyle[$tsk['priority']] . '">' 
-            .    $priorityName[$tsk['priority']] 
-            .    '</td>' 
+            ;
+            
+            if ( 0 == $tsk['priority'] )
+            {
+            	echo $priorityName[$tsk['priority']];
+            }
+            else
+            {
+                echo '<img ' 
+                .    'src="' . get_icon( $priorityIcon[$tsk['priority']] ) . '" '
+                .    'alt="' . $priorityName[$tsk['priority']] . '" border="0"' 
+                .    '> '
+                ;   
+            }
+            
+            echo '</td>' 
             
             // title
             .    '<td>' 
             .    '<a href="' . $_SERVER['PHP_SELF'] 
             .    '?cmd=showTask&amp;id=' . (int)$tsk['id'] . '">' 
+            .    '<img src="' . get_icon( 'enter' ) . '" '
+            .    'alt="Enter" border="0"> '    
             .    htmlspecialchars($tsk['title']) 
             .    '</a>' 
             .    '</td>' 
             ;
             
             // due date
-            if ( $tsk['dueDate'] != '0000-00-00 00:00:00' 
+            if ( '0000-00-00 00:00:00' != $tsk['dueDate']
                 && time() >= strtotime($tsk['dueDate'])
-                && ( $tsk['endDate'] == '0000-00-00 00:00:00' 
+                && ( '0000-00-00 00:00:00' == $tsk['endDate']  
                     || time() < strtotime($tsk['endDate']) ) 
+                && 100 != $tsk['progress']
                )
             {
                 echo '<td class="dueDateExceeded">';
@@ -638,7 +770,7 @@ if ( $dispList )
             // end date 
             if ( $tsk['endDate'] != '0000-00-00 00:00:00'
                 && time() >= strtotime($tsk['endDate']) )
-            {
+            {   
                 echo '<td class="taskEnded">';
             }
             else
@@ -651,13 +783,26 @@ if ( $dispList )
                      : claro_html_localised_date( get_locale('dateTimeFormatShort')
                          , strtotime($tsk['endDate']) ) 
                  )
-            .    '</td>'  
+            .    '</td>'
+            ;  
             
             // progress
-            //.  '<td class="' . $progressStyle[$tsk['progress']] . '">' 
-            .    '<td>'
-            //.  $progressValue[$tsk['progress']] 
-            .    ( is_null( $tsk['progress'] ) ? '-' : $tsk['progress'] . ' %' )
+                //.  '<td class="' . $progressStyle[$tsk['progress']] . '">' 
+                //.    '<td>'
+                //.  $progressValue[$tsk['progress']] 
+            if ( 100 == $tsk['progress']
+                && ! ( $tsk['endDate'] != '0000-00-00 00:00:00'
+                    && time() >= strtotime( $tsk['endDate'] ) )
+               ) // if progress = 100 but not if the EndDate got marked
+            {
+                echo '<td class="taskEnded">';
+            }
+            else
+            {
+                echo '<td>';
+            }
+            
+            echo ( is_null( $tsk['progress'] ) ? '-' : $tsk['progress'] . ' %' )
             .    '</td>'
             ;
             
@@ -731,7 +876,175 @@ if ( $dispList )
 
 if ( $dispTask )
 {
-	echo '<table class="claroTable emphaseLine" width="100%" ' 
+	// Construction and display of the task menu
+    if ( $isAllowedToManage )
+    {
+        $taskMenu = array();
+        
+        // modify
+        $taskMenu[] = '<a href="' . $_SERVER['PHP_SELF'] 
+            . '?cmd=rqEditTask&amp;id=' . (int)$task->getId() . '" ' 
+            . 'class="claroCmd">' 
+            . '<img src="' . get_icon( 'edit' ) . '" ' 
+            . 'alt="Modify" border="0">' 
+            . get_lang( 'Edit task' )
+            . '</a>'
+            ;
+            
+        // delete
+        $taskMenu[] = '<a href="' . $_SERVER['PHP_SELF'] 
+            . '?cmd=rqDeleteTask&amp;id=' . (int)$task->getId() . '" ' 
+            . 'class="claroCmd" ' 
+            . 'onclick="return confirmTaskDelete(\'' 
+            . (int)$task->getId()
+            . '\')"'
+            . '>' 
+            . '<img src="' . get_icon( 'delete' ) . '" ' 
+            . 'alt="Delete" border="0">' 
+            . get_lang( 'Delete task' )
+            . '</a>'                    
+            ;
+            
+        // visible        
+        $taskMenu[] = '<td align="center">' 
+            . '<a href="' . $_SERVER['PHP_SELF'] 
+            . '?cmd=' 
+            . ( $task->isVisible() ? 'mkInvisible' : 'mkVisible' )
+            . '&amp;id=' 
+            . (int)$task->getId() 
+            . '" ' 
+            . 'class="claroCmd">' 
+            . '<img src="' 
+            . get_icon( $task->isVisible() ? 'visible' : 'invisible' ) 
+            . '" ' 
+            . 'alt="Mask" border="0"' 
+            . '>'
+            . get_lang( $task->isVisible() ? 'Hide task' : 'Show task' )
+            . '</a>'     
+            ;
+            
+        echo '<p>'
+        .    claro_html_menu_horizontal( $taskMenu )
+        .    '</p>'
+        ;  
+    } 
+    
+    // Display of the task
+    echo '<table' . ( $task->isVisible() ? '' : ' class="invisible"' ) . '>'
+    
+    // title
+    .    '<tr valign="top">' 
+    .    '<td><b>' . get_lang("Title") . ' : </b></td>' 
+    .    '<td>' . htmlspecialchars($task->getTitle()) . '</td>' 
+    .    '</tr>' 
+    
+    // due date
+    .    '<tr valign="top">' 
+    .    '<td><b>' . get_lang("Due date") . ' : </b></td>'
+    ;
+     
+    if ( '0000-00-00 00:00:00' != $task->getDueDate() 
+        && time() >= strtotime($task->getDueDate())
+        && ( '0000-00-00 00:00:00' == $task->getEndDate() 
+            || time() < strtotime($task->getEndDate()) )
+        && 100 != $task->getProgress()
+       )
+    {
+        echo '<td class="dueDateExceeded">';
+    }
+    else
+    {
+        echo '<td>';
+    }
+    
+    echo ( $task->getDueDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatLong' )
+                 , strtotime( $task->getDueDate() ) ) 
+         ) 
+    .    '</td>'
+    .    '</tr>' 
+    
+    // start date
+    .    '<tr valign="top">' 
+    .    '<td><b>' . get_lang("Start date") . ' : </b></td>' 
+    .    '<td>' 
+    .    ( $task->getStartDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatLong' )
+                 , strtotime( $task->getStartDate() ) )
+         ) 
+    .    '</td>'
+    .    '</tr>' 
+    
+    // end date
+    .    '<tr valign="top">' 
+    .    '<td><b>' . get_lang("End Date") . ' : </b></td>' 
+    ;
+    
+    if ( $task->getEndDate() != '0000-00-00 00:00:00'
+        && time() >= strtotime($task->getEndDate()) )
+    {
+        echo '<td class="taskEnded">';
+    }
+    else
+    {
+        echo '<td>';
+    }
+    
+    echo ( $task->getEndDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatLong' )
+                 , strtotime( $task->getEndDate() ) ) 
+         )
+    .    '</td>'  
+    .    '</tr>' 
+    
+    // priority
+    .    '<tr valign="top">'
+    .    '<td><b>' . get_lang("Priority") . ' : </b></td>' 
+    .    '<td class="' . $priorityStyle[$task->getPriority()] . '">' 
+    .    $priorityName[$task->getPriority()] 
+    .    '</td>' 
+    .    '</tr>'
+    
+    // progress
+    .    '<tr valign="top">' 
+    .    '<td><b>' . get_lang("Progress") . ' : </b></td>' 
+    ;
+    
+    if ( 100 == $task->getProgress()
+        && ! ( $task->getEndDate() != '0000-00-00 00:00:00'
+            && time() >= strtotime( $task->getEndDate() ) )
+       ) // if progress = 100 but not if the EndDate got marked
+    {
+        echo '<td class="taskEnded">';
+    }
+    else
+    {
+        echo '<td>';
+    }
+    
+    echo ( is_null( $task->getProgress() ) ? '-' : $task->getProgress() . ' %' )
+    .    '</td>'
+    .    '</tr>' 
+    
+    .    '</table>'
+    
+    // description
+    .    '<div class="taskDescription">' 
+    .    '<p' . ( $task->isVisible() ? '' : ' class="invisible"' ) . '>' 
+    .    '<b>' . get_lang("Description") . ' : </b>' 
+    .    '</p>' 
+    .    '<div class="taskDescriptionContent">' . $san->sanitize($task->getDescription()) . '</div>'
+    .    '</div>' 
+    ;
+    
+    
+    
+   
+    /*  // DISPLAY same as list
+    echo '<table class="claroTable emphaseLine" width="100%" ' 
     .    'summary="' . get_lang('Task list') . '">' 
     .    '<thead>' 
     .    '<tr class="headerX">' 
@@ -820,7 +1133,6 @@ if ( $dispTask )
     
     // progress
     .    '<td>'
-    //. var_export($task->getProgress(),true)
     .    ( is_null( $task->getProgress() ) ? '-' : $task->getProgress() . ' %' )
     .    '</td>'
     ;
@@ -847,12 +1159,6 @@ if ( $dispTask )
         .    'alt="Delete" border="0">' 
         .    '</a>'                    
         .    '</td>' 
-        /*
-        // move
-        .    '<td align="center">' 
-        .    '<img src="' . get_icon( 'move' ) . '" ' 
-        .    'alt="Move" border="0"></td>' 
-        */
         // visible        
         .    '<td align="center">' 
         .    '<a href="' . $_SERVER['PHP_SELF'] 
@@ -892,7 +1198,97 @@ if ( $dispTask )
     .    '</tr>'
     .    '</tbody>'
     .    '</table>'
-    ;        
+    ;    
+    */
+    
+    
+    
+    /*  // DISPLAY l'un en dessous de l'autre ( gérer par css )
+    echo '<div class="task' . ( $task->isVisible() ? '' : ' invisible' ) . '">'
+    
+    // title
+    .    '<h3>' . get_lang("Task") . '</h3>'
+    .    '<div class="item">' 
+    .    htmlspecialchars($task->getTitle())
+    .    '</div>' 
+    
+    // due date 
+    .    '<h3>' . get_lang("Due date") . '</h3>' 
+    ;
+    
+    if ( $task->getDueDate() != '0000-00-00 00:00:00'
+        && time() >= strtotime($task->getDueDate())
+        && ( $task->getEndDate() == '0000-00-00 00:00:00' 
+            || time() < strtotime($task->getEndDate()) )
+       )
+    {
+        echo '<div class="dueDateExceeded item">';
+    }
+    else
+    {
+        echo '<div class="item">';
+    }
+    
+    echo ( $task->getDueDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatShort' )
+                 , strtotime( $task->getDueDate() ) ) 
+         ) 
+    .    '</div>'
+    
+    // start date
+    .    '<h3>' . get_lang("Start date") . '</h3>' 
+    .    '<div class="item">' 
+    .    ( $task->getStartDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatShort' )
+                 , strtotime( $task->getStartDate() ) )
+         ) 
+    .    '</div>'    
+    
+    // end date 
+    .    '<h3>' . get_lang("End date") . '</h3>' 
+    ;
+    
+    if ( $task->getEndDate() != '0000-00-00 00:00:00'
+        && time() >= strtotime($task->getEndDate()) )
+    {
+        echo '<div class="taskEnded item">';
+    }
+    else
+    {
+        echo '<div  class="item">';
+    }
+    
+    echo ( $task->getEndDate() == '0000-00-00 00:00:00' 
+             ? '-' 
+             : claro_html_localised_date( get_locale( 'dateTimeFormatShort' )
+                 , strtotime( $task->getEndDate() ) ) 
+         )
+    .    '</div>'  
+    
+    // priority
+    .    '<h3>' . get_lang("Priority") . '</h3>'
+    .    '<div class="' . $priorityStyle[$task->getPriority()] . ' item">' 
+    .    $priorityName[$task->getPriority()] 
+    .    '</div>' 
+    
+    // progress
+    .    '<h3>' . get_lang("Progress") . '</h3>'
+    .    '<div class="item">'
+    .    ( is_null( $task->getProgress() ) ? '-' : $task->getProgress() . ' %' )
+    .    '</div>'
+    
+    // description
+    .    '<h3>' . get_lang("Task description") . '</h3>'
+    .    '<div>' 
+    .    $san->sanitize($task->getDescription()) 
+    .    '</div>'
+    
+    .    '</div>'
+    ;
+    */
+       
 }
 
 
@@ -920,11 +1316,6 @@ if ( $dispForm )
     .    ( $task->getDueDate() != '0000-00-00 00:00:00' ? ' checked="checked"' : '' ) . ' />' 
     .    get_lang('Use due date') 
     .    '<br />'
-    /*.    '</td>'
-    .    '</tr>'
-    .    '<tr>'
-    .    '<td>&nbsp;</td>'
-    .    '<td>' */
     .    claro_html_date_form( 'dueDateDay', 'dueDateMonth', 'dueDateYear'
              , $task->getDueDate() != '0000-00-00 00:00:00' ? strtotime( $task->getDueDate() ) : time(), 'long' ) . ' '
     .    claro_html_time_form( 'dueDateHour','dueDateMinute'
@@ -942,11 +1333,6 @@ if ( $dispForm )
     .    ( $task->getStartDate() != '0000-00-00 00:00:00' ? ' checked="checked"' : '' ) . ' />' 
     .    get_lang('Use start date') 
     .    '<br />'
-    /*.  '</td>'
-    .    '</tr>'
-    .    '<tr>'
-    .    '<td>&nbsp;</td>'
-    .    '<td>' */
     .    claro_html_date_form( 'startDateDay', 'startDateMonth', 'startDateYear'
              , $task->getStartDate() != '0000-00-00 00:00:00' ? strtotime( $task->getStartDate() ) : time(), 'long' ) . ' '
     .    claro_html_time_form( 'startDateHour','startDateMinute'
@@ -967,11 +1353,6 @@ if ( $dispForm )
         .    ( $task->getEndDate() != '0000-00-00 00:00:00' ? ' checked="checked"' : '' ) . ' />'  
         .    get_lang('Use end date') 
         .    '<br />'
-        /*.    '</td>'
-        .    '</tr>'
-        .    '<tr>'
-        .    '<td>&nbsp;</td>'
-        .    '<td>' */
         .    claro_html_date_form( 'endDateDay', 'endDateMonth', 'endDateYear'
                  , $task->getEndDate() != '0000-00-00 00:00:00' ? strtotime( $task->getEndDate() ) : time(), 'long' ) . ' '
         .    claro_html_time_form( 'endDateHour','endDateMinute'
@@ -1067,8 +1448,7 @@ if ( $dispConfirm )
         , array( '%title%' => $san->sanitize($task->getTitle()) ) )
         ;	
     
-    echo '<p>' 
-    //.  '<font color="#cc0000"></font></p><p>' 
+    echo '<p>'  
     .    '<font color="#cc0000">' 
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeleteTask">Oui</a>' 
     .    '&nbsp;|&nbsp;' 
@@ -1077,8 +1457,6 @@ if ( $dispConfirm )
     .    '</p>';
 } 
 
-
-//} // end of the 'fatalError' condition
 
 
 require_once get_path('includePath') . '/claro_init_footer.inc.php';

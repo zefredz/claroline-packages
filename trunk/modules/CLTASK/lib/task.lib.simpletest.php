@@ -3,12 +3,12 @@
 /**
  * CLAROLINE
  *
- * TEST Task lib
+ * TEST Task library
  *
  * @version version 0.1 $Revision$
  * @copyright 2001 - 2007 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- * @author Tanguy Delooz <tdelooz32@hotmail.com>
+ * @author Tanguy Delooz <tdelooz@gmail.com>
  *
  * @package
  *
@@ -574,6 +574,15 @@ class TaskListTestCase extends TaskLibTestCase
     	$taskList = &new TaskList();    
     }
     
+    /*function setUp()
+    {
+    	parent::setUp();
+    }
+    
+    function tearDown()
+    {
+    	
+    }*/    
     
     function testLoadAll()
     {
@@ -586,6 +595,7 @@ class TaskListTestCase extends TaskLibTestCase
         
         $this->assertTrue( ( is_array($list) && count($list) == 0 ), 
             'No tasks in DB. Must return empty array.' );
+        
         
         // TEST ALL TASKS ARE LOADED FROM DB
         
@@ -644,6 +654,8 @@ class TaskListTestCase extends TaskLibTestCase
         */
         
         
+        // TEST $maskInvisibleTasks PARAMETER
+        
         // load the ONLY the VISIBLE tasks with taskList
         $list = $taskList->loadAll( true );
         
@@ -664,7 +676,81 @@ class TaskListTestCase extends TaskLibTestCase
             'Two tasks in DB, but one visible. Must return an array with one row.');
             
         $this->assertTaskIndenticalInDB( $task1, $list[0] );
-        $this->assertTaskIndenticalInDB( $task2, $list[1] );             
+        $this->assertTaskIndenticalInDB( $task2, $list[1] ); 
+        
+    }
+    
+    function testLoadNotEndedTest()
+    {       
+        $taskList = &new TaskList();
+        // TEST $maskEndedTasks PARAMETER
+                
+        // need 5 tasks in db : 3 different 'end dates'
+        // 1) no 'end date'
+        // 2) an 'end date' that is not exceeded yet
+        // 3) an 'end date' that is exceeded
+        // 4) no 'end date' but progress at 100
+        // 5) an 'end date' that is not exceeded yet but progress at 100
+        
+        $timestamp_yesterday = time() - 3600 * 24;
+        $timestamp_today = time();
+        $timestamp_tomorrow = time() + 3600 * 24;
+        
+        $endDate1 = '0000-00-00 00:00:00';
+        $endDate2 = date( 'Y-m-d H:i:s', $timestamp_yesterday );
+        $endDate3 = date( 'Y-m-d H:i:s', $timestamp_tomorrow );
+        $endDate4 = '0000-00-00 00:00:00';
+        $endDate5 = date( 'Y-m-d H:i:s', $timestamp_tomorrow );
+        
+        $task1 =& new Task();
+        $task2 =& new Task();
+        $task3 =& new Task();
+        $task4 =& new Task();
+        $task5 =& new Task();
+        
+        $task1->setTitle( 'empty' );
+        $task2->setTitle( 'yesterday' );
+        $task3->setTitle( 'tomorrow' );
+        $task4->setTitle( 'noEndDate but 100%' );
+        $task5->setTitle( 'EndDateTomorrow but 100%' );
+        
+        $task1->setEndDate( $endDate1 );
+        $task2->setEndDate( $endDate2 );
+        $task3->setEndDate( $endDate3 );
+        $task4->setEndDate( $endDate4 );
+        $task5->setEndDate( $endDate5 );
+        
+        $task4->setProgress( 100 );
+        $task5->setProgress( 100 );
+        
+        $task1->save();
+        $task2->save();
+        $task3->save();
+        $task4->save();
+        $task5->save();
+        
+        // loadAll(false, false) : show invisible and show ended tasks
+        $list = $taskList->loadAll( false, false );  
+             
+        $this->assertTrue(is_array($list), 'Task list must be an array');       
+        $this->assertTrue((is_array($list) && count($list) == 5), 
+            'Must return an array with 5 rows.');
+            
+        $this->assertTaskIndenticalInDB( $task1, $list[0] );
+        $this->assertTaskIndenticalInDB( $task2, $list[1] ); 
+        $this->assertTaskIndenticalInDB( $task3, $list[2] ); 
+        $this->assertTaskIndenticalInDB( $task4, $list[3] ); 
+        $this->assertTaskIndenticalInDB( $task5, $list[4] );   
+        
+        // loadAll(false, true) : show invisible but hide ended tasks
+        $list = $taskList->loadAll( false, true );
+        
+        $this->assertTrue(is_array($list), 'Task list must be an array');
+        $this->assertTrue((is_array($list) && count($list) == 2), 
+            'Must return an array with 2 rows.');
+            
+        $this->assertTaskIndenticalInDB( $task1, $list[0] );
+        $this->assertTaskIndenticalInDB( $task3, $list[1] );             
     }
      
 } // End of class TaskListTestCase

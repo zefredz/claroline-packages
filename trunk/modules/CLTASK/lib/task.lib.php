@@ -8,14 +8,14 @@ if ( count( get_included_files() ) == 1 )
 /**
  * CLAROLINE
  *
- * language library
- * contains function to manage l10n
+ * Task library
+ * Contains classes to manage the ToDoList
  *
  * @copyright 2001-2007 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @see http://www.claroline.net/wiki/CLUSR
  * @package CLTASK
- * @author Tanguy Delooz <tdelooz32@hotmail.com>
+ * @author Tanguy Delooz <tdelooz@gmail.com>
  *
  */
 
@@ -453,17 +453,31 @@ class TaskList
      *         The array contains or not the visible tasks according 
      *         to the parameter.
      */
-    function loadAll( $maskInvisibleTasks = false )
-    {
-    	$sql = "SELECT id, title, startDate, endDate, dueDate, "
-            ."description, priority, progress, visibility "
-            ."FROM `".$this->_tblNameList['cltask_tasks']."` "
-            ;
+    function loadAll( $maskInvisibleTasks = false, $maskEndedTask = false )
+    {        
+        $whereClauses = array();
         
         if ( $maskInvisibleTasks )
         {
-        	$sql .= " WHERE visibility = 'SHOW'";
+        	$whereClauses[] = "visibility = 'SHOW'";
         }
+        
+        if ( $maskEndedTask )
+        {
+        	$whereClauses[] = "( ( ISNULL(progress) OR progress < 100 ) " 
+                . "AND ( endDate = '0000-00-00 00:00:00' "
+                . "OR endDate > NOW() ) )"
+                ;
+        }
+        
+        $where = !empty($whereClauses) ? " WHERE " . implode( " AND ", $whereClauses ) . " " : "";
+        
+        $sql = "SELECT id, title, startDate, endDate, dueDate, "
+            ."description, priority, progress, visibility "
+            ."FROM `".$this->_tblNameList['cltask_tasks']."` "
+            . $where
+            . "ORDER BY id ASC"
+            ;
             
         if ( false === ( $res = claro_sql_query_fetch_all_rows($sql) ) )
         {
