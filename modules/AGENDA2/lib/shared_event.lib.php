@@ -1,7 +1,22 @@
 <?php // $Id$
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
- * get list of groups where the user is registred in current course
+ * CLAROLINE
+ *				
+ *
+ * @version 1.8 $Revision$
+ *
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ *
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ *
+ * @package CLAG2
+ *
+ * @author Marc Lavergne <marc86.lavergne@gmail.com>
+ */
+ 
+/**
+ * get list of groups where the user is registered in current course
  *
  * @param integer   $user_id   		id of the current user
  * @param string 	$bl_groupUser   name of this course group table
@@ -28,14 +43,14 @@ function get_user_group_list($user_id, $tbl_groupUser)
  */
 function get_user_course_list($tbl_user,$tbl_courseUser,$course_id)
 {
-	$sql = "SELECT `u`.`nom`     AS `lastName`,
-				  `u`.`prenom`  AS `firstName`,
-				  `u`.`user_id` AS `uid`
-			FROM `" . $tbl_user .     "` AS `u`
-					, `" . $tbl_courseUser."` AS `cu`
-				WHERE `cu`.`code_cours` = '" . addslashes($course_id) . "'
-				AND `cu`.`user_id` = `u`.`user_id`
-				ORDER BY `u`.`nom`, `u`.`prenom`";
+	$sql = "SELECT  `u`.`nom`     AS `lastName`,
+                    `u`.`prenom`  AS `firstName`,
+                    `u`.`user_id` AS `uid`
+            FROM `" . $tbl_user .     "` AS `u`
+                , `" . $tbl_courseUser."` AS `cu`
+            WHERE `cu`.`code_cours` = '" . addslashes($course_id) . "'
+                AND `cu`.`user_id` = `u`.`user_id`
+            ORDER BY `u`.`nom`, `u`.`prenom`";
 	
 	return claro_sql_query_fetch_all($sql);
 }
@@ -44,18 +59,18 @@ function get_user_course_list($tbl_user,$tbl_courseUser,$course_id)
 /**
  * get list of groups in a course
  *
- * @param array   	$tbl_groupUser  	table of group users in a course
- * @param array   	$tbl_group 		table of groups in a course
+ * @param array   	$tbl_groupUser   table of group users in a course
+ * @param array   	$tbl_group       table of groups in a course
  * @author Marc Lavergne
  * @return (id, name, userNB) 
  */
 function get_group_course_list($tbl_groupUser,$tbl_group)
 {
-	$sql = "SELECT `g`.`id`,
-				   `g`.`name`,
-					COUNT(`gu`.`id`) AS `userNb`
+	$sql = "SELECT  `g`.`id`,
+				    `g`.`name`,
+					 COUNT(`gu`.`id`) AS `userNb`
 			FROM `" . $tbl_group . "` AS `g` LEFT JOIN `" . $tbl_groupUser . "` AS `gu`
-			ON `g`.`id` = `gu`.`team`
+			    ON `g`.`id` = `gu`.`team`
 			GROUP BY `g`.`id`";
 	
 	return claro_sql_query_fetch_all($sql);
@@ -65,16 +80,17 @@ function get_group_course_list($tbl_groupUser,$tbl_group)
 /**
  * add a shared item
  *
- * @param string   	$course_id  	id of the cours
+ * @param string   	$course_id  	id of the course
  * @param integer  	$author_id 		id of the author
  * @param array   	$user_idlist	list of selected users
  * @param array   	$group_idlist	list of selected groups
  * @param string   	$title 			title of the event
- * @param string   	$description 	dscription of the event
+ * @param string   	$description 	description of the event
  * @param timestamp	$start_date		start date
  * @param timestamp	$end_date		end date
  * @param string	$visibility		visibility
  * @author Marc Lavergne
+ * @return result of add query 
  */
 function shared_add_item($course_id, $author_id, $user_idlist, $group_idlist, $title='', $description='', $start_date=NULL, $end_date=NULL, $visibility='SHOW' )
 {
@@ -86,13 +102,13 @@ function shared_add_item($course_id, $author_id, $user_idlist, $group_idlist, $t
 	$formated_end_day   = date("Y-m-d",$end_date);
 	$formated_end_hour   = date("H:i:s",$end_date);
 
-    $tbl = get_conf('mainDbName') . '`.`' . get_conf('mainTblPrefix') . 'event';
-    $sql = "INSERT INTO `" . $tbl . "`
-        SET title   	 = '" . addslashes(trim($title)) . "',
-            description  = '" . addslashes(trim($description)) . "',
-            start_date   = '" . $formated_start_day . ' ' . $formated_start_hour . "',
-            end_date     = '" . $formated_end_day . ' ' . $formated_end_hour . "',
-            author_id    = '" . $author_id . "'";
+    $tbl = get_conf('mainTblPrefix') . 'event';
+    $sql = "INSERT INTO " . $tbl . "
+          SET title   	 = '" . addslashes(trim($title)) . "',
+              description  = '" . addslashes(trim($description)) . "',
+              start_date   = '" . $formated_start_day . ' ' . $formated_start_hour . "',
+              end_date     = '" . $formated_end_day . ' ' . $formated_end_hour . "',
+              author_id    = '" . $author_id . "'";
 	$event_id = claro_sql_query_insert_id($sql);
 	if ($event_id == false)$result[] = $event_id;
 
@@ -100,12 +116,12 @@ function shared_add_item($course_id, $author_id, $user_idlist, $group_idlist, $t
 	{
 		foreach ($user_idlist as $this_user_id)
 		{
-			$tbl = get_conf('mainDbName') . '`.`' . get_conf('mainTblPrefix') . 'rel_event_recipient';
-			$sql = "INSERT INTO `" . $tbl . "`
-				SET user_id ='" . (int) $this_user_id . "',
-					event_id='" . (int) $event_id . "',
-					course_id= '" . $course_id . "',
-					visibility	= '" . ($visibility=='HIDE'?'HIDE':'SHOW') . "'"; 
+			$tbl = get_conf('mainTblPrefix') . 'rel_event_recipient';
+			$sql = "INSERT INTO " . $tbl . "
+      				SET user_id ='" . (int) $this_user_id . "',
+      					event_id='" . (int) $event_id . "',
+      					course_id= '" . $course_id . "',
+      					visibility	= '" . ($visibility=='HIDE'?'HIDE':'SHOW') . "'"; 
 			$result[] = claro_sql_query_insert_id($sql);
 		}
 	}
@@ -113,12 +129,12 @@ function shared_add_item($course_id, $author_id, $user_idlist, $group_idlist, $t
 	{
 		foreach ($group_idlist as $this_group_id)
 		{
-			$tbl = get_conf('mainDbName') . '`.`' . get_conf('mainTblPrefix') . 'rel_event_recipient';
-			$sql = "INSERT INTO `" . $tbl . "`
-				SET group_id ='" . (int) $this_group_id . "',
-					event_id='" . (int) $event_id . "',
-					course_id= '" . $course_id . "',
-					visibility	= '" . ($visibility=='HIDE'?'HIDE':'SHOW') . "'"; 
+			$tbl = get_conf('mainTblPrefix') . 'rel_event_recipient';
+			$sql = "INSERT INTO " . $tbl . "
+      				SET group_id ='" . (int) $this_group_id . "',
+      					event_id='" . (int) $event_id . "',
+      					course_id= '" . $course_id . "',
+      					visibility	= '" . ($visibility=='HIDE'?'HIDE':'SHOW') . "'"; 
 			$result[] = claro_sql_query_insert_id($sql);
 		}
 	}
@@ -142,11 +158,10 @@ function shared_add_item($course_id, $author_id, $user_idlist, $group_idlist, $t
  */
 function get_shared_group_list($event_id)
 {
-	$tbl = get_conf('mainDbName') . '.' . get_conf('mainTblPrefix') . 'rel_event_recipient';
-
-	$sql = "SELECT ". get_conf('mainTblPrefix') . "rel_event_recipient.group_id AS group_id
+	$tbl = get_conf('mainTblPrefix') . 'rel_event_recipient';
+	$sql = "SELECT group_id
 			FROM " . $tbl . "
-			WHERE ". get_conf('mainTblPrefix') . "rel_event_recipient.event_id = $event_id";
+			WHERE event_id = $event_id";
 	return claro_sql_query_fetch_all($sql);
 }
 
@@ -160,20 +175,20 @@ function get_shared_group_list($event_id)
  */
 function get_shared_user_list($event_id)
 {
-	$tbl = get_conf('mainDbName') . '.' . get_conf('mainTblPrefix') . 'rel_event_recipient';
-	$sql = "SELECT ". get_conf('mainTblPrefix') . "rel_event_recipient.user_id AS user_id
+	$tbl = get_conf('mainTblPrefix') . 'rel_event_recipient';
+	$sql = "SELECT user_id AS user_id
 			FROM " . $tbl . "
-			WHERE ". get_conf('mainTblPrefix') . "rel_event_recipient.event_id = $event_id";
+			WHERE event_id = $event_id";
 	return claro_sql_query_fetch_all($sql);
 }
 
 
 /**
- * identifie selected group
+ * identifies selected group
  *
  * @param array   	$tbl_groupUser  	table of group users in a course
  * @param array   	$tbl_group 			table of groups in a course
- * @param array   	$group_id_list 		table of selectd groups
+ * @param array   	$group_id_list 		table of selected groups
  * @author Marc Lavergne
  * @return (id, name, userNB) 
  */
@@ -184,9 +199,9 @@ function get_selected_group_list($tbl_groupUser,$tbl_group,$group_id_list)
 	{
 		if ($this_group_id['group_id']!=NULL)
 		{
-			$sql = "SELECT g.id,
-						   g.name,
-							COUNT(gu.id) AS userNb
+			$sql = "SELECT  g.id,
+                            g.name,
+                            COUNT(gu.id) AS userNb
 					FROM " . $tbl_group . " AS g LEFT JOIN " . $tbl_groupUser . " AS gu
 					ON g.id = gu.team
 					WHERE g.id = ". $this_group_id['group_id']."
@@ -199,12 +214,12 @@ function get_selected_group_list($tbl_groupUser,$tbl_group,$group_id_list)
 
 
 /**
- * identifie selected users
+ * identifies selected users
  *
  * @param array   	$tbl_user  			table of users
  * @param array   	$tbl_courseUser		table of users in a course
  * @param array   	$course_id			id of the current course
- * @param array   	$group_id_list 		table of selectd groups
+ * @param array   	$group_id_list 		table of selected groups
  * @author Marc Lavergne
  * @return (lastName, firstName, uid) of the course users
  */
