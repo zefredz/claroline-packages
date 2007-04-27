@@ -13,24 +13,78 @@
  * @package CLDATE
  *
  * @author Claro Team <cvs@claroline.net>
+ * @author Michel Carbone <michel_c12@yahoo.fr>
  */
 
 require_once 'clarodate.lib.php';
 
 class claroEvent
 {
+    /**
+    * Contructor of an event
+    *
+    * @param integer $startDate : timestamp
+    * @param string $title
+    * @param string $comment
+    * @param integer $endDate : timestamp
+    * @param string $author
+    * @param string $url
+    */
     function claroEvent($startDate, $title, $comment = null, $endDate = null, $author = null, $url = null)
     {
         $this->startDate = $startDate;
-        $this->endDate   = $endDate;
         $this->title      = $title;
         $this->comment   = $comment;
-        $this->url = $url;
+        $this->endDate   = $endDate;
         $this->author = $author;
+        $this->url = $url;
+
+    }
+    
+    /**
+    * @return integer : the start date of an event
+    */
+    function getStartDate()
+    {
+        return $this->startDate;
+    }
+    
+        
+    /**
+    * @return string :the title of an event
+    */
+    function getTitle()
+    {
+        return $this->title;
+    }
+
+
+    /**
+    * @return string : the comment of an event
+    */
+    function getComment()
+    {
+        return $this->comment;
+    }
+    
+    /**
+    * @return integer : the end date of an event
+    */
+    function getEndDate()
+    {
+        return $this->endDate;
     }
 
     /**
-    * return the url of an event
+    * @return integer : the ID of the author of an event
+    */
+    function getAuthor()
+    {
+        return $this->author;
+    }
+    
+    /**
+    * @return string : the url of an event
     */
     function getUrl()
     {
@@ -38,31 +92,8 @@ class claroEvent
     }
 
     /**
-    * return the start date of an event
-    */
-    function getStartDate()
-    {
-        return $this->startDate;
-    }
-    
-    /**
-    * return the title of an event
-    */
-    function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-    * return the comment of an event
-    */
-    function getComment()
-    {
-        return $this->comment;
-    }
-
-    /**
     * create an abstract of an event in max 20 caracters
+    * @return string : the abstract
     */
     function getAbstract()
     {
@@ -83,14 +114,6 @@ class claroEvent
         return $abstract;
     }
 
-    /**
-    * return the end date of an event
-    */
-    function getEndDate()
-    {
-        return $this->endDate;
-    }
-
     function sortList($eventList)
     {
         if(isset($eventList))
@@ -104,8 +127,15 @@ class claroEvent
         return $eventList;
     }
 
+    
+    
     /**
     * filter a list of event by the date with a precision define in sec, min, hour, day
+    * @param array $eventList 
+    * @param integer $startDate : timestamp
+    * @param integer $endDate : timestamp
+    * @param string $precision : define the precision for filter the list of event
+    * @return array : array filtered of the eventlist
     */
     function filterListByDate($eventList, $startDate, $endDate, $precision = 'SEC')
     {

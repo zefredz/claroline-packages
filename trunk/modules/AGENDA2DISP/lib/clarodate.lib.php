@@ -13,6 +13,7 @@
  * @package CLDATE
  *
  * @author Claro Team <cvs@claroline.net>
+ * @author Michel Carbone <michel_c12@yahoo.fr>
  */
 
 
@@ -38,6 +39,8 @@ class claroDate
 
     /**
     * Constructor of a date
+    * @param integer date : timestamp
+    * @param string dateFormat : date format
     */
     function claroDate($date = null, $dateFormat = null)
     {
@@ -47,9 +50,6 @@ class claroDate
         else                           $this->timeStamp = strtotime($date);
     }
 
-    /**
-    * calculate time offset from GMT time
-    */
     function clarodate_set()
     {
         $currentDate      = mktime();
@@ -61,7 +61,10 @@ class claroDate
         $defaultMonthView = date("n", mktime());
         $defaultYearView  = date("Y", mktime());
     }
-
+    
+    /**
+    * calculate time offset from GMT time
+    */
     function timeZoneOffset($setTimeZone = null)
     {
         static $timeZone = 0;
@@ -120,7 +123,7 @@ class claroDate
     }
 
     /**
-    * return the date in the format yyyy-mm-dd hh:mm:ss
+    * return the date in the format yyyy-mm-dd hh:mm:ss iff none specified
     */
     function getFormatedDate($dateFormat = null)
     {
@@ -129,6 +132,11 @@ class claroDate
         return date($dateFormat, $this->timeStamp);
     }
     
+    /**
+    * @param integer time : timestamp
+    * @param string dateFormat
+    * @return string formated date
+    */
     function getFormatedDateFromTimeStamp($time, $dateFormat = null)
     {
         if ( is_null($dateFormat) ) $dateFormat = 'Y M d';
@@ -153,7 +161,8 @@ class claroDate
     }
 
     /**
-    * return seconds in a int
+    * @param integer sec : integer of seconds to convert
+    * @return integer of number of seconds
     */
     function secToSec($sec)
     {
@@ -168,6 +177,10 @@ class claroDate
         return (int) strftime( '%M' , $this->timeStamp);
     }
 
+    /**
+    * @param integer $min : minutes to convert to seconds
+    * @return integer : number of seconds
+    */
     function minToSec($min)
     {
         return (int) $min*60;
@@ -182,7 +195,8 @@ class claroDate
     }
 
     /**
-    * return the number of hours in seconds
+    * @param integer $hour : integer hours to convert
+    * @return integer of the number of hours in seconds
     */
     function hourToSec($hour)
     {
@@ -209,18 +223,26 @@ class claroDate
         return $dayNameList[$this->getDayofWeek()];
     }
 
+    /**
+    * @param integer $timeStamp : integer hours to convert
+    * @return string : name of the day
+    */
     function getDayofWeekFromTimeStamp($timeStamp)
     {
         return strftime( '%a' , $timeStamp);
     }
     
+    /**
+    * @param integer $timeStamp : integer hours to convert
+    * @return integer : number between 1 and 7 corresponding to the day of the week
+    */
     function getNbrDayofWeekFromTimeStamp($timeStamp)
     {
         return clarodate::_dayNameToDayNum(clarodate::getDayofWeekFromTimeStamp($timeStamp));
     }
     
     /**
-    * return the number of the day
+    * @return the number of the day
     * 1 .. 28, 29, 30, 31
     */
     function getDayOfMonth()
@@ -244,7 +266,7 @@ class claroDate
     }
 
     /**
-    * return the current week of the year
+    * @return the current week of the year
     * 1 .. 52
     */
     function getWeekofYear()
@@ -252,6 +274,10 @@ class claroDate
         return (int) strftime( '%W' , $this->timeStamp);
     }
     
+    /**
+    * @param integer $time : integer hours to convert
+    * @return integer : number of the week in the year
+    */
     function getWeekofYearFromTimeStamp($time)
     {
         return (int) strftime( '%W' , $time);
@@ -268,8 +294,9 @@ class claroDate
 
 
     /**
-    * return the seconds as a decimal number from the time stamp sent in argument
-    **/
+    * @param integer time : timestamp
+    * @return integer the seconds as a decimal number from the time stamp sent in argument
+    */
     function getSecFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -277,8 +304,9 @@ class claroDate
     }
 
     /**
-    * return the minutes as a decimal number from the time stamp sent in argument
-    **/    
+    * @param integer time : timestamp
+    * @return integer the minutes as a decimal number from the time stamp sent in argument
+    */    
     function getMinFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -286,8 +314,9 @@ class claroDate
     }
     
     /**
-    * return the hours as a decimal number from the time stamp sent in argument
-    **/
+    * @param integer time : timestamp
+    * @return integer the hours as a decimal number from the time stamp sent in argument
+    */
     function getHourFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -295,8 +324,9 @@ class claroDate
     }
 
     /**
-    * return the day as a decimal number from the time stamp sent in argument
-    **/
+    * @param integer $time : timestamp
+    * @return integer the day as a decimal number from the time stamp sent in argument
+    */
     function getDayFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -304,8 +334,9 @@ class claroDate
     }
 
     /**
-    * return the month as a decimal number from the time stamp sent in argument
-    **/    
+    * @param integer $time : timestamp
+    * @return integer the month as a decimal number from the time stamp sent in argument
+    */    
     function getMonthFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -313,8 +344,9 @@ class claroDate
     }
 
     /**
-    * return the year as a decimal number from the time stamp sent in argument
-    **/
+    * @param integer $time : timestamp
+    * @return integer the year as a decimal number from the time stamp sent in argument
+    */
     function getYearFromTimeStamp($time)
     {
         $timeStamp=$time;
@@ -322,6 +354,12 @@ class claroDate
         return (int) strftime ('%Y' , $timeStamp);
     }
     
+    /**
+    * function that return the last day of the month
+    *
+    * @param integer $time
+    * @return integer number of the last dayof the month
+    */
     function getLastDayFromTimeStamp($time)
     {
         $Month = clarodate::getMonthFromTimeStamp($time);
@@ -330,6 +368,12 @@ class claroDate
         return (int)strftime("%d", $lastday);
     }
     
+    /**
+    * function that return the timestamp of the first of the month
+    *
+    * @param integer $time : time stamp of a date in the month
+    * @return integer : a time stamp
+    */
     function monthStartDateFromTimeStamp($time)
     {
         $refMonth = clarodate::getMonthFromTimeStamp($time);
@@ -338,6 +382,12 @@ class claroDate
 
     }
     
+    /**
+    * function that return the time stam of the day of the month of the date of the time stamp sent in argument
+    *
+    * @param integer $time : timestamp
+    * @return integer : timestamp
+    */
     function monthEndDateFromTimeStamp($time)
     {
         $refMonth = clarodate::getMonthFromTimeStamp($time);
@@ -391,8 +441,9 @@ class claroDate
 
     /**
     * function for switching from one month to the next or the preceding
-    * @param $timestamp : reference date time
-    * @param $offset : specifie if month switch is positive or negative
+    * @param integer timestamp : reference date time
+    * @param integer offset : specifie if month switch is positive or negative
+    * @return integer timestamp 
     */
     function month_switch($timestamp, $offset)
     {
@@ -400,12 +451,16 @@ class claroDate
             $timestamp=$timestamp+86400;
         else if(offset==-1)
             $timestamp=$timestamp-86400;
+        
+        return  $timestamp;
     }
 
     /**
     * set a new month in the date
+    *
     * @param $time date time in timestamp to modify
-    * @param $offset number of second of the offset
+    * @param $offset number of second of offset
+    * @return integer timestamp
     */
     function setTimeStampOffset($time, $offset)
     {
@@ -430,6 +485,7 @@ class claroDate
     * tell if year is bisectile or not
     * return 1 if its a leap year
     * return nothing if not leap year
+    * @return boolean
     */
     function isLeapYear()
     {
@@ -573,6 +629,12 @@ class claroDate
                       $elmtList['year' ]);
     }
 
+    /**
+    * private function that convert short day name to a integer
+    *
+    * @param string $string : date name in short format
+    * @return integer
+    */
     function _dayNameToDayNum($string)
     {
         $string = strtolower($string);
@@ -606,7 +668,9 @@ class claroDate
         return $dayNum;
     }
 
-
+    /**
+    * private function that return name of the days month in short and long format
+    */
     function _dateNameList($listName, $list = null)
     {
         global $langDay_of_weekNames;
