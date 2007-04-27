@@ -3,21 +3,32 @@
 }
 
 .priorityLow {
-	background-color: yellow;
+	/*background-color: yellow;*/
+		
 }
 
 .priorityMedium {
-	background-color: orange;
+	/*background-color: orange;*/
 }
 
 .priorityHigh {
-	background-color: red;
+	/*background-color: red;*/
 }
 
-.dueDateExceeded {
-	background-color: red;
+td.dueDateExceeded {
+	/*reddish*/
+	outline: 1px solid #993333;
+	background-color: #F1E3E3;
 }
 
-.taskEnded {
-	background-color: green;
+/* for endDate exceeded or progress = 100 */
+td.taskEnded {
+	/*greenish*/
+	outline: 1px solid #669933;
+	background-color: #EDF1E3;
+}
+
+div.taskDescriptionContent {
+	width: 60%;
+	border: 1px solid silver;
 }
