@@ -1,0 +1,23 @@
+<module>
+	<label>Sondage</label>
+	<name>Sondage</name>
+	<default_dock>campusHomePageRightMenu</default_dock>
+	<type>Applet</type>
+
+	<description>
+	</description>
+	<version>1.0</version>
+	<licence>GPL</licence>
+
+	<author>
+		<name>Marc Lavergne</name>
+		<email>marc86.lavergne@gmail.com</email>
+		<web>http://www.claroline.net</web>
+	</author>
+
+	<requirements>
+		<claroline>
+			<version>1.8</version>
+		</claroline>
+	</requirements>
+</module>
