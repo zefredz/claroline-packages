@@ -1,5 +1,22 @@
 <?php
-//Label du module
+/**
+ * CLAROLINE
+ *
+ * - For a Student ->  - View agenda Content and personal events
+ *                      - Update/delete his events personal events
+ * - For a Prof    -> - View agenda Content and personal events
+ *                    - Update/delete his events personal events
+ *
+ * @version 1.8 $Revision$
+ *
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ *
+ * @package CLAG2D
+ *
+ * @author Marc Lavergne <marc86.lavergne@gmail.com> Michel Carbone <michel_c12@yahoo.fr>
+ */
+//Module label
 $tlabelReq = 'CLAG2';
 
 // Initialisation du noyau claroline
@@ -11,23 +28,24 @@ require_once get_path('includePath') . '/lib/form.lib.php';
 require_once './lib/clarocalendar.lib.php';
 require_once './lib/claroevent.lib.php';
 require_once './lib/clarodate.lib.php';
+require_once get_path('clarolineRepositorySys') . '/linker/linker.inc.php';
 include_once claro_get_conf_repository().'CLAG2D.conf.php';
 
-// Code métier
+/*==============================================================================
+ Main Code
+===============================================================================*/
+
 $user_id   	= claro_get_current_user_id(); //find the user ID
 $nameTools 	= get_lang('My calendar');
 $eventList 	= Array();
-$today 		= date("Y-m-d"); 
 $display_form = FALSE;
 $dialogBox 	= '';
-
-/////
 $currentDate = mktime();
 
 $tbl_mdb_names  = claro_sql_get_main_tbl();
 $userCourseList = get_user_course_list($tbl_mdb_names );
 
-//////
+
 if ( isset($_REQUEST['refMonth'] ) )$refMonth = $_REQUEST['refMonth'];
 else 								$refMonth = clarodate::getMonthFromTimeStamp($currentDate);
 
@@ -56,6 +74,9 @@ else                               $update_repeat = 'this';
 
 if ( isset($_REQUEST['repeat']) ) $repeat = trim($_REQUEST['repeat']);
 else                             $repeat = 1;
+
+if ( isset($_REQUEST['repeat_type']) ) $repeat_type = trim($_REQUEST['repeat_type']);
+else                             $repeat_type = get_lang('Each week');
 
 if ( isset($_REQUEST['delete_item']) ) $delete_item = trim($_REQUEST['delete_item']);
 else                             $delete_item = 'this';
@@ -137,16 +158,17 @@ if (claro_is_user_authenticated())
 	--------------------------------------------------------------------------*/
 	if ( 'exuserAdd' == $cmd )
 	{
-		//date desting
+		//convert to timestamp
 		$start_date = mktime($_REQUEST['fhour'],$_REQUEST['fminute'],0,$_REQUEST['fmonth'],$_REQUEST['fday'],$_REQUEST['fyear']);
 		$end_date   = mktime($_REQUEST['ahour'],$_REQUEST['aminute'],0,$_REQUEST['amonth'],$_REQUEST['aday'],$_REQUEST['ayear']);
-		if ($end_date < $start_date)
+		
+		if ($end_date < $start_date)//date desting
 		{
 			$dialogBox .= '<p>' . get_lang('Invalid Dates') . '</p>' . "\n";
 		}
 		else
 		{
-			$entryId = myagenda_add_item($user_id,$title,$description, $start_date, $end_date, $repeat) ; //send data to the D
+			$entryId = myagenda_add_item($user_id,$title,$description, $start_date, $end_date, $repeat, $repeat_type) ; //send data to the D
 		}
 		if ( $entryId != false )
 		{
@@ -166,10 +188,11 @@ if (claro_is_user_authenticated())
 	
 	if ( 'exuserEdit' == $cmd )
 	{
+	    //convert to timestamp
 		$start_date = mktime($_REQUEST['fhour'],$_REQUEST['fminute'],0,$_REQUEST['fmonth'],$_REQUEST['fday'],$_REQUEST['fyear']);
 		$end_date   = mktime($_REQUEST['ahour'],$_REQUEST['aminute'],0,$_REQUEST['amonth'],$_REQUEST['aday'],$_REQUEST['ayear']);
 	
-		if ($end_date < $start_date)
+		if ($end_date < $start_date) //date desting
 		{
 			$dialogBox .= '<p>' . get_lang('Invalid Dates') . '</p>' . "\n";
 		}
@@ -208,20 +231,22 @@ if (claro_is_user_authenticated())
 	.    '</a>';
 	
 	
-		/*----------------------------------------------------------------------------
-		GET ALL THE CALENDAR DATA
-		----------------------------------------------------------------------------*/
+	/*----------------------------------------------------------------------------
+	GET ALL THE CALENDAR DATA
+	----------------------------------------------------------------------------*/
 	
-	$eventList = get_myagenda_items($user_id,$userCourseList);
-}
+	$eventList = get_myagenda_items($user_id,$userCourseList,$refMonth,$refDay,$refYear,$cmd);
+}// end of if is_user_authenticated
 
 
 
-/********************************************************************************************************************************************/
+/*==============================================================================
+ Display Code
+===============================================================================*/
 //Inclusion du header et du banner Claroline
 require_once get_path('includePath') . "/claro_init_header.inc.php";
 
-// Code d’affichage
+// Display
 echo claro_html_tool_title($nameTools);
 
 
@@ -229,99 +254,60 @@ echo claro_html_tool_title($nameTools);
     DISPLAY TYPE OF CALENDAR
 	----------------------------------------------------------------------------*/
 
-echo '<br /><a href="' . $_SERVER['PHP_SELF'] . '?cmd=monthview" >' . get_lang('Month view') . ' | </a>';
 echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=yearview" >' . get_lang('Year view') . ' | </a>';
+echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=monthview" >' . get_lang('Month view') . ' | </a>';
 echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=weekview" >' . get_lang('Week view') . ' | </a>';
 echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=dayview" >' . get_lang('Day view') . ' | </a>';
 echo '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=listview" >' . get_lang('List view') . '</a>';
-if (!empty($eventList))
-{
-	//display year view of the agenda
-	
-	if ( $cmd == 'yearview' )
-		{   
-		   // $offset = $refYear-$offset;
-		   // $refDate2 = time();
-			//$calendar->paint( new YearView($referenceDate, $eventList, $offset) );
-			YearView::yearViewDisplay($referenceDate, $eventList);
-		}
-		//else 
-			//{
-				//if($cmd == 'yearview')
-				//$calendar->paint( new YearView() );
-			//}
-	
-	/// display month view of the agenda
-	
-	if ( $cmd == 'monthview' )
-	{
-	   //** $refYear=clarodate::getYearFromTimeStamp($currentDate);
-	   //$offset='1';
-		//$referenceDate = $currentDate;
-	  // if( !isset($refMonth) && !isset($refYear) && !isset($referenceDate) )
-		//    {
-				//$referenceDate = mktime($refMonth,$refYear,-1);
-		  //  }
-	   // else //$referenceDate = mktime();
-		
-			//if($offset!=0){
-			//$defaultMonthView=$defaultMonthView+$offset;
-			//var_dump($referenceDate);
-		   //$referenceDate= clarodate::setMonthOffset($currentDate,$offset);  
-			//echo'hello  ';
-		  //  var_dump($referenceDate);
-			$offset = null;
-			if(isset($_REQUEST['refYear']) )
-			$refYear = $_REQUEST['refYear'];
-				else $refYear=null;
-			if(isset($_REQUEST['refMonth']) )
-			$refMonth = $_REQUEST['refMonth'];
-				else $refMonth=null;
-				
-			monthView::monthViewDisplay($referenceDate, $eventList,'LONG', 'monthView',$refMonth, $refYear);
-		//}
-	
-	   // $calendar->paint( new MonthView($referenceDate,$eventList) );
-	   // $calendar->paint( new MonthView($referenceDate,$eventList, 'LONG', 1) );
-	
-	}
-	
-	
-	/// display week view of the agenda
-	if ( $cmd=='weekview')
-		{
-		   weekView::weekViewDisplay($referenceDate, $eventList);
-		}
-	
-	
-	/// display day view of the agenda
-	if ( $cmd=='dayview')
-		{
-		   dayView::dayViewDisplay($referenceDate, $eventList);
-		}
-	
-	
-	/// display list of the events
-	if ( $cmd=='listview')
-		{
-		   listview::listViewDisplay($referenceDate, $eventList);
-		}
+
+//display year view of the agenda
+
+if ( $cmd == 'yearview' )
+{   
+	YearView::yearViewDisplay($referenceDate, $eventList);
 }
-else
+
+/// display month view of the agenda
+
+if ( $cmd == 'monthview' )
 {
-	$dialogBox .= get_lang('No event in the agenda');
+	monthView::monthViewDisplay($referenceDate, $eventList,'LONG', 'monthView',$refMonth, $refYear);		
 }
+
+
+/// display week view of the agenda
+if ( $cmd=='weekview')
+{
+	weekView::weekViewDisplay($referenceDate, $eventList);
+}
+
+
+/// display day view of the agenda
+if ( $cmd=='dayview')
+{
+	dayView::dayViewDisplay($referenceDate, $eventList);
+}
+
+
+/// display list of the events
+if ( $cmd=='listview')
+{
+	listview::listViewDisplay($referenceDate, $eventList);
+}
+
     /*------------------------------------------------------------------------
     DISPLAY DIALOGUE BOX 
     --------------------------------------------------------------------------*/
 
 if ($display_form)
 {	
+    if ($cmd=='rquserAdd') echo '<h3>'. get_lang('Add an event') .'</h3>';
+    if ($cmd=='rquserEdit') echo '<h3>'. get_lang('Edit an event') .'</h3>';
 	echo '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">'
-	.	 claro_form_relay_context()
+    .	 claro_form_relay_context()
     .    '<input type="hidden" name="cmd" value="' . $nextCommand . '" />'
     .    '<input type="hidden" name="id"  value="' . $editedEvent['id'] . '" />'
-	.	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'">' . "\n"
+    .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'">' . "\n"
     .    '<table>' . "\n"
     .    '<tr valign="top">' . "\n"
     .    '<td align="right">' . get_lang('Start date') . ' : '
@@ -343,10 +329,16 @@ if ($display_form)
 	if ($cmd != 'rquserEdit')
 	{
 		echo '<td align="right">'
-		.    '<label for="type">' . get_lang('Occurence') . '</label> : '
+		.    '<label for="repeat">' . get_lang('Occurence') . '</label> : '
 		.    '</td>' . "\n"
 		.    '<td>'
 		.    '<input type="text" name="repeat" id="repeat" size="20" maxlength="20" value="1" />'
+		.    '&nbsp;'
+		.	 '<select name="repeat_type">'
+		.	 '<option>'. get_lang('Each day') .'</option>'
+		.	 '<option SELECTED>'. get_lang('Each week') .'</option>'
+		.	 '<option>'. get_lang('Each month') .'</option>'
+		.	 '</select>'
 		.    '</td>' . "\n"
 		.    '</tr>' . "\n";
 	}
@@ -381,17 +373,19 @@ if ($display_form)
 		echo '<tr valign="top">' . "\n"
 		.    '<td align="right">' . "\n"
 		.    '<label for="update_repeat">' . "\n"
-		.    get_lang('This is a mutliple occurence event. Do you want to update all the similar events ?')
+		.    get_lang('This is a mutliple occurence event. What do you want to update ?')
 		.    ' : ' . "\n"
 		.    '</label>' . "\n"
 		.    '</td>' . "\n"
 		.    '<td>' . "\n"
-		. 	 get_lang('All') ."\n"
-		.	 '<input type="radio" name="update_repeat" value="all" >' ."\n"
+        .    '<label for="update_repeat_this">' . "\n"
 		. 	 get_lang('This') ."\n"
-		.	 '<input type="radio" name="update_repeat" value="this">' ."\n"
+		.	 '<input type="radio" name="update_repeat" id="update_repeat_this" value="this">' ."\n"
+	    .    '</label>' . "\n"
+	    .    '<label for="update_repeat_from_this">' . "\n"
 		. 	 get_lang('from this') ."\n"
-		.	 '<input type="radio" name="update_repeat" value="from_this" CHECKED>' ."\n"
+		.	 '<input type="radio" name="update_repeat" id="update_repeat_from_this" value="from_this" CHECKED>' ."\n"
+	    .    '</label>' . "\n"
 		.    '</td>' . "\n"
 		.    '</tr>' . "\n";
 	}
@@ -419,7 +413,7 @@ if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox); //dislay mess
 
 
 //CALENDAR OPTION
-if (get_conf('activate_personal')==TRUE)
+if (get_conf('activate_personal')==TRUE && $cmd!='rquserEdit' && $cmd!='rquserAdd' )
 {
 	echo '<p>' . claro_html_menu_horizontal($cmdList) . '</p>';
 }

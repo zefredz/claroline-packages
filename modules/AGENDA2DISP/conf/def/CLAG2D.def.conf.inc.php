@@ -14,7 +14,7 @@ array ( 'activate_personal'
 
 $conf_def_property_list['activate_personal'] =
 array ( 'label'       => 'Activate personal events function'
-      , 'description' => 'This function allows a loged user to create personal events'
+      , 'description' => 'This function allows a logged user to create personal events'
       , 'default'     => TRUE
       , 'type'        => 'boolean'
       , 'display'     => TRUE
