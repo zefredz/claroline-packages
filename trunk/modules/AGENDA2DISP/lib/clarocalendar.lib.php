@@ -110,9 +110,12 @@ class monthView
 
         $startDayCountDisplay = false;
         $dayNumber            = false;
-
+        
+        $nbrweekinmonth=0;
         while ($dayNumber <= $dayCountInMonth)
         {
+            $nbrweekinmonth++;
+           
             echo '<tr class="headerX" valign="top">';
    
             for ($i = 0; $i < 7; $i++)
@@ -151,8 +154,8 @@ class monthView
                     }
                     else
                     {
-                        $content = '<table><tr>';
-                        $content .= '<p><b>'.$dayNumber.'</b></p></tr>';
+                        $content = '<table class="jour"><tr style="valign:top">';
+                        $content .= '<br><b>'.$dayNumber.'</b></tr>';
                         if(isset($dayEventList)){
                              foreach($dayEventList as $thisEvent)
                              {
@@ -170,10 +173,15 @@ class monthView
                 {
                     $content = '&nbsp;';
                 }
-                echo '<td width="14%" valign="bottom">'. $content .'</td>';
+                echo '<td width="14%" valign="top">'. $content .'</td>';
             }
             echo '</tr>' . "\n";
         }
+        if ($nbrweekinmonth<6 && $_REQUEST['cmd']=='yearview')
+             for ($i = 0; $i < 7; $i++)
+                {
+            echo '<td width="14%" valign="top">'. '&nbsp;' .'</td>';
+                }
         echo '</table>'. "\n";
     }
 }
@@ -209,32 +217,32 @@ class YearView
             .'?refYear='.($refYear+1) . '&amp;cmd=yearview';
 
 
-            echo  '<table class="claroTable" border="0" >'. "\n"
+            echo  '<table class="claroTable" border="1">'. "\n"
             . '<tr>'  . "\n";
 
         
-            echo '<th class="superHeader" valign="top"><center>'
+            echo '<th class="superHeader" valign="top" width="40px"><center>'
             .    '<a href="' . $backwardsURL . '">&lt;&lt;</a>'
             .    '</center>'
             .    '</th>';
         
 
         echo '<th  class="superHeader" '
-            . ' valign="top"><center>' .$refYear.'</center></th>'. "\n";
+            . ' valign="top" width="808px"><center>' .$refYear.'</center></th>'. "\n";
        
 
                 
-            echo '<th class="superHeader" valign="top"><center>'
+            echo '<th class="superHeader" valign="top" width="40px"><center>'
             .    '<a href="' . $forewardsURL . '">&gt;&gt;</a>'
             .    '</center>'
             .    '</th>';
         
         
-        echo "</tr>"  . "\n";
+        echo "</tr></table>"  . "\n";
 
         for ($i=0; $i < 12; $i++)
         {
-            if ( $i%3 == 0 ) echo '<tr valign="top">' . "\n";
+            if ( $i%3 == 0 ) echo '<table><tr valign="top">' . "\n";
 
             $refMonthDate = new ClaroDate($refYear . '-' . ($i+1) . '-01');
             
