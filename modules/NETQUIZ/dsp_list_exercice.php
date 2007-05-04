@@ -38,16 +38,16 @@
     $output->append(claro_html_tool_title( get_lang('Netquiz') ) . "\n");	
 
 	// display
-/*
+
 if($is_allowedToAdmin == true) 
 {
-	*/
-
-	$output->append('<p><a class="claroCmd" href="javascript:openNetquiz(\''.dirname($_SERVER['PHP_SELF']).'/netquiz\', \''.claro_get_current_user_id().'\')"><img src="'.get_icon("info").'" alt="'.get_lang("info").'" title="'.get_lang("info").'" /> '.get_lang('Netquiz').'</a></p>');
 	
-	$output->append('<p><a class="claroCmd" href="index.php?fuseaction=netquiz"><img src="'.get_icon("info").'" alt="'.get_lang("info").'" title="'.get_lang("info").'" /> '.get_lang('Netquiz').'</a></p>');
-/*
-}*/
+
+	$output->append('<p><a class="claroCmd" href="javascript:openNetquiz(\''.dirname($_SERVER['PHP_SELF']).'/netquiz\')"><img src="'.get_icon("info").'" alt="'.get_lang("info").'" title="'.get_lang("info").'" /> '.get_lang('Netquiz').'</a></p>');
+	
+	//$output->append('<p><a class="claroCmd" href="index.php?fuseaction=netquiz"><img src="'.get_icon("info").'" alt="'.get_lang("info").'" title="'.get_lang("info").'" /> '.get_lang('Netquiz').'</a></p>');
+
+}
 
 $output->append('<ul>');
 
@@ -72,7 +72,7 @@ while ( false !== ($file = readdir($rep)) )
 			
 			//\''.dirname($_SERVER['PHP_SELF']).'/netquiz\', \''.claro_get_current_user_id().'\'
 			//\''.dirname($_SERVER['PHP_SELF']).$repName.'/'..$file.'\', \''.claro_get_current_user_id().'\'
-			$output->append('<a href="javascript:openQuiz(\''.dirname($_SERVER['PHP_SELF']).$repName.'/'.$file.'\', \''.claro_get_current_user_id().'\')">'.$file.'</a>');
+			$output->append('<a href="javascript:openQuiz(\''.dirname($_SERVER['PHP_SELF']).$repName.'/'.$file.'\')">'.$file.'</a>');
 
 
 			//$output->append('<a href="javascript:openQuiz(\''.dirname($_SERVER['PHP_SELF']).$repName.'/'.$file.'\')">'.$file.'</a>');
@@ -100,7 +100,7 @@ echo $output->getContents();
 	
 	
 			
-			
+			/*
 			$connexion = @mysql_connect("localhost", "root", "");
 			@mysql_select_db("db_netquiz", $connexion);
 	
@@ -116,7 +116,7 @@ echo $output->getContents();
 				print ('</p>');
 			
 			}
-				
+			*/	
 	
 	
 	// ------------ Claroline footer ---------------

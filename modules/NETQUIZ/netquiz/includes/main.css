@@ -1,0 +1,195 @@
+body
+{
+	font-family:Arial;
+	font-size:10pt;
+}
+font.blue
+{
+	color: #836ae9;
+}
+font.red
+{
+	color: Red;
+}
+font.small_black
+{
+	font-size:8pt;
+}
+font.small_gray
+{
+	font-size:8pt;
+	color:#828387;
+}
+font.list_header
+{
+	font-weight:bold;
+}
+font.section_header
+{
+	font-size:12pt;
+}
+font.disabled
+{
+	color:#828387;
+}
+a.small
+{
+	font-size:8pt;
+	color:#3f3089;
+	text-decoration:none;
+}
+a.small:hover
+{
+	font-size:8pt;
+	color:#3f3089;
+	text-decoration:underline;
+}
+a
+{
+	color:#3f3089;
+	text-decoration:none;
+}
+a:hover
+{
+	color:#3f3089;
+	text-decoration:underline;
+}
+
+TD.InputCell
+{
+	background-color:#F5F5F5;
+	border:solid 1px #9D9D9B;
+	padding: 5px;
+}
+.ContentCell
+{
+	background-color:#F5F5F5;
+	border-left:solid 1px #9D9D9B;
+	border-bottom:solid 1px #9D9D9B;
+	border-right:solid 1px #9D9D9B;
+}
+TD.WarningCell
+{
+	background-color:#E6E433;
+}
+TD.Tab
+{
+	border:solid 1px #9D9D9B;
+}
+TD.SelectedTab
+{
+	background-color:#F5F5F5;
+	border-top:solid 1px #9D9D9B;
+	border-right:solid 1px #9D9D9B;
+	border-left:solid 1px #9D9D9B;
+}
+TD.SpacerTab
+{
+	border-bottom:solid 1px #9D9D9B;
+}
+TD.ContentColWB
+{
+	border-right:solid 1px #9D9D9B;
+	border-top:solid 1px #9D9D9B;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+TD.ContentColWoB
+{
+	border-top:solid 1px #9D9D9B;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:2px;
+	padding-bottom:2px;
+}
+TD.DetailBand
+{
+	width:17px;
+	background-color:#3B3453;
+}
+TR.ContentRow
+{
+	cursor:pointer;
+}
+.Retro
+{
+	display:inline;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 10pt;
+}
+.RetroEtiquette
+{
+	display:inline;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 10pt;
+	color: #5c656f;
+}
+.Lettre
+{
+	display:inline;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 10pt;
+	color: #5c656f;
+}
+.Choix
+{
+	display:inline;
+	text-decoration: none;
+	font-weight: normal;
+	font-size: 10pt;
+}
+Body.Detail
+{
+	margin:0px;
+	font-family:Arial;
+	font-size:10pt;
+}
+Div.DetailHeader
+{
+	background-color:#CACACA;
+	border-bottom:black solid 1px;
+}
+Div.DetailList
+{
+	border-bottom:#CCCCCC solid 1px;
+	padding-left:37px;
+	padding-top:5px;
+}
+Font.BRep
+{
+	display:inline;
+	font-size:10pt;
+	font-weight:normal;	
+	color:Green;
+}
+Font.MRep
+{
+	display:inline;
+	font-size:10pt;
+	font-weight:normal;	
+	color:Red;
+}
+P.ErrorMsg
+{
+	display:inline;
+	color:#CB0E0E;
+}
+.LineA
+{
+	background: url(../images/linea1.gif) top left repeat-x;
+}
+.LineB
+{
+	background: url(../images/linea2.gif) top left repeat-x;
+}
+.Avertissement
+{
+	font-size: 8pt;
+	color: #666666;
+	padding-left:2px;
+}
