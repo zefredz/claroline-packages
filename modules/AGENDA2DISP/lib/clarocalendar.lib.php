@@ -61,7 +61,7 @@ class monthView
         if( !empty($eventList) ) 
             $monthEventList = claroEvent::filterListByDate($eventList, $monthStartDate, $monthEndDate);
 
-        $tableWidth = ($format == 'SHORT') ?  '' : ' width="100%"';
+        $tableWidth = ($format == 'SHORT') ?  'width="100%"' : ' width="100%"';
         
        
         $backwardsURL = $_SERVER['PHP_SELF']
@@ -106,7 +106,7 @@ class monthView
             echo ('<th class="superHeader" valign="top">' . $dayNameList[$i] . '</th>');
         }
 
-        echo '</tr>' . "\n";
+
 
         $startDayCountDisplay = false;
         $dayNumber            = false;
@@ -177,11 +177,16 @@ class monthView
             }
             echo '</tr>' . "\n";
         }
-        if ($nbrweekinmonth<6 && $_REQUEST['cmd']=='yearview')
-             for ($i = 0; $i < 7; $i++)
+        // if month has less than 6 weeks to display, display of one or 2 rows of blank cells
+        for ($nbrweekinmonth<6 && $_REQUEST['cmd']=='yearview';$nbrweekinmonth<6;$nbrweekinmonth++)
+            { 
+            echo '<tr>';
+            for ($i = 0; $i < 7; $i++)
                 {
             echo '<td width="14%" valign="top">'. '&nbsp;' .'</td>';
                 }
+            echo '</tr>';
+            }
         echo '</table>'. "\n";
     }
 }
@@ -217,22 +222,22 @@ class YearView
             .'?refYear='.($refYear+1) . '&amp;cmd=yearview';
 
 
-            echo  '<table class="claroTable" border="1">'. "\n"
+            echo  '<table class="claroTable" border="1" width="100%">'. "\n"
             . '<tr>'  . "\n";
 
         
-            echo '<th class="superHeader" valign="top" width="40px"><center>'
+            echo '<th class="superHeader" valign="top" width="10%"><center>'
             .    '<a href="' . $backwardsURL . '">&lt;&lt;</a>'
             .    '</center>'
             .    '</th>';
         
 
         echo '<th  class="superHeader" '
-            . ' valign="top" width="808px"><center>' .$refYear.'</center></th>'. "\n";
+            . ' valign="top" width="80%"><center>' .$refYear.'</center></th>'. "\n";
        
 
                 
-            echo '<th class="superHeader" valign="top" width="40px"><center>'
+            echo '<th class="superHeader" valign="top" width="10%"><center>'
             .    '<a href="' . $forewardsURL . '">&gt;&gt;</a>'
             .    '</center>'
             .    '</th>';
@@ -242,7 +247,7 @@ class YearView
 
         for ($i=0; $i < 12; $i++)
         {
-            if ( $i%3 == 0 ) echo '<table><tr valign="top">' . "\n";
+            if ( $i%3 == 0 ) echo '<table width="100%"><tr valign="top">' . "\n";
 
             $refMonthDate = new ClaroDate($refYear . '-' . ($i+1) . '-01');
             
@@ -298,7 +303,7 @@ class weekView
             .'&amp;refDay='.(claroDate::getDayFromTimeStamp($referenceDateForwards) );
             
         echo  "\n";
-        echo '<table class="claroTable" border="1">';
+        echo '<table class="claroTable" border="1" width="100%">';
         echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $backwardsURL . '">&lt;&lt;</a></center>';
 
         echo '<th class="superHeader" width="70%" valign="top"><center>'.get_lang('Week').' n&deg;'. claroDate::getWeekofYearFromTimeStamp($referenceDate).'</center></th>';
@@ -414,7 +419,7 @@ class DayView
         	$endViewHour = mktime(18, 0, 0, $refMonth, $refDay, $refYear);
         }
 
-        echo "\n".'<table class="claroTable" border="1">' . "\n";
+        echo "\n".'<table class="claroTable" border="1" width="100%">' . "\n";
               echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $backwardsURL . '">&lt;&lt;</a></center>'.'</th>';
         echo '<th class="superHeader" valign="top"><center>'  . "\n"
              .claroDate::getFormatedDateFromTimeStamp($referenceDate, 'Y M d') . "\n"
@@ -451,9 +456,17 @@ class DayView
                 }
             }
             echo  '</td>'. '<td width="15%">';
-            foreach ($hourEventList as $thisEvent)
+            if( !empty($hourEventList) )
             {
-                echo '<p>'. $thisEvent->getUrl(). '</p>'; 
+                foreach ($hourEventList as $thisEvent)
+                {
+                    echo '<p>'. $thisEvent->getUrl(). '</p>'; 
+                       
+                }
+            }
+            else
+            {
+                 echo '&nbsp;';
             }
             echo'</td>'.'</tr></tbody>';
         }
@@ -486,7 +499,7 @@ class ListView
         $nowBarPainted = false;
         $eventList = claroEvent::sortList($eventList) ;
 
-        echo '<table class="claroTable" border="1">' . "\n";
+        echo '<table class="claroTable" border="1" width="100%">' . "\n";
 
         if ( isset($eventList) )
         {
