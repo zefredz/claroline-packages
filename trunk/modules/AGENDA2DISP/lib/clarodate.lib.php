@@ -28,7 +28,7 @@ class claroDate
      * @var $timeStamp time stamp
      */    
 
-    //var $timeStamp = 0; 
+    var $timeStamp = 0; 
 
     /**
      * @var $defaultDateFormat default format of date
@@ -63,7 +63,11 @@ class claroDate
     }
     
     /**
-    * calculate time offset from GMT time
+    * calculate time offset from GMT time or from time zone define by $timeZone
+    *
+    * @param integer $setTimeZone
+    * integer $timeZone : static variable, by default is null
+    * @return integer timezone
     */
     function timeZoneOffset($setTimeZone = null)
     {
@@ -74,6 +78,9 @@ class claroDate
 
     /**
     * get the list of names of the days
+    *
+    * @param string $format : sort of display
+    * @return array string 
     */
     function getDayNameList($format = CAL_DOW_LONG)
     {
@@ -92,6 +99,10 @@ class claroDate
 
     /**
     * define the name of the days
+    *
+    * @param array string $dayNameListLong
+    * @param array string $dayNameListShort
+    * @return array string day name list
     */
     function setDayNameList($dayNameListLong, $dayNameListShort)
     {
@@ -108,6 +119,10 @@ class claroDate
 
     /**
     * define the names of the months
+    *
+    * @param array string $monthNameListLong
+    * @param array string $monthNameListShort
+    * @return array string month name list
     */
     function setMonthNameList($monthNameListLong, $monthNameListShort)
     {
@@ -123,7 +138,10 @@ class claroDate
     }
 
     /**
-    * return the date in the format yyyy-mm-dd hh:mm:ss iff none specified
+    * return the date in the format yyyy-mm-dd hh:mm:ss if no format specified
+    *
+    * @param string $dateFormat
+    * @return string date
     */
     function getFormatedDate($dateFormat = null)
     {
@@ -154,6 +172,8 @@ class claroDate
     
     /**
     * return the seconds of the date that called the function
+    *
+    @return integer : number of seconds of the date
     */
     function getSec()
     {
@@ -216,6 +236,8 @@ class claroDate
 
     /**
     * return the day name of the date that called the function
+    * @param string $format
+    * @return string : name of the day in specified format
     */
     function getDayName($format = CAL_DOW_LONG)
     {
@@ -357,8 +379,8 @@ class claroDate
     /**
     * function that return the last day of the month
     *
-    * @param integer $time
-    * @return integer number of the last dayof the month
+    * @param integer $time : timestamp
+    * @return integer number of days in the month including the $time
     */
     function getLastDayFromTimeStamp($time)
     {
@@ -369,7 +391,7 @@ class claroDate
     }
     
     /**
-    * function that return the timestamp of the first of the month
+    * function that return the timestamp of the first day of the month
     *
     * @param integer $time : time stamp of a date in the month
     * @return integer : a time stamp
@@ -383,10 +405,10 @@ class claroDate
     }
     
     /**
-    * function that return the time stam of the day of the month of the date of the time stamp sent in argument
+    * function that return the timestamp of the day of the month of the date of the time stamp sent in argument
     *
     * @param integer $time : timestamp
-    * @return integer : timestamp
+    * @return integer : timestamp of the last day of the month
     */
     function monthEndDateFromTimeStamp($time)
     {
@@ -397,6 +419,10 @@ class claroDate
  
     /**
     * return a new time stamp with the month offset sent in argument
+    *
+    * @param integer $date : timestamp
+    * @param integer $offset : offset of month
+    * @return integer : timestamp
     */ 
     function setMonthOffset($date,$offset)
     {
@@ -418,6 +444,9 @@ class claroDate
     /**
     * return the name of the month of the date 
     * January ... December
+    *
+    * @param string $format
+    * @return string : name of the month
     */
     function getMonthName($format = CAL_MONTH_GREGORIAN_LONG)
     {
@@ -425,6 +454,14 @@ class claroDate
         return $monthNameList[$this->getMonth()-1];
     }
     
+    /**
+    * return the name of the month of the date 
+    * January ... December
+    *
+    * @param integer $timestamp
+    * @param string $format
+    * @return string : name of the month
+    */
     function getMonthNameFromTimeStamp($timeStamp, $format = CAL_MONTH_GREGORIAN_LONG)
     {
         $monthNameList = claroDate::getMonthNameList($format);
@@ -441,6 +478,7 @@ class claroDate
 
     /**
     * function for switching from one month to the next or the preceding
+    *
     * @param integer timestamp : reference date time
     * @param integer offset : specifie if month switch is positive or negative
     * @return integer timestamp 
@@ -469,6 +507,9 @@ class claroDate
         return (int)( $time+$offset);
     }
 
+    /**
+    * @return integer timestamp
+    */
     function setNewMonth($offset)
     {
         $varmonth;
@@ -483,9 +524,8 @@ class claroDate
 
     /**
     * tell if year is bisectile or not
-    * return 1 if its a leap year
-    * return nothing if not leap year
-    * @return boolean
+    * 
+    * @return boolean : true if is leap year
     */
     function isLeapYear()
     {
@@ -494,16 +534,31 @@ class claroDate
 
     // COMPARISON METHODS
 
+    /**
+    * compare if equals two date objects
+    * @param object claroDate
+    * @return boolean
+    */
     function equals($dateObject)
     {
         return $this->timeStamp == $dateObject->getTimeStamp();
     }
 
+    /**
+    * compare if $dateObject is after this
+    * @param object claroDate
+    * @return boolean
+    */
     function after($dateObject)
     {
         return $this->timeStamp > $dateObject->getTimeStamp();
     }
     
+    /**
+    * compare if $dateObject is before this
+    * @param object claroDate
+    * @return boolean
+    */
     function before($dateObject)
     {
         return $this->timeStamp < $dateObject->getTimeStamp();
@@ -606,8 +661,7 @@ class claroDate
 
         return new ClaroDate( $this->_dateElements2TimeStamp($dateElementList) );
     }
-
-
+  
     function _getDateElements()
     {
         $formatedDate = $this->getFormatedDate();
@@ -633,7 +687,7 @@ class claroDate
     * private function that convert short day name to a integer
     *
     * @param string $string : date name in short format
-    * @return integer
+    * @return integer : day number
     */
     function _dayNameToDayNum($string)
     {
