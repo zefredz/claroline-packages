@@ -39,6 +39,9 @@ class monthView
      */
     function monthViewDisplay( $referenceDate, $eventList, $format, $view, $refMonth=null, $refYear=null)
     {
+        if(!isset($_REQUEST['cmd']))
+        $_REQUEST['cmd']='monthview';
+        
         $monthEventList = array();
         $titleName = get_lang('Month view');
 
@@ -222,7 +225,7 @@ class YearView
             .'?refYear='.($refYear+1) . '&amp;cmd=yearview';
 
 
-            echo  '<table class="claroTable" border="1" width="100%">'. "\n"
+            echo  '<table class="claroTable" border="0" width="100%">'. "\n"
             . '<tr>'  . "\n";
 
         
@@ -247,7 +250,7 @@ class YearView
 
         for ($i=0; $i < 12; $i++)
         {
-            if ( $i%3 == 0 ) echo '<table width="100%"><tr valign="top">' . "\n";
+            if ( $i%3 == 0 ) echo '<table width="100%" border="0"><tr valign="top">' . "\n";
 
             $refMonthDate = new ClaroDate($refYear . '-' . ($i+1) . '-01');
             
@@ -284,7 +287,6 @@ class weekView
 
         
         $weekStartDate = claroDate::rollDaysFromTimeStamp($referenceDate,(claroDate::getNbrDayofWeekFromTimeStamp($referenceDate) - 1 )* -1);
-        echo claroDate::getDayofWeekFromTimeStamp($referenceDate);
         $weekEndDate   = claroDate::rollDaysFromTimeStamp($weekStartDate,6);
 
         $weekEventList = claroEvent::filterListByDate($eventList, $weekStartDate, $weekEndDate);
