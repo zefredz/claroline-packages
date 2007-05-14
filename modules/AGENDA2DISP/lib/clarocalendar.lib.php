@@ -180,16 +180,19 @@ class monthView
             }
             echo '</tr>' . "\n";
         }
+        
         // if month has less than 6 weeks to display, display of one or 2 rows of blank cells
-        for ($nbrweekinmonth<6 && $_REQUEST['cmd']=='yearview';$nbrweekinmonth<6;$nbrweekinmonth++)
+        if('yearview' == $_REQUEST['cmd'])
+        for ( $nbrweekinmonth<6; $nbrweekinmonth<6; $nbrweekinmonth++)
             { 
-            echo '<tr>';
-            for ($i = 0; $i < 7; $i++)
-                {
-            echo '<td width="14%" valign="top">'. '&nbsp;' .'</td>';
-                }
-            echo '</tr>';
+                echo '<tr>';
+                for ($i = 0; $i < 7; $i++)
+                    {
+                        echo '<td width="14%" valign="top">'. '&nbsp;' .'</td>';
+                    }
+                echo '</tr>';
             }
+
         echo '</table>'. "\n";
     }
 }
