@@ -36,33 +36,12 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__question_list` (
   `id_question` int(11) NOT NULL auto_increment,
   `title` varchar(200) NOT NULL  default '',
   `description` text,
-  `id_question_type` int(10) NOT NULL default '1',
+  `type` varchar(10) NOT NULL  default 'radio',
   `option` text,
   `cid` varchar(40) NOT NULL default '',
   PRIMARY KEY  (`id_question`),
   INDEX (`cid`)
 )  ;
-
-
-# --------------------------------------------------------#
-# Structure de la table `question_list`
-#
-
-CREATE TABLE IF NOT EXISTS __CL_MAIN__question_type (
-  `id_question_type` int(11) NOT NULL auto_increment,
-  `name` varchar(200) NOT NULL  default '',
-  `description` text,
-  PRIMARY KEY  (`id_question_type`)
-)  ;
-
-
-INSERT IGNORE INTO __CL_MAIN__question_type
-(`id_question_type`, `name`, `description`)
-VALUES
-(1, 'radio', 'One valid answer' ),
-(2, 'multi', 'Many valid answer' ),
-(3, 'text', 'free text' );
-
 
 # --------------------------------------------------------
 #
@@ -73,10 +52,10 @@ CREATE TABLE IF NOT EXISTS __CL_MAIN__survey_answer (
   `id_answer` int(11) NOT NULL auto_increment,
   `id_survey` int(11) NOT NULL default '0',
   `id_question` int(11) NOT NULL default '0',
+  `cid` varchar(40) NOT NULL default '',
   `answer` varchar(255) NOT NULL default '',
-  PRIMARY KEY  (`id_answer`,`id_survey`,`id_question`),
-  PRIMARY KEY  (`id_answer`),
-  INDEX ( `id_survey` , `id_question` , `cid` )
+   PRIMARY KEY  (`id_answer`),
+   INDEX ( `id_survey` , `id_question` , `cid` )
 ) ;
 
 # --------------------------------------------------------

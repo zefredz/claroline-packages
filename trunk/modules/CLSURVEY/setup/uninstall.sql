@@ -23,3 +23,6 @@ DROP TABLE IF EXISTS `__CL_MAIN__question_list`;
 DROP TABLE IF EXISTS `__CL_MAIN__survey_answer`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey_user`;
+
+DROP TABLE IF EXISTS `__CL_MAIN__question_type`;
+
