@@ -252,10 +252,13 @@ mais conservé pour info
 
 				$total = 0;
 
-				foreach ($vote[$questionId] as $qty )
-				{
-					$total += $qty;
-				}
+                if ( isset ($vote[$questionId]) )
+                {
+				    foreach ($vote[$questionId] as $qty )
+				    {
+					    $total += $qty;
+				    }
+                }
 
 				if ($total == 0)
 				{
