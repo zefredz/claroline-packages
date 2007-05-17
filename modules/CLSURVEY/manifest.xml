@@ -1,0 +1,64 @@
+<module rev="$Id$">
+  <label>CLSURVEY</label>
+  <name>Survey</name>
+  <version>1.0.0</version>
+  <state>beta</state>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>survey_list.php</entry>
+  <icon>icon.gif</icon>
+
+  <description><![CDATA[
+     This module allows to create and manage surveys
+]]></description>
+
+  <author>
+     <name>Christophe Gesché</name>
+     <email>moosh@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+  <credit>
+     <name>Philippe Dekimpe</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </credit>
+  <context>
+ <course database="kernel"
+         enabling="automatic"
+         default_access="all"
+         access_manager="platform_admin" >
+   <link target="commonToolList"
+         path="../module/survey/survey_list.php" />
+   <link target="toolSelectBox"
+         path="../module/survey/survey_list.php" />
+ </course>
+
+   <group db="emule" file="share" enabling="automatic" default_access="group_member" access_manager="course_admin" />
+  </context>
+
+  <requirements>
+
+    <claroline>
+      <version>1.8.3</version>
+      <configuration>
+         <conf name="singleDBEnabled" value="true" />
+      </configuration>
+
+    </claroline>
+
+    <php>
+      <minversion>4.1</minversion>
+      <maxversion>5.1</maxversion> <!-- phpversion() -->
+
+      <extensions>
+         <loaded>pcre</loaded> <!-- extension_loaded()   -->
+      </extensions>
+    </php>
+
+    <mysql>
+      <minversion>3.23</minversion>
+      <maxversion>5.1</maxversion> <!-- mysqlversion() -->
+    </mysql>
+
+ </requirements>
+</module>
