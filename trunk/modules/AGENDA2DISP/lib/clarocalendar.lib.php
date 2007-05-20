@@ -55,6 +55,7 @@ class monthView
             $refMonth = clarodate::getMonthFromTimeStamp($referenceDate);
         if ( isset($refMonth) && isset($refYear) )
             $referenceDate = mktime(0, 0, 0, $refMonth, 1, $refYear);
+            
         $lastDay = claroDate::getLastDayFromTimeStamp($referenceDate);
         $dayCountInMonth = claroDate::getLastDayFromTimeStamp($referenceDate);
         $monthStartDate = clarodate::monthStartDateFromTimeStamp($referenceDate);
@@ -194,6 +195,11 @@ class monthView
             }
 
         echo '</table>'. "\n";
+        # echo claroDate::getLastDayFromTimeStamp(mktime());
+        # $date = new claroDate();
+        # $date1 = new claroDate($date+100);
+        # var_dump($date->after($date1));
+        # var_dump($date->before($date1));
     }
 }
 
@@ -370,10 +376,14 @@ class DayView
     */
     function dayViewDisplay($referenceDate, $eventList)
     {
+        /// initialisation of the array to avoid notice
         $dayEventList=array();
         $hourEventList=array();
+        
+        /// display the title
         echo '<h3>'. get_lang('Day View').'</h3>';
 
+        /// define the variables of time
         $refYear  = claroDate::getYearFromTimeStamp($referenceDate);
         $refMonth = claroDate::getMonthFromTimeStamp($referenceDate);
         $refDay   = claroDate::getDayFromTimeStamp($referenceDate);
@@ -384,8 +394,8 @@ class DayView
         $dayStart = mktime(0, 0, 0, $refMonth, $refDay, $refYear);
         $dayEnd   = claroDate::rollSecondsFromTimeStamp($dayStart, 24 * 60 * 60 - 1 );
 
-
-         $backwardsURL = $_SERVER['PHP_SELF']
+        /// creation of the url
+        $backwardsURL = $_SERVER['PHP_SELF']
             .'?refMonth='.(claroDate::getMonthFromTimeStamp($referenceDateBackwards) )
             .'&amp;refYear='.(claroDate::getYearFromTimeStamp($referenceDateBackwards) )
             .'&amp;cmd=dayview'
@@ -401,7 +411,10 @@ class DayView
         {
             $dayEventList = claroEvent::sortList(claroEvent::filterListByDate($eventList, $dayStart, $dayEnd));
         }
-
+        
+        /// if start hour is smaller than default start hour
+        //  TODO : preference in tools panel for setting the default start and end hour by the user
+        
         if ( isset($dayEventList[0]) && $dayEventList[0]->getStartDate()->getFormatedDate('H') < 8 )
         {
             $startViewHour = $dayEventList[0]->getStartDate()->getTimeStamp();
@@ -412,7 +425,8 @@ class DayView
         {
         	$startViewHour = mktime(8, 0, 0, $refMonth, $refDay, $refYear);
         }
-
+        
+        /// if start hour is smaller than default start hour
         if ( isset($dayEventList[count($dayEventList)-1]) && $dayEventList[count($dayEventList)-1]->getStartDate()->getFormatedDate('H') > 18 )
         {
             $endViewHour = $dayEventList[count($dayEventList)-1]->getStartDate()->getTimeStamp();
@@ -424,6 +438,7 @@ class DayView
         	$endViewHour = mktime(18, 0, 0, $refMonth, $refDay, $refYear);
         }
 
+        /// display the first row with title and navigation url
         echo "\n".'<table class="claroTable" border="1" width="100%">' . "\n";
               echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $backwardsURL . '">&lt;&lt;</a></center>'.'</th>';
         echo '<th class="superHeader" valign="top"><center>'  . "\n"
@@ -431,6 +446,8 @@ class DayView
              .'</center></th>'."\n";
         echo '<th class="superHeader" width="15%" valign="top">'.'<center><a href="' . $forewardsURL . '">&gt;&gt;</a></center>';
         echo'</th></tr>'."\n";
+        
+        /// display the hours and the events
         for ($i =  claroDate::getHourFromTimeStamp($startViewHour); $i <= claroDate::getHourFromTimeStamp($endViewHour); $i++)
         {	
 
@@ -496,13 +513,14 @@ class ListView
     */
     function listViewDisplay($referenceDate, $eventList)
     {
-        echo '<h3>List View</h3>';
-
+    
         $now = mktime();
 
         $monthDateBar  = mktime(0,0,0, 01, 01, 1970); // Epoch
         $nowBarPainted = false;
         $eventList = claroEvent::sortList($eventList) ;
+
+        echo '<h3>List View</h3>';
 
         echo '<table class="claroTable" border="1" width="100%">' . "\n";
 
@@ -520,11 +538,11 @@ class ListView
 
                     // MONTH BAR
                     echo '<tr>' . "\n"                    
-                    .    '<th class="superHeader" width="500px" valign="top">' . "\n"
+                    .    '<th class="superHeader" width="100%" valign="top"><i>' . "\n"
                     .    claroDate::getMonthNameFromTimeStamp($monthDateBar)
                     .    ' '
                     .    clarodate::getYearFromTimeStamp($monthDateBar)
-                    .    '</th>' . "\n"
+                    .    '</i></th>' . "\n"
                     .    '</tr>' . "\n"
                     ;
                 }
