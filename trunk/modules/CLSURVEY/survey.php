@@ -10,7 +10,7 @@
  * @package CLSURVEY
  *
  * @author Christophe Gesché <moosh@claroline.net>
- * @author Philippe Dekimpe <dlp@ecam.be>
+ * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  *
  */
@@ -174,7 +174,7 @@ $surveyQty = count($survey) ;
 // prepare
 if ( $mode == SURVEY_EDIT_MODE )
 {
-    $cmdQuestionListMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
+    $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
     '<img src="' . get_path('imgRepositoryWeb') . 'survey.gif" alt="" /> ' . get_lang('Add question'));
 }
 else
@@ -384,12 +384,7 @@ elseif ($displayList)
     ;
 }
 
-echo '<tr>' . "\n"
-.    '<td>'
-.    claro_html_menu_horizontal($cmdQuestionListMenu)
-.    '</td>' . "\n"
-.    '</tr>' . "\n"
-.	 '</table>' . "\n"
+echo '</table>' . "\n"
 ;
 
 include get_path('includePath') . '/claro_init_footer.inc.php';
