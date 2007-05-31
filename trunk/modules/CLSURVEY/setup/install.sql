@@ -10,7 +10,7 @@
 # package CLSURVEY
 #
 # Contact : Christophe Gesché <moosh@claroline.net>
-# Credit  : Philippe Dekimpe <dlp@ecam.be>
+# Credit  : Philippe Dekimpe <dkp@ecam.be>
 # General-contact Claro Team <cvs@claroline.net>
 # --------------------------------------------------------#
 # Structure de la table `survey_list`

@@ -10,7 +10,7 @@
  * @package CLSURVEY
  *
  * @author Christophe Gesché <moosh@claroline.net>
- * @author Philippe Dekimpe <dlp@ecam.be>
+ * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  *
  */
