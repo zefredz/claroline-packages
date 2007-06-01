@@ -618,7 +618,7 @@
         
         if ( $connection->hasError() )
         {
-            $err = 'Cannot find dictionary : %s'; 
+            $err = 'Cannot find post : %s';
             $reason = 'invalid id';
     
             $errorMsg .= sprintf( $err, $reason ) . "\n";
@@ -641,7 +641,9 @@
                         $postList[$id]['chapo'] = substr( $post['contents'], 0, $max );
                         $postList[$id]['user'] = $post['userId'] == 0 
                             ? get_lang('Unknown') 
-                            : $userList[$post['userId']]
+                            : get_lang('%firstName% %lastName%', array(
+                                '%firstName%' => $ul[$post['userId']]['prenom'],
+                                '%lastName%' => $ul[$post['userId']]['nom'] ) )
                             ;
                     }
                 }
