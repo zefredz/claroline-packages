@@ -27,7 +27,7 @@ $mod_lang['Question has been inserted'] = "La question a été insérée";
 $mod_lang['Survey has been updated'] = "Le sondage a été mis à jour";
 $mod_lang['Survey has been inserted'] = "Le sondage a été inséré";
 $mod_lang['New survey'] = "Nouveau sondage";
-$mod_lang['Edit survey'] = "Editer le sondage";
+$mod_lang['Edit this survey'] = "Editer le sondage";
 $mod_lang['Date of creation'] = "Date de création";
 $mod_lang['Survey has been deleted'] = "Le sondage a été effacé";
 $mod_lang['Add survey'] = "Ajouter un sondage";
@@ -44,6 +44,8 @@ $mod_lang['Number of answer/Total'] = "Nombre de réponses sur un total de ";
 $mod_lang['Percentage'] = "Pourcentage";
 $mod_lang['Add question'] = "Ajouter une question";
 $mod_lang['This survey is anonymous.  We only save your answer not your identification.'] = "Ce sondage est anonyme. Nous enregistrons uniquement vos réponses, pas votre identification";
+$mod_lang['This survey is already filled by you. Your answer are not saved again. As The survey are anonymous, we cannot show you your answers']="Vous avez déjà répondu à ce sondage.  Vos réponses ne seront donc pas sauvées.  Comme ce sondage est anonyme, nous ne pouvons vous montrer vos réponses.";
 $mod_lang['Position modified'] = "Position modifiée";
 $mod_lang['No answer']="Pas de réponse";
+$mod_lang['View this survey']="Voir ce sondage";
 ?>
