@@ -124,7 +124,11 @@ if (($cmd=='exEdit') and ($questionId==0))
         $msgList['info'][] = get_lang('Question has been inserted')
         .                    '<br />'
         .                    '<a href="./survey.php?surveyId=' . $idSurvey . '"> '
-        .                    get_lang('Continue')
+        .                    get_lang('View this survey')
+        .                    '</a>'
+        .					 ' | '
+        .                    '<a href="./edit_question.php?cmd=rqCreate&surveyId=' . $idSurvey . '"> '
+        .                    get_lang('Add question')
         .                    '</a>'
         .                    '<br />' . "\n"
         ;
