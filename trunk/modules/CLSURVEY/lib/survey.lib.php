@@ -648,6 +648,7 @@ function survey_empty_votes($surveyId, $context=null)
                 WHERE id_survey = " . (int) $surveyId . "
                   AND cid = '" . addslashes($courseId) . "'";
     $return = $return && claro_sql_query($sql);
+    return $return;
 
 }
 
