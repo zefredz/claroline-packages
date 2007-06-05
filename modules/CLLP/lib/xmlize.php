@@ -1,6 +1,6 @@
 <?php
 
-/* xmlize() is by Hans Anderson, me@hansanderson.com
+/* xmlize() is by Hans Anderson, www.hansanderson.com/contact/
  *
  * Ye Ole "Feel Free To Use it However" License [PHP, BSD, GPL].
  * some code in xml_depth is based on code written by other PHPers
@@ -11,36 +11,33 @@
  * This is a stable release, 1.0.  I don't foresee any changes, but you
  * might check http://www.hansanderson.com/php/xml/ to see
  *
- * usage: $xml = xmlize($array);
+ * usage: $xml = xmlize($xml_data);
  *
  * See the function traverse_xmlize() for information about the
  * structure of the array, it's much easier to explain by showing you.
- * Be aware that the array is somewhat tricky.  I use xmlize all the time,
- * but still need to use traverse_xmlize quite often to show me the structure!
-
- ## THIS IS A PHP 5 VERSION:
-
-	> attached is the modified script. Basically it has a new optional parameter
-	> to specify an OUTPUT encoding. If not specified, it defaults to UTF-8.
-	> I recommend you to read this PHP bug. There you can see how PHP4, PHP5.0.0
-	> and PHP5.0.2 will handle this.
-	> http://bugs.php.net/bug.php?id=29711
-	> Ciao, Eloy :-)
- ##
+ * Be aware that the array is very complex.  I use xmlize all the time,
+ * but still need to use traverse_xmlize or print_r() quite often to
+ * show me the structure!
  *
  */
 
-function xmlize($data, $WHITE=1, $encoding='UTF-8') {
+function xmlize($data, $WHITE=1) {
 
     $data = trim($data);
     $vals = $index = $array = array();
-    $parser = xml_parser_create($encoding);
+    $parser = xml_parser_create();
     xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
     xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, $WHITE);
-    xml_parse_into_struct($parser, $data, $vals, $index);
+    if ( !xml_parse_into_struct($parser, $data, $vals, $index) )
+    {
+	    die(sprintf("XML error: %s at line %d",
+                    xml_error_string(xml_get_error_code($parser)),
+                    xml_get_current_line_number($parser)));
+
+    }
     xml_parser_free($parser);
 
-    $i = 0;
+    $i = 0; 
 
     $tagname = $vals[$i]['tag'];
     if ( isset ($vals[$i]['attributes'] ) )
@@ -52,11 +49,10 @@ function xmlize($data, $WHITE=1, $encoding='UTF-8') {
 
     $array[$tagname]["#"] = xml_depth($vals, $i);
 
-
     return $array;
 }
 
-/*
+/* 
  *
  * You don't need to do anything with this function, it's called by
  * xmlize.  It's a recursive function, calling itself as it goes deeper
@@ -65,19 +61,19 @@ function xmlize($data, $WHITE=1, $encoding='UTF-8') {
  *
  */
 
-function xml_depth($vals, &$i) {
-    $children = array();
+function xml_depth($vals, &$i) { 
+    $children = array(); 
 
     if ( isset($vals[$i]['value']) )
     {
         array_push($children, $vals[$i]['value']);
     }
 
-    while (++$i < count($vals)) {
+    while (++$i < count($vals)) { 
 
-        switch ($vals[$i]['type']) {
+        switch ($vals[$i]['type']) { 
 
-           case 'open':
+           case 'open': 
 
                 if ( isset ( $vals[$i]['tag'] ) )
                 {
@@ -95,19 +91,18 @@ function xml_depth($vals, &$i) {
 
                 if ( isset ( $vals[$i]['attributes'] ) ) {
                     $children[$tagname][$size]['@'] = $vals[$i]["attributes"];
-
                 }
 
                 $children[$tagname][$size]['#'] = xml_depth($vals, $i);
 
-            break;
+            break; 
 
 
             case 'cdata':
-                array_push($children, $vals[$i]['value']);
-            break;
+                array_push($children, $vals[$i]['value']); 
+            break; 
 
-            case 'complete':
+            case 'complete': 
                 $tagname = $vals[$i]['tag'];
 
                 if( isset ($children[$tagname]) )
@@ -127,19 +122,18 @@ function xml_depth($vals, &$i) {
                 if ( isset ($vals[$i]['attributes']) ) {
                     $children[$tagname][$size]['@']
                                              = $vals[$i]['attributes'];
-                }
+                }			
 
-            break;
+            break; 
 
             case 'close':
-                return $children;
+                return $children; 
             break;
-        }
+        } 
 
-    }
+    } 
 
-        return $children;
-
+	return $children;
 
 }
 
@@ -153,7 +147,7 @@ function xml_depth($vals, &$i) {
  * print '<pre>' . implode("", $traverse_array . '</pre>';
  *
  *
- */
+ */ 
 
 function traverse_xmlize($array, $arrName = "array", $level = 0) {
 
@@ -172,3 +166,4 @@ function traverse_xmlize($array, $arrName = "array", $level = 0) {
 }
 
 ?>
+
