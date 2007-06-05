@@ -90,13 +90,11 @@ $sco['session_time'] = "0000:00:00.00";
 
 ?>
 <script type="text/javascript">
-    var module_url = "<?php echo get_module_url('CLLP'); ?>";
-    var cidReq = "<?php echo claro_get_current_course_id(); ?>";
 
     var init_total_time = "<?php echo $sco['total_time']; ?>";
+    
     // ====================================================
     // API Class Constructor
-    var debug_ = false;
     function APIClass() {
 
             //-- SCORM 1.2
@@ -147,7 +145,7 @@ $sco['session_time'] = "0000:00:00.00";
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSInitialize(arg) {
-            if(debug_) alert("initialize");
+            debug("LMSInitialize()", 1);
             if ( arg!="" ) {
                     this.APIError("201");
                     return "false";
@@ -166,7 +164,7 @@ $sco['session_time'] = "0000:00:00.00";
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSFinish(arg) {
-            if(debug_) alert("LMSfinish");
+            debug("LMSFinish()", 1);
             if ( APIInitialized ) {
                     if ( arg!="" ) {
                             this.APIError("201");
@@ -190,7 +188,7 @@ $sco['session_time'] = "0000:00:00.00";
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSTerminate(arg) {
-            if(debug_) alert("LMSTerminate");
+            debug("LMSTerminate()", 1);
             //TODO
     }
 
@@ -198,7 +196,7 @@ $sco['session_time'] = "0000:00:00.00";
     // Data Transfer
     //
     function LMSGetValue(ele) {
-            if(debug_) alert("LMSGetValue : \n" + ele);
+            debug("LMSGetValue(" + ele + ")", 1);
             if ( APIInitialized )
             {
                     var i = array_indexOf(elements,ele);
@@ -308,7 +306,7 @@ $sco['session_time'] = "0000:00:00.00";
     }
 
     function LMSSetValue(ele,val) {
-            if(debug_) alert ("LMSSetValue : \n" + ele +" "+ val);
+            debug("LMSSetValue(" + ele +","+ val + ")", 1);
             if ( APIInitialized )
             {
                     var i = array_indexOf(elements,ele);
@@ -509,7 +507,7 @@ $sco['session_time'] = "0000:00:00.00";
 
     function LMSCommit(arg)
     {
-            if(debug_) alert("LMScommit");
+            debug("LMScommit()", 1);
             if ( APIInitialized ) {
                     if ( arg!="" ) {
                             this.APIError("201");
@@ -532,22 +530,22 @@ $sco['session_time'] = "0000:00:00.00";
     // State Management
     //
     function LMSGetLastError() {
-            if(debug_) alert ("LMSGetLastError : " + APILastError);
+            debug("LMSGetLastError() : returns " + APILastError, 1);
 
             return APILastError;
     }
 
     function LMSGetErrorString(num) {
-            if(debug_) alert ("LMSGetErrorString(" + num +") = " + errCodes[num] );
+            debug("LMSGetErrorString(" + num +") : returns " + errCodes[num], 1);
 
             return errCodes[num];
 
     }
 
     function LMSGetDiagnostic(num) {
-            if(debug_) alert ("LMSGetDiagnostic("+num+") = " + errDiagn[num] );
+            debug("LMSGetDiagnostic(" + num + ") : returns " + errDiagn[num], 1);
 
-            if ( num=="" ) num = APILastError;
+            if ( num == "" ) num = APILastError;
             return errDiagn[num];
     }
 
