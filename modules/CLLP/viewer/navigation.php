@@ -64,12 +64,12 @@ $html .= '';
 
 // full screen switch
 $html .= '<p>' . "\n"
-.    '<small>'
-.    '<a href="index.php?pathId='.$pathId.'&amp;view=fullscreen" alt="'.get_lang('Fullscreen').'" title="'.get_lang('Fullscreen').'" target="_top">'
-.    '<img src="'.get_module_url('CLLP').'/img/view-fullscreen.png" />'
+.    '<small>' . "\n"
+.    '<a href="index.php?pathId='.$pathId.'&amp;view=fullscreen" title="'.get_lang('Fullscreen').'" target="_top">'
+.    '<img src="'.get_module_url('CLLP').'/img/view-fullscreen.png" alt="'.get_lang('Fullscreen').'" />'
 .    '</a>' . "\n"
-.    '<a href="index.php?pathId='.$pathId.'&amp;view=embedded" alt="'.get_lang('In frames').'" title="'.get_lang('In frames').'" target="_top">'
-.    '<img src="'.get_module_url('CLLP').'/img/view-embedded.png" />'
+.    '<a href="index.php?pathId='.$pathId.'&amp;view=embedded" title="'.get_lang('In frames').'" target="_top">'
+.    '<img src="'.get_module_url('CLLP').'/img/view-embedded.png" alt="'.get_lang('In frames').'" />'
 .    '</a>' . "\n"
 .    '</small>' . "\n"
 .    '</p>' . "\n\n";
@@ -78,6 +78,12 @@ $html .= '<p>' . "\n"
 $html .= '<p><a href="'.get_module_url('CLLP').'/index.php" class="claroCmd" target="_top">'.get_lang('Back to list').'</a></p>' . "\n";
 
 $html .= '</center>' . "\n";
+
+// debug messages
+$html .= "\n"
+.   '<div id="lp_debug">' ."\n"
+.   '</div>' . "\n\n";
+
 $display->setContent($html);
 
 $display->output();
