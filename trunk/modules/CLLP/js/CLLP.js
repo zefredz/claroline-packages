@@ -100,6 +100,14 @@ function getToc(pathId)
  *
  */
 
+function debug(msg, level)
+{
+    if( debug_mode > level )
+    {
+        $("#lp_debug", top.frames["lp_nav"].document).append(msg + '<br />\n');
+    }
+}
+
 function isolateContent()
 {
 	$('#topBanner').hide();
