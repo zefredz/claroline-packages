@@ -1,0 +1,25 @@
+<module>
+  <label>CLLP</label>
+  <name>Learning path</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>index.php</entry>
+  <icon>learnpath.gif</icon>
+
+  <description>
+    
+  </description>
+
+  <author>
+     <name>Sebastien Piraux</name>
+     <email>seb@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>
