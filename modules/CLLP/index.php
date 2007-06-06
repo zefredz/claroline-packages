@@ -140,13 +140,33 @@ if( $is_allowedToEdit )
     if( $cmd == 'exImport')
     {
     	// include import lib
-    	require_once dirname( __FILE__ ) . '/../lib/xmlize.php';
-        require_once dirname( __FILE__ ) . '/../lib/scorm.import.lib.php';
-    	// exec import
-    	
-    	// display import log (use backlog)
-    	
-    	// display import result 'Success' or 'Failed'
+    	require_once dirname( __FILE__ ) . '/lib/xmlize.php';
+        require_once dirname( __FILE__ ) . '/lib/scorm.import.lib.php';
+        // path class is already included
+        require_once dirname( __FILE__ ) . '/lib/item.class.php';
+
+        
+        // check if something has been uploaded
+        if ( !isset($_FILES['uploadedPackage']['name']) )
+        {
+            $dialogBox .= get_lang('Error : no file uploaded');
+        }
+        else
+        {
+            $scormImporter = new ScormImporter($_FILES['uploadedPackage']);
+            
+            if( $scormImporter->import() )
+            {
+                $dialogBox .= '<p><strong>' . get_lang('Import done') . '</strong></p>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<p><strong>' . get_lang('Import failed') . '</strong></p>' . "\n";
+                $cmd = 'rqImport';
+            }
+            //$dialogBox .= '<p>' . $scormImporter->backlog->output() . '</p>' . "\n";
+        }
+
     }
     
     if( $cmd == 'rqImport' )
@@ -170,7 +190,7 @@ if( $is_allowedToEdit )
 		.	 '<br />' . "\n"
 		.	 '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
         .    '<br /><br />' . "\n"
-        .    '<input type="hidden" name="cmd" value="exCreate" />' . "\n"
+        .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
         .    claro_html_button('index.php', get_lang('Cancel'))
         .    '</form>' . "\n"
