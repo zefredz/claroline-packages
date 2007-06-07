@@ -20,27 +20,65 @@ class ScormImporter
         $this->uploadedZipFile = $uploadedZipFile;    
         
         // paths
-        $this->baseDir = get_path('rootSys') . get_conf('tmpPathSys') . '/upload/';
+        $this->baseDir = get_path('rootSys') . get_conf('tmpPathSys') . 'upload/';
 
         // errors logging
-        $backlog = new Backlog();
+        $this->backlog = new Backlog();
     }
     
     function import()
     {
+        $step = 1;
+        // step 1
         // create tmp dir
-        $this->createUploadDir();
+        if( ! $this->createUploadDir() ) 
+        { 
+            clean($step); 
+            return false;
+        }
+        $step++;
         
+        // step 2
         // extract uploaded file to tmp dir
-        $this->unzip();
+        if( !$this->unzip() )
+        {
+            $this->clean($step);
+            return false;
+        }
+        $step++;
         
+        // step 3
+        // store all the list of files contained in the extracted zip for easier use
+        if( !$this->buildFileList() )
+        {
+            $this->clean($step);
+            return false;
+        }   
+        $step++;
+        
+        // step 4
         // find manifest file
-        
-        // parser le manifest
+        $manifestPath = $this->findMainManifest();
+        if( $manifestPath == '' )
+        {
+            $this->clean($step);
+            return false;
+        }
+        $step++;
+
+        // step 5
+        // parse manifest
         //  - trouver manifestes secondaire
         //  - les parser
         //  - vérifier si les ressources citées existes dans le tmp
         //  - sauver  
+        if( ! $this->parseManifest($manifestPath) )
+        {
+            $this->clean($step);
+            return false;
+        }
+        $step++;
+        
         // créer un objet path, le valider et le sauver
         // pour chaque module ou chapitre 
         //  - créer un objet item, le valider et le sauver
@@ -49,13 +87,23 @@ class ScormImporter
         // copier les fichiers de tmp vers répertoire définitif
         // effacer le répertoire temporaire
         
-        // renvoyer succès ou non
-        
+        // import is successfull
+        // clean tmp upload dir only
+        $this->clean(1); 
+        return true;
     }
     
     function createUploadDir()
     {
         $this->uploadDir = claro_mkdir_tmp($this->baseDir, 'path_');
+        
+        if( $this->uploadDir === false )
+        {
+            $this->backlog->failure(get_lang('Cannot read content of uploaded file.'));
+            return false;
+        }
+        
+        return true;
     }
     
     function unzip()
@@ -66,6 +114,7 @@ class ScormImporter
         if( !isset($this->uploadedZipFile) || !is_uploaded_file($this->uploadedZipFile['tmp_name']))
         {
             // upload failed
+            $this->backlog->failure(get_lang('Choose a file to upload.'));
             return false;
         }
 
@@ -77,7 +126,7 @@ class ScormImporter
         {
             if (!function_exists('gzopen'))
             {
-                claro_delete_file($uploadDir);
+                $this->backlog->failure(get_lang('Cannot unzip file.'));
                 return false;
             }
             
@@ -85,51 +134,114 @@ class ScormImporter
         }
         else
         {
-            claro_delete_file($uploadDir);
+            $this->backlog->failure(get_lang('File cannot be uploaded.  Not a zip file or not enough space remaining.'));
             return false;
         }
     }
     
     function buildFileList()
     {
-        $this->zipContent = listDirContent($this->uploadDir);
+        $this->zipContent = index_dir($this->uploadDir);
+        
+        if( $this->zipContent === false )
+        {
+            $this->backlog->failure(get_lang('Cannot read content of uploaded file.'));
+            return false;
+        }
+        
+        return true;
     }
     
-    function listDirContent()
+    function findMainManifest()
     {
-        $files = array();
-        if( is_dir($start_dir) ) 
+        // main manifest is the one that is the less deep in the zip file
+        // according to scorm 2004 it should be at top level so check this first
+        if( in_array($this->uploadDir . 'imsanifest.xml', $this->zipContent) )
         {
-            $fh = opendir($start_dir);
-            while( ( $file = readdir($fh) ) !== false ) 
-            {
-                // loop through the files, skipping . and .., and recursing if necessary
-                if( $file == '.' || $file == '..' ) continue;
-                
-                $filepath = $start_dir . '/' . $file;
-                
-                if ( is_dir($filepath) )
-                {
-                    $files = array_merge($files, listdir($filepath));
-                }
-                else
-                {
-                    array_push($files, $filepath);
-                }
-            }
-            closedir($fh);
-        } 
-        else
-        {
-            // false if the function was called with an invalid non-directory argument
-            $files = false;
+            return $this->uploadDir . 'imsanifest.xml';
         }
-        return $files;
+        
+        // if we do not find it at top level search the 'toper' imsmanifest.xml file
+        // we have seen packages that had all files nested in a subdirectory ...
+        $deep = 9999;
+        $manifestPath = '';
+        foreach( $this->zipContent as $thisFile )
+        {
+            // check that file is imsmanifest.xml (char(15))
+            if( strtolower( substr($thisFile, -15) ) == 'imsmanifest.xml' )
+            {
+                // get deep of the file (counting number of subdirectories)
+                $thisFileDeep = count( explode('/', $thisFile) );
+                if( $thisFileDeep < $deep )
+                {
+                    $manifestPath = $thisFile;
+                }
+            } 
+        }
+        return $manifestPath;
     }
        
-    function clean()
+    function parseManifest($manifestPath)
     {
+        $data = file_get_contents($manifestPath);
+
+        $this->manifestContent = xmlize($data);
+        if( ! is_array($this->manifestContent) ) 
+        {
+            // xmlize returns array or error message
+            $this->backlog->debug($this->manifestContent);
+            $this->backlog->failure(get_lang('Unable to read XML file'));
+            return false;
+        }
+        
+        //var_dump($manifestContent);
+        
+        // we need default organization identifier, fond in organizations 'default' attribute
+        // so we will be able to skip any other organization
+        $defaultOrganizationId = $this->manifestContent['manifest']['#']['organizations'][0]['@']['default'];
+        $organizationList = &$this->manifestContent['manifest']['#']['organizations'][0]['#'];
+        
+        if( is_array($organizationList) )
+        {
+            foreach( $organizationList as $organization )
+            {
+                // take care only of the default organization
+                if( $organization[0]['@']['identifier'] != $defaultOrganizationId ) continue;
+                
+                $organizationTitle = trim($organization[0]['#']['title'][0]['#']);
+                var_dump($organizationTitle);
+                var_dump($organization);
+//                $organizationList = &$organization['manifest']['#']['organizations'][0]['#'];
+            }
+            // also catch error when no organization has the default identifier
+        }
+        else
+        {
+            $this->backlog->failure('No organization in manifest.');
+            return false;
+        }
+        
+        
+        
+        return true;
+    }   
     
+    function clean($step = 0)
+    {
+        // for each step we have to clean all step before 
+        switch( $step )
+        {
+            case 4 : 
+            case 3 : 
+            case 2 :
+            case 1 :
+                echo "clean step 1";
+                claro_delete_file($this->uploadDir);
+            default : 
+                break;
+        }
+        
+        return true;            
     }
 }
 ?>
