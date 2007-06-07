@@ -50,7 +50,7 @@ claro_set_display_mode_available(TRUE);
  * DB tables definition
  */
 
-$tbl = claro_sql_get_tbl(array('survey_question', 'question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
+$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
 
 // DEFAULT DISPLAY
 $displayList = FALSE;
@@ -102,7 +102,7 @@ if ( !empty($cmd) ) // check teacher status
 
         $sql = "SELECT Q.`id_question` AS questionId
 			    FROM `" . $tbl['survey_question'] . "`     AS S
-			    INNER JOIN `" . $tbl['question_list'] . "` AS Q
+			    INNER JOIN `" . $tbl['survey_question_list'] . "` AS Q
 			            ON Q.id_question = S.id_question
 			    WHERE S.id_survey = " . (int) $idSurvey;
 
@@ -169,7 +169,7 @@ if ($idSurvey<>0)
                  , Q.`type`
                  , Q.`option`
             FROM       `" . $tbl['survey_question'] . "` AS S
-            INNER JOIN `" . $tbl['question_list'] . "`   AS Q
+            INNER JOIN `" . $tbl['survey_question_list'] . "`   AS Q
                     ON Q.id_question = S.id_question
             WHERE S.id_survey = " . (int) $idSurvey . "
             ORDER BY S.rank ASC";

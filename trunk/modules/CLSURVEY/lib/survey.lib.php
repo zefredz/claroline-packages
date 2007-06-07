@@ -242,13 +242,13 @@ function move_question($item_id, $cmd,$id_survey, $context=null)
 function delete_question_survey($questionId,$context=null)
 {
     $tbl = claro_sql_get_tbl(array( 'survey_question'
-                                  , 'question_list'
+                                  , 'survey_question_list'
                                   , 'survey_answer'
                                   , 'survey_user'), $context);
     if ( $questionId <> '' )
     {
         $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
-                DELETE FROM `" . $tbl['question_list'] . "` WHERE id_question=" . (int) $questionId;
+                DELETE FROM `" . $tbl['survey_question_list'] . "` WHERE id_question=" . (int) $questionId;
         $return = claro_sql_query($sql);
 
         $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
@@ -394,7 +394,7 @@ function is_survey_started_by_user($surveyId, $userId=null)
  */
 function survey_get_survey_question_data($questionId, $context=null)
 {
-    $tbl = claro_sql_get_tbl( 'question_list' , $context);
+    $tbl = claro_sql_get_tbl( 'survey_question_list' , $context);
 
     $cid = get_init('_cid');
 
@@ -403,7 +403,7 @@ function survey_get_survey_question_data($questionId, $context=null)
                    `description`,
                    `option`,
                    `type`
-      FROM `" . $tbl['question_list'] . "`
+      FROM `" . $tbl['survey_question_list'] . "`
 	 WHERE `id_question` = " . (int) $questionId . "
 	   AND `cid` = '" . addslashes($cid) . "'";
 
@@ -414,13 +414,13 @@ function survey_get_survey_question_data($questionId, $context=null)
 function survey_save_answer($surveyId, $answer,$questionId,$context=null)
 {
     $tbl = claro_sql_get_tbl(array( 'survey_question'
-                                  , 'question_list'
+                                  , 'survey_question_list'
                                   , 'survey_answer'
                                   , 'survey_user'), $context);
 
     $sql = "SELECT count(Q.`id_question`)
 		    FROM `" . $tbl['survey_question'] . "`     AS S
-		    INNER JOIN `" . $tbl['question_list'] . "` AS Q
+		    INNER JOIN `" . $tbl['survey_question_list'] . "` AS Q
 		            ON Q.id_question = S.id_question
 		    WHERE S.id_survey = " . (int) $surveyId;
 
@@ -499,7 +499,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
         : claro_get_current_course_id();
     }
 
-    $tbl = claro_sql_get_tbl(array('survey_question', 'question_list'), $context);
+    $tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list'), $context);
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT Q.`id_question` AS questionId,
@@ -508,7 +508,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
 	               Q.`type`,
 	               Q.`option`
 			  FROM `" . $tbl['survey_question'] . "` AS S
-			  INNER JOIN `" . $tbl['question_list'] . "`  AS Q
+			  INNER JOIN `" . $tbl['survey_question_list'] . "`  AS Q
 	                  ON Q.id_question = S.id_question
 			  WHERE S.id_survey = " . (int) $surveyId."
 			    AND Q.`cid` = '" . addslashes($courseId) . "'
@@ -536,7 +536,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
  */
  function survey_count_question_in_survey($surveyId, $context=null)
  {
-    $tbl = claro_sql_get_tbl(array('survey_question', 'question_list'), $context);
+    $tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list'), $context);
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
         SELECT count(`id_question`)

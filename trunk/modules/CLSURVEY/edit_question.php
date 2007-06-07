@@ -32,7 +32,7 @@ add_module_lang_array($tlabelReq);
  * DB tables definition
  */
 
-$tbl = claro_sql_get_tbl(array('survey_question', 'question_list' ), $context);
+$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list' ), $context);
 
 
 // claroline libraries
@@ -96,7 +96,7 @@ if (($cmd=='exEdit') and ($questionId<>0))
 
 if (($cmd=='exEdit') and ($questionId==0))
 {
-    $sql = "INSERT INTO `" . $tbl['question_list'] . "`
+    $sql = "INSERT INTO `" . $tbl['survey_question_list'] . "`
 	        SET `title`       = '" . addslashes($title) . "'
 	        ,   `description` = '" . addslashes($description) . "'
 	        ,   `option`      = '" . addslashes($option) . "'
@@ -271,9 +271,9 @@ include get_path('includePath') . '/claro_init_footer.inc.php';
 
 function survey_update_question($questionId, $title, $description, $option, $type,$context=null)
 {
-    $tbl = claro_sql_get_tbl('question_list', $context);
+    $tbl = claro_sql_get_tbl('survey_question_list', $context);
 
-    $sql = "UPDATE `" . $tbl['question_list'] . "` " . "\n"
+    $sql = "UPDATE `" . $tbl['survey_question_list'] . "` " . "\n"
     .      "SET `title` = '" . addslashes($title) . "' ," . "\n"
     .      "    `description` = '" . addslashes($description) . "'," . "\n"
     .      "    `option` = '" . addslashes($option) . "'," . "\n"
