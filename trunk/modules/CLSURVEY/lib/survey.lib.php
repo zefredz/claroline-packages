@@ -24,7 +24,7 @@
 * @param  string $idName name of id field
 * @return true;
 *
-* @author Philippe Dekimpe <dlp@ecam.be>
+* @author Philippe Dekimpe <dkp@ecam.be>
 */
 function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=null)
 {
@@ -101,7 +101,7 @@ function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=
 * @param  string $idName name of id field
 * @return true;
 *
-* @author Philippe Dekimpe <dlp@ecam.be>
+* @author Philippe Dekimpe <dkp@ecam.be>
 */
 function move_survey($item_id, $cmd, $context=null)
 {
@@ -237,7 +237,7 @@ function move_question($item_id, $cmd,$id_survey, $context=null)
 * @param  integer $questionId
 * @return true;
 *
-* @author Philippe Dekimpe <dlp@ecam.be>
+* @author Philippe Dekimpe <dkp@ecam.be>
 */
 function delete_question_survey($questionId,$context=null)
 {
