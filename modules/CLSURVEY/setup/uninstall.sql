@@ -10,19 +10,17 @@
 #
 # package CLSURVEY
 #
-# Contact : Christophe Gesché <moosh@claroline.net>
-# Credit  : Philippe Dekimpe <dkp@ecam.be>
+# Contact : Philippe Dekimpe <dkp@ecam.be>
+# Credit  : Christophe Gesché <moosh@claroline.net>
 # General-contact Claro Team <cvs@claroline.net>
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey_list`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey_question`;
 
-DROP TABLE IF EXISTS `__CL_MAIN__question_list`;
+DROP TABLE IF EXISTS `__CL_MAIN__survey_question_list`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey_answer`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey_user`;
-
-DROP TABLE IF EXISTS `__CL_MAIN__question_type`;
 

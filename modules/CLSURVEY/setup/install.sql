@@ -9,8 +9,8 @@
 #
 # package CLSURVEY
 #
-# Contact : Christophe Gesché <moosh@claroline.net>
-# Credit  : Philippe Dekimpe <dkp@ecam.be>
+# Contact : Philippe Dekimpe <dkp@ecam.be>
+# Credit  : Christophe Gesché <moosh@claroline.net>
 # General-contact Claro Team <cvs@claroline.net>
 # --------------------------------------------------------#
 # Structure de la table `survey_list`
@@ -29,10 +29,10 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey_list` (
 ) ;
 
 # --------------------------------------------------------#
-# Structure de la table `question_list`
+# Structure de la table `survey_question_list`
 #
 
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__question_list` (
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey_question_list` (
   `id_question` int(11) NOT NULL auto_increment,
   `title` varchar(200) NOT NULL  default '',
   `description` text,

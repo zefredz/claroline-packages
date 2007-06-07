@@ -43,7 +43,7 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 /**
  * DB tables definition
  */
-$tbl = claro_sql_get_tbl(array('survey_question', 'question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
+$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
 
 // DEFAULT DISPLAY
 $displayList = FALSE;
