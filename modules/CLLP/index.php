@@ -164,7 +164,7 @@ if( $is_allowedToEdit )
                 $dialogBox .= '<p><strong>' . get_lang('Import failed') . '</strong></p>' . "\n";
                 $cmd = 'rqImport';
             }
-            //$dialogBox .= '<p>' . $scormImporter->backlog->output() . '</p>' . "\n";
+            $dialogBox .= '<p>' . $scormImporter->backlog->output() . '</p>' . "\n";
         }
 
     }
