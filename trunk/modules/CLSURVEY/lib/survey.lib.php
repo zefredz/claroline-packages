@@ -410,44 +410,7 @@ function survey_get_survey_question_data($questionId, $context=null)
     return claro_sql_query_get_single_row($sql);
 
 }
-/*
-function survey_save_answer($surveyId, $answer,$questionId,$context=null)
-{
-    $tbl = claro_sql_get_tbl(array( 'survey_question'
-                                  , 'survey_question_list'
-                                  , 'survey_answer'
-                                  , 'survey_user'), $context);
 
-    $sql = "SELECT count(Q.`id_question`)
-		    FROM `" . $tbl['survey_question'] . "`     AS S
-		    INNER JOIN `" . $tbl['survey_question_list'] . "` AS Q
-		            ON Q.id_question = S.id_question
-		    WHERE S.id_survey = " . (int) $surveyId;
-
-    $surveyQuestionQty = claro_sql_query_get_single_value($sql);
-
-    $sql = "INSERT INTO `" . $tbl['survey_user'] . "`
-			    SET `id_survey` = " . (int) $surveyId . "
-		        ,   `id_user`   = " . (int) claro_get_current_user_id();
-    claro_sql_query($sql);
-
-    for ($i=1; $i<=$surveyQuestionQty; $i++)
-    {
-    //     les requests doivent sortir ici
-        $answer[$i]     = isset($_REQUEST['answer'.$i]) ? $answer[$i] = $_REQUEST['answer'.$i] 	: '';
-        $questionId[$i] = isset($_REQUEST['questionId'.$i]) ? (int) $_REQUEST['questionId'.$i] : 0;
-
-        $sql = "INSERT INTO  `" . $tbl['survey_answer'] . "`
-			        SET `id_survey` = " . (int) $surveyId . " ,
-						`id_question` = " . (int) $questionId[$i] . " ,
-						`answer` = '" . addslashes($answer[$i]) . "',
-						`cid` = '" . addslashes(claro_get_current_course_id()) . "'";
-        $return = claro_sql_query($sql);
-
-    }
-
-}
-*/
 /**
  * return the main properties of a given survey
  *
@@ -662,7 +625,7 @@ function survey_empty_votes($surveyId, $context=null)
  */
 function survey_votes_for_survey($surveyId, $context=null)
 {
-
+	$votesResult = array();
     if (!is_null($context) && !is_array($context))
     {
         trigger_error('Invalid fortmat for context: array or NULL attempt',E_USER_ERROR);
