@@ -103,7 +103,7 @@ if( $is_allowedToEdit )
 	        }
 	        else 
 	        {
-	            $dialogBox .= get_lang('Fatal error : cannot save');
+	            $dialogBox .= get_lang('Fatal error : cannot save path');
 	        }
         }
         else
