@@ -1,4 +1,5 @@
 <?php
+
 require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
 require_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
 require_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
@@ -12,6 +13,10 @@ class ScormImporter
     var $uploadedZipFile;
     var $baseDir = '';
     var $uploadDir = '';
+    
+    var $manifestContent = '';
+    var $insertedPath;
+    var $insertedItemList = array();
     
     var $backlog;
     
@@ -33,6 +38,7 @@ class ScormImporter
         // create tmp dir
         if( ! $this->createUploadDir() ) 
         { 
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
             clean($step); 
             return false;
         }
@@ -42,6 +48,7 @@ class ScormImporter
         // extract uploaded file to tmp dir
         if( !$this->unzip() )
         {
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
             $this->clean($step);
             return false;
         }
@@ -51,6 +58,7 @@ class ScormImporter
         // store all the list of files contained in the extracted zip for easier use
         if( !$this->buildFileList() )
         {
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
             $this->clean($step);
             return false;
         }   
@@ -61,6 +69,7 @@ class ScormImporter
         $manifestPath = $this->findMainManifest();
         if( $manifestPath == '' )
         {
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
             $this->clean($step);
             return false;
         }
@@ -74,6 +83,7 @@ class ScormImporter
         //  - sauver  
         if( ! $this->parseManifest($manifestPath) )
         {
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
             $this->clean($step);
             return false;
         }
@@ -158,7 +168,7 @@ class ScormImporter
         // according to scorm 2004 it should be at top level so check this first
         if( in_array($this->uploadDir . 'imsanifest.xml', $this->zipContent) )
         {
-            return $this->uploadDir . 'imsanifest.xml';
+            return $this->uploadDir . 'imsmanifest.xml';
         }
         
         // if we do not find it at top level search the 'toper' imsmanifest.xml file
@@ -174,6 +184,7 @@ class ScormImporter
                 $thisFileDeep = count( explode('/', $thisFile) );
                 if( $thisFileDeep < $deep )
                 {
+                    // keep only the less deep
                     $manifestPath = $thisFile;
                 }
             } 
@@ -194,26 +205,44 @@ class ScormImporter
             return false;
         }
         
-        //var_dump($manifestContent);
+       // var_dump($this->manifestContent);
+        
+        // check if we have a xml:base in manifest
+        
+        if( isset($this->manifestContent['manifest']['@']['xml:base']) )
+        {
+            $manifestXmlBase = $this->manifestContent['manifest']['@']['xml:base']; 
+        }
+        else
+        {
+            $manifestXmlBase = '';
+        }
         
         // we need default organization identifier, fond in organizations 'default' attribute
         // so we will be able to skip any other organization
         $defaultOrganizationId = $this->manifestContent['manifest']['#']['organizations'][0]['@']['default'];
-        $organizationList = &$this->manifestContent['manifest']['#']['organizations'][0]['#'];
+        $organizationList = &$this->manifestContent['manifest']['#']['organizations'][0]['#']['organization'];
         
         if( is_array($organizationList) )
         {
             foreach( $organizationList as $organization )
             {
                 // take care only of the default organization
-                if( $organization[0]['@']['identifier'] != $defaultOrganizationId ) continue;
-                
-                $organizationTitle = trim($organization[0]['#']['title'][0]['#']);
-                var_dump($organizationTitle);
-                var_dump($organization);
-//                $organizationList = &$organization['manifest']['#']['organizations'][0]['#'];
+                // TODO handle several organizations ?
+                if( $organization['@']['identifier'] == $defaultOrganizationId ) 
+                {
+                    $organizationTitle = trim($organization['#']['title'][0]['#']);
+                    $defaultOrganization = &$organization;
+                    break;
+                }
+                else
+                {
+                    continue;                    
+                }
+
+                // $organizationList = &$organization['manifest']['#']['organizations'][0]['#'];
             }
-            // also catch error when no organization has the default identifier
+            // TODO catch error when no organization has the default identifier
         }
         else
         {
@@ -221,21 +250,131 @@ class ScormImporter
             return false;
         }
         
+        // create a path from the organization
+        $this->insertedPath = new path();
+        $this->insertedPath->setTitle($organizationTitle);
+        $this->insertedPath->setInvisible();
+        // todo handle identifier ? type ? encoding ? viewmode ?
         
-        
+        if( $this->insertedPath->validate() )
+        {
+            if( $this->insertedPath->save() )
+            {
+                $this->backlog->success(get_lang('New path created : %pathTitle', array('%pathTitle' => $organizationTitle)));
+            }
+            else
+            {
+                $this->backlog->failure(get_lang('Fatal error : cannot save path'));
+                return false;
+            }
+        }
+        else
+        {
+            $this->backlog->failure(get_lang('Cannot save path : informations missing.'));
+            return false;
+        }
+
+        $this->addItems($defaultOrganization['#']['item']);
         return true;
     }   
+    
+    function addItems(&$itemList, $parentId = -1)
+    {
+        // go through all item ..['item'][0] ['item'][1] ...
+        foreach( $itemList as $item )
+        {
+            $insertedItem = new item();
+            $insertedItem->setTitle($item['#']['title'][0]['#']);
+            $insertedItem->setIdentifier($item['@']['identifier']);
+            $insertedItem->setPathId($this->insertedPath->getId());
+            
+            // parent 
+            if( $parentId > -1 )
+            {
+                $insertedItem->setParentId($parentId);
+            }
+            
+            // visibility
+            if( isset($item['@']['isvisible']) && $item['@']['isvisible'] == 'true' )
+            {
+                $insertedItem->setInvisible();
+            }
+            else
+            {
+                $insertedItem->setVisible(); // IMS consider that the default value of 'isvisible' is true
+            }
+            
+            // set sys path
+            if( isset($item['@']['identifierref']) )
+            {
+                if( $resourceRef = $this->getResourceByRef($item['@']['identifierref']) )
+                {
+                    $insertedItem->setSysPath($resourceRef['@']['href']);
+                }
+            }
+            
+            // chapter or module
+            if( isset($item['#']['item']) )
+            {
+                $insertedItem->setType('CONTAINER');
+            }
+
+            if( $insertedItem->validate() )
+            {
+                if( $insertedItem->save() )
+                {
+                    $this->backlog->success(get_lang('New item created : %pathTitle', array('%pathTitle' => $insertedItem->getTitle())));
+                }
+                else
+                {
+                    $this->backlog->failure(get_lang('Fatal error : cannot save item'));
+                    return false;
+                }
+            }
+            else
+            {
+                $this->backlog->failure(get_lang('Cannot save item : informations missing.'));
+                return false;
+            }            
+            
+            if( isset($item['#']['item']) )
+            {
+                $this->addItems($item['#']['item'], $insertedItem->getId());
+            }
+                   
+        }
+    }
+    
+    function getResourceByRef($identifierref)
+    {
+        $resourceList = &$this->manifestContent['manifest']['#']['resources'][0]['#']['resource'];
+        
+        foreach( $resourceList as $resource )
+        {
+            if( $resource['@']['identifier'] == $identifierref )
+            {
+                return $resource;
+            }
+            // else continue
+        }
+        
+        // not found
+        return false;
+    }
     
     function clean($step = 0)
     {
         // for each step we have to clean all step before 
         switch( $step )
         {
+            case 5 :
+                // delete inserted path
+                $this->insertedPath->delete();
+                // delete
             case 4 : 
             case 3 : 
             case 2 :
             case 1 :
-                echo "clean step 1";
                 claro_delete_file($this->uploadDir);
             default : 
                 break;
@@ -244,4 +383,5 @@ class ScormImporter
         return true;            
     }
 }
+
 ?>
