@@ -434,7 +434,29 @@ class item
     {
         return !$this->isVisible();
     }
-            
+      
+    /**
+     * get identifier 
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string
+     */
+    function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * set identifier
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string $value
+     */
+    function setIdentifier($value)
+    {
+        $this->identifier = trim($value);
+    }        
+    
     /**
      * get rank
      *
