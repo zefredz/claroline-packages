@@ -11,12 +11,14 @@ require_once get_path('incRepositorySys') . '/lib/backlog.class.php';
 class ScormImporter
 {
     var $uploadedZipFile;
-    var $baseDir = '';
     var $uploadDir = '';
+    var $scormDir = '';
+    var $pathDir = '';
+    var $uploadPath = '';
     
     var $manifestContent = '';
-    var $insertedPath;
-    var $insertedItemList = array();
+    var $path;
+    var $itemList = array();
     
     var $backlog;
     
@@ -24,8 +26,11 @@ class ScormImporter
     {
         $this->uploadedZipFile = $uploadedZipFile;    
         
+        // create an empty path
+        $this->path = new path();
+        
         // paths
-        $this->baseDir = get_path('rootSys') . get_conf('tmpPathSys') . 'upload/';
+        $this->scormDir = get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/';
 
         // errors logging
         $this->backlog = new Backlog();
@@ -77,10 +82,9 @@ class ScormImporter
 
         // step 5
         // parse manifest
-        //  - trouver manifestes secondaire
-        //  - les parser
-        //  - vérifier si les ressources citées existes dans le tmp
-        //  - sauver  
+        //  - find all manifest (several manifests is still according ADL so find only one)
+        //  - check if ressources really exists in extracted file
+        //  - save path and items 
         if( ! $this->parseManifest($manifestPath) )
         {
             $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
@@ -89,27 +93,27 @@ class ScormImporter
         }
         $step++;
         
-        // créer un objet path, le valider et le sauver
-        // pour chaque module ou chapitre 
-        //  - créer un objet item, le valider et le sauver
-        
-        // créer répertoire définitif
-        // copier les fichiers de tmp vers répertoire définitif
-        // effacer le répertoire temporaire
+        // step 6
+        // copy files from tmp folder to correct path_X folder
+        if( ! $this->renameDir() )
+        {
+            $this->backlog->failure(get_lang('Import failed at step %step', array('%step' => $step)));
+            $this->clean($step);
+            return false;
+        }
+        $step++;       
         
         // import is successfull
-        // clean tmp upload dir only
-        $this->clean(1); 
         return true;
     }
     
     function createUploadDir()
     {
-        $this->uploadDir = claro_mkdir_tmp($this->baseDir, 'path_');
+        $this->uploadDir = claro_mkdir_tmp($this->scormDir, 'path_');
         
         if( $this->uploadDir === false )
         {
-            $this->backlog->failure(get_lang('Cannot read content of uploaded file.'));
+            $this->backlog->failure(get_lang('Cannot create upload directory.'));
             return false;
         }
         
@@ -118,8 +122,8 @@ class ScormImporter
     
     function unzip()
     {
-        // upload path is the difference between baseDir to uploadDir
-        $uploadPath = str_replace($this->baseDir,'',$this->uploadDir);
+        // upload path is the difference between scormDir and uploadDir / something like 
+        $this->uploadPath = str_replace($this->scormDir,'',$this->uploadDir);
         
         if( !isset($this->uploadedZipFile) || !is_uploaded_file($this->uploadedZipFile['tmp_name']))
         {
@@ -132,7 +136,7 @@ class ScormImporter
 
 
         if ( preg_match('/.zip$/i', $this->uploadedZipFile['name']) 
-            && treat_uploaded_file($this->uploadedZipFile, $this->baseDir, $uploadPath, get_conf('maxFilledSpace' , 10000000), 'unzip', true))
+            && treat_uploaded_file($this->uploadedZipFile, $this->scormDir, $this->uploadPath, get_conf('maxFilledSpace' , 100000000), 'unzip', true))
         {
             if (!function_exists('gzopen'))
             {
@@ -166,7 +170,7 @@ class ScormImporter
     {
         // main manifest is the one that is the less deep in the zip file
         // according to scorm 2004 it should be at top level so check this first
-        if( in_array($this->uploadDir . 'imsanifest.xml', $this->zipContent) )
+        if( in_array($this->uploadDir . 'imsmanifest.xml', $this->zipContent) )
         {
             return $this->uploadDir . 'imsmanifest.xml';
         }
@@ -177,8 +181,8 @@ class ScormImporter
         $manifestPath = '';
         foreach( $this->zipContent as $thisFile )
         {
-            // check that file is imsmanifest.xml (char(15))
-            if( strtolower( substr($thisFile, -15) ) == 'imsmanifest.xml' )
+            // check that file is imsmanifest.xml
+            if( strtolower(basename($thisFile)) == 'imsmanifest.xml' )
             {
                 // get deep of the file (counting number of subdirectories)
                 $thisFileDeep = count( explode('/', $thisFile) );
@@ -205,7 +209,7 @@ class ScormImporter
             return false;
         }
         
-       // var_dump($this->manifestContent);
+        // var_dump($this->manifestContent);
         
         // check if we have a xml:base in manifest
         
@@ -228,8 +232,8 @@ class ScormImporter
             foreach( $organizationList as $organization )
             {
                 // take care only of the default organization
-                // TODO handle several organizations ?
-                if( $organization['@']['identifier'] == $defaultOrganizationId ) 
+                // take the 1rst one if defaultOrganizationId has not been found
+                if( $organization['@']['identifier'] == $defaultOrganizationId || empty($defaultOrganizationId) ) 
                 {
                     $organizationTitle = trim($organization['#']['title'][0]['#']);
                     $defaultOrganization = &$organization;
@@ -250,17 +254,16 @@ class ScormImporter
             return false;
         }
         
-        // create a path from the organization
-        $this->insertedPath = new path();
-        $this->insertedPath->setTitle($organizationTitle);
-        $this->insertedPath->setInvisible();
+        // fill path data
+        $this->path->setTitle($organizationTitle);
+        $this->path->setInvisible();
         // todo handle identifier ? type ? encoding ? viewmode ?
         
-        if( $this->insertedPath->validate() )
+        if( $this->path->validate() )
         {
-            if( $this->insertedPath->save() )
+            if( $this->path->save() )
             {
-                $this->backlog->success(get_lang('New path created : %pathTitle', array('%pathTitle' => $organizationTitle)));
+                $this->backlog->success(get_lang('Path created : %pathTitle', array('%pathTitle' => $organizationTitle)));
             }
             else
             {
@@ -286,7 +289,8 @@ class ScormImporter
             $insertedItem = new item();
             $insertedItem->setTitle($item['#']['title'][0]['#']);
             $insertedItem->setIdentifier($item['@']['identifier']);
-            $insertedItem->setPathId($this->insertedPath->getId());
+            $insertedItem->setPathId($this->path->getId());
+            $insertedItem->setType('SCORM');
             
             // parent 
             if( $parentId > -1 )
@@ -305,25 +309,70 @@ class ScormImporter
             }
             
             // set sys path
-            if( isset($item['@']['identifierref']) )
+            if( isset($item['@']['identifierref']) && !empty($item['@']['identifierref']) )
             {
-                if( $resourceRef = $this->getResourceByRef($item['@']['identifierref']) )
+                $resourceRef = $this->getResourceByRef($item['@']['identifierref']);
+ 
+                if( is_array($resourceRef) && isset($resourceRef['@']['href']) )
                 {
-                    $insertedItem->setSysPath($resourceRef['@']['href']);
+                    $itemPath = $resourceRef['@']['href'];
+                    
+                    // parameters
+                    if( !empty($item['@']['parameters']) )
+                    {
+                        if( substr($item['@']['parameters'],0,1) == '#' || substr($item['@']['parameters'],0,1) == '?' )
+                        {
+                            // anchor or url parameters
+                            $itemPath .= $item['@']['parameters'];
+                        }
+                        else
+                        {
+                            // url parameters but ? is missing
+                            $itemPath .= '?' . $item['@']['parameters'];
+                        }
+                    }
+                    
+                    $insertedItem->setSysPath($itemPath);
+                }
+                else
+                {
+                    $this->backlog->failure(get_lang('An item has an reference to a ressource but that ressource cannot be find.'));
+                    return false;
                 }
             }
+            else
+            {
+                $insertedItem->setSysPath('');
+                // no associated ressource
+            }
             
+            // time limit action
+            if( !empty($item['#']['adlcp:timeLimitAction']) )
+            {
+                // TODO
+            }
+            
+            // launch data
+            if( !empty($item['#']['adlcp:dataFromLms']) )
+            {
+                $insertedItem->setLaunchData($item['#']['adlcp:dataFromLms']);
+            }
+                        
             // chapter or module
-            if( isset($item['#']['item']) )
+            if( isset($item['#']['item']) && is_array($item['#']['item']) )
             {
                 $insertedItem->setType('CONTAINER');
             }
 
+            // try to save new item
             if( $insertedItem->validate() )
             {
                 if( $insertedItem->save() )
                 {
-                    $this->backlog->success(get_lang('New item created : %pathTitle', array('%pathTitle' => $insertedItem->getTitle())));
+                    $this->backlog->success(get_lang('Item created : %pathTitle', array('%pathTitle' => $insertedItem->getTitle())));
+                    
+                    // add object to pile 
+                    $this->itemList[] = $insertedItem;
                 }
                 else
                 {
@@ -337,6 +386,7 @@ class ScormImporter
                 return false;
             }            
             
+            // get 'children' of this item  if any
             if( isset($item['#']['item']) )
             {
                 $this->addItems($item['#']['item'], $insertedItem->getId());
@@ -349,17 +399,33 @@ class ScormImporter
     {
         $resourceList = &$this->manifestContent['manifest']['#']['resources'][0]['#']['resource'];
         
-        foreach( $resourceList as $resource )
+        if( is_array($resourceList) )
         {
-            if( $resource['@']['identifier'] == $identifierref )
+            foreach( $resourceList as $resource )
             {
-                return $resource;
+                if( $resource['@']['identifier'] == $identifierref )
+                {
+                    return $resource;
+                }
+                // else continue
             }
-            // else continue
         }
         
         // not found
         return false;
+    }
+        
+    function renameDir()
+    {   
+        // rename file from its tmp name to path_X where X is the path id
+        if( ! claro_rename_file($this->scormDir . $this->uploadPath.'/', $this->scormDir . 'path_'.$this->path->getId().'/') )
+        {
+            $this->backlog->failure(get_lang('Cannot rename tmp folder.'));
+            return false;   
+        }
+
+        return true;
+
     }
     
     function clean($step = 0)
@@ -367,9 +433,10 @@ class ScormImporter
         // for each step we have to clean all step before 
         switch( $step )
         {
+            case 6 : 
             case 5 :
-                // delete inserted path
-                $this->insertedPath->delete();
+                // delete inserted path - this should also delete created items
+                $this->path->delete();
                 // delete
             case 4 : 
             case 3 : 
