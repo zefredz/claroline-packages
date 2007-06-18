@@ -36,14 +36,17 @@ function doCommit()
  */
 function refreshViewer()
 {
-    
+    refreshToc();
+    refreshNav();
+    refreshApi();
+    refreshContent();
 }
 
 function refreshToc()
 {
     $("#table_of_content", top.frames["lp_toc"].document).empty();
     
-    getToc(1);
+    getToc(pathId);
 }
 
 function refreshNav()
@@ -104,7 +107,7 @@ function debug(msg, level)
 {
     if( debug_mode > level )
     {
-        $("#lp_debug", top.frames["lp_nav"].document).append(msg + '<br />\n');
+        $("#lp_debug", top.frames["lp_nav"].document).append(msg + "<br />\n\n");
     }
 }
 
