@@ -99,7 +99,12 @@ if( $cmd == 'rqToc' )
     $itemList = new itemList();
 
     $itemListArray = $itemList->getFlatList($pathId);
+    
+    // init what will be required to resolve urls
+    //  urls of claroline tools
     $resolver = new Resolver(get_path('rootWeb'));
+    //  urls of scorm packages 
+    $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
     
     $html = '';
 
@@ -107,24 +112,25 @@ if( $cmd == 'rqToc' )
 
     foreach( $itemListArray as $anItem )
     {
-        if( $anItem['type'] == 'MODULE' ) $itemUrl = $resolver->resolve($anItem['sys_path']);
-        
         $html .= '<tr>' . "\n";
 
         // result
     	$html .= '<td>' . "\n"
-    	.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
     	.    '<img src="' . get_path('imgRepositoryWeb') . 'checkbox_on.gif" border="0" alt="' . get_lang('Checked') . '" />' . "\n"
-    	.    '</a>'
     	.    '</td>' . "\n"; 
     	    
         // title
         $html .= '<td align="left" style="padding-left:'.($anItem['deepness']*10).'px;">'
         .    '<img src="'.get_module_url('CLLP').'/img/'.(($anItem['type'] == 'CONTAINER')? 'chapter.png': 'item.png').'" alt="" />';
-        
+
         if( $anItem['type'] == 'MODULE' )
         {
             $itemUrl = $resolver->resolve($anItem['sys_path']); 
+            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content">' . $anItem['title'] . '</a>';
+        }
+        elseif( $anItem['type'] == 'SCORM' )
+        {
+            $itemUrl = $scormBaseUrl . $anItem['sys_path']; 
             $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content">' . $anItem['title'] . '</a>';
         }
         else
