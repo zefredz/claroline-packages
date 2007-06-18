@@ -39,6 +39,11 @@ install_module_in_course( 'CLLP', claro_get_current_course_id() ) ;
 
 require_once dirname( __FILE__ ) . '/lib/path.class.php';
 
+// those include should not be required when user is a student
+require_once dirname( __FILE__ ) . '/lib/item.class.php';
+require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
+
+
 /*
  * init request vars
  */
