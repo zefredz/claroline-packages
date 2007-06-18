@@ -233,10 +233,32 @@ class path
      */    
     function delete()
     {
+        if( $this->id == -1 ) return true;
+        
+        // delete all items related to this path
+        $itemList = new itemList();
+        $thisPathItemList = $itemList->load($this->id);
+        
+        if( !empty($thisPathItemList) )
+        {
+            foreach( $thisPathItemList as $item )
+            { 
+                $itemObj = new item();
+                $itemObj->load($item['id']);
+                
+                $itemObj->delete();
+            }
+        
+        }
+        
+        // delete the path
         $sql = "DELETE FROM `" . $this->tblPath . "`
                 WHERE `id` = " . (int) $this->id ;
 
         if( claro_sql_query($sql) == false ) return false;
+        
+        // delete path repository
+        claro_delete_file(get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/path_' . $this->id );
         
         $this->id = -1;
         return true;
