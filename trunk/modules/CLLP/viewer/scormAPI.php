@@ -27,6 +27,7 @@ else                                                                  $pathId = 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemid = null;
 
+header( 'Content-Type: text/javascript' );
 
 /*
 if(claro_is_user_authenticated())
@@ -89,8 +90,6 @@ $sco['exit'] = "";
 $sco['session_time'] = "0000:00:00.00";
 
 ?>
-<script type="text/javascript">
-
     var init_total_time = "<?php echo $sco['total_time']; ?>";
     
     // ====================================================
@@ -172,7 +171,7 @@ $sco['session_time'] = "0000:00:00.00";
                     }
                     this.APIError("0");
 
-                    setTimeout("do_commit()",1000);
+                    //setTimeout("doCommit()",1000);
 
                     APIInitialized = false; //
                     return "true";
@@ -515,7 +514,7 @@ $sco['session_time'] = "0000:00:00.00";
                     } else {
                             this.APIError("0");
 
-                            do_commit();
+                            doCommit();
 
                             return "true";
                     }
@@ -583,7 +582,7 @@ $sco['session_time'] = "0000:00:00.00";
     errDiagn["203"] = "The course made an incorrect data request. Contact course vendor or system administrator";
     errDiagn["301"] = "The system has not been initialized correctly.  Please contact your system administrator";
     errDiagn["401"] = "The course made a request for data not supported by Answers.";
-    errDiagn["402"] = "The course made a bad data saving request.  Contact course vendor or system adminsitrator";
+    errDiagn["402"] = "The course made a bad data saving request.  Contact course vendor or system administrator";
     errDiagn["403"] = "The course tried to write to a read only value.  Contact course vendor";
     errDiagn["404"] = "The course tried to read a value that can only be written to.  Contact course vendor";
     errDiagn["405"] = "The course gave an incorrect Data type.  Contact course vendor";
@@ -652,6 +651,3 @@ $sco['session_time'] = "0000:00:00.00";
     API_1484_11 = new APIClass();
     api_1484_11 = API_1484_11;
 
-
-
-</script>

@@ -28,9 +28,9 @@ include_once get_path('incRepositorySys') . '/lib/embed.lib.php';
  * Output
  */
 
-$interbredcrump[]= array ('url' => '../index.php', 'name' => get_lang('Learning path list'));
+$interbredcrump[] = array ('url' => '../index.php', 'name' => get_lang('Learning path list'));
 
-
+$nameTools = get_lang('Learning path');
 
 
 $display = new ClarolineScriptEmbed();

@@ -116,15 +116,16 @@ $innerFrameset->addCol($contentFrame, '*');
 // prepare html header
 $htmlHeaders = "\n"
 .     '<script type="text/javascript">' . "\n"
-.    '  var jQueryPath = "'.get_module_url('CLLP').'/js/jquery.js";' . "\n"
+.    '  var pathId = "'.$pathId.'";' . "\n"
 .    '  var moduleUrl = "'.get_module_url('CLLP').'/";' . "\n"
 .    '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
 .    '  var debug_mode = '.get_conf('scorm_api_debug').';' . "\n"
+.    '  var jQueryPath = "'.get_module_url('CLLP').'/js/jquery.js";' . "\n"
 .    '</script>' . "\n\n"
 .    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.js"></script>' . "\n"
 .    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.frameready.js"></script>' . "\n"
 .    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/CLLP.js"></script>' . "\n"
-;//.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/viewer/scormAPI.php?pathId='.$pathId.'"></script>' . "\n\n";
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/viewer/scormAPI.php?pathId='.$pathId.'"></script>' . "\n\n";
 
 if( !$fullScreen )
 {
