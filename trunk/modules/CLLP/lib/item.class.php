@@ -254,6 +254,8 @@ class item
      */    
     function delete()
     {
+        if( $this->id == -1 ) return true;
+        
         $sql = "DELETE FROM `" . $this->tblItem . "`
                 WHERE `id` = " . (int) $this->id ;
 
@@ -338,7 +340,7 @@ class item
      */
     function setType($value)
     {
-        $acceptedValues = array('CONTAINER', 'MODULE');
+        $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM');
         
         if( in_array($value, $acceptedValues) )
         {
@@ -558,7 +560,7 @@ class item
      * get sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @return string crl of claroline ressource or SCORM ressource relative path
+     * @return string crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
      */
     function getSysPath()
     {
@@ -569,7 +571,7 @@ class item
      * set sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value crl of claroline ressource or SCORM ressource relative path
+     * @param string $value crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
      */
     function setSysPath($value)
     {
@@ -598,7 +600,29 @@ class item
     {
         $this->parentId = (int) $value;
     }
-		
+
+    /**
+     * get launchData
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string data provided by manifest to the SCO
+     */
+    function getLaunchData()
+    {
+        return $this->launchData;
+    }
+
+    /**
+     * set launchData
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string $value data provided by manifest to the SCO
+     */
+    function setLaunchData($value)
+    {
+        $this->launchData = trim($value);
+    }
+    		
     /**
      * get the higher rank of items in learning path
      *
@@ -642,22 +666,8 @@ class itemList
     // load correct flat list of modules depending on parameters
     function getFlatList($pathId = null, $userId = null)
     {
-       	if( !is_null($pathId) )
-		{
-			if( !is_null($userId) )
-			{
-				$list = $this->loadUserPath($pathId, $userId);
-			}
-			else
-			{
-				$list = $this->loadPath($pathId);	
-			}
-		}
-		else
-		{
-			$list = $this->loadAll();	
-		} 
-
+        $list = $this->load($pathId,$userId);
+        
 		return $this->flatList( $this->buildTree($list,-1) );
     }
     
@@ -806,7 +816,7 @@ class itemList
 
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
-            return false;
+            return array();
         }
         else
         {
@@ -837,7 +847,7 @@ class itemList
 
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
-            return false;
+            return array();
         }
         else
         {
@@ -874,7 +884,7 @@ class itemList
 
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
-            return false;
+            return array();
         }
         else
         {
