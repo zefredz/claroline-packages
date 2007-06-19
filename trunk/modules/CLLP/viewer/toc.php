@@ -51,8 +51,6 @@ $display = new ClarolineScriptEmbed();
 $display->frameMode();
 $display->hideClaroBody();
 
-$display->addHtmlHeader('<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.js"></script>');
-
 $html = "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
 
 $display->setContent($html);
