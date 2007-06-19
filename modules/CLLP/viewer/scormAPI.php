@@ -198,11 +198,30 @@ $sco['session_time'] = "0000:00:00.00";
             debug("LMSGetValue(" + ele + ")", 1);
             if ( APIInitialized )
             {
-                    var i = array_indexOf(elements,ele);
-                    if (i != -1 )  // ele is implemented -> handle it
+                    if( isDefined(elementList[ele]) )
                     {
                         switch (ele)
                         {
+                            case 'cmi._version' : 
+                                    APIError("0");
+                                    return elementList[ele];
+                                    break;
+                            case 'cmi.comments_from_learner._children' :
+                                    APIError("0");
+                                    return elementList[ele];
+                                    break;
+                            case 'cmi.comments_from_learner._count' :
+                                    APIError("0");
+                                    return elementList['cmi.comments_from_learner'].length;
+                                    break;
+                            case 'cmi.comments_from_lms._children' :
+                                    APIError("0");
+                                    return elementList[ele];
+                                    break;
+                            case 'cmi.comments_from_lms._count' :
+                                    APIError("0");
+                                    return elementList['cmi.comments_from_lms'].length;
+                                    break;
                             case 'cmi.core._children' :
                                     APIError("0");
                                     return values[i];
@@ -308,11 +327,22 @@ $sco['session_time'] = "0000:00:00.00";
             debug("LMSSetValue(" + ele +","+ val + ")", 1);
             if ( APIInitialized )
             {
-                    var i = array_indexOf(elements,ele);
-                    if (i != -1 )  // ele is implemented -> handle it
+                    if( isDefined(elementList[ele]) )
                     {
                         switch (ele)
                         {
+                            case 'cmi._version' : 
+                                    APIError("403"); // read only
+                                    return false;
+                                    break;
+                            case 'cmi.comments_from_learner._children' :
+                                    APIError("403"); // read only
+                                    return false;
+                                    break;
+                            case 'cmi.comments_from_learner._count' :
+                                    APIError("403"); // read only
+                                    return false;
+                                    break;
                             case 'cmi.core._children' :
                                     APIError("402"); // invalid set value, element is a keyword
                                     return "false";
@@ -632,7 +662,39 @@ $sco['session_time'] = "0000:00:00.00";
     values[16] = "<?php echo $sco['lesson_status']?>"; //we do deal the completion_status element with the old lesson_status element, this will change in further versions...
     values[17] = "<?php echo $sco['lesson_status']?>"; //we do deal the sucess_status element with the old lesson_status element, this will change in further versions...
 
-
+    var elementList = new Array();
+    elementList['cmi._version'] = '1.0';
+    elementList['cmi.comments_from_learner._children']  = "comment,location,timestamp";
+    elementList['cmi.comments_from_learner._count']  = "";
+    elementList['cmi.comments_from_learner'] = new Array(); // TODO handle collections
+    elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
+    elementList['cmi.comments_from_lms._count']  = "";
+    elementList['cmi.comments_from_lms'] = new Array(); // TODO handle collections
+    
+    // todo
+    elementList['cmi.completion_status']  = "";
+    elementList['cmi.completion_threshold']  = "";    
+    elementList['cmi.credit']  = "";
+    elementList['cmi.entry']  = "";
+    elementList['cmi.exit']  = "";
+    elementList['cmi.interactions']  = new Array();
+    elementList['cmi.launch_data']  = "";
+    elementList['cmi.learner_id']  = "";
+    elementList['cmi.learner_name'] = "";
+    elementList['cmi.learner_preference'] = "";
+    elementList['cmi.location'] = "";
+    elementList['cmi.max_time_allowed'] = "";
+    elementList['cmi.mode'] = "";
+    elementList['cmi.objectives'] = new Array();
+    elementList['cmi.progress_measure'] = "";
+    elementList['cmi.scaled_passing_score'] = "";
+    elementList['cmi.score'] = "";
+    elementList['cmi.session_time'] = "";
+    elementList['cmi.success_status'] = "";
+    elementList['cmi.suspend_data'] = "";                
+    elementList['cmi.time_limit_action'] = "";
+    elementList['cmi.total_time'] = "";
+        
     // ====================================================
     // Final Setup
     //
