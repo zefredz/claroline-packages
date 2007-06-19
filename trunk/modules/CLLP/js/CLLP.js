@@ -2,6 +2,7 @@ $(document).ready(init);
 
 function init()
 {
+    /*
     // use frameReady to access the inner frames
     $.frameReady(function(){
 		$('#topBanner').hide();
@@ -10,8 +11,9 @@ function init()
 	},"top.lp_content" );
 	
 	$.frameReady(refreshToc, "top.lp_toc");
+	*/
 	
-	$(".claroCmd","top.lp_nav").hide();
+	setTimeout("refreshToc()", 1000);
 }
 
 /**
@@ -130,4 +132,13 @@ function array_indexOf(arr,val)
     return -1;
 }
 
+function isDefined(a) 
+{ 
+	return typeof a != 'undefined';
+}
+
+function isNull(a) 
+{
+    return typeof a == 'object' && !a;
+}
 
