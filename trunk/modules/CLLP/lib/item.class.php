@@ -82,7 +82,17 @@ class item
      */
     var $launchData;           
 
+    /**
+     * @var $timeLimitAction define how the LMS must handle the sco if time is out 
+     * possible values are : 'exit,message', 'exit,no message', 'continue,message', 'continue,no message'
+     */
+    var $timeLimitAction;           
 
+    /**
+     * @var $completionThreshold defineshow must be computed the completion status
+     */
+    var $completionThreshold;           
+        
     /**
      * @var $tblItem name of the item table
      */
@@ -110,6 +120,8 @@ class item
         $this->previousId = (int) -1;
         $this->nextId = (int) -1;
         $this->launchData = '';
+        $this->timeLimitAction = 'continue,no message';
+        $this->completionThreshold = '';
         
         // define module table names
         $tblNameList = array(
@@ -143,7 +155,9 @@ class item
                     `parent_id`,
                     `previous_id`,
                     `next_id`,
-                    `launch_data`
+                    `launch_data`,
+                    `timeLimitAction`,
+                    `completionThreshold`
             FROM `".$this->tblItem."`
             WHERE `id` = ".(int) $id;
 
@@ -165,6 +179,9 @@ class item
             $this->previousId = $data['previous_id'];
             $this->nextId = $data['next_id'];
             $this->launchData = $data['launch_data'];
+            $this->timeLimitAction = $data['timeLimitAction'];
+            $this->completionThreshold = $data['completionThreshold'];
+            
 
             return true;
         }
@@ -200,7 +217,9 @@ class item
                         `parent_id` = ".(int) $this->parentId.",
                         `previous_id` = ".(int) $this->previousId.",
                         `next_id` = ".(int) $this->nextId.",                                               
-                        `launch_data` = '".addslashes($this->launchData)."'";
+                        `launch_data` = '".addslashes($this->launchData)."',
+                        `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
+                        `completionThreshold` = '".addslashes($this->completionThreshold)."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
@@ -231,7 +250,9 @@ class item
                         `parent_id` = ".(int) $this->parentId.",
                         `previous_id` = ".(int) $this->previousId.",
                         `next_id` = ".(int) $this->nextId.",                                               
-                        `launch_data` = '".addslashes($this->launchData)."'
+                        `launch_data` = '".addslashes($this->launchData)."',
+                        `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
+                        `completionThreshold` = '".addslashes($this->completionThreshold)."'
                     WHERE `id` = '".$this->id."'";
 
             // execute and return main query
@@ -622,7 +643,58 @@ class item
     {
         $this->launchData = trim($value);
     }
-    		
+
+    /**
+     * get timeLimitAction
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string defines how the LMS must handle SCO when time is out
+     */
+    function getTimeLimitAction()
+    {
+        return $this->timeLimitAction;
+    }
+
+    /**
+     * set timeLimitAction
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string defines how the LMS must handle SCO when time is out
+     */
+    function setTimeLimitAction($value)
+    {
+        $acceptedValues = array('exit,message', 'exit,no message', 'continue,message', 'continue,no message');
+        
+        if( in_array($value, $acceptedValues) )
+        {
+            $this->timeLimitAction = $value;
+            return true;    
+        }
+        return false;
+    }
+
+    /**
+     * get completionThreshold
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string value of threshold required if setted to compute tu completion_status 
+     */
+    function getCompletionThreshold()
+    {
+        return $this->completionThreshold;
+    }
+
+    /**
+     * set completionThreshold
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string value of threshold required if setted to compute tu completion_status 
+     */
+    function setCompletionThreshold($value)
+    {
+        $this->completionThreshold = trim($value);
+    }
+            		
     /**
      * get the higher rank of items in learning path
      *
