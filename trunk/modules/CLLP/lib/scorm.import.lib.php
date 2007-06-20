@@ -349,13 +349,19 @@ class ScormImporter
             // time limit action
             if( !empty($item['#']['adlcp:timeLimitAction']) )
             {
-                // TODO
+                $insertedItem->setTimeLimitAction($item['#']['adlcp:timeLimitAction']);
             }
             
             // launch data
             if( !empty($item['#']['adlcp:dataFromLms']) )
             {
                 $insertedItem->setLaunchData($item['#']['adlcp:dataFromLms']);
+            }
+            
+            // completionThreshold
+            if( !empty($item['#']['adlcp:completionThreshold']) )
+            {
+                $insertedItem->setCompletionThreshold($item['#']['adlcp:completionThreshold']);
             }
                         
             // chapter or module
