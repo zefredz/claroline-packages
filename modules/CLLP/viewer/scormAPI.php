@@ -198,122 +198,203 @@ $sco['session_time'] = "0000:00:00.00";
             debug("LMSGetValue(" + ele + ")", 1);
             if ( APIInitialized )
             {
-                    if( isDefined(elementList[ele]) )
-                    {
-                        switch (ele)
-                        {
-                            case 'cmi._version' : 
-                                    APIError("0");
-                                    return elementList[ele];
-                                    break;
-                            case 'cmi.comments_from_learner._children' :
-                                    APIError("0");
-                                    return elementList[ele];
-                                    break;
-                            case 'cmi.comments_from_learner._count' :
-                                    APIError("0");
-                                    return elementList['cmi.comments_from_learner'].length;
-                                    break;
-                            case 'cmi.comments_from_lms._children' :
-                                    APIError("0");
-                                    return elementList[ele];
-                                    break;
-                            case 'cmi.comments_from_lms._count' :
-                                    APIError("0");
-                                    return elementList['cmi.comments_from_lms'].length;
-                                    break;
-                            case 'cmi.core._children' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.student_id' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.student_name' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.lesson_location' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.credit' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.lesson_status' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
+                switch (ele)
+                {
+                    case 'cmi._version' : 
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.comments_from_learner._children' :
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.comments_from_learner._count' :
+                            APIError("0");
+                            return elementList[ele].length;
+                            break;
+                    case 'cmi.comments_from_lms._children' :
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.comments_from_lms._count' :
+                            APIError("0");
+                            return elementList[ele].length;
+                            break;
+                    case 'cmi.completion_status' :  // TODO handle completion_threshold and completion_status and progress_measure
+                            APIError("0");
+                            return elementList[ele];       
+                            break;
+                    case 'cmi.progress_measure' : 
+                            if( elementList[ele] == "" ) 
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.success_status' : 
+                    // TODO compute result
+                            break;                              
+                    // todo threshold, measure, status
+                    case 'cmi.entry' :
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.exit' :
+                            APIError("405"); // write only
+                            return "";
+                            break;                                    
+                    case 'cmi.launch_data' :
+                            if( elementList[ele] == "" ) 
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;                                  
+                    case 'cmi.learner_id' :
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.learner_name' :
+                            APIError("0");
+                            return elementList[ele];
+                            break;                            
+                    case 'cmi.location' :
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.max_time_allowed' : 
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;       
+                    case 'cmi.mode' : 
+                            APIError("0");
+                            return elementList[ele];
+                            break;                                     
+                    case 'cmi.credit' : 
+                            APIError("0");
+                            return elementList[ele];
+                            break; 
+                    case 'cmi.scaled_passing_score' : 
+                            APIError("0");
+                            return elementList[ele];
+                            break; 
+                    case 'cmi.score._children' : 
+                            APIError("0");
+                            return elementList[ele];
+                            break;
+                    case 'cmi.score.scaled' :
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.score.min' :
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.score.max' :
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.score.raw' :
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.suspend_data' : 
+                            if( elementList[ele] == "" )
+                            {
+                                APIError("403"); // data model element value not initialized
+                                return "";
+                            }
+                            else
+                            {
+                                APIError("0");
+                                return elementList[ele];
+                            }
+                            break;
+                    case 'cmi.time_limit_action' : 
+                            APIError("0");
+                            return elementList[ele]; 
+                            break;
+                    case 'cmi.session_time' :
+                            // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
+                            // sum this to total_time on terminate before commit
+                            APIError("0");
+                            return elementList[ele]; 
+                            break;    
+                    case 'cmi.total_time' :
+                            if( elementList['cmi.session_time'] == "" )
+                            {
+                                APIError("0");
+                                return 0;
+                            }
+                            APIError("0");
+                            return elementList[ele]; 
+                            break;   
+                    default :
+                            // not implemented error
+                            APIError("401");
+                            return "";
+                            break;
+               
+                }
 
-                            //-----------------------------------
-                            //deal with SCORM 2004 new elements :
-                            //-----------------------------------
-
-                            case 'cmi.completion_status' :
-                                    APIError("0");
-                                    ele = 'cmi.core.lesson_status';
-                                    return values[i];
-                                    break;
-
-                            case 'cmi.success_status' :
-                                    APIError("0");
-                                    ele = 'cmi.core.lesson_status';
-                                    return values[i];
-                                    break;
-
-                            //-----------------------------------
-
-                            case 'cmi.core.entry' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.score._children' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.score.raw' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.score.min' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.score.max' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.total_time' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.core.exit' :
-                                    APIError("404"); // write only
-                                    return "";
-                                    break;
-                            case 'cmi.core.session_time' :
-                                    APIError("404"); // write only
-                                    return "";
-                                    break;
-                            case 'cmi.suspend_data' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-                            case 'cmi.launch_data' :
-                                    APIError("0");
-                                    return values[i];
-                                    break;
-
-                        }
-                    }
-                    else // ele not implemented
-                    {
-                        // not implemented error
-                        APIError("401");
-                        return "";
-                    }
             }
             else
             {
@@ -327,204 +408,207 @@ $sco['session_time'] = "0000:00:00.00";
             debug("LMSSetValue(" + ele +","+ val + ")", 1);
             if ( APIInitialized )
             {
-                    if( isDefined(elementList[ele]) )
-                    {
-                        switch (ele)
-                        {
-                            case 'cmi._version' : 
-                                    APIError("403"); // read only
-                                    return false;
-                                    break;
-                            case 'cmi.comments_from_learner._children' :
-                                    APIError("403"); // read only
-                                    return false;
-                                    break;
-                            case 'cmi.comments_from_learner._count' :
-                                    APIError("403"); // read only
-                                    return false;
-                                    break;
-                            case 'cmi.core._children' :
-                                    APIError("402"); // invalid set value, element is a keyword
-                                    return "false";
-                                    break;
-                            case 'cmi.core.student_id' :
-                                    APIError("403"); // read only
-                                    return "false";
-                                    break;
-                            case 'cmi.core.student_name' :
-                                    APIError("403"); // read only
-                                    return "false";
-                                    break;
-                            case 'cmi.core.lesson_location' :
-                                    if( val.length > 255 )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.core.lesson_status' :
-                                    var upperCaseVal = val.toUpperCase();
-                                    if ( upperCaseVal != "PASSED" && upperCaseVal != "FAILED"
-                                        && upperCaseVal != "COMPLETED" && upperCaseVal != "INCOMPLETE"
-                                        && upperCaseVal != "BROWSED" && upperCaseVal != "NOT ATTEMPTED" )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-
-
-                            //-------------------------------
-                            // Deal with SCORM 2004 element :
-                            // completion_status and success_status are new element,
-                            // we use them together with the old element lesson_status in the claro DB
-                            //-------------------------------
-
-                            case 'cmi.completion_status' :
-                                    var upperCaseVal = val.toUpperCase();
-                                    if ( upperCaseVal != "PASSED" && upperCaseVal != "FAILED"
-                                        && upperCaseVal != "COMPLETED" && upperCaseVal != "INCOMPLETE"
-                                        && upperCaseVal != "BROWSED" && upperCaseVal != "NOT ATTEMPTED" && upperCaseVal != "UNKNOWN" )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    ele = 'cmi.core.lesson_status';
-                                    values[4] = val;  // deal with lesson_status element from scorm 1.2 instead
-                                    APIError("0");
-                                    return "true";
-                                    break;
-
-                            case 'cmi.success_status' :
-                                    var upperCaseVal = val.toUpperCase();
-                                    if ( upperCaseVal != "PASSED" && upperCaseVal != "FAILED"
-                                        && upperCaseVal != "COMPLETED" && upperCaseVal != "INCOMPLETE"
-                                        && upperCaseVal != "BROWSED" && upperCaseVal != "NOT ATTEMPTED" && upperCaseVal != "UNKNOWN" )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-
-                                    ele = 'cmi.core.lesson_status';
-                                    values[4] = val;  // deal with lesson_status element from scorm 1.2 instead
-                                    APIError("0");
-                                    return "true";
-                                    break;
-
-                            //-------------------------------
-
-
-                            case 'cmi.core.credit' :
-                                    APIError("403"); // read only
-                                    return "false";
-                                    break;
-                            case 'cmi.core.entry' :
-                                    APIError("403"); // read only
-                                    return "false";
-                                    break;
-                            case 'cmi.core.score._children' :
-                                    APIError("402");  // invalid set value, element is a keyword
-                                    return "false";
-                                    break;
-                            case 'cmi.core.score.raw' :
-                                    if( isNaN(parseInt(val)) || (val < 0) || (val > 100) )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.core.score.min' :
-                                    if( isNaN(parseInt(val)) || (val < 0) || (val > 100) )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.core.score.max' :
-                                    if( isNaN(parseInt(val)) || (val < 0) || (val > 100) )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.core.total_time' :
-                                    APIError("403"); //read only
-                                    return "false";
-                                    break;
-                            case 'cmi.core.exit' :
-                                    var upperCaseVal = val.toUpperCase();
-                                    if ( upperCaseVal != "TIME-OUT" && upperCaseVal != "SUSPEND"
-                                        && upperCaseVal != "LOGOUT" && upperCaseVal != "" )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.core.session_time' :
-                                    // regexp to check format
-                                    // hhhh:mm:ss.ss
-                                    var re = /^[0-9]{2,4}:[0-9]{2}:[0-9]{2}(.)?[0-9]?[0-9]?$/;
-
-                                    if ( !re.test(val) )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-
-								  // check that minuts and second are 0 <= x < 60
-                                    var splitted_val = val.split(":");
-                                    if( splitted_val[1] < 0 || splitted_val[1] >= 60 || splitted_val[2] < 0 || splitted_val[2] >= 60 )
-                                    {
-                                        APIError("405");
-                                        return "false";
-								  }
-
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.suspend_data' :
-                                    if( val.length > 4096 )
-                                    {
-                                        APIError("405");
-                                        return "false";
-                                    }
-                                    values[i] = val;
-                                    APIError("0");
-                                    return "true";
-                                    break;
-                            case 'cmi.launch_data' :
-                                    APIError("403"); //read only
-                                    return "false";
-                                    break;
-
-                        }
-                    }
-                    else // ele not implemented
-                    {
-                        // not implemented error
-                        APIError("401");
-                        return "";
-                    }
+                switch (ele)
+                {
+                    case 'cmi._version' : 
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.comments_from_learner._children' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.comments_from_learner._count' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.comments_from_lms._children' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.comments_from_lms._count' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.completion_status' :
+                            var upperCaseVal = val.toUpperCase();
+                            if ( upperCaseVal != "COMPLETED" && upperCaseVal != "INCOMPLETE"
+                                && upperCaseVal != "NOT ATTEMPTED" && upperCaseVal != "UNKNOWN" )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break; 
+                    case 'cmi.progress_measure' : 
+                            if( isNaN(parseFloat(val)) )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }    
+                            if( (val < 0) || (val > 1) )
+                            {
+                                APIError("407"); // data model element out of range
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            return "true";
+                            break;
+                    case 'cmi.success_status' :
+                            var upperCaseVal = val.toUpperCase();
+                            if ( upperCaseVal != "PASSED" && upperCaseVal != "FAILED"
+                                && upperCaseVal != "UNKNOWN" )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break; 
+                        
+                    case 'cmi.entry' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;        
+                    case 'cmi.exit' :
+                            var upperCaseVal = val.toUpperCase();
+                            if ( upperCaseVal != "TIME-OUT" && upperCaseVal != "SUSPEND"
+                                && upperCaseVal != "LOGOUT" && upperCaseVal != "" )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break;                                    
+                    case 'cmi.launch_data' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;         
+                    case 'cmi.learner_id' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.learner_name' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;                              
+                    case 'cmi.location' :
+                            if( val.length > 255 )
+                            {
+                                APIError("405");
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break;                              
+                    case 'cmi.max_time_allowed' :   
+                            APIError("404"); // read only
+                            return "false";
+                            break; 
+                    case 'cmi.mode' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;  
+                    case 'cmi.credit' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;  
+                    case 'cmi.scaled_passing_score' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;   
+                    case 'cmi.score._children' : 
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.score.scaled' : 
+                            if( isNaN(parseFloat(val)) )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }    
+                            if( (val < 0) || (val > 1) )
+                            {
+                                APIError("407"); // data model element out of range
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            return "true";
+                            break;      
+                    case 'cmi.score.min' : 
+                            if( isNaN(parseFloat(val)) )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }    
+                            if( (val < 0) || (val > 1) )
+                            {
+                                APIError("407"); // data model element out of range
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            return "true";
+                            break;       
+                    case 'cmi.score.max' : 
+                            if( isNaN(parseFloat(val)) )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }    
+                            if( (val < 0) || (val > 1) )
+                            {
+                                APIError("407"); // data model element out of range
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            return "true";
+                            break; 
+                    case 'cmi.score.raw' : 
+                            if( isNaN(parseFloat(val)) )
+                            {
+                                APIError("406"); // data model element type mismatch
+                                return "false";
+                            }    
+                            if( (val < 0) || (val > 1) )
+                            {
+                                APIError("407"); // data model element out of range
+                                return "false";
+                            }
+                            elementList[ele] = val;
+                            return "true";
+                            break;       
+                    case 'cmi.session_time' :
+                            // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break;    
+                    case 'cmi.total_time' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;   
+                    case 'cmi.suspend_data' :
+                            elementList[ele] = val;
+                            APIError("0");
+                            return "true";
+                            break;
+                    case 'cmi.time_limit_action' : 
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    default :
+                            // not implemented error
+                            APIError("401");
+                            return "";
+                            break;
+                
+                }
             }
             else
             {
@@ -670,30 +754,40 @@ $sco['session_time'] = "0000:00:00.00";
     elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
     elementList['cmi.comments_from_lms._count']  = "";
     elementList['cmi.comments_from_lms'] = new Array(); // TODO handle collections
-    
-    // todo
-    elementList['cmi.completion_status']  = "";
-    elementList['cmi.completion_threshold']  = "";    
-    elementList['cmi.credit']  = "";
+    elementList['cmi.completion_status']  = "UNKNOWN"; // progress measure == 0 -> not attempted, 1 -> completed, 0 < < 1 -> incomplete but depends on complete threshold
     elementList['cmi.entry']  = "";
     elementList['cmi.exit']  = "";
-    elementList['cmi.interactions']  = new Array();
     elementList['cmi.launch_data']  = "";
     elementList['cmi.learner_id']  = "";
-    elementList['cmi.learner_name'] = "";
-    elementList['cmi.learner_preference'] = "";
-    elementList['cmi.location'] = "";
-    elementList['cmi.max_time_allowed'] = "";
-    elementList['cmi.mode'] = "";
-    elementList['cmi.objectives'] = new Array();
-    elementList['cmi.progress_measure'] = "";
-    elementList['cmi.scaled_passing_score'] = "";
-    elementList['cmi.score'] = "";
-    elementList['cmi.session_time'] = "";
-    elementList['cmi.success_status'] = "";
-    elementList['cmi.suspend_data'] = "";                
-    elementList['cmi.time_limit_action'] = "";
+    elementList['cmi.learner_name'] = "";    
+    elementList['cmi.location'] = "";    
+    elementList['cmi.max_time_allowed'] = ""; // TODO get that from manifest ! 
+    elementList['cmi.mode'] = "";   // if mode is browse or review credit is always no-credit, if mode == "normal" credit my be credit or no-credit
+    elementList['cmi.credit']  = "no-credit";     
+    elementList['cmi.progress_measure'] = ""; // not attempted, completed, incomplete, depends on completionThreshold    
+    elementList['cmi.scaled_passing_score'] = "";    
+    elementList['cmi.score._children'] = "scaled,min,max,raw";
+    elementList['cmi.score.scaled'] = "";
+    elementList['cmi.score.min'] = "";
+    elementList['cmi.score.max'] = "";
+    elementList['cmi.score.raw'] = "";
+    elementList['cmi.session_time'] = ""; // check value ? find a way to store it ? probably use php to convert and serve a correct string
+    elementList['cmi.success_status'] = ""; // passed failed or unknown
+    elementList['cmi.suspend_data'] = "";     
+    elementList['cmi.time_limit_action'] = ""; // exit,message/exit,no message/continue,message/continue,no message // should be initialized to continue,no message if nothing found in manifest
     elementList['cmi.total_time'] = "";
+    
+                    
+    // todo    
+    elementList['cmi.completion_threshold']  = "";    
+    elementList['cmi.interactions']  = new Array();
+    elementList['cmi.learner_preference'] = "";
+    elementList['cmi.objectives'] = new Array();
+    
+
+
+               
+
         
     // ====================================================
     // Final Setup
