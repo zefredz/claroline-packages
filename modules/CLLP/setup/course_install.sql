@@ -31,6 +31,8 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `previous_id` INT(11),
   `next_id` INT(11),
   `launch_data` text NOT NULL default '',
+  `timeLimitAction` ENUM( 'exit,message', 'exit,no message', 'continue,message', 'continue,no message' ) NOT NULL DEFAULT 'continue,no message',  
+  `completionThreshold` VARCHAR(6) NOT NULL default '',
   PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
 
