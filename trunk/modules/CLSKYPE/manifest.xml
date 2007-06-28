@@ -1,0 +1,24 @@
+<module>
+  <label>CLSKYPE</label>
+  <name>Show teacher Skype status</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <default_dock>courseBannerRight</default_dock>
+  <type>applet</type>
+
+  <description>
+    This plugin shows the Skype status of the teacher to its course visitors.
+  </description>
+
+  <author>
+     <name>Sebastien Piraux</name>
+     <email>seb@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>
