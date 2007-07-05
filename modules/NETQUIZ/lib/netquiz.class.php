@@ -105,6 +105,7 @@ class QuizsStats
 	// compute
 	function compute()
 	{
+		
 		$this->nbparticipations = count($this->data);
 		
 		$this->selectDateLastParticipation();
@@ -112,19 +113,26 @@ class QuizsStats
 		$this->selectScore();
 		
 		$this->selectAverage();
-		
+			
 		$this->selectMediane();
-		
+			
 		$this->selectNumerPaticipantsMoyenne();
+		
 	}
 	
 	// selectDateLastParticipation
 	function selectDateLastParticipation()
 	{    
-		$this->iFinal = $this->data[0]['Final'];
-		if(intval($this->iFinal) == 1){
-			$this->datelastparticipation =  date($GLOBALS['sDefaultDateHourFormat'],$this->data[0]['ParticipationDate']);
-		}else{
+		if( !empty($this->data) ) {
+			$this->iFinal = $this->data[0]['Final'];
+			if(intval($this->iFinal) == 1){
+				$this->datelastparticipation =  date($GLOBALS['sDefaultDateHourFormat'],$this->data[0]['ParticipationDate']);
+			}else{
+				$this->datelastparticipation = "-";
+			}
+		}
+		else
+		{
 			$this->datelastparticipation = "-";
 		}
 	}
@@ -190,10 +198,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
 		
-		$sql =   "select max(IDParticipant) as last_id from `nq_participants`";
+		$sql =   "select max(IDParticipant) as last_id from `".$nameTables['nq_participants']."`";
 		
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
@@ -220,10 +228,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
 		
-		$sql =   "select max(IDQuiz) as last_id from `nq_quizs`";
+		$sql =   "select max(IDQuiz) as last_id from  `".$nameTables['nq_quizs']."`";
 		
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
@@ -283,15 +291,14 @@ class netquiz
 			
 			$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 			
-			### Debug ###
+			### Debug ### OK
 			// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
 			
-			$sql = "select IDQuiz from `nq_quizs` where QuizIdent = '".$this->getQuizIdent()."' and QuizVersion = '".$this->getQuizVersion()."'";
+			$sql = "select IDQuiz from `".$nameTables['nq_quizs']."` where QuizIdent = '".$this->getQuizIdent()."' and QuizVersion = '".$this->getQuizVersion()."'";
 			$result = claro_sql_query_get_single_value ($sql);
 			
 			if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 			{
-				//return $this->_setProperties($result);
 				return $result;
 			}
 			else
@@ -301,6 +308,17 @@ class netquiz
 		}
 	}
 	
+    
+    // current user id
+	function getCurrentUserid()
+	{
+    	return $this->currentuserid;
+	}
+	
+	function setCurrentUserId($currentuserid)
+	{
+		$this->currentuserid = $currentuserid;
+	}
 
 	
 	
@@ -382,10 +400,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
-		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`
+		### Debug ### OK
+		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`
 		
-		$sql = "INSERT INTO `nq_participants` (Prenom, Nom, Groupe, Matricule, Courriel, IDQuiz) VALUES (".toSQLString( $this->getPrenom(),false ).",".toSQLString( $this->getNom(),false ).",".toSQLString( $this->getGroupe(),false ).",".toSQLString( $this->getMatricule(),false ).",".toSQLString( $this->getCourriel(),false ).",".toSQLString( $this->getIdQuiz(),false ).");";
+		$sql = "INSERT INTO `".$nameTables['nq_participants']."` (Prenom, Nom, Groupe, Matricule, Courriel, IDQuiz, currentUserId) VALUES (".toSQLString( $this->getPrenom(),false ).",".toSQLString( $this->getNom(),false ).",".toSQLString( $this->getGroupe(),false ).",".toSQLString( $this->getMatricule(),false ).",".toSQLString( $this->getCourriel(),false ).",".toSQLString( $this->getIdQuiz(),false ).",". $this->getCurrentUserid().");";
 
 		if ( claro_sql_query($sql) )
 		{
@@ -400,6 +418,18 @@ class netquiz
 
 	
 	
+	
+	
+	// repquizid
+	function getRepQuizId()
+	{
+    	return $this->repquizid;
+	}
+	
+	function setRepQuizId($repquizid)
+	{
+		$this->repquizid = $repquizid;
+	}
 	
 /*
 	// QuizIdent
@@ -490,6 +520,10 @@ class netquiz
 		$this->actif = $actif;
 	}
 	
+
+	
+	
+
 	// addquiz.php -> insérer un quiz en DB
 	function insertQuiz()
 	{
@@ -501,10 +535,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`
 		
-		$sql = "INSERT INTO `nq_quizs` (QuizIdent, QuizVersion, QuizName, NbQuestions, VersionDate, Password, Auteur, Actif) VALUES ('".addslashes( $this->getQuizIdent() )."','".addslashes( $this->getQuizVersion() )."','".addslashes( $this->getQuizName() )."','".addslashes( $this->getNbQuestions() )."',NOW(),'".addslashes( $this->getPassword() )."','".addslashes( $this->getAuteur() )."','".addslashes( $this->getActif() )."');";
+		$sql = "INSERT INTO `".$nameTables['nq_quizs']."` (RepQuizId, QuizIdent, QuizVersion, QuizName, NbQuestions, VersionDate, Password, Auteur, Actif) VALUES ('".addslashes( $this->getRepQuizId() )."','".addslashes( $this->getQuizIdent() )."','".addslashes( $this->getQuizVersion() )."','".addslashes( $this->getQuizName() )."','".addslashes( $this->getNbQuestions() )."',NOW(),'".addslashes( $this->getPassword() )."','".addslashes( $this->getAuteur() )."','".addslashes( $this->getActif() )."');";
 
 		if ( claro_sql_query($sql) )
 		{
@@ -622,14 +656,14 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`
 		
-		$sql = "INSERT INTO `nq_questions` (QuestionName, QuestionType, QuestionTypeTD, Ponderation, EnonceHTML, ReponseXML, IDQuiz, NoQuestion) VALUES ('".addslashes( $this->getTitre() )."', '".addslashes( $this->getType() )."', '".addslashes( $this->getTypeTd() )."', '".addslashes( $this->getPonderation() )."', '".addslashes( $this->getEnonce() )."', '".addslashes( $this->getReponseXML() )."', '".addslashes( $this->getIdQuiz() )."', '".addslashes( $this->getNoQuestion() )."');";
+		$sql = "INSERT INTO  `".$nameTables['nq_questions']."` (QuestionName, QuestionType, QuestionTypeTD, Ponderation, EnonceHTML, ReponseXML, IDQuiz, NoQuestion) VALUES ('".addslashes( $this->getTitre() )."', '".addslashes( $this->getType() )."', '".addslashes( $this->getTypeTd() )."', '".addslashes( $this->getPonderation() )."', '".addslashes( $this->getEnonce() )."', '".addslashes( $this->getReponseXML() )."', '".addslashes( $this->getIdQuiz() )."', '".addslashes( $this->getNoQuestion() )."');";
 
 		if ( claro_sql_query($sql) )
 		{
-			return true;
+            return true;
 		}
 		else
 		{
@@ -651,10 +685,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
 		
-		$sql =   "select QuizIdent,QuizVersion from `nq_quizs`";
+		$sql =   "select QuizIdent,QuizVersion from `".$nameTables['nq_quizs']."`";
 		
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
@@ -681,10 +715,39 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
 		
-		$sql =   "select *,UNIX_TIMESTAMP(VersionDate) AS TS_VersionDate from `nq_quizs`";
+		$sql =   "select IDQuiz, RepQuizId, QuizName, Actif from `".$nameTables['nq_quizs']."`";
+		
+		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('LOADED_FAILED');
+		}
+			
+	}	
+	
+	
+	
+	
+	// quizlist.php -> select les questions en DB
+	function selectQuizsListDate()
+	{
+			
+		$tblNameList = array(
+			'nq_quizs'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
+		
+		$sql = "select  IDQuiz, QuizName, UNIX_TIMESTAMP(VersionDate) AS TS_VersionDate from `".$nameTables['nq_quizs']."`";
 		
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
@@ -722,10 +785,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
 		
-		$sql = "select Ponderation from `nq_questions` where IDQuestion = '".$this->getIdQuestion()."'";
+		$sql = "select Ponderation from `".$nameTables['nq_questions']."` where IDQuestion = '".$this->getIdQuestion()."'";
 		
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
@@ -787,10 +850,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."`	
 		
-		$sql = "update `nq_participations` set Pointage = '".$this->getPointage()."' where IDQuestion = '".$this->getIdQuestion()."' and IDParticipant = '".$this->getIdParticipant()."'";
+		$sql = "update `".$nameTables['nq_participations']."` set Pointage = '".$this->getPointage()."' where IDQuestion = '".$this->getIdQuestion()."' and IDParticipant = '".$this->getIdParticipant()."'";
 		
 		if ( claro_sql_query($sql) )
 		{
@@ -841,10 +904,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
 		
-		$sql = "update `nq_questions` set Active = '".$this->getQuestionsActif()."' where IDQuestion = '".$this->getIdQuestion()."'";
+		$sql = "update `".$nameTables['nq_questions']."` set Active = '".$this->getQuestionsActif()."' where IDQuestion = '".$this->getIdQuestion()."'";
 		
 		if ( claro_sql_query($sql) )
 		{
@@ -895,10 +958,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
 		
-		$sql = "update `nq_participants` set Actif = '".$this->getParticipantsActif()."' where IDParticipant = '".$this->getIdParticipant()."'";
+		$sql = "update  `".$nameTables['nq_participants']."` set Actif = '".$this->getParticipantsActif()."' where IDParticipant = '".$this->getIdParticipant()."'";
 
 		if ( claro_sql_query($sql) )
 		{
@@ -954,21 +1017,61 @@ class netquiz
 	{
 			
 		$tblNameList = array(
-			'nq_participants'
+			'nq_participants', 'nq_participations', 'nq_questions'
 		);
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
 		
 		$sql =   "select nq_participants.IDParticipant, nq_participants.Prenom, nq_participants.Nom, nq_participants.Groupe, nq_participants.Final,  nq_participants.Courriel, " .
                 "UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDate, sum(nq_participations.Pointage) as PointageTotal, nq_participants.Matricule, nq_participants.Actif " .
-                "from nq_participants " .
-                "left join nq_participations using (IDParticipant) " .
-                "right join nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
+                "from `".$nameTables['nq_participants']."` AS nq_participants " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDParticipant) " .
+                "right join `".$nameTables['nq_questions']."` AS nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
                 "where nq_questions.Active = 1 and " .
                 "nq_participants.IDQuiz = '".$this->getIdQuiz()."' " .
+                "group by nq_participants.IDParticipant " .
+                "order by '".$this->getOrderByField()."' '".$this->getOrderByDirection()."'";
+		
+		
+		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+
+
+
+
+
+	// exportparticipations.php -> export des participations
+	function selectParticipationsCurrentUser()
+	{
+			
+		$tblNameList = array(
+			'nq_participants', 'nq_participations', 'nq_questions'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
+		
+		$sql =   "select nq_participants.IDParticipant, nq_participants.Prenom, nq_participants.Nom, nq_participants.Groupe, nq_participants.Final,  nq_participants.Courriel, " .
+                "UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDate, sum(nq_participations.Pointage) as PointageTotal, nq_participants.Matricule, nq_participants.Actif " .
+                "from `".$nameTables['nq_participants']."` AS nq_participants " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDParticipant) " .
+                "right join `".$nameTables['nq_questions']."` AS nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
+                "where nq_questions.Active = 1 and " .
+                "nq_participants.IDQuiz = '".$this->getIdQuiz()."' and " .
+                "nq_participants.currentUserId = '".$this->getCurrentUserid()."' " .
                 "group by nq_participants.IDParticipant " .
                 "order by '".$this->getOrderByField()."' '".$this->getOrderByDirection()."'";
 		
@@ -1012,9 +1115,9 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
-		$sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) as VersionDate from `nq_quizs` where IDQuiz = '".$this->getIdQuiz()."'";
+		$sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) as VersionDate from `".$nameTables['nq_quizs']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
@@ -1054,9 +1157,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
-		$sql = "select sum(Ponderation) as PonderationTotal from `nq_questions` where IDQuiz = '".$this->getIdQuiz()."'";
+        
+		$sql = "select sum(Ponderation) as PonderationTotal from `".$nameTables['nq_questions']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
 			return $result;
@@ -1113,23 +1217,24 @@ class netquiz
 	{
 			
 		$tblNameList = array(
-			'nq_questions'
+			'nq_questions', 'nq_participations', 'nq_participants'
 		);
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
 		
 		$sql =  "select nq_questions.NoQuestion, nq_questions.Ponderation, AVG(nq_participations.Pointage) as Average, " .
                 "nq_questions.QuestionName , nq_questions.QuestionTypeTD, nq_questions.IDQuestion, nq_questions.Active " .
-                "from nq_questions " .
-                "left join nq_participations using (IDQuestion) " .
-                "left join (select * from nq_participants where Actif = 1) nq_participants_actif on nq_participations.IDParticipant = nq_participants_actif.IDParticipant " .
+                "from `".$nameTables['nq_questions']."` AS nq_questions " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDQuestion) " .
+                "left join (select IDParticipant, Prenom, Nom, Groupe, Matricule, Courriel, Coordonnees, ParticipationDate, Final, IDQuiz, Actif from `".$nameTables['nq_participants']."` AS nq_participants where Actif = 1) nq_participants_actif on nq_participations.IDParticipant = nq_participants_actif.IDParticipant " .
                 "where nq_questions.IDQuiz = '".$this->getIdQuiz()."' " .
                 "group by nq_questions.IDQuestion " .
                 "order by '".$this->getOrderByField()."' '".$this->getOrderByDirection()."'";
-		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		
+        if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
 		}
@@ -1139,8 +1244,45 @@ class netquiz
 		}
 			
 	}
+    
+    
+    
+    
+    
+	// exportquestions.php -> export des participations
+	function selectQuestionsCurrentUser()
+	{
+			
+		$tblNameList = array(
+			'nq_questions', 'nq_participations', 'nq_participants'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
+		
+		$sql =  "select nq_questions.NoQuestion, nq_questions.Ponderation, AVG(nq_participations.Pointage) as Average, " .
+                "nq_questions.QuestionName , nq_questions.QuestionTypeTD, nq_questions.IDQuestion, nq_questions.Active " .
+                "from `".$nameTables['nq_questions']."` AS nq_questions " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDQuestion) " .
+                " join (select IDParticipant, Prenom, Nom, Groupe, Matricule, Courriel, Coordonnees, ParticipationDate, Final, IDQuiz, Actif from `".$nameTables['nq_participants']."` AS nq_participants where Actif = 1 and currentUserId = '".$this->getCurrentUserid()."') nq_participants_actif on nq_participations.IDParticipant = nq_participants_actif.IDParticipant " .
+                "where nq_questions.IDQuiz = '".$this->getIdQuiz()."' " .
+                "group by nq_questions.IDQuestion " .
+                "order by '".$this->getOrderByField()."' '".$this->getOrderByDirection()."'";
+		
+        if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		{
+            return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
 
-
+  
 
 
 	
@@ -1154,9 +1296,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
-		$sql = "select IDQuestion from `nq_questions` where IDQuiz = '".$this->getIdQuiz()."'";
+		
+        $sql = "select IDQuestion from `".$nameTables['nq_questions']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
@@ -1182,9 +1325,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."`	
-		$sql = "select * from `nq_participations` where IDQuestion = '".$this->getIdQuestion()."'";
+		
+        $sql = "select IDParticipant, IDQuestion, Pointage, PointageAuto, ReponseHTML from `".$nameTables['nq_participations']."` where IDQuestion = '".$this->getIdQuestion()."'";
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
@@ -1210,9 +1354,9 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."`	
-		$sql = "delete from `nq_participations` where IDParticipant = '".$this->getIdParticipant()."' and IDQuestion = '".$this->getIdQuestion()."'";
+		$sql = "delete from `".$nameTables['nq_participations']."` where IDParticipant = '".$this->getIdParticipant()."' and IDQuestion = '".$this->getIdQuestion()."'";
 		if ( claro_sql_query($sql) )
 		{
 			return true;
@@ -1238,9 +1382,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
-		$sql = "delete from `nq_questions` where IDQuestion = '".$this->getIdQuestion()."'";
+		
+        $sql = "delete from  `".$nameTables['nq_questions']."` where IDQuestion = '".$this->getIdQuestion()."'";
 		if ( claro_sql_query($sql) )
 		{
 			return true;
@@ -1268,7 +1413,8 @@ class netquiz
 		
 		### Debug ###
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
-		$sql = "delete from `nq_quizs` where IDQuiz = '".$this->getIdQuiz()."'";
+		
+        $sql = "delete from `".$nameTables['nq_quizs']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( claro_sql_query($sql) )
 		{
 			return true;
@@ -1294,9 +1440,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
-		$sql = "delete from `nq_participants` where IDQuiz = '".$this->getIdQuiz()."'";
+		
+        $sql = "delete from `".$nameTables['nq_participants']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( claro_sql_query($sql) )
 		{
 			return true;
@@ -1322,9 +1469,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
-		$sql = "select QuizName from `nq_quizs` where IDQuiz = '".$this->getIdQuiz()."'";
+		
+        $sql = "select QuizName from `".$nameTables['nq_quizs']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
 			return $result;
@@ -1350,9 +1498,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
-		$sql = "select Nom,Prenom,Groupe,Matricule,Courriel,Coordonnees, Final, UNIX_TIMESTAMP(ParticipationDate) as ParticipationDate, Actif from `nq_participants` where IDParticipant = '".$this->getIdParticipant ()."'";
+		
+        $sql = "select Nom,Prenom,Groupe,Matricule,Courriel,Coordonnees, Final, UNIX_TIMESTAMP(ParticipationDate) as ParticipationDate, Actif from `".$nameTables['nq_participants']."` where IDParticipant = '".$this->getIdParticipant ()."'";
 		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
 		{
 			return $result;
@@ -1378,9 +1527,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`
-		$sql = "select sum(Ponderation) as PonderationTotal from `nq_questions` where IDQuiz = '".$this->getIdQuiz()."' and Active = 1";
+		
+        $sql = "select sum(Ponderation) as PonderationTotal from `".$nameTables['nq_questions']."` where IDQuiz = '".$this->getIdQuiz()."' and Active = 1";
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
 			return $result;
@@ -1406,9 +1556,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_questions` par  `".$nameTables['nq_questions']."`
-		$sql = "select sum(Pointage) as PointageTotal from `nq_participations`, `nq_questions` where IDParticipant = '".$this->getIdParticipant ()."' and nq_participations.IDQuestion = nq_questions.IDQuestion and nq_questions.Active = 1";
+		
+        $sql = "select sum(Pointage) as PointageTotal from `".$nameTables['nq_participations']."` AS nq_participations,  `".$nameTables['nq_questions']."` AS nq_questions where IDParticipant = '".$this->getIdParticipant ()."' and nq_participations.IDQuestion = nq_questions.IDQuestion and nq_questions.Active = 1";
 		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
 		{
 			return $result;
@@ -1434,9 +1585,125 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_questions` par  `".$nameTables['nq_questions']."`
-		$sql = "select * from `nq_participations`, `nq_questions` where nq_participations.IDParticipant = '".$this->getIdParticipant ()."' and nq_participations.IDQuestion = nq_questions.IDQuestion";
+		
+        $sql = "select nq_questions.IDQuestion, nq_questions.NoQuestion, nq_questions.QuestionName, nq_questions.QuestionType, nq_questions.QuestionTypeTD, nq_questions.EnonceHTML, nq_questions.ReponseHTML, nq_questions.Ponderation, nq_questions.Active, nq_participations.IDParticipant, nq_participations.IDQuestion, nq_participations.Pointage, nq_participations.PointageAuto, nq_participations.ReponseHTML from  `".$nameTables['nq_participations']."` AS nq_participations, `".$nameTables['nq_questions']."` AS nq_questions where nq_participations.IDParticipant = '".$this->getIdParticipant ()."' and nq_participations.IDQuestion = nq_questions.IDQuestion";
+		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+	
+    
+    
+    
+    
+    
+	// viewquestiondetail.php -> Select Question détail
+	function selectDetailsQuestion()
+	{
+			
+		$tblNameList = array(
+			'nq_questions', 'nq_quizs'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."` et remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`
+		
+        $sql = "select nq_questions.IDQuestion, nq_questions.QuestionName, nq_questions.QuestionType, nq_questions.QuestionTypeTD, nq_questions.Ponderation, nq_questions.EnonceHTML, nq_questions.ReponseHTML, nq_questions.ReponseXML, nq_questions.IDQuiz, nq_questions.NoQuestion, nq_questions.Active, nq_quizs.IDQuiz, nq_quizs.RepQuizId, nq_quizs.QuizIdent, nq_quizs.QuizVersion, nq_quizs.QuizName, nq_quizs.NbQuestions, nq_quizs.VersionDate, nq_quizs.Password, nq_quizs.Title, nq_quizs.Auteur, nq_quizs.Actif from `".$nameTables['nq_questions']."` AS nq_questions, `".$nameTables['nq_quizs']."` AS nq_quizs where IDQuestion = '".$this->getIdQuestion()."' and nq_questions.IDQuiz = nq_quizs.IDQuiz";
+		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+
+	
+	  
+	
+	
+	// viewquestiondetail.php -> Select Nombre de participant et moyenne
+	function selectNumberParticipantAndMoyenne()
+	{
+			
+		$tblNameList = array(
+			'nq_participations', 'nq_participants'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et remplacer `nq_participants` par  `".$nameTables['nq_participants']."`
+		
+        $sql = "select count(nq_participations.IDParticipant) as NbRepondants, avg(Pointage) as Moyenne from `".$nameTables['nq_participations']."` AS nq_participations, `".$nameTables['nq_participants']."` AS nq_participants where nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant and nq_participants.Actif = 1";
+		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+
+	
+	
+	
+    
+    
+    // viewquestiondetail.php -> Select Nombre de participant et moyenne de l'utilisateur courant
+	function selectNumberParticipantAndMoyenneCurrentUser()
+	{
+			
+		$tblNameList = array(
+			'nq_participations', 'nq_participants'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et remplacer `nq_participants` par  `".$nameTables['nq_participants']."`
+		
+        $sql = "select count(nq_participations.IDParticipant) as NbRepondants, avg(Pointage) as Moyenne from `".$nameTables['nq_participations']."` AS nq_participations, `".$nameTables['nq_participants']."` AS nq_participants where nq_participants.currentUserId = '".$this->getCurrentUserid()."' and nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant and nq_participants.Actif = 1";
+		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+
+	
+	// viewquestiondetail.php -> Select Participations list
+	function selectQuestionDetailParticipationsList()
+	{
+			
+		$tblNameList = array(
+			'nq_participations', 'nq_participants'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_participants` par  `".$nameTables['nq_participants']."`
+		
+        $sql = "select nq_participations.IDParticipant, nq_participations.IDQuestion, nq_participations.Pointage, nq_participations.PointageAuto, nq_participations.ReponseHTML, nq_participants.IDParticipant, nq_participants.Prenom, nq_participants.Nom, nq_participants.Groupe, nq_participants.Matricule, nq_participants.Courriel, nq_participants.Coordonnees, nq_participants.ParticipationDate, nq_participants.Final, nq_participants.IDQuiz, nq_participants.Actif, UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDateUT from  `".$nameTables['nq_participations']."` AS nq_participations, `".$nameTables['nq_participants']."` AS nq_participants where nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant";
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
@@ -1451,65 +1718,9 @@ class netquiz
 	
 	
 	
-	
-	// viewquestiondetail.php -> Select Question détail
-	function selectDetailsQuestion()
-	{
-			
-		$tblNameList = array(
-			'nq_questions', 'nq_quizs'
-		);
-		
-		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
-		
-		### Debug ###
-		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."` et remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`
-		$sql = "select * from `nq_questions`, `nq_quizs` where IDQuestion = '".$this->getIdQuestion()."' and nq_questions.IDQuiz = nq_quizs.IDQuiz";
-		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
-		{
-			return $result;
-		}
-		else
-		{				
-			return claro_failure::set_failure('SELECTED_FAILED');
-		}
-			
-	}
-
-	
-	
-	
-	
-	// viewquestiondetail.php -> Select Nombre de participant et moyenne
-	function selectNumberParticipantAndMoyenne()
-	{
-			
-		$tblNameList = array(
-			'nq_participations', 'nq_participants'
-		);
-		
-		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
-		
-		### Debug ###
-		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et remplacer `nq_participants` par  `".$nameTables['nq_participants']."`
-		$sql = "select count(nq_participations.IDParticipant) as NbRepondants, avg(Pointage) as Moyenne from `nq_participations`, `nq_participants` where nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant and nq_participants.Actif = 1";
-		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
-		{
-			return $result;
-		}
-		else
-		{				
-			return claro_failure::set_failure('SELECTED_FAILED');
-		}
-			
-	}
-
-	
-	
-	
-	
+    
 	// viewquestiondetail.php -> Select Participations list
-	function selectQuestionDetailParticipationsList()
+	function selectQuestionDetailParticipationsListCurrentUser()
 	{
 			
 		$tblNameList = array(
@@ -1518,9 +1729,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_participants` par  `".$nameTables['nq_participants']."`
-		$sql = "select *, UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDateUT from `nq_participations`, `nq_participants` where nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant";
+		
+        $sql = "select nq_participations.IDParticipant, nq_participations.IDQuestion, nq_participations.Pointage, nq_participations.PointageAuto, nq_participations.ReponseHTML, nq_participants.IDParticipant, nq_participants.Prenom, nq_participants.Nom, nq_participants.Groupe, nq_participants.Matricule, nq_participants.Courriel, nq_participants.Coordonnees, nq_participants.ParticipationDate, nq_participants.Final, nq_participants.IDQuiz, nq_participants.Actif, UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDateUT from  `".$nameTables['nq_participations']."` AS nq_participations, `".$nameTables['nq_participants']."` AS nq_participants where nq_participants.currentUserId = '".$this->getCurrentUserid()."' and nq_participations.IDQuestion = '".$this->getIdQuestion()."' and nq_participations.IDParticipant = nq_participants.IDParticipant";
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
@@ -1546,9 +1758,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
-		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_participants` par  `".$nameTables['nq_participants']."`
-		$sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) AS VersionDate, Password, Actif, sum(nq_questions.Ponderation) as PonderationTotal from `nq_quizs`, `nq_questions` where nq_quizs.IDQuiz = '".$this->getIdQuiz()."' and nq_quizs.IDQuiz = nq_questions.IDQuiz and nq_questions.Active = 1 group by nq_quizs.IDQuiz";
+		### Debug ### OK
+		// il faut remplacer `nq_participations` par  `".$nameTables['nq_quizs']."` et `nq_participants` par  `".$nameTables['nq_questions']."`
+		
+        $sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) AS VersionDate, Password, Actif, sum(nq_questions.Ponderation) as PonderationTotal from `".$nameTables['nq_quizs']."` AS nq_quizs,  `".$nameTables['nq_questions']."` AS nq_questions where nq_quizs.IDQuiz = '".$this->getIdQuiz()."' and nq_quizs.IDQuiz = nq_questions.IDQuiz and nq_questions.Active = 1 group by nq_quizs.IDQuiz";
 		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
 		{
 			return $result;
@@ -1567,25 +1780,27 @@ class netquiz
 	// viewquizstats.php -> Nombre de participations et premiere date
 	function selectNumberParticipationsAndDate()
 	{
-		/*	
+		
 		$tblNameList = array(
-			'nq_quizs', 'nq_questions'
+			'nq_participants', 'nq_participations', 'nq_questions'
 		);
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
-		*/
+		
 		### Debug ###
 		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_participants` par  `".$nameTables['nq_participants']."`
-		$sql = "select UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDate, nq_participants.Final as Final, nq_participants.IDParticipant as IDParticipant, " .
+		
+        $sql = "select UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDate, nq_participants.Final as Final, nq_participants.IDParticipant as IDParticipant, " .
                 "sum(nq_participations.Pointage) as PointageTotal " .
-                "from nq_participants " .
-                "left join nq_participations using (IDParticipant) " .
-                "right join nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
+                "from `".$nameTables['nq_participants']."` AS nq_participants " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDParticipant) " .
+                "right join `".$nameTables['nq_questions']."` AS nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
                 "where nq_questions.Active = 1 and " .
                 "nq_participants.Actif = 1 and " .
                 "nq_participants.IDQuiz = '".$this->getIdQuiz()."' " .
                 "group by nq_participants.IDParticipant order by nq_participants.ParticipationDate desc";
-		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		
+        if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			$tmp = new QuizsStats($result);
 			return $tmp;
@@ -1597,7 +1812,49 @@ class netquiz
 			
 	}
 	
-	
+    
+    
+    
+    
+    
+    // viewquizstats.php -> Nombre de participations et premiere date pour l'utilisateur courant
+	function selectNumberParticipationsAndDateCurrentUser()
+	{
+		
+		$tblNameList = array(
+			'nq_participants', 'nq_participations', 'nq_questions'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ###
+		// il faut remplacer `nq_participations` par  `".$nameTables['nq_participations']."` et `nq_participants` par  `".$nameTables['nq_participants']."`
+		
+        $sql = "select UNIX_TIMESTAMP(nq_participants.ParticipationDate) as ParticipationDate, nq_participants.Final as Final, nq_participants.IDParticipant as IDParticipant, " .
+                "sum(nq_participations.Pointage) as PointageTotal " .
+                "from `".$nameTables['nq_participants']."` AS nq_participants " .
+                "left join `".$nameTables['nq_participations']."` AS nq_participations using (IDParticipant) " .
+                "right join `".$nameTables['nq_questions']."` AS nq_questions on nq_participations.IDQuestion = nq_questions.IDQuestion " .
+                "where nq_questions.Active = 1 and " .
+                "nq_participants.Actif = 1 and " .
+                "nq_participants.currentUserId = '".$this->getCurrentUserid()."' and " .
+                "nq_participants.IDQuiz = '".$this->getIdQuiz()."' " .
+                "group by nq_participants.IDParticipant order by nq_participants.ParticipationDate desc";
+		
+        if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+		{
+			$tmp = new QuizsStats($result);
+			return $tmp;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+    
+    
+    
 	
 	
 	
@@ -1611,9 +1868,10 @@ class netquiz
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
+		### Debug ### OK
 		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`
-		$sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) as VersionDate, Password, Actif from `nq_quizs` where IDQuiz = '".$this->getIdQuiz()."'";
+		
+        $sql = "select QuizName, UNIX_TIMESTAMP(VersionDate) as VersionDate, Password, Actif from `".$nameTables['nq_quizs']."` where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
 		{
 			return $result;
@@ -1636,15 +1894,15 @@ class netquiz
 	{
 			
 		$tblNameList = array(
-			'nq_questions'
+			'nq_quizs'
 		);
 		
 		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
 		
-		### Debug ###
-		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`	
+		### Debug ### OK
+		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."`	
 		
-		$sql = "update `nq_quizs` set Actif = '".$this->getActif()."' where IDQuiz = '".$this->getIdQuiz()."'";
+		$sql = "update `".$nameTables['nq_quizs']."` set Actif = '".$this->getActif()."' where IDQuiz = '".$this->getIdQuiz()."'";
 		if ( claro_sql_query($sql) )
 		{
 			return true;
@@ -1654,7 +1912,86 @@ class netquiz
 			return claro_failure::set_failure('UPDATED_FAILED');
 		}
 
-	}		
+	}	
+
+	// qvalidate.php -> Update Participant info if final soumission
+	function updateParticipantsDate()
+	{
+			
+		$tblNameList = array(
+			'nq_participants'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_participants` par  `".$nameTables['nq_participants']."`	
+		
+        $sql = "update `".$nameTables['nq_participants']."` set ParticipationDate = now(), Final = 1 where IDParticipant = '".$this->getIdParticipant()."'";
+		
+		if ( claro_sql_query($sql) )
+		{
+			return true;
+		}
+		else
+		{				
+			return claro_failure::set_failure('UPDATED_FAILED');
+		}
+			
+	}
+	
+	// qvalidate.php -> Get the IDQuestion
+	function selectOneIdQuestion()
+	{
+			
+		$tblNameList = array(
+			'nq_questions', 'nq_quizs'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ### OK
+		// il faut remplacer `nq_quizs` par  `".$nameTables['nq_quizs']."` et `nq_questions`par `".$nameTables['nq_questions']."`
+		
+		$sql =   "select IDQuestion from `".$nameTables['nq_questions']."` AS nq_questions, `".$nameTables['nq_quizs']."` AS nq_quizs where nq_quizs.QuizIdent = '".$this->getQuizIdent()."' and nq_quizs.QuizVersion = '".$this->getQuizVersion()."' and nq_quizs.IDQuiz = nq_questions.IDQuiz and nq_questions.NoQuestion = '".$this->getNoQuestion()."'";
+		
+		if ( false !== ($result = claro_sql_query_get_single_value($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+	
+	// qvalidate.php -> Get ReponseXML and Ponderation
+	function selectReponseXMLandPonderation()
+	{
+			
+		$tblNameList = array(
+			'nq_questions'
+		);
+		
+		$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+		
+		### Debug ###
+		// il faut remplacer `nq_questions` par  `".$nameTables['nq_questions']."`
+		
+		$sql = "select ReponseXML, Ponderation from `".$nameTables['nq_questions']."` where IDQuestion = '".$this->getIdQuestion()."'";
+		
+		if ( false !== ($result = claro_sql_query_get_single_row($sql)) )
+		{
+			return $result;
+		}
+		else
+		{				
+			return claro_failure::set_failure('SELECTED_FAILED');
+		}
+			
+	}
+
 	
 }
 

@@ -34,33 +34,57 @@
         exit();
     }
     function average($iA){
-        $iSum = 0;
         
-        for($i = 0;$i < count($iA);$i++){
-            $iSum += $iA[$i];
-        }
-        
-        return $iSum / count($iA);
+		if ( !empty($iA) )
+		{
+			$iSum = 0;
+	        
+	        for($i = 0;$i < count($iA);$i++){
+	            $iSum += $iA[$i];
+	        }
+	        return $iSum / count($iA);
+		}
+		else
+		{
+			return 0;
+		}
+		
+		
     }
     function mediane($iA){
-        
-        $iMiddle = floor(count($iA) / 2);
-        if(count($iA)%2 == 0){
-            return (($iA[$iMiddle] + $iA[$iMiddle - 1]) / 2);
-        }else{
-            return $iA[$iMiddle];
-        }
+		
+		if ( !empty($iA) )
+		{
+	        $iMiddle = floor(count($iA) / 2);
+	        if(count($iA)%2 == 0){
+	            return (($iA[$iMiddle] + $iA[$iMiddle - 1]) / 2);
+	        }else{
+	            return $iA[$iMiddle];
+	        }
+		}
+		else
+		{
+			return 0;
+		}
         
     }
     function nbGT($iA,$iGT){
-        $iNB = 0;
-        for($i = 0;$i < count($iA);$i++){
-            if($iA[$i] >= $iGT){
-                $iNB++;
-            }
-        }
-        
-        return $iNB;
+		
+		if ( !empty($iA) )
+		{
+			$iNB = 0;
+	        for($i = 0;$i < count($iA);$i++){
+	            if($iA[$i] >= $iGT){
+	                $iNB++;
+	            }
+	        }
+	        return $iNB;
+		}
+		else
+		{
+			return '-';
+		}
+		
     }
     function clipString($s,$iNbChar,$sSuffix){
         if(strlen($s) > $iNbChar){
@@ -107,7 +131,8 @@
     }
     function XMLStrtoStr($s){
         //return mb_convert_encoding($s,"ISO-8859-1","UTF8");
-        return utf8_decode($s);
+        return $s;
+        //return utf8_decode($s);
         //return mb_detect_encoding($s);
         //return $s;
     }
@@ -220,5 +245,16 @@
     
     function toJS($s){
         return addslashes($s);
+    }
+    
+    function removeEMTags($s){
+        $sToReplace = array("<em>","</em>");
+        $sBy = array("","");
+        
+        return str_replace($sToReplace,$sBy,$s);
+    }
+
+    function output($s){
+        print $s;
     }
 ?>

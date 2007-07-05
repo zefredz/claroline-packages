@@ -11,19 +11,22 @@ require_once "../lib/netquiz.class.php";
 $current_user_data = user_get_properties(claro_get_current_user_id());
 
 // Vérification que l'utilisateur soit enregistré
+/*
+debug
 if(!claro_is_user_authenticated()) 
 {
-	claro_die(get_lang("Not allowed"));
+	//claro_die(get_lang("Not allowed"));
 	//claro_disp_auth_form();
+	
 }
 else
 {	
-
+*/
 	// inclusion des fichiers Netquiz
 	include_once("langr.inc.php");
 	include_once("settings.inc.php");
 	include_once("functions.inc.php");
-	include_once("fct_validate_form.php");
+	//include_once("fct_validate_form.php");
 	
 	// Récupération des paramettres URL
 	$sNextPage = $_GET["np"];
@@ -50,7 +53,8 @@ else
 	}
 		
 	// Insert participant information
-	$sPrenom = $current_user_data['firstname'];
+	$current_user_id = claro_get_current_user_id();
+    $sPrenom = $current_user_data['firstname'];
 	$sNom = $current_user_data['lastname'];
 	$sGroupe = "";
 	$sMatricule = $current_user_data['officialCode'];
@@ -60,7 +64,8 @@ else
 	/*****************************************************************************************************************************************************************/
 	
 	// Class netquiz : insertion du participant
-	$netquiz->setPrenom( $sPrenom );
+	$netquiz->setCurrentUserId( $current_user_id );
+    $netquiz->setPrenom( $sPrenom );
 	$netquiz->setNom( $sNom );
 	$netquiz->setGroupe( $sGroupe );
 	$netquiz->setMatricule( $sMatricule );
@@ -100,8 +105,10 @@ IQUERY;
 	$sRefererPath = substr($sReferer,0,strrpos($sReferer,"/"));
 	
 	$sNextPageFull = $sRefererPath . "/" . $sNextPage;
-
+/*
+debug
 }	
+*/
 ?>
 	
 <html>
