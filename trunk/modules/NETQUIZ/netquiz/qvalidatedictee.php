@@ -1,6 +1,640 @@
 <?php
 include_once("functions.inc.php");
 
+function validateMultiple($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Multiple");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+	
+	//$iTypeEti = $oXML->etiquette;
+	$bRepMultiple = true;
+	if($oXML->isrepmultiple == "false"){
+		$bRepMultiple = false;
+	}
+	$bTousBRepO = true;
+	if($oXML->istousbrepo == "false"){
+		$bTousBRepO = false;
+	}
+	
+	$oListeChoix = $oXML->liste_choix->choix;
+	$sTextes = array();
+	$bBRep = array();
+	$iNbBRep = 0;
+	$iNbMRep = 0;
+	foreach($oListeChoix as $oChoix){
+		$sAtt = $oChoix->attributes();
+		$sCID = $sAtt["cid"];
+		$sTextes["$sCID"] = $oChoix->texte;
+		$bBRep["$sCID"] = $oChoix->isbrep;
+		if($bBRep["$sCID"] == "true"){
+			$iNbBRep++;
+		}else{
+			$iNbMRep++;
+		}
+	}
+	
+	//Begin Validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	$iNbGivenMRep = 0;
+	
+	echoComment("Reponse : (" . trim($_POST["Reponse"],",") . ")");
+	if(strlen(trim($_POST["Reponse"],",")) == 0){
+		$sReponseHTML = "<font style=\"color:$sNoRepMsgCol\">$sNoRepMsg</font><br /><br />";
+		$iPointage = 0;
+	}else{
+		$sGivenCID = explode(",",trim($_POST["Reponse"],","));
+		for($i = 0;$i < count($sGivenCID);$i++){
+			//Validate
+			$sCID = $sGivenCID[$i];
+			if($bBRep["$sCID"] == "true"){
+				$iNbGivenBRep++;
+				$sBulletName = $sBRepBullet;
+			}else{
+				$iNbGivenMRep++;
+				$sBulletName = $sMRepBullet;
+			}
+			
+			$sTexte = $sTextes["$sCID"];
+			
+			//Generate ReponseHTML
+			$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+			$sReponseHTML .= "$sTexte<br /><br />";
+			
+		}
+		
+		if(($iNbGivenMRep == 0) && ($iNbGivenBRep == 0)){
+			$sMsg = $sRepIncMsg;
+			$sMsgColor = $sRepIncMsgCol;
+		}else if($iNbGivenMRep == 0){
+			if((!$bRepMultiple) || (!$bTousBRepO)){
+				$sMsg = $sBRepMsg;
+				$sMsgColor = $sBRepMsgCol;
+			}else{
+				if($iNbGivenBRep == $iNbBRep){
+					$sMsg = $sBRepMsg;
+					$sMsgColor = $sBRepMsgCol;
+				}else{
+					$sMsg = $sRepIncMsg;
+					$sMsgColor = $sRepIncMsgCol;
+				}
+			}
+		}else{
+			$sMsg = $sMRepMsg;
+			$sMsgColor = $sMRepMsgCol;
+		}
+		
+		
+		
+		$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+		
+		echoComment("iNbGivenBRep : $iNbGivenBRep <br><br>iNbGivenMRep : $iNbGivenMRep<br><br>iNbBRep : $iNbBRep");
+				
+		if($bTousBRepO){
+			$iNbBRepRequis = $iNbBRep;
+		}else{
+			$iNbBRepRequis = 1;
+		}
+		
+		if($bRepMultiple && !$bTousBRepO){
+			$dPondBRep = (($iNbGivenBRep > 0) ? $dP : 0);
+			$dPondMRep = $dP / $iNbMRep;
+			
+			echoComment("\$dPondBRep = $dPondBRep");
+			echoComment("\$dPondMRep = $dPondMRep");
+			
+			$iPointage = max(($dPondBRep - ($dPondMRep * $iNbGivenMRep)),0);
+		}else{
+			echoComment("iNbBRepRequis = $iNbBRepRequis");
+			echoComment((min(max(($iNbGivenBRep - $iNbGivenMRep),0),$iNbBRepRequis) / $iNbBRepRequis));
+			
+			$iPointage = (min(max(($iNbGivenBRep - $iNbGivenMRep),0),$iNbBRepRequis) / $iNbBRepRequis) * $dP;  
+		}
+	}
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateLacune($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Lacune");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+	
+	$sReponse = cleanForValid($oXML->breponse);
+	$sGivenReponse = cleanForValid(fromGPC($_POST["Reponse"]));
+	//Begin Validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	echoComment("sReponse = " . $sReponse);
+	
+	//Validate
+	if(strlen($sGivenReponse) == 0){
+		$sReponseHTML = "<font style=\"color:$sNoRepMsgCol\">$sNoRepMsg</font><br /><br />";
+		$iPointage = 0;
+	}else{
+		if(strtolower($sReponse) == strtolower($sGivenReponse)){
+			$iPointage = $dP;
+			$sBulletName = $sBRepBullet;
+			$sMsg = $sBRepMsg;
+			$sMsgColor = $sBRepMsgCol;
+			$sRepToDisplay = $sReponse;
+		}else{
+			$iPointage = 0;
+			$sBulletName = $sMRepBullet;
+			$sMsg = $sMRepMsg;
+			$sMsgColor = $sMRepMsgCol;
+			$sRepToDisplay = $sGivenReponse;
+		}
+		
+		
+		$sRepToDisplay = htmlentities($sRepToDisplay);
+		
+		//Generate ReponseHTML
+		$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />";
+		$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+		$sReponseHTML .= "$sRepToDisplay<br><br>";
+	}
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateClosure($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Closure");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+	
+	$sType = $oXML->type;
+
+	$oTrous = array();
+	$oListeTrous = $oXML->liste_trous->trou;
+	$iNbTrous = count($oListeTrous);
+	echoComment("Begining parsing trous (" . $iNbTrous . " trous)");
+	for($i = 0;$i < $iNbTrous;$i++){
+		$oTrou = $oListeTrous[$i];
+		
+		if($sType == "simple"){
+			$oTrous[$i] = $oTrou->reponse;
+		}else{
+			$oTrous[$i] = array();
+			
+			$oListeChoix = $oTrou->liste_choix->choix;
+			echoComment("&nbsp;&nbsp;Trou no $i (" . count($oListeChoix) . " choix)");
+			foreach($oListeChoix as $oChoix){
+				$sAtt = $oChoix->attributes();
+				$sCID = $sAtt["cid"];
+				$oTrous[$i]["$sCID"] = array();
+				
+				$oTrous[$i]["$sCID"]["texte"] = $oChoix->texte;
+				$oTrous[$i]["$sCID"]["isbrep"] = $oChoix->isbrep;
+				
+				echoComment("&nbsp;&nbsp;&nbsp;&nbsp;\$oTrous[$i][\"$sCID\"][\"texte\"] = " . $oTrous[$i]["$sCID"]["texte"]);
+				echoComment("&nbsp;&nbsp;&nbsp;&nbsp;\$oTrous[$i][\"$sCID\"][\"isbrep\"] = " . $oTrous[$i]["$sCID"]["isbrep"]);
+			}
+		}
+	}
+	
+	//Begin Validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	$bRepInc = false;
+	
+	echoComment("\$iNbTrous = $iNbTrous");
+	
+	for($i = 0;$i < $iNbTrous;$i++){
+		//Validate
+		$sInputName = "input" . completeNumber($i,5);
+		$sGivenRep = fromGPC($_POST["$sInputName"]);
+		
+		echoComment("\$sInputName = $sInputName");
+		
+		if($sType == "simple"){
+			$sGivenRep = cleanForValid($sGivenRep);
+			$sReponse = cleanForValid($oTrous[$i]);
+			if(strlen($sGivenRep) < 1){
+				$sBulletName = $sRepIncBullet;
+				$sTextToDisplay = " -";
+				$bRepInc = true;
+			}elseif(strtolower($sGivenRep) == strtolower($sReponse)){
+				$iNbGivenBRep++;
+				$sBulletName = $sBRepBullet;
+				$sTextToDisplay = $sReponse;
+			}else{
+				$sBulletName = $sMRepBullet;
+				$sTextToDisplay = $sGivenRep;
+			}
+		}else{
+			echoComment("\$sGivenRep for [$i] = $sGivenRep");
+			if(strlen($sGivenRep) < 1){
+				$sBulletName = $sRepIncBullet;
+				$sTextToDisplay = " -";
+			}elseif($oTrous[$i]["$sGivenRep"]["isbrep"] == "true"){
+				$iNbGivenBRep++;
+				$sBulletName = $sBRepBullet;
+				$sTextToDisplay = $oTrous[$i]["$sGivenRep"]["texte"];
+			}else{
+				$sBulletName = $sMRepBullet;
+				$sTextToDisplay = $oTrous[$i]["$sGivenRep"]["texte"];
+			}
+		}
+		
+		$sTextToDisplay = htmlentities($sTextToDisplay);
+		
+		//Generate ReponseHTML
+		$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+		$sReponseHTML .= "$sTextToDisplay<br><br>";
+		
+	}
+	
+   echoComment("iNbGivenBRep : $iNbGivenBRep");
+	
+	if($bRepInc){
+		$sMsg = $sRepIncMsg;
+		$sMsgColor = $sRepIncMsgCol;
+	}else if($iNbGivenBRep < $iNbTrous){
+		$sMsg = $sMRepMsg;
+		$sMsgColor = $sMRepMsgCol;
+	}else{
+		$sMsg = $sBRepMsg;
+		$sMsgColor = $sBRepMsgCol;
+	}
+	
+	
+	
+	$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+	
+	$iPointage = round(($iNbGivenBRep / $iNbTrous) * $dP,2);
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateOuverte($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Ouverte");
+	echoComment(htmlentities($sXML));
+	
+	$sGivenReponse = cleanForValid(fromGPC($_POST["Reponse"]));
+	//Begin Validation
+	if(strlen($sGivenReponse) > 0){
+		$iPointage = $dP;
+	}else{
+		$iPointage = 0;
+	}   
+	$sReponseHTML = htmlentities($sGivenReponse);
+	
+	//Generate ReponseHTML
+	$sReponseHTML .= "$sReponse<br><br>";
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateMiseEnOrdre($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Mise en ordre");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+	
+	$oListeChoix = $oXML->liste_choix->choix;
+	$sTextes = array();
+	$sCIDs = array();
+	$i = 0;
+	foreach($oListeChoix as $oChoix){
+		$sAtt = $oChoix->attributes();
+		$sCID = $sAtt["cid"];
+		$sTextes["$sCID"] = $oChoix->texte;
+		$sCIDs[$i] = $sCID;
+		$i++;
+	}
+	$iNbChoix = count($sCIDs);
+	
+	//Begin validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	
+	$sGivenCID = explode(",",trim($_POST["Reponse"],","));
+	
+	for($i = 0;$i < $iNbChoix;$i++){
+		//Validate
+		$sCurrentCID = $sGivenCID[$i];
+		
+		if($sCurrentCID == $sCIDs[$i]){
+			$iNbGivenBRep++;
+			$sBulletName = $sBRepBullet;
+		}else{
+			$sBulletName = $sMRepBullet;
+		}
+		$sTexte = htmlentities($sTextes["$sCurrentCID"]);
+		
+		//Generate ReponseHTML
+		$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+		$sReponseHTML .= "$sTexte<br /><br />";
+	}
+	
+	if($iNbGivenBRep == $iNbChoix){
+		$sMsg = $sBRepMsg;
+		$sMsgColor = $sBRepMsgCol;
+	}else{
+		$sMsg = $sMRepMsg;
+		$sMsgColor = $sMRepMsgCol;
+	}
+	
+	
+	
+	$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+	
+	$iPointage = round(($iNbGivenBRep / $iNbChoix) * $dP,2);
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateAssociation($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Association");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+	
+	$oListeChoix = $oXML->liste_choix->choix;
+	$sTextesF = array();
+	$sTextes = array();
+	$sCIDs = array();
+	$i = 0;
+	foreach($oListeChoix as $oChoix){
+		$sAtt = $oChoix->attributes();
+		$sCID = $sAtt["cid"];
+		$sTextes["$sCID"] = $oChoix->texte2;
+		$sCIDs[$i] = $sCID;
+		$sTextesF[$i] = $oChoix->texte;
+		$i++;
+	}
+	$iNbChoix = count($sCIDs);
+	
+	//Begin validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	
+	$sGivenCID = explode(",",trim($_POST["Reponse"],","));
+	
+	for($i = 0;$i < $iNbChoix;$i++){
+		//Validate
+		$sCurrentCID = $sGivenCID[$i];
+		
+		if($sCurrentCID == $sCIDs[$i]){
+			$iNbGivenBRep++;
+			$sBulletName = $sBRepBullet;
+		}else{
+			$sBulletName = $sMRepBullet;
+		}
+		$sTexteF = htmlentities($sTextesF[$i]);
+		$sTexte = htmlentities($sTextes["$sCurrentCID"]);
+		
+		//Generate ReponseHTML
+		$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+		$sReponseHTML .= "$sTexteF<img src=\"images/spacer.gif\" width=\"30\" height=\"10\" />";
+		$sReponseHTML .= "$sTexte<br /><br />";
+		
+	}
+	
+	if($iNbGivenBRep == $iNbChoix){
+		$sMsg = $sBRepMsg;
+		$sMsgColor = $sBRepMsgCol;
+	}else{
+		$sMsg = $sMRepMsg;
+		$sMsgColor = $sMRepMsgCol;
+	}
+	
+	
+	
+	$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+	
+	$iPointage = round(($iNbGivenBRep / $iNbChoix) * $dP,2);
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateDamier($iIDQ,$iIDP,$sXML,$dP){
+	include("settings.inc.php");
+	
+	echoComment("Validating Damier");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+
+	$oListeChoix = $oXML->liste_choix->choix;
+	$sTextes = array();
+	$sTextes2 = array();
+	$sCIDs = array();
+	$i = 0;
+	foreach($oListeChoix as $oChoix){
+		$sAtt = $oChoix->attributes();
+		$sCID = $sAtt["cid"];
+		$sTextes["$sCID"] = $oChoix->texte;
+		$sTextes2["$sCID"] = $oChoix->texte2;
+		$sCIDs[$i] = $sCID;
+		$i++;
+	}
+	$iNbChoix = count($sCIDs);
+	
+	//Begin Validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	
+	for($i = 0;$i < $iNbChoix;$i++){
+		//Validate
+		$sCurrentCID = $sCIDs[$i];
+		$sBFound = $_POST["$sCurrentCID"];
+		
+		if($sBFound == "true"){
+			$iNbGivenBRep++;
+		}
+		
+	}
+	
+	echoComment("iNbGivenBRep : $iNbGivenBRep");
+	
+	if($iNbGivenBRep < $iNbChoix){
+		$sMsg = $sMRepMsg;
+		$sMsgColor = $sMRepMsgCol;
+	}else{
+		$sMsg = $sBRepMsg;
+		$sMsgColor = $sBRepMsgCol;
+	}
+	
+	
+	
+	$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+	
+	$iPointage = round(($iNbGivenBRep / $iNbChoix) * $dP,2);
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function validateZone($iIDQ,$iIDP,$sXML,$dP){
+
+	include("settings.inc.php");
+	
+	echoComment("Validating Zone");
+	echoComment(htmlentities($sXML));
+	
+	//Extract Information from XML
+	$oXML = simplexml_load_string($sXML);
+
+	$sCoords = array();
+	$sTextes = array();
+	$sCIDs = array();
+	
+	$oListeChoix = $oXML->liste_choix->choix;
+	$iNbChoix = count($oListeChoix);
+	for($i = 0;$i < $iNbChoix;$i++){
+		$oChoix = $oListeChoix[$i];
+		
+		$sAtt = $oChoix->attributes();
+		$sCID = $sAtt["cid"];
+		
+		$sTextes["$sCID"] = $oChoix->texte;
+		$sCoords["$sCID"] = $oChoix->coord;
+		$sCIDs[$i] = $sCID;
+	}
+	
+	//Begin Validation
+	$iPointage = 0;
+	$sReponseHTML = "";
+	
+	$iNbGivenBRep = 0;
+	$bRepInc = false;
+	
+	for($i = 0;$i < $iNbChoix;$i++){
+		//Validate
+		$sCurrentCID = $sCIDs[$i];
+		$sGivenCoord = $_POST["$sCurrentCID"];
+		
+		if(strlen($sGivenCoord) < 1){
+			$sBulletName = $sRepIncBullet;
+			$sTextToDisplay = " -";
+			$bRepInc = true;
+		}elseif($sGivenCoord == $sCoords["$sCurrentCID"]){
+			$iNbGivenBRep++;
+			$sBulletName = $sBRepBullet;
+			$sTextToDisplay = $sTextes["$sCurrentCID"];
+		}else{
+			$sBulletName = $sMRepBullet;
+			$sTextToDisplay = $sTextes["$sCurrentCID"];
+		}
+	
+		$sTextToDisplay = htmlentities($sTextToDisplay);
+		
+		//Generate ReponseHTML
+		$sReponseHTML .= "<img src=\"images/$sBulletName\" /><img src=\"images/spacer.gif\" width=\"10\" height=\"10\" />";
+		$sReponseHTML .= "$sTextToDisplay<br><br>";
+		
+	}
+	
+	echoComment("iNbGivenBRep : $iNbGivenBRep");
+	
+	if($bRepInc){
+		$sMsg = $sRepIncMsg;
+		$sMsgColor = $sRepIncMsgCol;
+	}else if($iNbGivenBRep < $iNbChoix){
+		$sMsg = $sMRepMsg;
+		$sMsgColor = $sMRepMsgCol;
+	}else{
+		$sMsg = $sBRepMsg;
+		$sMsgColor = $sBRepMsgCol;
+	}
+		
+	
+	$sReponseHTML = "<font style=\"color:$sMsgColor\">$sMsg</font><br /><br />" . $sReponseHTML;
+	
+	$iPointage = round(($iNbGivenBRep / $iNbChoix) * $dP,2);
+	
+	saveValidation($sReponseHTML, $iPointage, $iIDP,$iIDQ);
+}
+
+function saveValidation($sReponseHTML,$iPointage,$iIDP, $iIDQ){
+	echoComment("\$iPointage = $iPointage");
+	echoComment($sReponseHTML);
+	
+	$sReponseHTMLClean = toSQLString($sReponseHTML);
+	
+	### Debug ###
+    
+    $tblNameList = array(
+		'nq_participations'
+	);
+		
+	$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
+	
+    ### Debug ###	
+    
+    
+    $sQuery = "select * from `".$nameTables['nq_participations']."` where IDParticipant = $iIDP and IDQuestion = $iIDQ";
+	echoComment($sQuery);
+	$oRS = executeQuery($sQuery);
+	
+	if(mysql_num_rows($oRS) == 0){
+		//Insert
+		$sQuery =   "insert into `".$nameTables['nq_participations']."` " . 
+					"(IDParticipant,IDQuestion,Pointage,PointageAuto,ReponseHTML) " . 
+					"values ($iIDP,$iIDQ,$iPointage,$iPointage,$sReponseHTMLClean)";
+		
+		echoComment(htmlentities($sQuery));
+		
+		executeQuery($sQuery);
+		
+		echoComment("insert");
+	}else{
+		//Update
+		$sQuery =   "update `".$nameTables['nq_participations']."` " . 
+					"set Pointage = $iPointage, PointageAuto = $iPointage, ReponseHTML = $sReponseHTMLClean " . 
+					"where IDParticipant = $iIDP and IDQuestion = $iIDQ";
+		
+		echoComment($sQuery);
+		
+		executeQuery($sQuery);            
+		
+		echoComment("update");
+	}
+	
+}
+
+function echoComment($s){
+	global $bVerbose;
+	
+	if($bVerbose){
+		echo "$s<br><br>";
+	}
+}
+
+
 function validateDictee($iIDQ,$iIDP,$sXML,$dP){
         include("settings.inc.php"); 
         
@@ -10,7 +644,7 @@ function validateDictee($iIDQ,$iIDP,$sXML,$dP){
         //Extract Information from XML
         $oXML = simplexml_load_string($sXML);
 
-        $sBReponse = XMLStrtoStr($oXML->breponse);
+        $sBReponse = $oXML->breponse;
         $bPoncCompte = $oXML->isponccompte;
         $bPoncCompte = (($bPoncCompte == "true") ? true : false);
         $bCaseSens = $oXML->ismajcompte;
