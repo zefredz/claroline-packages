@@ -123,4 +123,28 @@
             'claroCmd',
             get_icon('help_little.gif') );
     }
+
+/*  GREG  *****************************************************************************************************************************************************/  
+  
+    /**
+     * Display toolbar for the glossary search
+     * @return  string toolbar
+     */
+	function displayGlossarySearch( $param )
+    {
+        
+        $output = '<form action="entry.php?page=' . $param . '&amp;action=searchText" method="post">'
+    		. '<p>'
+    			. '<img src="' .get_icon( 'Search' ) . '" alt="Rechercher" title="search" />'
+                . '&nbsp;'
+    			. '<input name="frm_search" value="" size="20" type="text" />'
+    			. '<input value="Rechercher" type="submit" />'
+        	. '</p>'
+        . '</form>' . "\n"
+        ;      
+                    
+        return $output;
+    }
+    
+/*  ^^^^  *****************************************************************************************************************************************************/  
 ?>
