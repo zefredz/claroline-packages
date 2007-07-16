@@ -36,6 +36,10 @@
     $dispErrorBoxBackButton = false; // display back button on error
     $err                    = '';    // error string
     
+/*  GREG  *****************************************************************************************************************************************************/  
+    $dispTextSearch = false;
+/*  ^^^^  *****************************************************************************************************************************************************/  
+
     // load modules and libraries
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
@@ -61,6 +65,9 @@
             , 'exEditDict'
             , 'rqDelDict'
             , 'exDelDict'
+/*  GREG  *****************************************************************************************************************************************************/  
+            , 'searchText'
+/*  ^^^^  *****************************************************************************************************************************************************/  
         );
     }
     else
@@ -68,6 +75,9 @@
         $allowedActions = array( 
                'showList'
              , 'showDict'
+/*  GREG  *****************************************************************************************************************************************************/  
+            , 'searchText'
+/*  ^^^^  *****************************************************************************************************************************************************/  
         );
     }
     
@@ -101,7 +111,36 @@
         ? 0
         : $dictionaryId
         ;
+    
+/*  GREG  *****************************************************************************************************************************************************/  
+    
+    $param = ( isset( $_REQUEST['page'] ) ) 
+    ? $_REQUEST['page']
+    : 'list'
+    ;
+
+    if ( 'searchText' == $action )
+    {                
+        $frm_search = isset( $_REQUEST['frm_search'] )
+        ? $_REQUEST['frm_search']
+        : NULL
+        ;
         
+        if( strlen( trim ( $frm_search ) ) )
+        {
+            $dispTextSearch = true;
+            $dispTextList = true;
+        }
+        else
+        {
+            $dispError = true;
+            $errorMsg = get_lang( 'the field of research is empty' );
+            $dispTextList = true;
+        }
+    }
+
+/*  ^^^^  *****************************************************************************************************************************************************/  
+    
     if ( !is_null( $dictionaryId ) && $dictionaryId !== 0 )
     {
         $dictionaryExists = $list->dictionaryExists( $dictionaryId );
@@ -408,6 +447,30 @@
     {
         $output .= displayGlossaryMenu();
     }
+    
+/*  GREG  *****************************************************************************************************************************************************/  
+    $output .= displayGlossarySearch( $param );
+    
+    if ( true == $dispTextSearch )
+    {
+        $i = 1;
+        
+        $output .= '<p>' . get_lang('Your search is : ') . '<strong>' . $frm_search . '</strong></p>';
+        
+        $search = new search();
+        $search->setSearch( $frm_search );
+        $searchText = $search->searchText();
+        $nbrResult = count($searchText);
+
+        $output .= '<p>' . get_lang('The results found are : ') . '<strong>' . $nbrResult . '</strong></p>';
+        foreach($searchText as $row)
+        {
+            $output .= '<p>' . $i . ') <a href="#" onclick="popup( \'entry.php?page=dict&amp;action=showDefs&amp;dictionaryId='.$row['dictionaryId'].'&amp;word='.rawurlencode($row['name']).'&amp;inPopup=true\', \''.rawurlencode($row['name']).'\', 300,300);return false;">'.$row['name'].'</a></p>';
+            $i++;
+        }
+        
+    }
+/*  ^^^^  *****************************************************************************************************************************************************/  
     
     if ( true == $dispError )
     {
