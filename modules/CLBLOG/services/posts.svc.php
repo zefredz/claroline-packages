@@ -814,7 +814,8 @@
         {
             $output .= '<p><a class="claroCmd" href="'
                 . $_SERVER['PHP_SELF'] . '?page=blog">'
-                . '<img src="'.get_icon('parent.gif').'" alt="[back]" />'
+                // . '<img src="'.get_icon('parent.gif').'" alt="[back]" />'
+                . claro_html_icon('parent')
                 . get_lang('Back')
                 . '</a></p>'
                 . "\n"
@@ -826,14 +827,16 @@
                     . '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
                     . '&amp;postId=' . (int) $postId . '">'
-                    . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    . claro_html_icon('edit')
                     . get_lang('Edit')
                     . '</a>'
                     . '&nbsp;|&nbsp;'
                     . '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
                     . '&amp;postId=' . (int) $postId . '">'
-                    . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    // . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    . claro_html_icon('delete')
                     . get_lang('Delete')
                     . '</a>'
                     . '</p>'
@@ -876,14 +879,16 @@
                 $tpl .= '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
                     . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId.'">'
-                    . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    . claro_html_icon('edit')
                     . get_lang('Edit')
                     . '</a>'
                     . '&nbsp;|&nbsp;'
                     . '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
                     . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId.'">'
-                    . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    // . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    . claro_html_icon('delete')
                     . get_lang('Delete')
                     . '</a>'
                     . "\n"
@@ -957,14 +962,16 @@
                 $tpl .= '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
                     . '&amp;postId=%int(id)%">'
-                    . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
+                    . claro_html_icon('edit')
                     . get_lang('Edit')
                     . '</a>'
                     . '&nbsp;|&nbsp;'
                     . '<a class="claroCmd" href="'
                     . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
                     . '&amp;postId=%int(id)%">'
-                    . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    //. '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
+                    . claro_html_icon('delete')
                     . get_lang('Delete')
                     . '</a>'
                     . '&nbsp;|&nbsp;'
@@ -996,8 +1003,8 @@
                 . $_SERVER['PHP_SELF']
                 . '?page=blog&amp;action=rqAddPost"'
                 . ' title="'.get_lang('Click here to add a new post').'">'
-                . '<img src="'. get_icon('new.gif').'" alt="'
-                . get_lang('Click here to add a new post').'" />'
+                // . '<img src="'. get_icon('new.gif').'" alt="'
+                . claro_html_icon('new', get_lang('Click here to add a new post') )
                 . '&nbsp;'.get_lang('Add a post').'</a></p>'
                 . "\n"
                 ;
