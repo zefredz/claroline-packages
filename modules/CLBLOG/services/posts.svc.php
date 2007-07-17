@@ -812,33 +812,27 @@
         
         if ( $dispPost )
         {
-            $output .= '<p><a class="claroCmd" href="'
-                . $_SERVER['PHP_SELF'] . '?page=blog">'
-                // . '<img src="'.get_icon('parent.gif').'" alt="[back]" />'
-                . claro_html_icon('parent')
-                . get_lang('Back')
-                . '</a></p>'
-                . "\n"
-                ;
-                
+            $output .= '<p>' . claro_html_icon_button(
+                $_SERVER['PHP_SELF'] . '?page=blog'
+                , 'parent'
+                , get_lang('Back') ) . '</p>' . "\n";
+
             if ( $isAllowedToEdit )
             {
                 $output .= '<p>'
-                    . '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
-                    . '&amp;postId=' . (int) $postId . '">'
-                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
-                    . claro_html_icon('edit')
-                    . get_lang('Edit')
-                    . '</a>'
+                    . claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
+                            . '&amp;postId=' . (int) $postId
+                        , 'edit'
+                        , get_lang('Edit')
+                        , get_lang('Click to edit this post') )
                     . '&nbsp;|&nbsp;'
-                    . '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
-                    . '&amp;postId=' . (int) $postId . '">'
-                    // . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
-                    . claro_html_icon('delete')
-                    . get_lang('Delete')
-                    . '</a>'
+                    . claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
+                            . '&amp;postId=' . (int) $postId
+                        , 'delete'
+                        , get_lang('Delete')
+                        , get_lang('Click to delete this post') )
                     . '</p>'
                     . "\n"
                     ;
@@ -876,21 +870,19 @@
                 
             if ( $isAllowedToEdit )
             {
-                $tpl .= '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
-                    . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId.'">'
-                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
-                    . claro_html_icon('edit')
-                    . get_lang('Edit')
-                    . '</a>'
+                $tpl .= claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
+                        , 'edit'
+                        , get_lang('Edit')
+                        , get_lang('Click to edit this comment') )
                     . '&nbsp;|&nbsp;'
-                    . '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
-                    . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId.'">'
-                    // . '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
-                    . claro_html_icon('delete')
-                    . get_lang('Delete')
-                    . '</a>'
+                    . claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
+                        , 'delete'
+                        , get_lang('Delete')
+                        , get_lang('Click to delete this comment') )
                     . "\n"
                     ;
             }
@@ -959,35 +951,35 @@
                 
             if ( $isAllowedToEdit )
             {
-                $tpl .= '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
-                    . '&amp;postId=%int(id)%">'
-                    // . '<img src="'.get_icon('edit.gif').'" alt="[back]" />'
-                    . claro_html_icon('edit')
-                    . get_lang('Edit')
-                    . '</a>'
+                $tpl .= claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
+                            . '&amp;postId=%int(id)%'
+                        , 'edit'
+                        , get_lang('Edit')
+                        , get_lang('Click to edit this post') )
                     . '&nbsp;|&nbsp;'
-                    . '<a class="claroCmd" href="'
-                    . $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
-                    . '&amp;postId=%int(id)%">'
-                    //. '<img src="'.get_icon('delete.gif').'" alt="[back]" />'
-                    . claro_html_icon('delete')
-                    . get_lang('Delete')
-                    . '</a>'
+                    . claro_html_icon_button(
+                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
+                            . '&amp;postId=%int(id)%'
+                        , 'delete'
+                        , get_lang('Delete')
+                        , get_lang('Click to delete this post') )
                     . '&nbsp;|&nbsp;'
                     . "\n"
                     ;
             }
             
-            $tpl .= '<a class="claroCmd" href="'. $_SERVER['PHP_SELF'] 
-                . '?page=blog&amp;action=showPost'
-                . '&amp;postId=%int(id)%'
-                . '">'.get_lang('Read more...') . '</a>'
+            $tpl .= claro_html_icon_button(
+                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=showPost'
+                        . '&amp;postId=%int(id)%'
+                    , ''
+                    , get_lang('Read more...') )
                 . '&nbsp;|&nbsp;'
-                . '<a class="claroCmd" href="'. $_SERVER['PHP_SELF'] 
-                . '?page=blog&amp;action=showPost'
-                . '&amp;postId=%int(id)%'
-                . '#comments">'.get_lang('Comments (%comments%)') . '</a>'
+                . claro_html_icon_button(
+                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=showPost'
+                        . '&amp;postId=%int(id)%#comments'
+                    , ''
+                    , get_lang('Comments (%comments%)') )
                 ;
             
             $tpl .= '</p></div>' . "\n";
@@ -999,13 +991,13 @@
             $datagrid = new HTML_Datagrid_Template;
             $datagrid->setTemplate( $template );
             $datagrid->setData( $postList );
-            $addLink = '<p><a class="claroCmd" href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=blog&amp;action=rqAddPost"'
-                . ' title="'.get_lang('Click here to add a new post').'">'
-                // . '<img src="'. get_icon('new.gif').'" alt="'
-                . claro_html_icon('new', get_lang('Click here to add a new post') )
-                . '&nbsp;'.get_lang('Add a post').'</a></p>'
+            $addLink = '<p>'
+                . claro_html_icon_button(
+                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqAddPost'
+                    , 'new'
+                    , get_lang('Add a post')
+                    , get_lang('Click here to add a new post') )
+                . '</p>'
                 . "\n"
                 ;
                     
