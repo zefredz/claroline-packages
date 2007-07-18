@@ -1,0 +1,83 @@
+WizMySQLAdmin - Changelog
+=========================
+
+WizMySQLAdmin 0.11.4
+--------------------
+- fixed a bug when "order by" is specified into the query textbox (Thanks to Sarah Zelechoski for bug report)
+- change ascending/descendig order clicking on the column header in browsing table mode
+
+
+WizMySQLAdmin 0.11.3
+--------------------
+- fixed a bug when database/tables/fields contains hypens (Thanks to Rob Parker for bug report)
+- fixed other little flaws
+
+
+WizMySQLAdmin 0.11.2
+--------------------
+- code improvement (Thanks to Max Faber)
+
+
+WizMySQLAdmin 0.11.1
+--------------------
+- fixed a bug executing queries with special charater "$" (thanks to Tomek Klimczak for bug report)
+- fixed a bug executing queries with special charater ";" (thanks to Bob for bug report)
+- improved portability (thanks to Bruce Painter for report)
+- some other minor bug fixes and improvements
+
+
+WizMySQLAdmin 0.10.8
+--------------------
+- fixed a bug removing field content (thanks to Kees Serier for bug report)
+- added support for sorting columns during browsing
+
+
+WizMySQLAdmin 0.10.6
+--------------------
+- fixed a bug into table properties (thanks to Kees Serier for bug report)
+
+
+WizMySQLAdmin 0.10.5
+--------------------
+- added support for enum and set types
+- added support for alter table stucture
+- added indexes management
+- fixed bug dropping tables and databases (thanks to anonymous for bug report)
+- fixed bug inserting record into table
+- greatly improved select and free query execution, also cleaning redundant code (op=3 has been removed, merged with op=4)
+- removed SELECT form from left toolbar if database has no tables
+- improved output readability in some function (ie: browse, insert/edit)
+- a lot of minor enhancements and bugfixes
+
+
+WizMySQLAdmin 0.9.0
+-------------------
+- fixed manual SELECT query execution: now it doesn't report if the query has success but the query result
+- other minor bugfixes
+
+
+WizMySQLAdmin 0.8.9
+-------------------
+- fixed a problem with GNU GPL license compliance
+
+
+WizMySQLAdmin 0.8.8
+-------------------
+- added "query from file" function
+- added "optimize table" function
+- fixed error when no table selected
+
+
+WizMySQLAdmin 0.8.6
+-------------------
+- added support for multiple databases
+- added support for multiple tables
+- added support for table creation
+- a lot of other minor feature improvements
+- bugfixes
+- graphic design improved
+
+
+WizMySQLAdmin 0.6.4
+-------------------
+Initial public release

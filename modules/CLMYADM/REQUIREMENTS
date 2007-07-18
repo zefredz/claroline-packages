@@ -1,0 +1,9 @@
+WizMySQLAdmin - Requiremets
+===========================
+
+WizMySQLAdmin require PHP language and MySQL database.
+
+PHP configuration:
+ - register globals off (required)
+ - sessions enabled (required)
+ - file upload enabled (required to execute query from external file and restore backup)
