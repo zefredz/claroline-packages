@@ -1,0 +1,23 @@
+<module>
+<label>CLMYADM</label>
+<name>WizMySQLAdmin</name>
+<description><![CDATA[
+MySQL administration tool.
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>applet</type>
+<default_dock>userBannerRight</default_dock>
+<entry>entry.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLMYADM</web>
+</author>
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>

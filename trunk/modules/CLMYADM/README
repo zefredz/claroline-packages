@@ -1,0 +1,25 @@
+WizMySQLAdmin - Readme
+======================
+
+OVERVIEW
+--------
+WizMySQLAdmin is a MySQL database manager like the most famous phpMyAdmin, but it's very simple to install and maintain.
+It's composed by only one file, and it support multiple databases and tables creation and manipulation.
+
+
+CONFIGURATION
+-------------
+Open the file (wizmysqladmin.php) and set the correct username ($DBU) and password ($DBP) for your mysql account.
+If the server is not "localhost" set also the $DBH variable with the correct value.
+
+
+SUPPORT MY WORK, PLEASE!
+------------------------
+WizMySQLAdmin is totally free. I to not make any profit by its development and maintenance.
+If you think it's great and useful, you can make me a donation through Paypal, and I'll drink a pint of Kilkenny (Strong) to yours health!
+If you want go to:
+
+https://www.paypal.com/xclick/business=paypal%40wizshelf.org&item_name=WizMySQLAdmin&no_note=1&tax=0&currency_code=EUR
+
+and fill the Paypal form to make me a donation.
+Thank you in advance!
