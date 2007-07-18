@@ -753,8 +753,6 @@ default:
 <?php
 
 require get_path('includePath') . '/claro_init_footer.inc.php';
-    
-mysql_close($dbl);
 
 function CreateTableStructure($FieldNum,$FieldStructure) {
  echo("<table cellspacing='0' cellpadding='2' border='0' style='border:1pt solid #666666;border-collapse:collapse;'>
