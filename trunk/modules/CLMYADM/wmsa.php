@@ -53,8 +53,16 @@ $dbl=@mysql_connect($DBH,$DBU,$DBP) or die("Access denied. Check configuration."
 if ( $singleDbEnabled )
 {
     $_SESSION[DBN]=$mainDbName;
-    $_REQUEST[hop]=1;
-    $_REQUEST[op]=1;
+    
+    if ( ! array_key_exists( 'hop', $_REQUEST ) )
+    {
+        $_REQUEST[hop]=1;
+    }
+
+    if ( ! array_key_exists( 'op', $_REQUEST ) )
+    {
+        $_REQUEST[op]=1;
+    }
 }
 
 switch($_REQUEST[hop]) {
