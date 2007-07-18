@@ -2,9 +2,9 @@
 <label>CLMYADM</label>
 <name>WizMySQLAdmin</name>
 <description><![CDATA[
-MySQL administration tool.
+MySQL database administration tool based on WizMySQLAdmin from http://www.wizshelf.org/.
 ]]></description>
-<version>1.0</version>
+<version>1.0-alpha</version>
 <license>GPL</license>
 <icon>icon.png</icon>
 <type>applet</type>
