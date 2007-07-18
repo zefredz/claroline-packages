@@ -26,7 +26,7 @@ header("Pragma: no-cache");
 header("Cache-Control: no-cache, must-revalidate");
 set_time_limit(0);
 error_reporting (E_ALL ^ E_NOTICE);
-session_start();
+// session_start();
 
 //********************************************//
 //*** CONFIGURE YOUR SERVER HERE *** START ***//
@@ -169,18 +169,11 @@ if($_SESSION[DBN]) {
   $TABLES.="<option value='$tbn' ".(($tbn==$_SESSION[TBN])?"selected":"").">$tbn</option>";
  }
 } elseif ($_REQUEST[op]!="999") unset($_REQUEST[op]);
-?>
-<html>
-<head>
- <title><?php echo("$VER[NAME] $VER[MAJOR].$VER[MINOR]"); ?></title>
- <style type="text/css"><!--
-  BODY,TABLE,TR,TD,INPUT,TEXTAREA,OPTION,SELECT { font-family:sans-serif;font-size:10pt;color:#404040;text-decoration:none; }
-  A:LINK,A:VISITED { font-family:sans-serif;font-size:10pt;color:#3366AA;text-decoration:none; }
-  A:HOVER { text-decoration:underline; }
- --></style>
-</head>
 
-<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+require get_path('includePath') . '/claro_init_header.inc.php';
+
+?>
+
 <table cellspacing="0" cellpadding="0" width="100%" border="0">
  <tr valign="middle" height="20" bgcolor="#CCCCCC">
   <td width="75%">&nbsp; <b><?php echo("$VER[NAME] $VER[MAJOR].$VER[MINOR]"); ?></b></td>
@@ -756,9 +749,11 @@ default:
 <table cellspacing="0" cellpadding="0" width="100%" border="0" valign="middle"><tr height="20">
  <th bgcolor="#CCCCCC">Copyright &copy; 2004-2007 <a href="<?php echo($VER[URL]); ?>" target='_blank'><?php echo($VER[WEB]); ?></a></td>
 </tr></table>
-</body>
-</html>
+
 <?php
+
+require get_path('includePath') . '/claro_init_footer.inc.php';
+    
 mysql_close($dbl);
 
 function CreateTableStructure($FieldNum,$FieldStructure) {
