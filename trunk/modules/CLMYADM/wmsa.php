@@ -22,11 +22,15 @@ $tlabelReq = 'CLMYADM';
 // load Claroline kernel
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
 
+if ( ! claro_is_platform_admin() )
+{
+    claro_disp_auth_form();
+}
+
 header("Pragma: no-cache");
 header("Cache-Control: no-cache, must-revalidate");
 set_time_limit(0);
 error_reporting (E_ALL ^ E_NOTICE);
-// session_start();
 
 //********************************************//
 //*** CONFIGURE YOUR SERVER HERE *** START ***//
