@@ -17,7 +17,7 @@ MySQL database administration tool based on WizMySQLAdmin from http://www.wizshe
 </author>
 <requirements>
 <claroline>
-<version>1.9</version>
+<version>1.8.6</version>
 </claroline>
 </requirements>
 </module>
