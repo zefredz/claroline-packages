@@ -14,7 +14,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * @author Sebastien Piraux
  *
  */
- 
+
 class item
 {
     /**
@@ -26,7 +26,7 @@ class item
      * @var $pathId id of path containing this item
      */
     var $pathId;
-    
+
     /**
      * @var $type type of the item
      */
@@ -41,70 +41,70 @@ class item
      * @var $description statement of the item
      */
     var $description;
-        
+
     /**
      * @var $visibility visibility of the item (default is invisible)
      */
-    var $visibility;      
-    
+    var $visibility;
+
     /**
      * @var $rank order of the item in the item list
      */
     var $rank;
-    
+
     /**
      * @var $identifier SCORM manifest ressource identifier
      */
-    var $identifier;        
-    
+    var $identifier;
+
     /**
      * @var $sysPath physical location of item ressources
      */
     var $sysPath;
 
     /**
-     * @var $parentId id of item that is direct parent of this 
+     * @var $parentId id of item that is direct parent of this
      */
-    var $parentId; 
-    
+    var $parentId;
+
     /**
      * @var $previousId id of the item previous of this
      */
-    var $previousId;        
+    var $previousId;
 
     /**
      * @var $nextId id of the item next to this
      */
-    var $nextId;            
-    
+    var $nextId;
+
     /**
      * @var $launchData text data required by the SCO to be launched (has been read in the manifest)
      */
-    var $launchData;           
+    var $launchData;
 
     /**
-     * @var $timeLimitAction define how the LMS must handle the sco if time is out 
+     * @var $timeLimitAction define how the LMS must handle the sco if time is out
      * possible values are : 'exit,message', 'exit,no message', 'continue,message', 'continue,no message'
      */
-    var $timeLimitAction;           
+    var $timeLimitAction;
 
     /**
      * @var $completionThreshold defineshow must be computed the completion status
      */
-    var $completionThreshold;           
-        
+    var $completionThreshold;
+
     /**
      * @var $tblItem name of the item table
      */
     var $tblItem;
-    
-        
+
+
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     */      
-  
+     */
+
     function item()
     {
         $this->id = (int) -1;
@@ -113,7 +113,7 @@ class item
         $this->title = '';
         $this->description = '';
         $this->visibility = 'INVISIBLE';
-        $this->rank = 0;        
+        $this->rank = 0;
         $this->identifier = '';
         $this->sysPath = '';
         $this->parentId = (int) -1;
@@ -122,14 +122,14 @@ class item
         $this->launchData = '';
         $this->timeLimitAction = 'continue,no message';
         $this->completionThreshold = '';
-        
+
         // define module table names
         $tblNameList = array(
             'lp_item'
         );
 
         // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblItem = $tbl_lp_names['lp_item'];
     }
 
@@ -139,7 +139,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer $id id of path
      * @return boolean load successfull ?
-     */    
+     */
     function load($id)
     {
         $sql = "SELECT
@@ -149,7 +149,7 @@ class item
                     `title`,
                     `description`,
                     `visibility`,
-                    `rank`,                    
+                    `rank`,
                     `identifier`,
                     `sys_path`,
                     `parent_id`,
@@ -171,7 +171,7 @@ class item
             $this->type = $data['type'];
             $this->title = $data['title'];
             $this->description = $data['description'];
-            $this->visibility = $data['visibility'];      
+            $this->visibility = $data['visibility'];
             $this->rank = (int) $data['rank'];
             $this->identifier = $data['identifier'];
             $this->sysPath = $data['sys_path'];
@@ -181,7 +181,7 @@ class item
             $this->launchData = $data['launch_data'];
             $this->timeLimitAction = $data['timeLimitAction'];
             $this->completionThreshold = $data['completionThreshold'];
-            
+
 
             return true;
         }
@@ -196,14 +196,14 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
-     */    
+     */
     function save()
     {
         if( $this->id == -1 )
         {
             // set correct value for rank on creation
             $this->setHigherRank($this->pathId);
-            
+
             // insert
             $sql = "INSERT INTO `".$this->tblItem."`
                     SET `path_id` = '".(int) $this->pathId."',
@@ -216,7 +216,7 @@ class item
                         `sys_path` = '".addslashes($this->sysPath)."',
                         `parent_id` = ".(int) $this->parentId.",
                         `previous_id` = ".(int) $this->previousId.",
-                        `next_id` = ".(int) $this->nextId.",                                               
+                        `next_id` = ".(int) $this->nextId.",
                         `launch_data` = '".addslashes($this->launchData)."',
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
                         `completionThreshold` = '".addslashes($this->completionThreshold)."'";
@@ -249,11 +249,11 @@ class item
                         `sys_path` = '".addslashes($this->sysPath)."',
                         `parent_id` = ".(int) $this->parentId.",
                         `previous_id` = ".(int) $this->previousId.",
-                        `next_id` = ".(int) $this->nextId.",                                               
+                        `next_id` = ".(int) $this->nextId.",
                         `launch_data` = '".addslashes($this->launchData)."',
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
                         `completionThreshold` = '".addslashes($this->completionThreshold)."'
-                    WHERE `id` = '".$this->id."'";
+                    WHERE `id` = '".(int) $this->id."'";
 
             // execute and return main query
             if( claro_sql_query($sql) )
@@ -272,20 +272,20 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function delete()
     {
         if( $this->id == -1 ) return true;
-        
+
         $sql = "DELETE FROM `" . $this->tblItem . "`
                 WHERE `id` = " . (int) $this->id ;
 
         if( claro_sql_query($sql) == false ) return false;
-        
+
         $this->id = -1;
         return true;
     }
-    
+
     /**
      * check if data are valide
      *
@@ -305,9 +305,9 @@ class item
 
         return true; // no errors, form is valide
     }
-     
+
     //-- Getter & Setter
-    
+
     /**
      * get id
      *
@@ -329,19 +329,19 @@ class item
     {
         return (int) $this->pathId;
     }
-    
+
     /**
      * set path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the path 
+     * @param $value int id of the path
      * @return int
      */
     function setPathId($value)
     {
         $this->pathId = (int) $value;
     }
-    
+
     /**
      * get type
      *
@@ -362,15 +362,15 @@ class item
     function setType($value)
     {
         $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM');
-        
+
         if( in_array($value, $acceptedValues) )
         {
             $this->type = $value;
-            return true;    
+            return true;
         }
         return false;
     }
-    
+
     /**
      * get title
      *
@@ -423,7 +423,7 @@ class item
     function setVisible()
     {
         $this->visibility = 'VISIBLE';
-    } 
+    }
 
     /**
      * set invisible
@@ -433,14 +433,14 @@ class item
     function setInvisible()
     {
         $this->visibility = 'INVISIBLE';
-    } 
-    
+    }
+
     /**
      * is the item visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isVisible()
     {
         if( $this->visibility == 'VISIBLE' )    return true;
@@ -452,14 +452,14 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isInvisible()
     {
         return !$this->isVisible();
     }
-      
+
     /**
-     * get identifier 
+     * get identifier
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -478,8 +478,8 @@ class item
     function setIdentifier($value)
     {
         $this->identifier = trim($value);
-    }        
-    
+    }
+
     /**
      * get rank
      *
@@ -501,7 +501,7 @@ class item
     {
         $this->rank = (int) $value;
     }
-    
+
     /**
      *
      *
@@ -510,8 +510,8 @@ class item
     function setHigherRank($pathId)
     {
         $this->rank = (int) $this->getHigherRank($pathId) + 1;
-    }    
-    
+    }
+
     /**
      * get lock
      *
@@ -532,8 +532,8 @@ class item
     function setLock($value)
     {
         $this->lock = trim($value);
-    } 
-    
+    }
+
     /**
      * set lock
      *
@@ -542,7 +542,7 @@ class item
     function lock()
     {
         $this->lock = 'CLOSE';
-    } 
+    }
 
     /**
      * set unlock
@@ -552,14 +552,14 @@ class item
     function unlock()
     {
         $this->lock = 'OPEN';
-    } 
-    
+    }
+
     /**
      * is the path locked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isLocked()
     {
         if( $this->lock == 'CLOSE' )    return true;
@@ -571,12 +571,12 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isUnlocked()
     {
         return !$this->isLocked();
     }
-    
+
     /**
      * get sysPath
      *
@@ -598,7 +598,7 @@ class item
     {
         $this->sysPath = trim($value);
     }
-    
+
     /**
      * get parent id
      *
@@ -609,12 +609,12 @@ class item
     {
         return (int) $this->parentId;
     }
-    
+
     /**
      * set parent id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the parent 
+     * @param $value int id of the parent
      * @return int
      */
     function setParentId($value)
@@ -664,11 +664,11 @@ class item
     function setTimeLimitAction($value)
     {
         $acceptedValues = array('exit,message', 'exit,no message', 'continue,message', 'continue,no message');
-        
+
         if( in_array($value, $acceptedValues) )
         {
             $this->timeLimitAction = $value;
-            return true;    
+            return true;
         }
         return false;
     }
@@ -677,7 +677,7 @@ class item
      * get completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @return string value of threshold required if setted to compute tu completion_status 
+     * @return string value of threshold required if setted to compute tu completion_status
      */
     function getCompletionThreshold()
     {
@@ -688,13 +688,13 @@ class item
      * set completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string value of threshold required if setted to compute tu completion_status 
+     * @param string value of threshold required if setted to compute tu completion_status
      */
     function setCompletionThreshold($value)
     {
         $this->completionThreshold = trim($value);
     }
-            		
+
     /**
      * get the higher rank of items in learning path
      *
@@ -714,14 +714,14 @@ class item
 
         if( !is_null($rankMax) ) return (int) $rankMax;
         else                     return 0;
-    }	
+    }
 }
 
 class itemList
 {
 	var $tblPath;
 	var $tblItem;
-	
+
 	function itemList()
     {
         $tblNameList = array(
@@ -730,19 +730,19 @@ class itemList
         );
 
         // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
         $this->tblItem = $tbl_lp_names['lp_item'];
     }
-    
+
     // load correct flat list of modules depending on parameters
     function getFlatList($pathId = null, $userId = null)
     {
         $list = $this->load($pathId,$userId);
-        
+
 		return $this->flatList( $this->buildTree($list,-1) );
     }
-    
+
     /**
      * Build an tree of $list from $id using the 'parent'
      * table. (recursive function)
@@ -761,20 +761,20 @@ class itemList
         if( is_array($list) && !empty($list) )
         {
             foreach ($list as $item)
-            {                
+            {
                 if( $item['id'] == $id )
                 {
                     $tree = $item; // keep all $list informations in the returned array
-                    
+
                     // add parameters that will be used in claro_build_nested_menu
                     $tree['name'] = $item['title'];
                     $tree['value'] = $item['id'];
                     break;
                 }
             }
-                
+
             foreach ($list as $item)
-            {   
+            {
                 if( $item['parent_id'] == $id && $item['parent_id'] != $item['id'] )
                 {
                     if($id == -1)
@@ -825,7 +825,7 @@ class itemList
             $item['deepness'] = $deepness;
             // remove children before copying item to final array as we do not need it anymore.
             unset($item['children']);
-            
+
             //--- up and down arrows displayed ?
             if( $count == count($treeList) ) $itemIsLast = true;
 
@@ -842,10 +842,10 @@ class itemList
                 $flatList = array_merge( $flatList, $this->flatList($temp, $deepness + 1 ) );
             }
         }
-        
+
         return  $flatList;
     }
-    
+
     // load correct list of modules depending on parameters
 	function load($pathId = null, $userId = null)
 	{
@@ -857,12 +857,12 @@ class itemList
 			}
 			else
 			{
-				return $this->loadPath($pathId);	
+				return $this->loadPath($pathId);
 			}
 		}
 		else
 		{
-			return $this->loadAll();	
+			return $this->loadAll();
 		}
 	}
 
@@ -875,7 +875,7 @@ class itemList
                     `type`,
                     `title`,
                     `description`,
-                    `visibility`,                    
+                    `visibility`,
                     `rank`,
                     `identifier`,
                     `sys_path`,
@@ -893,9 +893,9 @@ class itemList
         else
         {
             return $data;
-        }  		
+        }
 	}
-	
+
 	// should return a tree list of path items for course administrator
 	function loadPath($pathId)
 	{
@@ -905,7 +905,7 @@ class itemList
                     `type`,
                     `title`,
                     `description`,
-                    `visibility`,                    
+                    `visibility`,
                     `rank`,
                     `identifier`,
                     `sys_path`,
@@ -924,15 +924,15 @@ class itemList
         else
         {
             return $data;
-        }  	
+        }
 	}
-	
+
 	// should return a tree list of path items for a single user with its progression
 	function loadPathUserProgress($pathId, $userId)
 	{
-		
+
 	}
-	
+
 	function loadContainerList($pathId)
 	{
 	   $sql = "SELECT
@@ -941,7 +941,7 @@ class itemList
                     `type`,
                     `title`,
                     `description`,
-                    `visibility`,                    
+                    `visibility`,
                     `rank`,
                     `identifier`,
                     `sys_path`,
@@ -950,7 +950,7 @@ class itemList
                     `next_id`,
                     `launch_data`
             FROM `".$this->tblItem."`
-            WHERE `type` = 'container' 
+            WHERE `type` = 'container'
             AND `path_id` = ".(int) $pathId."
             ORDER BY `rank` ASC";
 
@@ -961,9 +961,9 @@ class itemList
         else
         {
             return $data;
-        } 
+        }
 	}
-	
+
 	/**
      * move item one position up in the tree if possible
      *
@@ -985,41 +985,41 @@ class itemList
             }
             $i++;
         }
-        
+
         // if the path is the first of the list
         if( $i == 0 )
         {
             return false;
         }
-        
+
         $currentRank = $item->getRank();
         $otherItemId = $list[$i-1]['id'];
-        
-        
+
+
         // get the item that is at the new position
         $otherItem = new item();
         $otherItem->load($otherItemId);
 
         // invert ranks
         $newRank = $otherItem->getRank();
-         
+
         $otherItem->setRank($currentRank);
         $item->setRank($newRank);
-    
+
         // save the two paths
         if( $item->validate() && $otherItem->validate() )
         {
             $item->save();
             $otherItem->save();
-            
+
             return true;
         }
         else
         {
             return false;
-        }      
+        }
     }
-    
+
     /**
      * move item one position down in the tree if possible
      *
@@ -1048,35 +1048,35 @@ class itemList
         {
             return false;
         }
-        
+
         $currentRank = $item->getRank();
         $otherItemId = $list[$i+1]['id'];
-        
-        
+
+
         // get the item that is at the new position
         $otherItem = new item();
         $otherItem->load($otherItemId);
 
         // invert ranks
         $newRank = $otherItem->getRank();
-         
+
         $otherItem->setRank($currentRank);
         $item->setRank($newRank);
-    
+
         // save the two paths
         if( $item->validate() && $otherItem->validate() )
         {
             $item->save();
             $otherItem->save();
-            
+
             return true;
         }
         else
         {
             return false;
-        }      
+        }
     }
-    
+
     /**
      * returns, for a path, the children of a node
      *
@@ -1084,11 +1084,11 @@ class itemList
      * @param $tree array that represent a tree (fields id and children should be setted)
      * @param $nodeId int id of the node to get
      * @return boolean result of operation
-     */	
+     */
     function getNodeChildren($pathId,$itemId)
     {
         $list = array();
-        
+
         // get all items list
         $itemList = $this->buildTree( $this->load($pathId) );
 
@@ -1108,10 +1108,10 @@ class itemList
             //item to move is at node
             $list = $itemList;
         }
-        
+
         return $list;
     }
-    
+
 	/**
      * returns a given node and its children
      *
@@ -1119,9 +1119,9 @@ class itemList
      * @param $tree array that represent a tree (fields id and children should be setted)
      * @param $nodeId int id of the node to get
      * @return boolean result of operation
-     */	
+     */
 	function getNode($tree,$nodeId)
-	{   
+	{
 	    foreach( $tree as $branch )
 	    {
     	    if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
@@ -1137,6 +1137,6 @@ class itemList
 
 	    // not found
 	    return false;
-	}    
+	}
 }
 ?>
