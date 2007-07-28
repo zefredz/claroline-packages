@@ -18,6 +18,7 @@
  * See http://www.gnu.org/licenses/gpl.html for the complete text of the license.
  */
 
+$cidReset = true;
 $tlabelReq = 'CLMYADM';
 // load Claroline kernel
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
