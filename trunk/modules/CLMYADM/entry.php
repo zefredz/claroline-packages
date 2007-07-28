@@ -4,8 +4,9 @@
 
     if ( claro_is_platform_admin() )
     {
-        $old_tlabel = $GLOBALS['tlabelReq'];
-        $GLOBALS['tlabelReq'] = 'CLMYADM';
+        //$old_tlabel = $GLOBALS['currentModuleLabel'];
+        $GLOBALS['currentModuleLabel'] = 'CLMYADM';
+        
         $claro_buffer->append( 
             claro_html_icon_button(
                 get_module_url('CLMYADM') . '/wmsa.php',
@@ -15,6 +16,6 @@
             )
         );
 
-        $GLOBALS['tlabelReq'] = $old_tlabel;
+        $GLOBALS['currentModuleLabel'] = null;
     }
 ?>
