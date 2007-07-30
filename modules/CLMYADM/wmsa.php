@@ -1,4 +1,7 @@
-<?php
+<?php // $Id$
+
+// vim: expandtab sw=4 ts=4 sts=4:
+
 /* Copyright (C) 2004-2007 Wiz's Shelf www.wizshelf.org
  *
  * This program is free software; you can redistribute it and/or modify
