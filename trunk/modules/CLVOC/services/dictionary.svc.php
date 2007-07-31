@@ -15,6 +15,7 @@
     
     // set diplay mode
     $dispDictionary         = true;  // display dictionary
+    $dispTitleDictionary    = true;
     $dispAddWordForm        = false; // display add word form
     $dispAddWordLink        = false; // display link to add word
     $dispEditForm           = false; // display edit form
@@ -29,6 +30,9 @@
     $dispAdminWordLink      = false;
     $dispToolBar            = true;
     $dispBackToDictionary   = true;
+/*  GREG  *****************************************************************************************************************************************************/  
+    $dispPrint              = false;
+/*  ^^^^  *****************************************************************************************************************************************************/  
     
     // set service state
     $loadDictionary         = true;
@@ -45,6 +49,10 @@
 
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
+/*  GREG  *****************************************************************************************************************************************************/  
+    require_once dirname(__FILE__) . '/../lib/print/print.class.php';
+    require_once dirname(__FILE__) . '/../lib/glossary/text.class.php';
+/*  ^^^^  *****************************************************************************************************************************************************/  
 }
 // }}}
     
@@ -81,6 +89,9 @@
             , 'rqDelWordDef'    // display are you sure
             , 'exDelWordDef'    // delete a def-word line from dictionary
             , 'showDefs'        // show definitions of a word
+/*  GREG  *****************************************************************************************************************************************************/  
+            , 'print'           // print
+/*  ^^^^  *****************************************************************************************************************************************************/  
         );
         
         $dispAddWordLink = true;
@@ -91,6 +102,9 @@
         $allowedActions = array( 
               'showDict'              // list words and definitions
             , 'showDefs'        // show definitions of a word
+/*  GREG  *****************************************************************************************************************************************************/  
+            , 'print'           // print
+/*  ^^^^  *****************************************************************************************************************************************************/  
         );
     }
     
@@ -135,6 +149,11 @@
         
     $dictionaryId = isset( $_REQUEST['dictionaryId'] )
         ? (int) $_REQUEST['dictionaryId']
+        : null
+        ;
+        
+    $textId = isset( $_REQUEST['textId'] )
+        ? (int) $_REQUEST['textId']
         : null
         ;
         
@@ -677,6 +696,39 @@
             $dispErrorBoxBackButton = false;
         }
     }
+
+/*  GREG  *****************************************************************************************************************************************************/  
+    if ( 'print' == $action )
+    {
+        $dispTitleDictionary = false;
+        $dispDictionary = false;
+        $dispPrint = true;
+        
+        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
+        $glossaryText->setId($textId);
+        $glossaryText->load();
+        $textTitle = $glossaryText->getTitle();
+        $wordList = $glossaryText->getWordList();
+        $glossary = $glossaryText->getGlossary();
+        
+        
+        /*
+        $glossaryPrint = new PrintTextGlossary();
+        $glossaryPrint->setWordList($wordList);
+        $printWords = $glossaryPrint->printWords();
+        */
+                print("<pre>");
+                var_dump($glossary);
+                print("</pre>");
+        //var_dump($wordList);
+        //$dictionaryId
+        //$textId
+        
+        
+        //$print = new printGlossary;
+        //$print->printWords();
+    }
+/*  ^^^^  *****************************************************************************************************************************************************/  
     
     // generate connection error
     if ( $connection->hasError() )
@@ -714,17 +766,20 @@
 // {{{ VIEW
 {
     $output = '';
-    
-    if ( is_null( $dictionaryId ) || 0 === $dictionaryId )
+    if ( true == $dispTitleDictionary )
     {
-        $output .= '<h1>'.get_lang('Dictionary').'</h1>' . "\n";
-    }
-    else
-    {
-        $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
-            , htmlspecialchars($dictionaryInfo['name'])).'</h1>' . "\n";
+        if ( is_null( $dictionaryId ) || 0 === $dictionaryId )
+        {
+            $output .= '<h1>'.get_lang('Dictionary').'</h1>' . "\n";
+        }
+        else
+        {
+            $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
+                , htmlspecialchars($dictionaryInfo['name'])).'</h1>' . "\n";
+        }
     }
     
+   
     if ( true == $dispToolBar )
     {
         $output .= displayGlossaryMenu();
@@ -833,6 +888,17 @@
             
             $output .= '</ul>' . "\n";
         }
+        
+/*  GREG  *****************************************************************************************************************************************************/  
+        // display print
+        if ( true == $dispPrint )
+        {
+            $output .= '<p class="claroCmd"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
+            $output .= '<h1>'.get_lang( 'Print' ).'</h1>';
+            
+            $output .= '<p class="claroCmd"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
+        }
+/*  ^^^^  *****************************************************************************************************************************************************/  
         
         // display add word form
         if ( true == $dispAddWordForm )

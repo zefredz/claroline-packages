@@ -35,6 +35,7 @@
 
 /*  GREG  *****************************************************************************************************************************************************/  
     require_once dirname(__FILE__) . '/lib/search/search.class.php';
+    require_once dirname(__FILE__) . '/lib/print/print.class.php';
 /*  ^^^^  *****************************************************************************************************************************************************/  
 
     // check tool access
@@ -52,7 +53,8 @@
         'glossary_text_dictionaries',
         'glossary_dictionary_tree',
         'glossary_tags',
-        'glossary_tags_entries'
+        'glossary_tags_entries',
+        'glossary_print'
     );
     // convert to Claroline course table names
     $glossaryTables = get_module_course_tbl( $tblNameList
@@ -79,6 +81,7 @@
     $dispatcher->bind( 'dict', new ScriptService('./services/dictionary.svc.php') );
     $dispatcher->bind( 'tags', new ScriptService('./services/tags.svc.php') );
     $dispatcher->bind( 'help', new ScriptService('./services/help.svc.php') );
+    $dispatcher->bind( 'print', new ScriptService('./services/print.svc.php') );
     
     // instanciate display
     $display = new ClarolineScriptEmbed;
@@ -100,6 +103,9 @@
         
     $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
         .$moduleCssRepositoryWeb.'/clvoc.css" media="all" />');
+        
+    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
+        .$moduleCssRepositoryWeb.'/print.css" media="print" />');
 }
 // }}}
 // {{{ CONTROLLER    

@@ -36,7 +36,7 @@
                 $callback = $_SERVER['PHP_SELF'];
             }
             
-            $urlVarValue = Glossary_Highlighter::urlHexEncode( $word );
+            $urlVarValue = $this->urlHexEncode( $word );
             $urlVarName = 'word';
             
             $callback = add_request_variable_to_url( $callback
@@ -49,7 +49,7 @@
             $replacement = PopupHelper::popupLink( 
                 $callback, 
                 "%".$word."%", 
-                Glossary_Highlighter::urlHexEncode('dictionary'), 
+                $this->urlHexEncode('dictionary'), 
                 300, 
                 300, 
                 'glossaryEntry' );
@@ -99,11 +99,11 @@
         */
         function highlightList( $text, $list, $callback = '' )
         {
-            Glossary_Highlighter::sort( $list );
+            $this->sort( $list );
             
             foreach ( $list as $word )
             {
-                 $text = Glossary_Highlighter::highlight( $text, $word, $callback );
+                 $text = $this->highlight( $text, $word, $callback );
                  // FIXME this is a patch !!!!!
                  // $text = Glossary_Highlighter::highlight( $text, ucfirst($word), $callback );
             }
@@ -161,6 +161,42 @@
             $encoded = '%'.substr( $encoded, 0, strlen( $encoded ) - 1 );
 
             return $encoded;
+        }
+    }
+    
+    class Glossary_Print_Highlighter extends Glossary_Highlighter
+    {
+        /**
+        * highlight a word in a given text
+        * @param    string $text text to highlight
+        * @param    string $word word to highlight in the text
+        * @param    string $callback url callback
+        * @return   highlighted string
+        */
+        function highlight( $text, $word, $callback = '' )
+        {
+            $replacement = '<span class="word">%'.$word.'%</span>';
+            
+            $result = preg_replace( 
+                '#('. $word .')#i'
+                , str_replace( "%".$word."%", "\\1", $replacement)
+                , $text);
+            
+            // cleaning result
+            $result = preg_replace(
+                '~(\<span class="word"\>+)~'
+                , '<span class="word">'
+                , $result
+            );
+            
+            $result = preg_replace(
+                '~(\</span\>+)~'
+                , '</span>'
+                , $result
+            );
+
+            
+            return $result;
         }
     }
 ?>
