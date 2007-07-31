@@ -301,8 +301,6 @@
                 
                 $successfulyAdded = false;
                 
-                $dict->addWord( $word, $definition );
-                
                 //if ( is_null( $wordId ) )
                 {
                     if ( !empty( $definition )  )
@@ -850,7 +848,6 @@
         {
             $title = $text->getTitle();
             // $output .= '<h2>'.htmlspecialchars( $title ).'</h2>' . "\n";
-                            
             if ( $isAllowedToEdit )
             {
                 $wordList = $text->getWordList();
@@ -899,12 +896,12 @@
                     . "\n"
                     ;
             }
-            
+
             // highlighter
             $content = $text->getContent();
             $wordList = $text->getWordList();
             $content = $san->sanitize( $content );
-            
+
             if (! empty( $wordList ) )
             {
                 $callback = $_SERVER['PHP_SELF'] 
@@ -913,11 +910,12 @@
                     . (!is_null($dictionaryId)?'&amp;dictionaryId='.$dictionaryId:'')
                     ;
                     
-                $content = Glossary_Highlighter::highlightList( $content
+                $highlighter = new Glossary_Highlighter;
+                $content = $highlighter->highlightList( $content
                     , $wordList
                     , $callback );
             }
-            
+
             // display text
             
             $output .= '<h3>' . get_lang( 'Text' ) . '</h3>' . "\n";
@@ -960,6 +958,17 @@
                 . '</p>'
                 . "\n"
                 ;
+/*  GREG  *****************************************************************************************************************************************************/  
+            $output .= '<p class="claroCmd icoPrint">'
+            . '<a href="#"'
+            .'onclick="popup( \'entry.php?page=print&amp;action=print&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
+            . '>'
+            . '<img src="'.get_icon('print').'" alt="' . get_lang( 'Print' ) . '" title="' . get_lang( 'Print' ) . '" /> Imprimer'
+            . '</a>'
+            . '</p>' . "\n"
+            ; 
+/*  ^^^^  *****************************************************************************************************************************************************/  
+            
         }
         
         if ( true == $dispTextList )

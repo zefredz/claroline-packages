@@ -3,3 +3,31 @@
     color: black !important;
     background-color: #E9967A;
 }
+
+/****************************************************
+Icone print
+****************************************************/
+
+.icoPrint{
+    float:right;
+}
+
+/****************************************************
+Print
+****************************************************/
+
+.linkPrintWindow{
+    text-align:center;
+}
+
+span.word {
+    font-weight:bold;
+    text-decoration:underline;
+    color:red;
+}
+
+.glossaryWord dt {
+    font-weight:bold;
+    margin-bottom:0.5em;
+    margin-top:1em;
+}

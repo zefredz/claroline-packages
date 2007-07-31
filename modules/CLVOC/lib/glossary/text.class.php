@@ -398,5 +398,44 @@
             
             return $dictionaryList;
         }
+        
+    	function getGlossary()
+    	{
+    		
+            $wordList = $this->getWordList();
+            $wordList = array_map("addslashes",$wordList);
+
+            $sql = "SELECT " . "\n"
+            . "W.id AS wordId, " . "\n"
+            . "W.name , " . "\n"
+            . "WD.id AS entryId, " . "\n"
+            . "WD.dictionaryId, " . "\n"
+            . "D.id AS definitionId, " . "\n"
+            . "D.definition " . "\n"
+            . "FROM " . "\n"
+            . "`".$this->tableList['glossary_words']."` AS W " . "\n"
+            . "LEFT JOIN " . "\n"
+            . "`".$this->tableList['glossary_word_definitions']."` AS WD " . "\n"
+            . "ON W.id = WD.wordId " . "\n"
+            . "LEFT JOIN " . "\n"
+            . "`".$this->tableList['glossary_definitions']."` AS D " . "\n"
+            . "ON WD.definitionId = D.id " . "\n"
+            . "WHERE WD.dictionaryId = '1' " . "\n"
+            . "AND  " . "\n"
+            . "W.name IN ('" . implode("','",$wordList) . "') " . "\n"
+            . "ORDER BY wordId ASC " . "\n"
+            ;
+            
+    		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+    		{
+    			return $result;
+    		}
+    		else
+    		{				
+    			return claro_failure::set_failure('SEARCH_FAILED');
+    		}
+    		
+    	}			
+        
     }
 ?>
