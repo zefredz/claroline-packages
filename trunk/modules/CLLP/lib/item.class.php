@@ -350,7 +350,7 @@ class item
      */
     function getType()
     {
-        return $this->title;
+        return $this->type;
     }
 
     /**
@@ -712,8 +712,8 @@ class item
 
         $rankMax = claro_sql_query_get_single_value($sql);
 
-        if( !is_null($rankMax) ) return (int) $rankMax;
-        else                     return 0;
+        if( !is_null($rankMax) || !$rankMax ) return (int) $rankMax;
+        else                     			  return 0;
     }
 }
 
