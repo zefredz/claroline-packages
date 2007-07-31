@@ -27,7 +27,6 @@ else                                                                  $pathId = 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemid = null;
 
-header( 'Content-Type: text/javascript' );
 
 /*
 if(claro_is_user_authenticated())
@@ -89,9 +88,10 @@ $sco['score_children'] = "raw,min,max";
 $sco['exit'] = "";
 $sco['session_time'] = "0000:00:00.00";
 
+header( 'Content-Type: text/javascript' );
 ?>
     var init_total_time = "<?php echo $sco['total_time']; ?>";
-    
+
     // ====================================================
     // API Class Constructor
     function APIClass() {
@@ -123,7 +123,7 @@ $sco['session_time'] = "0000:00:00.00";
             this.SetValue = LMSSetValue;
             this.Commit = LMSCommit;
             this.Terminate = LMSTerminate;
-            
+
             // State Management
             this.GetLastError = LMSGetLastError;
             this.GetErrorString = LMSGetErrorString;
@@ -200,7 +200,7 @@ $sco['session_time'] = "0000:00:00.00";
             {
                 switch (ele)
                 {
-                    case 'cmi._version' : 
+                    case 'cmi._version' :
                             APIError("0");
                             return elementList[ele];
                             break;
@@ -222,10 +222,10 @@ $sco['session_time'] = "0000:00:00.00";
                             break;
                     case 'cmi.completion_status' :  // TODO handle completion_threshold and completion_status and progress_measure
                             APIError("0");
-                            return elementList[ele];       
+                            return elementList[ele];
                             break;
-                    case 'cmi.progress_measure' : 
-                            if( elementList[ele] == "" ) 
+                    case 'cmi.progress_measure' :
+                            if( elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -236,9 +236,9 @@ $sco['session_time'] = "0000:00:00.00";
                                 return elementList[ele];
                             }
                             break;
-                    case 'cmi.success_status' : 
+                    case 'cmi.success_status' :
                     // TODO compute result
-                            break;                              
+                            break;
                     // todo threshold, measure, status
                     case 'cmi.entry' :
                             APIError("0");
@@ -247,9 +247,9 @@ $sco['session_time'] = "0000:00:00.00";
                     case 'cmi.exit' :
                             APIError("405"); // write only
                             return "";
-                            break;                                    
+                            break;
                     case 'cmi.launch_data' :
-                            if( elementList[ele] == "" ) 
+                            if( elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -259,7 +259,7 @@ $sco['session_time'] = "0000:00:00.00";
                                 APIError("0");
                                 return elementList[ele];
                             }
-                            break;                                  
+                            break;
                     case 'cmi.learner_id' :
                             APIError("0");
                             return elementList[ele];
@@ -267,7 +267,7 @@ $sco['session_time'] = "0000:00:00.00";
                     case 'cmi.learner_name' :
                             APIError("0");
                             return elementList[ele];
-                            break;                            
+                            break;
                     case 'cmi.location' :
                             if( elementList[ele] == "" )
                             {
@@ -280,7 +280,7 @@ $sco['session_time'] = "0000:00:00.00";
                                 return elementList[ele];
                             }
                             break;
-                    case 'cmi.max_time_allowed' : 
+                    case 'cmi.max_time_allowed' :
                             if( elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
@@ -291,20 +291,20 @@ $sco['session_time'] = "0000:00:00.00";
                                 APIError("0");
                                 return elementList[ele];
                             }
-                            break;       
-                    case 'cmi.mode' : 
+                            break;
+                    case 'cmi.mode' :
                             APIError("0");
                             return elementList[ele];
-                            break;                                     
-                    case 'cmi.credit' : 
+                            break;
+                    case 'cmi.credit' :
                             APIError("0");
                             return elementList[ele];
-                            break; 
-                    case 'cmi.scaled_passing_score' : 
+                            break;
+                    case 'cmi.scaled_passing_score' :
                             APIError("0");
                             return elementList[ele];
-                            break; 
-                    case 'cmi.score._children' : 
+                            break;
+                    case 'cmi.score._children' :
                             APIError("0");
                             return elementList[ele];
                             break;
@@ -356,7 +356,7 @@ $sco['session_time'] = "0000:00:00.00";
                                 return elementList[ele];
                             }
                             break;
-                    case 'cmi.suspend_data' : 
+                    case 'cmi.suspend_data' :
                             if( elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
@@ -368,16 +368,16 @@ $sco['session_time'] = "0000:00:00.00";
                                 return elementList[ele];
                             }
                             break;
-                    case 'cmi.time_limit_action' : 
+                    case 'cmi.time_limit_action' :
                             APIError("0");
-                            return elementList[ele]; 
+                            return elementList[ele];
                             break;
                     case 'cmi.session_time' :
                             // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
                             // sum this to total_time on terminate before commit
                             APIError("0");
-                            return elementList[ele]; 
-                            break;    
+                            return elementList[ele];
+                            break;
                     case 'cmi.total_time' :
                             if( elementList['cmi.session_time'] == "" )
                             {
@@ -385,14 +385,14 @@ $sco['session_time'] = "0000:00:00.00";
                                 return 0;
                             }
                             APIError("0");
-                            return elementList[ele]; 
-                            break;   
+                            return elementList[ele];
+                            break;
                     default :
                             // not implemented error
                             APIError("401");
                             return "";
                             break;
-               
+
                 }
 
             }
@@ -410,7 +410,7 @@ $sco['session_time'] = "0000:00:00.00";
             {
                 switch (ele)
                 {
-                    case 'cmi._version' : 
+                    case 'cmi._version' :
                             APIError("404"); // read only
                             return "false";
                             break;
@@ -441,13 +441,13 @@ $sco['session_time'] = "0000:00:00.00";
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
-                            break; 
-                    case 'cmi.progress_measure' : 
+                            break;
+                    case 'cmi.progress_measure' :
                             if( isNaN(parseFloat(val)) )
                             {
                                 APIError("406"); // data model element type mismatch
                                 return "false";
-                            }    
+                            }
                             if( (val < 0) || (val > 1) )
                             {
                                 APIError("407"); // data model element out of range
@@ -467,12 +467,12 @@ $sco['session_time'] = "0000:00:00.00";
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
-                            break; 
-                        
+                            break;
+
                     case 'cmi.entry' :
                             APIError("404"); // read only
                             return "false";
-                            break;        
+                            break;
                     case 'cmi.exit' :
                             var upperCaseVal = val.toUpperCase();
                             if ( upperCaseVal != "TIME-OUT" && upperCaseVal != "SUSPEND"
@@ -484,11 +484,11 @@ $sco['session_time'] = "0000:00:00.00";
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
-                            break;                                    
+                            break;
                     case 'cmi.launch_data' :
                             APIError("404"); // read only
                             return "false";
-                            break;         
+                            break;
                     case 'cmi.learner_id' :
                             APIError("404"); // read only
                             return "false";
@@ -496,7 +496,7 @@ $sco['session_time'] = "0000:00:00.00";
                     case 'cmi.learner_name' :
                             APIError("404"); // read only
                             return "false";
-                            break;                              
+                            break;
                     case 'cmi.location' :
                             if( val.length > 255 )
                             {
@@ -506,33 +506,33 @@ $sco['session_time'] = "0000:00:00.00";
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
-                            break;                              
-                    case 'cmi.max_time_allowed' :   
-                            APIError("404"); // read only
-                            return "false";
-                            break; 
-                    case 'cmi.mode' :
-                            APIError("404"); // read only
-                            return "false";
-                            break;  
-                    case 'cmi.credit' :
-                            APIError("404"); // read only
-                            return "false";
-                            break;  
-                    case 'cmi.scaled_passing_score' :
-                            APIError("404"); // read only
-                            return "false";
-                            break;   
-                    case 'cmi.score._children' : 
+                            break;
+                    case 'cmi.max_time_allowed' :
                             APIError("404"); // read only
                             return "false";
                             break;
-                    case 'cmi.score.scaled' : 
+                    case 'cmi.mode' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.credit' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.scaled_passing_score' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.score._children' :
+                            APIError("404"); // read only
+                            return "false";
+                            break;
+                    case 'cmi.score.scaled' :
                             if( isNaN(parseFloat(val)) )
                             {
                                 APIError("406"); // data model element type mismatch
                                 return "false";
-                            }    
+                            }
                             if( (val < 0) || (val > 1) )
                             {
                                 APIError("407"); // data model element out of range
@@ -540,13 +540,13 @@ $sco['session_time'] = "0000:00:00.00";
                             }
                             elementList[ele] = val;
                             return "true";
-                            break;      
-                    case 'cmi.score.min' : 
+                            break;
+                    case 'cmi.score.min' :
                             if( isNaN(parseFloat(val)) )
                             {
                                 APIError("406"); // data model element type mismatch
                                 return "false";
-                            }    
+                            }
                             if( (val < 0) || (val > 1) )
                             {
                                 APIError("407"); // data model element out of range
@@ -554,13 +554,13 @@ $sco['session_time'] = "0000:00:00.00";
                             }
                             elementList[ele] = val;
                             return "true";
-                            break;       
-                    case 'cmi.score.max' : 
+                            break;
+                    case 'cmi.score.max' :
                             if( isNaN(parseFloat(val)) )
                             {
                                 APIError("406"); // data model element type mismatch
                                 return "false";
-                            }    
+                            }
                             if( (val < 0) || (val > 1) )
                             {
                                 APIError("407"); // data model element out of range
@@ -568,13 +568,13 @@ $sco['session_time'] = "0000:00:00.00";
                             }
                             elementList[ele] = val;
                             return "true";
-                            break; 
-                    case 'cmi.score.raw' : 
+                            break;
+                    case 'cmi.score.raw' :
                             if( isNaN(parseFloat(val)) )
                             {
                                 APIError("406"); // data model element type mismatch
                                 return "false";
-                            }    
+                            }
                             if( (val < 0) || (val > 1) )
                             {
                                 APIError("407"); // data model element out of range
@@ -582,23 +582,23 @@ $sco['session_time'] = "0000:00:00.00";
                             }
                             elementList[ele] = val;
                             return "true";
-                            break;       
+                            break;
                     case 'cmi.session_time' :
                             // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
-                            break;    
+                            break;
                     case 'cmi.total_time' :
                             APIError("404"); // read only
                             return "false";
-                            break;   
+                            break;
                     case 'cmi.suspend_data' :
                             elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
-                    case 'cmi.time_limit_action' : 
+                    case 'cmi.time_limit_action' :
                             APIError("404"); // read only
                             return "false";
                             break;
@@ -607,7 +607,7 @@ $sco['session_time'] = "0000:00:00.00";
                             APIError("401");
                             return "";
                             break;
-                
+
                 }
             }
             else
@@ -706,66 +706,27 @@ $sco['session_time'] = "0000:00:00.00";
     // ====================================================
     // CMI Elements and Values
     //
-    var elements = new Array();
-    elements[0]  = "cmi.core._children";
-    elements[1]  = "cmi.core.student_id";
-    elements[2]  = "cmi.core.student_name";
-    elements[3]  = "cmi.core.lesson_location";
-    elements[4]  = "cmi.core.lesson_status";
-    elements[5]  = "cmi.core.credit";
-    elements[6]  = "cmi.core.entry";
-    elements[7]  = "cmi.core.score._children";
-    elements[8]  = "cmi.core.score.raw";
-    elements[9]  = "cmi.core.total_time";
-    elements[10] = "cmi.core.exit";
-    elements[11] = "cmi.core.session_time";
-    elements[12] = "cmi.suspend_data";
-    elements[13] = "cmi.launch_data";
-    elements[14] = "cmi.core.score.min";
-    elements[15] = "cmi.core.score.max";
-    elements[16] = "cmi.completion_status";
-    elements[17] = "cmi.success_status";
 
-    var values = new Array();
-    values[0]  = "<?php echo $sco['_children']; ?>";
-    values[1]  = "<?php echo $sco['student_id']; ?>";
-    values[2]  = "<?php echo $sco['student_name']; ?>";
-    values[3]  = "<?php echo $sco['lesson_location']; ?>";
-    values[4]  = "<?php echo $sco['lesson_status'];?>";
-    values[5]  = "<?php echo $sco['credit']; ?>";
-    values[6]  = "<?php echo $sco['entry'];?>";
-    values[7]  = "<?php echo $sco['score_children']; ?>";
-    values[8]  = "<?php echo $sco['raw'];?>";
-    values[9]  = "<?php echo $sco['total_time'] ?>";
-    values[10] = "<?php echo $sco['exit']; ?>";
-    values[11] = "<?php echo $sco['session_time']; ?>";
-    values[12] = "<?php echo $sco['suspend_data'];?>";
-    values[13] = "<?php echo $sco['launch_data'];?>";
-    values[14] = "<?php echo $sco['scoreMin'];?>";
-    values[15] = "<?php echo $sco['scoreMax'];?>";
-    values[16] = "<?php echo $sco['lesson_status']?>"; //we do deal the completion_status element with the old lesson_status element, this will change in further versions...
-    values[17] = "<?php echo $sco['lesson_status']?>"; //we do deal the sucess_status element with the old lesson_status element, this will change in further versions...
-
-    var elementList = new Array();
+    var elementList = {};
     elementList['cmi._version'] = '1.0';
     elementList['cmi.comments_from_learner._children']  = "comment,location,timestamp";
     elementList['cmi.comments_from_learner._count']  = "";
-    elementList['cmi.comments_from_learner'] = new Array(); // TODO handle collections
+    elementList['cmi.comments_from_learner'] = {}; // TODO handle collections
     elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
     elementList['cmi.comments_from_lms._count']  = "";
-    elementList['cmi.comments_from_lms'] = new Array(); // TODO handle collections
+    elementList['cmi.comments_from_lms'] = {}; // TODO handle collections
     elementList['cmi.completion_status']  = "UNKNOWN"; // progress measure == 0 -> not attempted, 1 -> completed, 0 < < 1 -> incomplete but depends on complete threshold
     elementList['cmi.entry']  = "";
     elementList['cmi.exit']  = "";
     elementList['cmi.launch_data']  = "";
     elementList['cmi.learner_id']  = "";
-    elementList['cmi.learner_name'] = "";    
-    elementList['cmi.location'] = "";    
-    elementList['cmi.max_time_allowed'] = ""; // TODO get that from manifest ! 
+    elementList['cmi.learner_name'] = "";
+    elementList['cmi.location'] = "";
+    elementList['cmi.max_time_allowed'] = ""; // TODO get that from manifest !
     elementList['cmi.mode'] = "";   // if mode is browse or review credit is always no-credit, if mode == "normal" credit my be credit or no-credit
-    elementList['cmi.credit']  = "no-credit";     
-    elementList['cmi.progress_measure'] = ""; // not attempted, completed, incomplete, depends on completionThreshold    
-    elementList['cmi.scaled_passing_score'] = "";    
+    elementList['cmi.credit']  = "no-credit";
+    elementList['cmi.progress_measure'] = ""; // not attempted, completed, incomplete, depends on completionThreshold
+    elementList['cmi.scaled_passing_score'] = "";
     elementList['cmi.score._children'] = "scaled,min,max,raw";
     elementList['cmi.score.scaled'] = "";
     elementList['cmi.score.min'] = "";
@@ -773,22 +734,22 @@ $sco['session_time'] = "0000:00:00.00";
     elementList['cmi.score.raw'] = "";
     elementList['cmi.session_time'] = ""; // check value ? find a way to store it ? probably use php to convert and serve a correct string
     elementList['cmi.success_status'] = ""; // passed failed or unknown
-    elementList['cmi.suspend_data'] = "";     
+    elementList['cmi.suspend_data'] = "";
     elementList['cmi.time_limit_action'] = ""; // exit,message/exit,no message/continue,message/continue,no message // should be initialized to continue,no message if nothing found in manifest
     elementList['cmi.total_time'] = "";
-    
-                    
-    // todo    
-    elementList['cmi.completion_threshold']  = "";    
-    elementList['cmi.interactions']  = new Array();
+
+
+    // todo
+    elementList['cmi.completion_threshold']  = "";
+    elementList['cmi.interactions']  = {};
     elementList['cmi.learner_preference'] = "";
-    elementList['cmi.objectives'] = new Array();
-    
+    elementList['cmi.objectives'] = {};
 
 
-               
 
-        
+
+
+
     // ====================================================
     // Final Setup
     //
@@ -806,4 +767,7 @@ $sco['session_time'] = "0000:00:00.00";
 
     API_1484_11 = new APIClass();
     api_1484_11 = API_1484_11;
+
+    // other usefull vars
+    var itemId = "<?php echo $itemId ?>";
 
