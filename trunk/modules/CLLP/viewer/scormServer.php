@@ -13,7 +13,7 @@
  * @author Sebastien Piraux
  *
  */
- 
+
 $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
@@ -23,10 +23,10 @@ if ( !claro_is_tool_allowed() )
 	if ( claro_is_in_a_course() )
 	{
 		claro_die( get_lang( "Not allowed" ) );
-	} 
+	}
     else
 	{
-		claro_redirect("index.php");	
+		claro_redirect("index.php");
 	}
 }
 
@@ -49,6 +49,7 @@ else                                                                  $itemId = 
  */
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
+require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
 /*
  * Shared libraries
@@ -62,31 +63,68 @@ if( is_null($cmd) ) echo 'Error : no command.';
 
 if( $cmd == 'doCommit' )
 {
-    
+	require_once dirname( __FILE__ ) . '/../lib/JSON.php';
+
+	$json = new Services_JSON();
+	// it returns an object so we have to cast it to an array to be able to use it correctly
+	// do not forget to also cast sub-arrays like cmi.comments_from_learner
+	$decodedScormData = (array) $json->decode($_REQUEST['scormdata']);
+
+	$thisAttempt = unserialize($_SESSION['thisAttempt']);
+
+	$itemAttempt = new itemAttempt();
+	$itemAttempt->load($thisAttempt['id'], $itemId); // TODO do that properly ^^
+
+	if( isset($thisAttempt['itemAttemptList'][$itemId]) )
+	{
+
+	}
+	else
+	{
+
+	}
 }
 
 if( $cmd == 'rqRefresh' )
 {
-    
+
 }
 
+/**
+ * Get the url of one single item by id
+ */
 if( $cmd == 'rqContentUrl' )
 {
     $item = new item();
     $itemUrl = '';
-    
-    if( $item->load($itemId) ) 
+
+    if( $item->load($itemId) )
     {
-        $resolver = new Resolver(get_path('rootWeb'));
-    
-        $itemUrl = $resolver->resolve($anItem['sys_path']); 
-        // TODO
-        // scorm
-        // claroline module
-        // test purpose
+        if( $item->getType() == 'MODULE' )
+        {
+        	$resolver = new Resolver(get_path('rootWeb'));
+
+        	$itemUrl = $resolver->resolve($item->getSysPath());
+        }
+        elseif( $item->getType() == 'SCORM' )
+        {
+        	$scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
+
+            $itemUrl = $scormBaseUrl . $item->getSysPath();
+        }
+        else
+        {
+            return false;
+        }
+dump($itemUrl);
+	    echo $itemUrl;
+	    return true;
     }
-    echo $itemUrl;
-}  
+    else
+    {
+    	return false;
+    }
+}
 
 if( $cmd == 'rqToc' )
 {
@@ -99,13 +137,14 @@ if( $cmd == 'rqToc' )
     $itemList = new itemList();
 
     $itemListArray = $itemList->getFlatList($pathId);
-    
+
+
     // init what will be required to resolve urls
     //  urls of claroline tools
     $resolver = new Resolver(get_path('rootWeb'));
-    //  urls of scorm packages 
+    //  urls of scorm packages
     $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
-    
+
     $html = '';
 
     $html .= '<table style="font-size: small;" width="100%" border="0" cellspacing="2">' . "\n";
@@ -117,21 +156,21 @@ if( $cmd == 'rqToc' )
         // result
     	$html .= '<td>' . "\n"
     	.    '<img src="' . get_path('imgRepositoryWeb') . 'checkbox_on.gif" border="0" alt="' . get_lang('Checked') . '" />' . "\n"
-    	.    '</td>' . "\n"; 
-    	    
+    	.    '</td>' . "\n";
+
         // title
         $html .= '<td align="left" style="padding-left:'.($anItem['deepness']*10).'px;">'
         .    '<img src="'.get_module_url('CLLP').'/img/'.(($anItem['type'] == 'CONTAINER')? 'chapter.png': 'item.png').'" alt="" />';
 
         if( $anItem['type'] == 'MODULE' )
         {
-            $itemUrl = $resolver->resolve($anItem['sys_path']); 
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content">' . $anItem['title'] . '</a>';
+            $itemUrl = $resolver->resolve($anItem['sys_path']);
+            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="openItem(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
         }
         elseif( $anItem['type'] == 'SCORM' )
         {
-            $itemUrl = $scormBaseUrl . $anItem['sys_path']; 
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content">' . $anItem['title'] . '</a>';
+            $itemUrl = $scormBaseUrl . $anItem['sys_path'];
+            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="openItem(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
         }
         else
         {
@@ -139,13 +178,20 @@ if( $cmd == 'rqToc' )
         }
 
         $html .= '</td>' . "\n";
-    	
+
         $html .= '</tr>' . "\n";
     }
 
     $html .= '</table>';
-    
+
     echo $html;
-}   
+}
+
+function dump($var)
+{
+	$fp = fopen('debug.txt','a');
+	fwrite($fp, "\n" . '------------------------------' . "\n" . print_r($var,true));
+	fclose($fp);
+}
 // ajax output
 ?>

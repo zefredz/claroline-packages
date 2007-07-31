@@ -13,7 +13,7 @@
  * @author Sebastien Piraux
  *
  */
- 
+
 $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
@@ -23,7 +23,7 @@ if ( !claro_is_tool_allowed() )
 	if ( claro_is_in_a_course() )
 	{
 		claro_die( get_lang( "Not allowed" ) );
-	} 
+	}
     else
 	{
 		claro_disp_auth_form( true );
@@ -34,7 +34,9 @@ if ( !claro_is_tool_allowed() )
 /*
  * Tool libraries
  */
+require_once dirname( __FILE__ ) . '/../lib/CLLP.lib.php';
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
+require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
 /*
  * Shared libraries
@@ -64,7 +66,7 @@ if( is_null($pathId) )
 else
 {
     $path = new path();
-    
+
     if( !$path->load($pathId) )
     {
         // path is required
@@ -73,14 +75,14 @@ else
     }
 }
 
-
 claro_set_display_mode_available(false);
-
-$user_id = claro_get_current_user_id();
 
 $fullScreen = $path->isFullScreen() || ( isset($rqFullscreen) && $rqFullscreen );
 
+$thisAttempt = new attempt();
+$thisAttempt->load($pathId, claro_get_current_user_id());
 
+$_SESSION['thisAttempt'] = serialize($thisAttempt);
 
 /*
  * Output
@@ -101,10 +103,8 @@ $menuFrameset->addRow($menuFrameToc, '*');
 $menuFrameset->addRow($menuFrameNav, '100');
 
 
-// content frame 
-$resolver = new Resolver(get_path('rootWeb'));
-$itemUrl = $resolver->resolve('crl://claroline.net/3227e902568ab6bfc78be23c9a24e3ab/LPTEST/CLQWZ___/1');
-$contentFrame = new ClaroFrame('lp_content', '#');
+// content frame
+$contentFrame = new ClaroFrame('lp_content', 'blank.htm');
 $contentFrame->allowScrolling(true);
 $contentFrame->noFrameBorder();
 
@@ -114,33 +114,29 @@ $innerFrameset->addCol($menuFrameset, '200');
 $innerFrameset->addCol($contentFrame, '*');
 
 // prepare html header
-$htmlHeaders = "\n"
-.     '<script type="text/javascript">' . "\n"
-.    '  var pathId = "'.$pathId.'";' . "\n"
-.    '  var moduleUrl = "'.get_module_url('CLLP').'/";' . "\n"
-.    '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
-.    '  var debug_mode = '.get_conf('scorm_api_debug').';' . "\n"
-.    '  var jQueryPath = "'.get_module_url('CLLP').'/js/jquery.js";' . "\n"
-.    '</script>' . "\n\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.frameready.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/CLLP.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/viewer/scormAPI.php?pathId='.$pathId.'"></script>' . "\n\n";
+$htmlHeaders = getViewerHtmlHeaders($pathId);
+
+$htmlHeaders .= "\n"
+.    '<script type="text/javascript">' . "\n"
+.	 '  $(document).ready(function() {' . "\n"
+.    '    setTimeout("refreshToc()", 1000);' . "\n"
+.	 '  });' . "\n"
+.    '</script>' . "\n\n";
 
 if( !$fullScreen )
 {
     // create outer frameset
     $outerFrameset = new ClaroFrameset();
-    
+
     // header frame
     $headerFrame = new ClaroFrame('lp_header', 'header.php?pathId='.$pathId);
     $headerFrame->noFrameBorder();
-    
-    // add header frame and inner frameset    
+
+    // add header frame and inner frameset
     $outerFrameset->addRow($headerFrame, '150');
     $outerFrameset->addRow($innerFrameset, '*');
-    
-    $outerFrameset->addHtmlHeader($htmlHeaders);    
+
+    $outerFrameset->addHtmlHeader($htmlHeaders);
     // output outer frameset with inner frameset within in embedded mode
     $outerFrameset->output();
 }
