@@ -1,0 +1,15 @@
+.closeWindow, .linkPrintWindow {
+    display:none;
+}
+
+span.word {
+    font-weight:bold;
+    text-decoration:underline;
+    color:red;
+}
+
+.glossaryWord dt {
+    font-weight:bold;
+    margin-bottom:0.5em;
+    margin-top:1em;
+}
