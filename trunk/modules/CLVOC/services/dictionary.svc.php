@@ -30,9 +30,7 @@
     $dispAdminWordLink      = false;
     $dispToolBar            = true;
     $dispBackToDictionary   = true;
-/*  GREG  *****************************************************************************************************************************************************/  
     $dispPrint              = false;
-/*  ^^^^  *****************************************************************************************************************************************************/  
     
     // set service state
     $loadDictionary         = true;
@@ -49,10 +47,8 @@
 
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
-/*  GREG  *****************************************************************************************************************************************************/  
     require_once dirname(__FILE__) . '/../lib/print/print.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/text.class.php';
-/*  ^^^^  *****************************************************************************************************************************************************/  
 }
 // }}}
     
@@ -89,9 +85,7 @@
             , 'rqDelWordDef'    // display are you sure
             , 'exDelWordDef'    // delete a def-word line from dictionary
             , 'showDefs'        // show definitions of a word
-/*  GREG  *****************************************************************************************************************************************************/  
             , 'print'           // print
-/*  ^^^^  *****************************************************************************************************************************************************/  
         );
         
         $dispAddWordLink = true;
@@ -102,9 +96,7 @@
         $allowedActions = array( 
               'showDict'              // list words and definitions
             , 'showDefs'        // show definitions of a word
-/*  GREG  *****************************************************************************************************************************************************/  
             , 'print'           // print
-/*  ^^^^  *****************************************************************************************************************************************************/  
         );
     }
     
@@ -124,12 +116,6 @@
         ? trim( $_REQUEST['def'] )
         : ''
         ;
-
-    /*$synList = isset( $_REQUEST['synonymList'] )
-            && trim( $_REQUEST['synonymList'] ) != ''
-        ? explode( ',', $_REQUEST['synonymList'] )
-        : NULL
-        ; */
         
     $synList = isset( $_REQUEST['synList'] )
             && is_array( $_REQUEST['synList'] )
@@ -697,7 +683,6 @@
         }
     }
 
-/*  GREG  *****************************************************************************************************************************************************/  
     if ( 'print' == $action )
     {
         $dispTitleDictionary = false;
@@ -710,25 +695,7 @@
         $textTitle = $glossaryText->getTitle();
         $wordList = $glossaryText->getWordList();
         $glossary = $glossaryText->getGlossary();
-        
-        
-        /*
-        $glossaryPrint = new PrintTextGlossary();
-        $glossaryPrint->setWordList($wordList);
-        $printWords = $glossaryPrint->printWords();
-        */
-                print("<pre>");
-                var_dump($glossary);
-                print("</pre>");
-        //var_dump($wordList);
-        //$dictionaryId
-        //$textId
-        
-        
-        //$print = new printGlossary;
-        //$print->printWords();
     }
-/*  ^^^^  *****************************************************************************************************************************************************/  
     
     // generate connection error
     if ( $connection->hasError() )
@@ -889,7 +856,6 @@
             $output .= '</ul>' . "\n";
         }
         
-/*  GREG  *****************************************************************************************************************************************************/  
         // display print
         if ( true == $dispPrint )
         {
@@ -898,7 +864,6 @@
             
             $output .= '<p class="claroCmd"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
         }
-/*  ^^^^  *****************************************************************************************************************************************************/  
         
         // display add word form
         if ( true == $dispAddWordForm )
