@@ -1,0 +1,39 @@
+/* Messages d'erreurs */
+
+.error {
+ padding: 1em 0 1em 1.3em;
+ border-bottom:1px solid #cccccc;
+}
+
+/* Message d'informations ou de confirmations */
+
+.confirm {
+ padding: 1em 0 1em 1.3em;
+ color: green;
+ border-bottom:1px solid #cccccc;
+}
+
+.info {
+ padding: 1em 0 1em 1.3em;
+ color: green;
+ font-style:italic;
+ border-top:1px solid #cccccc;
+}
+
+/* Tableau */
+
+table.widthTable {
+width: 100%;
+}
+
+thead {
+text-align:center;
+}
+
+th.col_static {
+width:100px;
+}
+
+td.center {
+text-align:center;
+}
