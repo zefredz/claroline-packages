@@ -27,9 +27,7 @@
     $dispConfirmDelWord = false;
     $dispWordDeleted = false;
     $dispDefinition = false;
-/*  GREG  *****************************************************************************************************************************************************/  
-//    $dispTextSearch = false;
-/*  ^^^^  *****************************************************************************************************************************************************/  
+    //    $dispTextSearch = false;
     
     
     // set error variables
@@ -78,9 +76,7 @@
             , 'exAddWord'           // add word to wordlist/dictionary
             , 'rqDelWord'
             , 'exDelWord'
-/*  GREG  *****************************************************************************************************************************************************/  
-//            , 'searchText'
-/*  ^^^^  *****************************************************************************************************************************************************/  
+            // , 'searchText'
             // , 'showDefs'
         );
     }
@@ -90,9 +86,7 @@
             // all users
               'listText'             // list texts
             , 'showText'             // show text
-/*  GREG  *****************************************************************************************************************************************************/  
-//            , 'searchText'
-/*  ^^^^  *****************************************************************************************************************************************************/  
+            // , 'searchText'
             // , 'showDefs'
         );
     }
@@ -143,13 +137,6 @@
         ? (int) $_REQUEST['dictionaryId']
         : NULL
         ;
-
-    // var_dump( $dictionaryId );
-    
-    /*if ( 'showText' == $action && is_null( $textId ) )
-    {
-        $action = 'listText';
-    }*/
     
     if ( ! is_null( $textId ) )
     {
@@ -157,35 +144,6 @@
         // $text->load();
     }
 
-/*  GREG  *****************************************************************************************************************************************************/  
-/*    
-    $param = ( isset( $_REQUEST['page'] ) ) 
-    ? $_REQUEST['page']
-    : 'text'
-    ;
-
-    if ( 'searchText' == $action )
-    {                
-        $frm_search = isset( $_REQUEST['frm_search'] )
-        ? $_REQUEST['frm_search']
-        : NULL
-        ;
-        
-        if( strlen( trim ( $frm_search ) ) )
-        {
-            $dispTextSearch = true;
-            $dispTextList = true;
-        }
-        else
-        {
-            $dispError = true;
-            $errorMsg = get_lang( 'the field of research is empty' );
-            $dispTextList = true;
-        }
-    }
-*/
-/*  ^^^^  *****************************************************************************************************************************************************/  
-    
     if ( 'showText' == $action )
     {
         if ( ! is_null( $textId ) )
@@ -546,31 +504,7 @@
     }
         
     $output .= displayGlossaryMenu();
-/*  GREG  *****************************************************************************************************************************************************/  
-/*    
-    $output .= displayGlossarySearch( $param );
-    
-    if ( true == $dispTextSearch )
-    {
-        $i = 1;
-        
-        $output .= '<p>' . get_lang('Your search is : ') . '<strong>' . $frm_search . '</strong></p>';
-        
-        $search = new search();
-        $search->setSearch( $frm_search );
-        $searchText = $search->searchText();
-        $nbrResult = count($searchText);
 
-        $output .= '<p>' . get_lang('The results found are : ') . '<strong>' . $nbrResult . '</strong></p>';
-        foreach($searchText as $row)
-        {
-            $output .= '<p>' . $i . ') <a href="#" onclick="popup( \'entry.php?page=dict&amp;action=showDefs&amp;dictionaryId='.$row['dictionaryId'].'&amp;word='.rawurlencode($row['name']).'&amp;inPopup=true\', \''.rawurlencode($row['name']).'\', 300,300);return false;">'.$row['name'].'</a></p>';
-            $i++;
-        }
-        
-    }
- */   
-/*  ^^^^  *****************************************************************************************************************************************************/  
     // TODO rewrite to use claro_disp_msg_arr or claro_disp_msg_box
     if ( true == $dispError )
     {
@@ -958,7 +892,7 @@
                 . '</p>'
                 . "\n"
                 ;
-/*  GREG  *****************************************************************************************************************************************************/  
+
             $output .= '<p class="claroCmd icoPrint">'
             . '<a href="#"'
             .'onclick="popup( \'entry.php?page=print&amp;action=print&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
@@ -967,7 +901,6 @@
             . '</a>'
             . '</p>' . "\n"
             ; 
-/*  ^^^^  *****************************************************************************************************************************************************/  
             
         }
         

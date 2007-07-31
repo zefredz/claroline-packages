@@ -32,11 +32,8 @@
     require_once dirname(__FILE__) . '/lib/html/datagrid/table.class.php';
     require_once dirname(__FILE__) . '/lib/html/messagebox.class.php';
     require_once dirname(__FILE__) . '/lib/glossary/display.lib.php';
-
-/*  GREG  *****************************************************************************************************************************************************/  
     require_once dirname(__FILE__) . '/lib/search/search.class.php';
     require_once dirname(__FILE__) . '/lib/print/print.class.php';
-/*  ^^^^  *****************************************************************************************************************************************************/  
 
     // check tool access
     claro_course_tool_allowed( true );
