@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_path` (
   `title` VARCHAR(255) NOT NULL default '',
   `description` TEXT NOT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
-  `rank` INT(11) NOT NULL default '0',  
+  `rank` INT(11) NOT NULL default '0',
   `type` ENUM('') NOT NULL,
   `lock` enum('OPEN','CLOSE') NOT NULL default 'OPEN',
   `identifier` VARCHAR(255) default '',
@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `path_id` INT(11) NOT NULL,
   `type` ENUM('LABEL','MODULE','SCORM') NOT NULL DEFAULT 'MODULE',
   `title` VARCHAR(255) NOT NULL,
-  `description` TEXT NULL,  
+  `description` TEXT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
   `rank` INT(11) NOT NULL default '0',
   `identifier` VARCHAR(255) default '',
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `previous_id` INT(11),
   `next_id` INT(11),
   `launch_data` text NOT NULL default '',
-  `timeLimitAction` ENUM( 'exit,message', 'exit,no message', 'continue,message', 'continue,no message' ) NOT NULL DEFAULT 'continue,no message',  
+  `timeLimitAction` ENUM( 'exit,message', 'exit,no message', 'continue,message', 'continue,no message' ) NOT NULL DEFAULT 'continue,no message',
   `completionThreshold` VARCHAR(6) NOT NULL default '',
   PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_attempt` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `path_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `last_item` INT(11),
+  `last_item_id` INT(11),
   `progress` INT(11),
   `attempt_number` INT(11),
   PRIMARY KEY(`id`)
