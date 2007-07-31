@@ -18,17 +18,8 @@
      *
      * @package NETQUIZ
      */
-/*
-if( count( get_included_files() ) == 1 )
-{
-    die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead');
-}
 
-// Vérification que l'utilisateur soit enregistré
-if($is_allowedToAdmin == true) 
-{
-*/
-	// lib
+    // lib
 	//require_once "lib/netquiz.class.php";
 	//require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
     

@@ -1,7 +1,5 @@
 <?php
 
-### debut debug #################################################################################################
-
 // inclusion du noyeux de claroline
 include "../../../claroline/inc/claro_init_global.inc.php";
 require_once get_path('includePath').'/lib/user.lib.php';
@@ -12,18 +10,6 @@ require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
 
 // recupération des données utilisateurs
 $current_user_data = user_get_properties(claro_get_current_user_id());
-/*
-debug
-// Vérification que l'utilisateur soit enregistré
-if(!claro_is_user_authenticated()) 
-{
-	claro_die(get_lang("Not allowed"));
-	//claro_disp_auth_form();
-}
-else
-{
-*/
-### fin debug #################################################################################################
 
     include_once("langr.inc.php");
     include_once("settings.inc.php");
@@ -47,27 +33,6 @@ else
     $sRefererPath = substr($sReferer,0,strrpos($sReferer,"/"));
     
     $sNextPageFull = $sRefererPath . "/" . $sNextPage;
-
-    /*
-    //Connection
-    $oServerConn = mysql_connect($sMySQLLocation,$sMySQLUser,$sMySQLPassword);
-    if(!$oServerConn){
-        die(mysql_error());
-    }
-    
-    mysql_select_db($sMySQLDatabase);
-
-    //Update Participant info if final soumission
-	if(isset($_POST["Final"])){
-        $sQuery =   "update nq_participants " . 
-                    "set ParticipationDate = now(), Final = 1 " . 
-                    "where IDParticipant = $iIDParticipant";
-            
-        echoComment("Final submit<br><br>$sQuery");
-        
-        executeQuery($sQuery);
-    }
-	*/
 	
 	// Declaration de la Class netquiz		
 	$netquiz = new netquiz();
@@ -98,23 +63,6 @@ else
 	
     $sReponseXML = "<?xml version='1.0' encoding=\"ISO-8859-1\"?>" . $reponseXMLandPonderation['ReponseXML'];
     $dPonderation = $reponseXMLandPonderation['Ponderation'];
-	
-	/*
-	$sQuery =   "select IDQuestion from nq_questions, nq_quizs where nq_quizs.QuizIdent = '$sQuizIdent' and
-                nq_quizs.QuizVersion = '$sQuizVersion' and nq_quizs.IDQuiz = nq_questions.IDQuiz and
-                nq_questions.NoQuestion = $iNoQuestion";
-    
-    $oRS = executeQuery($sQuery);
-    
-    $iIDQuestion = mysql_result($oRS,0,"IDQuestion");
-
-    $sQuery = "select ReponseXML, Ponderation from nq_questions where IDQuestion = $iIDQuestion";
-    
-    $oRS = executeQuery($sQuery);
-	
-    $sReponseXML = "<?xml version='1.0' encoding=\"ISO-8859-1\"?>" . mysql_result($oRS,0,"ReponseXML");
-    $dPonderation = mysql_result($oRS,0,"Ponderation");
-    */
 	
     //Validate the question
     switch($iTypeQuestion){
@@ -179,8 +127,4 @@ else
     if(!$bVerbose){
         urlRedirect($sNextPageFull,false);
     }
-/*
-debug    
-}	
-*/
 ?> 
