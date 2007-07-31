@@ -584,17 +584,12 @@ function saveValidation($sReponseHTML,$iPointage,$iIDP, $iIDQ){
 	echoComment($sReponseHTML);
 	
 	$sReponseHTMLClean = toSQLString($sReponseHTML);
-	
-	### Debug ###
     
     $tblNameList = array(
 		'nq_participations'
 	);
 		
 	$nameTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
-	
-    ### Debug ###	
-    
     
     $sQuery = "select * from `".$nameTables['nq_participations']."` where IDParticipant = $iIDP and IDQuestion = $iIDQ";
 	echoComment($sQuery);
@@ -1039,12 +1034,7 @@ function validateDictee($iIDQ,$iIDP,$sXML,$dP){
                     $trouve = 1;
                     }
             }
-            
-            /*print_r($tab1_new);
-            echo "<br><br>";
-            print_r($tab2_new);
-            echo "<br><br>";*/
-            
+                        
             echoComment("nbMots1 = $nbMots1");
             echoComment("nbMots2 = $nbMots2");
             

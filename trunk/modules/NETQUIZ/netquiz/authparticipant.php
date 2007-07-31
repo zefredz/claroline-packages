@@ -10,18 +10,6 @@ require_once "../lib/netquiz.class.php";
 // recupération des données utilisateurs
 $current_user_data = user_get_properties(claro_get_current_user_id());
 
-// Vérification que l'utilisateur soit enregistré
-/*
-debug
-if(!claro_is_user_authenticated()) 
-{
-	//claro_die(get_lang("Not allowed"));
-	//claro_disp_auth_form();
-	
-}
-else
-{	
-*/
 	// inclusion des fichiers Netquiz
 	include_once("langr.inc.php");
 	include_once("settings.inc.php");
@@ -41,12 +29,6 @@ else
 	$netquiz->setQuizIdent( $sQuizIdent );
 	$iIDQuiz = $netquiz->fetchIdQuiz();
 	
-	
-	/*
-	$sql = "select IDQuiz from nq_quizs where QuizIdent = '$sQuizIdent' and QuizVersion = '$sQuizVersion'";
-	$iIDQuiz = claro_sql_query_get_single_value ($sql);
-	*/
-	
 	if ( is_null($iIDQuiz) )
 	{
 		claro_die(get_lang("Quiz not found"));
@@ -60,9 +42,6 @@ else
 	$sMatricule = $current_user_data['officialCode'];
 	$sCourriel = $current_user_data['email'];
 
-		
-	/*****************************************************************************************************************************************************************/
-	
 	// Class netquiz : insertion du participant
 	$netquiz->setCurrentUserId( $current_user_id );
     $netquiz->setPrenom( $sPrenom );
@@ -77,26 +56,7 @@ else
 		claro_die(get_lang("Participant is not insert"));
 	}
 	
-		
-	
-	// Requete sql
-	/*
-	$sQuery =   <<<IQUERY
-				insert into nq_participants 
-				(Prenom,Nom,Groupe,Matricule,Courriel,IDQuiz) 
-				values ($sPrenom,$sNom,$sGroupe,$sMatricule,$sCourriel,$iIDQuiz)
-IQUERY;
-	executeQuery($sQuery);
-	*/
 
-	/*****************************************************************************************************************************************************************/
-	//Get participant id
-	
-	/*
-	$sql =   "select max(IDParticipant) as last_id from `nq_participants`";
-	$iIDParticipant = claro_sql_query_get_single_value ($sql);
-	*/
-	
 	$iIDParticipant = netquiz::lastIdParticipant();
 
 	//Generate javascript (set iIDParticipant and redirect to NextPage)
@@ -105,10 +65,6 @@ IQUERY;
 	$sRefererPath = substr($sReferer,0,strrpos($sReferer,"/"));
 	
 	$sNextPageFull = $sRefererPath . "/" . $sNextPage;
-/*
-debug
-}	
-*/
 ?>
 	
 <html>
