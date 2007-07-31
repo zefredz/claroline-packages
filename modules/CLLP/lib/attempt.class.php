@@ -104,6 +104,12 @@ class attempt
      */
 	function load($pathId, $userId, $attemptNumber = null)
 	{
+		// $userId will be null if user is anonymous
+		if( is_null($userId) )
+		{
+			return false;
+		}
+
         $sql = "SELECT
                     `id`,
                     `path_id`,
@@ -129,7 +135,7 @@ class attempt
 
         $data = claro_sql_query_get_single_row($sql);
 
-        if( !empty($data) )
+        if( $data !== false && !empty($data) )
         {
             // from query
             $this->id = (int) $data['id'];
@@ -137,11 +143,11 @@ class attempt
             $this->userId = $data['user_id'];
             $this->lastItemId = $data['last_item_id'];
             $this->progress = $data['progress'];
-            $this->attemptNumber = $data['attempt_number'];
+            $this->attemptNumber = (int) $data['attempt_number'];
 
 			// load list of related item attempts
-			$this->itemAttemptList = new itemAttemptList();
-			$this->itemAttemptList->load($this->id);
+			$itemAttemptTmpList = new itemAttemptList();
+			$this->itemAttemptList = $itemAttemptTmpList->load($this->id);
 
             return true;
         }
@@ -223,10 +229,7 @@ class attempt
 	{
         if( $this->id == -1 ) return true;
 
-		if( !is_null($this->itemAttemptList) )
-		{
-			$this->itemAttemptList->delete();
-		}
+		// TODO delete all item_attempts
 
         $sql = "DELETE FROM `" . $this->tblAttempt . "`
                 WHERE `id` = " . (int) $this->id ;
@@ -369,11 +372,34 @@ class attempt
         $this->attemptNumber = (int) $value;
     }
 
-    function setHighetAttemptNumber()
+    /**
+     * get attempt number for this path and this user
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int progression
+     * @return int
+     */
+    function setHigherAttemptNumber()
     {
-    	$sql = "SELECT COUNT(`attemptNumber`) " .
-    			"FROM ".$this->tblAttempt."" .
-    			WHERE `path_id`"
+    	// use max instead of count to handle suppressed attempts
+    	$sql = "SELECT MAX(`attemptNumber`)
+    			FROM ".$this->tblAttempt."
+    			WHERE `path_id` = ".(int) $this->pathId."
+    			AND `user_id` = ".(int) $this->userId;
+
+    	$higherAttempt = claro_sql_query_get_single_value($sql);
+
+    	if( is_null($higherAttempt)  || !$higherAttempt )
+    	{
+    		// error in query
+    		$higherAttempt = 1;
+    	}
+    	else
+    	{
+    		// value is at least 1
+    		$higherAttempt = max(1,$higherAttempt);
+    	}
+
     	$this->setAttemptNumber($higherAttempt);
     }
 }
@@ -396,15 +422,303 @@ class attempt
   PRIMARY KEY(`id`)
 ) TYPE=MyISAM;
  */
-class item_attempt
+class itemAttempt
 {
+    /**
+     * @var $id id of item attempt, -1 if item attempt doesn't exist already
+     */
+    var $id;
+
+    /**
+     * @var $attemptId id of the attempt
+     */
+    var $attemptId;
+
+    /**
+     * @var $itemId id of the item
+     */
+    var $itemId;
+
+    /**
+     * @var $location SCORM location (position in the SCO)
+     */
+    var $location;
+
+    /**
+     * @var $completionStation SCORM completion_status (completion level of the SCO)
+     */
+    var $completionStation;
+
+    /**
+     * @var $entry SCORM entry (is the learner entered in the SCO)
+     */
+    var $entry;
+
+	/**
+	 * @var $scoreRaw SCORM score.raw (score of the learner)
+	 */
+	var $scoreRaw;
+
+	/**
+	 * @var $scoreMin SCORM score.min (minimum possible score)
+	 */
+	var $scoreMin;
+
+	/**
+	 * @var $scoreMax SCORM score.max (maximum possible score)
+	 */
+	var $scoreMax;
+
+    /**
+     * @var $totalTime SCORM total_time (sum of all session_time of this SCO)
+     */
+    var $totalTime;
+
+	/**
+	 * @var $sessionTime SCORM session_time (time spent by learner for this session in the SCO)
+	 */
+	var $sessionTime;
+
+	/**
+	 * @var $suspendData SCORM suspend_data (data the SCO would like to get back on next attempt)
+	 */
+	var $suspendData;
+
+	/**
+	 * @var $credit SCORM credit ( indicates whether the learner will be credited for performance)
+	 */
+	var $credit;
+
+    /**
+     * @var $tblItemAttempt name of the item table
+     */
+    var $tblItemAttempt;
+
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	function item_attempt()
+	function itemAttempt()
 	{
+        $this->id = (int) -1;
+        $this->attemptId = (int) -1;
+        $this->itemId = (int) -1;
+        $this->location = '';
+        $this->completionStatus = 'NOT ATTEMPTED';
+        $this->entry = 'AB-INITIO';
+        $this->scoreRaw = (int) 0;
+		$this->scoreMin = (int) 0;
+		$this->scoreMax = (int) 100;
+		$this->totalTime = ''; // TODO correct format
+		$this->sessionTime = ''; // TODO correct format
+		$this->suspendData = '';
+		$this->credit = 'NO-CREDIT';
+
+        // define module table names
+        $tblNameList = array(
+            'lp_item_attempt'
+        );
+
+        // convert to Claroline course table names
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+        $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
 
 	}
+
+	/**
+     * load item attempt
+     *
+     * @param $attemptId int id of attempt
+     * @param $itemId int id of item
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return boolean
+     */
+	function load($attemptId, $itemId)
+	{
+    	$sql = "SELECT `id`,
+    			`attempt_id`
+    			`item_id`,
+    			`location`,
+    			`completion_status`,
+    			`entry`,
+    			`score_raw`,
+    			`score_min`,
+    			`score_max`,
+    			`total_time`,
+    			`session_time`,
+    			`suspend_data`,
+    			`credit`
+    			FROM ". $this->tblItemAttempt."
+    			WHERE `attempt_id` = ". (int) $attemptId ."
+    			AND `item_id` = ". (int) $itemId ;
+
+        $data = claro_sql_query_get_single_row($sql);
+
+        if( $data !== false && !empty($data) )
+        {
+        	$this->id = (int) $data['id'];
+	        $this->attemptId = (int) $data['attempt_id'];
+	        $this->itemId = (int) $data['item_id'];
+	        $this->location = $data['location'];
+	        $this->completionStatus = $data['completion_status'];
+	        $this->entry = $data['entry'];
+	        $this->scoreRaw = (int) $data['score_raw'];
+			$this->scoreMin = (int) $data['score_min'];
+			$this->scoreMax = (int) $data['score_max'];
+			$this->totalTime = $data['total_time']; // TODO correct format
+			$this->sessionTime = $data['session_time']; // TODO correct format
+			$this->suspendData = $data['suspend_data'];
+			$this->credit = $data['credit'];
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+	}
+
+    /**
+     * save item attempt to DB
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return mixed false or id of the record
+     */
+	function save()
+	{
+		if( $this->id == -1 )
+        {
+            // insert
+            $sql = "INSERT INTO `".$this->tblItemAttempt."`
+                    SET `attempt_id` = '".(int) $this->attemptId."',
+                    	`item_id` = '".(int) $this->itemId."',
+                    	`location` = '".addslashes($this->location)."',
+                    	`completion_status` = '".addslashes($this->completionStatus)."',
+                    	`entry` = '".addslashes($this->entry)."',
+                    	`score_raw` = '".(int) $this->scoreRaw."',
+                    	`score_min` = '".(int) $this->scoreMin."',
+                    	`score_raw` = '".(int) $this->scoreMax."',
+                    	`total_time` = '".addslashes($this->totalTime)."',
+                    	`session_time` = '".addslashes($this->sessionTime)."',
+                    	`suspend_data` = '".addslashes($this->suspendData)."',
+                        `credit` = '".addslashes($this->credit)."'";
+
+            // execute the creation query and get id of inserted assignment
+            $insertedId = claro_sql_query_insert_id($sql);
+
+            if( $insertedId )
+            {
+                $this->id = (int) $insertedId;
+
+                return $this->id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            // update, main query
+            $sql = "UPDATE `".$this->tblItemAttempt."`
+	           		SET `path_id` = '".(int) $this->pathId."',
+                        `user_id` = '".(int) $this->userId."',
+                        `last_item_id` = '".(int) $this->lastItemId."',
+                    	`progress` = '".(int) $this->progress."',
+                        `attempt_number` = '".(int) $this->attemptNumber."'
+                    WHERE `id` = '".(int) $this->id."'";
+
+            // execute and return main query
+            if( claro_sql_query($sql) )
+            {
+                return $this->id;
+            }
+            else
+            {
+                return false;
+            }
+        }
+	}
+
+	/**
+     * delete item attempt
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return boolean
+     */
+	function delete()
+	{
+        if( $this->id == -1 ) return true;
+
+		// TODO delete all item_attempts
+
+        $sql = "DELETE FROM `" . $this->tblItemAttempt . "`
+                WHERE `id` = " . (int) $this->id ;
+
+        if( claro_sql_query($sql) == false ) return false;
+
+        $this->id = -1;
+        return true;
+	}
+
+}
+
+class itemAttemptList
+{
+	var $tblPath;
+	var $tblItem;
+
+    /**
+     * Constructor
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     */
+	function itemAttemptList()
+    {
+        // define module table names
+        $tblNameList = array(
+            'lp_item_attempt'
+        );
+
+        // convert to Claroline course table names
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+        $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
+    }
+
+    function load($attemptId)
+    {
+    	$sql = "SELECT `id`,
+    			`item_id`,
+    			`location`,
+    			`completion_status`,
+    			`entry`,
+    			`score_raw`,
+    			`score_min`,
+    			`score_max`,
+    			`total_time`,
+    			`session_time`,
+    			`suspend_data`,
+    			`credit`
+    			FROM ". $this->tblItemAttempt."
+    			WHERE `attempt_id` = ". (int) $attemptId ;
+
+    	$data = claro_sql_query_fetch_all_rows($sql);
+
+		if( is_array($data) && !empty($data) )
+		{
+			// for simplier use later we will use the item id as index for this array
+			foreach( $data as $itemAttempt )
+			{
+				$itemAttemptList[$itemAttempt['item_id']] = $itemAttempt;
+			}
+		}
+		else
+		{
+			$itemAttemptList = array();
+		}
+
+		return $itemAttemptList;
+    }
 }
