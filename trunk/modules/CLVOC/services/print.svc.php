@@ -227,6 +227,7 @@
         }
     
     // fatal error
+    }
     else
     {
         // fatal error nothing else to do...
