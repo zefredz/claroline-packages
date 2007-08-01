@@ -25,16 +25,6 @@
      * @package CLVOC
      */
 
-	 
-	 
-	 
-	//claro_sql_query_get_single_value => selectionne 1 valeur
-	//claro_sql_query_get_single_row => selectionne 1 ligne
-	//claro_sql_query_fetch_all_rows => selectionne toutes les lignes
-	 
-	
-	 
-
 class PrintTextGlossary
 {
 		
@@ -103,54 +93,7 @@ class PrintTextGlossary
         . "W.name IN ('" . implode("','",$wordList) . "') " . "\n"
         . "ORDER BY wordId ASC " . "\n"
         ;
-        
-       // = '".$this->getDictionaryId()."' " . "\n"
-        
-        /*        
-		$sql = "SELECT " . "\n"
-        . "W.id, " . "\n"
-        . "W.name, " . "\n"
-        . "WD.id, " . "\n"
-        . "WD.dictionaryId, " . "\n"
-        . "WD.definitionId, " . "\n"
-        . "WD.wordId, " . "\n"
-        . "D.id, " . "\n"
-        . "D.definition, " . "\n"
-        . "Dict.id, " . "\n"
-        . "TDict.dictionaryId, " . "\n"
-        . "TDict.textId, " . "\n"
-        . "T.id, " . "\n"
-        . "T.title, " . "\n"
-        . "T.content " . "\n"        
-        . "FROM " . "\n"
-        . "`".$faqTables['glossary_words']."` AS W " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_word_definitions']."` AS WD " . "\n"
-        . "ON W.id = WD.wordId " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_definitions']."` AS D " . "\n"
-        . "ON WD.definitionId = D.id " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_dictionaries']."` AS Dict " . "\n"
-        . "ON WD.dictionaryId = Dict.id " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_text_dictionaries']."` AS TDict " . "\n"
-        . "ON Dict.id = TDict.dictionaryId " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_texts']."` AS T " . "\n"
-        . "ON TDict.textId = T.id " . "\n"
-        . "WHERE WD.dictionaryId = '%".$this->getDictionaryId()."%' " . "\n"
-        . "AND  " . "\n"
-        ."T.id = '%".$this->getTextId()."%' " . "\n"
-        ;
-*/
-        /*
-        $sql = "SELECT id, name, MATCH (name) AGAINST ('".$this->getSearch()."*' IN BOOLEAN MODE) AS score " . "\n"
-        . "FROM `".$faqTables['glossary_words']."` " . "\n"
-        . "WHERE MATCH (name) " . "\n"
-        . "AGAINST ('*".$this->getSearch()."*' IN BOOLEAN MODE) " . "\n"
-        ;
-        */
+
 		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
 		{
 			return $result;
