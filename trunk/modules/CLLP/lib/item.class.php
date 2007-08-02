@@ -847,7 +847,7 @@ class itemList
     }
 
     // load correct list of modules depending on parameters
-	function load($pathId = null, $userId = null)
+	function load($pathId, $userId = null)
 	{
 		if( !is_null($pathId) )
 		{
@@ -862,7 +862,7 @@ class itemList
 		}
 		else
 		{
-			return $this->loadAll();
+			return array();
 		}
 	}
 
@@ -899,7 +899,13 @@ class itemList
 	// should return a tree list of path items for course administrator
 	function loadPath($pathId)
 	{
-		    $sql = "SELECT
+		// prevent a query made on incorrect data
+		if( is_null($pathId) || !is_numeric($pathId) )
+		{
+			return array();
+		}
+
+		$sql = "SELECT
                     `id`,
                     `path_id`,
                     `type`,
