@@ -706,6 +706,7 @@
         
         if ( true == $dispDictionary )
         {
+                        
             $table = new HTML_Datagrid_Table;
             
             $table->setTitle( sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name'] ) )  );
@@ -785,6 +786,23 @@
             $table->setData( $dict );
             
             $output .= $table->render();
+            
+            //$output .= ('Entrée du dictionnaire');
+                        
+            $output .= '<p class="claroCmd icoPrint">'
+            . '<a href="entry.php?page=print&amp;action=exportDict&amp;dictionaryId='.$dictionaryId.'"'
+            . '>'
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> Export'
+            . '</a>'
+            . '&nbsp;&nbsp;|&nbsp;&nbsp;'
+            . '<a href="#"'
+            .'onclick="popup( \'entry.php?page=print&amp;action=printDict&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
+            . '>'
+            . '<img src="'.get_icon('print').'" alt="' . get_lang( 'Print' ) . '" title="' . get_lang( 'Print' ) . '" /> Imprimer'
+            . '</a>'
+            . '</p>' . "\n"
+            ; 
+
         }
     }
     else

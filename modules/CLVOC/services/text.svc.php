@@ -894,15 +894,13 @@
                 ;
 
             $output .= '<p class="claroCmd icoPrint">'
-            . '<a href="entry.php?page=print&amp;action=export&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
+            . '<a href="entry.php?page=print&amp;action=exportText&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
             . '>'
-            //. '<a href="#"'
-            //.'onclick="popup( \'entry.php?page=print&amp;action=export&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
             . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> Export'
             . '</a>'
             . '&nbsp;&nbsp;|&nbsp;&nbsp;'
             . '<a href="#"'
-            .'onclick="popup( \'entry.php?page=print&amp;action=print&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
+            .'onclick="popup( \'entry.php?page=print&amp;action=printText&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
             . '>'
             . '<img src="'.get_icon('print').'" alt="' . get_lang( 'Print' ) . '" title="' . get_lang( 'Print' ) . '" /> Imprimer'
             . '</a>'

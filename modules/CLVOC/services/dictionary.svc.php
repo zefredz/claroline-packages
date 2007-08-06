@@ -30,7 +30,7 @@
     $dispAdminWordLink      = false;
     $dispToolBar            = true;
     $dispBackToDictionary   = true;
-    $dispPrint              = false;
+    //$dispPrint              = false;
     
     // set service state
     $loadDictionary         = true;
@@ -85,7 +85,7 @@
             , 'rqDelWordDef'    // display are you sure
             , 'exDelWordDef'    // delete a def-word line from dictionary
             , 'showDefs'        // show definitions of a word
-            , 'print'           // print
+            //, 'print'           // print
         );
         
         $dispAddWordLink = true;
@@ -96,7 +96,7 @@
         $allowedActions = array( 
               'showDict'              // list words and definitions
             , 'showDefs'        // show definitions of a word
-            , 'print'           // print
+            //, 'print'           // print
         );
     }
     
@@ -855,7 +855,7 @@
             
             $output .= '</ul>' . "\n";
         }
-        
+        /*
         // display print
         if ( true == $dispPrint )
         {
@@ -864,7 +864,7 @@
             
             $output .= '<p class="claroCmd"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
         }
-        
+        */
         // display add word form
         if ( true == $dispAddWordForm )
         {

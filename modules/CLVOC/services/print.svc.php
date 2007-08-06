@@ -14,8 +14,10 @@
     //$isAllowedToEdit = claro_is_allowed_to_edit();
     
     // set diplay mode
-    $dispPrint              = false;
-    $dispExport              = false;
+    $dispPrintText              = false;
+    $dispExportText             = false;
+    $dispPrintDict              = false;
+    $dispExportDict             = false;
     
     // set service state
     //$loadDictionary         = true;
@@ -51,8 +53,10 @@
 // {{{ CONTROLLER
 {    
     $allowedActions = array( 
-        'print'           // print
-        ,'export'
+        'printText'           // print
+        ,'exportText'
+        ,'printDict'
+        ,'exportDict'
     );
     
     // get request variables
@@ -106,11 +110,12 @@
         }
     }
     
-    if ( 'print' == $action )
+    // printText
+    if ( 'printText' == $action )
     {
         //$dispTitleDictionary = false;
         //$dispDictionary = false;
-        $dispPrint = true;
+        $dispPrintText = true;
         
         $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
         $glossaryText->setId($textId);
@@ -139,11 +144,12 @@
 
     }
     
-    if ( 'export' == $action )
+    // exportText
+    if ( 'exportText' == $action )
     {
         //$dispTitleDictionary = false;
         //$dispDictionary = false;
-        $dispExport = true;
+        $dispExportText = true;
         
         $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
         $glossaryText->setId($textId);
@@ -156,6 +162,82 @@
         $content = $glossaryText->getContent();        
         $content = $san->sanitize( $content );
         $glossaryWord = $glossaryText->getGlossary();
+    }
+    
+    // printDict
+    if ( 'printDict' == $action )
+    {
+        //$dispTitleDictionary = false;
+        //$dispDictionary = false;
+        $dispPrintDict = true;
+        
+        
+        $test = 'printDict';
+        
+        /*
+        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
+        $glossaryText->setId($textId);
+        $glossaryText->load();
+        
+        $textTitle = $glossaryText->getTitle();
+        $content = $glossaryText->getContent();
+        $content = $san->sanitize( $content );
+        
+        $wordList = $glossaryText->getWordList();
+        $glossaryWord = $glossaryText->getGlossary();
+        
+        if (! empty( $wordList ) )
+        {
+            $callback = $_SERVER['PHP_SELF'] 
+                . '?page=dict'
+                . '&amp;action=showDefs'
+                . (!is_null($dictionaryId)?'&amp;dictionaryId='.$dictionaryId:'')
+                ;
+                
+            $highlighter = new Glossary_Print_Highlighter;
+            $content = $highlighter->highlightList( $content
+                , $wordList
+                , $callback );
+        }
+*/
+    }
+    
+    // exportDict
+    if ( 'exportDict' == $action )
+    {
+        //$dispTitleDictionary = false;
+        //$dispDictionary = false;
+        $dispExportDict = true;
+        
+        $test = 'exportDict';
+        
+        /*
+        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
+        $glossaryText->setId($textId);
+        $glossaryText->load();
+        
+        $textTitle = $glossaryText->getTitle();
+        
+        $fileName = preg_replace('/\s+/', '_', $textTitle);
+
+        $content = $glossaryText->getContent();        
+        $content = $san->sanitize( $content );
+        $glossaryWord = $glossaryText->getGlossary();
+        */
+    }
+    
+    if ( NULL == $action )
+    {
+        $err = 'Cannot find action : %s'; 
+        $reason = 'invalid action';
+
+        $errorMsg .= sprintf( $err, $reason ) . "\n";
+        
+        // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
+        
+        $dispError = true;
+        $fatalError = true;
+        $dispErrorBoxBackButton = false;
     }
     
     if ( NULL == $action )
@@ -223,10 +305,10 @@
     {
 
     // display print
-        if ( true == $dispPrint )
+        //impression du text
+        if ( true == $dispPrintText )
         {
             $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
-            
             
             $output .= '<h1>' . $textTitle . '</h1>';
                         
@@ -261,13 +343,13 @@
 
         }
         
-    // Exportation dans un fichier texte
-        if ( true == $dispExport )
+        // Exportation dans un fichier texte du text
+        if ( true == $dispExportText )
         {
             //Declaration du Header
             header("Content-type: application/force-download; charset=ISO-8859-1");
             header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
-
+            
             $output .= $textTitle . "\n\n";
                         
             $output .= $content . "\n\n";
@@ -294,7 +376,84 @@
             echo( $output );
             exit;
         }
-    
+        
+        //impression du dictionnaire
+        if ( true == $dispPrintDict )
+        {
+            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
+            
+            $output .= $test;
+            
+            /*
+            $output .= '<h1>' . $textTitle . '</h1>';
+                        
+            $output .= '<p class="glossaryText">'
+                . nl2br( $content )
+                . '</p>'
+                . "\n"
+                ;
+
+            $output .= '<h1>' . get_lang( 'List vocabularies' ) . '</h1>';
+                        
+            $lastWord = '';
+            $i = 1;
+            
+            $output .= '<dl class="glossaryWord">';
+            foreach ( $glossaryWord as $word )
+            {
+                
+                if( empty( $lastWord ) || $lastWord != $word['name'] )
+                {
+                    $i = 1;
+                    $lastWord = $word['name'];
+                    $output .= '<dt>' . $word['name'] . '</dt>';
+                }
+                
+                    $output .= '<dd>' . $i . ')&nbsp;' . $word['definition'] . '</dd>';
+                    $i++;
+            }        
+            $output .= '</dl>';
+                */
+            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
+
+        }
+        
+    // Exportation dans un fichier texte du dictionnaire
+        if ( true == $dispExportDict )
+        {
+            //Declaration du Header
+            header("Content-type: application/force-download; charset=ISO-8859-1");
+            header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
+
+            $output .= $test;
+            
+            /*
+            $output .= $textTitle . "\n\n";
+                        
+            $output .= $content . "\n\n";
+
+            $output .= get_lang( 'List vocabularies' ) . "\n\n";
+                        
+            $lastWord = '';
+            $i = 1;
+            
+            foreach ( $glossaryWord as $word )
+            {
+                
+                if( empty( $lastWord ) || $lastWord != $word['name'] )
+                {
+                    $i = 1;
+                    $lastWord = $word['name'];
+                    $output .= '[ ' . $word['name'] . ' ]' ."\n";
+                }
+                
+                    $output .= "\t" . $i . ') ' . $word['definition'] . "\n";
+                    $i++;
+            }        
+            */
+            echo( $output );
+            exit;
+        }    
     // fatal error
     }
     else
