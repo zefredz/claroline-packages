@@ -15,6 +15,7 @@
     
     // set diplay mode
     $dispPrint              = false;
+    $dispExport              = false;
     
     // set service state
     //$loadDictionary         = true;
@@ -51,13 +52,14 @@
 {    
     $allowedActions = array( 
         'print'           // print
+        ,'export'
     );
     
     // get request variables
     $action = ( isset( $_REQUEST['action'] ) 
             && in_array( $_REQUEST['action'], $allowedActions ) )
         ? $_REQUEST['action']
-        : 'showDict'
+        : NULL
         ;
 
     $dictionaryId = isset( $_REQUEST['dictionaryId'] )
@@ -135,6 +137,39 @@
                 , $callback );
         }
 
+    }
+    
+    if ( 'export' == $action )
+    {
+        //$dispTitleDictionary = false;
+        //$dispDictionary = false;
+        $dispExport = true;
+        
+        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
+        $glossaryText->setId($textId);
+        $glossaryText->load();
+        
+        $textTitle = $glossaryText->getTitle();
+        
+        $fileName = preg_replace('/\s+/', '_', $textTitle);
+
+        $content = $glossaryText->getContent();        
+        $content = $san->sanitize( $content );
+        $glossaryWord = $glossaryText->getGlossary();
+    }
+    
+    if ( NULL == $action )
+    {
+        $err = 'Cannot find action : %s'; 
+        $reason = 'invalid action';
+
+        $errorMsg .= sprintf( $err, $reason ) . "\n";
+        
+        // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
+        
+        $dispError = true;
+        $fatalError = true;
+        $dispErrorBoxBackButton = false;
     }
 
 }
@@ -224,6 +259,40 @@
                 
             $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
 
+        }
+        
+    // Exportation dans un fichier texte
+        if ( true == $dispExport )
+        {
+            //Declaration du Header
+            header("Content-type: application/force-download; charset=ISO-8859-1");
+            header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
+
+            $output .= $textTitle . "\n\n";
+                        
+            $output .= $content . "\n\n";
+
+            $output .= get_lang( 'List vocabularies' ) . "\n\n";
+                        
+            $lastWord = '';
+            $i = 1;
+            
+            foreach ( $glossaryWord as $word )
+            {
+                
+                if( empty( $lastWord ) || $lastWord != $word['name'] )
+                {
+                    $i = 1;
+                    $lastWord = $word['name'];
+                    $output .= '[ ' . $word['name'] . ' ]' ."\n";
+                }
+                
+                    $output .= "\t" . $i . ') ' . $word['definition'] . "\n";
+                    $i++;
+            }        
+            
+            echo( $output );
+            exit;
         }
     
     // fatal error
