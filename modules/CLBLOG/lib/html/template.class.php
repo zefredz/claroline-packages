@@ -40,7 +40,7 @@
             foreach ( $data as $key => $value )
             {
                 $output = str_replace( "%$key%", $value, $output );
-                $output = str_replace( "%html($key%)", htmlspecialchars( $value ), $output );
+                $output = str_replace( "%html($key)%", htmlspecialchars( $value ), $output );
                 $output = str_replace( "%uu($key)%", rawurlencode( $value ), $output );
                 $output = str_replace( "%int($key)%", (int) $value, $output );
                 
