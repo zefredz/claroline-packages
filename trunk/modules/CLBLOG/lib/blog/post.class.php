@@ -39,7 +39,7 @@
                 . "title = '".addslashes($title)."', "
                 . "chapo = '".addslashes($chapo)."', "
                 . "contents = '".addslashes($contents)."', "
-                . "ctime = '".date( "Y-m-d H:i:s" )."' "
+                . "ctime = '".date( "Y-m-d H:i:s", claro_time() )."' "
                 ;
                 
             $this->connection->executeQuery( $sql );

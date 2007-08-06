@@ -36,7 +36,7 @@
             $sql = "INSERT INTO `" . $this->config['blog_comments'] . "`\n"
                 . "SET userId = ".(int) $userId.",\n"
                 . "contents = '".addslashes($contents)."',\n"
-                . "ctime = '".date( "Y-m-d H:i:s" )."',\n"
+                . "ctime = '".date( "Y-m-d H:i:s", claro_time() )."',\n"
                 . "postId = ".(int) $postId
                 ;
                 
@@ -61,7 +61,7 @@
             $sql = "UPDATE `" . $this->config['blog_comments'] . "`\n"
                 . "SET userId = ".(int) $userId.",\n"
                 . "contents = '".addslashes($contents)."', \n"
-                . "ctime = '".date( "Y-m-d H:i:s" )."',\n"
+                . "ctime = '".date( "Y-m-d H:i:s", claro_time() )."',\n"
                 . "postId = ".(int) $postId . "\n"
                 . "WHERE id = " . (int) $id
                 ;
