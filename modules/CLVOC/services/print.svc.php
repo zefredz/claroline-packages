@@ -46,6 +46,7 @@
     $connection = new Claroline_Database_Connection;
     $dictionary = new Glossary_Dictionary( $connection, $GLOBALS['glossaryTables'] );
     $dictionaryList = new Glossary_Dictionary_List( $connection, $GLOBALS['glossaryTables'] );
+    $list = new Glossary_Dictionary_List( $connection, $GLOBALS['glossaryTables'] );
     $san = new HTML_Sanitizer;
 }
 // }}}
@@ -69,6 +70,11 @@
     $dictionaryId = isset( $_REQUEST['dictionaryId'] )
         ? (int) $_REQUEST['dictionaryId']
         : null
+        ;
+    
+    $rootId =  ( is_null( $dictionaryId ) )
+        ? 0
+        : $dictionaryId
         ;
         
     $textId = isset( $_REQUEST['textId'] )
@@ -167,63 +173,87 @@
     // printDict
     if ( 'printDict' == $action )
     {
-        //$dispTitleDictionary = false;
-        //$dispDictionary = false;
-        $dispPrintDict = true;
-        
-        
-        $test = 'printDict';
-        
-        /*
-        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
-        $glossaryText->setId($textId);
-        $glossaryText->load();
-        
-        $textTitle = $glossaryText->getTitle();
-        $content = $glossaryText->getContent();
-        $content = $san->sanitize( $content );
-        
-        $wordList = $glossaryText->getWordList();
-        $glossaryWord = $glossaryText->getGlossary();
-        
-        if (! empty( $wordList ) )
+        if ( !is_null( $dictionaryId ) )
         {
-            $callback = $_SERVER['PHP_SELF'] 
-                . '?page=dict'
-                . '&amp;action=showDefs'
-                . (!is_null($dictionaryId)?'&amp;dictionaryId='.$dictionaryId:'')
-                ;
+            
+            $list->setRootId( $rootId );
+            $dictionaryList = $list->getDictionaryList();
+            $dictionary->setId( $dictionaryId );
+            $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
+            $dict = $dictionary->getDictionary();
+            
+            if ( $connection->hasError() )
+            {
+                $dispError = true;
+                $fatalError = true;
                 
-            $highlighter = new Glossary_Print_Highlighter;
-            $content = $highlighter->highlightList( $content
-                , $wordList
-                , $callback );
+                $err = 'Dictionary cannot be loaded : %s'; 
+                $reason = $connection->getError();
+                
+                $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+            }
+            else
+            {
+                $dispPrintDict = true;
+            }
         }
-*/
+        else
+        {
+            $dispError = true;
+            $err = 'Cannot load dictionary : %s'; 
+            $reason = 'missing id';
+    
+            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+        }
     }
     
     // exportDict
     if ( 'exportDict' == $action )
     {
-        //$dispTitleDictionary = false;
-        //$dispDictionary = false;
-        $dispExportDict = true;
+        if ( !is_null( $dictionaryId ) )
+        {
+            
+            $list->setRootId( $rootId );
+            $dictionaryList = $list->getDictionaryList();
+            $dictionary->setId( $dictionaryId );
+            $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
+            $dict = $dictionary->getDictionary();
+            
+            if ( $connection->hasError() )
+            {
+                $dispError = true;
+                $fatalError = true;
+                
+                $err = 'Dictionary cannot be loaded : %s'; 
+                $reason = $connection->getError();
+                
+                $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+            }
+            else
+            {
+                $dispExportDict = true;
+            }
+        }
+        else
+        {
+            $dispError = true;
+            $err = 'Cannot load dictionary : %s'; 
+            $reason = 'missing id';
+    
+            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+        }
         
-        $test = 'exportDict';
+        if ( is_null( $dictionaryId ) || ! isset( $dictionaryInfo) )
+        {
+            $fileName = sprintf(get_lang('Dictionary_%s')
+                , get_lang('Default') );
+        }
+        else
+        {
+            $fileName = sprintf(get_lang('Dictionary_%s')
+                , htmlspecialchars($dictionaryInfo['name']) );
+        }
         
-        /*
-        $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
-        $glossaryText->setId($textId);
-        $glossaryText->load();
-        
-        $textTitle = $glossaryText->getTitle();
-        
-        $fileName = preg_replace('/\s+/', '_', $textTitle);
-
-        $content = $glossaryText->getContent();        
-        $content = $san->sanitize( $content );
-        $glossaryWord = $glossaryText->getGlossary();
-        */
     }
     
     if ( NULL == $action )
@@ -240,20 +270,6 @@
         $dispErrorBoxBackButton = false;
     }
     
-    if ( NULL == $action )
-    {
-        $err = 'Cannot find action : %s'; 
-        $reason = 'invalid action';
-
-        $errorMsg .= sprintf( $err, $reason ) . "\n";
-        
-        // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
-        
-        $dispError = true;
-        $fatalError = true;
-        $dispErrorBoxBackButton = false;
-    }
-
 }
 // }}}
 
@@ -382,75 +398,84 @@
         {
             $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
             
-            $output .= $test;
-            
-            /*
-            $output .= '<h1>' . $textTitle . '</h1>';
-                        
-            $output .= '<p class="glossaryText">'
-                . nl2br( $content )
-                . '</p>'
-                . "\n"
-                ;
-
-            $output .= '<h1>' . get_lang( 'List vocabularies' ) . '</h1>';
-                        
-            $lastWord = '';
-            $i = 1;
-            
-            $output .= '<dl class="glossaryWord">';
-            foreach ( $glossaryWord as $word )
+            if ( is_null( $dictionaryId ) || ! isset( $dictionaryInfo) )
             {
-                
-                if( empty( $lastWord ) || $lastWord != $word['name'] )
-                {
-                    $i = 1;
-                    $lastWord = $word['name'];
-                    $output .= '<dt>' . $word['name'] . '</dt>';
-                }
-                
-                    $output .= '<dd>' . $i . ')&nbsp;' . $word['definition'] . '</dd>';
-                    $i++;
-            }        
-            $output .= '</dl>';
-                */
+                $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
+                    , get_lang('Default') ).'</h1>' . "\n";
+            }
+            else
+            {
+                $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
+                    , htmlspecialchars($dictionaryInfo['name'])).'</h1>' . "\n";
+            }
+            
+            $table = new HTML_Datagrid_Table;
+            $table->setTitle( get_lang('Dictionaries') );
+            $dataFields = array(
+                'name' => get_lang( 'Title' ),
+                'description' => get_lang( 'Description' )
+            );
+            $table->setDataFields( $dataFields );
+            $table->setData( $dictionaryList );
+            
+            $output .= $table->render();
+             
+            $table = new HTML_Datagrid_Table;
+            $table->setTitle( sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name'] ) )  );
+            $dataFields = array(
+                'name' => get_lang( 'Word' ),
+                'definition' => get_lang( 'Definition' )
+            );
+            $table->setDataFields( $dataFields );
+            $table->setData( $dict );
+            
+            $output .= $table->render();
+            
             $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
-
         }
         
     // Exportation dans un fichier texte du dictionnaire
         if ( true == $dispExportDict )
         {
+                        
             //Declaration du Header
             header("Content-type: application/force-download; charset=ISO-8859-1");
             header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
 
-            $output .= $test;
+            $output .= '[ ' . get_lang('Dictionaries') . ' ]' . "\n\n";
             
-            /*
-            $output .= $textTitle . "\n\n";
+            $output .= '| ' . get_lang( 'Title' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
                         
-            $output .= $content . "\n\n";
-
-            $output .= get_lang( 'List vocabularies' ) . "\n\n";
-                        
-            $lastWord = '';
-            $i = 1;
-            
-            foreach ( $glossaryWord as $word )
+            if( $dictionaryList ) 
             {
-                
-                if( empty( $lastWord ) || $lastWord != $word['name'] )
+                foreach ( $dictionaryList as $key )
                 {
-                    $i = 1;
-                    $lastWord = $word['name'];
-                    $output .= '[ ' . $word['name'] . ' ]' ."\n";
+                    $output .= $key['name'] . "\t" .' - '. "\t" . $key['description'] . "\n";
+                }        
+            }
+            else
+            {
+                $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
+            }
+            
+            $output .= "\n\n";
+            
+            $output .= '[ ' . sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name']) ) . ' ]' . "\n\n";
+            
+            $output .= '| ' . get_lang( 'Word' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
+            
+            if( $dict ) 
+            {
+                foreach ( $dict as $key )
+                {
+                    $output .= $key['name'] . "\t" .' - '. "\t" . $key['definition'] . "\n";
                 }
-                
-                    $output .= "\t" . $i . ') ' . $word['definition'] . "\n";
-                    $i++;
-            }        
-            */
+            }
+            else
+            {
+                $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
+            }
+            
             echo( $output );
             exit;
         }    
