@@ -53,8 +53,16 @@
 // {{{ CONTROLLER
 {    
     $allowedActions = array( 
-        'printText',
-        'printDict'
+        'printText'
+        ,'printDict'
+        ,'exportText'
+        ,'exportDict'
+    );
+    
+    $allowedFormat = array( 
+        'text'
+        ,'csv'
+        ,'yml'
     );
     
     // get request variables
@@ -196,7 +204,84 @@
             $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
         }
     }
-   
+
+    // exportText
+    if ( 'exportText' == $action )
+    {
+        if ( !is_null( $textId ) )
+        {
+            $dispExportText = true;
+            
+            $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
+            $glossaryText->setId($textId);
+            $glossaryText->load();
+            
+            $textTitle = $glossaryText->getTitle();
+            
+            $fileName = preg_replace('/\s+/', '_', $textTitle);
+
+            $content = $glossaryText->getContent();        
+            $content = $san->sanitize( $content );
+            $glossaryWord = $glossaryText->getGlossary();
+        }
+        else
+        {
+            $dispError = true;
+            $err = 'Cannot load text : %s'; 
+            $reason = 'missing id';
+    
+            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+        }
+    }
+        
+    // exportDict
+    if ( 'exportDict' == $action )
+    {
+        if ( !is_null( $dictionaryId ) )
+        {
+            
+            $list->setRootId( $rootId );
+            $dictionaryList = $list->getDictionaryList();
+            $dictionary->setId( $dictionaryId );
+            $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
+            $dict = $dictionary->getDictionary();
+            
+            if ( $connection->hasError() )
+            {
+                $dispError = true;
+                $fatalError = true;
+                
+                $err = 'Dictionary cannot be loaded : %s'; 
+                $reason = $connection->getError();
+                
+                $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+            }
+            else
+            {
+                $dispExportDict = true;
+            }
+        }
+        else
+        {
+            $dispError = true;
+            $err = 'Cannot load dictionary : %s'; 
+            $reason = 'missing id';
+    
+            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+        }
+        
+        if ( is_null( $dictionaryId ) || ! isset( $dictionaryInfo) )
+        {
+            $fileName = sprintf(get_lang('Dictionary_%s')
+                , get_lang('Default') );
+        }
+        else
+        {
+            $fileName = sprintf(get_lang('Dictionary_%s')
+                , htmlspecialchars($dictionaryInfo['name']) );
+        }
+    }
+    
     if ( NULL == $action )
     {
         $err = 'Cannot find action : %s'; 
@@ -338,10 +423,117 @@
             
             $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
         }
+        
+        // Export text
+        if ( true == $dispExportText )
+        {
+            // format text
+            if ( 'text' == $format )
+            {
+                //Declaration du Header
+                header("Content-type: application/force-download; charset=ISO-8859-1");
+                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
+                
+                $output .= $textTitle . "\n\n";
+                            
+                $output .= $content . "\n\n";
+
+                $output .= get_lang( 'List vocabularies' ) . "\n\n";
+                            
+                $lastWord = '';
+                $i = 1;
+                
+                foreach ( $glossaryWord as $word )
+                {
+                    
+                    if( empty( $lastWord ) || $lastWord != $word['name'] )
+                    {
+                        $i = 1;
+                        $lastWord = $word['name'];
+                        $output .= '[ ' . $word['name'] . ' ]' ."\n";
+                    }
+                    
+                        $output .= "\t" . $i . ') ' . $word['definition'] . "\n";
+                        $i++;
+                }        
+                
+                echo( $output );
+                exit;
+            }  
+            
+            // Format csv
+            if ( 'csv' == $format )
+            {
+            }
+            
+            // Format yml
+            if ( 'yml' == $format )
+            {
+            }
+        }
+
+        // Export dict
+        if ( true == $dispExportDict )
+        {
+            // Format text
+            if ( 'text' == $format )
+            {
+                //Declaration du Header
+                header("Content-type: application/force-download; charset=ISO-8859-1");
+                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
+
+                $output .= '[ ' . get_lang('Dictionaries') . ' ]' . "\n\n";
+                
+                $output .= '| ' . get_lang( 'Title' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
+                            
+                if( $dictionaryList ) 
+                {
+                    foreach ( $dictionaryList as $key )
+                    {
+                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['description'] . "\n";
+                    }        
+                }
+                else
+                {
+                    $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
+                }
+                
+                $output .= "\n\n";
+                
+                $output .= '[ ' . sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name']) ) . ' ]' . "\n\n";
+                
+                $output .= '| ' . get_lang( 'Word' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
+                
+                if( $dict ) 
+                {
+                    foreach ( $dict as $key )
+                    {
+                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['definition'] . "\n";
+                    }
+                }
+                else
+                {
+                    $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
+                }
+                
+                echo( $output );
+                exit;
+            }
+            
+            // Format csv
+            if ( 'csv' == $format )
+            {
+            }
+            
+            // Format yml
+            if ( 'yml' == $format )
+            {
+            }
+        }    
+    // fatal error
     }
     else
     {
-        // fatal error
         // fatal error nothing else to do...
     }
     

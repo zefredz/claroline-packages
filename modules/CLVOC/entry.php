@@ -34,6 +34,8 @@
     require_once dirname(__FILE__) . '/lib/glossary/display.lib.php';
     require_once dirname(__FILE__) . '/lib/search/search.class.php';
     require_once dirname(__FILE__) . '/lib/print/print.class.php';
+    require_once dirname(__FILE__) . '/lib/import/import.class.php';
+    require_once dirname(__FILE__) . '/lib/export/export.class.php';
 
     // check tool access
     claro_course_tool_allowed( true );
@@ -51,7 +53,9 @@
         'glossary_dictionary_tree',
         'glossary_tags',
         'glossary_tags_entries',
-        'glossary_print'
+        'glossary_print',
+        'glossary_import',
+        'glossary_export'
     );
     // convert to Claroline course table names
     $glossaryTables = get_module_course_tbl( $tblNameList
@@ -79,6 +83,8 @@
     $dispatcher->bind( 'tags', new ScriptService('./services/tags.svc.php') );
     $dispatcher->bind( 'help', new ScriptService('./services/help.svc.php') );
     $dispatcher->bind( 'print', new ScriptService('./services/print.svc.php') );
+    $dispatcher->bind( 'import', new ScriptService('./services/import.svc.php') );
+    $dispatcher->bind( 'export', new ScriptService('./services/export.svc.php') );
     
     // instanciate display
     $display = new ClarolineScriptEmbed;
