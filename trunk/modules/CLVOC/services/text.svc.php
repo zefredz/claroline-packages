@@ -894,9 +894,9 @@
                 ;
 
             $output .= '<p class="claroCmd icoPrint">'
-            . '<a href="entry.php?page=print&amp;action=exportText&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
+            . '<a href="entry.php?page=export&amp;action=exportText&amp;format=text&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
             . '>'
-            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> Export'
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export text') . ''
             . '</a>'
             . '&nbsp;&nbsp;|&nbsp;&nbsp;'
             . '<a href="#"'

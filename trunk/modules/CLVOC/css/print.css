@@ -1,4 +1,4 @@
-.closeWindow, .linkPrintWindow {
+.linkCloseWindow, .linkPrintWindow {
     display:none;
 }
 
