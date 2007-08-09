@@ -790,6 +790,11 @@
             //$output .= ('Entrée du dictionnaire');
                         
             $output .= '<p class="claroCmd icoPrint">'
+            . '<a href="entry.php?page=export&amp;action=exportDict&amp;format=yml&amp;dictionaryId='.$dictionaryId.'"'
+            . '>'
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary to yml') . ''
+            . '</a>'
+            . '&nbsp;&nbsp;|&nbsp;&nbsp;'
             . '<a href="entry.php?page=export&amp;action=exportDict&amp;format=text&amp;dictionaryId='.$dictionaryId.'"'
             . '>'
             . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary') . ''
