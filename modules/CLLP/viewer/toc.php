@@ -50,7 +50,9 @@ else                                                                  $pathId = 
 
 
 // prepare html header
-$htmlHeaders = getViewerHtmlHeaders($pathId);
+$htmlHeaders = '<script type="text/javascript">' . "\n"
+.	 '	var lpClient = window.parent.lpClient;' . "\n"
+.	 '</script>' . "\n";
 
 /*
  * Output
@@ -61,6 +63,8 @@ $display->frameMode();
 $display->hideClaroBody();
 
 $html = "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
+
+$html .= '<a href="#" onClick="lpClient.isolateContent(); return false;" >debug</a>';
 $display->setContent($html);
 
 $display->addHtmlHeader($htmlHeaders);
