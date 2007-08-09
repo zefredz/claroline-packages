@@ -80,7 +80,14 @@ claro_set_display_mode_available(false);
 $fullScreen = $path->isFullScreen() || ( isset($rqFullscreen) && $rqFullscreen );
 
 $thisAttempt = new attempt();
-$thisAttempt->load($pathId, claro_get_current_user_id());
+
+if( !$thisAttempt->load($pathId, claro_get_current_user_id()) )
+{
+	// save the attempt as there is no attempt for this user yet
+	$thisAttempt->setPathId($pathId);
+	$thisAttempt->setUserId(claro_get_current_user_id());
+	$thisAttempt->save();
+}
 
 $_SESSION['thisAttempt'] = serialize($thisAttempt);
 
@@ -114,12 +121,25 @@ $innerFrameset->addCol($menuFrameset, '200');
 $innerFrameset->addCol($contentFrame, '*');
 
 // prepare html header
-$htmlHeaders = getViewerHtmlHeaders($pathId);
+$htmlHeaders = "\n"
+.     '<script type="text/javascript">' . "\n"
+.    '  var jQueryPath = "'.get_module_url('CLLP').'/js/jquery.js";' . "\n"
+.    '</script>' . "\n\n"
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.js"></script>' . "\n"
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.frameready.js"></script>' . "\n"
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/json.jquery.js"></script>' . "\n"
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/CLLP.js"></script>' . "\n"
+.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/scormAPI.js"></script>' . "\n\n";
 
 $htmlHeaders .= "\n"
 .    '<script type="text/javascript">' . "\n"
+.	 '  var pathId = "'.(int) $pathId.'";' . "\n"
+.	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
+.	 '  var moduleUrl = "'.get_module_url('CLLP').'/";' . "\n"
+.    '  var debugMode = '.get_conf('scorm_api_debug').';' . "\n\n"
+.	 '  var lpClient = new lpClient(pathId,cidReq,moduleUrl,debugMode);' . "\n"
 .	 '  $(document).ready(function() {' . "\n"
-.    '    setTimeout("refreshToc()", 1000);' . "\n"
+.    '    setTimeout("lpClient.refreshToc()", 1000);' . "\n"
 .	 '  });' . "\n"
 .    '</script>' . "\n\n";
 
