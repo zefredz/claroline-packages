@@ -382,7 +382,7 @@ class attempt
     function setHigherAttemptNumber()
     {
     	// use max instead of count to handle suppressed attempts
-    	$sql = "SELECT MAX(`attemptNumber`)
+    	$sql = "SELECT MAX(`attempt_number`)
     			FROM ".$this->tblAttempt."
     			WHERE `path_id` = ".(int) $this->pathId."
     			AND `user_id` = ".(int) $this->userId;
@@ -662,6 +662,315 @@ class itemAttempt
         $this->id = -1;
         return true;
 	}
+
+	/**
+	 * check that all scorm data are consistent and that value are correct
+	 */
+	function validate()
+	{
+		return true;
+	}
+
+    /**
+     * get id
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int
+     */
+    function getId()
+    {
+        return (int) $this->id;
+    }
+
+    /**
+     * get attempt id
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int
+     */
+    function getAttemptId()
+    {
+        return (int) $this->attemptId;
+    }
+
+    /**
+     * set attempt id
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int id of the attempt
+     */
+    function setAttemptId($value)
+    {
+        $this->attemptId = (int) $value;
+    }
+
+    /**
+     * get item id
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int
+     */
+    function getItemId()
+    {
+        return (int) $this->itemId;
+    }
+
+    /**
+     * set item id
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int id of the item
+     */
+    function setItemId($value)
+    {
+        $this->itemId = (int) $value;
+    }
+
+	/**
+	 * set location
+	 *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value location in the SCO
+	 */
+	 function setLocation($value)
+	 {
+	 	$this->location = trim($value);
+	 }
+
+    /**
+     * get location
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string location in the SCO
+     */
+	 function getLocation()
+	 {
+	 	return $this->location;
+	 }
+
+	/**
+	 * set completionStatus
+	 *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value completionStatus of the SCO
+	 */
+	 function setCompletionStatus($value)
+	 {
+	 	$acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
+
+        if( in_array($value, $acceptedValues) )
+        {
+            $this->completionStatus = $value;
+            return true;
+        }
+        return false;
+	 }
+
+    /**
+     * get completionStatus
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string completionStatus of the SCO
+     */
+	 function getCompletionStatus()
+	 {
+	 	return $this->completionStatus;
+	 }
+
+	/**
+	 * set entry
+	 *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value entry of the SCO
+	 */
+	 function setEntry($value)
+	 {
+	 	$acceptedValues = array('AB-INITIO','RESUME','');
+
+        if( in_array($value, $acceptedValues) )
+        {
+            $this->entry = $value;
+            return true;
+        }
+        return false;
+	 }
+
+    /**
+     * get entry
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string entry of the SCO
+     */
+	 function getEntry()
+	 {
+	 	return $this->entry;
+	 }
+
+    /**
+     * get score raw
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int score raw
+     */
+    function getScoreRaw()
+    {
+        return (int) $this->scoreRaw;
+    }
+
+    /**
+     * set score raw
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int score raw
+     */
+    function setScoreRaw($value)
+    {
+        $this->scoreRaw = (int) $value;
+    }
+
+    /**
+     * get score min
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int score min
+     */
+    function getScoreMin()
+    {
+        return (int) $this->scoreMin;
+    }
+
+    /**
+     * set score min
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int score min
+     */
+    function setScoreMin($value)
+    {
+        $this->scoreMin = (int) $value;
+    }
+
+    /**
+     * get score max
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int score max
+     */
+    function getScoreMax()
+    {
+        return (int) $this->scoreMax;
+    }
+
+    /**
+     * set score max
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int score max
+     */
+    function setScoreMax($value)
+    {
+        $this->scoreMax = (int) $value;
+    }
+
+    /**
+     * get sessionTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int session time in SCO
+     */
+    function getSessionTime()
+    {
+        return $this->sessionTime;
+    }
+
+    /**
+     * set sessionTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int sessionTime
+     */
+    function setSessionTime($value)
+    {
+        $this->sessionTime = (int) $value;
+    }
+
+    /**
+     * get totalTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return int total time in SCO
+     */
+    function getTotalTime()
+    {
+        return $this->totalTime;
+    }
+
+    /**
+     * set totalTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value int totalTime
+     */
+    function setTotalTime($value)
+    {
+        $this->totalTime = (int) $value;
+    }
+
+
+	/**
+     * get suspend data
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string suspend data
+     */
+    function getSuspendData()
+    {
+        return $this->suspendData;
+    }
+
+    /**
+     * set suspend data
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value string suspend data
+     */
+    function setSuspendData($value)
+    {
+        $this->suspendData = $value;
+    }
+
+	/**
+	 * set credit
+	 *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param $value credit of the SCO
+	 */
+	 function setCredit($value)
+	 {
+	 	$acceptedValues = array('CREDIT','NO-CREDIT');
+
+        if( in_array($value, $acceptedValues) )
+        {
+            $this->credit = $value;
+            return true;
+        }
+        return false;
+	 }
+
+    /**
+     * get credit
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string credit of the SCO
+     */
+	 function getCredit()
+	 {
+	 	return $this->credit;
+	 }
+
+
+
+
 
 }
 
