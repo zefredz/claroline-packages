@@ -155,7 +155,7 @@
             $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
         }
     }
-        
+      
     // exportDict
     if ( 'exportDict' == $action )
     {
@@ -217,8 +217,8 @@
         $fatalError = true;
         $dispErrorBoxBackButton = false;
     }
-    
 }
+
 // }}}
 
 // {{{ VIEW
@@ -372,16 +372,49 @@
             if ( 'yml' == $format )
             {
                 $array = array();
-                $array['Dictionary']['Name'] = 'mydict'; 
-                $array['Dictionary']['Description'] = 'un joli dico'; 
-                $array['Dictionary']['Tags'][0] =  array( 'Tag' => 'test','Description' => 'un essai');
-                $array['Dictionary']['Tags'][1] =  array( 'Tag' => 'test2','Description' => 'un autre essai');
-                $array['Dictionary']['Content'][0]['Word'] = 'lapin'; 
-                $array['Dictionary']['Content'][0]['Definitions'][0]['Definition'] = 'animal avec des longues oreilles';
-                $array['Dictionary']['Content'][0]['Definitions'][0]['Tags'] = 'test,test2'; 
-                $array['Dictionary']['Content'][0]['Definitions'][1]['Definition'] = 'mange des carottes';  
-                $array['Dictionary']['Content'][1]['Word'] = 'cigogne'; 
-                $array['Dictionary']['Content'][1]['Definitions'][0]['Definition'] = 'apporte les bébés';
+                $array['Dictionary']['Name'] = $dictionaryInfo['name']; 
+                $array['Dictionary']['Description'] = $dictionaryInfo['description']; 
+                $array['Dictionary']['Tags'][0] =  array( 'Tag' => '','Description' => '');
+                $array['Dictionary']['Tags'][1] =  array( 'Tag' => '','Description' => '');
+                
+                $lastWord = '';
+                $i = 0;
+                
+                foreach($dict as $word)
+                {
+
+                    if( empty( $lastWord ) || $lastWord != $word['name'] )
+                    {
+                        $lastWord = $word['name'];
+                        $output .= '<dt>' . $word['name'] . '</dt>';
+                    }
+                
+                    $output .= '<dd>' . $i . ')&nbsp;' . $word['definition'] . '</dd>';
+                    $i++;
+                
+                    $array['Dictionary']['Content'][0]['Word'] = 'lapin'; 
+                    $array['Dictionary']['Content'][0]['Definitions'][0]['Definition'] = 'animal avec des longues oreilles';
+                    $array['Dictionary']['Content'][0]['Definitions'][0]['Tags'] = ''; 
+                    $array['Dictionary']['Content'][0]['Definitions'][1]['Definition'] = 'mange des carottes';  
+                }
+                
+                /*
+                $array = array();
+                $array['Dictionary']['Name'] = $dictionaryInfo['name']; 
+                $array['Dictionary']['Description'] = $dictionaryInfo['description']; 
+                $array['Dictionary']['Tags'][0] =  array( 'Tag' => '','Description' => '');
+                $array['Dictionary']['Tags'][1] =  array( 'Tag' => '','Description' => '');
+                
+                foreach($dict as $key)
+                {
+                    $array['Dictionary']['Content'][0]['Word'] = 'lapin'; 
+                    $array['Dictionary']['Content'][0]['Definitions'][0]['Definition'] = 'animal avec des longues oreilles';
+                    $array['Dictionary']['Content'][0]['Definitions'][0]['Tags'] = ''; 
+                    $array['Dictionary']['Content'][0]['Definitions'][1]['Definition'] = 'mange des carottes';  
+                    $array['Dictionary']['Content'][1]['Word'] = 'cigogne'; 
+                    $array['Dictionary']['Content'][1]['Definitions'][0]['Definition'] = 'apporte les bébés';
+                }
+*/
                 
                 $generator = new YAML_Generator;
                 $yaml = $generator->generate( $array );
