@@ -32,13 +32,14 @@
     require_once dirname(__FILE__) . '/lib/html/datagrid/table.class.php';
     require_once dirname(__FILE__) . '/lib/html/messagebox.class.php';
     require_once dirname(__FILE__) . '/lib/glossary/display.lib.php';
-    require_once dirname(__FILE__) . '/lib/search/search.class.php';
-    require_once dirname(__FILE__) . '/lib/print/print.class.php';
-    require_once dirname(__FILE__) . '/lib/import/import.class.php';
-    require_once dirname(__FILE__) . '/lib/export/export.class.php';
+    //require_once dirname(__FILE__) . '/lib/search/search.class.php';
+    //require_once dirname(__FILE__) . '/lib/print/print.class.php';
+    //require_once dirname(__FILE__) . '/lib/import/import.class.php';
+    //require_once dirname(__FILE__) . '/lib/export/export.class.php';
 
     // check tool access
     claro_course_tool_allowed( true );
+    
     // display mode
     claro_set_display_mode_available(true);
     
@@ -57,6 +58,7 @@
         'glossary_import',
         'glossary_export'
     );
+    
     // convert to Claroline course table names
     $glossaryTables = get_module_course_tbl( $tblNameList
         , claro_get_current_course_id() );

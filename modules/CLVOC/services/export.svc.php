@@ -37,6 +37,8 @@
     require_once dirname(__FILE__) . '/../lib/glossary/text.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/highlighter.class.php';
     require_once dirname(__FILE__) . '/../lib/html/sanitizer.class.php';
+    require_once dirname(__FILE__) . '/../lib/yml/yaml.lib.php';
+    
 }
 // }}}
     
@@ -360,7 +362,7 @@
                 echo( $output );
                 exit;
             }
-            
+
             // Format csv
             if ( 'csv' == $format )
             {
@@ -369,6 +371,26 @@
             // Format yml
             if ( 'yml' == $format )
             {
+                $array = array();
+                $array['Dictionary']['Name'] = 'mydict'; 
+                $array['Dictionary']['Description'] = 'un joli dico'; 
+                $array['Dictionary']['Tags'][0] =  array( 'Tag' => 'test','Description' => 'un essai');
+                $array['Dictionary']['Tags'][1] =  array( 'Tag' => 'test2','Description' => 'un autre essai');
+                $array['Dictionary']['Content'][0]['Word'] = 'lapin'; 
+                $array['Dictionary']['Content'][0]['Definitions'][0]['Definition'] = 'animal avec des longues oreilles';
+                $array['Dictionary']['Content'][0]['Definitions'][0]['Tags'] = 'test,test2'; 
+                $array['Dictionary']['Content'][0]['Definitions'][1]['Definition'] = 'mange des carottes';  
+                $array['Dictionary']['Content'][1]['Word'] = 'cigogne'; 
+                $array['Dictionary']['Content'][1]['Definitions'][0]['Definition'] = 'apporte les bébés';
+                
+                $generator = new YAML_Generator;
+                $yaml = $generator->generate( $array );
+                
+                header("Content-type: application/force-download; charset=ISO-8859-1");
+                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".yml");
+                
+                echo( $yaml );
+                exit;
             }
         }    
     // fatal error
