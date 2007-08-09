@@ -70,19 +70,49 @@ if( $cmd == 'doCommit' )
 	// do not forget to also cast sub-arrays like cmi.comments_from_learner
 	$decodedScormData = (array) $json->decode($_REQUEST['scormdata']);
 
+	// get serialized attempt
 	$thisAttempt = unserialize($_SESSION['thisAttempt']);
 
 	$itemAttempt = new itemAttempt();
-	$itemAttempt->load($thisAttempt['id'], $itemId); // TODO do that properly ^^
 
-	if( isset($thisAttempt['itemAttemptList'][$itemId]) )
-	{
+	// try to load itemAttempt
+	$itemAttempt->load($thisAttempt->getId(), $itemId);
+dump($decodedScormData);
+	// set values from jsonized javascript object
+	$itemAttempt->setAttemptId($thisAttempt->getId());
+	$itemAttempt->setItemId($itemId);
+	$itemAttempt->setLocation($decodedScormData['cmi.location']);
+	$itemAttempt->setCompletionStatus($decodedScormData['cmi.completion_status']);
+	$itemAttempt->setEntry($decodedScormData['cmi.entry']);
+	$itemAttempt->setScoreRaw($decodedScormData['cmi.score.raw']);
+	$itemAttempt->setScoreMin($decodedScormData['cmi.score.min']);
+	$itemAttempt->setScoreMax($decodedScormData['cmi.score.max']);
+	$itemAttempt->setSessionTime($decodedScormData['cmi.session_time']);
+	$itemAttempt->setTotalTime($decodedScormData['cmi.total_time']);
+	$itemAttempt->setSuspendData($decodedScormData['cmi.suspend_data']);
+	$itemAttempt->setCredit($decodedScormData['cmi.credit']);
 
-	}
-	else
-	{
+dump($itemAttempt);
+	if( $itemAttempt->validate() )
+    {
+    	dump("has validate");
+        if( $itemAttempt->save() )
+        {
+        	dump("saved");
+        	// get new item attempt list
+        	// compute new values of attempt
+        	// save attempt
 
-	}
+        	$thisAttempt->save();
+			return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
+
+    return false;
 }
 
 if( $cmd == 'rqRefresh' )
@@ -116,7 +146,7 @@ if( $cmd == 'rqContentUrl' )
         {
             return false;
         }
-dump($itemUrl);
+
 	    echo $itemUrl;
 	    return true;
     }
@@ -165,12 +195,12 @@ if( $cmd == 'rqToc' )
         if( $anItem['type'] == 'MODULE' )
         {
             $itemUrl = $resolver->resolve($anItem['sys_path']);
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="openItem(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
+            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="lpClient.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
         }
         elseif( $anItem['type'] == 'SCORM' )
         {
             $itemUrl = $scormBaseUrl . $anItem['sys_path'];
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="openItem(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
+            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="lpClient.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
         }
         else
         {
