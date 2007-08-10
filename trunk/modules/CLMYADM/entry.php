@@ -9,7 +9,7 @@
         
         $claro_buffer->append( 
             claro_html_icon_button(
-                get_module_url('CLMYADM') . '/wmsa.php?cidReset=1',
+                get_module_url('CLMYADM') . '/wmsa.php',
                 'sqladmin',
                 get_lang('MySQLAdmin'),
                 get_lang('Database administration')
