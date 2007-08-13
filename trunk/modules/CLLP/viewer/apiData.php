@@ -92,49 +92,49 @@ $sco['session_time'] = "0000:00:00.00";
 header( 'Content-Type: text/javascript' );
 ?>
 
-lpClient.APIInitialized = false;
-lpClient.APILastError = "301";
+lpHandler.APIInitialized = false;
+lpHandler.APILastError = "301";
 
-lpClient.itemId = "<?php echo $itemId; ?>";
+lpHandler.itemId = "<?php echo $itemId; ?>";
 
 // ====================================================
 // CMI Elements and Values
 //
 
-lpClient.elementList = {};
-lpClient.elementList['cmi._version'] = '1.0';
-lpClient.elementList['cmi.comments_from_learner._children']  = "comment,location,timestamp";
-lpClient.elementList['cmi.comments_from_learner._count']  = "";
-lpClient.elementList['cmi.comments_from_learner'] = {}; /* TODO handle collections */
-lpClient.elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
-lpClient.elementList['cmi.comments_from_lms._count']  = "";
-lpClient.elementList['cmi.comments_from_lms'] = {}; /* TODO handle collections */
-lpClient.elementList['cmi.completion_status']  = "UNKNOWN"; /* progress measure == 0 -> not attempted, 1 -> completed, 0 < < 1 -> incomplete but depends on complete threshold */
-lpClient.elementList['cmi.entry']  = "";
-lpClient.elementList['cmi.exit']  = "";
-lpClient.elementList['cmi.launch_data']  = "";
-lpClient.elementList['cmi.learner_id']  = "";
-lpClient.elementList['cmi.learner_name'] = "";
-lpClient.elementList['cmi.location'] = "";
-lpClient.elementList['cmi.max_time_allowed'] = ""; /* TODO get that from manifest ! */
-lpClient.elementList['cmi.mode'] = "";   /* if mode is browse or review credit is always no-credit, if mode == "normal" credit my be credit or no-credit */
-lpClient.elementList['cmi.credit']  = "no-credit";
-lpClient.elementList['cmi.progress_measure'] = ""; /* not attempted, completed, incomplete, depends on completionThreshold */
-lpClient.elementList['cmi.scaled_passing_score'] = "";
-lpClient.elementList['cmi.score._children'] = "scaled,min,max,raw";
-lpClient.elementList['cmi.score.scaled'] = "";
-lpClient.elementList['cmi.score.min'] = "";
-lpClient.elementList['cmi.score.max'] = "";
-lpClient.elementList['cmi.score.raw'] = "";
-lpClient.elementList['cmi.session_time'] = ""; /* check value ? find a way to store it ? probably use php to convert and serve a correct string */
-lpClient.elementList['cmi.success_status'] = ""; /* passed failed or unknown */
-lpClient.elementList['cmi.suspend_data'] = "";
-lpClient.elementList['cmi.time_limit_action'] = ""; /* exit,message/exit,no message/continue,message/continue,no message // should be initialized to continue,no message if nothing found in manifest */
-lpClient.elementList['cmi.total_time'] = "";
+lpHandler.elementList = {};
+lpHandler.elementList['cmi._version'] = '1.0';
+lpHandler.elementList['cmi.comments_from_learner._children']  = "comment,location,timestamp";
+lpHandler.elementList['cmi.comments_from_learner._count']  = "";
+lpHandler.elementList['cmi.comments_from_learner'] = {}; /* TODO handle collections */
+lpHandler.elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
+lpHandler.elementList['cmi.comments_from_lms._count']  = "";
+lpHandler.elementList['cmi.comments_from_lms'] = {}; /* TODO handle collections */
+lpHandler.elementList['cmi.completion_status']  = "UNKNOWN"; /* progress measure == 0 -> not attempted, 1 -> completed, 0 < < 1 -> incomplete but depends on complete threshold */
+lpHandler.elementList['cmi.entry']  = "";
+lpHandler.elementList['cmi.exit']  = "";
+lpHandler.elementList['cmi.launch_data']  = "";
+lpHandler.elementList['cmi.learner_id']  = "";
+lpHandler.elementList['cmi.learner_name'] = "";
+lpHandler.elementList['cmi.location'] = "";
+lpHandler.elementList['cmi.max_time_allowed'] = ""; /* TODO get that from manifest ! */
+lpHandler.elementList['cmi.mode'] = "";   /* if mode is browse or review credit is always no-credit, if mode == "normal" credit my be credit or no-credit */
+lpHandler.elementList['cmi.credit']  = "no-credit";
+lpHandler.elementList['cmi.progress_measure'] = ""; /* not attempted, completed, incomplete, depends on completionThreshold */
+lpHandler.elementList['cmi.scaled_passing_score'] = "";
+lpHandler.elementList['cmi.score._children'] = "scaled,min,max,raw";
+lpHandler.elementList['cmi.score.scaled'] = "";
+lpHandler.elementList['cmi.score.min'] = "";
+lpHandler.elementList['cmi.score.max'] = "";
+lpHandler.elementList['cmi.score.raw'] = "";
+lpHandler.elementList['cmi.session_time'] = ""; /* check value ? find a way to store it ? probably use php to convert and serve a correct string */
+lpHandler.elementList['cmi.success_status'] = ""; /* passed failed or unknown */
+lpHandler.elementList['cmi.suspend_data'] = "";
+lpHandler.elementList['cmi.time_limit_action'] = ""; /* exit,message/exit,no message/continue,message/continue,no message // should be initialized to continue,no message if nothing found in manifest */
+lpHandler.elementList['cmi.total_time'] = "";
 
 
 // todo
-lpClient.elementList['cmi.completion_threshold']  = "";
-lpClient.elementList['cmi.interactions']  = {};
-lpClient.elementList['cmi.learner_preference'] = "";
-lpClient.elementList['cmi.objectives'] = {};
+lpHandler.elementList['cmi.completion_threshold']  = "";
+lpHandler.elementList['cmi.interactions']  = {};
+lpHandler.elementList['cmi.learner_preference'] = "";
+lpHandler.elementList['cmi.objectives'] = {};
