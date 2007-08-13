@@ -478,6 +478,7 @@ $cmdMenu = array();
 // do not display commands to student or when creating a new path (rqEdit)
 if( $is_allowedToEdit && !is_null($pathId) )
 {
+	$cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Play path'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Edit path settings'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Create chapter'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddModule&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Add module(s)'));
