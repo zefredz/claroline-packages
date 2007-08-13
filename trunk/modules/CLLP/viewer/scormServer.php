@@ -77,7 +77,7 @@ if( $cmd == 'doCommit' )
 
 	// try to load itemAttempt
 	$itemAttempt->load($thisAttempt->getId(), $itemId);
-dump($decodedScormData);
+
 	// set values from jsonized javascript object
 	$itemAttempt->setAttemptId($thisAttempt->getId());
 	$itemAttempt->setItemId($itemId);
@@ -92,10 +92,9 @@ dump($decodedScormData);
 	$itemAttempt->setSuspendData($decodedScormData['cmi.suspend_data']);
 	$itemAttempt->setCredit($decodedScormData['cmi.credit']);
 
-dump($itemAttempt);
+
 	if( $itemAttempt->validate() )
     {
-    	dump("has validate");
         if( $itemAttempt->save() )
         {
         	dump("saved");
@@ -115,10 +114,6 @@ dump($itemAttempt);
     return false;
 }
 
-if( $cmd == 'rqRefresh' )
-{
-
-}
 
 /**
  * Get the url of one single item by id
@@ -175,36 +170,31 @@ if( $cmd == 'rqToc' )
     //  urls of scorm packages
     $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
 
-    $html = '';
+    $html = "\n";
 
-    $html .= '<table style="font-size: small;" width="100%" border="0" cellspacing="2">' . "\n";
+    $html .= '<table style="font-size: small;" width="100%" border="0" cellspacing="2" id="toc" >' . "\n";
+
+	// TODO path title
+	$html .= '<tr>' . "\n"
+	.	 '<th>Path title here</th>' . "\n"
+	.	 '</tr>' . "\n";
 
     foreach( $itemListArray as $anItem )
     {
-        $html .= '<tr>' . "\n";
-
-        // result
-    	$html .= '<td>' . "\n"
-    	.    '<img src="' . get_path('imgRepositoryWeb') . 'checkbox_on.gif" border="0" alt="' . get_lang('Checked') . '" />' . "\n"
-    	.    '</td>' . "\n";
+        $html .= '<tr id="item_'.$anItem['id'].'">' . "\n";
 
         // title
-        $html .= '<td align="left" style="padding-left:'.($anItem['deepness']*10).'px;">'
-        .    '<img src="'.get_module_url('CLLP').'/img/'.(($anItem['type'] == 'CONTAINER')? 'chapter.png': 'item.png').'" alt="" />';
+        $html .= '<td align="left" style="padding-left:'.($anItem['deepness']*10).'px;">';
 
-        if( $anItem['type'] == 'MODULE' )
+        if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' )
         {
-            $itemUrl = $resolver->resolve($anItem['sys_path']);
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="lpClient.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
-        }
-        elseif( $anItem['type'] == 'SCORM' )
-        {
-            $itemUrl = $scormBaseUrl . $anItem['sys_path'];
-            $html .= '&nbsp;<a href="'.$itemUrl.'" target="lp_content" onClick="lpClient.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
+            $html .= '<img src="'.get_module_url('CLLP').'/img/item.png" alt="" />'
+			.	 '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
         }
         else
         {
-            $html .= '&nbsp;' . $anItem['title'];
+            $html .= '<img src="'.get_module_url('CLLP').'/img/chapter.png" alt="" />'
+			.	 '&nbsp;' . $anItem['title'];
         }
 
         $html .= '</td>' . "\n";
