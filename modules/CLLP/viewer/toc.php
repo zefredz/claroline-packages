@@ -50,9 +50,15 @@ else                                                                  $pathId = 
 
 
 // prepare html header
-$htmlHeaders = '<script type="text/javascript">' . "\n"
-.	 '	var lpClient = window.parent.lpClient;' . "\n"
+$htmlHeaders = '<link rel="stylesheet" type="text/css" href="' . get_module_url('CLLP') . '/css/cllp.css" media="screen, projection, tv" />' . "\n"
+.	 '<script type="text/javascript">' . "\n"
+.	 '	var lpHandler = window.parent.lpHandler;' . "\n"
 .	 '</script>' . "\n";
+
+// to fix png transparency problem using IE < 7
+$htmlHeaders .= '<!--[if lt IE 7]>' . "\n"
+.	 '<script defer type="text/javascript" src="pngfix.js"></script>' . "\n"
+.	 '<![endif]-->' . "\n";
 
 /*
  * Output
@@ -62,9 +68,59 @@ $display = new ClarolineScriptEmbed();
 $display->frameMode();
 $display->hideClaroBody();
 
-$html = "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
+$html = '';
 
-$html .= '<a href="#" onClick="lpClient.isolateContent(); return false;" >debug</a>';
+// Navigation
+$html .= "\n" . '<div id="navigation">' . "\n";
+
+//- previous and next links
+$html .= '';
+
+
+$html .= '<p>' . "\n"
+//- back to list
+.    '<a href="'.get_module_url('CLLP').'/index.php" title="'.get_lang('Back to list').'" target="_top">'
+.    '<img src="'.get_module_url('CLLP').'/img/go-home.png" alt="'.get_lang('Back to list').'" />'
+.    '</a>' . "\n"
+//- tracking
+.	 '&nbsp;&nbsp;'
+.    '<a href="#" title="'.get_lang('View statistics').'" onClick="lpHandler.openStatistics(); return false;">'
+.    '<img src="'.get_module_url('CLLP').'/img/statistics.gif" alt="'.get_lang('View statistics').'" />'
+.    '</a>' . "\n"
+//- previous and next buttons
+.	 '&nbsp;&nbsp;'
+.    '<a href="#" title="'.get_lang('Previous').'" onClick="lpHandler.goPrevious(); return false;" id="goPrevious">'
+.    '<img src="'.get_module_url('CLLP').'/img/go-previous.png" alt="'.get_lang('Previous').'" />'
+.    '</a>' . "\n"
+.    '<a href="#" title="'.get_lang('Next').'" onClick="lpHandler.goNext(); return false;" id="goNext">'
+.    '<img src="'.get_module_url('CLLP').'/img/go-next.png" alt="'.get_lang('Next').'" />'
+.    '</a>' . "\n"
+//- full screen switch
+.	 '&nbsp;&nbsp;'
+.    '<a href="#" title="'.get_lang('Fullscreen').'" onClick="lpHandler.setFullscreen(); return false;">'
+.    '<img src="'.get_module_url('CLLP').'/img/view-fullscreen.png" alt="'.get_lang('Fullscreen').'" />'
+.    '</a>' . "\n"
+.    '<a href="#" title="'.get_lang('Embedded').'" onClick="lpHandler.setEmbedded(); return false;">'
+.    '<img src="'.get_module_url('CLLP').'/img/view-embedded.png" alt="'.get_lang('Embedded').'" />'
+.    '</a>' . "\n"
+
+.    '</p>' . "\n\n";
+
+// progression
+$html .= '<p>' . claro_html_progress_bar(46, 1) . '&nbsp;<a href="#" onClick="lpHandler.isolateContent();return false;" >46%</a></p>' . "\n";
+
+$html .= '</div>' . "\n";
+
+// table of content
+$html .= "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
+
+// debug messages
+$html .= "\n"
+.   '<div id="lp_debug">' ."\n"
+.   '</div>' . "\n\n";
+
+
+// output
 $display->setContent($html);
 
 $display->addHtmlHeader($htmlHeaders);
