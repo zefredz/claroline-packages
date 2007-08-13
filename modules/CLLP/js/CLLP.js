@@ -1,7 +1,7 @@
 //$(document).ready(init);
 
 
-function lpClient(pathId, cidReq, moduleUrl, debugMode)
+function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 {
 	this.pathId = pathId;
 	this.cidReq = cidReq;
@@ -9,7 +9,7 @@ function lpClient(pathId, cidReq, moduleUrl, debugMode)
 	this.debugMode = debugMode;
 
 	// refreshed by api data
-	this.itemId;
+	this.itemId = -1;
 	this.APIInitialized = false;
 	this.APILastError = "301";
 	this.elementList = {};
@@ -19,112 +19,207 @@ function lpClient(pathId, cidReq, moduleUrl, debugMode)
  	 * Send all values to server to store them
  	 *
  	 */
-	this.commit = function commit() {
-		var scormdata = $.toJSON(this.elementList);
-
-	    $.ajax({
-	    	type: "POST",
-	        url: this.moduleUrl + "viewer/scormServer.php",
-	        data: "cmd=doCommit&cidReq="+ this.cidReq + "&itemId=" + this.itemId + "&scormdata=" + scormdata,
-	        success: this.refreshToc(),
-	        dataType: 'html'
-	    });
-
-	    return false;
-	}
+	this.commit = commit;
 
 	/**
 	 * Set Content
  	 * Reinitialize API then open content in content frame
  	 *
  	 */
-	this.setContent = function setContent(itemId) {
-		// set item id
-		this.itemId = itemId;
-		// refresh api then refresh content
-		$.getScript("apiData.php?cidReq="+ this.cidReq + "&pathId=" + this.pathId + "&itemId=" + itemId, this.rqOpenItem() );
-	}
+	this.setContent = setContent;
 
 	/**
 	 * Refresh the table of content
 	 * TODO : does it depends on user id ?
 	 */
-	this.refreshToc = function refreshToc() {
-
-	    // return all the toc that will fill the div in the toc frame
-	    $.ajax({
-	    	url: this.moduleUrl + "viewer/scormServer.php?cmd=rqToc&cidReq=" + this.cidReq + "&pathId=" + this.pathId,
-	    	success: function(response){
-		    	$("#table_of_content", top.frames["lp_toc"].document).empty();
-		        $("#table_of_content", top.frames["lp_toc"].document).append(response);
-		        },
-	    	dataType: 'html'
-	    });
-
-	    return true;
-	}
+	this.refreshToc = refreshToc;
 
 	/**
 	 * Change the content of content frame according to itemId received
 	 * Should be call as callback for the load of the api
 	 *
 	 */
-	this.rqOpenItem = function rqOpenItem() {
-
-		// get url and set frame location to this url
-	    $.ajax({
-	    	url: this.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + this.cidReq + "&pathId=" + this.pathId + "&itemId=" + this.itemId,
-	    	success: this.mkOpenItem,
-	    	dataType: 'html'
-	    });
-	}
+	this.rqOpenItem = rqOpenItem;
 
 	/**
-	 * Change the content of content frame according to url received, also refresh the API
+	 * Change the content of content frame according to url received
 	 * Should be called by rqOpenItem
 	 *
 	 */
-	this.mkOpenItem = function mkOpenItem(itemUrl) {
+	this.mkOpenItem = mkOpenItem;
 
-		if( itemUrl != '' )
-		{
-			parent.lp_content.location = itemUrl;
-		}
-		else
-		{
-			parent.lp_content.location = 'blank.htm';
-		}
+	// Presentation function :
 
-		this.isolateContent();
-	}
+	/**
+	 * Remove headers, footers,... from a claroline content inserted as a module
+	 *
+	 */
+	this.isolateContent = isolateContent;
+
+	/**
+	 * Resize frameset to have a fullscreen
+	 *
+	 */
+	this.setFullscreen = setFullscreen;
+
+	/**
+	 * Resize frameset to have a embedded mode
+	 *
+	 */
+	this.setEmbedded = setEmbedded;
 
 	/**
 	 * Append a debug msg to navigation frame
 	 * TODO use a debug frame ?
 	 *
 	 */
-	this.debug = function debug(msg, level) {
-
-	    if( this.debugMode > level )
-	    {
-	        $("#lp_debug", top.frames["lp_nav"].document).append(msg + "<br />\n\n");
-	    }
-	}
-
-	/**
-	 * Remove headers, footers,... from a claroline content inserted as a module
-	 *
-	 */
-	this.isolateContent = function isolateContent() {
-
-		$("#topBanner", top.frames["lp_content"].document).hide();
-		$("#userBanner", top.frames["lp_content"].document).hide();
-		$("#courseBanner", top.frames["lp_content"].document).hide();
-		$("#breadcrumbLine", top.frames["lp_content"].document).hide();
-		$("#campusFooter", top.frames["lp_content"].document).hide();
-	}
+	this.debug = debug;
 }
 
+
+/**
+ * Functions mapped in object
+ *
+ */
+
+/**
+ * Commit
+ * Send all values to server to store them
+ *
+ */
+function commit() {
+	var scormdata = $.toJSON(lpHandler.elementList);
+
+    $.ajax({
+    	type: "POST",
+        url: lpHandler.moduleUrl + "viewer/scormServer.php",
+        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + scormdata,
+        success: refreshToc,
+        dataType: 'html'
+    });
+
+    return false;
+}
+
+
+/**
+ * Set Content
+ * Reinitialize API then open content in content frame
+ *
+ */
+function setContent(itemId) {
+
+	// set item id
+	this.itemId = itemId;
+
+	// refresh api then refresh content
+	$.getScript("apiData.php?cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + itemId, rqOpenItem );
+}
+
+/**
+ * Change the content of content frame according to itemId received
+ * Should be call as callback for the load of the api
+ *
+ */
+function rqOpenItem() {
+
+	// get url and set frame location to this url
+    $.ajax({
+    	url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+    	success: mkOpenItem,
+    	dataType: 'html'
+    });
+}
+
+
+/**
+ * Change the content of content frame according to url received
+ * Should be called by rqOpenItem
+ *
+ */
+function mkOpenItem(itemUrl) {
+
+	if( itemUrl != '' )
+	{
+		parent.lp_content.location = itemUrl;
+	}
+	else
+	{
+		parent.lp_content.location = 'blank.htm';
+	}
+	// remove all currently active class
+	$(".active", top.frames["lp_toc"].document).removeClass("active");
+
+	// find correct item and add it the active class
+	$("#item_" + lpHandler.itemId, top.frames["lp_toc"].document).addClass("active");
+
+	// blink the new active item
+	$(".active a", top.frames["lp_toc"].document).fadeOut("fast");
+	$(".active a", top.frames["lp_toc"].document).fadeIn("fast");
+}
+
+/**
+ * Refresh the table of content
+ * TODO : does it depends on user id ?
+ */
+function refreshToc() {
+
+    // return all the toc that will fill the div in the toc frame
+    $.ajax({
+    	url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqToc&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId,
+    	success: function(response){
+	    	$("#table_of_content", top.frames["lp_toc"].document).empty();
+	        $("#table_of_content", top.frames["lp_toc"].document).append(response);
+	        },
+    	dataType: 'html'
+    });
+
+    return true;
+}
+
+// Presentation function :
+
+/**
+ * Remove headers, footers,... from a claroline content inserted as a module
+ *
+ */
+function isolateContent() {
+
+	$("#topBanner", top.frames["lp_content"].document).hide();
+	$("#userBanner", top.frames["lp_content"].document).hide();
+	$("#courseBanner", top.frames["lp_content"].document).hide();
+	$("#breadcrumbLine", top.frames["lp_content"].document).hide();
+	$("#campusFooter", top.frames["lp_content"].document).hide();
+}
+
+/**
+ * Resize frameset to have a fullscreen
+ *
+ */
+function setFullscreen() {
+	parent.document.body.rows = "0,*";
+}
+
+/**
+ * Resize frameset to have a embedded mode
+ *
+ */
+function setEmbedded() {
+	parent.document.body.rows = "150,*";
+}
+
+/**
+ * Append a debug msg to navigation frame
+ * TODO use a debug frame ?
+ *
+ */
+function debug(msg, level) {
+
+    if( lpHandler.debugMode > level )
+    {
+        $("#lp_debug", top.frames["lp_toc"].document).append(msg + "<br />\n\n");
+    }
+}
 /**
  * Some utilities functions
  *
