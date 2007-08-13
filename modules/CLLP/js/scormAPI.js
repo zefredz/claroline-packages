@@ -50,13 +50,13 @@
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSInitialize(arg) {
-            lpClient.debug("LMSInitialize()", 1);
+            lpHandler.debug("LMSInitialize()", 1);
             if ( arg!="" ) {
                     this.APIError("201");
                     return "false";
             }
             this.APIError("0");
-            lpClient.APIInitialized = true;
+            lpHandler.APIInitialized = true;
 
             if ( this.LMSGetValue("cmi.core.lesson_status") == "not_started" ) {
                     this.LMSSetValue("cmi.core.lesson_status","started");
@@ -69,8 +69,8 @@
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSFinish(arg) {
-            lpClient.debug("LMSFinish()", 1);
-            if ( lpClient.APIInitialized ) {
+            lpHandler.debug("LMSFinish()", 1);
+            if ( lpHandler.APIInitialized ) {
                     if ( arg!="" ) {
                             this.APIError("201");
                             return "false";
@@ -79,7 +79,7 @@
 
                     //setTimeout("doCommit()",1000);
 
-                    lpClient.APIInitialized = false; //
+                    lpHandler.APIInitialized = false; //
                     return "true";
             } else {
                     this.APIError("301");   // not initialized
@@ -93,7 +93,7 @@
     //    - arg must be "" (empty string)
     //    - return value : "true" or "false"
     function LMSTerminate(arg) {
-            lpClient.debug("LMSTerminate()", 1);
+            lpHandler.debug("LMSTerminate()", 1);
             //TODO
     }
 
@@ -101,37 +101,37 @@
     // Data Transfer
     //
     function LMSGetValue(ele) {
-            lpClient.debug("LMSGetValue(" + ele + ")", 1);
-            if ( lpClient.APIInitialized )
+            lpHandler.debug("LMSGetValue(" + ele + ")", 1);
+            if ( lpHandler.APIInitialized )
             {
                 switch (ele)
                 {
                     case 'cmi._version' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.comments_from_learner._children' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.comments_from_learner._count' :
                             APIError("0");
-                            return lpClient.elementList[ele].length;
+                            return lpHandler.elementList[ele].length;
                             break;
                     case 'cmi.comments_from_lms._children' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.comments_from_lms._count' :
                             APIError("0");
-                            return lpClient.elementList[ele].length;
+                            return lpHandler.elementList[ele].length;
                             break;
                     case 'cmi.completion_status' :  // TODO handle completion_threshold and completion_status and progress_measure
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.progress_measure' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -139,7 +139,7 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.success_status' :
@@ -148,14 +148,14 @@
                     // todo threshold, measure, status
                     case 'cmi.entry' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.exit' :
                             APIError("405"); // write only
                             return "";
                             break;
                     case 'cmi.launch_data' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -163,19 +163,19 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.learner_id' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.learner_name' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.location' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -183,11 +183,11 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.max_time_allowed' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -195,27 +195,27 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.mode' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.credit' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.scaled_passing_score' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.score._children' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.score.scaled' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -223,11 +223,11 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.score.min' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -235,11 +235,11 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.score.max' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -247,11 +247,11 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.score.raw' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -259,11 +259,11 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.suspend_data' :
-                            if( lpClient.elementList[ele] == "" )
+                            if( lpHandler.elementList[ele] == "" )
                             {
                                 APIError("403"); // data model element value not initialized
                                 return "";
@@ -271,27 +271,27 @@
                             else
                             {
                                 APIError("0");
-                                return lpClient.elementList[ele];
+                                return lpHandler.elementList[ele];
                             }
                             break;
                     case 'cmi.time_limit_action' :
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.session_time' :
                             // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
                             // sum this to total_time on terminate before commit
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     case 'cmi.total_time' :
-                            if( lpClient.elementList['cmi.session_time'] == "" )
+                            if( lpHandler.elementList['cmi.session_time'] == "" )
                             {
                                 APIError("0");
                                 return 0;
                             }
                             APIError("0");
-                            return lpClient.elementList[ele];
+                            return lpHandler.elementList[ele];
                             break;
                     default :
                             // not implemented error
@@ -311,8 +311,8 @@
     }
 
     function LMSSetValue(ele,val) {
-            lpClient.debug("LMSSetValue(" + ele +","+ val + ")", 1);
-            if ( lpClient.APIInitialized )
+            lpHandler.debug("LMSSetValue(" + ele +","+ val + ")", 1);
+            if ( lpHandler.APIInitialized )
             {
                 switch (ele)
                 {
@@ -344,7 +344,7 @@
                                 APIError("406"); // data model element type mismatch
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -359,7 +359,7 @@
                                 APIError("407"); // data model element out of range
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             return "true";
                             break;
                     case 'cmi.success_status' :
@@ -370,7 +370,7 @@
                                 APIError("406"); // data model element type mismatch
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -387,7 +387,7 @@
                                 APIError("406"); // data model element type mismatch
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -409,7 +409,7 @@
                                 APIError("405");
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -444,7 +444,7 @@
                                 APIError("407"); // data model element out of range
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             return "true";
                             break;
                     case 'cmi.score.min' :
@@ -458,7 +458,7 @@
                                 APIError("407"); // data model element out of range
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             return "true";
                             break;
                     case 'cmi.score.max' :
@@ -472,7 +472,7 @@
                                 APIError("407"); // data model element out of range
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             return "true";
                             break;
                     case 'cmi.score.raw' :
@@ -486,12 +486,12 @@
                                 APIError("407"); // data model element out of range
                                 return "false";
                             }
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             return "true";
                             break;
                     case 'cmi.session_time' :
                             // find """something""" that could check that val correspond to : P[yY][mM][dD][T[hH][nM][s[.s]S]]
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -500,7 +500,7 @@
                             return "false";
                             break;
                     case 'cmi.suspend_data' :
-                            lpClient.elementList[ele] = val;
+                            lpHandler.elementList[ele] = val;
                             APIError("0");
                             return "true";
                             break;
@@ -526,16 +526,16 @@
 
     function LMSCommit(arg)
     {
-            lpClient.debug("LMScommit()", 1);
-            if ( lpClient.APIInitialized ) {
+            lpHandler.debug("LMScommit()", 1);
+            if ( lpHandler.APIInitialized ) {
                     if ( arg!="" ) {
                             this.APIError("201");
                             return "false";
                     } else {
                             this.APIError("0");
 							// API should handle total time because server side will have to receive 1.2 data or 1.3 data
-							//lpClient.elementList['cmi.total_time'] = totalTime();
-                            lpClient.commit();
+							//lpHandler.elementList['cmi.total_time'] = totalTime();
+                            lpHandler.commit();
 
                             return "true";
                     }
@@ -550,22 +550,22 @@
     // State Management
     //
     function LMSGetLastError() {
-            lpClient.debug("LMSGetLastError() : returns " + lpClient.APILastError, 1);
+            lpHandler.debug("LMSGetLastError() : returns " + lpHandler.APILastError, 1);
 
-            return lpClient.APILastError;
+            return lpHandler.APILastError;
     }
 
     function LMSGetErrorString(num) {
-            lpClient.debug("LMSGetErrorString(" + num +") : returns " + errCodes[num], 1);
+            lpHandler.debug("LMSGetErrorString(" + num +") : returns " + errCodes[num], 1);
 
             return errCodes[num];
 
     }
 
     function LMSGetDiagnostic(num) {
-            lpClient.debug("LMSGetDiagnostic(" + num + ") : returns " + errDiagn[num], 1);
+            lpHandler.debug("LMSGetDiagnostic(" + num + ") : returns " + errDiagn[num], 1);
 
-            if ( num == "" ) num = lpClient.APILastError;
+            if ( num == "" ) num = lpHandler.APILastError;
             return errDiagn[num];
     }
 
@@ -574,7 +574,7 @@
     // Private
     //
     function APIError(num) {
-            lpClient.APILastError = num;
+            lpHandler.APILastError = num;
     }
 
     // ====================================================
@@ -624,7 +624,7 @@
     }
 
     function totalTime() {
-        total_time = addTime(lpClient.elementList['cmi.total_time'], lpClient.elementList['cmi.session_time']);
+        total_time = addTime(lpHandler.elementList['cmi.total_time'], lpHandler.elementList['cmi.session_time']);
         return total_time;
     }
     // ====================================================
