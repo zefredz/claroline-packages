@@ -11,16 +11,13 @@
 // {{{ SCRIPT INITIALISATION
 { 
     // local variable initialisation
-    //$isAllowedToEdit = claro_is_allowed_to_edit();
+    $isAllowedToEdit = claro_is_allowed_to_edit();
     
     // set diplay mode
     $dispPrintText              = false;
     $dispPrintDict              = false;
     $dispExportText             = false;
     $dispExportDict             = false;
-    
-    // set service state
-    //$loadDictionary         = true;
     
     // set error variables
     $dispError              = false; // display error box
@@ -33,7 +30,6 @@
     // load modules and libraries
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
-    //require_once dirname(__FILE__) . '/../lib/print/print.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/text.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/highlighter.class.php';
     require_once dirname(__FILE__) . '/../lib/html/sanitizer.class.php';
@@ -60,9 +56,9 @@
     );
     
     $allowedFormat = array( 
-        'text'
-        ,'csv'
-        ,'yml'
+        'text',
+        'csv',
+        'yml'
     );
     
     // get request variables
@@ -166,7 +162,7 @@
             $dictionaryList = $list->getDictionaryList();
             $dictionary->setId( $dictionaryId );
             $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
-            $dict = $dictionary->getDictionary();
+            $glossaryWord = $dictionary->getDictionary();
             
             if ( $connection->hasError() )
             {
@@ -312,6 +308,45 @@
             // Format yml
             if ( 'yml' == $format )
             {
+                $array = array();
+                $array['Dictionary']['Name'] = $dictionaryInfo['name']; 
+                $array['Dictionary']['Description'] = $dictionaryInfo['description']; 
+                //$array['Dictionary']['Tags'][0] =  array( 'Tag' => '','Description' => '');
+                //$array['Dictionary']['Tags'][1] =  array( 'Tag' => '','Description' => '');
+                
+                $lastWord = '';
+                $i = 0;
+                $j = 0;
+                
+                foreach( $glossaryWord as $word )
+                {
+                    if( empty( $lastWord ) || $lastWord != $word['name'] )
+                    {
+                        $j = 0;
+                        $lastI = $i;
+                        $lastWord = $word['name'];
+                        $array['Dictionary']['Content'][$i]['Word'] = $word['name']; 
+                        $array['Dictionary']['Content'][$i]['Definitions'][$j]['Definition'] = $word['definition'];
+                    }
+                    else
+                    {
+                        $array['Dictionary']['Content'][$lastI]['Definitions'][$j]['Definition'] = $word['definition'];
+                        $i = $lastI;
+                    }
+                    //$array['Dictionary']['Content'][$i]['Definitions'][$j]['Tags'] = ''; 
+                    
+                    $i++;
+                    $j++;
+                }
+                
+                $generator = new YAML_Generator;
+                $yaml = $generator->generate( $array );
+                
+                header("Content-type: application/force-download; charset=ISO-8859-1");
+                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".yml");
+                
+                echo( $yaml );
+                exit;            
             }
         }
 
@@ -331,9 +366,9 @@
                             
                 if( $dictionaryList ) 
                 {
-                    foreach ( $dictionaryList as $key )
+                    foreach ( $dictionaryList as $word )
                     {
-                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['description'] . "\n";
+                        $output .= $word['name'] . "\t" .' - '. "\t" . $word['description'] . "\n";
                     }        
                 }
                 else
@@ -347,11 +382,11 @@
                 
                 $output .= '| ' . get_lang( 'Word' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
                 
-                if( $dict ) 
+                if( $glossaryWord ) 
                 {
-                    foreach ( $dict as $key )
+                    foreach ( $glossaryWord as $word )
                     {
-                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['definition'] . "\n";
+                        $output .= $word['name'] . "\t" .' - '. "\t" . $word['definition'] . "\n";
                     }
                 }
                 else
@@ -371,31 +406,36 @@
             // Format yml
             if ( 'yml' == $format )
             {
+                
                 $array = array();
                 $array['Dictionary']['Name'] = $dictionaryInfo['name']; 
                 $array['Dictionary']['Description'] = $dictionaryInfo['description']; 
-                $array['Dictionary']['Tags'][0] =  array( 'Tag' => '','Description' => '');
-                $array['Dictionary']['Tags'][1] =  array( 'Tag' => '','Description' => '');
+                //$array['Dictionary']['Tags'][0] =  array( 'Tag' => '','Description' => '');
+                //$array['Dictionary']['Tags'][1] =  array( 'Tag' => '','Description' => '');
                 
                 $lastWord = '';
                 $i = 0;
+                $j = 0;
                 
-                foreach($dict as $word)
+                foreach( $glossaryWord as $word )
                 {
-
                     if( empty( $lastWord ) || $lastWord != $word['name'] )
                     {
+                        $j = 0;
+                        $lastI = $i;
                         $lastWord = $word['name'];
-                        $output .= '<dt>' . $word['name'] . '</dt>';
+                        $array['Dictionary']['Content'][$i]['Word'] = $word['name']; 
+                        $array['Dictionary']['Content'][$i]['Definitions'][$j]['Definition'] = $word['definition'];
                     }
-                
-                    $output .= '<dd>' . $i . ')&nbsp;' . $word['definition'] . '</dd>';
+                    else
+                    {
+                        $array['Dictionary']['Content'][$lastI]['Definitions'][$j]['Definition'] = $word['definition'];
+                        $i = $lastI;
+                    }
+                    //$array['Dictionary']['Content'][$i]['Definitions'][$j]['Tags'] = ''; 
+                    
                     $i++;
-                
-                    $array['Dictionary']['Content'][0]['Word'] = 'lapin'; 
-                    $array['Dictionary']['Content'][0]['Definitions'][0]['Definition'] = 'animal avec des longues oreilles';
-                    $array['Dictionary']['Content'][0]['Definitions'][0]['Tags'] = ''; 
-                    $array['Dictionary']['Content'][0]['Definitions'][1]['Definition'] = 'mange des carottes';  
+                    $j++;
                 }
                 
                 /*
