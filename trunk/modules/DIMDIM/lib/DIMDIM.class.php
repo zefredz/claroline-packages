@@ -564,6 +564,16 @@ class conference
     } 
 
     /**
+     * get attendeeMikes
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     */
+    function getAttendeeMikes()
+    {
+        return (int) $this->attendeeMikes;
+    } 
+    
+    /**
      * set attendeeMikes
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
@@ -576,16 +586,6 @@ class conference
             return true;
         }
         return false;
-    } 
-
-    /**
-     * get attendeeMikes
-     *
-     * @author Sebastien Piraux <pir@cerdecam.be>
-     */
-    function getAttendeeMikes()
-    {
-        return (int) $this->attendeeMikes;
     } 
     
     /**
@@ -619,9 +619,50 @@ class conference
         $this->network = trim($value);
     }     
 
+    /**
+     * get startTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return integer
+     */
+    function getStartTime()
+    {
+        return (int) $this->startTime;
+    }
 
-                        `startTime` = FROM_UNIXTIME('".$this->startTime."'),
-                        `confKey` = '".addslashes($this->type)."'";   
+    /**
+     * set startTime
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param integer value
+     */
+    function setStartTime($value)
+    {
+        $this->startTime = (int) $value;
+    }  
+
+    /**
+     * get confKey
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string
+     */
+    function getConfKey()
+    {
+        return $this->confKey;
+    }
+
+    /**
+     * set confKey
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string $value
+     */
+    function setConfKey($value)
+    {
+        $this->confKey = trim($value);
+    }
+
 }
 
 /**
