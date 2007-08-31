@@ -317,7 +317,7 @@ class conference
      */
     function buildUrl()
     {
-        $url = get_conf('dimdim_server_url') 
+        $url = get_conf('dimdim_server_url');
         
         if( trim(get_conf('dimdim_server_port')) != '' )
         {
@@ -529,7 +529,7 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer value
      */
-    function getDuration($value)
+    function setDuration($value)
     {
         $this->duration = (int) $value;
     }  
