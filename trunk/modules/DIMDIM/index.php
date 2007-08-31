@@ -36,19 +36,18 @@ if ( !claro_is_tool_allowed() )
 
 install_module_in_course( 'DIMDIM', claro_get_current_course_id() ) ;
 
-
 require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
 
 /*
  * init request vars
  */
+ 
 $acceptedCmdList = array(   'rqEdit', 'exEdit' );
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
 else                                                                            $cmd = null;
 
 if( isset($_REQUEST['confId']) && is_numeric($_REQUEST['confId']) )   $confId = (int) $_REQUEST['confId'];
 else                                                                  $confId = null;
-
 
 /*
  * init other vars
@@ -66,7 +65,6 @@ if( !is_null($confId) )
 }
 
 $conferenceList = new conferenceList();
-
 
 claro_set_display_mode_available(true);
 
@@ -93,7 +91,6 @@ if( $is_allowedToEdit )
     	$conference->setAttendeeMikes($_REQUEST['attendeeMikes']);
     	$conference->setNetwork($_REQUEST['network']);
     	$conference->setStartTime($startTime);
-
 
     	if( $conference->validate() )
         {
@@ -153,25 +150,142 @@ if( $is_allowedToEdit )
         // title
         .	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
         .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($conference->getTitle()).'" /><br />' . "\n"
+
         // description
         .	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
         .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($conference->getDescription()).'</textarea><br />'
-        // viewmode
-        .	 get_lang('Default view mode') . '&nbsp;<span class="required">*</span><br />' . "\n"
-    	.	 '<input type="radio" name="viewMode" id="viewModeEmb" value="EMBEDDED" '.($conference->isFullscreen()?'':'checked="checked"').'>'
-    	.	 '<label for="viewModeEmb">'.get_lang('Embedded').'</label><br />' . "\n"
-    	.	 '<input type="radio" name="viewMode" id="viewModeFull" value="FULLSCREEN" '.($conference->isFullscreen()?'checked="checked"':'').'>'
-    	.	 '<label for="viewModeFull">'.get_lang('Fullscreen').'</label>' . "\n"
-    	.	 '<br /><br />'
-        // charset : TODO
 
-        .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
+        // waiting area
+        . get_lang('Waiting Area') . '<br />' . "\n"
+        . '<input id="label_waiting_area_TRUE"  type="radio" name="waitingArea" value="ENABLE"  '
+        . ( $conference->getWaitingArea() == 'ENABLE' ? ' checked="checked" ':' ') . ' >'
+        . '<label for="label_waiting_area_TRUE"  >' . get_lang('Yes') . '</label>' . '&nbsp;'
+        . '<input id="label_waiting_area_FALSE" type="radio" name="waitingArea" value="DISABLE" '
+        . ( $conference->getWaitingArea() == 'DISABLE' ? ' checked="checked" ': ' ') . ' >'
+        . '<label for="label_waiting_area_FALSE" >' . get_lang('No') . '</label><br />' . "\n";
+
+        // maximum users
+
+        $dialogBox .= '<label for="label_max_users"  >'.get_lang('Maximum users').'</label><br />' . "\n" ;
+       
+        // display select box with accepted value
+
+        $maxUserValueList = array('20', '40', '60', '80', '100', '200', '300', '400', '500');
+
+        $dialogBox .= '<select id="label_max_users" name="maxUsers">' . "\n";
+
+        foreach ( $maxUserValueList as $maxUserValue )
+        {
+            if ( $maxUserValue == $conference->getMaxUsers() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($maxUserValue) .'" selected="selected">' . $maxUserValue .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($maxUserValue) .'" >' . $maxUserValue .'</option>' . "\n";
+            }
+        } // end foreach
+
+        $dialogBox .= '</select><br />' . "\n";
+
+        // duration in hours
+        
+        $dialogBox .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
+
+        $durationValueList = array('1','2','3','4','5');
+
+        $dialogBox .= '<select id="label_duration" name="duration">' . "\n";
+
+        foreach ( $durationValueList as $durationValue )
+        {
+            if ( $durationValue == $conference->getDuration() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" selected="selected">' . $durationValue .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" >' . $durationValue .'</option>' . "\n";
+            }
+        }
+
+        $dialogBox .= '</select><br />' . "\n";
+
+        // type video and audio or audio only, default is audio
+        
+        $dialogBox .= '<label for="label_type"  >'.get_lang('Type').'</label><br />' . "\n" ;
+
+        $typeValueList = array('AUDIO' => get_lang('Audio') , 'VIDEO' => get_lang('Audio/Video'));
+
+        $dialogBox .= '<select id="label_type" name="type">' . "\n";
+
+        foreach ( $typeValueList as $typeValue => $typeLabel )
+        {
+            if ( $typeValue == $conference->getType() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($typeValue) .'" selected="selected">' . $typeLabel .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($typeValue) .'" >' . $typeLabel .'</option>' . "\n";
+            }
+        } // end foreach
+
+        $dialogBox .= '</select><br />' . "\n";
+
+        // attendee Mikes
+        
+        $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
+
+        $attendeeMikesValueList = array('1','2','3','4','5');
+
+        $dialogBox .= '<select id="label_attendeeMikes" name="attendeeMikes">' . "\n";
+
+        foreach ( $attendeeMikesValueList as $attendeeMikesValue )
+        {
+            if ( $attendeeMikesValue == $conference->getAttendeeMikes() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" selected="selected">' . $attendeeMikesValue .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" >' . $attendeeMikesValue .'</option>' . "\n";
+            }
+        }
+
+        $dialogBox .= '</select><br />' . "\n";
+
+        // network type
+        $dialogBox .= '<label for="network_type"  >'.get_lang('Network').'</label><br />' . "\n" ;
+
+        $networkValueList = array('DIALUP' => get_lang('Dial up') , 'CABLEDSL' => get_lang('Cable/Dsl'), 'LAN' => get_lang('LAN') );
+
+        $dialogBox .= '<select id="label_network" name="network">' . "\n";
+
+        foreach ( $networkValueList as $networkValue => $networkLabel )
+        {
+            if ( $networkValue == $conference->getNetwork() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($networkValue) .'" selected="selected">' . $networkLabel .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($networkValue) .'" >' . $networkLabel .'</option>' . "\n";
+            }
+        } // end foreach
+
+        $dialogBox .= '</select><br />' . "\n";        
+
+        // startTime
+
+
+        $dialogBox .= '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
         .    claro_html_button($_SERVER['PHP_SELF'] . '?confId='.$confId, get_lang('Cancel'))
         .    '</form>' . "\n"
         ;
 
     }
+
     if( $cmd == 'exDelete' )
     {
     	if( $conference->delete() )
@@ -231,7 +345,7 @@ if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
 $cmdMenu = array();
 if($is_allowedToEdit)
 {
-    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqCreate' . claro_url_relay_context('&amp;'),get_lang('Schedule a conference'));
+    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit' . claro_url_relay_context('&amp;'),get_lang('Schedule a conference'));
 }
 
 echo '<p>'
@@ -283,7 +397,7 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
         
         // duration
         echo '<td>'
-        .    get_lang("%duration hours", array("%duration" => htmlspecialchars($aConference['duration'])
+        .    get_lang("%duration hours", array("%duration" => htmlspecialchars($aConference['duration'])))
         .    '</td>';
         
         if( $is_allowedToEdit )
@@ -332,15 +446,7 @@ else
     .    '<td align="center" colspan="8">' . get_lang('No conference scheduled') . '</td>' . "\n"
     .    '</tr>' . "\n"
     .    '</tfoot>' . "\n";
-}    
-
-
-
-
-
-
-
-
+}
 
 include  get_path('includePath') . '/claro_init_footer.inc.php';
 
