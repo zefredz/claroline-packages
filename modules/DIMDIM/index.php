@@ -37,12 +37,14 @@ if ( !claro_is_tool_allowed() )
 install_module_in_course( 'DIMDIM', claro_get_current_course_id() ) ;
 
 require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
+require_once get_path('incRepositorySys') . '/lib/form.lib.php';
 
 /*
  * init request vars
  */
  
-$acceptedCmdList = array(   'rqEdit', 'exEdit' );
+$acceptedCmdList = array('rqEdit', 'exEdit', 'exDelete', 'exVisible', 'exInvisible');
+
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
 else                                                                            $cmd = null;
 
@@ -79,9 +81,7 @@ $dialogBox = '';
 if( $is_allowedToEdit )
 {
     if( $cmd == 'exEdit' )
-    {
-        $startTime = $_REQUEST['day'];
-        
+    {       
     	$conference->setTitle($_REQUEST['title']);
     	$conference->setDescription($_REQUEST['description']);
     	$conference->setWaitingArea($_REQUEST['waitingArea']);
@@ -89,12 +89,12 @@ if( $is_allowedToEdit )
     	$conference->setDuration($_REQUEST['duration']);
     	$conference->setType($_REQUEST['type']);
     	$conference->setAttendeeMikes($_REQUEST['attendeeMikes']);
-    	$conference->setNetwork($_REQUEST['network']);
-    	$conference->setStartTime($startTime);
+    	$conference->setNetwork($_REQUEST['network']);   	
+    	$conference->setStartTime(mktime($_REQUEST['startHour'],$_REQUEST['startMinute'],0,$_REQUEST['startMonth'],$_REQUEST['startDay'],$_REQUEST['startYear']) );
 
     	if( $conference->validate() )
         {
-            if( $conference->save() )
+            if( $insertedId = $conference->save() )
             {
             	if( is_null($confId) )
                 {
@@ -276,7 +276,11 @@ if( $is_allowedToEdit )
         $dialogBox .= '</select><br />' . "\n";        
 
         // startTime
-
+        $dialogBox .= get_lang('Start date') . '<br />' . "\n" 
+        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long') 
+        . ' - ' 
+        . claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
+    	. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
 
         $dialogBox .= '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
@@ -311,16 +315,16 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'exVisible' )
     {
-    	$path->setVisible();
+    	$conference->setVisible();
 
-    	$path->save();
+    	$conference->save();
     }
 
     if( $cmd == 'exInvisible' )
     {
-    	$path->setInvisible();
+    	$conference->setInvisible();
 
-    	$path->save();
+    	$conference->save();
     }
 
 }
@@ -352,7 +356,6 @@ echo '<p>'
 .    claro_html_menu_horizontal( $cmdMenu )
 .    '</p>';
 
-
 echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
@@ -362,7 +365,7 @@ echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing=
 
 if( $is_allowedToEdit )
 {
-    // display path name and tools to edit it
+    // display conference name and tools to edit it
     // titles
     echo '<th>' . get_lang('Modify') . '</th>' . "\n"
     .    '<th>' . get_lang('Delete') . '</th>' . "\n"
@@ -382,17 +385,19 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
         if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) break;
         
         echo '<tr align="center"' . (($aConference['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
+        
         // title
+        // TODO : add link to join conference
         echo '<td align="left">'
-        .    '<a href="viewer/index.php?pathId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
-        .    '<img src="' . get_path('imgRepositoryWeb') . 'learnpath.gif" alt="" border="0" />'
+        .    '<a href="index.php?cmd=rqEdit&amp;confId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
         .    htmlspecialchars($aConference['title'])
         .    '</a>' . "\n"
         .    '</td>';
         
-        // startTime
+        
+        // startTime        
         echo '<td>'
-        .    claro_disp_localised_date($dateFormatLong, $aConference['startTime'])
+        .    claro_disp_localised_date($dateTimeFormatLong, $aConference['startTime'])
         .    '</td>';
         
         // duration
@@ -404,14 +409,15 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
         {
             // edit
             echo '<td>' . "\n"
-            .    '<a href="index.php?confId=' . $aConference['id'] . '">' . "\n"
+            .    '<a href="index.php?cmd=rqEdit&amp;confId=' . $aConference['id'] . '">' . "\n"
             .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
 
             // delete
+            // TODO add js confirmation
             echo '<td>' . "\n"
-            .    '<a href="index.php?cmd=rqDelete&amp;confId=' . $aConference['id'] . '">' . "\n"
+            .    '<a href="index.php?cmd=exDelete&amp;confId=' . $aConference['id'] . '">' . "\n"
             .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";

@@ -125,7 +125,7 @@ class conference
                     `type`,
                     `attendeeMikes`,
                     `network`,
-                    `startTime`,
+                    UNIX_TIMESTAMP(`startTime`) AS `startTime`,
                     `confKey`
             FROM `".$this->tblConference."`
             WHERE `id` = ".(int) $id;
@@ -206,7 +206,7 @@ class conference
                         `waitingArea` = '".addslashes($this->waitingArea)."',
                         `maxUsers` = '".(int) $this->maxUsers."',
                         `duration` = '".(int)$this->duration."',
-                        `type` = ".addslashes($this->type).",
+                        `type` = '".addslashes($this->type)."',
                         `attendeeMikes` = ".(int) $this->attendeeMikes.",
                         `network` = '".addslashes($this->network)."',
                         `startTime` = FROM_UNIXTIME('".$this->startTime."')
@@ -702,7 +702,7 @@ class conferenceList
                     `type`,
                     `attendeeMikes`,
                     `network`,
-                    `startTime`
+                    UNIX_TIMESTAMP(`startTime`) AS `startTime`
             FROM `". $this->tblConference ."`
             ORDER BY `startTime` ASC";
         
