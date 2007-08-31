@@ -101,15 +101,8 @@ class conference
         $this->attendeeMikes = (int) 0;        
         $this->network = 'DIALUP';
         $this->startTime = claro_time();
-        
-        // define module table names
-        $tblNameList = array(
-            'dim_conference'
-        );
-
-        // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
-        $this->tblConference = $tbl_lp_names['dim_conference'];
+        $tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
+        $this->tblConference = $tbl_names['dim_conference'];        
     }
     
     /**
@@ -676,24 +669,17 @@ class conferenceList
     /**
      * @var $tblConference name of the path table
      */
-    var $tblConference;
-    
+    var $tblConference;    
         
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */ 	
-    function pathList()
+    function conferenceList()
     {
-        // define module table names
-        $tblNameList = array(
-            'dim_conference'
-        );
-
-        // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
-        $this->tblConference = $tbl_lp_names['dim_conference'];
+        $tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
+        $this->tblConference = $tbl_names['dim_conference'];        
     }
     
 	/**
@@ -717,7 +703,7 @@ class conferenceList
                     `attendeeMikes`,
                     `network`,
                     `startTime`
-            FROM `".$this->tblConference."`
+            FROM `". $this->tblConference ."`
             ORDER BY `startTime` ASC";
         
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )

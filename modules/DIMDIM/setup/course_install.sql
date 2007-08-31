@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__dim_conference` (
   `type` enum('AUDIO','AUDIOVIDEO') NOT NULL default 'AUDIO',
   `attendeeMikes` INT(11) NOT NULL default '0',
   `network` ENUM('DIALUP', 'CABLEDSL', 'LAN') NOT NULL DEFAULT 'DIALUP',
-  `startTime` DATETIME NOT NULL default now(),
+  `startTime` DATETIME NOT NULL default '0000-00-00 00:00:00',
   `confKey` VARCHAR(255) NOT NULL default '',
   PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
