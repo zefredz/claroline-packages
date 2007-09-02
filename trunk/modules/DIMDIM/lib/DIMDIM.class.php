@@ -180,7 +180,7 @@ class conference
                         `attendeeMikes` = ".(int) $this->attendeeMikes.",
                         `network` = '".addslashes($this->network)."',
                         `startTime` = FROM_UNIXTIME('".$this->startTime."'),
-                        `confKey` = '".addslashes($this->type)."'";
+                        `confKey` = '".addslashes($this->confKey)."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
@@ -262,7 +262,7 @@ class conference
         }
 
         // time must be now or in the future but decount duration 
-        if( $this->startTime < ( time() - $this->duration ) )
+        if( $this->startTime < ( time() - $this->duration*3600 ) )
         {
             claro_failure::set_failure('conference_invalid_date');
             return false;
@@ -329,7 +329,7 @@ class conference
         	     . '&amp;networkProfile='. urlencode($this->getNetwork(true))
         	     . '&amp;meetingHours='. urlencode($this->getDuration())
         	     . '&amp;meetingMinutes='. 0
-        	     . '&amp;maxParticipants='. urlencode($this->getMaxUser())
+        	     . '&amp;maxParticipants='. urlencode($this->getMaxUsers())
         	     . '&amp;presenterAV='. urlencode($this->getType(true))
         	     . '&amp;attendees='. urlencode(' ')
         	     . '&amp;maxAttendeeMikes='. urlencode($this->getAttendeeMikes())
