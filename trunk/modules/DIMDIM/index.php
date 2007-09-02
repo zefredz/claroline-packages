@@ -43,7 +43,7 @@ require_once get_path('incRepositorySys') . '/lib/form.lib.php';
  * init request vars
  */
  
-$acceptedCmdList = array('rqEdit', 'exEdit', 'exDelete', 'exVisible', 'exInvisible');
+$acceptedCmdList = array('rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exInvisible', 'rqView');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
 else                                                                            $cmd = null;
@@ -329,6 +329,22 @@ if( $is_allowedToEdit )
 
 }
 
+if( $cmd == 'rqView' )
+{
+	$dialogBox .= '<strong>'.$conference->getTitle().'</strong>' . "\n"
+	.	 '<blockquote>'.$conference->getDescription().'</blockquote>' . "\n";
+	
+	if( $conference->startTime < ( time() - $conference->duration*3600 ) )
+	{
+		// conference has ended
+		$dialogBox .= '<center>'.get_lang('Conference is finished and closed').'</center>' . "\n";
+	}
+	else
+	{
+		//TODO open in other window or popup?
+		$dialogBox .= '<center><a href="'.$conference->buildUrl().'">'.get_lang('Enter conference').'</a></center>' . "\n";
+	}
+}
 
 //-- prepare list to display
 $conferenceListArray = $conferenceList->load();
@@ -375,21 +391,25 @@ if( $is_allowedToEdit )
 echo '</tr>' . "\n"
 .    '</thead>' . "\n";
 
-echo '<tbody>' . "\n";
+$displayedConfCount = 0;
 
 if( !empty($conferenceListArray) && is_array($conferenceListArray) )
 { 
+	echo '<tbody>' . "\n";
+	
     foreach( $conferenceListArray as $aConference )
     {
         // do not display to student if conf is not visible
         if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) break;
         
+		$displayedConfCount++;
+		
         echo '<tr align="center"' . (($aConference['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
         
         // title
         // TODO : add link to join conference
         echo '<td align="left">'
-        .    '<a href="index.php?cmd=rqEdit&amp;confId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
+        .    '<a href="index.php?cmd=rqView&amp;confId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
         .    htmlspecialchars($aConference['title'])
         .    '</a>' . "\n"
         .    '</td>';
@@ -402,7 +422,7 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
         
         // duration
         echo '<td>'
-        .    get_lang("%duration hours", array("%duration" => htmlspecialchars($aConference['duration'])))
+        .    get_lang("%duration hour(s)", array("%duration" => htmlspecialchars($aConference['duration'])))
         .    '</td>';
         
         if( $is_allowedToEdit )
@@ -417,7 +437,7 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
             // delete
             // TODO add js confirmation
             echo '<td>' . "\n"
-            .    '<a href="index.php?cmd=exDelete&amp;confId=' . $aConference['id'] . '">' . "\n"
+            .    '<a href="index.php?cmd=rqDelete&amp;confId=' . $aConference['id'] . '">' . "\n"
             .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
@@ -443,9 +463,11 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
 
         echo '</tr>' . "\n\n";
     }
+	
     echo '</tbody>' . "\n";
 }
-else
+
+if( $displayedConfCount == 0 )
 {
     echo '<tfoot>' . "\n"
     .    '<tr>' . "\n"
@@ -453,6 +475,8 @@ else
     .    '</tr>' . "\n"
     .    '</tfoot>' . "\n";
 }
+
+echo '</table>' . "\n";
 
 include  get_path('includePath') . '/claro_init_footer.inc.php';
 
