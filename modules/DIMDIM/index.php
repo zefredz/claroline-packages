@@ -338,9 +338,9 @@ if( $cmd == 'rqView' )
 	if( $is_allowedToEdit )
 	{
 		// teacher
-		$dialogBox .= '<a href="'.$conference->buildUrl(true).'">'.('Join conference as speaker').'</a>'
+		$dialogBox .= '<a href="'.$conference->buildUrl(true).'" target="_blank">'.('Join conference as administrator').'</a>'
 		.	 '&nbsp;|&nbsp;'
-		.	 '<a href="'.$conference->buildUrl().'">'.('Join conference as attendee').'</a>' . "\n";
+		.	 '<a href="'.$conference->buildUrl().'" target="_blank">'.('Join conference as attendee').'</a>' . "\n";
 	}
 	elseif( time() < $conference->startTime )
 	{
@@ -356,7 +356,7 @@ if( $cmd == 'rqView' )
 	else
 	{
 		// conference is available to students
-		$dialogBox .= '<a href="'.$conference->buildUrl().'">'.get_lang('Join conference').'</a>' . "\n";
+		$dialogBox .= '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference').'</a>' . "\n";
 	}
 }
 
