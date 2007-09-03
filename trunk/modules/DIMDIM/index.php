@@ -334,7 +334,6 @@ if( $cmd == 'rqView' )
 	$dialogBox .= '<strong>'.$conference->getTitle().'</strong>' . "\n"
 	.	 '<blockquote>'.$conference->getDescription().'</blockquote>' . "\n";
 
-	//TODO open in other window or popup?
 	if( $is_allowedToEdit )
 	{
 		// teacher
@@ -348,9 +347,9 @@ if( $cmd == 'rqView' )
 		$dialogBox .= get_lang('Conference is not yet available.  Will start on %startTime',
 							array('%startTime' => claro_disp_localised_date($dateTimeFormatLong, $conference->getStartTime()))) . "\n";
 	}
-	elseif( $conference->startTime < ( time() - $conference->duration*3600 ) )
+	elseif( $conference->startTime < ( time() - ( $conference->duration + 1 ) * 3600 ) )
 	{
-		// conference has ended
+		// conference has ended (startTime + duration + 1 hour)
 		$dialogBox .= get_lang('Conference is finished and closed') . "\n";
 	}
 	else
