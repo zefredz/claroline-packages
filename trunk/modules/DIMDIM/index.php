@@ -13,7 +13,7 @@
  * @author Sebastien Piraux
  *
  */
- 
+
 $tlabelReq = 'DIMDIM';
 
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
@@ -42,7 +42,7 @@ require_once get_path('incRepositorySys') . '/lib/form.lib.php';
 /*
  * init request vars
  */
- 
+
 $acceptedCmdList = array('rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exInvisible', 'rqView');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
@@ -55,7 +55,7 @@ else                                                                  $confId = 
  * init other vars
  */
 
-$conference = new conference(); 
+$conference = new conference();
 
 if( !is_null($confId) )
 {
@@ -81,7 +81,7 @@ $dialogBox = '';
 if( $is_allowedToEdit )
 {
     if( $cmd == 'exEdit' )
-    {       
+    {
     	$conference->setTitle($_REQUEST['title']);
     	$conference->setDescription($_REQUEST['description']);
     	$conference->setWaitingArea($_REQUEST['waitingArea']);
@@ -89,7 +89,7 @@ if( $is_allowedToEdit )
     	$conference->setDuration($_REQUEST['duration']);
     	$conference->setType($_REQUEST['type']);
     	$conference->setAttendeeMikes($_REQUEST['attendeeMikes']);
-    	$conference->setNetwork($_REQUEST['network']);   	
+    	$conference->setNetwork($_REQUEST['network']);
     	$conference->setStartTime(mktime($_REQUEST['startHour'],$_REQUEST['startMinute'],0,$_REQUEST['startMonth'],$_REQUEST['startDay'],$_REQUEST['startYear']) );
 
     	if( $conference->validate() )
@@ -119,11 +119,11 @@ if( $is_allowedToEdit )
             {
                 $dialogBox .= '<p>' . get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) . '</p>';
             }
-            
+
             if( claro_failure::get_last_failure() == 'conference_invalid_date' )
             {
                 $dialogBox .= '<p>' . get_lang('Date is in the past') . '</p>';
-            }            
+            }
             $cmd = 'rqEdit';
         }
     }
@@ -167,7 +167,7 @@ if( $is_allowedToEdit )
         // maximum users
 
         $dialogBox .= '<label for="label_max_users"  >'.get_lang('Maximum users').'</label><br />' . "\n" ;
-       
+
         // display select box with accepted value
 
         $maxUserValueList = array('20', '40', '60', '80', '100', '200', '300', '400', '500');
@@ -189,7 +189,7 @@ if( $is_allowedToEdit )
         $dialogBox .= '</select><br />' . "\n";
 
         // duration in hours
-        
+
         $dialogBox .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
 
         $durationValueList = array('1','2','3','4','5');
@@ -211,7 +211,7 @@ if( $is_allowedToEdit )
         $dialogBox .= '</select><br />' . "\n";
 
         // type video and audio or audio only, default is audio
-        
+
         $dialogBox .= '<label for="label_type"  >'.get_lang('Type').'</label><br />' . "\n" ;
 
         $typeValueList = array('AUDIO' => get_lang('Audio') , 'VIDEO' => get_lang('Audio/Video'));
@@ -233,7 +233,7 @@ if( $is_allowedToEdit )
         $dialogBox .= '</select><br />' . "\n";
 
         // attendee Mikes
-        
+
         $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
 
         $attendeeMikesValueList = array('1','2','3','4','5');
@@ -273,12 +273,12 @@ if( $is_allowedToEdit )
             }
         } // end foreach
 
-        $dialogBox .= '</select><br />' . "\n";        
+        $dialogBox .= '</select><br />' . "\n";
 
         // startTime
-        $dialogBox .= get_lang('Start date') . '<br />' . "\n" 
-        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long') 
-        . ' - ' 
+        $dialogBox .= get_lang('Start date') . '<br />' . "\n"
+        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long')
+        . ' - '
         . claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
     	. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
 
@@ -333,16 +333,30 @@ if( $cmd == 'rqView' )
 {
 	$dialogBox .= '<strong>'.$conference->getTitle().'</strong>' . "\n"
 	.	 '<blockquote>'.$conference->getDescription().'</blockquote>' . "\n";
-	
-	if( $conference->startTime < ( time() - $conference->duration*3600 ) )
+
+	//TODO open in other window or popup?
+	if( $is_allowedToEdit )
+	{
+		// teacher
+		$dialogBox .= '<a href="'.$conference->buildUrl(true).'">'.('Join conference as speaker').'</a>'
+		.	 '&nbsp;|&nbsp;'
+		.	 '<a href="'.$conference->buildUrl().'">'.('Join conference as attendee').'</a>' . "\n";
+	}
+	elseif( time() < $conference->startTime )
+	{
+		// conference not yet available
+		$dialogBox .= get_lang('Conference is not yet available.  Will start on %startTime',
+							array('%startTime' => claro_disp_localised_date($dateTimeFormatLong, $conference->getStartTime()))) . "\n";
+	}
+	elseif( $conference->startTime < ( time() - $conference->duration*3600 ) )
 	{
 		// conference has ended
-		$dialogBox .= '<center>'.get_lang('Conference is finished and closed').'</center>' . "\n";
+		$dialogBox .= get_lang('Conference is finished and closed') . "\n";
 	}
 	else
 	{
-		//TODO open in other window or popup?
-		$dialogBox .= '<center><a href="'.$conference->buildUrl().'">'.get_lang('Enter conference').'</a></center>' . "\n";
+		// conference is available to students
+		$dialogBox .= '<a href="'.$conference->buildUrl().'">'.get_lang('Join conference').'</a>' . "\n";
 	}
 }
 
@@ -376,7 +390,7 @@ echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing=
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
 .    '<th>' . get_lang('Conference') . '</th>' . "\n"
-.    '<th>' . get_lang('Date') . '</th>' . "\n"    
+.    '<th>' . get_lang('Date') . '</th>' . "\n"
 .    '<th>' . get_lang('Duration') . '</th>' . "\n";
 
 if( $is_allowedToEdit )
@@ -394,18 +408,18 @@ echo '</tr>' . "\n"
 $displayedConfCount = 0;
 
 if( !empty($conferenceListArray) && is_array($conferenceListArray) )
-{ 
+{
 	echo '<tbody>' . "\n";
-	
+
     foreach( $conferenceListArray as $aConference )
     {
         // do not display to student if conf is not visible
         if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) break;
-        
+
 		$displayedConfCount++;
-		
+
         echo '<tr align="center"' . (($aConference['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
-        
+
         // title
         // TODO : add link to join conference
         echo '<td align="left">'
@@ -413,18 +427,18 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
         .    htmlspecialchars($aConference['title'])
         .    '</a>' . "\n"
         .    '</td>';
-        
-        
-        // startTime        
+
+
+        // startTime
         echo '<td>'
         .    claro_disp_localised_date($dateTimeFormatLong, $aConference['startTime'])
         .    '</td>';
-        
+
         // duration
         echo '<td>'
         .    get_lang("%duration hour(s)", array("%duration" => htmlspecialchars($aConference['duration'])))
         .    '</td>';
-        
+
         if( $is_allowedToEdit )
         {
             // edit
@@ -463,7 +477,7 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
 
         echo '</tr>' . "\n\n";
     }
-	
+
     echo '</tbody>' . "\n";
 }
 
