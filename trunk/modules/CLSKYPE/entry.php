@@ -15,6 +15,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 if( claro_is_in_a_course() )
 {
+    add_module_lang_array('CLSKYPE');
+
     include_once get_module_path('CLSKYPE') . '/lib/skype.status.class.php';
 
 
