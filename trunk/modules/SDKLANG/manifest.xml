@@ -1,0 +1,11 @@
+<module>
+    <label>SDKLANG</label>
+    <name>Translation Tools for Claroline</name>
+    <type>admin</type>
+    <description>Extract translation, build complete and missing, translate missing, ...</description>
+    <version>0.1</version>
+    <author>
+      <name>Mathieu Laurent</name>
+      <email>mathieu@claroline.net</email>
+    </author>
+</module>
