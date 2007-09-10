@@ -21,6 +21,8 @@ if ( !claro_is_in_a_course() && !claro_is_allowed_to_edit() )
     claro_die( get_lang( "Not allowed" ) );
 }
 
+add_module_lang_array('CLSKYPE');
+
 // Include libraries
 require get_path('includePath') . '/lib/embed.lib.php';
 include_once get_module_path('CLSKYPE') . '/lib/skype.status.class.php';
@@ -92,7 +94,7 @@ $html .= '<form action"'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
 .    '<input type="text" name="skypeName" value="' . $skypeStatusNotifier->getSkypeName() . '" />' . "\n"
 .    '<p><small>' . get_lang('Leave empty to deactivate status notifier.') . '</small></p>' . "\n"
 .    '<p><small>' . get_lang('Do not forget to allow your status to be shown from your Skype client.') . '</small><br />'
-.    '<img src="'.get_module_url('CLSKYPE').'/img/privacy_shot" alt="'.get_lang('Skype options, Privacy panel.').'" /></p>' . "\n"
+.    '<img src="'.get_module_url('CLSKYPE').'/img/privacy_shot.jpg" alt="'.get_lang('Skype options, Privacy panel.').'" /></p>' . "\n"
 .    '<input type="submit" value="'.get_lang('Ok').'" />' . "\n"
 .    '</form>' . "\n\n";
 
