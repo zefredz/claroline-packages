@@ -85,7 +85,7 @@ claro_set_display_mode_available(true);
 $is_allowedToEdit = claro_is_allowed_to_edit();
 $user_id = claro_get_current_user_id();
 
-$dialogBox = '';
+$dialogBox = new DialogBox();
 
 /*
  * Admin only commands
@@ -105,7 +105,7 @@ if( $is_allowedToEdit )
         // check if something has been uploaded
         if ( !isset($_FILES['uploadedPackage']['name']) )
         {
-            $dialogBox .= get_lang('Error : no file uploaded');
+            $dialogBox->error( get_lang('Error : no file uploaded') );
         }
         else
         {
@@ -113,14 +113,14 @@ if( $is_allowedToEdit )
 
             if( $scormImporter->import() )
             {
-                $dialogBox .= '<p><strong>' . get_lang('Import done') . '</strong></p>' . "\n";
+                $dialogBox->success('<strong>' . get_lang('Import done') . '</strong>');
             }
             else
             {
-                $dialogBox .= '<p><strong>' . get_lang('Import failed') . '</strong></p>' . "\n";
+                $dialogBox->error('<strong>' . get_lang('Import failed') . '</strong>');
                 $cmd = 'rqImport';
             }
-            $dialogBox .= '<p>' . $scormImporter->backlog->output() . '</p>' . "\n";
+            $dialogBox->debug($scormImporter->backlog->output());
         }
 
     }
@@ -135,7 +135,7 @@ if( $is_allowedToEdit )
 		$courseDir   = claro_get_course_path() . '/scormPackages/';
 		$baseWorkDir = get_path('coursesRepositorySys').$courseDir;
 
-        $dialogBox .= "\n\n"
+        $dialogBox->form("\n\n"
         .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
         .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
         .    claro_form_relay_context()
@@ -149,31 +149,31 @@ if( $is_allowedToEdit )
         .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
         .    claro_html_button('index.php', get_lang('Cancel'))
-        .    '</form>' . "\n"
-        ;
+        .    '</form>' . "\n");
     }
 
     if( $cmd == 'exDelete' )
     {
     	if( $path->delete() )
     	{
-    		$dialogBox .= get_lang('Path succesfully deleted');
+    		$dialogBox->success( get_lang('Path succesfully deleted') );
     	}
     	else
     	{
-    		$dialogBox .= get_lang('Fatal error : cannot delete path');
+    		$dialogBox->error( get_lang('Fatal error : cannot delete path') );
     	}
     }
 
     if( $cmd == 'rqDelete' )
     {
-        $dialogBox .= get_lang('Are you sure to delete learning path "%pathTitle" ?', array('%pathTitle' => htmlspecialchars($path->getTitle()) ));
-
-        $dialogBox .= '<p>'
+        $htmlConfirmDelete = get_lang('Are you sure to delete learning path "%pathTitle" ?', array('%pathTitle' => htmlspecialchars($path->getTitle()) ))
+		.	 '<br /><br />'
         .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pathId='.$pathId.'">' . get_lang('Yes') . '</a>'
         .    '&nbsp;|&nbsp;'
         .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
-        .    '</p>' . "\n";
+        ;
+
+        $dialogBox->question( $htmlConfirmDelete );
     }
 
     if( $cmd == 'exLock' )
@@ -242,7 +242,8 @@ include  get_path('includePath') . '/claro_init_header.inc.php';
 
 echo claro_html_tool_title($nameTools);
 
-if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
+
+echo $dialogBox->render();
 
 $cmdMenu = array();
 if($is_allowedToEdit)

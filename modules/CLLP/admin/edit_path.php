@@ -101,7 +101,7 @@ else
 }
 
 
-$dialogBox = '';
+$dialogBox = new DialogBox();
 
 /*
  * Admin only page
@@ -132,16 +132,16 @@ if( $cmd == 'exEdit' )
 
 	if( $path->validate() )
     {
-        if( $path->save() )
+        if( $insertedId = $path->save() )
         {
         	if( is_null($pathId) )
             {
-                $dialogBox .= get_lang('Empty learning path successfully created');
+                $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
             }
             else
             {
-            	$dialogBox .= get_lang('Learning path successfully modified');
+            	$dialogBox->success( get_lang('Learning path successfully modified') );
             }
         }
         else
@@ -155,7 +155,7 @@ if( $cmd == 'exEdit' )
     {
         if( claro_failure::get_last_failure() == 'path_no_title' )
         {
-            $dialogBox .= '<p>' . get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) . '</p>';
+            $dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
         }
         $cmd = 'rqEdit';
     }
@@ -164,18 +164,20 @@ if( $cmd == 'exEdit' )
 if( $cmd == 'rqEdit' )
 {
 	// show form
-    $dialogBox .= "\n\n";
+    $htmlEditForm = "\n\n";
 
     if( !is_null($pathId) )
     {
-    	$dialogBox .= '<strong>' . get_lang('Edit learning path settings') . '</strong>' . "\n";
+    	$htmlEditForm .= '<strong>' . get_lang('Edit learning path settings') . '</strong>' . "\n";
+    	$cancelUrl = $_SERVER['PHP_SELF'] . '?pathId='.$pathId;
     }
     else
     {
-    	$dialogBox .= '<strong>' . get_lang('Create a new learning path') . '</strong>' . "\n";
+    	$htmlEditForm .= '<strong>' . get_lang('Create a new learning path') . '</strong>' . "\n";
+    	$cancelUrl = get_module_url('CLLP') . '/index.php';
     }
 
-    $dialogBox .= '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
+    $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
     .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
     .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
@@ -206,9 +208,11 @@ if( $cmd == 'rqEdit' )
 
     .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
     .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
-    .    claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
+    .    claro_html_button($cancelUrl, get_lang('Cancel'))
     .    '</form>' . "\n"
     ;
+
+    $dialogBox->form($htmlEditForm);
 
 }
 
@@ -239,11 +243,11 @@ if( $cmd == 'exAddModule' )
             {
                 if( $addedItem->save() )
                 {
-                    $dialogBox .= get_lang('Module "%moduleTitle" successfully added', array('%moduleTitle' => $title) ) . '<br />' . "\n";
+                    $dialogBox->sucess( get_lang('Module "%moduleTitle" successfully added', array('%moduleTitle' => $title) ) );
                 }
                 else
                 {
-                    $dialogBox .= get_lang('Fatal error, cannot save "%moduleTitle"', array('%moduleTitle' => $title) );
+                    $dialogBox->error( get_lang('Fatal error, cannot save "%moduleTitle"', array('%moduleTitle' => $title) ) );
                 }
             }
 
@@ -252,7 +256,7 @@ if( $cmd == 'exAddModule' )
     }
     else
     {
-    	$dialogBox .= '<p>' . get_lang('You didn\'t choose any ressource to add as module.') . '</p>';
+    	$dialogBox->error( get_lang('You didn\'t choose any ressource to add as module.') );
     	$cmd = 'rqAddModule';
     }
 }
@@ -265,7 +269,7 @@ if( $cmd == 'rqAddModule' )
     linker_html_head_xtra();
 
 
-    $dialogBox .= "\n\n"
+    $htmlAddModule = "\n\n"
     .    '<strong>' . get_lang('Add module(s)') . '</strong>' . "\n"
     .    '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context() . "\n"
@@ -275,21 +279,22 @@ if( $cmd == 'rqAddModule' )
     if( claro_is_jpspan_enabled() )
     {
         linker_set_local_crl( isset ($_REQUEST['id']) );
-        $dialogBox .= linker_set_display();
+        $htmlAddModule .= linker_set_display();
 
-        $dialogBox .= '<input type="submit" onclick="linker_confirm();" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
+        $htmlAddModule .= '<input type="submit" onclick="linker_confirm();" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
     }
     else
     {
-        if(isset($_REQUEST['id'])) $dialogBox .= linker_set_display($_REQUEST['id']);
-        else                       $dialogBox .= linker_set_display();
+        if(isset($_REQUEST['id'])) $htmlAddModule .= linker_set_display($_REQUEST['id']);
+        else                       $htmlAddModule .= linker_set_display();
 
-        $dialogBox .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
+        $htmlAddModule .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
     }
 
-    $dialogBox .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
-    .    '</form>' . "\n"
-    ;
+    $htmlAddModule .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
+    .    '</form>' . "\n";
+
+    $dialogBox->form($htmlAddModule);
 }
 
 if( $cmd == 'exAddContainer' )
@@ -303,23 +308,23 @@ if( $cmd == 'exAddContainer' )
     {
         if( $newItemId = $item->save() )
         {
-            $dialogBox .= get_lang('Chapter successfully created');
+            $dialogBox->success( get_lang('Chapter successfully created') );
         }
         else
         {
-            $dialogBox .= get_lang('Fatal error : cannot save');
+            $dialogBox->error( get_lang('Fatal error : cannot save') );
         }
     }
     else
     {
-    	$dialogBox .= '<p>' . get_lang('Missing field : title is mandatory.') . '</p>';
+    	$dialogBox->error( get_lang('Missing field : title is mandatory.') );
     	$cmd = 'rqAddContainer';
     }
 }
 
 if( $cmd == 'rqAddContainer' )
 {
-    $dialogBox .= "\n\n"
+    $htmlAddContainer = "\n\n"
     .    '<strong>' . get_lang('Add a chapter') . '</strong>' . "\n"
     .    '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
@@ -331,8 +336,9 @@ if( $cmd == 'rqAddContainer' )
     .    '<input type="hidden" name="cmd" value="exAddContainer" />' . "\n"
     .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
     .    claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
-    .    '</form>' . "\n"
-    ;
+    .    '</form>' . "\n";
+
+    $dialogBox->form( $htmlAddContainer );
 }
 
 
@@ -340,23 +346,25 @@ if( $cmd == 'exDelete' )
 {
 	if( $item->delete() )
 	{
-		$dialogBox .= get_lang('Item succesfully deleted');
+		$dialogBox->success( get_lang('Item succesfully deleted') );
 	}
 	else
 	{
-		$dialogBox .= get_lang('Fatal error : cannot delete item');
+		$dialogBox->error( get_lang('Fatal error : cannot delete item') );
 	}
 }
 
 if( $cmd == 'rqDelete' )
 {
-    $dialogBox .= get_lang('Are you sure to delete learning path "%pathTitle" ?', array('%pathTitle' => htmlspecialchars($item->getTitle()) ));
 
-    $dialogBox .= '<p>'
+	$htmlConfirmDelete = get_lang('Are you sure to delete item "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+	.	 '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'
-    .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
-    .    '</p>' . "\n";
+    .    '<a href="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'">' . get_lang('No') . '</a>'
+    ;
+
+    $dialogBox->question( $htmlConfirmDelete );
 }
 
 if( $cmd == 'exMove' )
@@ -373,11 +381,11 @@ if( $cmd == 'exMove' )
     {
         if( $item->save() )
         {
-            $dialogBox .= get_lang('Item succesfully moved');
+            $dialogBox->success( get_lang('Item succesfully moved') );
         }
         else
         {
-            $dialogBox .= get_lang('Fatal error : cannot move item');
+            $dialogBox->error( get_lang('Fatal error : cannot move item') );
         }
     }
 
@@ -399,7 +407,7 @@ if( $cmd == 'rqMove' )
     array_unshift($containerListTree,$topElement);
 
     // show form
-    $dialogBox .= "\n\n"
+    $htmlRqMove = "\n\n"
     .    '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'."\n"
@@ -410,8 +418,9 @@ if( $cmd == 'rqMove' )
     .    '<input type="hidden" name="cmd" value="exMove" />' . "\n"
     .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
     .    claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
-    .    '</form>' . "\n"
-    ;
+    .    '</form>' . "\n";
+
+    $dialogBox->form( $htmlRqMove );
 }
 
 if( $cmd == 'exMoveUp' )
@@ -472,7 +481,7 @@ include get_path('includePath') . '/claro_init_header.inc.php';
 
 echo claro_html_tool_title($toolTitle);
 
-if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
+echo $dialogBox->render();
 
 $cmdMenu = array();
 // do not display commands to student or when creating a new path (rqEdit)
