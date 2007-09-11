@@ -13,29 +13,24 @@
  * @author Sebastien Piraux
  *
  */
- 
+
 $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
-
-/*
- * Shared libraries
- */
-include_once get_path('incRepositorySys') . '/lib/embed.lib.php';
 
 
 /*
  * Output
  */
+$claroline->setDisplayType( CL_PAGE );
 
 $interbredcrump[] = array ('url' => '../index.php', 'name' => get_lang('Learning path list'));
 
 $nameTools = get_lang('Learning path');
 
+$claroline->display->body->hideClaroBody();
+$claroline->display->footer->hide();
+$claroline->display->body->setContent(''); // no content
 
-$display = new ClarolineScriptEmbed();
-$display->hideClaroBody();
-$display->hideFooter();
-$display->setContent(''); // no content
-$display->output();
+echo $claroline->display->render();
 ?>

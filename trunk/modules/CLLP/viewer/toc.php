@@ -63,10 +63,7 @@ $htmlHeaders .= '<!--[if lt IE 7]>' . "\n"
 /*
  * Output
  */
-
-$display = new ClarolineScriptEmbed();
-$display->frameMode();
-$display->hideClaroBody();
+$claroline->setDisplayType( CL_PAGE );
 
 $html = '';
 
@@ -121,8 +118,14 @@ $html .= "\n"
 
 
 // output
-$display->setContent($html);
+$claroline->display->banner->hide();
+$claroline->display->body->hideClaroBody();
+$claroline->display->footer->hide();
 
-$display->addHtmlHeader($htmlHeaders);
-$display->output();
+$claroline->display->body->setContent($html);
+
+$claroline->display->header->addHtmlHeader($htmlHeaders);
+
+
+echo $claroline->display->render();
 ?>
