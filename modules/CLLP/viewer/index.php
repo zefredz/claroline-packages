@@ -30,7 +30,6 @@ if ( !claro_is_tool_allowed() )
 	}
 }
 
-
 /*
  * Tool libraries
  */
@@ -41,7 +40,6 @@ require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 /*
  * Shared libraries
  */
-include_once get_path('incRepositorySys') . '/lib/embed.lib.php';
 require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
 
 /*
@@ -90,6 +88,7 @@ $_SESSION['thisAttempt'] = serialize($thisAttempt);
 /*
  * Output
  */
+$claroline->setDisplayType( CL_FRAMESET );
 
 
 // prepare html header
@@ -135,8 +134,8 @@ $innerFrameset = new ClaroFrameSet();
 $innerFrameset->addCol($tocFrame, '200');
 $innerFrameset->addCol($contentFrame, '*');
 
-// outer frameset that contains header frame and inner frameset
-$outerFrameset = new ClaroFrameset();
+
+
 
 // header frame
 $headerFrame = new ClaroFrame('lp_header', 'header.php?pathId='.$pathId);
@@ -145,12 +144,12 @@ $headerFrame->noFrameBorder();
 // add header frame and inner frameset
 $headerFrameSize = $path->isFullScreen()?'0':'150';
 
-$outerFrameset->addRow($headerFrame, $headerFrameSize);
-$outerFrameset->addRow($innerFrameset, '*');
+$claroline->display->addRow($headerFrame, $headerFrameSize);
+$claroline->display->addRow($innerFrameset, '*');
 
-$outerFrameset->addHtmlHeader($htmlHeaders);
+$claroline->display->header->addHtmlHeader($htmlHeaders);
 // output outer frameset with inner frameset within in embedded mode
-$outerFrameset->output();
+$claroline->display->output();
 
 
 ?>
