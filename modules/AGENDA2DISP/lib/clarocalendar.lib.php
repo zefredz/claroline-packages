@@ -16,6 +16,9 @@
  * @autor Michel Carbone <michel_c12@yahoo.fr>
  */
 
+// TODO : remake the month view from the original calendar of Claroline : use of the exacts
+//        CSS tags and i.e. highlight for the current date
+
 require_once 'claroevent.lib.php';
 
 
@@ -77,24 +80,24 @@ class monthView
             .'&amp;refYear='.($refMonth==12 ? $refYear+1 : $refYear)  . '&amp;cmd=monthview' ;
 
         echo  '<table class="claroTable" border="1" '.$tableWidth.'>'. "\n"
-            . '<tr>'  . "\n";
+            . '<tr class="superHeader">'  . "\n";
        
 
         if ($view != 'yearview') 
         {
-            echo '<th class="superHeader" valign="top"><center>'
+            echo '<th><center>'
             .    '<a href="' . $backwardsURL . '">&lt;&lt;</a>'
             .    '</center>'
             .    '</th>';
         }
 
-        echo '<th  class="superHeader" colspan="' . ( ($view != 'yearview') ? '5' : '7' ) . '"'
+        echo '<th colspan="' . ( ($view != 'yearview') ? '5' : '7' ) . '"'
             . ' valign="top"><center>' . claroDate::getMonthNameFromTimeStamp($monthStartDate).' '.$refYear.'</center></th>'. "\n";
         
 
         if ($view!='yearview')
         {
-            echo '<th class="superHeader" valign="top"><center>'
+            echo '<th><center>'
             .    '<a href="' . $forewardsURL . '">&gt;&gt;</a>'
             .    '</center>'
             .    '</th>';
@@ -104,13 +107,15 @@ class monthView
         
         $dayNameFormat = ( $format == 'SHORT' ) ?  CAL_DOW_SHORT : CAL_DOW_LONG;
         $dayNameList = claroDate::getDayNameList($dayNameFormat);
-
+        
+        echo "<tr class=\"headerX\">";
+        
         for ($i=0; $i < 7; $i ++) // HEADER
         {
-            echo ('<th class="superHeader" valign="top">' . $dayNameList[$i] . '</th>');
+            echo ('<th width="14%">' . $dayNameList[$i] . '</th>');
         }
 
-
+        echo '</tr>';
 
         $startDayCountDisplay = false;
         $dayNumber            = false;
@@ -120,7 +125,7 @@ class monthView
         {
             $nbrweekinmonth++;
            
-            echo '<tr class="headerX" valign="top">';
+            echo '<tr>'."\n";
    
             for ($i = 0; $i < 7; $i++)
             {
@@ -158,8 +163,15 @@ class monthView
                     }
                     else
                     {
-                        $content = '<table class="jour"><tr style="valign:top">';
-                        $content .= '<br><b>'.$dayNumber.'</b></tr>';
+                        $content = '<table>';
+                        
+                        $content .='<tr valign="top"';
+                        $content .= 'class="';
+                        if($i<5){
+                            $content .= 'workingWeek">';
+                            }
+                            else $content .= 'weekEnd">';
+                        $content .= '<br><b>'. $dayNumber .'</b></tr></td>';
                         if(isset($dayEventList)){
                              foreach($dayEventList as $thisEvent)
                              {
@@ -177,7 +189,7 @@ class monthView
                 {
                     $content = '&nbsp;';
                 }
-                echo '<td width="14%" valign="top">'. $content .'</td>';
+                echo '<td width="14%">'. $content .'</td>'."\n";
             }
             echo '</tr>' . "\n";
         }
