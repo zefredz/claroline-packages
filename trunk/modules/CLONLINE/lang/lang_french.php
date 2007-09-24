@@ -12,9 +12,9 @@
  * @author Claro Team <cvs@claroline.net>
  *
  */
-$_lang['User(s) online'] = 'Utilisateurs connectŽés';
+$_lang['User(s) online'] = 'Utilisateurs connectés';
 $_lang['List of active users for the last %time minutes :'] = 'Liste des utilisateurs actifs depuis au moins %time minutes :';
 $_lang['1 user connected'] = '1 utilisateur en ligne';
 $_lang['%countOfUsers users connected'] = '%countOfUsers utilisateurs en ligne';
-$_lang['No user connected'] = 'Aucun utilisateur connectéŽ';
+$_lang['No user connected'] = 'Aucun utilisateur connecté';
 ?>
