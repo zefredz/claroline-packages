@@ -67,15 +67,15 @@ echo $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
 
 if( get_conf('showUserId') ) echo '<th><a href="' . $sortUrlList['user_id'] . '">' .  get_lang('No.') . '</a></th>' . "\n";
 
-echo '<th><a href="' . $sortUrlList['lastname'] . '">' .  get_lang('Last Name')    . '</a></th>' . "\n"
-.    '<th><a href="' . $sortUrlList['firstname'] . '">' .  get_lang('First Name')   . '</a></th>' . "\n";
+echo '<th><a href="' . $sortUrlList['lastname'] . '">' .  get_lang('Last name')    . '</a></th>' . "\n"
+.    '<th><a href="' . $sortUrlList['firstname'] . '">' .  get_lang('First name')   . '</a></th>' . "\n";
 
 if( get_conf('showEmail') ) echo '<th><a href="' . $sortUrlList['email'] . '">' .  get_lang('Email') . '</a></th>' . "\n";
 
 if( get_conf('showStatus') ) echo '<th><a href="' . $sortUrlList['isCourseCreator'] . '">' .  get_lang('Status') . '</a></th>' . "\n";
 
 
-echo '</tr>' . "\n" 
+echo '</tr>' . "\n"
 .    '</thead>' . "\n"
 .    '<tbody>' . "\n\n";
 
@@ -89,7 +89,7 @@ foreach($userList as $user)
     echo '<td>' . ( !empty($user['lastname'])?$user['lastname']:'&nbsp;')  . '</td>' . "\n";
     echo '<td>' . ( !empty($user['firstname'])?$user['firstname']:'&nbsp;')  . '</td>' . "\n";
 
-    if( get_conf('showEmail') ) 
+    if( get_conf('showEmail') )
     {
         if( !empty($user['email']) )
         {
@@ -100,16 +100,15 @@ foreach($userList as $user)
             echo '<td>-</td>' . "\n";
         }
     }
-    
-    if( get_conf('showStatus') ) echo '<td>' . ( $user['isCourseCreator']?get_lang('Course creator'):get_lang('User')) . '</td>' . "\n";    
-    
+
+    if( get_conf('showStatus') ) echo '<td>' . ( $user['isCourseCreator']?get_lang('Course creator'):get_lang('User')) . '</td>' . "\n";
+
     echo '</tr>' . "\n\n";
 }
 
 echo '</tbody>' . "\n"
 .    '</table>' . "\n"
-.    $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF'])
-;
+.    $myPager->disp_pager_tool_bar($_SERVER['PHP_SELF']);
 
 
 include $includePath . '/claro_init_footer.inc.php';
