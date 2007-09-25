@@ -3,7 +3,7 @@
     // vim: expandtab sw=4 ts=4 sts=4:
 
 	// protect file
-	if( count( get_included_files() ) == 1 )
+	if ( count( get_included_files() ) == 1 )
 	{
 		die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead');
 	}
@@ -22,77 +22,101 @@
      *
      * @author KOCH Gregory <gregk84@gate71.be>
      *
-     * @package CLVOC
+     * @package NETQUIZ
      */
 
 	 
-	 
-	 
-	//claro_sql_query_get_single_value => selectionne 1 valeur
-	//claro_sql_query_get_single_row => selectionne 1 ligne
-	//claro_sql_query_fetch_all_rows => selectionne toutes les lignes
-	 
+
 	
 	 
-
-class import 
+// class netquizInstaller
+class importYml 
 {
-		
 	
-	function getSearch()
+	//var $extractDirectory;
+	var $fileStruct;
+	/*
+	// extractDirectory
+	function setExtractDirectory($extractDirectory)
 	{
-    	return $this->search;
-	}
-	
-	function setSearch($search)
-	{
-		$this->search = $search;
+		$this->extractDirectory = $extractDirectory;
 	}	
-
-
 	
-	
-	
-	function searchText()
+	// vérifie si le zip decompressé contient 1 repertoire et 1 fichier xml
+	function chkFileStruct()
 	{
-
-		$tblNameList = array(
-			'glossary_words','glossary_word_definitions','glossary_definitions'
-		);
-				
-		$faqTables = get_module_course_tbl($tblNameList, claro_get_current_course_id());
-		        
-		$sql = "SELECT " . "\n"
-        . "W.id, " . "\n"
-        . "W.name, " . "\n"
-        . "WD.id, " . "\n"
-        . "WD.dictionaryId, " . "\n"
-        . "WD.definitionId, " . "\n"
-        . "WD.wordId, " . "\n"
-        . "D.id, " . "\n"
-        . "D.definition " . "\n"
-        . "FROM " . "\n"
-        . "`".$faqTables['glossary_words']."` AS W " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_word_definitions']."` AS WD " . "\n"
-        . "ON W.id = WD.wordId " . "\n"
-        . "INNER JOIN " . "\n"
-        . "`".$faqTables['glossary_definitions']."` AS D " . "\n"
-        . "ON WD.definitionId = D.id " . "\n"
-        . "WHERE W.name  " . "\n"
-        . "LIKE '%".$this->getSearch()."%' " . "\n"
-        ;
-                    
-		if ( false !== ($result = claro_sql_query_fetch_all_rows($sql)) )
+	
+		$file_struct = array();
+		$file_struct['path'] = '';
+		$file_struct['data'] = '';
+		$file_struct['xml'] = '';
+		
+		$handle = opendir( $this->extractDirectory );
+		
+		while ( false !== ( $file = readdir( $handle ) ) )
 		{
-			return $result;
+			
+			if ( $file != "." && $file != ".." && $file != "" && !preg_match('/^\./', $file) && $file != "__MACOSX" )
+			{ 
+				
+				$file_struct['path'] = $this->extractDirectory;
+				
+				if ( is_dir( $this->extractDirectory . '/' . $file ) 
+					&& empty( $file_struct['data'] ) )  
+				{
+					$file_struct['data'] = $file;
+				}
+				elseif ( is_file( $this->extractDirectory . '/' . $file ) 
+					&& empty( $file_struct['xml'] )
+					&& substr( $file, -4 ) == ".xml" ) 
+				{
+					$file_struct['xml'] = $file;
+				}
+
+			}
+			
+		}
+
+		closedir($handle);
+		
+		if ( !empty( $file_struct['path']) && !empty( $file_struct['data']) && !empty( $file_struct['xml']) )
+		{
+			return $file_struct;
 		}
 		else
-		{				
-			return claro_failure::set_failure('SEARCH_FAILED');
+		{
+			if ( empty( $file_struct['path']) )
+			{
+				pushClaroMessage("invalid netquiz archive : missing path");
+			}
+			
+			if ( empty( $file_struct['data']) )
+			{
+				pushClaroMessage("invalid netquiz archive : missing dat");
+			}
+			
+			if ( empty( $file_struct['xml']) )
+			{
+				pushClaroMessage("invalid netquiz archive : missing xml");
+			}
+			
+			return false;
 		}
 		
-	}			
+	}
+	*/
+	// fileStruct
+	function setFileStruct($fileStruct)
+	{
+		$this->fileStruct = $fileStruct;
+	}
+
+	// vérifie si le fichier xmlest valide
+	function chkValidYml()
+	{
+		return true;
+    }	
+	
 	
 	
 }
