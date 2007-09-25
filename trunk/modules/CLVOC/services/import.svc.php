@@ -11,32 +11,41 @@
 // {{{ SCRIPT INITIALISATION
 { 
     // local variable initialisation
-    //$isAllowedToEdit = claro_is_allowed_to_edit();
+    $isAllowedToEdit = claro_is_allowed_to_edit();
     
     // set diplay mode
-    $dispPrintText              = false;
-    $dispPrintDict              = false;
-    $dispExportText             = false;
-    $dispExportDict             = false;
-    
-    // set service state
-    //$loadDictionary         = true;
-    
-    // set error variables
+    $dispToolBar            = true;
+    $dispDisplayForm        = true;
+    $dispImport             = false;
+        
+    // error dialog
     $dispError              = false; // display error box
     $fatalError             = false; // if set to true, the script ends after 
                                      // displaying the error
     $errorMsg = '';                  // error message to display
-    $dispErrorBoxBackButton = true;  // display back button on error
+    $dispErrorBoxBackButton = false; // display back button on error
     $err                    = '';    // error string
+    
+    // Success dialog
+    $dispSuccess            = false;
+    $dispSuccessBoxBackButton = false;
+    $successMsg             = '';
     
     // load modules and libraries
     require_once dirname(__FILE__) . '/../lib/glossary/dictionary.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/dictionarylist.class.php';
-    //require_once dirname(__FILE__) . '/../lib/print/print.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/text.class.php';
     require_once dirname(__FILE__) . '/../lib/glossary/highlighter.class.php';
     require_once dirname(__FILE__) . '/../lib/html/sanitizer.class.php';
+    require_once dirname(__FILE__) . '/../lib/import/fileuploader.lib.php';
+    require_once dirname(__FILE__) . '/../lib/import/import.class.php';
+    require_once dirname(__FILE__) . '/../lib/yml/yaml.lib.php';
+    
+    
+    //require_once get_path('includePath') . '/lib/file.lib.php';
+    require_once get_path('includePath') . '/lib/fileManage.lib.php';
+    //require_once get_path('includePath') . '/lib/fileDisplay.lib.php';
+    //require_once get_path('includePath') . '/lib/fileUpload.lib.php';
 }
 // }}}
     
@@ -53,249 +62,138 @@
 // {{{ CONTROLLER
 {    
     $allowedActions = array( 
-        'printText'
-        ,'printDict'
-        ,'exportText'
-        ,'exportDict'
+        'display',
+        'import'
     );
-    
-    $allowedFormat = array( 
-        'text'
-        ,'csv'
-        ,'yml'
-    );
-    
+        
     // get request variables
     $action = ( isset( $_REQUEST['action'] ) 
             && in_array( $_REQUEST['action'], $allowedActions ) )
         ? $_REQUEST['action']
-        : NULL
-        ;
-        
-    $format = ( isset( $_REQUEST['format'] ) 
-            && in_array( $_REQUEST['format'], $allowedFormat ) )
-        ? $_REQUEST['format']
-        : NULL
-        ;
-
-    $dictionaryId = isset( $_REQUEST['dictionaryId'] )
-        ? (int) $_REQUEST['dictionaryId']
-        : null
+        : 'display'
         ;
     
-    $rootId =  ( is_null( $dictionaryId ) )
-        ? 0
-        : $dictionaryId
-        ;
-        
-    $textId = isset( $_REQUEST['textId'] )
-        ? (int) $_REQUEST['textId']
-        : null
-        ;
-
-    if ( !is_null( $dictionaryId ) )
+    if( 'import' == $action )
     {
-        $dictionaryExists = $dictionaryList->dictionaryExists( $dictionaryId );
+        $dispDisplayForm = false;
+        $dispImport = true;
         
-        if ( $dictionaryExists )
+        // Validation du  fichier uploade
+        if( array_key_exists('frm_file',$_FILES) )
         {
-            $dictionary->setId( $dictionaryId );
-            $dictionaryInfo = $dictionaryList->getDictionaryInfo( $dictionaryId );
-        }
-        elseif ( $dictionaryId === 0 )
-        {
-            $dictionary->setId( $dictionaryId );
-            $dictionaryInfo = null;
-        }
-        else
-        {
-            // Make sure we cannot do anything else
-            $dictionaryInfo = null;
-            $dictionaryId = null;
-            $action = 'noAction';
-            
-            $err = 'Cannot find dictionary : %s'; 
-            $reason = 'invalid id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-            // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
-            
-            $dispError = true;
-            $fatalError = true;
-            $dispErrorBoxBackButton = false;
-        }
-    }
-    
-    // printText
-    if ( 'printText' == $action )
-    {
-        if ( !is_null( $textId ) )
-        {
-            $dispPrintText = true;
-            
-            $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
-            $glossaryText->setId($textId);
-            $glossaryText->load();
-            
-            $textTitle = $glossaryText->getTitle();
-            $content = $glossaryText->getContent();
-            $content = $san->sanitize( $content );
-            
-            $wordList = $glossaryText->getWordList();
-            $glossaryWord = $glossaryText->getGlossary();
-            
-            if (! empty( $wordList ) )
-            {
-                $callback = $_SERVER['PHP_SELF'] 
-                    . '?page=dict'
-                    . '&amp;action=showDefs'
-                    . (!is_null($dictionaryId)?'&amp;dictionaryId='.$dictionaryId:'')
-                    ;
-                    
-                $highlighter = new Glossary_Print_Highlighter;
-                $content = $highlighter->highlightList( $content
-                    , $wordList
-                    , $callback );
-            }
-        }
-        else
-        {
-            $dispError = true;
-            $err = 'Cannot load text : %s'; 
-            $reason = 'missing id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
-        }
-    }
-    
-    // printDict
-    if ( 'printDict' == $action )
-    {
-        if ( !is_null( $dictionaryId ) )
-        {
-            $list->setRootId( $rootId );
-            $dictionaryList = $list->getDictionaryList();
-            $dictionary->setId( $dictionaryId );
-            $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
-            $dict = $dictionary->getDictionary();
-            
-            if ( $connection->hasError() )
+            if( $_FILES['frm_file']['error'] == 4 )
             {
                 $dispError = true;
-                $fatalError = true;
-                
-                $err = 'Dictionary cannot be loaded : %s'; 
-                $reason = $connection->getError();
-                
-                $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+                $dispErrorBoxBackButton = true;
+                $errorMsg = "Vous n'avez pas sélectionné de fichier !" . "\n";
             }
             else
             {
-                $dispPrintDict = true;
-            }
-        }
-        else
-        {
-            $dispError = true;
-            $err = 'Cannot load dictionary : %s'; 
-            $reason = 'missing id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
-        }
-    }
-
-    // exportText
-    if ( 'exportText' == $action )
-    {
-        if ( !is_null( $textId ) )
-        {
-            $dispExportText = true;
-            
-            $glossaryText = new Glossary_Text( $connection, $GLOBALS['glossaryTables'] );
-            $glossaryText->setId($textId);
-            $glossaryText->load();
-            
-            $textTitle = $glossaryText->getTitle();
-            
-            $fileName = preg_replace('/\s+/', '_', $textTitle);
-
-            $content = $glossaryText->getContent();        
-            $content = $san->sanitize( $content );
-            $glossaryWord = $glossaryText->getGlossary();
-        }
-        else
-        {
-            $dispError = true;
-            $err = 'Cannot load text : %s'; 
-            $reason = 'missing id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
-        }
-    }
-        
-    // exportDict
-    if ( 'exportDict' == $action )
-    {
-        if ( !is_null( $dictionaryId ) )
-        {
-            
-            $list->setRootId( $rootId );
-            $dictionaryList = $list->getDictionaryList();
-            $dictionary->setId( $dictionaryId );
-            $dictionaryInfo = $list->getDictionaryInfo( $dictionaryId );
-            $dict = $dictionary->getDictionary();
-            
-            if ( $connection->hasError() )
-            {
-                $dispError = true;
-                $fatalError = true;
                 
-                $err = 'Dictionary cannot be loaded : %s'; 
-                $reason = $connection->getError();
-                
-                $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
-            }
-            else
-            {
-                $dispExportDict = true;
+                if( $_FILES['frm_file']['size'] > 0 )
+                {
+        			// Build archive in tmp course folder
+                    $tmpDirectory = get_path('rootSys') . get_conf('tmpPathSys', 'tmp') . 'yml';
+                    $tmpFileName = strtolower( $_FILES['frm_file']['name'] );
+                    $tmpPath = $tmpDirectory . '/' . $tmpFileName;
+
+        			// Create the temp dir if it doesn't exist
+                    if(!is_dir($tmpDirectory))
+                    {
+                        claro_mkdir($tmpDirectory, CLARO_FILE_PERMISSIONS, true);
+                    }
+
+                    // copie le fichier dans le repertoire => tmp/yml
+                    $uploader = new FileUploader( $_FILES['frm_file'] );
+               
+                    if ( $uploader->uploadFailed() )
+                    {
+                        $dispError = true;
+                        $dispErrorBoxBackButton = true;
+                        $errorMsg = $uploader->getFileUploadErrorMessage() . "\n";
+                        // supression du repertoire temporaire de telechargement du fichier yml
+                        claro_delete_file( $tmpDirectory );
+                    }
+                    else
+                    {
+                        if ( ! $uploader->moveToDestination( $tmpDirectory, $tmpFileName ) )
+                        {
+                            $dispError = true;
+                            $dispErrorBoxBackButton = true;
+                            $errorMsg = "Votre fichier YML n'a pas été déplacé !" . "\n";
+                            // supression du repertoire temporaire de telechargement du fichier yml
+                            claro_delete_file( $tmpDirectory );
+                        }
+                        else
+                        {
+                            // validation du fichier Yml
+                            $importYml = new importYml;
+                            if ( false === ( $importYml->chkValidYml() ) )
+                            {    						
+                                $dispError = true;
+                                $dispErrorBoxBackButton = true;
+                                $errorMsg = "Votre fichier YML n'est pas valide !" . "\n";
+                                // supression du repertoire temporaire de telechargement du fichier yml
+                                claro_delete_file( $tmpDirectory );
+                            }
+                            else
+                            {
+                                // Parsage du fichier Yml
+                                if( ! $yml = parse_yaml_file( $tmpPath ) )
+                                {
+                                    $dispError = true;
+                                    $dispErrorBoxBackButton = true;
+                                    $errorMsg = "Chargement du fichier YML non réussi !" . "\n";
+                                    // supression du repertoire temporaire de telechargement du fichier yml
+                                    claro_delete_file( $tmpDirectory );
+                                }
+                                else
+                                {
+                                    
+                                    // traitement du tableau
+                                    foreach( $yml as $dictImported )
+                                    {
+                                    
+                                        $name = $dictImported['Name'];
+                                        $description = $dictImported['Description'];
+                                        $content = $dictImported['Content'];
+                                        $words = $dictImported['Content'][0]['Word'];
+                                    
+                                    }
+                                    
+                                    
+                                    // importation dans la db
+                                    
+                                    $dispSuccess = true;
+                                    $dispSuccessBoxBackButton = true;
+                                    $successMsg = "L'importation du dictionnaire a réussi !" . "\n";
+                                    // supression du repertoire temporaire de telechargement du fichier yml
+                                    claro_delete_file( $tmpDirectory );
+
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    $dispError = true;
+                    $dispErrorBoxBackButton = true;
+                    $errorMsg = "Le fichier est trop volumineux !" . "\n";
+                    // supression du repertoire temporaire de telechargement du fichier yml
+                    claro_delete_file( $tmpDirectory );
+                }
             }
         }
         else
         {
             $dispError = true;
-            $err = 'Cannot load dictionary : %s'; 
-            $reason = 'missing id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
-        }
-        
-        if ( is_null( $dictionaryId ) || ! isset( $dictionaryInfo) )
-        {
-            $fileName = sprintf(get_lang('Dictionary_%s')
-                , get_lang('Default') );
-        }
-        else
-        {
-            $fileName = sprintf(get_lang('Dictionary_%s')
-                , htmlspecialchars($dictionaryInfo['name']) );
+            $dispErrorBoxBackButton = true;
+            $errorMsg = "Le fichier n'a pas été uploadé pour une raison inconnue !!" . "\n";
+            // supression du repertoire temporaire de telechargement du fichier yml
+            claro_delete_file( $tmpDirectory );
         }
     }
-    
-    if ( NULL == $action )
-    {
-        $err = 'Cannot find action : %s'; 
-        $reason = 'invalid action';
-
-        $errorMsg .= sprintf( $err, $reason ) . "\n";
-        
-        // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
-        
-        $dispError = true;
-        $fatalError = true;
-        $dispErrorBoxBackButton = false;
-    }
-    
 }
 // }}}
 
@@ -303,6 +201,42 @@
 {
     $output = '';
 
+    $output .= '<h1>'.get_lang('Import a dictionary') .'</h1>' . "\n";
+    
+    if ( true == $dispToolBar )
+    {
+        $output .= displayGlossaryMenu();
+    }
+    
+    if ( true == $dispSuccess )
+    {
+        // display success
+        $successMessage =  '<h2>'
+            . get_lang( 'Success' )
+            . '</h2>'
+            . "\n"
+            ;
+        
+        $successMessage .= '<p>'
+            . htmlspecialchars($successMsg) . '</p>' 
+            . "\n"
+            ;
+        // display back link    
+        // but back to where ???? (in case of fatal error)
+        if ( true == $dispSuccessBoxBackButton )
+        {
+            $successMessage .= '<p><a href="'
+                . $_SERVER['PHP_SELF']
+                . '?page=import'
+                .'">['.get_lang('Back').']</a></p>'
+                . "\n"
+                ;
+        }
+        
+        $output .= MessageBox::Success( $successMessage );
+    }        
+
+    
     if ( true == $dispError )
     {
         // display error
@@ -324,9 +258,7 @@
         {
             $errorMessage .= '<p><a href="'
                 . $_SERVER['PHP_SELF']
-                . '?page=dict'
-                . (!is_null($dictionaryId)?'&amp;dictionaryId='.(int)$dictionaryId:'')
-                . (!is_null($parentId)?'&amp;parentId='.(int)$parentId:'') 
+                . '?page=import'
                 .'">['.get_lang('Back').']</a></p>'
                 . "\n"
                 ;
@@ -345,191 +277,43 @@
     // no fatal error
     if ( true != $fatalError )
     {
-        //impression du text
-        if ( true == $dispPrintText )
+    
+        if( true == $dispDisplayForm )
         {
-            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
-            
-            $output .= '<h1>' . $textTitle . '</h1>';
-                        
-            $output .= '<p class="glossaryText">'
-                . nl2br( $content )
-                . '</p>'
-                . "\n"
-                ;
-
-            $output .= '<h1>' . get_lang( 'List vocabularies' ) . '</h1>';
-                        
-            $lastWord = '';
-            $i = 1;
-            
-            $output .= '<dl class="glossaryWord">';
-            foreach ( $glossaryWord as $word )
-            {
-                
-                if( empty( $lastWord ) || $lastWord != $word['name'] )
-                {
-                    $i = 1;
-                    $lastWord = $word['name'];
-                    $output .= '<dt>' . $word['name'] . '</dt>';
-                }
-                
-                    $output .= '<dd>' . $i . ')&nbsp;' . $word['definition'] . '</dd>';
-                    $i++;
-            }        
-            $output .= '</dl>';
-                
-            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
-
-        }
-                
-        //impression du dictionnaire
-        if ( true == $dispPrintDict )
-        {
-            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
-            
-            if ( is_null( $dictionaryId ) || ! isset( $dictionaryInfo) )
-            {
-                $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
-                    , get_lang('Default') ).'</h1>' . "\n";
-            }
-            else
-            {
-                $output .= '<h1>'.sprintf(get_lang('Dictionary : %s')
-                    , htmlspecialchars($dictionaryInfo['name'])).'</h1>' . "\n";
-            }
-            
-            $table = new HTML_Datagrid_Table;
-            $table->setTitle( get_lang('Dictionaries') );
-            $dataFields = array(
-                'name' => get_lang( 'Title' ),
-                'description' => get_lang( 'Description' )
-            );
-            $table->setDataFields( $dataFields );
-            $table->setData( $dictionaryList );
-            
-            $output .= $table->render();
-             
-            $table = new HTML_Datagrid_Table;
-            $table->setTitle( sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name'] ) )  );
-            $dataFields = array(
-                'name' => get_lang( 'Word' ),
-                'definition' => get_lang( 'Definition' )
-            );
-            $table->setDataFields( $dataFields );
-            $table->setData( $dict );
-            
-            $output .= $table->render();
-            
-            $output .= '<p class="linkPrintWindow"><a href="javascript:window.print()">' . get_lang( 'Print this page' ) . '</a></p>';
+            $output .= '<form enctype="multipart/form-data"'
+            . 'action="entry.php?page=import&amp;action=import" '
+            . 'method="post">'
+            . claro_form_relay_context()
+            . '<table>'
+            . '<tr>'
+            . '<td>'.get_lang("Upload file").' : </td>'
+            . '<td><input type="file" name="frm_file" /></td>'
+            . '</tr>'
+            . '<tr>'
+            . '<td>'
+            . '<a href="entry.php?page=list">'
+            . '<input class="buttom" type="button" value="'.get_lang("Cancel").'" onclick="document.location=\'entry.php?page=list\'" />'
+            . '</a>'
+            . '<input class="buttom" type="submit" value="'.get_lang("Save").'" />'
+            . '</td>'
+            . '</tr>'
+            . '</table>' 
+            . '</form>'
+            ;
         }
         
-        // Export text
-        if ( true == $dispExportText )
+        if( true == $dispImport && false == $dispError)
         {
-            // format text
-            if ( 'text' == $format )
-            {
-                //Declaration du Header
-                header("Content-type: application/force-download; charset=ISO-8859-1");
-                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
-                
-                $output .= $textTitle . "\n\n";
-                            
-                $output .= $content . "\n\n";
+            // Affichage du contenu en dessous du message de réussite 
+            //$output .= '<p>Importé !</p>';
+            
+            $output .= $name;
+            $output .= $description;
+            $output .= $content;
+            $output .= $words;
 
-                $output .= get_lang( 'List vocabularies' ) . "\n\n";
-                            
-                $lastWord = '';
-                $i = 1;
-                
-                foreach ( $glossaryWord as $word )
-                {
-                    
-                    if( empty( $lastWord ) || $lastWord != $word['name'] )
-                    {
-                        $i = 1;
-                        $lastWord = $word['name'];
-                        $output .= '[ ' . $word['name'] . ' ]' ."\n";
-                    }
-                    
-                        $output .= "\t" . $i . ') ' . $word['definition'] . "\n";
-                        $i++;
-                }        
-                
-                echo( $output );
-                exit;
-            }  
-            
-            // Format csv
-            if ( 'csv' == $format )
-            {
-            }
-            
-            // Format yml
-            if ( 'yml' == $format )
-            {
-            }
         }
-
-        // Export dict
-        if ( true == $dispExportDict )
-        {
-            // Format text
-            if ( 'text' == $format )
-            {
-                //Declaration du Header
-                header("Content-type: application/force-download; charset=ISO-8859-1");
-                header("Content-disposition: attachment; filename=".date('Ymd')."_".$fileName.".txt");
-
-                $output .= '[ ' . get_lang('Dictionaries') . ' ]' . "\n\n";
-                
-                $output .= '| ' . get_lang( 'Title' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
-                            
-                if( $dictionaryList ) 
-                {
-                    foreach ( $dictionaryList as $key )
-                    {
-                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['description'] . "\n";
-                    }        
-                }
-                else
-                {
-                    $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
-                }
-                
-                $output .= "\n\n";
-                
-                $output .= '[ ' . sprintf( get_lang('Entries in dictionary %s'), htmlspecialchars($dictionaryInfo['name']) ) . ' ]' . "\n\n";
-                
-                $output .= '| ' . get_lang( 'Word' ) . ' |' . "\t" . '| ' . get_lang( 'Definition' ) . ' |' . "\n\n";
-                
-                if( $dict ) 
-                {
-                    foreach ( $dict as $key )
-                    {
-                        $output .= $key['name'] . "\t" .' - '. "\t" . $key['definition'] . "\n";
-                    }
-                }
-                else
-                {
-                    $output .= get_lang( 'Empty' ) . "\t" .' - '. "\t" . get_lang( 'Empty' ) . "\n";
-                }
-                
-                echo( $output );
-                exit;
-            }
-            
-            // Format csv
-            if ( 'csv' == $format )
-            {
-            }
-            
-            // Format yml
-            if ( 'yml' == $format )
-            {
-            }
-        }    
+    
     // fatal error
     }
     else
@@ -538,20 +322,11 @@
     }
     
     $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php'
-        , 'name' => get_lang("Glossary"));
+        , 'name' => get_lang("Glossary") );
     $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php?page=list'
-        , 'name' => get_lang("Dictionary List"));
-    
-    if ( !is_null( $dictionaryId ) )
-    {
-        $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php?page=dict&amp;dictionaryId='.(int)$dictionaryId
-            , 'name' => $dictionaryInfo['name']);
-    }
-    else
-    {
-        $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php?page=dict'
-            , 'name' => get_lang("Dictionary"));
-    }
+        , 'name' => get_lang("Dictionary") );
+    $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php?page=import'
+        , 'name' => get_lang("Import") );
     
     // send output to dispatcher
     $this->setOutput($output);
