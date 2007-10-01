@@ -1,0 +1,22 @@
+<module>
+<label>CLTINY</label>
+<name>Tiny Url</name>
+<description><![CDATA[
+Tiny Url tools
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.gif</icon>
+<type>applet</type>
+<entry>index.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLVOC</web>
+</author>
+<requirements>
+<claroline>
+<version>1.8</version>
+</claroline>
+</requirements>
+</module>
