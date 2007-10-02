@@ -57,10 +57,10 @@ if(!$_SESSION[RPP]) $_SESSION[RPP]=20;
 
 $dbl=@mysql_connect($DBH,$DBU,$DBP) or die("Access denied. Check configuration.");
 
-if ( $singleDbEnabled )
+$_SESSION[DBN]=$mainDbName;
+
+//if ( $singleDbEnabled )
 {
-    $_SESSION[DBN]=$mainDbName;
-    
     if ( ! array_key_exists( 'hop', $_REQUEST ) )
     {
         $_REQUEST[hop]=1;
@@ -75,7 +75,7 @@ if ( $singleDbEnabled )
 switch($_REQUEST[hop]) {
 //SET DATABASE
 case "1":
-    if ( $singleDbEnabled )
+    if ( $singleDbEnabled || ! array_key_exists( 'dbn', $_GET ) )
     {
         $_SESSION[DBN]=$mainDbName;
     }
