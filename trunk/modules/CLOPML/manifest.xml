@@ -9,6 +9,7 @@ OPML Tool from iCampus
 <icon>icon.png</icon>
 <type>applet</type>
 <entry>entry.php</entry>
+<default_dock>campusHomePageRightMenu</default_dock>
 <author>
 <name>Frederic Minne</name>
 <email>zefredz@claroline.net</email>
