@@ -3,7 +3,8 @@
     // vim: expandtab sw=4 ts=4 sts=4:
     
     /**
-     * OPML generator
+     * OPML generator : create OPML file for a user containing all RSS from
+     *  his course. User is identified by user id, username or official code
      *
      * @version     1.9 $Revision$
      * @copyright   2001-2007 Universite catholique de Louvain (UCL)

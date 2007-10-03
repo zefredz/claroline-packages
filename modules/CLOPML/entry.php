@@ -8,4 +8,19 @@
     }
 
     // empty entry
+    
+    if ( claro_is_user_authenticated() )
+    {
+        $GLOBALS['currentModuleLabel'] = 'CLOPML';
+        
+        $out = '<a href="'
+            . get_module_url('CLOPML')
+            . '/index.php?userId=' . claro_get_current_user_id()
+            . '"><img src="'.get_icon('rss.png').'" />&nbsp;'.get_lang('My RSS').'</a>'."\n"
+            ;
+            
+        $GLOBALS['currentModuleLabel'] = null;
+        
+        $claro_buffer->append( $out );
+    }
 ?>
