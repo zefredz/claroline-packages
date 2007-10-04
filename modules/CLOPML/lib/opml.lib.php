@@ -18,8 +18,16 @@
         die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
     }
 
+    /**
+     * OPML Generator Class
+     */
     class Opml
     {
+        /**
+         * Generate OPML file content from an array
+         * @param   array data content of the opml in an array
+         * @return  string opml file content
+         */
         public function generate( $data )
         {
             $opml = '<?xml version="1.0" encoding="utf-8" standalone="yes" ?'.'>'."\n"

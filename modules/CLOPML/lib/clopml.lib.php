@@ -22,6 +22,12 @@
     
     require_once dirname(__FILE__) . '/opml.lib.php';
     
+    /**
+     * Generate opml file for a user given its user id
+     * @param   int userId id of the user in the database
+     * @return  string opml file contents
+     *          boolean false if no opml generated
+     */
     function generate_opml( $userId )
     {
         $tblList = claro_sql_get_main_tbl();
@@ -40,12 +46,14 @@
         
         $courseSysCodeList = $courseSysCodeList['code'];
 
+        // generate opml file content
         if (is_array($courseSysCodeList) )
         {
             $opmlData = array();
             
             $opmlData['outlines'] = array();
 
+            // generate one entry for each course the user is enrolled in
             foreach($courseSysCodeList as $thisCourseSys)
             {
                 $opmlData['outlines'][] = array(
