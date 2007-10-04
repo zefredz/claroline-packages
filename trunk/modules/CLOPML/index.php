@@ -32,7 +32,8 @@
         ? trim($_REQUEST['officialCode'])
         : null
         ;
-        
+
+    // get user id from username or official code
     if ( empty ( $userId ) )
     {
         $tblList = claro_sql_get_main_tbl();
@@ -67,14 +68,14 @@
         }
     }
         
-    // get userId from official code or username
-        
+    // get opml file from user id
     if ( !empty( $userId ) )
     {
         $opml = generate_opml( $userId );
         
         if ( $opml )
         {
+            // TODO : handle OPML file-type here
             header("Content-Type: text/xml");
             echo $opml;
         }
