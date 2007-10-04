@@ -2,7 +2,10 @@
 <label>CLOPML</label>
 <name>OPML Generator</name>
 <description><![CDATA[
-OPML Tool from iCampus
+OPML Generator applet for Claroline.
+&lt;small&gt;Note : You can use Firefox OPML Reader extension to
+auto-detect OPML feeds in webpages
+(https://addons.mozilla.org/en-US/firefox/addon/3555)&lt;/small&gt;
 ]]></description>
 <version>1.0</version>
 <license>GPL</license>
