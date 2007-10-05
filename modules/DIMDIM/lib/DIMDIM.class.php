@@ -100,7 +100,7 @@ class conference
         $this->type = 'AUDIO';
         $this->attendeeMikes = (int) 0;
         $this->network = 'DIALUP';
-        $this->startTime = claro_time();
+        $this->startTime = claro_time()+3600;
         $tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
         $this->tblConference = $tbl_names['dim_conference'];
     }

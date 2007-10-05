@@ -36,6 +36,8 @@ if ( !claro_is_tool_allowed() )
 
 install_module_in_course( 'DIMDIM', claro_get_current_course_id() ) ;
 
+add_module_lang_array('DIMDIM');
+
 require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
 require_once get_path('incRepositorySys') . '/lib/form.lib.php';
 
@@ -145,18 +147,47 @@ if( $is_allowedToEdit )
         $dialogBox .= '<form action="' . $_SERVER['PHP_SELF'] . '?confId='.$confId.'" method="post">' . "\n"
         .    claro_form_relay_context()
         .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
-        .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
+        .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n";
 
         // title
-        .	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-        .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($conference->getTitle()).'" /><br />' . "\n"
+        $dialogBox .=	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+        .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($conference->getTitle()).'" /><br />' . "\n";
 
         // description
-        .	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
-        .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($conference->getDescription()).'</textarea><br />'
+        $dialogBox .=	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
+        .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($conference->getDescription()).'</textarea><br />';
+
+        // startTime
+        $dialogBox .= get_lang('Start date') . '<br />' . "\n"
+        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long')
+        . ' - '
+        . claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
+    	. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
+
+        // duration in hours
+
+        $dialogBox .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
+
+        $durationValueList = array('1','2','3','4','5');
+
+        $dialogBox .= '<select id="label_duration" name="duration">' . "\n";
+
+        foreach ( $durationValueList as $durationValue )
+        {
+            if ( $durationValue == $conference->getDuration() )
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" selected="selected">' . $durationValue .'</option>' . "\n";
+            }
+            else
+            {
+                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" >' . $durationValue .'</option>' . "\n";
+            }
+        }
+
+        $dialogBox .= '</select><br />' . "\n";
 
         // waiting area
-        . get_lang('Waiting Area') . '<br />' . "\n"
+        $dialogBox .= get_lang('Waiting Area') . '<br />' . "\n"
         . '<input id="label_waiting_area_TRUE"  type="radio" name="waitingArea" value="ENABLE"  '
         . ( $conference->getWaitingArea() == 'ENABLE' ? ' checked="checked" ':' ') . ' >'
         . '<label for="label_waiting_area_TRUE"  >' . get_lang('Yes') . '</label>' . '&nbsp;'
@@ -187,24 +218,24 @@ if( $is_allowedToEdit )
         } // end foreach
 
         $dialogBox .= '</select><br />' . "\n";
+        
+        // attendee Mikes
 
-        // duration in hours
+        $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
 
-        $dialogBox .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
+        $attendeeMikesValueList = array('1','2','3','4','5');
 
-        $durationValueList = array('1','2','3','4','5');
+        $dialogBox .= '<select id="label_attendeeMikes" name="attendeeMikes">' . "\n";
 
-        $dialogBox .= '<select id="label_duration" name="duration">' . "\n";
-
-        foreach ( $durationValueList as $durationValue )
+        foreach ( $attendeeMikesValueList as $attendeeMikesValue )
         {
-            if ( $durationValue == $conference->getDuration() )
+            if ( $attendeeMikesValue == $conference->getAttendeeMikes() )
             {
-                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" selected="selected">' . $durationValue .'</option>' . "\n";
+                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" selected="selected">' . $attendeeMikesValue .'</option>' . "\n";
             }
             else
             {
-                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" >' . $durationValue .'</option>' . "\n";
+                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" >' . $attendeeMikesValue .'</option>' . "\n";
             }
         }
 
@@ -232,28 +263,6 @@ if( $is_allowedToEdit )
 
         $dialogBox .= '</select><br />' . "\n";
 
-        // attendee Mikes
-
-        $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
-
-        $attendeeMikesValueList = array('1','2','3','4','5');
-
-        $dialogBox .= '<select id="label_attendeeMikes" name="attendeeMikes">' . "\n";
-
-        foreach ( $attendeeMikesValueList as $attendeeMikesValue )
-        {
-            if ( $attendeeMikesValue == $conference->getAttendeeMikes() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" selected="selected">' . $attendeeMikesValue .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" >' . $attendeeMikesValue .'</option>' . "\n";
-            }
-        }
-
-        $dialogBox .= '</select><br />' . "\n";
-
         // network type
         $dialogBox .= '<label for="network_type"  >'.get_lang('Network').'</label><br />' . "\n" ;
 
@@ -274,13 +283,6 @@ if( $is_allowedToEdit )
         } // end foreach
 
         $dialogBox .= '</select><br />' . "\n";
-
-        // startTime
-        $dialogBox .= get_lang('Start date') . '<br />' . "\n"
-        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long')
-        . ' - '
-        . claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
-    	. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
 
         $dialogBox .= '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
