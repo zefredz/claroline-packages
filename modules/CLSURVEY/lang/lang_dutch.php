@@ -15,38 +15,37 @@
  * @author Claro Team <cvs@claroline.net>
  *
  */
-
 $_lang['Survey'] = "Opiniepeiling";
 $_lang['Surveys'] = "Opiniepeilingen";
 $_lang['List of surveys'] = "Lijst van opiniepeilingen";
-$_lang['Multiple choice - horizontal answer'] = "Multiple choice - réponses alignées horizontalement";
-$_lang['Multiple choice - vertical answer'] = "Multiple choice - réponses alignées verticalement";
-$_lang['Textbox'] = "Vak";
-$_lang['Question has been updated'] = "De vraag is bijwerkt";
-$_lang['Question has been inserted'] = "De vraag is toevoegd";
-$_lang['Survey has been updated'] = "De opiniepeiling is bijwerkt";
-$_lang['Survey has been inserted'] = "De opiniepeiling is toevoegd";
+$_lang['Multiple choice - horizontal answer'] = "Verschillende keuzes - antwoord horizontaal";
+$_lang['Multiple choice - vertical answer'] = "Verschillende keuzes - antwoord verticaal";
+$_lang['Textbox'] = "Tekst";
+$_lang['Question has been updated'] = "De vraag is bijgewerkt";
+$_lang['Question has been inserted'] = "De vraag is ingevoegd";
+$_lang['Survey has been updated'] = "De opiniepeiling is bijgewerkt";
+$_lang['Survey has been inserted'] = "De opiniepeiling is ingevoegd";
 $_lang['New survey'] = "Nieuwe opiniepeiling";
 $_lang['Edit this survey'] = "Verander de opiniepeiling";
-$_lang['Date of creation'] = "Datum van aanmaak";
-$_lang['Survey has been deleted'] = "De opiniepeiling is verwijderd";
-$_lang['Add survey'] = "Invoegen een opiniepeiling";
+$_lang['Date of creation'] = "Aanmaakdatum";
+$_lang['Survey has been deleted'] = "De opiniepeiling is gewist";
+$_lang['Add survey'] = "Een opiniepeiling invoegen";
 $_lang['No survey'] = "Geen opiniepeilingen";
 $_lang['Results'] = "Resultaten";
-$_lang['Question has been deleted'] = "De vraag is verwijderd";
+$_lang['Question has been deleted'] = "De vraag is gewist";
 $_lang['Answers have been saved'] = "De antwoorden zijn geregistreerd";
 $_lang['No question'] = "Geen vraag";
-$_lang['No result available'] = "Geen resultaten gevonden";
-$_lang['Results have been deleted'] = "De resultaten zijn verwijderd";
-$_lang['Delete all results'] = "Verwijder alle resultaten";
-$_lang['Export results'] = "Exporteer de resultaten";
-$_lang['Number of answer/Total'] = "Aantal antwoorden voor een totaal van ";
+$_lang['No result available'] = "Geen resultaat beschikbaar";
+$_lang['Results have been deleted'] = "De resultaten zijn gewist";
+$_lang['Delete all results'] = "Alle resultaten wissen";
+$_lang['Export results'] = "De resultaten exporteren ";
+$_lang['Number of answer/Total'] = "Aantal antwoorden op een totaal van ";
 $_lang['Percentage'] = "Percentage";
-$_lang['Add question'] = "Voeg een vraag toe";
-$_lang['This survey is anonymous.  We only save your answer not your identification.'] = "We bewaren alleen de antwoorden, geen persoonlijke gegevens";
-$_lang['This survey is already filled by you. Your answer are not saved again. As The survey are anonymous, we cannot show you your answers']="Uw heeft al geantwoordt op deze opiniepeiling.  Jouw antwoorden zijn niet aangenomen.  Omdat deze opiniepeiling anoniem is, kunnen we uw antwoorden niet weergeven.";
-$_lang['Position modified'] = "Positie veranderd";
+$_lang['Add question'] = "Een vraag invoegen";
+$_lang['This survey is anonymous. We only save your answer not your identification.'] = "Deze opiniepeiling is anoniem. We bewaren enkel je antwoord, niet je identificatiegegevens.";
+$_lang['This survey is already filled by you. Your answer are not saved again. As The survey are anonymous, we cannot show you your answers']="U heeft reeds geantwoord op deze opiniepeiling. De antwoorden worden geen tweede keer opgeslagen. Omdat deze peiling anoniem gebeurt, kunnen we je vorige antwoorden niet opnieuw opvragen.";
+$_lang['Position modified'] = "Positie aangepast";
 $_lang['No answer']="Geen antwoord";
-$_lang['View this survey']="Zie deze opiniepeiling";
+$_lang['View this survey']="Bekijk deze opiniepeiling";
 $_lang['Vote for this survey']="Stemmen";
 ?>
