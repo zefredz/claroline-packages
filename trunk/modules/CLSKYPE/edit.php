@@ -21,7 +21,7 @@ if ( !claro_is_in_a_course() && !claro_is_allowed_to_edit() )
     claro_die( get_lang( "Not allowed" ) );
 }
 
-add_module_lang_array('CLSKYPE');
+load_module_language('CLSKYPE');
 
 // Include libraries
 require get_path('includePath') . '/lib/embed.lib.php';

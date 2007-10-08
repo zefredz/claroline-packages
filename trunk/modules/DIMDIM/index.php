@@ -36,8 +36,6 @@ if ( !claro_is_tool_allowed() )
 
 install_module_in_course( 'DIMDIM', claro_get_current_course_id() ) ;
 
-add_module_lang_array('DIMDIM');
-
 require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
 require_once get_path('incRepositorySys') . '/lib/form.lib.php';
 

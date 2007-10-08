@@ -28,8 +28,6 @@ require '../../claroline/inc/claro_init_global.inc.php';
 
 $context = array( CLARO_CONTEXT_COURSE=> claro_get_current_course_id());
 
-add_module_lang_array($tlabelReq);
-
 if ( ! get_init('in_course_context') || ! get_init('is_courseAllowed') || !get_init('is_authenticated') ) claro_disp_auth_form(true);
 
 claro_set_display_mode_available(TRUE);
