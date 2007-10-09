@@ -1,0 +1,44 @@
+
+#authorSidebar
+{
+    border-left: 1px solid #ccc;
+    float:right;
+    width:250px;
+    padding-left: 5px;
+}
+
+#componentsContainer
+{
+	margin-right: 275px;
+}
+
+.sortableComponent .componentHeader
+{
+	cursor: move;
+}
+
+.sortableComponent .componentHeader .componentHeaderCmd
+{
+	float: right;
+
+}
+
+.sortableComponent .componentEditor
+{
+	padding: 5px;
+	background: #f0f0f0;
+	border-left: 1px solid #ccc;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+#clauthor_loading
+{
+	float: right;
+}
+
+.sortHelper
+{
+	border: 1px dashed #666;
+	width: auto !important;
+}
