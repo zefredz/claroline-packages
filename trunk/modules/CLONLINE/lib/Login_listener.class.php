@@ -20,10 +20,8 @@ class Login_listener extends EventDriven
     /**
      * constructor
      */
-    function Login_listener ( &$registry )
+    function Login_listener ()
     {
-        parent::EventDriven( $registry );
-
         $tbl_names = claro_sql_get_tbl('user_online', array('course'=>null));
 		$this->tblUserOnline = $tbl_names['user_online'];
     }

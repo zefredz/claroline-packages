@@ -34,11 +34,11 @@ if( isset($GLOBALS['_uid']) )
 }
 
 // declare event manager dependencies and listener
-$claro_login_listener = new Login_listener($claro_event_manager);
+$claro_login_listener = new Login_listener;
 
 //set required event listener in the Claroline event manager
-$claro_login_listener->addListener( 'delete_login_online', "user_logout");
-$claro_login_listener->addListener( 'insert_login_online', "user_login");
+$claro_login_listener->addListener( "user_logout", 'delete_login_online' );
+$claro_login_listener->addListener( "user_login", 'insert_login_online' );
 $claro_login_listener->refresh_login_DB();
 
 ?>
