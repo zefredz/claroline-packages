@@ -13,14 +13,14 @@
 
 //declare  the online user listener for this module
 
-class Login_listener extends EventDriven
+class LoginListener extends EventDriven
 {
     var $tblUserOnline;
 
     /**
      * constructor
      */
-    function Login_listener ()
+    function LoginListener ()
     {
         $tbl_names = claro_sql_get_tbl('user_online', array('course'=>null));
 		$this->tblUserOnline = $tbl_names['user_online'];

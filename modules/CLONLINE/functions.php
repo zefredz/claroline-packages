@@ -34,7 +34,7 @@ if( isset($GLOBALS['_uid']) )
 }
 
 // declare event manager dependencies and listener
-$claro_login_listener = new Login_listener;
+$claro_login_listener = new LoginListener;
 
 //set required event listener in the Claroline event manager
 $claro_login_listener->addListener( "user_logout", 'delete_login_online' );
