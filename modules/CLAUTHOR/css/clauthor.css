@@ -1,0 +1,19 @@
+.sortableComponent
+{
+	margin: 15px 0;
+}
+
+.sortableComponent .componentHeader
+{
+	color: #669933;
+    font-weight: bold;
+    padding: 2px 5px 2px 5px;
+    background-color: #EDF1E3;
+    border: 1px #96BB7A solid;
+}
+
+.sortableComponent .componentContent
+{
+	padding: 5px;
+	background: #FFF;
+}
