@@ -17,57 +17,67 @@
      *              GNU GENERAL PUBLIC LICENSE
      * @package     CLPAGES
      */
-     
+
     class TextAndFileComponent extends Component
     {
         private $content = '';
         private $textAlign = 'left';
         private $fileAlign = 'right';
         private $url = '';
-    	
+
     	public function render()
     	{
             $out = '<div style="float:'.$this->textAlign.'; max-width: 50%;">' . claro_parse_user_text($this->content) . '</div>';
-            
+
             if( !empty($this->url) )
     		{
 	    		include_once get_path('incRepositorySys') . '/lib/htmlxtra.lib.php';
-	    		
+
 	    		$out .= '<div style="float:'.$this->fileAlign.'">' . "\n"
                 .    claro_html_media_player($this->url,$this->url)
                 .	 '</div>' . "\n"
                 ;
-                
-                
+
+
     		}
     		else
     		{
     			$out .=  '' . "\n";
     		}
-    		
+
             $out .= '<div class="spacer"></div>';
-    		
+
             return $out;
     	}
-    	
+
     	public function editor()
     	{
-            $out = '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>';
-            
-            $out .= '<label for="url_'.$this->getId().'">' . get_lang('Url of a file') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-    		.	 '<input type="text" name="url_'.$this->getId().'" id="url_'.$this->getId().'" maxlength="255" value="'.htmlspecialchars($this->url).'" /><br />' . "\n"
-    		;
-    		
+    		$out = '';
+
             $out .= get_lang('Layout :') . '&nbsp;<span class="required">*</span><br />' . "\n"
-    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="align_'.$this->getId().'_left" value="left"'.( $this->textAlign == 'left' ? ' checked="checked"' : ''  ).' />'
-    		.    '<label for="layout_'.$this->getId().'_left">' . get_lang('Text on left') . '</label><br />' . "\n"
-    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="align_'.$this->getId().'_right" value="right"'.( $this->textAlign == 'right' ? ' checked="checked"' : ''  ).' />'
-    		.    '<label for="layout_'.$this->getId().'_right">' . get_lang('Text on right') . '</label><br />' . "\n"
+    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="layout_'.$this->getId().'_left" value="left"'.( $this->textAlign == 'left' ? ' checked="checked"' : ''  ).' />'
+    		.    '<label for="layout_'.$this->getId().'_left">' . get_lang('Text on left') . '</label>' . "\n"
+    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="layout_'.$this->getId().'_right" value="right"'.( $this->textAlign == 'right' ? ' checked="checked"' : ''  ).' />'
+    		.    '<label for="layout_'.$this->getId().'_right">' . get_lang('Text on right') . '</label><br /><br />' . "\n"
     		;
-    		
+
+            $out .= '<fieldset>' . "\n"
+            .	 '<legend>'.get_lang('Text').'</legend>' . "\n"
+			.	 '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>'
+			.	 '</fieldset>' . "\n"
+			;
+
+            $out .= '<fieldset>' . "\n"
+            .	 '<legend>'.get_lang('File').'</legend>' . "\n"
+			.	 '<label for="url_'.$this->getId().'">' . get_lang('Url of a file') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+    		.	 '<input type="text" name="url_'.$this->getId().'" id="url_'.$this->getId().'" maxlength="255" size="60" value="'.htmlspecialchars($this->url).'" /><br />' . "\n"
+    		.	 '</fieldset>' . "\n"
+    		;
+
+
     		return $out;
     	}
-    	
+
     	public function getEditorData()
     	{
             $this->url = $this->getFromRequest('url_'.$this->getId());
@@ -75,7 +85,7 @@
     		$this->textAlign = $this->getFromRequest('layout_'.$this->getId());
     		$this->fileAlign = $this->textAlign == 'left' ? 'right' : 'left';
     	}
-    	
+
     	/**
 		 * @see Component
 		 */
@@ -99,6 +109,6 @@
 			);
     	}
     }
-    
+
     PluginRegistry::register('textandfile',get_lang('Text and file'),'TextAndFileComponent');
 ?>
