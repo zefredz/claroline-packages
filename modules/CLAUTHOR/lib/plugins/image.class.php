@@ -64,11 +64,11 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     		.	 '<input type="text" name="caption_'.$this->getId().'" id="caption_'.$this->getId().'" maxlength="255" size="60" value="'.htmlspecialchars($this->caption).'" /><br />' . "\n"
     		// size - height
 			.	 '<label for="height_'.$this->getId().'">' . get_lang('Height') . '</label><br />' . "\n"
-    		.	 '<input type="text" name="height_'.$this->getId().'" id="height_'.$this->getId().'" maxlength="255" size="10" value="'.htmlspecialchars($this->height).'" />' . "\n"
+    		.	 '<input type="text" name="height_'.$this->getId().'" id="height_'.$this->getId().'" maxlength="10" size="10" value="'.htmlspecialchars($this->height).'" />' . "\n"
     		.	 '&nbsp;<small>'.get_lang('Leave emtpy to keep original size').'</small><br />' . "\n"
     		// size - wodth
     		.	 '<label for="width_'.$this->getId().'">' . get_lang('Width') . '</label><br />' . "\n"
-    		.	 '<input type="text" name="width_'.$this->getId().'" id="width_'.$this->getId().'" maxlength="255" size="10" value="'.htmlspecialchars($this->width).'" />' . "\n"
+    		.	 '<input type="text" name="width_'.$this->getId().'" id="width_'.$this->getId().'" maxlength="10" size="10" value="'.htmlspecialchars($this->width).'" />' . "\n"
     		.	 '&nbsp;<small>'.get_lang('Leave emtpy to keep original size').'</small><br />' . "\n"
     		;
     	}
