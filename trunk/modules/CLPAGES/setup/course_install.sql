@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `__CL_COURSE__clauthor_docs` (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__clpages_pages` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL DEFAULT '',
   `description` TEXT,
@@ -10,10 +10,10 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__clauthor_docs` (
   PRIMARY KEY(id)
 ) TYPE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS `__CL_COURSE__clauthor_contents` (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__clpages_contents` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(255) NOT NULL DEFAULT '',
-  `docId` INT(11) NOT NULL,
+  `pageId` INT(11) NOT NULL,
   `type` VARCHAR(60) NOT NULL DEFAULT 'Text',
   `data` TEXT NOT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',

@@ -3,13 +3,13 @@
 	$(document).ready( function ()
 	{
 
-		$("#clauthor_loading").hide();
+		$("#loading").hide();
 
-		$("#clauthor_loading").ajaxStart(function(){
+		$("#loading").ajaxStart(function(){
 			$(this).show();
 		});
 
-		$("#clauthor_loading").ajaxStop(function(){
+		$("#loading").ajaxStop(function(){
 			$(this).hide();
 		});
 
@@ -57,7 +57,7 @@
 	{
 	    $.ajax({
 	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=addItem&cidReq="+ cidReq + "&docId=" + docId + "&itemType=" + itemType,
+	    	data: "cmd=addItem&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + itemType,
 	    	success: function(response){
 	    		// we need to update sortable with id of last add html block, so find id of this block (component_*)
 				var addedHtmlId = getComponentIdFromHtml(response);
@@ -86,7 +86,7 @@
 
 			$.ajax({
 		    	url: moduleUrl + "ajaxHandler.php",
-		    	data: "cmd=deleteItem&cidReq="+ cidReq + "&docId=" + docId + "&itemType=" + type + "&itemId=" + id,
+		    	data: "cmd=deleteItem&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
 		    	success: function(response){
 		    		if( response = 'true' )
 		    		{
@@ -119,7 +119,7 @@
 		{
 			$.ajax({
 		    	url: moduleUrl + "ajaxHandler.php",
-		    	data: "cmd=getEditor&cidReq="+ cidReq + "&docId=" + docId + "&itemType=" + type + "&itemId=" + id,
+		    	data: "cmd=getEditor&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
 		    	success: function(response){
 		    		if( response != '' )
 		    		{
@@ -154,7 +154,7 @@
 		// refresh content
 		$.ajax({
 	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=getComponent&cidReq="+ cidReq + "&docId=" + docId + "&itemId=" + id + "&itemType=" + type,
+	    	data: "cmd=getComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemId=" + id + "&itemType=" + type,
 	    	success: function(response){
 	    		// we need to update sortable with id of last add html block, so find id of this block (component_*)
 				var addedHtmlId = getComponentIdFromHtml(response);
@@ -165,6 +165,7 @@
 		    		.remove();
 		    	$("#componentsContainer").SortableAddItem(document.getElementById(addedHtmlId));
 		        },
+		    error: showErrorMessage,
 	    	dataType: 'html'
 	    });
 
@@ -185,7 +186,7 @@
 
 	    $.ajax({
 	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=mkVisible&cidReq="+ cidReq + "&docId=" + docId + "&itemType=" + type + "&itemId=" + id,
+	    	data: "cmd=mkVisible&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
 	    	success: function(response){
 					// switch eye
 					if( response == "true" )
@@ -212,7 +213,7 @@
 
 	    $.ajax({
 	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=mkInvisible&cidReq="+ cidReq + "&docId=" + docId + "&itemType=" + type + "&itemId=" + id,
+	    	data: "cmd=mkInvisible&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
 	    	success: function(response){
 					// switch eye
 					if( response == "true" )

@@ -8,7 +8,7 @@
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *
@@ -16,10 +16,10 @@
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
     // load Claroline kernel
-    $tlabelReq = 'CLAUTHOR';
+    $tlabelReq = 'CLPAGES';
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-	require_once dirname( __FILE__ ) . '/lib/clauthor.lib.php';
+	require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
 	require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
 
 	/*
@@ -33,8 +33,8 @@
 	if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
 	else                                                                            $cmd = null;
 
-	if( isset($_REQUEST['docId']) && is_numeric($_REQUEST['docId']) )   $docId = (int) $_REQUEST['docId'];
-	else                                                                $docId = null;
+	if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) )   	$pageId = (int) $_REQUEST['pageId'];
+	else                                                                	$pageId = null;
 
 	/*
 	 * Init other vars
@@ -51,45 +51,45 @@
 	 */
 	if( $is_allowedToEdit )
 	{
-		$document = new document();
+		$page = new page();
 
-		if( !is_null($docId) )
+		if( !is_null($pageId) )
 		{
-		    if( !$document->load($docId) )
+		    if( !$page->load($pageId) )
 		    {
 		        $cmd = null;
-		        $docId = null;
+		        $pageId = null;
 		    }
 		}
 
 		if( $cmd == 'exEdit' )
 		{
-			$document->setTitle($_REQUEST['title']);
-			$document->setDescription($_REQUEST['description']);
+			$page->setTitle($_REQUEST['title']);
+			$page->setDescription($_REQUEST['description']);
 
-			// set author id if creating doc
-			if( is_null($docId) )
+			// set author id if creation
+			if( is_null($pageId) )
 			{
-				$document->setAuthorId( claro_get_current_user_id() );
-				$document->setCreationTime( time() );
+				$page->setAuthorId( claro_get_current_user_id() );
+				$page->setCreationTime( time() );
 			}
 
 			// on creation editor is the same as author, and the last modification is creation
-			$document->setEditorId( claro_get_current_user_id() );
-			$document->setLastModificationTime( time() );
+			$page->setEditorId( claro_get_current_user_id() );
+			$page->setLastModificationTime( time() );
 
-			if( $document->validate() )
+			if( $page->validate() )
 		    {
-		        if( $insertedId = $document->save() )
+		        if( $insertedId = $page->save() )
 		        {
-		        	if( is_null($docId) )
+		        	if( is_null($pageId) )
 		            {
-		                $dialogBox->success( get_lang('Empty document successfully created') );
-		                $docId = $insertedId;
+		                $dialogBox->success( get_lang('Empty page successfully created') );
+		                $pageId = $insertedId;
 		            }
 		            else
 		            {
-		            	$dialogBox->success( get_lang('Document successfully modified') );
+		            	$dialogBox->success( get_lang('Page successfully modified') );
 		            }
 		        }
 		        else
@@ -101,7 +101,7 @@
 		    }
 		    else
 		    {
-		        if( claro_failure::get_last_failure() == 'document_no_title' )
+		        if( claro_failure::get_last_failure() == 'page_no_title' )
 		        {
 		            $dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
 		        }
@@ -114,26 +114,26 @@
 			// show form
 		    $htmlEditForm = "\n\n";
 
-		    if( !is_null($docId) )
+		    if( !is_null($pageId) )
 		    {
-		    	$htmlEditForm .= '<strong>' . get_lang('Edit document settings') . '</strong>' . "\n";
+		    	$htmlEditForm .= '<strong>' . get_lang('Edit page settings') . '</strong>' . "\n";
 		    }
 		    else
 		    {
-		    	$htmlEditForm .= '<strong>' . get_lang('Create a new document') . '</strong>' . "\n";
+		    	$htmlEditForm .= '<strong>' . get_lang('Create a new page') . '</strong>' . "\n";
 		    }
 
-		    $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?docId='.$docId.'" method="post">' . "\n"
+		    $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pageId='.$pageId.'" method="post">' . "\n"
 		    .    claro_form_relay_context()
 		    .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
 		    .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
 
 		    // title
 		    .	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-		    .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($document->getTitle()).'" /><br />' . "\n"
+		    .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($page->getTitle()).'" /><br />' . "\n"
 		    // description
 		    .	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
-		    .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($document->getDescription()).'</textarea><br />'
+		    .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($page->getDescription()).'</textarea><br />'
 
 		    .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
 		    .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
@@ -146,9 +146,9 @@
 
 		if( $cmd == 'exDelete' )
 	    {
-	    	if( $document->delete() )
+	    	if( $page->delete() )
 	    	{
-	    		$dialogBox->success( get_lang('Document succesfully deleted') );
+	    		$dialogBox->success( get_lang('Page succesfully deleted') );
 	    	}
 	    	else
 	    	{
@@ -158,9 +158,9 @@
 
 	    if( $cmd == 'rqDelete' )
 	    {
-	        $htmlConfirmDelete = get_lang('Are you sure to delete document "%docTitle" ?', array('%docTitle' => htmlspecialchars($document->getTitle()) ))
+	        $htmlConfirmDelete = get_lang('Are you sure to delete page "%pageTitle" ?', array('%pageTitle' => htmlspecialchars($page->getTitle()) ))
 			.	 '<br /><br />'
-	        .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;docId='.$docId.'">' . get_lang('Yes') . '</a>'
+	        .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pageId='.$pageId.'">' . get_lang('Yes') . '</a>'
 	        .    '&nbsp;|&nbsp;'
 	        .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
 	        ;
@@ -170,16 +170,16 @@
 
 		if( $cmd == 'exVisible' )
 	    {
-	    	$document->setVisible();
+	    	$page->setVisible();
 
-	    	$document->save();
+	    	$page->save();
 	    }
 
 	    if( $cmd == 'exInvisible' )
 	    {
-	    	$document->setInvisible();
+	    	$page->setInvisible();
 
-	    	$document->save();
+	    	$page->save();
 	    }
 	}
 
@@ -188,16 +188,14 @@
 	 */
 
 	$cssLoader = CssLoader::getInstance();
-    $cssLoader->load( 'clauthor', 'screen');
-    // optional since we are using default display type
-    $claroline->setDisplayType( CL_PAGE );
+    $cssLoader->load( 'clpages', 'screen');
 
 	$out = '';
 	$htmlHeaders = '';
 
 	$claroline->display->header->addHtmlHeader($htmlHeaders);
 
-	$nameTools = get_lang('Authoring');
+	$nameTools = get_lang('Pages');
 
 	$out .= claro_html_tool_title($nameTools);
 
@@ -206,7 +204,7 @@
 	$cmdMenu = array();
 	if($is_allowedToEdit)
 	{
-	    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new document'));
+	    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new page'));
 	}
 
 	$out .= '<p>'
@@ -216,7 +214,7 @@
 	$out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 	.    '<thead>' . "\n"
 	.    '<tr class="headerX" align="center" valign="top">' . "\n"
-	.	 '<th>' . get_lang('Document') . '</th>' . "\n"
+	.	 '<th>' . get_lang('Page') . '</th>' . "\n"
 	.	 '<th>' . get_lang('Creation date') . '</th>' . "\n";
 
 	if( $is_allowedToEdit )
@@ -229,65 +227,65 @@
     $out .= '</tr>' . "\n"
     .    '</thead>' . "\n";
 
-	// list display
-	$listLoader = new docList();
+
+	$listLoader = new pageList();
 
 	if( $is_allowedToEdit )
 	{
-		// load all documents
-		$docListAray = $listLoader->load(true);
+		// all
+		$pageListAray = $listLoader->load(true);
 	}
 	else
 	{
-		// load only visible documents
-		$docListAray = $listLoader->load(false);
+		// only visible
+		$pageListAray = $listLoader->load(false);
 	}
 
 
 
-	if( !empty($docListAray) && is_array($docListAray) )
+	if( !empty($pageListAray) && is_array($pageListAray) )
     {
         $i = 0;
-        $lpCount = count($docListAray);
+        $lpCount = count($pageListAray);
         $totalProgress = 0;
 
         $out .= '<tbody>' . "\n";
 
-        foreach( $docListAray as $aDoc )
+        foreach( $pageListAray as $aPage )
         {
             $i++;
             $out .= '<tr>' . "\n";
 
             // title
             $out .= '<td>' . "\n"
-            .    '<a href="doc.php?docId='.$aDoc['id'].'" title="'.htmlspecialchars(strip_tags($aDoc['description'])).'">'
+            .    '<a href="page.php?pageId='.$aPage['id'].'" title="'.htmlspecialchars(strip_tags($aPage['description'])).'">'
             .    claro_html_icon('learnpath') . '&nbsp;'
-            .    htmlspecialchars($aDoc['title'])
+            .    htmlspecialchars($aPage['title'])
             .    '</a>' . "\n"
             .    '</td>' . "\n"
 
             .	 '<td align="center">' . "\n"
-            .    $aDoc['creationTime']
+            .    $aPage['creationTime']
             .    '</td>' . "\n";
 
 			if( $is_allowedToEdit )
 			{
 				$out .= '<td align="center">' . "\n"
-	            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqEdit&amp;docId='.$aDoc['id'].'">'
+	            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqEdit&amp;pageId='.$aPage['id'].'">'
 	            .    claro_html_icon('edit')
 	            .    '</a>' . "\n"
 	            .    '</td>' . "\n"
 
 	            .	 '<td align="center">' . "\n"
-	            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqDelete&amp;docId='.$aDoc['id'].'">'
+	            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqDelete&amp;pageId='.$aPage['id'].'">'
 	            .    claro_html_icon('delete')
 	            .    '</a>' . "\n"
 	            .    '</td>' . "\n";
 
-				if( $aDoc['visibility'] == 'VISIBLE' )
+				if( $aPage['visibility'] == 'VISIBLE' )
 				{
 		            $out .= '<td align="center">' . "\n"
-		            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exInvisible&amp;docId='.$aDoc['id'].'">'
+		            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exInvisible&amp;pageId='.$aPage['id'].'">'
 		            .    claro_html_icon('visible')
 		            .    '</a>' . "\n"
 		            .    '</td>' . "\n";
@@ -295,7 +293,7 @@
 				else
 				{
 					$out .= '<td align="center">' . "\n"
-		            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exVisible&amp;docId='.$aDoc['id'].'">'
+		            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exVisible&amp;pageId='.$aPage['id'].'">'
 		            .    claro_html_icon('invisible')
 		            .    '</a>' . "\n"
 		            .    '</td>' . "\n";
@@ -309,7 +307,7 @@
     {
         $out .= '<tfoot>' . "\n"
         .    '<tr>' . "\n"
-        .    '<td align="center" colspan="3">' . get_lang('No documents') . '</td>' . "\n"
+        .    '<td align="center" colspan="3">' . get_lang('No pages') . '</td>' . "\n"
         .    '</tr>' . "\n"
         .    '</tfoot>' . "\n";
     }

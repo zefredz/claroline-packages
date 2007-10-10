@@ -9,21 +9,23 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *
  */
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-    class DefaultComponent extends Component
+    class TextComponent extends Component
     {
+    	private $content = '';
+
 		/**
 		 * @see Component
 		 */
     	function render()
     	{
-			return ( claro_is_allowed_to_edit() ? '<p>'.get_lang('Deprecated plugin, contact administrator').'</p>': '');
+			return claro_parse_user_text($this->content);
     	}
 
 		/**
@@ -31,7 +33,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function editor()
     	{
-    		return '';
+    		return '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->render()).'</textarea>';
+    		//return claro_html_textarea_editor('content_'. $this->getId(), $this->render(), 20, 80 );
     	}
 
 		/**
@@ -39,7 +42,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function getEditorData()
     	{
-    		// do nothing
+    		$this->content = $this->getFromRequest('content_'.$this->getId());
     	}
 
 		/**
@@ -47,7 +50,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function setData( $data )
     	{
-  			// do nothing
+  			$this->content = $data['content'];
     	}
 
 		/**
@@ -55,10 +58,9 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function getData()
     	{
-    		// do nothing
+    		return array('content' => $this->content);
     	}
     }
 
-	// do not register this default plugin
-    //PluginRegistry::register('default',get_lang('Text'),'TextComponent');
+    PluginRegistry::register('text',get_lang('Text'),'TextComponent');
 ?>

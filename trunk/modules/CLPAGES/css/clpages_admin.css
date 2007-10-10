@@ -1,5 +1,5 @@
 
-#authorSidebar
+#pageSidebar
 {
     border-left: 1px solid #ccc;
     float:right;
@@ -32,7 +32,7 @@
 	border-right: 1px solid #ccc;
 }
 
-#clauthor_loading
+#loading
 {
 	float: right;
 }
