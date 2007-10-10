@@ -187,7 +187,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 					. 	 '  </span>' . "\n";
 				}
 
-				$out .= '  <span class="componentHeaderTitle">&nbsp;'  . $this->getTitle() . '</span>' . "\n"
+				$out .= '  <span class="componentHeaderTitle">&nbsp;'  . htmlspecialchars($this->getTitle()) . '</span>' . "\n"
 				.	 ' </div>' . "\n";
 			}
 
