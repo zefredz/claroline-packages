@@ -8,7 +8,7 @@
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *
@@ -16,10 +16,10 @@
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
     // load Claroline kernel
-    $tlabelReq = 'CLAUTHOR';
+    $tlabelReq = 'CLPAGES';
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-	require_once dirname( __FILE__ ) . '/lib/clauthor.lib.php';
+	require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
 	require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
 	// load and register all plugins
 	$pluginRegistry = pluginRegistry::getInstance();
@@ -28,8 +28,8 @@
 	/*
 	 * init request vars
 	 */
-	if( isset($_REQUEST['docId']) && is_numeric($_REQUEST['docId']) )   $docId = (int) $_REQUEST['docId'];
-	else                                                                $docId = null;
+	if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) ) $pageId = (int) $_REQUEST['pageId'];
+	else                                                                $pageId = null;
 
 
 	/*
@@ -38,18 +38,18 @@
 	claro_set_display_mode_available(true);
 	$is_allowedToEdit = claro_is_allowed_to_edit();
 
-	if( is_null($docId) )
+	if( is_null($pageId) )
 	{
 		header("Location: ./index.php");
 		exit();
 	}
 	else
 	{
-	    $doc = new Document();
+	    $page = new Page();
 
-	    if( !$doc->load($docId) )
+	    if( !$page->load($pageId) )
 	    {
-	        // doc is required
+	        // required
 	        header("Location: ../index.php");
 	    	exit();
 	    }
@@ -59,7 +59,7 @@
 	 * Output
 	 */
 	$cssLoader = CssLoader::getInstance();
-    $cssLoader->load( 'clauthor', 'screen');
+    $cssLoader->load( 'clpages', 'screen');
 
 	if( $is_allowedToEdit )
 	{
@@ -71,15 +71,15 @@
 	    $jsloader->load('jquery.livequery');
 	    $jsloader->load('jquery.json');
 	    $jsloader->load('jquery.form');
-	    $jsloader->load('clauthor');
+	    $jsloader->load('clpages');
 
-		$cssLoader->load( 'clauthor_admin', 'screen');
+		$cssLoader->load( 'clpages_admin', 'screen');
 
 		$htmlHeaders = "\n"
 		.    '<script type="text/javascript">' . "\n"
 		.	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
-		.	 '  var docId = "'.$docId.'";'
-		.	 '  var moduleUrl = "'.get_module_url('CLAUTHOR').'/";' . "\n"
+		.	 '  var pageId = "'.$page->getId().'";'
+		.	 '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
 		.    '</script>' . "\n\n";
 
 		$claroline->display->header->addHtmlHeader($htmlHeaders);
@@ -88,20 +88,20 @@
 
    	$out = '';
 
-	$interbredcrump[]= array ('url' => './index.php' . claro_url_relay_context('?'), 'name' => get_lang('Authoring'));
+	$interbredcrump[]= array ('url' => './index.php' . claro_url_relay_context('?'), 'name' => get_lang('Pages'));
 
-   	$nameTools = get_lang('Edit document');
+   	$nameTools = get_lang('Page');
 
 	$out .= claro_html_tool_title($nameTools)
-   	.	 '<div id="authorContainer">' . "\n";
+   	.	 '<div id="pageContainer">' . "\n";
 
    	if( $is_allowedToEdit )
    	{
    		$pluginRegistry = pluginRegistry::getInstance();
    		$availablePlugins = $pluginRegistry->getList();
 
-   		$out .= '<div id="authorSidebar">' . "\n"
-   		.	 '<img src="'.get_module_url('CLAUTHOR').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="clauthor_loading" width="16" height="16" />' . "\n"
+   		$out .= '<div id="pageSidebar">' . "\n"
+   		.	 '<img src="'.get_module_url('CLPAGES').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
    		.	 '<ul>' . "\n";
 
    		foreach( $availablePlugins as $pluginType => $pluginDetails )
@@ -117,7 +117,7 @@
 
 	$out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
 
-	$componentList = $doc->getComponentList();
+	$componentList = $page->getComponentList();
 
 	foreach( $componentList as $component )
 	{
@@ -130,7 +130,7 @@
 	// componentsContainer
 	$out .= '</div>' . "\n\n"
 	.	 '<div class="spacer"></div>' . "\n"
-	// authorContainer
+	// pageContainer
    	.	 '</div>' . "\n";
 
 

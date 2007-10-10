@@ -9,7 +9,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *

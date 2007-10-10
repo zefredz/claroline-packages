@@ -49,9 +49,9 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 				    {
 				        if( $i < $limit )
 				        {
-				            $out .= '<div class="authorRssItem">'
-							.	 '<div class="authorRssItemHeader"><a href="' . claro_utf8_decode($item['link']) . '">' . claro_utf8_decode($item['title']) . '</a></div>' . "\n"
-							.	 '<div  class="authorRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode($item['description'])) . '</div>' . "\n"
+				            $out .= '<div class="componentRssItem">'
+							.	 '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode($item['link']) . '">' . claro_utf8_decode($item['title']) . '</a></div>' . "\n"
+							.	 '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode($item['description'])) . '</div>' . "\n"
 							.	 '</div>' . "\n";
 				            $i++;
 				        }

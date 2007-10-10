@@ -9,7 +9,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *
@@ -19,7 +19,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     abstract class Component
     {
     	private $id = 0;
-    	private $docId = 0;
+    	private $pageId = 0;
     	private $title = '';
     	private $type = '';
     	private $visibility = 'VISIBLE';
@@ -83,21 +83,15 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     		$this->rank = (int) $rank;
     	}
 
-    	/* Move this to document class
-    	public function move(){}
-    	public function moveUp(){}
-    	public function moveDown(){}
-    	*/
-
-		// document id
-    	public function getDocId()
+		// page id
+    	public function getPageId()
     	{
-    		return (int) $this->docId;
+    		return (int) $this->pageId;
     	}
 
-		public function setDocId( $docId )
+		public function setPageId( $pageId )
 		{
-			$this->docId = (int) $docId;
+			$this->pageId = (int) $pageId;
 		}
 
 		// type
@@ -187,7 +181,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 					. 	 '  </span>' . "\n";
 				}
 
-				$out .= '  <span class="componentHeaderTitle">&nbsp;'  . htmlspecialchars($this->getTitle()) . '</span>' . "\n"
+				$out .= '  <span class="componentHeaderTitle '.($this->isTitleVisible()?'':' invisible').'">&nbsp;'  . htmlspecialchars($this->getTitle()) . '</span>' . "\n"
 				.	 ' </div>' . "\n";
 			}
 
@@ -199,6 +193,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 			return $out;
     	}
+
+
     	public function renderEditor()
     	{
 			$out = "\n\n" . ' <div class="componentEditor">' . "\n"
@@ -207,7 +203,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 			.    claro_form_relay_context()
     		.	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
    			.	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
-   			.	 '<input type="hidden" name="docId" value="'.$this->getDocId().'" />' . "\n"
+   			.	 '<input type="hidden" name="pageId" value="'.$this->getPageId().'" />' . "\n"
    			.	 '<input type="hidden" name="itemId" value="'.$this->getId().'" />' . "\n"
    			.	 '<input type="hidden" name="itemType" value="'.$this->getType().'" />' . "\n"
    			// title
@@ -232,16 +228,16 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		// load
     	public function load( $id )
     	{
-    		$tblList = get_module_course_tbl( array( 'clauthor_contents' ), claro_get_current_course_id() );
+    		$tblList = get_module_course_tbl( array( 'clpages_contents' ), claro_get_current_course_id() );
 			$sql = "SELECT `id`,
 	                    `title`,
-	                    `docId`,
+	                    `pageId`,
 	                    `type`,
 	                    `data`,
 	                    `visibility`,
 	                    `titleVisibility`,
 	                    `rank`
-					FROM `".$tblList['clauthor_contents']."`
+					FROM `".$tblList['clpages_contents']."`
 					WHERE id = '".(int) $id . "'";
 
 			$data = claro_sql_query_get_single_row($sql);
@@ -250,7 +246,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	        {
 	            // from query
 	            $this->id = (int) $data['id'];
-	            $this->docId = (int) $data['docId'];
+	            $this->pageId = (int) $data['pageId'];
 	            $this->title = $data['title'];
 	            $this->type = $data['type'];
 	            $this->visibility = $data['visibility'];
@@ -269,15 +265,15 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		// save
     	public function save()
     	{
-    		$tblList = get_module_course_tbl( array( 'clauthor_contents' ), claro_get_current_course_id() );
+    		$tblList = get_module_course_tbl( array( 'clpages_contents' ), claro_get_current_course_id() );
 
 	        if( ! $this->getId() )
 	        {
 	            $this->setRank( $this->getHigherRank() + 1 );
 
 	            // insert
-	            $sql = "INSERT INTO `".$tblList['clauthor_contents']."`
-	                    SET `docId` = '".$this->getDocId()."',
+	            $sql = "INSERT INTO `".$tblList['clpages_contents']."`
+	                    SET `pageId` = '".$this->getPageId()."',
 	                    	`title` = '".addslashes($this->getTitle())."',
 	                        `type` = '".addslashes($this->getType())."',
 	                        `visibility` = '".addslashes($this->getVisibility())."',
@@ -302,8 +298,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	        else
 	        {
 	            // update, main query
-	            $sql = "UPDATE `".$tblList['clauthor_contents']."`
-	                    SET `docId` = '".$this->getDocId()."',
+	            $sql = "UPDATE `".$tblList['clpages_contents']."`
+	                    SET `pageId` = '".$this->getPageId()."',
 	                    	`title` = '".addslashes($this->getTitle())."',
 	                        `type` = '".addslashes($this->getType())."',
 	                        `visibility` = '".addslashes($this->getVisibility())."',
@@ -328,9 +324,9 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	{
 	        if( ! $this->getId() ) return true;
 
-			$tblList = get_module_course_tbl( array( 'clauthor_contents' ), claro_get_current_course_id() );
+			$tblList = get_module_course_tbl( array( 'clpages_contents' ), claro_get_current_course_id() );
 
-	        $sql = "DELETE FROM `" . $tblList['clauthor_contents'] . "`
+	        $sql = "DELETE FROM `" . $tblList['clpages_contents'] . "`
 	                WHERE `id` = " . $this->getId() ;
 
 	        if( claro_sql_query($sql) == false ) return false;
@@ -341,12 +337,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
     	function getHigherRank()
 	    {
-	    	$tblList = get_module_course_tbl( array( 'clauthor_contents' ), claro_get_current_course_id() );
+	    	$tblList = get_module_course_tbl( array( 'clpages_contents' ), claro_get_current_course_id() );
 
 	    	// use max instead of count to handle suppressed attempts
 	    	$sql = "SELECT MAX(`rank`)
-	    			FROM ".$tblList['clauthor_contents']."
-	    			WHERE `docId` = ".(int) $this->docId;
+	    			FROM ".$tblList['clpages_contents']."
+	    			WHERE `pageId` = ".(int) $this->pageId;
 
 	    	$higherRank = claro_sql_query_get_single_value($sql);
 
@@ -374,7 +370,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	    }
     }
 
-    class Document
+    class Page
     {
     	private $id = 0;
     	private $title = '';
@@ -396,7 +392,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		// load
     	public function load( $id )
     	{
-    		$tblList = get_module_course_tbl( array( 'clauthor_docs' ), claro_get_current_course_id() );
+    		$tblList = get_module_course_tbl( array( 'clpages_pages' ), claro_get_current_course_id() );
 			$sql = "SELECT
 						`id`,
 	                    `title`,
@@ -406,7 +402,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	                    `creationTime`,
 	                    `lastModificationTime`,
 	                    `visibility`
-					FROM `".$tblList['clauthor_docs']."`
+					FROM `".$tblList['clpages_pages']."`
 					WHERE id = '".(int) $id . "'";
 
 			$data = claro_sql_query_get_single_row($sql);
@@ -437,12 +433,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		// save
     	public function save()
     	{
-    		$tblList = get_module_course_tbl( array( 'clauthor_docs' ), claro_get_current_course_id() );
+    		$tblList = get_module_course_tbl( array( 'clpages_pages' ), claro_get_current_course_id() );
 
 	        if( ! $this->getId() )
 	        {
 	        	// insert
-	            $sql = "INSERT INTO `".$tblList['clauthor_docs']."`
+	            $sql = "INSERT INTO `".$tblList['clpages_pages']."`
 	                    SET `title` = '".addslashes($this->getTitle())."',
 	                    	`description` = '".addslashes($this->getDescription())."',
 	                    	`authorId` = '".$this->getAuthorId()."',
@@ -469,7 +465,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	        {
 	            // update, main query
 	            // do not update creation time and author id on update
-	            $sql = "UPDATE `".$tblList['clauthor_docs']."`
+	            $sql = "UPDATE `".$tblList['clpages_pages']."`
 	                    SET `title` = '".addslashes($this->getTitle())."',
 	                    	`description` = '".addslashes($this->getDescription())."',
 	                    	`editorId` = '".$this->getEditorId()."',
@@ -494,15 +490,15 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	{
 	        if( ! $this->getId() ) return true;
 
-			$tblList = get_module_course_tbl( array( 'clauthor_docs', 'clauthor_contents' ), claro_get_current_course_id() );
+			$tblList = get_module_course_tbl( array( 'clpages_pages', 'clpages_contents' ), claro_get_current_course_id() );
 
-	        $sql = "DELETE FROM `" . $tblList['clauthor_docs'] . "`
+	        $sql = "DELETE FROM `" . $tblList['clpages_pages'] . "`
 	                WHERE `id` = " . $this->getId() ;
 
 	        if( claro_sql_query($sql) == false ) return false;
 
-			$sql = "DELETE FROM `" . $tblList['clauthor_contents'] . "`
-	                WHERE `docId` = " . $this->getId() ;
+			$sql = "DELETE FROM `" . $tblList['clpages_contents'] . "`
+	                WHERE `pageId` = " . $this->getId() ;
 
 	        if( claro_sql_query($sql) == false ) return false;
 
@@ -512,20 +508,20 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 		private function createComponents()
 		{
-			$tbl_lp_names = get_module_course_tbl( array('clauthor_contents'), claro_get_current_course_id() );
-	        $tblContents = $tbl_lp_names['clauthor_contents'];
+			$tbl_lp_names = get_module_course_tbl( array('clpages_contents'), claro_get_current_course_id() );
+	        $tblContents = $tbl_lp_names['clpages_contents'];
 
 	        $sql = "SELECT
 	                    `id`,
 	                    `title`,
-	                    `docId`,
+	                    `pageId`,
 	                    `type`,
 	                    `data`,
 	                    `visibility`,
 	                    `titleVisibility`,
 	                    `rank`
 	            FROM `".$tblContents."`
-	            WHERE `docId` = ". $this->getId() ."
+	            WHERE `pageId` = ". $this->getId() ."
 	            ORDER BY `rank` ASC";
 
 	        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
@@ -544,7 +540,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 					if( $component )
 					{
 		        		$component->setId($componentData['id']);
-		        		$component->setDocId($componentData['docId']);
+		        		$component->setPageId($componentData['pageId']);
 		        		$component->setTitle($componentData['title']);
 		        		$component->setType($componentData['type']);
 		        		$component->setVisibility($componentData['visibility']);
@@ -579,7 +575,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 	        if( empty($title) )
 	        {
-	            claro_failure::set_failure('document_no_title');
+	            claro_failure::set_failure('page_no_title');
 	            return false;
 	        }
 
@@ -593,7 +589,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 		//-- Getter & Setter
 
-		// document id
+		// page id
 	    public function getId()
 	    {
 	        return (int) $this->id;
@@ -706,12 +702,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     }
 
 
-    class DocList
+    class PageList
 	{
 	    /**
-	     * @var $tblDocs name of the docs table
+	     * @var $tblPages name of the pages table
 	     */
-	    private $tblDocs;
+	    private $tblPages;
 
 
 	    /**
@@ -722,12 +718,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	    function __construct()
 	    {
 	        $tblNameList = array(
-	            'clauthor_docs'
+	            'clpages_pages'
 	        );
 
 	        // convert to Claroline course table names
 	        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
-	        $this->tblDocs = $tbl_lp_names['clauthor_docs'];
+	        $this->tblPages = $tbl_lp_names['clpages_pages'];
 	    }
 
 		/**
@@ -756,7 +752,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	                    `creationTime`,
 	                    `lastModificationTime`,
 	                    `visibility`
-	            FROM `".$this->tblDocs."`
+	            FROM `".$this->tblPages."`
 	            ORDER BY `creationTime`";
 
 	        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
@@ -780,7 +776,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	                    `creationTime`,
 	                    `lastModificationTime`,
 	                    `visibility`
-	            FROM `".$this->tblDocs."`
+	            FROM `".$this->tblPages."`
 	            WHERE `visibility` = 'VISIBLE'
 	            ORDER BY `creationTime`";
 
@@ -819,8 +815,6 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 			{
 				return new DefaultComponent();
 			}
-
-			return false;
 		}
 	}
 

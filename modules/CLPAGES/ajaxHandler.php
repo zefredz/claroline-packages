@@ -8,13 +8,13 @@
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Sebastien Piraux
  *
  */
 
-$tlabelReq = 'CLAUTHOR';
+$tlabelReq = 'CLPAGES';
 
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
@@ -27,7 +27,7 @@ if ( !claro_is_allowed_to_edit() || !claro_is_in_a_course() )
 /*
  * Tool libraries
  */
-require_once dirname( __FILE__ ) . '/lib/clauthor.lib.php';
+require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
 require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
 // load and register all plugins
 $pluginRegistry = pluginRegistry::getInstance();
@@ -41,8 +41,8 @@ $acceptedCmdList = array('exOrder', 'addItem', 'deleteItem', 'getEditor', 'mkVis
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
 
-if( isset($_REQUEST['docId']) && is_numeric($_REQUEST['docId']) )   $docId = (int) $_REQUEST['docId'];
-else                                                                $docId = null;
+if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) )   $pageId = (int) $_REQUEST['pageId'];
+else                                                                $pageId = null;
 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemId = null;
@@ -56,10 +56,10 @@ header('Content-Type: text/html; charset=UTF-8');
 
 if( $cmd == 'exOrder' )
 {
-	$tbl_lp_names = get_module_course_tbl( array('clauthor_contents'), claro_get_current_course_id() );
-    $tblContents = $tbl_lp_names['clauthor_contents'];
+	$tbl_lp_names = get_module_course_tbl( array('clpages_content'), claro_get_current_course_id() );
+    $tblContents = $tbl_lp_names['clpages_content'];
 
-	if( is_array($_REQUEST['componentsContainer']) && !is_null($docId) )
+	if( is_array($_REQUEST['componentsContainer']) && !is_null($pageId) )
 	{
 		// $_REQUEST['componentsContainer'] is the ordered list of items, key is position, value is html id
 		// html id is concatenation of item_ and the id of item
@@ -71,7 +71,7 @@ if( $cmd == 'exOrder' )
 			$sql = "UPDATE `".$tblContents."`
 					SET `rank` = ".$position."
 					WHERE `id` = ".$movedComponentId."
-						AND `docId` = ".$docId;
+						AND `pageId` = ".$pageId;
 
 			claro_sql_query($sql);
 		}
@@ -83,7 +83,7 @@ if( $cmd == 'exOrder' )
 
 if( $cmd == 'addItem')
 {
-	if( is_null($docId) || is_null($itemType) ) return false;
+	if( is_null($pageId) || is_null($itemType) ) return false;
 
 	$factory = new ComponentFactory();
 
@@ -92,7 +92,7 @@ if( $cmd == 'addItem')
 	if( $component )
 	{
 		// save component as we need to have an id for it !
-		$component->setDocId($docId);
+		$component->setPageId($pageId);
 		$component->setType($itemType);
 		$component->setInvisible();
 		$component->save();
@@ -106,7 +106,7 @@ if( $cmd == 'addItem')
 
 if( $cmd == 'getComponent')
 {
-	if( is_null($docId) || is_null($itemType) || is_null($itemId) ) return false;
+	if( is_null($pageId) || is_null($itemType) || is_null($itemId) ) return false;
 
 	$factory = new ComponentFactory();
 

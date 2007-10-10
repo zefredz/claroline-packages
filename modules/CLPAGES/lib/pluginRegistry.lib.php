@@ -9,7 +9,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package CLAUTHOR
+ * @package CLPAGES
  *
  * @author Claroline team <info@claroline.net>
  *
@@ -47,7 +47,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		{
 			$allowedExtensions = array('.php','.php3','.php4','.php4','.php6');
 
-	    	$path = get_module_path('CLAUTHOR') . '/lib/plugins';
+	    	$path = get_module_path('CLPAGES') . '/lib/plugins';
 
 	        $dirname = realpath($path) . '/' ;
 	        if ( is_dir($dirname) )

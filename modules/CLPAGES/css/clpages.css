@@ -36,17 +36,17 @@
 }
 
 
-.authorRssItem
+.componentRssItem
 {
 	margin: 5px;
 }
 
-.authorRssItemHeader
+.componentRssItemHeader
 {
 	border-bottom: 1px solid #ccc;
 }
 
-.authorRssItemContent
+.componentRssItemContent
 {
 	padding: 2px;
 }

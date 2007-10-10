@@ -1,11 +1,11 @@
 <module>
-  <label>CLAUTHOR</label>
-  <name>Authoring tool</name>
+  <label>CLPAGES</label>
+  <name>Pages</name>
   <version>0.1</version>
   <license>GPL</license>
   <type>tool</type>
   <entry>index.php</entry>
-  <icon>icon.png</icon>
+  <icon>/img/page.gif</icon>
 
   <description>
 
