@@ -17,3 +17,20 @@
 	padding: 5px;
 	background: #FFF;
 }
+
+.captionImg
+{
+	padding: 5px;
+	text-align: center;
+}
+
+.captionImg img
+{
+	border: 1px solid #ccc;
+}
+
+.captionImg .caption
+{
+	text-align: center;
+	font-size: small;
+}
