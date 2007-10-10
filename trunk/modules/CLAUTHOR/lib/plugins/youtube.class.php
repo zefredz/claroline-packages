@@ -29,7 +29,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     		{
 	    		return '<center>' . "\n"
 				.	 '<object width="425" height="353">' . "\n"
-				.	 '<param name="movie" value="http://www.youtube.com/v/'.$this->videoId.'&rel=1"></param>' . "\n"
+				.	 '<param name="movie" value="http://www.youtube.com/v/'.htmlspecialchars($this->videoId).'&rel=1"></param>' . "\n"
 				.	 '<param name="wmode" value="transparent"></param>' . "\n"
 				.	 '<embed src="http://www.youtube.com/v/'.$this->videoId.'&rel=1" type="application/x-shockwave-flash" wmode="transparent" width="425" height="353"></embed>' . "\n"
 				.	 '</object>' . "\n"

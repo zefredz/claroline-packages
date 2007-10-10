@@ -32,7 +32,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
     		if( !empty($this->url) )
     		{
-    			return '<iframe src="'.$this->url.'" width="100%" height="'.$height.'"></iframe>';
+    			return '<iframe src="'.htmlspecialchars($this->url).'" width="100%" height="'.$height.'"></iframe>';
     		}
     		else
     		{
