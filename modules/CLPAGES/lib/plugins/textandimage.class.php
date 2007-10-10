@@ -17,7 +17,7 @@
      *              GNU GENERAL PUBLIC LICENSE
      * @package     CLPAGES
      */
-     
+
     class TextAndImageComponent extends Component
     {
         private $content = '';
@@ -27,17 +27,19 @@
     	private $caption = '';
     	private $height = 0;
     	private $width = 0;
-    	
+
     	public function render()
     	{
-            $out = '<div style="float:'.$this->textAlign.'">' . claro_parse_user_text($this->content) . '</div>';
-            
+    		// Text
+            $out = '<div style="float:'.$this->textAlign.'; max-width: 50%;">' . claro_parse_user_text($this->content) . '</div>';
+
+			// Image
             if( !empty($this->url) )
     		{
     			if( !empty($this->height) ) $height = 'height="'.htmlspecialchars($this->height).'"';
     			else						$height = '';
 
-    			if( !empty($this->height) ) $width = 'width="'.htmlspecialchars($this->width).'"';
+    			if( !empty($this->width) ) $width = 'width="'.htmlspecialchars($this->width).'"';
     			else						$width = '';
 
 	    		$out .= '<div class="captionImg" style="float:'.$this->imgAlign.'">' . "\n"
@@ -51,17 +53,34 @@
     		{
     			$out .= '' . "\n";
     		}
-    		
+
             $out .= '<div class="spacer"></div>';
-    		
+
             return $out;
     	}
-    	
+
     	public function editor()
     	{
-            $out = '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>';
-            
-            $out .= '<label for="url_'.$this->getId().'">' . get_lang('Url of an image') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+    		$out = '';
+
+            $out .= get_lang('Layout :') . '&nbsp;<span class="required">*</span><br />' . "\n"
+    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="layout_'.$this->getId().'_left" value="left"'.( $this->textAlign == 'left' ? ' checked="checked"' : ''  ).' />'
+    		.    '<label for="layout_'.$this->getId().'_left">' . get_lang('Text on left') . '</label>' . "\n"
+    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="layout_'.$this->getId().'_right" value="right"'.( $this->textAlign == 'right' ? ' checked="checked"' : ''  ).' />'
+    		.    '<label for="layout_'.$this->getId().'_right">' . get_lang('Text on right') . '</label><br /><br />' . "\n"
+    		;
+
+    		// Text
+            $out .= '<fieldset>' . "\n"
+            .	 '<legend>'.get_lang('Text').'</legend>' . "\n"
+			.	 '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>'
+			.	 '</fieldset>' . "\n"
+			;
+
+			// Image
+            $out .= '<fieldset>' . "\n"
+            .	 '<legend>'.get_lang('Image').'</legend>' . "\n"
+			.	 '<label for="url_'.$this->getId().'">' . get_lang('Url of an image') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
     		.	 '<input type="text" name="url_'.$this->getId().'" id="url_'.$this->getId().'" maxlength="255" size="60" value="'.htmlspecialchars($this->url).'" /><br />' . "\n"
     		// caption
     		.	 '<label for="caption_'.$this->getId().'">' . get_lang('Caption') . '</label><br />' . "\n"
@@ -70,22 +89,17 @@
 			.	 '<label for="height_'.$this->getId().'">' . get_lang('Height') . '</label><br />' . "\n"
     		.	 '<input type="text" name="height_'.$this->getId().'" id="height_'.$this->getId().'" maxlength="10" size="10" value="'.htmlspecialchars($this->height).'" />' . "\n"
     		.	 '&nbsp;<small>'.get_lang('Leave emtpy to keep original size').'</small><br />' . "\n"
-    		// size - wodth
+    		// size - width
     		.	 '<label for="width_'.$this->getId().'">' . get_lang('Width') . '</label><br />' . "\n"
     		.	 '<input type="text" name="width_'.$this->getId().'" id="width_'.$this->getId().'" maxlength="10" size="10" value="'.htmlspecialchars($this->width).'" />' . "\n"
     		.	 '&nbsp;<small>'.get_lang('Leave emtpy to keep original size').'</small><br />' . "\n"
+    		.	 '</fieldset>' . "\n"
     		;
-    		
-            $out .= get_lang('Layout :') . '&nbsp;<span class="required">*</span><br />' . "\n"
-    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="align_'.$this->getId().'_left" value="left"'.( $this->textAlign == 'left' ? ' checked="checked"' : ''  ).' />'
-    		.    '<label for="layout_'.$this->getId().'_left">' . get_lang('Text on left') . '</label><br />' . "\n"
-    		.	 '<input type="radio" name="layout_'.$this->getId().'" id="align_'.$this->getId().'_right" value="right"'.( $this->textAlign == 'right' ? ' checked="checked"' : ''  ).' />'
-    		.    '<label for="layout_'.$this->getId().'_right">' . get_lang('Text on right') . '</label><br />' . "\n"
-    		;
-    		
+
+
     		return $out;
     	}
-    	
+
     	public function getEditorData()
     	{
             $this->url = $this->getFromRequest('url_'.$this->getId());
@@ -96,7 +110,7 @@
     		$this->textAlign = $this->getFromRequest('layout_'.$this->getId());
     		$this->imgAlign = $this->textAlign == 'left' ? 'right' : 'left';
     	}
-    	
+
     	/**
 		 * @see Component
 		 */
@@ -126,6 +140,6 @@
 			);
     	}
     }
-    
+
     PluginRegistry::register('textandimage',get_lang('Text and image'),'TextAndImageComponent');
 ?>
