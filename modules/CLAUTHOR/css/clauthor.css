@@ -34,3 +34,19 @@
 	text-align: center;
 	font-size: small;
 }
+
+
+.authorRssItem
+{
+	margin: 5px;
+}
+
+.authorRssItemHeader
+{
+	border-bottom: 1px solid #ccc;
+}
+
+.authorRssItemContent
+{
+	padding: 2px;
+}
