@@ -25,7 +25,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function render()
     	{
-			return $this->content;
+			return claro_parse_user_text($this->content);
     	}
 
 		/**
@@ -33,7 +33,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 		 */
     	function editor()
     	{
-    		return '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.$this->render().'</textarea>';
+    		return '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->render()).'</textarea>';
     		//return claro_html_textarea_editor('content_'. $this->getId(), $this->render(), 20, 80 );
     	}
 
