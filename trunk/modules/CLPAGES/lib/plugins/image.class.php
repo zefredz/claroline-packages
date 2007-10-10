@@ -33,7 +33,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     			if( !empty($this->height) ) $height = 'height="'.htmlspecialchars($this->height).'"';
     			else						$height = '';
 
-    			if( !empty($this->height) ) $width = 'width="'.htmlspecialchars($this->width).'"';
+    			if( !empty($this->width) ) $width = 'width="'.htmlspecialchars($this->width).'"';
     			else						$width = '';
 
 	    		$out = '<div class="captionImg">' . "\n"
