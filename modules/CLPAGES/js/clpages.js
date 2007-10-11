@@ -124,6 +124,7 @@
 		    		if( response != '' )
 		    		{
 			    		$("#component_" + id + " .componentHeader").after(response);
+			    		$("#component_" + id + " textarea").tinymce();
 
 			    		$("#component_" + id + " form").ajaxForm({
 					        success: function(response){
@@ -289,6 +290,20 @@
 		}
 	}
 
+
+	$.fn.tinymce = function(options)
+	{
+	    return this.each(function(){
+	    	try {
+	    		tinyMCE.addMCEControl(document.getElementById(this.id), this.id);
+	    	}
+	    	catch(e)
+	    	{
+	    		alert(e.message);
+	    	}
+			return '';
+	    });
+	}
 
 
 	function dump(arr,level) {
