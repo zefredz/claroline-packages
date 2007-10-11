@@ -259,7 +259,7 @@
             // title
             $out .= '<td>' . "\n"
             .    '<a href="page.php?pageId='.$aPage['id'].'" title="'.htmlspecialchars(strip_tags($aPage['description'])).'">'
-            .    claro_html_icon('learnpath') . '&nbsp;'
+            .    claro_html_icon('page') . '&nbsp;'
             .    htmlspecialchars($aPage['title'])
             .    '</a>' . "\n"
             .    '</td>' . "\n"
@@ -307,7 +307,7 @@
     {
         $out .= '<tfoot>' . "\n"
         .    '<tr>' . "\n"
-        .    '<td align="center" colspan="3">' . get_lang('No pages') . '</td>' . "\n"
+        .    '<td align="center" colspan="'.( $is_allowedToEdit ? '5' : '2').'">' . get_lang('No pages') . '</td>' . "\n"
         .    '</tr>' . "\n"
         .    '</tfoot>' . "\n";
     }
