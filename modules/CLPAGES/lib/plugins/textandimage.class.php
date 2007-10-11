@@ -30,8 +30,7 @@
 
     	public function render()
     	{
-    		// Text
-            $out = '<div style="float:'.$this->textAlign.'; max-width: 50%;">' . claro_parse_user_text($this->content) . '</div>';
+			$out = '<div style="width:99%">' . "\n";
 
 			// Image
             if( !empty($this->url) )
@@ -42,7 +41,7 @@
     			if( !empty($this->width) ) $width = 'width="'.htmlspecialchars($this->width).'"';
     			else						$width = '';
 
-	    		$out .= '<div class="captionImg" style="float:'.$this->imgAlign.'">' . "\n"
+	    		$out .= '<div class="captionImg" style="width: 48%; float:'.$this->imgAlign.'">' . "\n"
 	    		.	 '<img src="'.htmlspecialchars($this->url).'" '.$height.' '.$width.' alt="" /><br />' . "\n"
 	    		.	 '<div class="caption">'.htmlspecialchars($this->caption).'</div>' . "\n"
 	    		.	 '</div>' . "\n"
@@ -54,7 +53,11 @@
     			$out .= '' . "\n";
     		}
 
-            $out .= '<div class="spacer"></div>';
+    		// Text
+            $out .= '<div style="width: 48%; float: '.$this->textAlign.';">' . claro_parse_user_text($this->content) . '</div>';
+
+            $out .= '<div class="spacer"></div>' . "\n"
+            .	 '</div>' . "\n";
 
             return $out;
     	}
@@ -73,7 +76,7 @@
     		// Text
             $out .= '<fieldset>' . "\n"
             .	 '<legend>'.get_lang('Text').'</legend>' . "\n"
-			.	 '<textarea name="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>'
+			.	 '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>'
 			.	 '</fieldset>' . "\n"
 			;
 
