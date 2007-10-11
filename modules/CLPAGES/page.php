@@ -78,9 +78,14 @@
 		$htmlHeaders = "\n"
 		.    '<script type="text/javascript">' . "\n"
 		.	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
-		.	 '  var pageId = "'.$page->getId().'";'
+		.	 '  var pageId = "'.$page->getId().'";' . "\n"
 		.	 '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
 		.    '</script>' . "\n\n";
+
+		$htmlHeaders .= "\n"
+		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce.js" ></script>' . "\n"
+		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce_init.js" ></script>' . "\n";
+
 
 		$claroline->display->header->addHtmlHeader($htmlHeaders);
 	}
@@ -90,7 +95,7 @@
 
 	$interbredcrump[]= array ('url' => './index.php' . claro_url_relay_context('?'), 'name' => get_lang('Pages'));
 
-   	$nameTools = get_lang('Page');
+   	$nameTools = get_lang('Edit page');
 
 	$out .= claro_html_tool_title($nameTools)
    	.	 '<div id="pageContainer">' . "\n";
@@ -102,6 +107,7 @@
 
    		$out .= '<div id="pageSidebar">' . "\n"
    		.	 '<img src="'.get_module_url('CLPAGES').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
+   		.	 '<strong>'.get_lang('Add a composant').'</strong>' . "\n"
    		.	 '<ul>' . "\n";
 
    		foreach( $availablePlugins as $pluginType => $pluginDetails )
