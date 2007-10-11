@@ -126,15 +126,24 @@
 			    		$("#component_" + id + " .componentHeader").after(response);
 			    		$("#component_" + id + " textarea").tinymce();
 
-			    		$("#component_" + id + " form").ajaxForm({
-					        success: function(response){
-					        	if( response == 'true' )
-					        	{
-									refreshComponent(id, type);
-								}
-					        },  // post-submit callback
-					        error : showErrorMessage
-					    });
+					    $("#component_" + id + " form").submit(function() {
+
+					    	// force push content of editors in their respective textarea BEFORE submission
+						    $("#component_" + id + " textarea").tinymceTriggerSave();
+						    // submit the form
+						    $(this).ajaxSubmit({
+						        success: function(response){
+						        	if( response == 'true' )
+						        	{
+										refreshComponent(id, type);
+									}
+						        },  // post-submit callback
+						        error : showErrorMessage
+						    });
+
+						    // return false to prevent normal browser submit and page navigation
+						    return false;
+						});
 			    		// mark editor as opened
 					    openedEditors[id] = 1;
 					}
@@ -305,6 +314,31 @@
 	    });
 	}
 
+	$.fn.tinymceTriggerSave = function(options)
+	{
+	    return this.each(function(){
+	    	try {
+
+				for ( var n in tinyMCE.instances) {
+					var inst = tinyMCE.getInstanceById(n);
+
+					if( inst.formTargetElementId == this.id )
+					{
+						inst.triggerSave(false,false);
+					}
+				}
+
+				// force remove of this tinymce instance
+				tinyMCE.removeMCEControl(this.id);
+
+	    	}
+	    	catch(e)
+	    	{
+	    		alert(e.message);
+	    	}
+			return '';
+	    });
+	}
 
 	function dump(arr,level) {
 		var dumped_text = "";
