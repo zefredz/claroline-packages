@@ -36,7 +36,7 @@ $pluginRegistry = pluginRegistry::getInstance();
 /*
  * init request vars
  */
-$acceptedCmdList = array('exOrder', 'addItem', 'deleteItem', 'getEditor', 'mkVisible', 'mkInvisible', 'exEdit', 'getComponent');
+$acceptedCmdList = array('exOrder', 'addComponent', 'deleteComponent', 'getEditor', 'mkVisible', 'mkInvisible', 'exEdit', 'getComponent');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -81,7 +81,7 @@ if( $cmd == 'exOrder' )
 	return true;
 }
 
-if( $cmd == 'addItem')
+if( $cmd == 'addComponent')
 {
 	if( is_null($pageId) || is_null($itemType) ) return false;
 
@@ -126,7 +126,7 @@ if( $cmd == 'getComponent')
 }
 
 
-if( $cmd == 'deleteItem' )
+if( $cmd == 'deleteComponent' )
 {
 	$factory = new ComponentFactory();
 
