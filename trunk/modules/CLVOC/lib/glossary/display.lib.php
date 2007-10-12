@@ -29,7 +29,7 @@
             . get_lang( 'Texts' )
             . '</a>'
             . '&nbsp;|&nbsp;'
-            . '<a class="claroCmdDisabled" href="'
+            . '<a class="claroCmd" href="'
             . $_SERVER['PHP_SELF'].'?page=list">' // &amp;action=showDict&amp;dictionaryId=0">'
             . '<img src="'.get_icon('glossary_dict.gif').'" alt="['
             . get_lang( 'Dictionary' ) . ']"/> '
@@ -128,7 +128,8 @@
      * Display toolbar for the glossary search
      * @return  string toolbar
      */
-	function displayGlossarySearch( $param )
+	/*
+    function displayGlossarySearch( $param )
     {
         
         $output = '<form action="entry.php?page=' . $param . '&amp;action=searchText" method="post">'
@@ -141,6 +142,44 @@
         . '</form>' . "\n"
         ;      
                     
+        return $output;
+    }
+    */
+	function displayGlossaryMenuSearchInportExport($param, $isAllowedToEdit, $dictionaryId)
+    {
+        
+        $output = '<form action="entry.php?page=' . $param . '&amp;action=searchText" method="post">'
+            . '<p>' . "\n"
+            . '<img src="' .get_icon( 'Search' ) . '" alt="Rechercher" title="search" />'
+            . '&nbsp;'
+            . '<input name="frm_search" value="" size="20" type="text" />'
+            . '<input value="Rechercher" type="submit" />'
+            ;
+            
+            if( true == $isAllowedToEdit )
+            {
+            
+        $output .= '&nbsp;|&nbsp;'
+            . '<a class="claroCmd" href="'
+            . $_SERVER['PHP_SELF'].'?page=import">'
+            . '<img src="'.get_icon('importlist').'" alt="['
+            . get_lang( 'Import' ) . ']"/> '
+            . get_lang( 'Import' )
+            . '</a>'
+            . '&nbsp;|&nbsp;'
+            . '<a class="claroCmd" href="'
+            . $_SERVER['PHP_SELF'].'?page=export&amp;action=exportDict&amp;format=yml&amp;dictionaryId='.$dictionaryId.'">'
+            . '<img src="'.get_icon('export').'" alt="['
+            . get_lang( 'Export' ) . ']"/> '
+            . get_lang( 'Export' )
+            . '</a>'
+            ;
+            }
+            
+        $output .= '</p>' . "\n"
+            . '</form>' . "\n"
+            ;      
+            
         return $output;
     }
     

@@ -150,26 +150,136 @@
                                 else
                                 {
                                     
-                                    // traitement du tableau
-                                    foreach( $yml as $dictImported )
+                                    //print('<pre>');
+                                    //var_dump($yml);
+                                    //print('</pre>');
+                                    
+                                    //if( array_key_exists('Name',$yml) && array_key_exists('Description',$yml) )
+                                    if( array_key_exists('Name',$yml['Dictionary']) && array_key_exists('Description',$yml['Dictionary']) && array_key_exists('Content',$yml['Dictionary']) )
                                     {
-                                    
-                                        $name = $dictImported['Name'];
-                                        $description = $dictImported['Description'];
-                                        $content = $dictImported['Content'];
-                                        $words = $dictImported['Content'][0]['Word'];
-                                    
-                                    }
-                                    
-                                    
-                                    // importation dans la db
-                                    
-                                    $dispSuccess = true;
-                                    $dispSuccessBoxBackButton = true;
-                                    $successMsg = "L'importation du dictionnaire a réussi !" . "\n";
-                                    // supression du repertoire temporaire de telechargement du fichier yml
-                                    claro_delete_file( $tmpDirectory );
+                                        // Création du dictionnaire
+                                        $name = '<h3>Dictionary imported :</h3>';
+                                        $title = $yml['Dictionary']['Name'];
+                                        $description = $yml['Dictionary']['Description'];
 
+                                        // importation dans la db du titre et de la description
+                                        if( is_null( $parentId ) )
+                                        {
+                                            $parentId = 0;
+                                        }
+                                        
+                                        $idDictionary = $list->createDictionary( $title, $description, null, $parentId );
+                                        $dictionary->setId( $idDictionary );
+                                        
+                                        
+                                        /*
+                                        if ( $connection->hasError() )
+                                        {
+                                            $dispError = true;
+                                            $err = 'Cannot add dictionary : %s'; 
+                                            $reason = $connection->getError();
+
+                                            $errorMsg .= sprintf( $err, $reason ) . "\n";
+                                        }
+                                        else
+                                        {
+                                            $dispSuccess = true;
+                                            $successMsg = get_lang( 'Dictionary added' );
+                                        }
+                                        */
+                                        // Insertion des Tags 
+                                        #foreach( $yml['Dictionary']['Tags'] as $tagsImported ) 
+                                        #{
+                                        #}
+                                        
+                                         
+                                        
+
+                                        
+                                        // Insertion du contenu
+                                        $content = '';
+                                        
+                                        $content .= '<dl>';
+                                        foreach( $yml['Dictionary']['Content']  as $wordImported )
+                                        {
+                                            $content .= '<dt><strong>' . $wordImported['Word'] . ' : </strong></dt>';
+                                            
+                                            
+                                            foreach( $wordImported['Definitions'] as $definitionImported )
+                                            {
+                                                $content .= '<dd>' . $definitionImported['Definition'] . '</dd>';
+                                                $dictionaryImported[] = array($wordImported['Word'], $definitionImported['Definition']);
+                                                $dictionary->import( $dictionaryImported );
+                                                //$dictionary->addWord( $wordImported['Word'], $definitionImported['Definition'] );
+                                            }
+                                        }
+                                        $content .= '</dl>';
+                                        
+                                       // print('<pre>');
+                                        //var_dump($test);
+                                        //print('</pre>');
+
+                                 
+/*                                        
+        if ( (!empty( $word )) && (!empty($def)) )
+        {
+            $wordId = $dictionary->addWord( $word, $def );
+            $defId = $dictionary->getDefinitionId( $def );
+            
+            if ( !empty( $synList ) )
+            {
+                if ( ! in_array( $word, $synList ) )
+                {
+                    $synList[] = $word;
+                }
+                
+                $dictionary->addSynonymList( $defId, $synList, $def );
+            }
+            
+            // set connection error message
+            $err = get_lang( 'Word cannot be added : %s' );
+            
+            $dispEditForm = true;
+            $dispDictionary = false;
+        }
+        else
+        {
+            $dispError = true;
+            
+            $err = get_lang( 'Word cannot be added : %s' );
+            
+            $reason = ( empty( $word ) 
+                ? ( empty( $def ) 
+                    ? get_lang('form empty') 
+                    : get_lang('missing word') ) 
+                : get_lang('missing definition') )
+                ;
+                
+            $errorMsg .= sprintf( $err, $reason ) . "<br />\n";
+            
+            $dispAddWordForm = true;
+            $dispErrorBoxBackButton = false;
+        }
+*/                                        
+                                        
+                                        
+                                        // importation dans la db
+                                        
+                                        // confirmation
+                                        $dispSuccess = true;
+                                        $dispSuccessBoxBackButton = true;
+                                        $successMsg = "L'importation du dictionnaire a réussi !" . "\n";
+                                        // supression du repertoire temporaire de telechargement du fichier yml
+                                        claro_delete_file( $tmpDirectory );
+                                    }
+                                    else
+                                    {
+                                        $dispError = true;
+                                        $dispErrorBoxBackButton = true;
+                                        $errorMsg = "Fichier YML non valide !" . "\n";
+                                        // supression du repertoire temporaire de telechargement du fichier yml
+                                        claro_delete_file( $tmpDirectory );
+                                    }
                                 }
                             }
                         }
@@ -305,12 +415,11 @@
         if( true == $dispImport && false == $dispError)
         {
             // Affichage du contenu en dessous du message de réussite 
-            //$output .= '<p>Importé !</p>';
             
             $output .= $name;
-            $output .= $description;
+            $output .= '<p>Name : ' . $title . '</p>';
+            $output .= '<p>Description : ' . $description . '</p>';
             $output .= $content;
-            $output .= $words;
 
         }
     

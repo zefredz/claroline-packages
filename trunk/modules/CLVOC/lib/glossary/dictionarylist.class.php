@@ -90,6 +90,11 @@
                 return false;
             }
             
+            if (is_null( $parentId ) )
+            {
+                $parentId = 0;
+            }
+            
             $sql = "SELECT id " . "\n"
                 . "FROM `" . $this->tableList['glossary_dictionaries'] . "` AS D " . "\n"
                 . "WHERE id = " . (int) $dictId  . "\n"

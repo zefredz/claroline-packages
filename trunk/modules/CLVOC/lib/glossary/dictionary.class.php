@@ -852,6 +852,7 @@
          * Import dictionary as an array
          * @param   array dictionary contents
          */
+        
         function import( $arrayDict )
         {
             foreach ( $arrayDict as $word )

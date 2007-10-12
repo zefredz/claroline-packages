@@ -16,6 +16,7 @@
     $isAllowedToEdit = claro_is_allowed_to_edit();
     
     // set diplay mode
+    $dispToolBar = true;
     $dispToolTitle = true; 
     $dispTextList = false;
     $dispAddTextForm = false;
@@ -503,7 +504,10 @@
             , htmlspecialchars( $text->getTitle() ) ).'</h1>' . "\n";
     }
         
-    $output .= displayGlossaryMenu();
+    if ( true == $dispToolBar )
+    {
+        $output .= displayGlossaryMenu();
+    }
 
     // TODO rewrite to use claro_disp_msg_arr or claro_disp_msg_box
     if ( true == $dispError )
@@ -894,11 +898,19 @@
                 ;
 
             $output .= '<p class="claroCmd icoPrint">'
-            . '<a href="entry.php?page=export&amp;action=exportText&amp;format=text&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
+            
+            . '<a href="entry.php?page=export&amp;action=exportText&amp;format=yml&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
             . '>'
-            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export text') . ''
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary') . ''
             . '</a>'
             . '&nbsp;&nbsp;|&nbsp;&nbsp;'
+            /*
+            . '<a href="entry.php?page=export&amp;action=exportText&amp;format=text&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'"'
+            . '>'
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary to text') . ''
+            . '</a>'
+            . '&nbsp;&nbsp;|&nbsp;&nbsp;'
+            */
             . '<a href="#"'
             .'onclick="popup( \'entry.php?page=print&amp;action=printText&amp;textId='.$textId.'&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
             . '>'

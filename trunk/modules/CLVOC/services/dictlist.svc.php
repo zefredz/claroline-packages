@@ -14,6 +14,7 @@
     
     // local variables
     $dispToolBar            = true;
+    $dispToolBarSearchInportExport      = true;
     $dispError              = false;
     $fatalError             = false;
     
@@ -370,7 +371,7 @@
     $list->setRootId( $rootId );
     
     $dictionaryList = $list->getDictionaryList();
-    
+    //var_dump($dictionaryList);
     if ( $connection->hasError() )
     {
         $dispError = true;
@@ -438,7 +439,10 @@
         $output .= displayGlossaryMenu();
     }
     
-    $output .= displayGlossarySearch( $param );
+    if ( true == $dispToolBarSearchInportExport )
+    {
+        $output .= displayGlossaryMenuSearchInportExport($param, $isAllowedToEdit, $dictionaryId);
+    }
     
     if ( true == $dispTextSearch )
     {
@@ -790,16 +794,19 @@
             //$output .= ('Entrée du dictionnaire');
                         
             $output .= '<p class="claroCmd icoPrint">'
+            
             . '<a href="entry.php?page=export&amp;action=exportDict&amp;format=yml&amp;dictionaryId='.$dictionaryId.'"'
-            . '>'
-            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary to yml') . ''
-            . '</a>'
-            . '&nbsp;&nbsp;|&nbsp;&nbsp;'
-            . '<a href="entry.php?page=export&amp;action=exportDict&amp;format=text&amp;dictionaryId='.$dictionaryId.'"'
             . '>'
             . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary') . ''
             . '</a>'
             . '&nbsp;&nbsp;|&nbsp;&nbsp;'
+            /*
+            . '<a href="entry.php?page=export&amp;action=exportDict&amp;format=text&amp;dictionaryId='.$dictionaryId.'"'
+            . '>'
+            . '<img src="'.get_icon('clvoc_export.png').'" alt="' . get_lang( 'export' ) . '" title="' . get_lang( 'Export' ) . '" /> ' . get_lang('Export dictionary to text') . ''
+            . '</a>'
+            . '&nbsp;&nbsp;|&nbsp;&nbsp;'
+            */
             . '<a href="#"'
             .'onclick="popup( \'entry.php?page=print&amp;action=printDict&amp;dictionaryId='.$dictionaryId.'&amp;inPopup=true\', \'Print\', 600,600);return false;"'
             . '>'
