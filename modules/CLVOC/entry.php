@@ -7,7 +7,7 @@
      *
      * @version     1.9 $Revision$
      * @copyright   2001-2006 Universite catholique de Louvain (UCL)
-     * @author      Frederic Minne <zefredz@claroline.net>
+     * @author      Frederic Minne <zefredz@claroline.net> and KOCH Gregory <gregk84@gate71.be>
      * @license     http://www.gnu.org/copyleft/gpl.html 
      *              GNU GENERAL PUBLIC LICENSE
      * @package     CLVOC
@@ -18,8 +18,8 @@
     $tlabelReq = 'CLVOC';
     // load Claroline kernel
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
-    
-    require_once get_path('includePath') . '/lib/embed.lib.php';
+
+    //require_once get_path('includePath') . '/lib/embed.lib.php';
     
     require_once dirname(__FILE__) . '/lib/access.lib.php';
     
@@ -32,6 +32,7 @@
     require_once dirname(__FILE__) . '/lib/html/datagrid/table.class.php';
     require_once dirname(__FILE__) . '/lib/html/messagebox.class.php';
     require_once dirname(__FILE__) . '/lib/glossary/display.lib.php';
+    # require_once dirname(__FILE__) . '/lib/plugit.lib.php'; 
     //require_once dirname(__FILE__) . '/lib/search/search.class.php';
     //require_once dirname(__FILE__) . '/lib/print/print.class.php';
     //require_once dirname(__FILE__) . '/lib/import/import.class.php';
@@ -89,28 +90,27 @@
     $dispatcher->bind( 'export', new ScriptService('./services/export.svc.php') );
     
     // instanciate display
-    $display = new ClarolineScriptEmbed;
-        
-    $display->addHtmlHeader('<script type="text/javascript" src="'
+    $claroline->display->header->addHtmlHeader('<script type="text/javascript" src="'
         .$moduleJavascriptRepositoryWeb.'/phpcompat.js"></script>');
         
-    $display->addHtmlHeader('<script type="text/javascript" src="'
+    $claroline->display->header->addHtmlHeader('<script type="text/javascript" src="'
         .$moduleJavascriptRepositoryWeb.'/claroline.js.php"></script>');
         
-    $display->addHtmlHeader('<script type="text/javascript" src="'
+    $claroline->display->header->addHtmlHeader('<script type="text/javascript" src="'
         .$moduleJavascriptRepositoryWeb.'/popup.js"></script>');
         
-    $display->addHtmlHeader('<script type="text/javascript" src="'
+    $claroline->display->header->addHtmlHeader('<script type="text/javascript" src="'
         .$moduleJavascriptRepositoryWeb.'/itemlist.js"></script>');
         
-    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
+    $claroline->display->header->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
         .$moduleCssRepositoryWeb.'/form.css" media="all" />');
         
-    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
+    $claroline->display->header->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
         .$moduleCssRepositoryWeb.'/clvoc.css" media="all" />');
         
-    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
+    $claroline->display->header->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
         .$moduleCssRepositoryWeb.'/print.css" media="print" />');
+        
 }
 // }}}
 // {{{ CONTROLLER    
@@ -140,27 +140,10 @@
         : false
         ;
     
-    // set display mode
+    // set display Popup
     if ( $inPopup )
     {
-        $display->popupMode();
-    }
-    else
-    {
-        if ( $hide_banner )
-        {
-            $display->hideBanner();
-        }
-        
-        if ( $hide_footer )
-        {
-            $display->hideFooter();
-        }
-        
-        if ( $hide_body )
-        {
-            $display->hideBody();
-        }
+        $claroline->display->popupMode();
     }
     
     // set dispatcher requested service identifier
@@ -178,21 +161,22 @@
     // prepare output
     if ( $dispatcher->hasError() )
     {
-        $display->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
+        $claroline->display->body->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
     }
     elseif ( $svc->hasError() )
     {
-        $display->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
+        $claroline->display->body->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
     }
     else
     {
-        $display->setContent( $svc->getOutput() );
+        $claroline->display->body->setContent( $svc->getOutput() );
     }
-}
+
+    }
 // }}}
 // {{{ VIEW    
 {
-    $display->output();
+    echo $claroline->display->render();
 }
 // }}}
 ?>
