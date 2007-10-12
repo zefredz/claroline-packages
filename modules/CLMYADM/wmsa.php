@@ -57,8 +57,6 @@ if(!$_SESSION[RPP]) $_SESSION[RPP]=20;
 
 $dbl=@mysql_connect($DBH,$DBU,$DBP) or die("Access denied. Check configuration.");
 
-$_SESSION[DBN]=$mainDbName;
-
 //if ( $singleDbEnabled )
 {
     if ( ! array_key_exists( 'hop', $_REQUEST ) )
