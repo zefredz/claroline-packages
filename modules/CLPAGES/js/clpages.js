@@ -2,25 +2,17 @@
 
 	$(document).ready( function ()
 	{
-
-		$("#loading").hide();
-
-		$("#loading").ajaxStart(function(){
-			$(this).show();
-		});
-
-		$("#loading").ajaxStop(function(){
-			$(this).hide();
-		});
-
-		$('a.toggleEditorCmd').livequery('click', toggleEditor);
-		$('a.deleteItemCmd').livequery('click', deleteItem);
+		// bind events
+		//	to cmd of each component (use livequery so that binding is automatically added on new DOM elements
+		$('a.toggleEditorCmd').livequery('click', rqToggleEditor);
+		$('a.deleteComponentCmd').livequery('click', deleteComponent);
 		$('a.mkVisibleCmd').livequery('click', mkVisible);
 		$('a.mkInvisibleCmd').livequery('click', mkInvisible);
 
 
-
-		// sortable list of components
+		/*
+			Make the component list sortable using interface library method
+		*/
 		$('div.componentWrapper').Sortable(
 			{
 				accept: 'sortableComponent',
@@ -32,12 +24,13 @@
 				axis : 'vertically',
 				onChange : function(serializedList)
 				{
+					// commit change to DB by sending new ordering via ajax
 					var hash = serializedList[0].hash;
 
 					$.ajax({
 				    	type: "POST",
 				        url: moduleUrl + "ajaxHandler.php",
-				        data: "cmd=exOrder&cidReq="+ cidReq + "&docId=" + docId + "&" + hash,
+				        data: "cmd=exOrder&cidReq="+ cidReq + "&docId=" + pageId + "&" + hash,
 				        dataType: 'html'
 				    });
 				},
@@ -53,20 +46,25 @@
 		);
 	});
 
-	function addItem( itemType )
+	/*
+		Add a component to the list
+	*/
+	function addComponent( type )
 	{
 	    $.ajax({
 	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=addItem&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + itemType,
+	    	data: "cmd=addComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type,
 	    	success: function(response){
 	    		// we need to update sortable with id of last add html block, so find id of this block (component_*)
 				var addedHtmlId = getComponentIdFromHtml(response);
 				// append block at the end list and update sortable object
-		    	$("#componentsContainer").append(response).SortableAddItem(document.getElementById(addedHtmlId));
-		    	// scroll to the new item
-		    	$("#componentsContainer :last-child").ScrollTo(800);
-		    	// newComponent.toggleEditor();
-		        },
+		    	$("#componentsContainer")
+		    		.append(response)
+		    		.SortableAddItem(document.getElementById(addedHtmlId));
+
+		    	$("#" + addedHtmlId).toggleEditor();
+
+		    },
 	    	dataType: 'html'
 	    });
 
@@ -74,7 +72,7 @@
 	}
 
 
-	function deleteItem()
+	function deleteComponent()
 	{
 		if( confirm("Are you sure to delete ?") )
 		{
@@ -86,10 +84,11 @@
 
 			$.ajax({
 		    	url: moduleUrl + "ajaxHandler.php",
-		    	data: "cmd=deleteItem&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
+		    	data: "cmd=deleteComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
 		    	success: function(response){
 		    		if( response = 'true' )
 		    		{
+		    			// delete was successfull so we can remove component from the DOM
 			    		$("#component_" + id).remove();
 					}
 			    },
@@ -99,86 +98,111 @@
 		return false;
 	}
 
-	function toggleEditor()
+	function rqToggleEditor()
 	{
-		// this.parentNode.parentNode.parentNode is the component
-		var componentDiv = $(this.parentNode.parentNode.parentNode);
-
-		var id = getIdFromComponent( componentDiv );
-		var type = getTypeFromComponent( componentDiv );
-
-		if( openedEditors[id] == 1 )
-		{
-			// remove editor from the DOM
-			// TODO check if something has to be saved ?
-			$("#component_" + id + " .componentEditor").remove();
-			// mark editor as closed
-			openedEditors[id] = 0;
-		}
-		else
-		{
-			$.ajax({
-		    	url: moduleUrl + "ajaxHandler.php",
-		    	data: "cmd=getEditor&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
-		    	success: function(response){
-		    		if( response != '' )
-		    		{
-			    		$("#component_" + id + " .componentHeader").after(response);
-			    		$("#component_" + id + " textarea").tinymce();
-
-					    $("#component_" + id + " form").submit(function() {
-
-					    	// force push content of editors in their respective textarea BEFORE submission
-						    $("#component_" + id + " textarea").tinymceTriggerSave();
-						    // submit the form
-						    $(this).ajaxSubmit({
-						        success: function(response){
-						        	if( response == 'true' )
-						        	{
-										refreshComponent(id, type);
-									}
-						        },  // post-submit callback
-						        error : showErrorMessage
-						    });
-
-						    // return false to prevent normal browser submit and page navigation
-						    return false;
-						});
-			    		// mark editor as opened
-					    openedEditors[id] = 1;
-					}
-			    },
-		    	dataType: 'html'
-		    });
-		}
-
+		// this event is binded on a cmd link so we have to find its parent
+		// and to toggle editor on this parent
+		$(this.parentNode.parentNode.parentNode).toggleEditor();
 		return false;
+	}
+
+	$.fn.toggleEditor = function()
+	{
+		return this.each(function(){
+			// from here this is the object representing the DOM element so this.id is "component_X"
+
+			var id = getIdFromComponent($(this));
+
+			if( openedEditors[id] )
+			{
+				// close editor
+				// remove editor from the DOM as it seems to be already opened
+				$("#component_" + id + " .componentEditor").remove();
+
+				// mark editor as closed
+				openedEditors[id] = false;
+			}
+			else
+			{
+				// open editor
+				var type = getTypeFromComponent($(this));
+
+				// get editor content
+				// AND configure the submission to be made using ajax
+
+				$.ajax({
+			    	url: moduleUrl + "ajaxHandler.php",
+			    	data: "cmd=getEditor&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
+			    	success: function(response){
+			    		if( response != '' )
+			    		{
+			    			// append response
+				    		$("#component_" + id + " .componentHeader").after(response);
+				    		// add tinymce on all textarea
+				    		$("#component_" + id + " textarea").tinymce();
+
+							//
+						    $("#component_" + id + " form").submit(function() {
+
+						    	// force push content of editors in their respective textarea BEFORE submission
+							    $("#component_" + id + " textarea").tinymceTriggerSave();
+							    // submit the form
+							    $(this).ajaxSubmit({
+							        success: function(response){
+							        	if( response == 'true' )
+							        	{
+							        		$("#component_" + id).refreshComponent();
+										}
+							        },  // post-submit callback
+							        error : showErrorMessage
+							    });
+
+							    // return false to prevent normal browser submit and page navigation
+							    return false;
+							});
+
+							// focus title
+							$("#component_" + id + " #title_" + id).focus();
+
+				    		// mark editor as opened
+						    openedEditors[id] = true;
+						}
+				    },
+			    	dataType: 'html'
+			    });
+			}
+
+			return false;
+		});
 
 	}
 
-	function refreshComponent(id, type)
+	$.fn.refreshComponent =	function()
 	{
-		// mark editor as closed
-		openedEditors[id] = 0;
+		return this.each(function(){
 
-		// refresh content
-		$.ajax({
-	    	url: moduleUrl + "ajaxHandler.php",
-	    	data: "cmd=getComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemId=" + id + "&itemType=" + type,
-	    	success: function(response){
-	    		// we need to update sortable with id of last add html block, so find id of this block (component_*)
-				var addedHtmlId = getComponentIdFromHtml(response);
+			var id = getIdFromComponent($(this));
+			var type = getTypeFromComponent($(this));
 
-				// replace current component by its new content and update sortable object
-		    	$("#component_" + id)
-		    		.after(response)
-		    		.remove();
-		    	$("#componentsContainer").SortableAddItem(document.getElementById(addedHtmlId));
-		        },
-		    error: showErrorMessage,
-	    	dataType: 'html'
-	    });
+			// mark editor as closed
+			openedEditors[id] = 0;
 
+			// refresh content
+			$.ajax({
+		    	url: moduleUrl + "ajaxHandler.php",
+		    	data: "cmd=getComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemId=" + id + "&itemType=" + type,
+		    	success: function(response){
+					// replace current component by its new content and update sortable object
+			    	$("#component_" + id)
+			    		.after(response)
+			    		.remove();
+
+			    	$("#componentsContainer").SortableAddItem(document.getElementById("component_" + id));
+			        },
+			    error: showErrorMessage,
+		    	dataType: 'html'
+		    });
+		});
 	}
 
 	function showErrorMessage()
@@ -304,6 +328,7 @@
 	{
 	    return this.each(function(){
 	    	try {
+	    		//$(this).prepend('<!-- content: html tiny_mce -->');
 	    		tinyMCE.addMCEControl(document.getElementById(this.id), this.id);
 	    	}
 	    	catch(e)
@@ -338,29 +363,4 @@
 	    	}
 			return '';
 	    });
-	}
-
-	function dump(arr,level) {
-		var dumped_text = "";
-		if(!level) level = 0;
-
-		//The padding given at the beginning of the line.
-		var level_padding = "";
-		for(var j=0;j<level+1;j++) level_padding += "    ";
-
-		if(typeof(arr) == 'object') { //Array/Hashes/Objects
-		 for(var item in arr) {
-		  var value = arr[item];
-
-		  if(typeof(value) == 'object') { //If it is an array,
-		   dumped_text += level_padding + "'" + item + "' ...\n";
-		   dumped_text += dump(value,level+1);
-		  } else {
-		   dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-		  }
-		 }
-		} else { //Stings/Chars/Numbers etc.
-		 dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-		}
-		return dumped_text;
 	}
