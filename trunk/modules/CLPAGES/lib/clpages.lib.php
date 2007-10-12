@@ -177,7 +177,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 					.	 '&nbsp;'
 					.	 '<a href="#" class="toggleEditorCmd">' . claro_html_icon('edit') . '</a>'
 					. 	 '&nbsp;'
-					.	 '<a href="#" class="deleteItemCmd">' . claro_html_icon('delete') . '</a>'
+					.	 '<a href="#" class="deleteComponentCmd">' . claro_html_icon('delete') . '</a>'
 					. 	 '  </span>' . "\n";
 				}
 
