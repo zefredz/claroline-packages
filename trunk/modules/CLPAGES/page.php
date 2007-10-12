@@ -71,6 +71,7 @@
 	    $jsloader->load('jquery.livequery');
 	    $jsloader->load('jquery.json');
 	    $jsloader->load('jquery.form');
+	    $jsloader->load('claroline');
 	    $jsloader->load('clpages');
 
 		$cssLoader->load( 'clpages_admin', 'screen');
@@ -113,7 +114,7 @@
    		foreach( $availablePlugins as $pluginType => $pluginDetails )
 		{
 			$out .= '<li>'
-			.	 '<a href="#" onclick="javascript:addItem(\''.$pluginType.'\'); return false;">'.$pluginDetails['displayName'].'</a>'
+			.	 '<a href="#" onclick="javascript:addComponent(\''.$pluginType.'\');return false;">'.$pluginDetails['displayName'].'</a>'
 			.	 '</li>';
 		}
    		$out .= '</ul>' . "\n"
