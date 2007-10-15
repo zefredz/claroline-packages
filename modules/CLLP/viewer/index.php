@@ -90,19 +90,18 @@ $_SESSION['thisAttempt'] = serialize($thisAttempt);
  */
 $claroline->setDisplayType( CL_FRAMESET );
 
+$jsloader = JavascriptLoader::getInstance();
+$jsloader->load('jquery');
+$jsloader->load('jquery.json');
 
+$jsloader->load('CLLP');
+$jsloader->load('scormtime');
+$jsloader->load('claroline');
+
+$jsloader->load('scormAPI_13');
 // prepare html header
-$htmlHeaders = "\n"
-.     '<script type="text/javascript">' . "\n"
-.    '  var jQueryPath = "'.get_module_url('CLLP').'/js/jquery.js";' . "\n"
-.    '</script>' . "\n\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/jquery.frameready.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/json.jquery.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/CLLP.js"></script>' . "\n"
-.    '<script type="text/javascript" src="'.get_module_url('CLLP').'/js/scormAPI.js"></script>' . "\n\n";
 
-$htmlHeaders .= "\n"
+$htmlHeaders = "\n"
 .    '<script type="text/javascript">' . "\n"
 .	 '  var pathId = "'.(int) $pathId.'";' . "\n"
 .	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
@@ -148,8 +147,9 @@ $claroline->display->addRow($headerFrame, $headerFrameSize);
 $claroline->display->addRow($innerFrameset, '*');
 
 $claroline->display->header->addHtmlHeader($htmlHeaders);
+
 // output outer frameset with inner frameset within in embedded mode
-$claroline->display->output();
+echo $claroline->display->render();
 
 
 ?>
