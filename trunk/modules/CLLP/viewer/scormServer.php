@@ -61,6 +61,11 @@ require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
 if( is_null($cmd) ) echo 'Error : no command.';
 
 
+// force headers
+header('Content-Type: text/html; charset=UTF-8'); // Charset
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+
 if( $cmd == 'doCommit' )
 {
 	require_once dirname( __FILE__ ) . '/../lib/JSON.php';
