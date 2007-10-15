@@ -30,13 +30,6 @@ if ( !claro_is_tool_allowed() )
 	}
 }
 
-/*
- * On the fly install
- */
-
-install_module_in_course( 'CLLP', claro_get_current_course_id() ) ;
-
-
 require_once dirname( __FILE__ ) . '/lib/path.class.php';
 
 // those include should not be required when user is a student
@@ -120,7 +113,7 @@ if( $is_allowedToEdit )
                 $dialogBox->error('<strong>' . get_lang('Import failed') . '</strong>');
                 $cmd = 'rqImport';
             }
-            $dialogBox->debug($scormImporter->backlog->output());
+            $dialogBox->info($scormImporter->backlog->output());
         }
 
     }
@@ -236,14 +229,16 @@ else
  */
 
 //-- Content
+$cssLoader = CssLoader::getInstance();
+$cssLoader->load( 'clpages', 'screen');
+
+$out = '';
+
 $nameTools = get_lang('Learning path list');
 
-include  get_path('includePath') . '/claro_init_header.inc.php';
+$out .= claro_html_tool_title($nameTools);
 
-echo claro_html_tool_title($nameTools);
-
-
-echo $dialogBox->render();
+$out .= $dialogBox->render();
 
 $cmdMenu = array();
 if($is_allowedToEdit)
@@ -257,11 +252,11 @@ if($is_allowedToEdit)
     }
 }
 
-echo '<p>'
+$out .= '<p>'
 .    claro_html_menu_horizontal( $cmdMenu )
 .    '</p>';
 
-echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
+$out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n";
 
@@ -269,7 +264,7 @@ if( $is_allowedToEdit )
 {
     // display path name and tools to edit it
     // titles
-    echo '<th>' . get_lang('Learning path') . '</th>' . "\n"
+    $out .= '<th>' . get_lang('Learning path') . '</th>' . "\n"
     .    '<th>' . get_lang('Modify') . '</th>' . "\n"
     .    '<th>' . get_lang('Delete') . '</th>' . "\n"
     .    '<th>' . get_lang('Block') . '</th>' . "\n"
@@ -277,9 +272,9 @@ if( $is_allowedToEdit )
     .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
     .    '<th>' . get_lang('Export').'</th>' . "\n";
 
-    if( get_conf('is_trackingEnabled') ) echo '<th>' . get_lang('Tracking') . '</th>' . "\n";
+    if( get_conf('is_trackingEnabled') ) $out .= '<th>' . get_lang('Tracking') . '</th>' . "\n";
 
-    echo '</tr>' . "\n"
+    $out .= '</tr>' . "\n"
     .    '</thead>' . "\n";
 
     if( !empty($pathListArray) && is_array($pathListArray) )
@@ -287,29 +282,29 @@ if( $is_allowedToEdit )
         $i = 0;
         $lpCount = count($pathListArray);
 
-        echo '<tbody>' . "\n";
+        $out .= '<tbody>' . "\n";
 
         foreach( $pathListArray as $aPath )
         {
             $i++;
 
-            echo '<tr align="center"' . (($aPath['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
+            $out .= '<tr align="center"' . (($aPath['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
             // title
-            echo '<td align="left">'
+            $out .= '<td align="left">'
             .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
             .    '<img src="' . get_path('imgRepositoryWeb') . 'learnpath.gif" alt="" border="0" />'
             .    htmlspecialchars($aPath['title'])
             .    '</a>' . "\n"
             .    '</td>';
             // edit
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
 	        .    '<a href="admin/edit_path.php?pathId=' . $aPath['id'] . '">' . "\n"
 	        .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
             // delete
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
 	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] . '">' . "\n"
 	        .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
 	        .    '</a>'
@@ -318,7 +313,7 @@ if( $is_allowedToEdit )
             // block/unblock
             if( $aPath['lock'] == 'OPEN' )
             {
-	            echo '<td>' . "\n"
+	            $out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] . '">' . "\n"
 		        .    '<img src="' . get_path('imgRepositoryWeb') . 'unblock.gif" border="0" alt="' . get_lang('Block') . '" />' . "\n"
 		        .    '</a>'
@@ -326,7 +321,7 @@ if( $is_allowedToEdit )
             }
             else
             {
-				echo '<td>' . "\n"
+				$out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] . '">' . "\n"
 		        .    '<img src="' . get_path('imgRepositoryWeb') . 'block.gif" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
 		        .    '</a>'
@@ -335,7 +330,7 @@ if( $is_allowedToEdit )
             // visible/invisible
             if( $aPath['visibility'] == 'VISIBLE' )
             {
-	            echo '<td>' . "\n"
+	            $out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
 		        .    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
 		        .    '</a>'
@@ -343,7 +338,7 @@ if( $is_allowedToEdit )
             }
             else
             {
-				echo '<td>' . "\n"
+				$out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
 		        .    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
 		        .    '</a>'
@@ -353,7 +348,7 @@ if( $is_allowedToEdit )
             // Move up
             if( $i > 1 )
             {
-                echo '<td>' . "\n"
+                $out .= '<td>' . "\n"
                 .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveUp&amp;pathId=' . $aPath['id'] . '">' . "\n"
                 .    '<img src="' . get_path('imgRepositoryWeb') . 'up.gif" alt="' . get_lang('Move up') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
@@ -361,13 +356,13 @@ if( $is_allowedToEdit )
             }
             else
             {
-                echo '<td>&nbsp;</td>' . "\n";
+                $out .= '<td>&nbsp;</td>' . "\n";
             }
 
             // Move down
             if( $i < $lpCount )
             {
-                echo '<td>' . "\n"
+                $out .= '<td>' . "\n"
                 .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;pathId=' . $aPath['id'] . '">' . "\n"
                 .    '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" alt="' . get_lang('Move down') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
@@ -375,30 +370,30 @@ if( $is_allowedToEdit )
             }
             else
             {
-                echo '<td>&nbsp;</td>' . "\n";
+                $out .= '<td>&nbsp;</td>' . "\n";
             }
 
             // export
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
 	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
 	        .    '<img src="' . get_path('imgRepositoryWeb') . 'export.gif" border="0" alt="' . get_lang('Export') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
             // tracking
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
 	        .    '<a href="' . get_path('clarolineRepositoryWeb') . 'tracking/learnPath_details.php?pathId=' . $aPath['id'] . '">' . "\n"
 	        .    '<img src="' . get_path('imgRepositoryWeb') . 'statistics.gif" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
-            echo '</tr>' . "\n\n";
+            $out .= '</tr>' . "\n\n";
         }
-        echo '</tbody>' . "\n";
+        $out .= '</tbody>' . "\n";
     }
     else
     {
-        echo '<tfoot>' . "\n"
+        $out .= '<tfoot>' . "\n"
         .    '<tr>' . "\n"
         .    '<td align="center" colspan="8">' . get_lang('No learning path') . '</td>' . "\n"
         .    '</tr>' . "\n"
@@ -409,7 +404,7 @@ else
 {
     // display pah name and module progression
     // titles
-    echo '<th>' . get_lang('Learning path') . '</th>' . "\n"
+    $out .= '<th>' . get_lang('Learning path') . '</th>' . "\n"
     .    '<th colspan="2">' . get_lang('Progress') . '</th>' . "\n"
     .    '</tr>' . "\n"
     .    '</thead>' . "\n\n";
@@ -420,15 +415,15 @@ else
         $lpCount = count($pathListArray);
         $totalProgress = 0;
 
-        echo '<tbody>' . "\n";
+        $out .= '<tbody>' . "\n";
 
         foreach( $pathListArray as $aPath )
         {
             $i++;
-            echo '<tr>' . "\n";
+            $out .= '<tr>' . "\n";
 
             // title
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
             .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
             .    '<img src="' . get_path('imgRepositoryWeb') . 'learnpath.gif" alt="" border="0" />'
             .    htmlspecialchars($aPath['title'])
@@ -442,7 +437,7 @@ else
             $totalProgress += max(0,$lpProgress);
 
             // progression
-            echo '<td align="right">'
+            $out .= '<td align="right">'
             .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.get_lang('See details').'">' . claro_html_progress_bar($lpProgress, 1) . '</a>' . "\n"
             .    '</td>' . "\n"
             .    '<td align="left">'
@@ -450,13 +445,13 @@ else
             .    '</td>' . "\n"
             ;
 
-            echo '</tr>' . "\n\n";
+            $out .= '</tr>' . "\n\n";
         }
 
         // $i should not be lower than 1, but to avoid ugly error we use max trick to prevent division by 0
         $courseProgress = round( $totalProgress / max(1,$i) );
 
-        echo '</tbody>' . "\n\n"
+        $out .= '</tbody>' . "\n\n"
         .    '<tfoot>' . "\n"
         .    '<tr>' . "\n"
         .    '<td colspan="3">' . "\n"
@@ -481,7 +476,7 @@ else
     }
     else
     {
-        echo '<tfoot>' . "\n"
+        $out .= '<tfoot>' . "\n"
         .    '<tr>' . "\n"
         .    '<td align="center" colspan="3">' . get_lang('No learning path') . '</td>' . "\n"
         .    '</tr>' . "\n"
@@ -489,8 +484,12 @@ else
     }
 }
 
-echo '</table>' . "\n";
 
-include  get_path('includePath') . '/claro_init_footer.inc.php';
+$out .= '</table>' . "\n";
+
+
+$claroline->display->body->appendContent($out);
+
+echo $claroline->display->render();
 
 ?>
