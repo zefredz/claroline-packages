@@ -57,7 +57,7 @@
             foreach($courseSysCodeList as $thisCourseSys)
             {
                 $opmlData['outlines'][] = array(
-                    'xmlUrl' => get_path('rootWeb') . 'claroline/rss/?cidReq=' . $thisCourseSys
+                    'xmlUrl' => get_path('rootWeb') . 'claroline/backends/rss.php?cidReq=' . $thisCourseSys
                 );
             }
             
