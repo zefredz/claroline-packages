@@ -138,9 +138,9 @@
         {
             if( (in_shopping_cart(crl)) == false )
             {
-                addHiddenInputToForm( 'hiddenFields', 'moduleList', crl, servAdd );
+                addHiddenInputToForm( 'hiddenFields', 'itemList', crl, servAdd );
                 addHiddenInputToForm( 'hiddenFields', 'titleList', title, servAdd );
-                
+
                 servAdd++;
 
             	var item = new Array();
@@ -303,12 +303,12 @@
                var parent_crl = result['parent']['crl'];
 
                clear('toolBar');
-               
-               if( parent_crl )              
+
+               if( parent_crl )
                {
                     print('toolBar','<a href=\"http://claroline.net\" class=\"claroCmd\" onclick=\"display_navigator(\''+parent_crl+'\');return false;\"><img src=\"'+img_repository_web+'parent.gif\" border=\"0\" alt=\"\" />'+lang_up+'</a>');
                }
-               
+
                else
                {
                    print('toolBar','<img src=\"'+img_repository_web+'parentdisabled.gif\" border=\"0\" alt=\"\" /><span class="claroCmdDisabled">'+lang_up+'</span>');
@@ -323,9 +323,9 @@
             getresource:function(result)
             {
                 clear('nav');
-                
+
                 print('nav', '<table style="border: 0px none ; width: 100%;">\n');
-                
+
                 for(i=0; i<result.length; i++)
                 {
                     var name = result[i]['name'];
@@ -334,11 +334,11 @@
                     var linkable = result[i]['linkable'];
                     var visible = result[i]['visible'];
                     var title = result[i]['title'];
-                    
+
                     var line = '';
-                    
+
                     line += '<tr><td>\n';
-                    
+
                     if( container )
                     {
                     	if( visible == false )
@@ -361,9 +361,9 @@
                     		line += name;
                     	}
                     }
-                    
+
                     line += '</td><td>\n';
-                    
+
                     if( linkable == true && !container )
                     {
 						line += "&nbsp;&nbsp;<a href=\"http://claroline.net\" class=\"claroCmd\" onclick=\"attach(\'"+crl+"\',\'"+title+"\');return false;\">["+lang_add+"]</a>";
@@ -371,10 +371,10 @@
                     else
                     {
                         line += '&nbsp;';
-                    }                    
+                    }
 
                     line += "</td></tr>\n";
-                    
+
                     print('nav',line);
                 }
                 print('nav','\n</table>\n');
