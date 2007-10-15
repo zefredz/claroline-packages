@@ -47,7 +47,7 @@ require_once dirname( __FILE__ ) . '/../linker/linker.inc.php';
  * init request vars
  */
 $acceptedCmdList = array(   'rqEdit', 'exEdit',
-							'rqAddModule', 'exAddModule',
+							'rqAddItem', 'exAddItem',
 							'rqAddContainer', 'exAddContainer',
                             'rqDelete', 'exDelete',
                             'rqPrereq', 'exPrereq',
@@ -70,7 +70,7 @@ else                                                                  $itemId = 
  * init other vars
  */
 
-claro_set_display_mode_available(true);
+claro_set_display_mode_available(false);
 
 $is_allowedToEdit = claro_is_allowed_to_edit();
 
@@ -216,12 +216,12 @@ if( $cmd == 'rqEdit' )
 
 }
 
-if( $cmd == 'exAddModule' )
+if( $cmd == 'exAddItem' )
 {
-    if( isset($_REQUEST['moduleList']) && is_array($_REQUEST['moduleList']) && count($_REQUEST['moduleList']) )
+    if( isset($_REQUEST['itemList']) && is_array($_REQUEST['itemList']) && count($_REQUEST['itemList']) )
     {
         $i = 0;
-        foreach( $_REQUEST['moduleList'] as $moduleToAdd )
+        foreach( $_REQUEST['itemList'] as $itemToAdd )
         {
             // get title in path
             if( !empty($_REQUEST['titleList'][$i]) )
@@ -237,17 +237,17 @@ if( $cmd == 'exAddModule' )
           	$addedItem->setType('MODULE');
             $addedItem->setTitle($title);
             $addedItem->setPathId($pathId);
-        	$addedItem->setSysPath(urldecode($moduleToAdd));
+        	$addedItem->setSysPath(urldecode($itemToAdd));
 
         	if( $addedItem->validate() )
             {
                 if( $addedItem->save() )
                 {
-                    $dialogBox->sucess( get_lang('Module "%moduleTitle" successfully added', array('%moduleTitle' => $title) ) );
+                    $dialogBox->success( get_lang('Item "%itemTitle" successfully added', array('%itemTitle' => $title) ) );
                 }
                 else
                 {
-                    $dialogBox->error( get_lang('Fatal error, cannot save "%moduleTitle"', array('%moduleTitle' => $title) ) );
+                    $dialogBox->error( get_lang('Fatal error, cannot save "%itemTitle"', array('%itemTitle' => $title) ) );
                 }
             }
 
@@ -256,12 +256,12 @@ if( $cmd == 'exAddModule' )
     }
     else
     {
-    	$dialogBox->error( get_lang('You didn\'t choose any ressource to add as module.') );
-    	$cmd = 'rqAddModule';
+    	$dialogBox->error( get_lang('You didn\'t choose any ressource to add as item.') );
+    	$cmd = 'rqAddItem';
     }
 }
 
-if( $cmd == 'rqAddModule' )
+if( $cmd == 'rqAddItem' )
 {
     //------------------------
     //linker
@@ -269,32 +269,32 @@ if( $cmd == 'rqAddModule' )
     linker_html_head_xtra();
 
 
-    $htmlAddModule = "\n\n"
-    .    '<strong>' . get_lang('Add module(s)') . '</strong>' . "\n"
+    $htmlAddItem = "\n\n"
+    .    '<strong>' . get_lang('Add item(s)') . '</strong>' . "\n"
     .    '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context() . "\n"
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'."\n"
-    .    '<input type="hidden" name="cmd" value="exAddModule" />' . "\n";
+    .    '<input type="hidden" name="cmd" value="exAddItem" />' . "\n";
 
     if( claro_is_jpspan_enabled() )
     {
         linker_set_local_crl( isset ($_REQUEST['id']) );
-        $htmlAddModule .= linker_set_display();
+        $htmlAddItem .= linker_set_display();
 
-        $htmlAddModule .= '<input type="submit" onclick="linker_confirm();" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
+        $htmlAddItem .= '<input type="submit" onclick="linker_confirm();" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
     }
     else
     {
-        if(isset($_REQUEST['id'])) $htmlAddModule .= linker_set_display($_REQUEST['id']);
-        else                       $htmlAddModule .= linker_set_display();
+        if(isset($_REQUEST['id'])) $htmlAddItem .= linker_set_display($_REQUEST['id']);
+        else                       $htmlAddItem .= linker_set_display();
 
-        $htmlAddModule .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
+        $htmlAddItem .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
     }
 
-    $htmlAddModule .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
+    $htmlAddItem .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
     .    '</form>' . "\n";
 
-    $dialogBox->form($htmlAddModule);
+    $dialogBox->form($htmlAddItem);
 }
 
 if( $cmd == 'exAddContainer' )
@@ -470,18 +470,18 @@ $itemListArray = $itemList->getFlatList($pathId);
  * Output
  */
 
-$interbredcrump[]= array ('url' => '../index.php', 'name' => get_lang('Learning path list'));
+$interbredcrump[]= array ('url' => '../index.php' . claro_url_relay_context('?'), 'name' => get_lang('Learning path list'));
 
 //-- Content
+$out = '';
+
 $nameTools = get_lang('Learning path');
 $toolTitle['mainTitle'] = $nameTools;
 $toolTitle['subTitle'] = htmlspecialchars($path->getTitle());
 
-include get_path('includePath') . '/claro_init_header.inc.php';
+$out .= claro_html_tool_title($toolTitle);
 
-echo claro_html_tool_title($toolTitle);
-
-echo $dialogBox->render();
+$out .= $dialogBox->render();
 
 $cmdMenu = array();
 // do not display commands to student or when creating a new path (rqEdit)
@@ -490,19 +490,19 @@ if( $is_allowedToEdit && !is_null($pathId) )
 	$cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Play path'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Edit path settings'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Create chapter'));
-    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddModule&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Add module(s)'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Add item(s)'));
 }
 
-echo '<p><small>' . htmlspecialchars($path->getDescription()). '</small></p>' . "\n";
-echo '<p>'
+$out .= '<p><small>' . htmlspecialchars($path->getDescription()). '</small></p>' . "\n";
+$out .= '<p>'
 .    claro_html_menu_horizontal( $cmdMenu )
 .    '</p>'
 ;
 
-echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
+$out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
-.	 '<th>' . get_lang('Module') . '</th>' . "\n"
+.	 '<th>' . get_lang('Item') . '</th>' . "\n"
 .	 '<th>' . get_lang('Modify') . '</th>' . "\n"
 .	 '<th>' . get_lang('Delete') . '</th>' . "\n"
 .	 '<th>' . get_lang('Prerequisites') . '</th>' . "\n"
@@ -514,34 +514,34 @@ echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing=
 
 if( !empty($itemListArray) && is_array($itemListArray) )
 {
-    echo '<tbody>' . "\n";
+    $out .= '<tbody>' . "\n";
 
     foreach( $itemListArray as $anItem )
     {
-        echo '<tr align="center"' . (($anItem['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
+        $out .= '<tr align="center"' . (($anItem['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
 
         // title
-        echo '<td align="left" style="padding-left:'.(5 + $anItem['deepness']*10).'px;">'
+        $out .= '<td align="left" style="padding-left:'.(5 + $anItem['deepness']*10).'px;">'
         .    '<img src="'.get_module_url('CLLP').'/img/'.(($anItem['type'] == 'CONTAINER')? 'chapter.png': 'item.png').'" alt="" />'
         .    '&nbsp;' . $anItem['title']
         .    '</td>' . "\n";
 
         // edit
-        echo '<td>' . "\n"
-	    .    '<a href="admin/edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        $out .= '<td>' . "\n"
+	    .    '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
 	    .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
 	    .    '</a>'
 	    .    '</td>' . "\n";
 
         // delete
-        echo '<td>' . "\n"
+        $out .= '<td>' . "\n"
      	.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
 	    .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
     	.    '</a>'
     	.    '</td>' . "\n";
 
         // prerequisites
-		echo '<td>' . "\n"
+		$out .= '<td>' . "\n"
 		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
 		.    '<img src="' . get_path('imgRepositoryWeb') . 'unblock.gif" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
 		.    '</a>'
@@ -550,7 +550,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         // visible/invisible
         if( $anItem['visibility'] == 'VISIBLE' )
         {
-        	echo '<td>' . "\n"
+        	$out .= '<td>' . "\n"
       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
       		.    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
       		.    '</a>'
@@ -558,14 +558,14 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         }
         else
         {
-			echo '<td>' . "\n"
+			$out .= '<td>' . "\n"
       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
       		.    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
       		.    '</a>'
       		.    '</td>' . "\n";
         }
 
-        echo '<td>' . "\n"
+        $out .= '<td>' . "\n"
    		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqMove&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
   		.    '<img src="' . get_path('imgRepositoryWeb') . 'move.gif" border="0" alt="' . get_lang('Move') . '" />' . "\n"
      	.    '</a>'
@@ -574,7 +574,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         // order
         if( $anItem['canMoveUp'] )
         {
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
        		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
       		.    '<img src="' . get_path('imgRepositoryWeb') . 'up.gif" border="0" alt="' . get_lang('Move up') . '" />' . "\n"
          	.    '</a>'
@@ -582,12 +582,12 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         }
         else
         {
-            echo '<td>&nbsp;</td>' . "\n";
+            $out .= '<td>&nbsp;</td>' . "\n";
         }
 
         if( $anItem['canMoveDown'] )
         {
-            echo '<td>' . "\n"
+            $out .= '<td>' . "\n"
        		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveDown&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
       		.    '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" border="0" alt="' . get_lang('Move down') . '" />' . "\n"
          	.    '</a>'
@@ -595,26 +595,26 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         }
         else
         {
-            echo '<td>&nbsp;</td>' . "\n";
+            $out .= '<td>&nbsp;</td>' . "\n";
         }
 
-        echo '</tr>' . "\n\n";
+        $out .= '</tr>' . "\n\n";
     }
 
-    echo '</tbody>' . "\n";
+    $out .= '</tbody>' . "\n";
 }
 else
 {
-    echo '<tfoot>' . "\n"
+    $out .= '<tfoot>' . "\n"
     .    '<tr>' . "\n"
-    .    '<td align="center" colspan="8">' . get_lang('No Module') . '</td>' . "\n"
+    .    '<td align="center" colspan="8">' . get_lang('No item') . '</td>' . "\n"
     .    '</tr>' . "\n"
     .    '</tfoot>' . "\n";
 }
 
-echo '</table>' . "\n";
+$out .= '</table>' . "\n";
 
+$claroline->display->body->appendContent($out);
 
-include  get_path('includePath') . '/claro_init_footer.inc.php';
-
+echo $claroline->display->render();
 ?>
