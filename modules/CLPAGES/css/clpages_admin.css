@@ -42,3 +42,31 @@
 	border: 1px dashed #666;
 	width: auto !important;
 }
+
+
+#pageSidebar .pluginCategory
+{
+	border-bottom: 1px solid #96BB7A;
+	padding-bottom: 0;
+	text-align: right;
+	font-size: small;
+}
+
+#pageSidebar ul.pluginList
+{
+	margin-left: 3px;
+	padding: 0;
+	list-style-type: none;
+	margin-left: 5px;
+}
+
+#pageSidebar ul.pluginList li
+{
+	border-bottom: 1px solid #EDF1E3;
+}
+
+#pageSidebar ul.pluginList li a
+{
+	display: block;
+	padding: 3px 12px 3px 8px;
+}
