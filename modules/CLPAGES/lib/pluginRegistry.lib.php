@@ -29,13 +29,19 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 			$this->loadAll();
 		}
 
-		public function register($type, $displayName, $className = '')
+		public function register($type, $displayName, $className = '', $category = '', $img = '' )
 		{
 			$type = strtolower($type);
-			if( $className == '' ) $className = $type;
 
 			$this->plugins[$type]['displayName'] = $displayName;
+
+			if( $className == '' ) $className = $type;
 			$this->plugins[$type]['className'] = $className;
+
+			$this->plugins[$type]['category'] = strtolower($category);
+
+			if( $img == '' ) $img = '';
+			$this->plugins[$type]['img'] = $img;
 		}
 
 		public function getRegisteredTypes()
