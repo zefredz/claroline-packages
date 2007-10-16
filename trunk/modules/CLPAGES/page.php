@@ -105,20 +105,46 @@
    	{
    		$pluginRegistry = pluginRegistry::getInstance();
    		$availablePlugins = $pluginRegistry->getList();
+   		$plugins = array();
+		// sort by category
+		foreach( $availablePlugins as $type => $details )
+		{
+			$plugins[$details['category']][$type] = $details;
+		}
+		ksort($plugins);
 
    		$out .= '<div id="pageSidebar">' . "\n"
    		.	 '<img src="'.get_module_url('CLPAGES').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
-   		.	 '<strong>'.get_lang('Add a composant').'</strong>' . "\n"
-   		.	 '<ul>' . "\n";
+   		.	 '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
 
-   		foreach( $availablePlugins as $pluginType => $pluginDetails )
+   		foreach( $plugins as $category => $categoryPlugins )
 		{
-			$out .= '<li>'
-			.	 '<a href="#" onclick="javascript:addComponent(\''.$pluginType.'\');return false;">'.$pluginDetails['displayName'].'</a>'
-			.	 '</li>';
+			if( !empty($category) ) $out .= '<p class="pluginCategory">'.ucfirst(strtolower($category)).'</>' . "\n";
+			$out .= '<ul class="pluginList">'. "\n";
+
+			foreach( $categoryPlugins as $type => $pluginDetails )
+			{
+				$img = '';
+				if( !empty($pluginDetails['img']) )
+				{
+					$iconUrl = get_icon_url($pluginDetails['img']);
+
+					if( !is_null($iconUrl) )
+					{
+						$img = 'style="background: url('.$iconUrl.') center right no-repeat; "';
+					}
+				}
+
+				$out .= '<li '.$img.'>'
+				.	 '<a href="#" onclick="javascript:addComponent(\''.$type.'\');return false;">'
+				.	 $pluginDetails['displayName']
+				.	 '</a>'
+				.	 '</li>';
+			}
+
+			$out .= '</ul>' . "\n";
 		}
-   		$out .= '</ul>' . "\n"
-   		.	 '</div>' . "\n";
+   		$out .= '</div>' . "\n";
    	}
 
 
@@ -134,11 +160,10 @@
 		}
 	}
 
-	// componentsContainer
-	$out .= '</div>' . "\n\n"
+	$out .= '</div>' . "\n\n" // componentsContainer
 	.	 '<div class="spacer"></div>' . "\n"
-	// pageContainer
-   	.	 '</div>' . "\n";
+	.	 '</div>' . "\n\n" // pageContainer
+	;
 
 
 
