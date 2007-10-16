@@ -144,5 +144,5 @@
     	}
     }
 
-    PluginRegistry::register('textandimage',get_lang('Text and image'),'TextAndImageComponent');
+    PluginRegistry::register('textandimage',get_lang('Text and image'),'TextAndImageComponent', 'layout', 'textImageIco');
 ?>

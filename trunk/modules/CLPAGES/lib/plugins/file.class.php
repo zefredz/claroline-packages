@@ -72,5 +72,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('file',get_lang('File'),'FileComponent');
+    PluginRegistry::register('file',get_lang('File'),'FileComponent', '', 'fileIco');
 ?>

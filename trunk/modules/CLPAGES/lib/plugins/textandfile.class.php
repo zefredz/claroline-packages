@@ -114,5 +114,5 @@
     	}
     }
 
-    PluginRegistry::register('textandfile',get_lang('Text and file'),'TextAndFileComponent');
+    PluginRegistry::register('textandfile',get_lang('Text and file'),'TextAndFileComponent', 'layout', 'textFileIco');
 ?>

@@ -61,5 +61,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('text',get_lang('Text'),'TextComponent');
+    PluginRegistry::register('text',get_lang('Text'),'TextComponent', '', 'textIco');
 ?>

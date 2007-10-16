@@ -100,5 +100,5 @@
     	}
     }
 
-    PluginRegistry::register('text2columns',get_lang('Text on 2 columns'),'Text2ColumnsComponent');
+    PluginRegistry::register('text2columns',get_lang('Text on 2 columns'),'Text2ColumnsComponent', 'layout', 'textTextIco');
 ?>
