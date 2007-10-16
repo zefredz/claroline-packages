@@ -50,8 +50,10 @@ else                                                                  $itemId = 
 if( isset($_REQUEST['itemType']) )  $itemType = $_REQUEST['itemType'];
 else                             	$itemType = null;
 
-// force header
-header('Content-Type: text/html; charset=UTF-8');
+// force headers
+header('Content-Type: text/html; charset=UTF-8'); // Charset
+header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 
 if( $cmd == 'exOrder' )
