@@ -109,5 +109,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('image',get_lang('Image'),'ImageComponent');
+    PluginRegistry::register('image',get_lang('Image'),'ImageComponent', '', 'imageIco');
 ?>
