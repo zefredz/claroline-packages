@@ -76,5 +76,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('youtube',get_lang('YouTube video'),'YouTubeComponent', '', 'youtubeIco');
+    PluginRegistry::register('youtube',get_lang('YouTube video'),'YouTubeComponent', 'Externals', 'youtubeIco');
 ?>

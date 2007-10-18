@@ -88,5 +88,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('website',get_lang('External website'),'WebsiteComponent', '', 'webIco');
+    PluginRegistry::register('website',get_lang('External website'),'WebsiteComponent', 'Externals', 'webIco');
 ?>
