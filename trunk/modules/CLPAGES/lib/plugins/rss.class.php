@@ -122,5 +122,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	}
     }
 
-    PluginRegistry::register('rss',get_lang('Rss'),'RssComponent', '', 'rssIco');
+    PluginRegistry::register('rss',get_lang('Rss'),'RssComponent', 'Externals', 'rssIco');
 ?>
