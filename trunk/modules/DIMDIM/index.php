@@ -218,7 +218,7 @@ if( $is_allowedToEdit )
         } // end foreach
 
         $dialogBox .= '</select><br />' . "\n";
-        
+
         // attendee Mikes
 
         $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
@@ -339,9 +339,9 @@ if( $cmd == 'rqView' )
 	if( $is_allowedToEdit )
 	{
 		// teacher
-		$dialogBox .= '<a href="'.$conference->buildUrl(true).'" target="_blank">'.('Join conference as administrator').'</a>'
+		$dialogBox .= '<a href="'.$conference->buildUrl(true).'" target="_blank">'.get_lang('Join conference as administrator').'</a>'
 		.	 '&nbsp;|&nbsp;'
-		.	 '<a href="'.$conference->buildUrl().'" target="_blank">'.('Join conference as attendee').'</a>' . "\n";
+		.	 '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference as attendee').'</a>' . "\n";
 	}
 	elseif( time() < $conference->startTime )
 	{
@@ -415,7 +415,7 @@ if( !empty($conferenceListArray) && is_array($conferenceListArray) )
     foreach( $conferenceListArray as $aConference )
     {
         // do not display to student if conf is not visible
-        if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) break;
+        if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) continue;
 
 		$displayedConfCount++;
 
