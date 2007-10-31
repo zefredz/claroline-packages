@@ -8,42 +8,10 @@
 		$('a.deleteComponentCmd').livequery('click', deleteComponent);
 		$('a.mkVisibleCmd').livequery('click', mkVisible);
 		$('a.mkInvisibleCmd').livequery('click', mkInvisible);
+		$('a.mkUpCmd').livequery('click', mkUp);
+		$('a.mkDownCmd').livequery('click', mkDown);
 
-
-		/*
-			Make the component list sortable using interface library method
-		*/
-		$('div.componentWrapper').Sortable(
-			{
-				accept: 'sortableComponent',
-				helperclass: 'sortHelper',
-				activeclass : 'sortableactive',
-				hoverclass : 'sortablehover',
-				handle: 'div.componentHeader',
-				tolerance: 'pointer',
-				axis : 'vertically',
-				onChange : function(serializedList)
-				{
-					// commit change to DB by sending new ordering via ajax
-					var hash = serializedList[0].hash;
-
-					$.ajax({
-				    	type: "POST",
-				        url: moduleUrl + "ajaxHandler.php",
-				        data: "cmd=exOrder&cidReq="+ cidReq + "&docId=" + pageId + "&" + hash,
-				        dataType: 'html'
-				    });
-				},
-				onStart : function()
-				{
-					$.iAutoscroller.start(this, document.getElementsByTagName('body'));
-				},
-				onStop : function()
-				{
-					$.iAutoscroller.stop();
-				}
-			}
-		);
+		updateMoveCmdVisibility();
 	});
 
 	/*
@@ -55,14 +23,12 @@
 	    	url: moduleUrl + "ajaxHandler.php",
 	    	data: "cmd=addComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type,
 	    	success: function(response){
-	    		// we need to update sortable with id of last add html block, so find id of this block (component_*)
-				var addedHtmlId = getComponentIdFromHtml(response);
-				// append block at the end list and update sortable object
-		    	$("#componentsContainer")
-		    		.append(response)
-		    		.SortableAddItem(document.getElementById(addedHtmlId));
+		    	var addedHtmlId = getComponentIdFromHtml(response);
+				// append block at the end list
+		    	$("#componentsContainer").append(response);
 
 		    	$("#" + addedHtmlId).toggleEditor();
+		    	updateMoveCmdVisibility();
 
 		    },
 	    	dataType: 'html'
@@ -90,6 +56,7 @@
 		    		{
 		    			// delete was successfull so we can remove component from the DOM
 			    		$("#component_" + id).remove();
+			    		updateMoveCmdVisibility();
 					}
 			    },
 		    	dataType: 'html'
@@ -192,13 +159,13 @@
 		    	url: moduleUrl + "ajaxHandler.php",
 		    	data: "cmd=getComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemId=" + id + "&itemType=" + type,
 		    	success: function(response){
-					// replace current component by its new content and update sortable object
+					// replace current component by its new content
 			    	$("#component_" + id)
 			    		.after(response)
 			    		.remove();
 
-			    	$("#componentsContainer").SortableAddItem(document.getElementById("component_" + id));
-			        },
+			    	updateMoveCmdVisibility();
+			    },
 			    error: showErrorMessage,
 		    	dataType: 'html'
 		    });
@@ -264,7 +231,63 @@
 	    return false;
 	}
 
+	function mkUp()
+	{
+		// this.parentNode.parentNode.parentNode is the component
+		var componentDiv = $(this.parentNode.parentNode.parentNode);
 
+		var id = getIdFromComponent( componentDiv );
+		var type = getTypeFromComponent( componentDiv );
+
+	    $.ajax({
+	    	url: moduleUrl + "ajaxHandler.php",
+	    	data: "cmd=mkUp&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
+	    	success: function(response){
+					// switch eye
+					if( response == "true" )
+					{
+						// move component up : insert component to move before the one before him
+						$("#component_" + id )
+							.prev()
+							.before( $("#component_" + id) );
+
+						updateMoveCmdVisibility();
+					}
+		        },
+	    	dataType: 'html'
+	    });
+
+	    return false;
+	}
+
+	function mkDown()
+	{
+		// this.parentNode.parentNode.parentNode is the component
+		var componentDiv = $(this.parentNode.parentNode.parentNode);
+
+		var id = getIdFromComponent( componentDiv );
+		var type = getTypeFromComponent( componentDiv );
+
+	    $.ajax({
+	    	url: moduleUrl + "ajaxHandler.php",
+	    	data: "cmd=mkDown&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
+	    	success: function(response){
+					// switch eye
+					if( response == "true" )
+					{
+						// move component down : insert component_id after the component after him
+						$("#component_" + id )
+							.next()
+							.after( $("#component_" + id) );
+
+						updateMoveCmdVisibility();
+					}
+		        },
+	    	dataType: 'html'
+	    });
+
+	    return false;
+	}
 
 	function getIdFromComponent( componentDiv )
 	{
@@ -323,6 +346,16 @@
 		}
 	}
 
+	function updateMoveCmdVisibility()
+	{
+		// show all
+		$('#componentsContainer .sortableComponent a.mkUpCmd').show();
+		$('#componentsContainer .sortableComponent a.mkDownCmd').show();
+
+		// hide up command for first component, and down command for the last
+		$('#componentsContainer .sortableComponent:first-child a.mkUpCmd').hide();
+		$('#componentsContainer .sortableComponent:last-child a.mkDownCmd').hide();
+	}
 
 	$.fn.tinymce = function(options)
 	{
