@@ -12,11 +12,6 @@
 	margin-right: 275px;
 }
 
-.sortableComponent .componentHeader
-{
-	cursor: move;
-}
-
 .sortableComponent .componentHeader .componentHeaderCmd
 {
 	float: right;
@@ -64,6 +59,7 @@
 #pageSidebar ul.pluginList li
 {
 	border-bottom: 1px solid #EDF1E3;
+	padding-right: 35px;
 }
 
 #pageSidebar ul.pluginList li a
