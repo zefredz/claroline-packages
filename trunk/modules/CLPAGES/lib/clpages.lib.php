@@ -172,6 +172,10 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 				{
 					// commands
 					$out .= '  <span class="componentHeaderCmd">'
+					.	 '<a href="#" class="mkUpCmd">' . claro_html_icon('up') . '</a>'
+					. 	 '&nbsp;'
+					.	 '<a href="#" class="mkDownCmd">' . claro_html_icon('down') . '</a>'
+					.	 '&nbsp;&nbsp;'
 					.	 '<a href="#" class="mkInvisibleCmd" '.(!$this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('visible') . '</a>'
 					.	 '<a href="#" class="mkVisibleCmd" '.($this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('invisible') . '</a>'
 					.	 '&nbsp;'
