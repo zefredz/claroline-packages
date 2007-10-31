@@ -36,7 +36,13 @@ $pluginRegistry = pluginRegistry::getInstance();
 /*
  * init request vars
  */
-$acceptedCmdList = array('exOrder', 'addComponent', 'deleteComponent', 'getEditor', 'mkVisible', 'mkInvisible', 'exEdit', 'getComponent');
+$acceptedCmdList = array(	'addComponent', 'deleteComponent',
+							'exEdit',
+							'getEditor',
+							'mkVisible', 'mkInvisible',
+							'mkUp', 'mkDown',
+							'getComponent'
+						);
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -55,33 +61,87 @@ header('Content-Type: text/html; charset=UTF-8'); // Charset
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
-
-if( $cmd == 'exOrder' )
+if( $cmd == 'mkUp' || $cmd == 'mkDown' )
 {
-	$tbl_lp_names = get_module_course_tbl( array('clpages_content'), claro_get_current_course_id() );
-    $tblContents = $tbl_lp_names['clpages_content'];
+    $page = new Page();
 
-	if( is_array($_REQUEST['componentsContainer']) && !is_null($pageId) )
+	if( is_null($pageId) || !$page->load($pageId) )
 	{
-		// $_REQUEST['componentsContainer'] is the ordered list of items, key is position, value is html id
-		// html id is concatenation of item_ and the id of item
-		foreach( $_REQUEST['componentsContainer'] as $position => $htmlItemId )
-		{
-			$position = (int) $position + 1; // add 1 to have lower rank == to 1 instead of 0
-			$movedComponentId = (int) str_replace( 'component_', '', $htmlItemId );
-
-			$sql = "UPDATE `".$tblContents."`
-					SET `rank` = ".$position."
-					WHERE `id` = ".$movedComponentId."
-						AND `pageId` = ".$pageId;
-
-			claro_sql_query($sql);
-		}
+		return false;
 	}
 
+	$list = $page->getComponentList();
 
-	return true;
+	if( array_key_exists($itemId, $list) )  $thisItem = $list[$itemId];
+	else									return false;
+
+	if( $cmd == 'mkDown' )
+	{
+		// find the next one
+		$otherItemToMove = null;
+
+		$found = false;
+		foreach( $list as $item )
+		{
+			if( $found )
+			{
+				// we found item on previous iteration so this one is the "next"
+				$otherItemToMove = $item;
+				break;
+			}
+
+			if( $item->getId() == $itemId )
+			{
+				// we found it
+				$found = true;
+			}
+		}
+		// stop here if there is no next item (this item is the last)
+		if( is_null($otherItemToMove) ) return false;
+	}
+	else // mkUp
+	{
+		// find the previous one
+		$otherItemToMove = null;
+
+		foreach( $list as $item )
+		{
+			if( $item->getId() == $itemId )
+			{
+				// we found it, previous item should have been setted in previous iteration
+				break;
+			}
+			else
+			{
+				$otherItemToMove = $item;
+			}
+		}
+
+		// stop here if there is no previous item (this item is the first)
+		if( is_null($otherItemToMove) ) return false;
+	}
+
+	// get old position
+	$oldPos = $thisItem->getRank();
+	// get new position
+	$newPos = $otherItemToMove->getRank();
+
+	// change positions
+	$thisItem->setRank($newPos);
+	$otherItemToMove->setRank($oldPos);
+
+	// save the two items
+	if( $thisItem->save() && $otherItemToMove->save() )
+	{
+		echo 'true';
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
+
 
 if( $cmd == 'addComponent')
 {
@@ -225,8 +285,8 @@ if( $cmd == 'exEdit' )
 	{
 		if( $component->load( $itemId ) )
 		{
-			if( isset($_REQUEST['title_'.$component->getId()]) ) 	$title = $_REQUEST['title_'.$component->getId()];
-			else													$title = '';
+			// get it from request (this function ensure data is correctly encoded , etc...)
+			$title = $component->getFromRequest('title_'.$component->getId());
 
 			if( isset($_REQUEST['titleVisibility_'.$component->getId()]) && $_REQUEST['titleVisibility_'.$component->getId()] == 'VISIBLE' )
 			{
