@@ -99,6 +99,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	{
     		$this->url = $this->getFromRequest('url_'.$this->getId());
     		$this->limit = $this->getFromRequest('limit_'.$this->getId());
+
+    		$this->limit = max(0, $this->limit);
     	}
 
 		/**
