@@ -1,14 +1,20 @@
-<?php
+<?php // $Id$
 
+/**
+ * 
+ * @package NETQUIZ
+ * @author Gregory Koch
+ * 
+ */ 
 // inclusion du noyeux de claroline
-require_once dirname(__FILE__) . "/../../claroline/inc/claro_init_global.inc.php";
-require_once get_path('includePath').'/lib/user.lib.php';
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+require_once get_path('includePath') . '/lib/user.lib.php';
 
 // lib
-require_once "lib/netquiz.class.php";
-include_once("netquiz/langr.inc.php");
-include_once("netquiz/settings.inc.php");
-include_once("netquiz/functions.inc.php");
+require_once 'lib/netquiz.class.php';
+include_once 'netquiz/langr.inc.php';
+include_once 'netquiz/settings.inc.php';
+include_once 'netquiz/functions.inc.php';
 
 // recupération des données utilisateurs
 $current_user_data = user_get_properties(claro_get_current_user_id());
@@ -16,7 +22,7 @@ $current_user_data = user_get_properties(claro_get_current_user_id());
 // Vérification que l'utilisateur soit enregistré
 if(!claro_is_user_authenticated()) 
 {
-	claro_die(get_lang("Not allowed"));
+	claro_die(get_lang('Not allowed'));
 }
 else
 {
@@ -24,10 +30,10 @@ else
     //Variables
     $bCloseWindow = false;
     
-    $iActive = $_GET["a"];
-    $iIDQuestion = $_GET["id"];
+    $iActive = $_GET['a'];
+    $iIDQuestion = $_GET['id'];
     
-    if(isset($_GET["cw"])){
+    if(isset($_GET['cw'])){
         $bCloseWindow = true;
     }
     
@@ -40,10 +46,11 @@ else
 
 	if ( !$netquiz->updateQuestionsStatus() )
 	{
-		claro_die(get_lang("Status is not updated"));
+		claro_die(get_lang('Status is not updated'));
 	}
 
-    if($bCloseWindow){
+    if($bCloseWindow)
+    {
         ?>
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html>
@@ -56,14 +63,16 @@ else
             </head>
         </html>
         <?php
-    }else{
+    }
+    else
+    {
         ?>
         <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         <html>
             <head>
                 <link rel="stylesheet" type="text/css" href="css/main.css" />
                 <script src="js/fct_js.js" language="javascript"></script>
-                <title><?php echo $sLR["qq_sta_lbl"]; ?></title>
+                <title><?php echo $sLR['qq_sta_lbl']; ?></title>
                 <script>
                     function cancel(){
                         window.close();
@@ -91,7 +100,7 @@ else
                             <td>&nbsp;</td>
                         </tr>
                         <tr>
-                            <td align="right"><input type="submit" value="<?php echo $sLR["ok_btn"]; ?>" />&nbsp;<input type="button" value="<?php echo $sLR["cancel_btn"]; ?>" onclick="cancel()" /></td>
+                            <td align="right"><input type="submit" value="<?php echo $sLR['ok_btn']; ?>" />&nbsp;<input type="button" value="<?php echo $sLR['cancel_btn']; ?>" onclick="cancel()" /></td>
                         </tr>
                     </table>
                 </form>
