@@ -91,10 +91,10 @@ $html .= '<form action"'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
 .    '<input type="hidden" name="cmd" value="exUpdate" />' . "\n"
 .    '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />' . "\n"
 .    '<label for="skypeName">'.get_lang('Skype name').' : </label>' . "\n"
-.    '<input type="text" name="skypeName" value="' . $skypeStatusNotifier->getSkypeName() . '" />' . "\n"
+.    '<input type="text" name="skypeName" id="skypeName" value="' . $skypeStatusNotifier->getSkypeName() . '" />' . "\n"
 .    '<p><small>' . get_lang('Leave empty to deactivate status notifier.') . '</small></p>' . "\n"
 .    '<p><small>' . get_lang('Do not forget to allow your status to be shown from your Skype client.') . '</small><br />'
-.    '<img src="'.get_module_url('CLSKYPE').'/img/privacy_shot.jpg" alt="'.get_lang('Skype options, Privacy panel.').'" /></p>' . "\n"
+.    '<img src="' . get_module_url('CLSKYPE') . '/img/privacy_shot.jpg" alt="'.get_lang('Skype options, Privacy panel.').'" /></p>' . "\n"
 .    '<input type="submit" value="'.get_lang('Ok').'" />' . "\n"
 .    '</form>' . "\n\n";
 
