@@ -150,9 +150,11 @@
         
         $output = '<form action="entry.php?page=' . $param . '&amp;action=searchText" method="post">'
             . '<p>' . "\n"
+            . '<label for="frm_search">' . "\n"
             . '<img src="' .get_icon( 'Search' ) . '" alt="Rechercher" title="search" />'
+            . '</label>'
             . '&nbsp;'
-            . '<input name="frm_search" value="" size="20" type="text" />'
+            . '<input name="frm_search" id="frm_search" value="" size="20" type="text" />'
             . '<input value="Rechercher" type="submit" />'
             ;
             

@@ -396,8 +396,8 @@
             . claro_form_relay_context()
             . '<table>'
             . '<tr>'
-            . '<td>'.get_lang("Upload file").' : </td>'
-            . '<td><input type="file" name="frm_file" /></td>'
+            . '<td><label for="frm_file" >'.get_lang('Upload file').'</label> : </td>'
+            . '<td><input id="frm_file" type="file" name="frm_file" /></td>'
             . '</tr>'
             . '<tr>'
             . '<td>'
