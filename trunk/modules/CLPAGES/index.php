@@ -132,7 +132,7 @@
 		    .	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
 		    .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($page->getTitle()).'" /><br />' . "\n"
 		    // description
-		    .	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
+		    .	 '<label for="description">' . get_lang('Description') . '</label><br />' . "\n"
 		    .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($page->getDescription()).'</textarea><br />'
 
 		    .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
