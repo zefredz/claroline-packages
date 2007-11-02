@@ -510,11 +510,11 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 . '</legend>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="tagName">'.get_lang( 'Tag' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<input name="tagName" value="'.htmlspecialchars( $tagName ).'" type="text" />' . "\n"
+                . '<input name="tagName" id="tagName" value="'.htmlspecialchars( $tagName ).'" type="text" />' . "\n"
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="tagDescription">'.get_lang( 'Description' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="tagDescription" cols="60" rows="5">'.htmlspecialchars( $tagDescription ).'</textarea>' . "\n"
+                . '<textarea name="tagDescription" id="tagDescription" cols="60" rows="5">'.htmlspecialchars( $tagDescription ).'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . ( $tagId ? '<input type="hidden" value="'.$tagId.'" name="tagId" />' : '' )

@@ -660,7 +660,7 @@
                     . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
                     . '<input type="hidden" name="word" id="word" value="'.htmlspecialchars($word).'" />' . "\n"
                     . (!is_null($dictionaryId)
-                    	? '<input type="hidden" name="dictionaryId" value="'.(int)$dictionaryId.'" />' :'' )
+                    	? '<input type="hidden" name="dictionaryId" value="' . (int)$dictionaryId . '" />' :'' )
                     . '<input value="'.get_lang('Add').'" type="submit" name="submitAddDefForm" />' . "\n"
                     . '<input value="'.get_lang('Cancel').'" onclick="window.location=\''
                     . $_SERVER['PHP_SELF']
@@ -692,7 +692,7 @@
                 . '</div>'
                 . '<div class="row">' . "\n"
                 . '<label for="content">'.get_lang( 'Content' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="content" cols="80" rows="15">'.$content.'</textarea>' . "\n"
+                . '<textarea name="content" id="content" cols="80" rows="15">'.$content.'</textarea>' . "\n"
                 . '</div>'
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -727,7 +727,7 @@
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="content">'.get_lang( 'Content' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="content" cols="80" rows="15">'.$content.'</textarea>' . "\n"
+                . '<textarea name="content" id="content" cols="80" rows="15">'.$content.'</textarea>' . "\n"
                 . '</div>' . "\n"
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
