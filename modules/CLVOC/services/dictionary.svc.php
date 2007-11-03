@@ -877,11 +877,11 @@
                 . '<legend>'.get_lang( 'Add Word' ).'</legend>'
                 . '<div class="row">' . "\n"
                 . '<label for="word">'.get_lang( 'Word' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<input name="word" value="'.$word.'" type="text" />' . "\n"
+                . '<input name="word" id="word" value="'.$word.'" type="text" />' . "\n"
                 . '</div>' . "\n"
                 . '<div class="row">' . "\n"
                 . '<label for="def">'.get_lang( 'Definition' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="def" cols="60" rows="5">'.$def.'</textarea>' . "\n"
+                . '<textarea name="def" id="def" cols="60" rows="5">'.$def.'</textarea>' . "\n"
                 . '</div>' . "\n"
                 /*. '<div class="row">' . "\n"
                 . '<label for="synonymList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;'
@@ -937,7 +937,7 @@
                     . '<fieldset id="addDef">'
                     . '<legend>'.get_lang( 'Edit Word' ).'</legend>'
                     . '<div class="row">' . "\n"
-                    . '<label for="def">'.get_lang( 'Word' ).'&nbsp;:&nbsp;</label>'
+                    . '<label for="word">'.get_lang( 'Word' ).'&nbsp;:&nbsp;</label>'
                     . '<input type="text" name="word" id="word" value="'
                     . htmlspecialchars( $wordName ) . '" />' 
                     . '</div>' . "\n"
@@ -1004,12 +1004,12 @@
                     . '<legend>'.get_lang( 'Add Definition' ).'</legend>'
                     . '<div class="row">' . "\n"
                     . '<label for="def">'.get_lang( 'Definition' ).'&nbsp;:&nbsp;</label>'
-                    . '<textarea name="def" cols="60" rows="5"></textarea>'
+                    . '<textarea name="def" id="def" cols="60" rows="5"></textarea>'
                     . '</div>' . "\n"
                     . '<div class="row">' . "\n"
                     . '<label for="synonymList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;</label>'
                     . '<small><em>(' .get_lang('Coma separated word list'). ')</em></small><br>'
-                    . '<textarea name="synonymList" cols="60" rows="5"></textarea>'
+                    . '<textarea name="synonymList" id="synonymList" cols="60" rows="5"></textarea>'
                     . '</div>' . "\n"
                     . '<div class="btnrow">' . "\n"
                     . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -1262,7 +1262,7 @@
                 . '<legend>' . get_lang( 'Edit definition' ) . '</legend>'
                 . '<div class="row">' . "\n"
                 . '<label for="def">'.get_lang( 'Definition' ).'&nbsp;:&nbsp;</label>'
-                . '<textarea name="def"  id="def" cols="60" rows="5">'.$def.'</textarea>'
+                . '<textarea name="def" id="def" cols="60" rows="5">' . $def . '</textarea>'
                 . '</div>' . "\n"
                 /*. '<div class="row">' . "\n"
                 . '<label for="synonymList">'.get_lang( 'Variants' ).'&nbsp;:&nbsp;</label>'
