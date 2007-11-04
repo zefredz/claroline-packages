@@ -13,7 +13,7 @@
      *
      * @version 1.9 $Revision$
      *
-     * @copyright 2001-2006 Universite catholique de Louvain (UCL)
+     * @copyright 2001-2007 Universite catholique de Louvain (UCL)
      *
      * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
      * This program is under the terms of the GENERAL PUBLIC LICENSE (GPL)
@@ -29,13 +29,13 @@ $form_xfa_post = 'validate_category';
 $form_xfa_cancel = 'index.php?fuseaction=management_category';
 
 # id
-$frm_id = isset($_POST['frm_id']) ? $_POST['frm_id'] : "";
+$frm_id = isset($_POST['frm_id']) ? $_POST['frm_id'] : '';
 		
 # Champ categorie
-$frm_category = isset($_POST['frm_category']) ? $_POST['frm_category'] : "";
+$frm_category = isset($_POST['frm_category']) ? $_POST['frm_category'] : '';
 
 # Champ categorie
-$frm_description = isset($_POST['frm_description']) ? $_POST['frm_description'] : "";
+$frm_description = isset($_POST['frm_description']) ? $_POST['frm_description'] : '';
 
 # Action
 $form_action = isset($_POST['form_action']) ? $_POST['form_action'] : '';
@@ -100,6 +100,4 @@ else
 	}
 	
 }
-
-
 ?>
