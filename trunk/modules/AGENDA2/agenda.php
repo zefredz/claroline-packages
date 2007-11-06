@@ -962,7 +962,7 @@ foreach ( $eventList as $thisEvent )
 		if ($thisEvent['author_id']==$user_id)
 		{
 			echo '<a href="' . $_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;id=' . $thisEvent['id'] . '">'
-			.    '<img src="./img/edit.gif" border="O" alt="' . get_lang('Modify') . '">'
+			.    '<img src="./img/edit.gif" border="0" alt="' . get_lang('Modify') . '">'
 			.    '</a> '
 			.    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;id=' . $thisEvent['id'] . '" '
 			.    'onclick="javascript:if(!confirm(\''
@@ -1004,7 +1004,6 @@ foreach ( $eventList as $thisEvent )
 
 echo '</table>';
 
-
 // footer  
-require_once get_path('includePath') . "/claro_init_footer.inc.php";
+require_once get_path('includePath') . '/claro_init_footer.inc.php';
 ?>
