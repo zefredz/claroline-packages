@@ -6,7 +6,7 @@
     /**
      * OPML Generator function : generate OPML from user course RSS
      *
-     * @version     1.9 $Revision$
+     * @version     1.9 $Revision: 315 $
      * @copyright   2001-2007 Universite catholique de Louvain (UCL)
      * @author      Christophe Gesché <moosh@claroline.net>
      * @author      Frederic Minne <zefredz@claroline.net>

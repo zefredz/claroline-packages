@@ -3,7 +3,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
  * CLAROLINE
  *
- * $Revision$
+ * $Revision: 329 $
  *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
  *
