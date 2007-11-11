@@ -6,7 +6,7 @@
      * OPML generator : create OPML file for a user containing all RSS from
      *  his course. User is identified by user id, username or official code
      *
-     * @version     1.9 $Revision$
+     * @version     1.9 $Revision: 269 $
      * @copyright   2001-2007 Universite catholique de Louvain (UCL)
      * @author      Frederic Minne <zefredz@claroline.net>
      * @license     http://www.gnu.org/copyleft/gpl.html

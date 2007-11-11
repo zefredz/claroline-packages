@@ -5,7 +5,7 @@
     /**
      * Main Controller for Vocabulary Application
      *
-     * @version     1.9 $Revision$
+     * @version     1.9 $Revision: 308 $
      * @copyright   2001-2006 Universite catholique de Louvain (UCL)
      * @author      Frederic Minne <zefredz@claroline.net> and KOCH Gregory <gregk84@gate71.be>
      * @license     http://www.gnu.org/copyleft/gpl.html 

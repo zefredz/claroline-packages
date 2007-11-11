@@ -1,7 +1,7 @@
 <?php // $Id$
 /**
  *
- * @version 1.0 $Revision$
+ * @version 1.0 $Revision: 100 $
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
