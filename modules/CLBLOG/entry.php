@@ -75,51 +75,28 @@
 // {{{ CONTROLLER    
 {
     // set shared display variables
-    $inPopup = ( isset( $_REQUEST['inPopup'] ) 
+    if( isset( $_REQUEST['inPopup'] )
             && 'true' == $_REQUEST['inPopup'] )
-        ? true
-        : false
-        ;
-        
-    $hide_banner = ( isset( $_REQUEST['hide_banner'] ) 
-            && 'true' == $_REQUEST['hide_banner'] )
-        ? true
-        : false
-        ;
-        
-    $hide_footer = ( isset( $_REQUEST['hide_footer'] ) 
-            && 'true' == $_REQUEST['hide_footer'] )
-        ? true
-        : false
-        ;
-        
-    $hide_body = ( isset( $_REQUEST['hide_body'] ) 
-            && 'true' == $_REQUEST['hide_body'] )
-        ? true
-        : false
-        ;
-    
-    // set display mode
-    if ( $inPopup )
     {
-        $display->popupMode();
+        $claroline->display->popupMode();
     }
-    else
+
+    if ( isset( $_REQUEST['hide_banner'] )
+            && 'true' == $_REQUEST['hide_banner'] )
     {
-        if ( $hide_banner )
-        {
-            $display->hideBanner();
-        }
-        
-        if ( $hide_footer )
-        {
-            $display->hideFooter();
-        }
-        
-        if ( $hide_body )
-        {
-            $display->hideBody();
-        }
+        $claroline->display->banner->hide();
+    }
+
+    if( isset( $_REQUEST['hide_footer'] )
+            && 'true' == $_REQUEST['hide_footer'] )
+    {
+        $claroline->display->footer->hide();
+    }
+
+    if( isset( $_REQUEST['hide_body'] )
+            && 'true' == $_REQUEST['hide_body'] )
+    {
+        $claroline->display->body->hideClaroBody();
     }
     
     // set dispatcher requested service identifier
