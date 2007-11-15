@@ -34,7 +34,7 @@
 	// Class netquiz : recuperation de IdQuestion
 	$netquiz->setIdQuiz( $iIDQuiz );
 	$selectIdQuestion = $netquiz->selectIdQuestion();
-	
+	// test
 	foreach( $selectIdQuestion as $IdQuestion )
 	{
 	
