@@ -323,7 +323,7 @@ class conference
         	$url .= '/dimdim/html/signin/signin.action?action=host'
         	     . '&amp;email='. urlencode(claro_get_current_user_data('mail'))
         	     . '&amp;confKey='. urlencode($this->getConfkey())
-        	     . '&amp;displayName='. urlencode(claro_get_current_user_data('firstName') . ' ' . claro_get_current_user_data('lastName'))
+        	     . '&amp;displayName='. urlencode(htmlentities(claro_get_current_user_data('firstName') . ' ' . claro_get_current_user_data('lastName')))
         	     . '&amp;confName='. urlencode($this->getTitle())
         	     . '&amp;lobby='. urlencode($this->getWaitingArea(true))
         	     . '&amp;networkProfile='. urlencode($this->getNetwork(true))
@@ -341,7 +341,7 @@ class conference
         	$url .= '/dimdim/html/signin/signin.action?action=join'
         	     . '&amp;email='. urlencode(claro_get_current_user_data('mail'))
         	     . '&amp;confKey='. urlencode($this->getConfkey())
-        	     . '&amp;displayName='. urlencode(claro_get_current_user_data('firstName') . ' ' . claro_get_current_user_data('lastName'))
+        	     . '&amp;displayName='. urlencode(htmlentities(claro_get_current_user_data('firstName') . ' ' . claro_get_current_user_data('lastName')))
         	     . '&amp;returnUrl='. urlencode(get_conf('rootWeb'))
         	     . '&amp;submitFormOnLoad=true';
         }
