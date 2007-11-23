@@ -2,20 +2,21 @@
 
     // vim: expandtab sw=4 ts=4 sts=4:
     
+    if ( count( get_included_files() ) == 1 )
+    {
+        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+    }
+    
     /**
      * Blog Post class
      *
-     * @version     1.9 $Revision: 198 $
+     * @version     1.9 $Revision: 1.4 $
      * @copyright   2001-2007 Universite catholique de Louvain (UCL)
      * @author      Frederic Minne <zefredz@claroline.net>
      * @license     http://www.gnu.org/copyleft/gpl.html 
      *              GNU GENERAL PUBLIC LICENSE
      * @package     CLBLOG
      */
-    
-    if ( count( get_included_files() ) == 1 ) die( '---' );
-    
-    require_once dirname(__FILE__) . "/../database/connection.class.php";
     
     class Blog_Post
     {
@@ -46,14 +47,7 @@
             
             $id = $this->connection->getLastInsertId();
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $id;
-            }
+            return $id;
         }
         
         function updatePost( $postId, $userId, $title, $contents, $chapo = '', $groupId )
@@ -73,14 +67,7 @@
             
             $id = $this->connection->getLastInsertId();
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $id;
-            }
+            return $id;
         }
         
         function postExists( $postId )
@@ -129,14 +116,7 @@
                 
             $this->connection->executeQuery( $sql );
 
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
     }
 ?>

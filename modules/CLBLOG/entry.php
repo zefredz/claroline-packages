@@ -20,56 +20,27 @@
     // load Claroline kernel
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
     
-    require_once get_path('includePath') . '/lib/embed.lib.php';
-    
-    require_once dirname(__FILE__) . '/lib/access.lib.php';
-    
     // load service architecture
-    require_once dirname(__FILE__) . '/lib/service/dispatcher.class.php';
-    require_once dirname(__FILE__) . '/lib/service/service.class.php';
-    
-    // load shared libraries for scripts
-    require_once dirname(__FILE__) . '/lib/database/connection/claroline.class.php';
-    require_once dirname(__FILE__) . '/lib/html/messagebox.class.php';
-    
-    // check tool access
-    claro_course_tool_allowed( true );
+    uses ( 'core/service.lib', 'display/dialogBox.lib' );
+
     // display mode
     claro_set_display_mode_available(true);
     
     // get Claroline course table names
     $blogTables = get_module_course_tbl( array( 'blog_posts', 'blog_comments' )
         , claro_get_current_course_id() );
-    
-    // run course installer for on the fly table creation
-    install_module_in_course( 'CLBLOG', claro_get_current_course_id() ) ;
-    
-    // global variables
-    $moduleImageRepositoryWeb = './img';
-    $moduleImageRepositorySys = dirname(__FILE__).'/img';    
-    $moduleJavascriptRepositoryWeb = './js';
-    $moduleCssRepositoryWeb = './css';
-    $helpDir = dirname(__FILE__) . '/help'; 
 } 
 // }}}
 // {{{ MODEL
 {    
     // instanciate dispatcher and bind services 
-    $dispatcher = new Dispatcher();
+    $dispatcher = Dispatcher::getInstance();
     $dispatcher->setDefault( new ScriptService('./services/posts.svc.php') );
     $dispatcher->bind( 'blog', new ScriptService('./services/posts.svc.php') );
-    $dispatcher->bind( 'help', new ScriptService('./services/help.svc.php') );
     
-    // instanciate display
-    $display = new ClarolineScriptEmbed;
-    $display->addHtmlHeader('<script type="text/javascript" src="'
-        .$moduleJavascriptRepositoryWeb.'/popup.js"></script>');
-        
-    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
-        .$moduleCssRepositoryWeb.'/blog.css" media="all" />');
-        
-    $display->addHtmlHeader('<link rel="stylesheet" type="text/css" href="'
-        .$moduleCssRepositoryWeb.'/form.css" media="all" />');
+    $cssLoader = CssLoader::getInstance();
+    $cssLoader->load('blog','all');
+    $cssLoader->load('form','all');
 }
 // }}}
 // {{{ CONTROLLER    
@@ -106,29 +77,27 @@
         ;
         
     // serve requested page
-    $svc = is_null( $requestedService ) 
-        ? $dispatcher->serveDefault()
-        : $dispatcher->serve( $requestedService )
-        ;
-    
-    // prepare output
-    if ( $dispatcher->hasError() )
+    try
     {
-        $display->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
+        $svc = is_null( $requestedService ) 
+            ? $dispatcher->serveDefault()
+            : $dispatcher->serve( $requestedService )
+            ;
+        
+        $claroline->display->setContent( $svc->getOutput() );
     }
-    elseif ( $svc->hasError() )
+    catch ( Exception $e )
     {
-        $display->setContent( MessageBox::FatalError( $dispatcher->getError() ) );
-    }
-    else
-    {
-        $display->setContent( $svc->getOutput() );
+        $dialogBox = new DialogBox;
+        $dialogBox->error( $e->getMessage() );
+        
+        $claroline->display->setContent( $dialogBox->render() );
     }
 }
 // }}}
 // {{{ VIEW    
 {
-    $display->output();
+    echo $claroline->display->render();
 }
 // }}}
 ?>
