@@ -391,7 +391,32 @@
             if ( ! is_null( $postId ) )
             {
                 $postTitle = $post['title'];
-                $dispConfirmDelPost = true;
+                
+                $confirmDelPost = '<p>'
+                    . get_lang( 'You are going to delete the following post : %title%'
+                        , array( '%title%' => htmlspecialchars($postTitle) ) )
+                    . '<br /><br />'
+                    . "\n"
+                    ;
+                    
+                $confirmDelPost .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
+                    . '<a href="'
+                    . $_SERVER['PHP_SELF']
+                    . '?page=blog&amp;action=exDelPost&amp;postId='
+                    . (int) $postId
+                    . '">'
+                    . '[' 
+                    . get_lang( 'Yes' ) 
+                    . ']</a>&nbsp;' 
+                    . '<a href="'
+                    . $_SERVER['PHP_SELF']
+                    . '?page=blog">[' 
+                    . get_lang( 'No' ) 
+                    . ']</a>' . '</p>'
+                    . "\n"
+                    ;
+                    
+                $dialogBox->question( $confirmDelPost );
             }
             else
             {
@@ -409,7 +434,30 @@
         {
             if ( ! is_null( $commentId ) )
             {
-                $dispConfirmDelComment = true;
+                $confirmDelComment = '<p>'
+                    . get_lang( 'You are going to delete the comment.' )
+                    . '<br /><br />'
+                    . "\n"
+                    ;
+                    
+                $confirmDelComment .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
+                    . '<a href="'
+                    . $_SERVER['PHP_SELF']
+                    . '?page=blog&amp;action=exDelComment&amp;postId='
+                    . (int) $postId
+                    . '&amp;commentId='.(int)$commentId.'">'
+                    . '[' 
+                    . get_lang( 'Yes' ) 
+                    . ']</a>&nbsp;' 
+                    . '<a href="'
+                    . $_SERVER['PHP_SELF']
+                    . '?page=blog">[' 
+                    . get_lang( 'No' ) 
+                    . ']</a>' . '</p>'
+                    . "\n"
+                    ;
+                    
+                $dialogBox->question( $confirmDelComment );
             }
             else
             {
@@ -595,59 +643,12 @@
         
         if ( $dispConfirmDelPost )
         {
-            $confirmDelPost = '<p>'
-                . get_lang( 'You are going to delete the following post : %title%'
-                    , array( '%title%' => htmlspecialchars($postTitle) ) )
-                . '<br /><br />'
-                . "\n"
-                ;
-                
-            $confirmDelPost .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
-                . '<a href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=blog&amp;action=exDelPost&amp;postId='
-                . (int) $postId
-                . '">'
-                . '[' 
-                . get_lang( 'Yes' ) 
-                . ']</a>&nbsp;' 
-                . '<a href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=blog">[' 
-                . get_lang( 'No' ) 
-                . ']</a>' . '</p>'
-                . "\n"
-                ;
-                
-            $output .= MessageBox::Question( $confirmDelPost );
+            
         }
         
         if ( $dispConfirmDelComment )
         {
-            $confirmDelComment = '<p>'
-                . get_lang( 'You are going to delete the comment.' )
-                . '<br /><br />'
-                . "\n"
-                ;
-                
-            $confirmDelComment .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
-                . '<a href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=blog&amp;action=exDelComment&amp;postId='
-                . (int) $postId
-                . '&amp;commentId='.(int)$commentId.'">'
-                . '[' 
-                . get_lang( 'Yes' ) 
-                . ']</a>&nbsp;' 
-                . '<a href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=blog">[' 
-                . get_lang( 'No' ) 
-                . ']</a>' . '</p>'
-                . "\n"
-                ;
-                
-            $output .= MessageBox::Question( $confirmDelComment );
+            
         }
         
         if ( $dispPostForm )
