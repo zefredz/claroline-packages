@@ -2,6 +2,11 @@
 
     // vim: expandtab sw=4 ts=4 sts=4:
     
+    if ( count( get_included_files() ) == 1 )
+    {
+        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+    }
+    
     /**
      * Blog Comment class
      *
@@ -12,10 +17,6 @@
      *              GNU GENERAL PUBLIC LICENSE
      * @package     CLBLOG
      */
-    
-    if ( count( get_included_files() ) == 1 ) die( '---' );
-    
-    require_once dirname(__FILE__) . "/../database/connection.class.php";
     
     class Blog_Comment
     {
@@ -70,14 +71,7 @@
             
             $id = $this->connection->getLastInsertId();
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $id;
-            }
+            return $id;
         }
         
         function getPostComment( $postId )
@@ -92,14 +86,7 @@
 
             $result = $this->connection->getAllRowsFromQuery( $sql );
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $result;
-            }
+            return $result;
         }
         
         function getComment( $id )
@@ -114,14 +101,7 @@
 
             $result = $this->connection->getRowFromQuery( $sql );
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $result;
-            }
+            return $result;
         }
         
         function getAll()
@@ -135,21 +115,14 @@
 
             $result = $this->connection->getAllRowsFromQuery( $sql );
             
-            if ( $this->connection->hasError() )
+            $ret = array();
+            
+            foreach ( $result as $row )
             {
-                return null;
+                $ret[] = $row;
             }
-            else
-            {
-                $ret = array();
-                
-                foreach ( $result as $row )
-                {
-                    $ret[] = $row;
-                }
-                
-                return $ret;
-            }
+            
+            return $ret;
         }
         
         function deleteComment( $id )
@@ -162,14 +135,7 @@
                 
             $this->connection->executeQuery( $sql );
 
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         
         function deletePostComment( $postId )
@@ -182,14 +148,7 @@
                 
             $this->connection->executeQuery( $sql );
 
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
         
         function getCommentNumber( $postId )

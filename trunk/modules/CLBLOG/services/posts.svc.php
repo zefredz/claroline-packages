@@ -1,7 +1,6 @@
 <?php // $Id$
     
     // vim: expandtab sw=4 ts=4 sts=4:
-    // vim>600: set foldmethod=marker:
     
     if ( count( get_included_files() ) == 1 )
     {
@@ -54,582 +53,495 @@
     $err                    = '';    // error string
     
     // script initalisation
-    require_once dirname(__FILE__) . '/../lib/html/template.class.php';
-    require_once dirname(__FILE__) . '/../lib/html/datagrid/template.class.php';
-    require_once dirname(__FILE__) . '/../lib/blog/post.class.php';
-    require_once dirname(__FILE__) . '/../lib/blog/comment.class.php';
-    require_once dirname(__FILE__) . '/../lib/blog/utils.class.php';
-    require_once dirname(__FILE__) . '/../lib/user.lib.php';
+    uses('html/template.class','html/datagrid/template.class'
+        , 'blog/post.class', 'blog/comment.class', 'blog/utils.class'
+        , 'user.lib.php');
 }
 // }}}
 // {{{ MODEL
 {
     // model code here
-    $connection = new Claroline_Database_Connection;
-    $bp = new Blog_Post( $connection, $GLOBALS['blogTables'] );
-    $bc = new Blog_Comment( $connection, $GLOBALS['blogTables'] );
+    $bp = new Blog_Post( $claroline->database, $GLOBALS['blogTables'] );
+    $bc = new Blog_Comment( $claroline->database, $GLOBALS['blogTables'] );
     $san = new HTML_Sanitizer;
+    $dialogBox = new DialogBox;
 }
 // }}}
 // {{{ CONTROLLER
 {
-    // controller code here
-    if ( $isAllowedToEdit == true )
+    try
     {
-        $allowedActions = array( 
-              'showList'
-            , 'showPost'
-            , 'rqAddPost'
-            , 'exAddPost'
-            , 'rqEditPost'
-            , 'exEditPost'
-            , 'rqDelPost'
-            , 'exDelPost'
-            , 'exAddComment'
-            , 'rqDelComment'
-            , 'exDelComment'
-            , 'rqEditComment'
-            , 'exEditComment'
-        );
-    }
-    else
-    {
-        $allowedActions = array( 
-              'showList'
-            , 'showPost'
-            , 'exAddComment'
-            , 'rqEditComment'
-            , 'exEditComment'
-        );
-    }
-    
-    $action = ( isset( $_REQUEST['action'] ) 
-            && in_array( $_REQUEST['action'], $allowedActions ) )
-        ? $_REQUEST['action']
-        : 'showList'
-        ;
-        
-    $postId = isset( $_REQUEST['postId'] )
-        ? (int) $_REQUEST['postId']
-        : null
-        ;
-        
-    $postTitle = isset( $_REQUEST['postTitle'] )
-        ? trim( $_REQUEST['postTitle'] )
-        : ''
-        ;
-        
-    $postTitle = $san->sanitize( $postTitle );
-        
-    $postChapo = isset( $_REQUEST['postChapo'] )
-        ? trim( $_REQUEST['postChapo'] )
-        : ''
-        ;
-        
-    $postChapo = $san->sanitize( $postChapo );
-        
-    $postContents = isset( $_REQUEST['postContents'] )
-        ? trim( $_REQUEST['postContents'] )
-        : ''
-        ;
-        
-    $postContents = $san->sanitize( $postContents );
-        
-    $commentId = isset( $_REQUEST['commentId'] )
-        ? (int) $_REQUEST['commentId']
-        : null
-        ;
-        
-    $commentContents = isset( $_REQUEST['commentContents'] )
-        ? trim( $_REQUEST['commentContents'] )
-        : ''
-        ;
-        
-    $commentContents = $san->sanitize( $commentContents );
-    
-    // Check postId and load post
-    if ( ! is_null( $postId ) && ! $bp->postExists( $postId ) )
-    {
-        $err = 'Cannot execute %s action on given post : %s'; 
-        $reason = 'post not found in database';
-
-        $errorMsg .= sprintf( $err, $action, $reason ) . "\n";
-        
-        $dispError = true;
-        $fatalError = true;
-        
-        $action = 'showPostList';
-        $tag = null;
-    }
-    elseif ( !is_null( $postId ) )
-    {
-        $post = $bp->getPost( $postId );
-              
-        if ( is_null ( $post ) )
+        // controller code here
+        if ( $isAllowedToEdit == true )
         {
-            $err = 'Cannot execute %s on post : %s'; 
-            
-            if ( $connection->hasError() )
-            {
-                $reason = $connection->getError();
-            }
-            else
-            {
-                $reason = 'unknown error';
-            }
-
-            $errorMsg .= sprintf( $err, $action, $reason ) . "\n";
-        
-            $dispError = true;
-            $fatalError = true;
+            $allowedActions = array( 
+                  'showList'
+                , 'showPost'
+                , 'rqAddPost'
+                , 'exAddPost'
+                , 'rqEditPost'
+                , 'exEditPost'
+                , 'rqDelPost'
+                , 'exDelPost'
+                , 'exAddComment'
+                , 'rqDelComment'
+                , 'exDelComment'
+                , 'rqEditComment'
+                , 'exEditComment'
+            );
         }
-    }
-    else
-    {
-    }
-    
-    // Check comment id
-    if ( ! is_null( $commentId ) && ! $bc->commentExists( $commentId ) )
-    {
-        $$err = 'Cannot execute %s action on given comment : %s'; 
-        $reason = 'comment not found in database';
-
-        $errorMsg .= sprintf( $err, $action, $reason ) . "\n";
-        
-        $dispError = true;
-        $fatalError = true;
-        
-        $action = 'showPost';
-        $tag = null;
-    }
-    else
-    {
-    }
-    
-    if ( 'exDelComment' === $action )
-    {
-        if ( ! is_null ( $commentId ) )
+        else
         {
-            if ( $bc->deleteComment( $commentId ) )
+            $allowedActions = array( 
+                  'showList'
+                , 'showPost'
+                , 'exAddComment'
+                , 'rqEditComment'
+                , 'exEditComment'
+            );
+        }
+        
+        $action = ( isset( $_REQUEST['action'] ) 
+                && in_array( $_REQUEST['action'], $allowedActions ) )
+            ? $_REQUEST['action']
+            : 'showList'
+            ;
+            
+        $postId = isset( $_REQUEST['postId'] )
+            ? (int) $_REQUEST['postId']
+            : null
+            ;
+            
+        $postTitle = isset( $_REQUEST['postTitle'] )
+            ? trim( $_REQUEST['postTitle'] )
+            : ''
+            ;
+            
+        $postTitle = $san->sanitize( $postTitle );
+            
+        $postChapo = isset( $_REQUEST['postChapo'] )
+            ? trim( $_REQUEST['postChapo'] )
+            : ''
+            ;
+            
+        $postChapo = $san->sanitize( $postChapo );
+            
+        $postContents = isset( $_REQUEST['postContents'] )
+            ? trim( $_REQUEST['postContents'] )
+            : ''
+            ;
+            
+        $postContents = $san->sanitize( $postContents );
+            
+        $commentId = isset( $_REQUEST['commentId'] )
+            ? (int) $_REQUEST['commentId']
+            : null
+            ;
+            
+        $commentContents = isset( $_REQUEST['commentContents'] )
+            ? trim( $_REQUEST['commentContents'] )
+            : ''
+            ;
+            
+        $commentContents = $san->sanitize( $commentContents );
+        
+        // Check postId and load post
+        if ( ! is_null( $postId ) && ! $bp->postExists( $postId ) )
+        {
+            $err = 'Cannot execute %s action on given post : %s'; 
+            $reason = 'post not found in database';
+    
+            $dialogBox->error(sprintf( $err, $action, $reason ));
+            
+            $fatalError = true;
+            
+            $action = 'showPostList';
+            $tag = null;
+        }
+        elseif ( !is_null( $postId ) )
+        {
+            $post = $bp->getPost( $postId );
+                  
+            if ( is_null ( $post ) )
             {
-                $successMessage = get_lang( 'Comment deleted' );
-                $action = 'showPost';
+                $err = 'Cannot execute %s on post : %s'; 
+                
+                $reason = 'unknown error';
+    
+                $dialogBox->error(sprintf( $err, $action, $reason ));
+
+                $fatalError = true;
+            }
+        }
+        else
+        {
+        }
+        
+        // Check comment id
+        if ( ! is_null( $commentId ) && ! $bc->commentExists( $commentId ) )
+        {
+            $$err = 'Cannot execute %s action on given comment : %s'; 
+            $reason = 'comment not found in database';
+    
+            $dialogBox->error(sprintf( $err, $action, $reason ));
+            
+            
+            $fatalError = true;
+            
+            $action = 'showPost';
+            $tag = null;
+        }
+        else
+        {
+        }
+        
+        if ( 'exDelComment' === $action )
+        {
+            if ( ! is_null ( $commentId ) )
+            {
+                if ( $bc->deleteComment( $commentId ) )
+                {
+                    $dialogBox->success(get_lang( 'Comment deleted' ));
+                    $action = 'showPost';
+                }
+                else
+                {
+                    $err = 'Cannot delete comment : %s'; 
+                
+                    $reason = 'not found';
+                    
+                    $dialogBox->error(sprintf( $err, $reason ));
+                    
+                    $action = 'showPost';
+                }
+                
+                $commentId = null;
             }
             else
             {
                 $err = 'Cannot delete comment : %s'; 
-            
-                if ( $connection->hasError() )
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                
+                $action = 'showPost';
+            }
+        }
+        
+        if ( 'exDelPost' === $action )
+        {
+            if ( ! is_null ( $postId ) )
+            {
+                if ( $bp->deletePost( $postId ) )
                 {
-                    $reason = $connection->getError();
+                    $bc->deletePostComment( $postId );
+                    $dialogBox->success(get_lang( 'Post deleted' ));
+                    $action = 'showList';
                 }
                 else
                 {
+                    $err = 'Cannot delete post : %s'; 
+                
                     $reason = 'not found';
+                    
+                    $dialogBox->error(sprintf( $err, $reason ));
+                
+                    $action = 'showList';
                 }
-
-                $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-                $dispError = true;
-                $action = 'showPost';
-            }
-            
-            $commentId = null;
-        }
-        else
-        {
-            $err = 'Cannot delete comment : %s'; 
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            
-            $action = 'showPost';
-        }
-    }
-    
-    if ( 'exDelPost' === $action )
-    {
-        if ( ! is_null ( $postId ) )
-        {
-            if ( $bp->deletePost( $postId ) )
-            {
-                $bc->deletePostComment( $postId );
-                $successMessage = get_lang( 'Post deleted' );
-                $action = 'showList';
             }
             else
             {
-                $err = 'Cannot delete post : %s'; 
-            
-                if ( $connection->hasError() )
-                {
-                    $reason = $connection->getError();
-                }
-                else
-                {
-                    $reason = 'not found';
-                }
-
-                $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-                $dispError = true;
+                $err = 'Cannot delete comment : %s'; 
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                
                 $action = 'showList';
             }
         }
-        else
+        
+        if ( 'exAddComment' === $action )
         {
-            $err = 'Cannot delete comment : %s'; 
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            
-            $action = 'showList';
-        }
-    }
-    
-    if ( 'exAddComment' === $action )
-    {
-        if ( !empty ( $commentContents ) )
-        {
-            if ( !is_null( $postId ) )
+            if ( !empty ( $commentContents ) )
             {
-                if ( is_null( $commentId ) )
+                if ( !is_null( $postId ) )
                 {
-                    $commentId = $bc->addComment( $postId
-                        , claro_get_current_user_id()
-                        , $commentContents );
+                    if ( is_null( $commentId ) )
+                    {
+                        $commentId = $bc->addComment( $postId
+                            , claro_get_current_user_id()
+                            , $commentContents );
+                            
+                        if ( !$commentId )
+                        {
+                            $dialogBox->error('Cannot save comment'); 
+                        }
                         
-                    if ( !$commentId )
+                        $commentId = null;
+                    }
+                    else
                     {
                         $err = 'Cannot save comment : %s'; 
-                        $reason = $connection->getError();
-
-                        $errorMsg .= sprintf( $err, $reason ) . "\n";
-                
-                        $dispError = true;
+                        
+                        $bc->editComment( $commentId
+                            , $postId
+                            , claro_get_current_user_id()
+                            , $commentContents );
                     }
+                        
+                    $commentContents = '';
                     
-                    $commentId = null;
+                    $action = 'showPost';
                 }
                 else
                 {
-                    $bc->editComment( $commentId
-                        , $postId
-                        , claro_get_current_user_id()
-                        , $commentContents );
-                        
-                    if ( $connection->hasError() )
-                    {
-                        $err = 'Cannot save comment : %s'; 
-                        $reason = $connection->getError();
-
-                        $errorMsg .= sprintf( $err, $reason ) . "\n";
-                
-                        $dispError = true;
-                    }
-                }
+                    $err = 'Cannot save comment : %s'; 
+                    $reason = 'missing post id';
+    
+                    $dialogBox->error(sprintf( $err, $reason ));
+            
                     
-                $commentContents = '';
-                
-                $action = 'showPost';
+                    $action = 'showList';
+                }
             }
             else
             {
                 $err = 'Cannot save comment : %s'; 
-                $reason = 'missing post id';
-
-                $errorMsg .= sprintf( $err, $reason ) . "\n";
+                $reason = 'empty contents';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
         
-                $dispError = true;
-                $action = 'showList';
-            }
-        }
-        else
-        {
-            $err = 'Cannot save comment : %s'; 
-            $reason = 'empty contents';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            
-            $action = 'showPost';
-        }
-    }
-    
-    if ( 'exAddPost' === $action )
-    {
-        if ( !empty ( $postTitle ) )
-        {
-            if ( is_null( $postId ) )
-            {
-                $postId = $bp->addPost( claro_get_current_user_id()
-                    , $postTitle
-                    , $postContents
-                    , $postChapo
-                    , $groupId );
                 
-                if ( $postId )
-                {
-                    $action = 'showPost';
-                }
-                else
-                {
-                    $err = 'Cannot save post : %s'; 
-                    $reason = $connection->getError();
-
-                    $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-                    $dispError = true;
-                    $action = 'showList';
-                }
-            }
-            else
-            {
-                $bp->updatePost( $postId
-                    , claro_get_current_user_id()
-                    , $postTitle
-                    , $postContents
-                    , $postChapo
-                    , $groupId );
-                    
-                if ( $connection->hasError() )
-                {
-                    $err = 'Cannot save post : %s'; 
-                    $reason = $connection->getError();
-
-                    $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-                    $dispError = true;
-                    
-                    $action = 'showList';
-                }
-                else
-                {
-                    $action = 'showPost';
-                }
-            }
-        }
-        else
-        {
-            $err = 'Cannot save post : %s'; 
-            $reason = 'empty title';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            $action = 'rqAddPost';
-        }
-    }
-        
-    if ( 'rqAddPost' === $action )
-    {
-        $dispPostForm = true;
-        $postTitle = '';
-        $postChapo = '';
-        $postContents = '';
-        $nextAction = 'exAddPost';
-    }
-    
-    if ( 'rqEditPost' === $action )
-    {
-        $dispPostForm = true;
-        $postTitle = $post['title'];
-        $postChapo = $post['chapo'];
-        $postContents = $post['contents'];
-        $nextAction = 'exAddPost';
-    }
-    
-    if ( 'rqDelPost' === $action )
-    {
-        if ( ! is_null( $postId ) )
-        {
-            $postTitle = $post['title'];
-            $dispConfirmDelPost = true;
-        }
-        else
-        {
-            $err = 'Cannot delete post : %s'; 
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            $action = 'showList';
-        }
-    }
-    
-    if ( 'rqDelComment' === $action )
-    {
-        if ( ! is_null( $commentId ) )
-        {
-            $dispConfirmDelComment = true;
-        }
-        else
-        {
-            $err = 'Cannot delete comment : %s'; 
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            $action = 'showPost';
-        }
-    }
-    
-    if ( 'rqEditComment' === $action )
-    {
-        if ( !is_null( $commentId ) )
-        {
-            $comment = $bc->getComment( $commentId );
-            
-            if ( $comment )
-            {
-                $dispCommentForm = true;
-                $commentContents = $comment['contents'];
-                $nextAction = 'exAddComment';
-            }
-            else
-            {
-                $err = 'Cannot load comment : %s'; 
-                
-                if ( $connection->hasError() )
-                {
-                    $reason = $connection->getError();
-                }
-                else
-                {
-                    $reason = 'comment not found';
-                }
-
-                $errorMsg .= sprintf( $err, $reason ) . "\n";
-        
-                $dispError = true;
                 
                 $action = 'showPost';
             }
         }
-        else
-        {
-            $err = 'Cannot load comment : %s';
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            
-            $action = 'showPost';
-        }
-    }
-    
-    if ( 'showPost' === $action )
-    {
-        if ( !is_null( $postId ) )
-        {
-            $post = $bp->getPost( $postId );
-            $commentList = $bc->getPostComment( $postId );
-            
-            $userIdList = array();
         
-            foreach ( $commentList as $key => $comment )
+        if ( 'exAddPost' === $action )
+        {
+            if ( !empty ( $postTitle ) )
             {
-                $userIdList[] = (int)$comment['userId'];
+                if ( is_null( $postId ) )
+                {
+                    $postId = $bp->addPost( claro_get_current_user_id()
+                        , $postTitle
+                        , $postContents
+                        , $postChapo
+                        , $groupId );
+                    
+                    if ( $postId )
+                    {
+                        $action = 'showPost';
+                    }
+                    else
+                    {
+                        $dialogBox->error('Cannot save post');
+                
+                        $action = 'showList';
+                    }
+                }
+                else
+                {
+                    $bp->updatePost( $postId
+                        , claro_get_current_user_id()
+                        , $postTitle
+                        , $postContents
+                        , $postChapo
+                        , $groupId );
+                        
+                    $action = 'showPost';
+                }
             }
+            else
+            {
+                $err = 'Cannot save post : %s'; 
+                $reason = 'empty title';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                $action = 'rqAddPost';
+            }
+        }
             
-            $userIdList[] = $post['userId'];
+        if ( 'rqAddPost' === $action )
+        {
+            $dispPostForm = true;
+            $postTitle = '';
+            $postChapo = '';
+            $postContents = '';
+            $nextAction = 'exAddPost';
+        }
+        
+        if ( 'rqEditPost' === $action )
+        {
+            $dispPostForm = true;
+            $postTitle = $post['title'];
+            $postChapo = $post['chapo'];
+            $postContents = $post['contents'];
+            $nextAction = 'exAddPost';
+        }
+        
+        if ( 'rqDelPost' === $action )
+        {
+            if ( ! is_null( $postId ) )
+            {
+                $postTitle = $post['title'];
+                $dispConfirmDelPost = true;
+            }
+            else
+            {
+                $err = 'Cannot delete post : %s'; 
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                $action = 'showList';
+            }
+        }
+        
+        if ( 'rqDelComment' === $action )
+        {
+            if ( ! is_null( $commentId ) )
+            {
+                $dispConfirmDelComment = true;
+            }
+            else
+            {
+                $err = 'Cannot delete comment : %s'; 
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                $action = 'showPost';
+            }
+        }
+        
+        if ( 'rqEditComment' === $action )
+        {
+            if ( !is_null( $commentId ) )
+            {
+                $comment = $bc->getComment( $commentId );
+                
+                if ( $comment )
+                {
+                    $dispCommentForm = true;
+                    $commentContents = $comment['contents'];
+                    $nextAction = 'exAddComment';
+                }
+                else
+                {
+                    $err = 'Cannot load comment : %s'; 
+                    
+                    $reason = 'comment not found';
+                    $dialogBox->error(sprintf( $err, $reason ));
+            
+                    
+                    
+                    $action = 'showPost';
+                }
+            }
+            else
+            {
+                $err = 'Cannot load comment : %s';
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                
+                $action = 'showPost';
+            }
+        }
+        
+        if ( 'showPost' === $action )
+        {
+            if ( !is_null( $postId ) )
+            {
+                $post = $bp->getPost( $postId );
+                $commentList = $bc->getPostComment( $postId );
+                
+                $userIdList = array();
+            
+                foreach ( $commentList as $key => $comment )
+                {
+                    $userIdList[] = (int)$comment['userId'];
+                }
+                
+                $userIdList[] = $post['userId'];
+                
+                $userIdList = array_unique( $userIdList );
+                
+                $ul = getCourseUserList( $userIdList );
+                
+                foreach ( $commentList as $key => $comment )
+                {
+                    $user = $ul[(int)$comment['userId']];
+                    $commentList[$key]['user'] = $user['prenom'] . ' ' . $user['nom'];
+                }
+                
+                $user = $ul[(int)$post['userId']];
+                
+                $post['user'] = $user['prenom'] . ' ' . $user['nom'];
+                
+                if ( ! $post )
+                {
+                    $err = 'Cannot load post : %s'; 
+                    
+                    $reason = 'post not found';
+                    $dialogBox->error(sprintf( $err, $reason ));
+            
+                    
+                    
+                    $action = 'showList';
+                }
+                else
+                {
+                    $dispPost = true;
+                    $dispCommentForm = true;
+                    $nextAction = 'exAddComment';
+                }
+            }
+            else
+            {
+                $err = 'Cannot load post : %s'; 
+                $reason = 'missing id';
+    
+                $dialogBox->error(sprintf( $err, $reason ));
+        
+                
+                
+                $action = 'showList';
+            }
+        }
+            
+        if ( 'showList' === $action )
+        {
+            $postList = $bp->getAll();
+            $userIdList = array();
+            
+            foreach ( $postList as $key => $post )
+            {
+                $userIdList[] = (int)$post['userId'];
+            }
             
             $userIdList = array_unique( $userIdList );
             
             $ul = getCourseUserList( $userIdList );
             
-            foreach ( $commentList as $key => $comment )
+            foreach ( $postList as $key => $post )
             {
-                $user = $ul[(int)$comment['userId']];
-                $commentList[$key]['user'] = $user['prenom'] . ' ' . $user['nom'];
+                $user = $ul[(int)$post['userId']];
+                $postList[$key]['user'] = $user['prenom'] . ' ' . $user['nom'];
+                $postList[$key]['comments'] = $bc->getCommentNumber( (int)$post['id'] );
             }
             
-            $user = $ul[(int)$post['userId']];
-            
-            $post['user'] = $user['prenom'] . ' ' . $user['nom'];
-            
-            if ( ! $post )
-            {
-                $err = 'Cannot load post : %s'; 
-                
-                if ( $connection->hasError() )
-                {
-                    $reason = $connection->getError();
-                }
-                else
-                {
-                    $reason = 'post not found';
-                }
-
-                $errorMsg .= sprintf( $err, $reason ) . "\n";
-        
-                $dispError = true;
-                
-                $action = 'showList';
-            }
-            else
-            {
-                $dispPost = true;
-                $dispCommentForm = true;
-                $nextAction = 'exAddComment';
-            }
-        }
-        else
-        {
-            $err = 'Cannot load post : %s'; 
-            $reason = 'missing id';
-
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-    
-            $dispError = true;
-            
-            $action = 'showList';
-        }
-    }
-        
-    if ( 'showList' === $action )
-    {
-        $postList = $bp->getAll();
-        $userIdList = array();
-        
-        foreach ( $postList as $key => $post )
-        {
-            $userIdList[] = (int)$post['userId'];
-        }
-        
-        $userIdList = array_unique( $userIdList );
-        
-        $ul = getCourseUserList( $userIdList );
-        
-        foreach ( $postList as $key => $post )
-        {
-            $user = $ul[(int)$post['userId']];
-            $postList[$key]['user'] = $user['prenom'] . ' ' . $user['nom'];
-            $postList[$key]['comments'] = $bc->getCommentNumber( (int)$post['id'] );
-        }
-        
-        if ( $connection->hasError() )
-        {
-            $err = 'Cannot find post : %s';
-            $reason = 'invalid id';
-    
-            $errorMsg .= sprintf( $err, $reason ) . "\n";
-            
-            // $this->setOutput( MessageBox::FatalError( $errorMsg ) );
-            
-            $dispError = true;
-            $fatalError = true;
-        }
-        else
-        {  
             if ( count ( $postList ) > 0 )
             {
                 foreach ( $postList as $id => $post )
@@ -647,36 +559,13 @@
                             ;
                     }
                 }
+                
+                $dispPostList = true;
             }
-            
-            $dispPostList = true;
         }
     }
-}
-// }}}
-// {{{ VIEW
-{
-    $output = '';
-    
-    $output .= claro_html_tool_title( get_lang('Blog') );
-
-    if ( true == $dispError )
+    catch ( Exception $e )
     {
-        // display error
-        $errorMessage =  '<h2>'
-            . ( ( true == $fatalError ) 
-                ? get_lang( 'Error (Fatal)' ) 
-                : get_lang( 'Error' ) )
-            . '</h2>'
-            . "\n"
-            ;
-        
-        $errorMessage .= '<p>'
-            . htmlspecialchars($errorMsg) . '</p>' 
-            . "\n"
-            ;
-        // display back link    
-        // but back to where ???? (in case of fatal error)
         if ( true === $dispErrorBoxBackButton )
         {
             $errorMessage .= '<p><a href="'
@@ -686,32 +575,18 @@
                 ;
         }
         
-        if ( true === $fatalError )
-        {
-            $output .= MessageBox::FatalError( $errorMessage );
-        }
-        else
-        {
-            $output .= MessageBox::Error( $errorMessage );
-        }
+        $dialogBox->error(sprintf( $err, $e->getMessage ));
+        $fatalError = true;
     }
+}
+// }}}
+// {{{ VIEW
+{
+    $output = '';
     
-    if ( true === $dispSuccess )
-    {
-        // display error
-        $successMessage =  '<h2>'
-            . get_lang( 'Success' )
-            . '</h2>'
-            . "\n"
-            ;
-        
-        $successMessage .= '<p>'
-            . htmlspecialchars($successMsg) . '</p>' 
-            . "\n"
-            ;
-            
-        $output .= MessageBox::Success( $successMessage );
-    }
+    $output .= claro_html_tool_title( get_lang('Blog') );
+    
+    $output .= $dialogBox->render();
     
     // no fatal error
     if ( true != $fatalError )
