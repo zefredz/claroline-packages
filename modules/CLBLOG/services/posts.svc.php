@@ -559,9 +559,9 @@
                             ;
                     }
                 }
-                
-                $dispPostList = true;
             }
+            
+            $dispPostList = true;
         }
     }
     catch ( Exception $e )
