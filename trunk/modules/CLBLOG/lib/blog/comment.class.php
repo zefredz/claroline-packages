@@ -45,14 +45,7 @@
             
             $id = $this->connection->getLastInsertId();
             
-            if ( $this->connection->hasError() )
-            {
-                return false;
-            }
-            else
-            {
-                return $id;
-            }
+            return $id;
         }
         
         function editComment( $id, $postId, $userId, $contents )
