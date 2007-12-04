@@ -641,16 +641,6 @@
     {
         // view code here
         
-        if ( $dispConfirmDelPost )
-        {
-            
-        }
-        
-        if ( $dispConfirmDelComment )
-        {
-            
-        }
-        
         if ( $dispPostForm )
         {
             $form = '<div class="formContainer"><form method="post" action="'.$_SERVER['PHP_SELF']
@@ -899,6 +889,12 @@
     {
         $GLOBALS['interbredcrump'][]= array ( 'url' => Null
             , 'name' => get_lang("Posts"));
+    }
+    
+    if ( 'showPost' === $action )
+    {
+        $GLOBALS['interbredcrump'][]= array ( 'url' => Null
+            , 'name' => $post['title'] );
     }
     
     $this->setOutput( $output );
