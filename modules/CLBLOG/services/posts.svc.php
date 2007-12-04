@@ -876,25 +876,26 @@
     {
     }
     
-    $GLOBALS['interbredcrump'][]= array ( 'url' => 'entry.php'
-        , 'name' => get_lang("Blog"));
+    $claroline->display->banner->breadcrumbs->append(
+        get_lang("Blog"), 
+        $_SERVER['PHP_SELF']);
         
     if ( 'rqAddPost' === $action || 'rqEditPost' === $action )
     {
-        $GLOBALS['interbredcrump'][]= array ( 'url' => Null
-            , 'name' => get_lang("Add/Edit post"));
+        $claroline->display->banner->breadcrumbs->append(
+            get_lang("Add/Edit post"));
     }
     
     if ( 'showList' === $action )
     {
-        $GLOBALS['interbredcrump'][]= array ( 'url' => Null
-            , 'name' => get_lang("Posts"));
+        $claroline->display->banner->breadcrumbs->append(
+            get_lang("Posts"));
     }
     
     if ( 'showPost' === $action )
     {
-        $GLOBALS['interbredcrump'][]= array ( 'url' => Null
-            , 'name' => $post['title'] );
+        $claroline->display->banner->breadcrumbs->append(
+            $post['title']);
     }
     
     $this->setOutput( $output );
