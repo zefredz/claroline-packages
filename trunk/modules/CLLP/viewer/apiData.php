@@ -1,8 +1,9 @@
 <?php // $Id$
+
 /**
  * CLAROLINE
  *
- * @version 0.1 $Revision: 222 $
+ * @version 0.1 $Revision: 1.2 $
  *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
  *
@@ -87,54 +88,39 @@ $sco['_children'] = "student_id,student_name,lesson_location,credit,lesson_statu
 $sco['score_children'] = "raw,min,max";
 $sco['exit'] = "";
 $sco['session_time'] = "0000:00:00.00";
+//lpHandler.itemId = "<?php echo $itemId; ?>";
 */
 
 header( 'Content-Type: text/javascript' );
+
 ?>
+console.info("API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>");
 
-lpHandler.APIInitialized = false;
-lpHandler.APILastError = "301";
+API_1484_11.init();
+<?
+/*
+//
 
-lpHandler.itemId = "<?php echo $itemId; ?>";
 
 // ====================================================
 // CMI Elements and Values
 //
+/*
+	// entry handling
+    if (isset($userdata->status)) {
+        //if ($userdata->status == ''&& (!(($userdata->{'cmi.exit'} == 'suspend') || ($userdata->{'cmi.exit'} == 'logout'))&& !($userdata->{'adl.nav.request'} == 'suspendAll'))||($userdata->{'cmi.exit'} == 'normal')) {      //antes solo llegaba esta l�nea hasta el &&
+        if (!isset($userdata->{'cmi.exit'}) || (($userdata->{'cmi.exit'} == 'time-out') || ($userdata->{'cmi.exit'} == 'normal'))) {
+                $userdata->entry = 'ab-initio';
+        } else {
+            //if ((isset($userdata->{'cmi.exit'}) && (($userdata->{'cmi.exit'} == 'suspend') || ($userdata->{'cmi.exit'} == 'logout')))||(($userdata->{'adl.nav.request'} == 'suspendAll')&& isset($userdata->{'adl.nav.request'}) )) {
+            if (isset($userdata->{'cmi.exit'}) && (($userdata->{'cmi.exit'} == 'suspend') || ($userdata->{'cmi.exit'} == 'logout'))) {
+                $userdata->entry = 'resume';
+            } else {
+                $userdata->entry = '';
+            }
+        }
+    }
 
-lpHandler.elementList = {};
-lpHandler.elementList['cmi._version'] = '1.0';
-lpHandler.elementList['cmi.comments_from_learner._children']  = "comment,location,timestamp";
-lpHandler.elementList['cmi.comments_from_learner._count']  = "";
-lpHandler.elementList['cmi.comments_from_learner'] = {}; /* TODO handle collections */
-lpHandler.elementList['cmi.comments_from_lms._children']  = "comment,location,timestamp";
-lpHandler.elementList['cmi.comments_from_lms._count']  = "";
-lpHandler.elementList['cmi.comments_from_lms'] = {}; /* TODO handle collections */
-lpHandler.elementList['cmi.completion_status']  = "UNKNOWN"; /* progress measure == 0 -> not attempted, 1 -> completed, 0 < < 1 -> incomplete but depends on complete threshold */
-lpHandler.elementList['cmi.entry']  = "";
-lpHandler.elementList['cmi.exit']  = "";
-lpHandler.elementList['cmi.launch_data']  = "";
-lpHandler.elementList['cmi.learner_id']  = "";
-lpHandler.elementList['cmi.learner_name'] = "";
-lpHandler.elementList['cmi.location'] = "";
-lpHandler.elementList['cmi.max_time_allowed'] = ""; /* TODO get that from manifest ! */
-lpHandler.elementList['cmi.mode'] = "";   /* if mode is browse or review credit is always no-credit, if mode == "normal" credit my be credit or no-credit */
-lpHandler.elementList['cmi.credit']  = "no-credit";
-lpHandler.elementList['cmi.progress_measure'] = ""; /* not attempted, completed, incomplete, depends on completionThreshold */
-lpHandler.elementList['cmi.scaled_passing_score'] = "";
-lpHandler.elementList['cmi.score._children'] = "scaled,min,max,raw";
-lpHandler.elementList['cmi.score.scaled'] = "";
-lpHandler.elementList['cmi.score.min'] = "";
-lpHandler.elementList['cmi.score.max'] = "";
-lpHandler.elementList['cmi.score.raw'] = "";
-lpHandler.elementList['cmi.session_time'] = ""; /* check value ? find a way to store it ? probably use php to convert and serve a correct string */
-lpHandler.elementList['cmi.success_status'] = ""; /* passed failed or unknown */
-lpHandler.elementList['cmi.suspend_data'] = "";
-lpHandler.elementList['cmi.time_limit_action'] = ""; /* exit,message/exit,no message/continue,message/continue,no message // should be initialized to continue,no message if nothing found in manifest */
-lpHandler.elementList['cmi.total_time'] = "";
-
-
-// todo
-lpHandler.elementList['cmi.completion_threshold']  = "";
-lpHandler.elementList['cmi.interactions']  = {};
-lpHandler.elementList['cmi.learner_preference'] = "";
-lpHandler.elementList['cmi.objectives'] = {};
+*/
+exit;
+?>
