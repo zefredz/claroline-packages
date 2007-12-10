@@ -2,7 +2,7 @@
 /**
  * CLAROLINE
  *
- * @version 0.1 $Revision: 186 $
+ * @version 0.1 $Revision: 1.6 $
  *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
  *
@@ -760,13 +760,13 @@ header( 'Content-Type: text/javascript' );
 
     // Declare Scorm API object for 1.2
 
-    API = new APIClass();
-    api = API;
+    //API = new APIClass();
+    //api = API;
 
     // Declare Scorm API object for 2004
 
     API_1484_11 = new APIClass();
-    api_1484_11 = API_1484_11;
+    //api_1484_11 = API_1484_11;
 
     // other usefull vars
     var itemId = "<?php echo $itemId ?>";
