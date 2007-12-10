@@ -1,6 +1,5 @@
 //$(document).ready(init);
 
-
 function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 {
 	this.pathId = pathId;
@@ -8,11 +7,6 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 	this.moduleUrl = moduleUrl;
 	this.debugMode = debugMode;
 
-	// refreshed by api data
-	this.itemId = -1;
-	this.APIInitialized = false;
-	this.APILastError = "301";
-	this.elementList = {};
 
 	/**
 	 * Commit
@@ -88,6 +82,8 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
  *
  */
 function commit() {
+	debug("Commit",1);
+
 	var scormdata = $.toJSON(lpHandler.elementList);
 
     $.ajax({
@@ -108,10 +104,9 @@ function commit() {
  *
  */
 function setContent(itemId) {
-
+	debug("setContent("+itemId+")",1);
 	// set item id
 	this.itemId = itemId;
-
 	// refresh api then refresh content
 	$.getScript("apiData.php?cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + itemId, rqOpenItem );
 }
@@ -122,8 +117,9 @@ function setContent(itemId) {
  *
  */
 function rqOpenItem() {
+	debug("rqOpenItem()",1);
 
-	// get url and set frame location to this url
+    // get url and set frame location to this url
     $.ajax({
     	url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
     	success: mkOpenItem,
@@ -138,24 +134,18 @@ function rqOpenItem() {
  *
  */
 function mkOpenItem(itemUrl) {
+	debug("mkOpenItem()",1);
 
 	if( itemUrl != '' )
 	{
-		parent.lp_content.location = itemUrl;
+		lp_top.lp_content.location = itemUrl;
 	}
 	else
 	{
-		parent.lp_content.location = 'blank.htm';
+		lp_top.lp_content.location = 'blank.htm';
 	}
-	// remove all currently active class
-	$(".active", top.frames["lp_toc"].document).removeClass("active");
 
-	// find correct item and add it the active class
-	$("#item_" + lpHandler.itemId, top.frames["lp_toc"].document).addClass("active");
-
-	// blink the new active item
-	$(".active a", top.frames["lp_toc"].document).fadeOut("fast");
-	$(".active a", top.frames["lp_toc"].document).fadeIn("fast");
+	makeItemActive(lpHandler.itemId);
 }
 
 /**
@@ -163,13 +153,15 @@ function mkOpenItem(itemUrl) {
  * TODO : does it depends on user id ?
  */
 function refreshToc() {
+	debug("refreshToc()",1);
 
     // return all the toc that will fill the div in the toc frame
     $.ajax({
     	url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqToc&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId,
     	success: function(response){
-	    	$("#table_of_content", top.frames["lp_toc"].document).empty();
-	        $("#table_of_content", top.frames["lp_toc"].document).append(response);
+	    	$("#table_of_content", lp_top.frames["lp_toc"].document).empty();
+	        $("#table_of_content", lp_top.frames["lp_toc"].document).append(response);
+	        makeItemActive(lpHandler.itemId);
 	        },
     	dataType: 'html'
     });
@@ -184,12 +176,13 @@ function refreshToc() {
  *
  */
 function isolateContent() {
+	debug("isolateContent()",1);
 
-	$("#topBanner", top.frames["lp_content"].document).hide();
-	$("#userBanner", top.frames["lp_content"].document).hide();
-	$("#courseBanner", top.frames["lp_content"].document).hide();
-	$("#breadcrumbLine", top.frames["lp_content"].document).hide();
-	$("#campusFooter", top.frames["lp_content"].document).hide();
+	$("#topBanner", lp_top.frames["lp_content"].document).hide();
+	$("#userBanner", lp_top.frames["lp_content"].document).hide();
+	$("#courseBanner", lp_top.frames["lp_content"].document).hide();
+	$("#breadcrumbLine", lp_top.frames["lp_content"].document).hide();
+	$("#campusFooter", lp_top.frames["lp_content"].document).hide();
 }
 
 /**
@@ -197,7 +190,9 @@ function isolateContent() {
  *
  */
 function setFullscreen() {
-	parent.document.body.rows = "0,*";
+	debug("setFullScreen()",1);
+
+	lp_top.document.body.rows = "0,*";
 }
 
 /**
@@ -205,26 +200,55 @@ function setFullscreen() {
  *
  */
 function setEmbedded() {
-	parent.document.body.rows = "150,*";
+	debug("setEmbedded()",1);
+
+	lp_top.document.body.rows = "150,*";
 }
 
 /**
- * Append a debug msg to navigation frame
- * TODO use a debug frame ?
+ * Append a debug msg to js console
  *
  */
 function debug(msg, level) {
 
     if( lpHandler.debugMode > level )
     {
-        $("#lp_debug", top.frames["lp_toc"].document).append(msg + "<br />\n\n");
+        //$("#lp_debug", lp_top.frames["lp_toc"].document).append(msg + "<br />\n\n");
+        console.info(msg);
     }
 }
+
+
 /**
  * Some utilities functions
  *
  */
 
+/**
+ *	Make active an item in the table of content
+ *
+ */
+function makeItemActive( itemId )
+{
+	debug("makeItemActive("+itemId+")",1);
+	if( itemId > 0 )
+	{
+		// remove header and footer of content
+		//isolateContent();
+
+		// remove all currently active class
+		$(".active", lp_top.frames["lp_toc"].document).removeClass("active");
+
+		// find correct item and add it the active class
+		$("#item_" + lpHandler.itemId, lp_top.frames["lp_toc"].document).addClass("active");
+
+		// blink the new active item
+		$(".active a", lp_top.frames["lp_toc"].document).fadeOut("fast").fadeIn("slow");
+
+	}
+
+	return true;
+}
 
 function array_indexOf(arr,val)
 {
