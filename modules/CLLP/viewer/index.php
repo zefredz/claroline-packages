@@ -2,7 +2,7 @@
 /**
  * CLAROLINE
  *
- * @version 0.1 $Revision: 319 $
+ * @version 0.1 $Revision: 1.8 $
  *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
  *
@@ -108,6 +108,7 @@ $htmlHeaders = "\n"
 .	 '  var moduleUrl = "'.get_module_url('CLLP').'/";' . "\n"
 .    '  var debugMode = '.get_conf('scorm_api_debug').';' . "\n\n"
 .	 '  var lpHandler = new lpHandler(pathId,cidReq,moduleUrl,debugMode);' . "\n"
+.	 '  var lp_top = this;' . "\n"
 .	 '  $(document).ready(function() {' . "\n"
 .    '    setTimeout("lpHandler.refreshToc()", 900);' . "\n"
 .    '    setTimeout("lpHandler.setContent(' .$thisAttempt->getLastItemId().')", 1000);' . "\n"
