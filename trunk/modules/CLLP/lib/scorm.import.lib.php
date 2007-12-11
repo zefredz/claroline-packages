@@ -20,6 +20,8 @@ class ScormImporter
     var $path;
     var $itemList = array();
 
+	var $manifestXmlBase = '';
+
     var $backlog;
 
     function ScormImporter(&$uploadedZipFile)
@@ -215,11 +217,11 @@ class ScormImporter
 
         if( isset($this->manifestContent['manifest']['@']['xml:base']) )
         {
-            $manifestXmlBase = $this->manifestContent['manifest']['@']['xml:base'];
+            $this->manifestXmlBase = $this->manifestContent['manifest']['@']['xml:base'];
         }
         else
         {
-            $manifestXmlBase = '';
+            $this->manifestXmlBase = '';
         }
 
         // we need default organization identifier, fond in organizations 'default' attribute
@@ -292,6 +294,18 @@ class ScormImporter
 
     function addItems(&$itemList, $parentId = -1)
     {
+    	$resources = &$this->manifestContent['manifest']['#']['resources'];
+
+    	// resources xml base
+		if( isset($resources['@']['xml:base']) )
+        {
+            $resourcesXmlBase = $resources['@']['xml:base'];
+        }
+        else
+        {
+            $resourcesXmlBase = '';
+        }
+
         // go through all item ..['item'][0] ['item'][1] ...
         foreach( $itemList as $item )
         {
@@ -322,9 +336,20 @@ class ScormImporter
             {
                 $resourceRef = $this->getResourceByRef($item['@']['identifierref']);
 
+				// resource xml base
+				if( isset($resourceRef['@']['xml:base']) )
+		        {
+		            $resourceXmlBase = $resourceRef['@']['xml:base'];
+		        }
+		        else
+		        {
+		            $resourceXmlBase = '';
+		        }
+
                 if( is_array($resourceRef) && isset($resourceRef['@']['href']) )
                 {
-                    $itemPath = $resourceRef['@']['href'];
+                	// full path is the sum of all xml:base
+                    $itemPath = $this->manifestXmlBase . $resourcesXmlBase . $resourceXmlBase . $resourceRef['@']['href'];
 
                     // parameters
                     if( !empty($item['@']['parameters']) )
