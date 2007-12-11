@@ -94,7 +94,7 @@ $sco['session_time'] = "0000:00:00.00";
 header( 'Content-Type: text/javascript' );
 
 ?>
-console.info("API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>");
+if( ! $.browser.msie ) console.info("API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>");
 
 API_1484_11.init();
 <?
