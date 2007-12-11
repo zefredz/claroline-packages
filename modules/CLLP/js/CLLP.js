@@ -213,8 +213,14 @@ function debug(msg, level) {
 
     if( lpHandler.debugMode > level )
     {
-        //$("#lp_debug", lp_top.frames["lp_toc"].document).append(msg + "<br />\n\n");
-        console.info(msg);
+        if( $.browser.msie )
+        {
+        	$("#lp_debug", lp_top.frames["lp_toc"].document).append(msg + "<br />\n\n");
+        }
+        else
+        {
+        	console.info(msg);
+        }
     }
 }
 
