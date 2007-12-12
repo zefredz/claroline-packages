@@ -36,7 +36,9 @@
 	    CMIIndexStore : '.N(\\d+).',
 	    CMICStatus : '^completed$|^incomplete$|^not attempted$|^unknown$',
 	    CMISStatus : '^passed$|^failed$|^unknown$',
+	    CMICredit : '^credit$|^no-credit$',
 	    CMIExit : '^time-out$|^suspend$|^logout$|^normal$|^$',
+	    CMIEntry : '^ab-initio$|^resume$|^$',
 	    CMIType : '^true-false$|^choice$|^(long-)?fill-in$|^matching$|^performance$|^sequencing$|^likert$|^numeric$|^other$',
 	    CMIResult : '^correct$|^incorrect$|^unanticipated$|^neutral$|^-?([0-9]{1,4})(\\.[0-9]{1,18})?$',
 	    NAVEvent : '^previous$|^continue$|^exit$|^exitAll$|^abandon$|^abandonAll$|^suspendAll$|^{target:\\S{0,200}[a-zA-Z0-9]}choice$',
@@ -62,82 +64,83 @@
 			this._lastDiagnostic = "";
 
 			this._datamodel =  {
-		        'cmi._children':{'defaultvalue': this._childrenOf['cmi'], 'mod':'r'},
-		        'cmi.comments_from_learner._children':{'defaultvalue': this._childrenOf['cmi.comments_from_learner'], 'mod':'r'},
+		        'cmi._children':{'value': this._childrenOf['cmi'], 'mod':'r'},
+		        'cmi._version':{'value':'1.0', 'mod':'r'},
+		        'cmi.comments_from_learner._children':{'value': this._childrenOf['cmi.comments_from_learner'], 'mod':'r'},
+		        'cmi.comments_from_learner._count':{'value':'0', 'mod':'r'},
 
+		        'cmi.comments_from_lms._children':{'value': this._childrenOf['cmi.comments_from_lms'], 'mod':'r'},
+		        'cmi.comments_from_lms._count':{'value':'0', 'mod':'r'},
 
-		        'cmi._version':{'defaultvalue':'1.0', 'mod':'r'}
+		        'cmi.completion_status':{'value':'unknown', 'format': this.CMICStatus, 'mod':'rw'},
+		        'cmi.credit':{'value':'credit', 'format' : this.CMICredit, 'mod':'r'},
+		        'cmi.entry':{'value':'ab-initio', 'format' : this.CMIEntry, 'mod':'r'},
+		        'cmi.exit':{'value':'', 'format': this.CMIExit, 'mod':'w'},
+
 		    };
 		    /*
-		        'cmi.comments_from_learner._count':{'mod':'r', 'defaultvalue':'0'},
 		        'cmi.comments_from_learner.n.comment':{'format':CMILangString4000, 'mod':'rw'},
 		        'cmi.comments_from_learner.n.location':{'format':CMIString250, 'mod':'rw'},
 		        'cmi.comments_from_learner.n.timestamp':{'format':CMITime, 'mod':'rw'},
-		        'cmi.comments_from_lms._children':{'defaultvalue': this._childrenOf['cmi.comments_from_lms'], 'mod':'r'},
-		        'cmi.comments_from_lms._count':{'mod':'r', 'defaultvalue':'0'},
 		        'cmi.comments_from_lms.n.comment':{'format':CMILangString4000, 'mod':'r'},
 		        'cmi.comments_from_lms.n.location':{'format':CMIString250, 'mod':'r'},
 		        'cmi.comments_from_lms.n.timestamp':{'format':CMITime, 'mod':'r'},
-		        'cmi.completion_status':{'defaultvalue':'<?php echo isset($userdata->{'cmi.completion_status'})?$userdata->{'cmi.completion_status'}:'unknown' ?>', 'format':CMICStatus, 'mod':'rw'},
-		        'cmi.completion_threshold':{'defaultvalue':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.credit':{'defaultvalue':'<?php echo isset($userdata->credit)?$userdata->credit:'' ?>', 'mod':'r'},
-		        'cmi.entry':{'defaultvalue':'<?php echo $userdata->entry ?>', 'mod':'r'},
-		        'cmi.exit':{'defaultvalue':'<?php echo isset($userdata->{'cmi.exit'})?$userdata->{'cmi.exit'}:'' ?>', 'format':CMIExit, 'mod':'w'},
-		        'cmi.interactions._children':{'defaultvalue': this._childrenOf['cmi.interactions'], 'mod':'r'},
-		        'cmi.interactions._count':{'mod':'r', 'defaultvalue':'0'},
+		        'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
+		        'cmi.interactions._children':{'value': this._childrenOf['cmi.interactions'], 'mod':'r'},
+		        'cmi.interactions._count':{'mod':'r', 'value':'0'},
 		        'cmi.interactions.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
 		        'cmi.interactions.n.type':{'pattern':CMIIndex, 'format':CMIType, 'mod':'rw'},
-		        'cmi.interactions.n.objectives._count':{'pattern':CMIIndex, 'mod':'r', 'defaultvalue':'0'},
+		        'cmi.interactions.n.objectives._count':{'pattern':CMIIndex, 'mod':'r', 'value':'0'},
 		        'cmi.interactions.n.objectives.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
 		        'cmi.interactions.n.timestamp':{'pattern':CMIIndex, 'format':CMITime, 'mod':'rw'},
-		        'cmi.interactions.n.correct_responses._count':{'defaultvalue':'0', 'pattern':CMIIndex, 'mod':'r'},
+		        'cmi.interactions.n.correct_responses._count':{'value':'0', 'pattern':CMIIndex, 'mod':'r'},
 		        'cmi.interactions.n.correct_responses.n.pattern':{'pattern':CMIIndex, 'format':CMIFeedback, 'mod':'rw'},
 		        'cmi.interactions.n.weighting':{'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
 		        'cmi.interactions.n.learner_response':{'pattern':CMIIndex, 'format':CMIFeedback, 'mod':'rw'},
 		        'cmi.interactions.n.result':{'pattern':CMIIndex, 'format':CMIResult, 'mod':'rw'},
 		        'cmi.interactions.n.latency':{'pattern':CMIIndex, 'format':CMITimespan, 'mod':'rw'},
 		        'cmi.interactions.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.launch_data':{'defaultvalue':<?php echo isset($userdata->datafromlms)?'\''.$userdata->datafromlms.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.learner_id':{'defaultvalue':'<?php echo $userdata->student_id ?>', 'mod':'r'},
-		        'cmi.learner_name':{'defaultvalue':'<?php echo addslashes($userdata->student_name) ?>', 'mod':'r'},
-		        'cmi.learner_preference._children':{'defaultvalue': this._childrenOf['cmi.learner_preference'], 'mod':'r'},
-		        'cmi.learner_preference.audio_level':{'defaultvalue':'1', 'format':CMIDecimal, 'range':audio_range, 'mod':'rw'},
-		        'cmi.learner_preference.language':{'defaultvalue':'', 'format':CMILang, 'mod':'rw'},
-		        'cmi.learner_preference.delivery_speed':{'defaultvalue':'1', 'format':CMIDecimal, 'range':speed_range, 'mod':'rw'},
-		        'cmi.learner_preference.audio_captioning':{'defaultvalue':'0', 'format':CMISInteger, 'range':text_range, 'mod':'rw'},
-		        'cmi.location':{'defaultvalue':<?php echo isset($userdata->{'cmi.location'})?'\''.$userdata->{'cmi.location'}.'\'':'null' ?>, 'format':CMIString1000, 'mod':'rw'},
-		        'cmi.max_time_allowed':{'defaultvalue':<?php echo isset($userdata->maxtimeallowed)?'\''.$userdata->maxtimeallowed.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.mode':{'defaultvalue':'<?php echo $userdata->mode ?>', 'mod':'r'},
-		        'cmi.objectives._children':{'defaultvalue': this._childrenOf['cmi.objectives'], 'mod':'r'},
-		        'cmi.objectives._count':{'mod':'r', 'defaultvalue':'0'},
+		        'cmi.launch_data':{'value':<?php echo isset($userdata->datafromlms)?'\''.$userdata->datafromlms.'\'':'null' ?>, 'mod':'r'},
+		        'cmi.learner_id':{'value':'<?php echo $userdata->student_id ?>', 'mod':'r'},
+		        'cmi.learner_name':{'value':'<?php echo addslashes($userdata->student_name) ?>', 'mod':'r'},
+		        'cmi.learner_preference._children':{'value': this._childrenOf['cmi.learner_preference'], 'mod':'r'},
+		        'cmi.learner_preference.audio_level':{'value':'1', 'format':CMIDecimal, 'range':audio_range, 'mod':'rw'},
+		        'cmi.learner_preference.language':{'value':'', 'format':CMILang, 'mod':'rw'},
+		        'cmi.learner_preference.delivery_speed':{'value':'1', 'format':CMIDecimal, 'range':speed_range, 'mod':'rw'},
+		        'cmi.learner_preference.audio_captioning':{'value':'0', 'format':CMISInteger, 'range':text_range, 'mod':'rw'},
+		        'cmi.location':{'value':<?php echo isset($userdata->{'cmi.location'})?'\''.$userdata->{'cmi.location'}.'\'':'null' ?>, 'format':CMIString1000, 'mod':'rw'},
+		        'cmi.max_time_allowed':{'value':<?php echo isset($userdata->maxtimeallowed)?'\''.$userdata->maxtimeallowed.'\'':'null' ?>, 'mod':'r'},
+		        'cmi.mode':{'value':'<?php echo $userdata->mode ?>', 'mod':'r'},
+		        'cmi.objectives._children':{'value': this._childrenOf['cmi.objectives'], 'mod':'r'},
+		        'cmi.objectives._count':{'mod':'r', 'value':'0'},
 		        'cmi.objectives.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
-		        'cmi.objectives.n.score._children':{'defaultvalue': this._childrenOf['cmi.score'], 'pattern':CMIIndex, 'mod':'r'},
-		        'cmi.objectives.n.score.scaled':{'defaultvalue':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
-		        'cmi.objectives.n.score.raw':{'defaultvalue':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.objectives.n.score.min':{'defaultvalue':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.objectives.n.score.max':{'defaultvalue':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.objectives.n.success_status':{'defaultvalue':'unknown', 'pattern':CMIIndex, 'format':CMISStatus, 'mod':'rw'},
-		        'cmi.objectives.n.completion_status':{'defaultvalue':'unknown', 'pattern':CMIIndex, 'format':CMICStatus, 'mod':'rw'},
-		        'cmi.objectives.n.progress_measure':{'defaultvalue':null, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
+		        'cmi.objectives.n.score._children':{'value': this._childrenOf['cmi.score'], 'pattern':CMIIndex, 'mod':'r'},
+		        'cmi.objectives.n.score.scaled':{'value':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
+		        'cmi.objectives.n.score.raw':{'value':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.objectives.n.score.min':{'value':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.objectives.n.score.max':{'value':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.objectives.n.success_status':{'value':'unknown', 'pattern':CMIIndex, 'format':CMISStatus, 'mod':'rw'},
+		        'cmi.objectives.n.completion_status':{'value':'unknown', 'pattern':CMIIndex, 'format':CMICStatus, 'mod':'rw'},
+		        'cmi.objectives.n.progress_measure':{'value':null, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
 		        'cmi.objectives.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.progress_measure':{'defaultvalue':<?php echo isset($userdata->{'cmi.progess_measure'})?'\''.$userdata->{'cmi.progress_measure'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
-		        'cmi.scaled_passing_score':{'defaultvalue':<?php echo isset($userdata->{'cmi.scaled_passing_score'})?'\''.$userdata->{'cmi.scaled_passing_score'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'r'},
-		        'cmi.score._children':{'defaultvalue': this._childrenOf['cmi.score'], 'mod':'r'},
-		        'cmi.score.scaled':{'defaultvalue':<?php echo isset($userdata->{'cmi.score.scaled'})?'\''.$userdata->{'cmi.score.scaled'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
-		        'cmi.score.raw':{'defaultvalue':<?php echo isset($userdata->{'cmi.score.raw'})?'\''.$userdata->{'cmi.score.raw'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.score.min':{'defaultvalue':<?php echo isset($userdata->{'cmi.score.min'})?'\''.$userdata->{'cmi.score.min'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.score.max':{'defaultvalue':<?php echo isset($userdata->{'cmi.score.max'})?'\''.$userdata->{'cmi.score.max'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.session_time':{'format':CMITimespan, 'mod':'w', 'defaultvalue':'PT0H0M0S'},
-		        'cmi.success_status':{'defaultvalue':'<?php echo isset($userdata->{'cmi.success_status'})?$userdata->{'cmi.success_status'}:'unknown' ?>', 'format':CMISStatus, 'mod':'rw'},
-		        'cmi.suspend_data':{'defaultvalue':<?php echo isset($userdata->{'cmi.suspend_data'})?'\''.$userdata->{'cmi.suspend_data'}.'\'':'null' ?>, 'format':CMIString64000, 'mod':'rw'},
-		        'cmi.time_limit_action':{'defaultvalue':<?php echo isset($userdata->timelimitaction)?'\''.$userdata->timelimitaction.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.total_time':{'defaultvalue':'<?php echo isset($userdata->{'cmi.total_time'})?$userdata->{'cmi.total_time'}:'PT0H0M0S' ?>', 'mod':'r'},
-		        'adl.nav.request':{'defaultvalue':'_none_', 'format':NAVEvent, 'mod':'rw'}
+		        'cmi.progress_measure':{'value':<?php echo isset($userdata->{'cmi.progess_measure'})?'\''.$userdata->{'cmi.progress_measure'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
+		        'cmi.scaled_passing_score':{'value':<?php echo isset($userdata->{'cmi.scaled_passing_score'})?'\''.$userdata->{'cmi.scaled_passing_score'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'r'},
+		        'cmi.score._children':{'value': this._childrenOf['cmi.score'], 'mod':'r'},
+		        'cmi.score.scaled':{'value':<?php echo isset($userdata->{'cmi.score.scaled'})?'\''.$userdata->{'cmi.score.scaled'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
+		        'cmi.score.raw':{'value':<?php echo isset($userdata->{'cmi.score.raw'})?'\''.$userdata->{'cmi.score.raw'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.score.min':{'value':<?php echo isset($userdata->{'cmi.score.min'})?'\''.$userdata->{'cmi.score.min'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.score.max':{'value':<?php echo isset($userdata->{'cmi.score.max'})?'\''.$userdata->{'cmi.score.max'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
+		        'cmi.session_time':{'format':CMITimespan, 'mod':'w', 'value':'PT0H0M0S'},
+		        'cmi.success_status':{'value':'<?php echo isset($userdata->{'cmi.success_status'})?$userdata->{'cmi.success_status'}:'unknown' ?>', 'format':CMISStatus, 'mod':'rw'},
+		        'cmi.suspend_data':{'value':<?php echo isset($userdata->{'cmi.suspend_data'})?'\''.$userdata->{'cmi.suspend_data'}.'\'':'null' ?>, 'format':CMIString64000, 'mod':'rw'},
+		        'cmi.time_limit_action':{'value':<?php echo isset($userdata->timelimitaction)?'\''.$userdata->timelimitaction.'\'':'null' ?>, 'mod':'r'},
+		        'cmi.total_time':{'value':'<?php echo isset($userdata->{'cmi.total_time'})?$userdata->{'cmi.total_time'}:'PT0H0M0S' ?>', 'mod':'r'},
+		        'adl.nav.request':{'value':'_none_', 'format':NAVEvent, 'mod':'rw'}
 		    };*/
 		},
 
 	    // ====================================================
-	    // Execution State
+	    // Session methods
 	    //
 
 	    // According to SCORM 1.3 reference :
@@ -176,8 +179,10 @@
 
 	        if( arg == "" ) {
 	        	if( this._Initialized && ! this._Terminated ) {
+
 	            	this._Initialized = false;
 	            	this._Terminated = true;
+	            	this._APIError("0");
 
 	            	lpHandler.commit();
 	            	/* TODO check this part
@@ -210,51 +215,46 @@
 					return "true";
 	            } else {
 	                if( this._Terminated ) {
-	                    errorCode = "113";
+	                    this._APIError("113");
 	                } else {
-	                    errorCode = "112";
+	                    this._APIError("112");
 	                }
 	        	}
 	        } else {
-	            errorCode = "201";
+	            this._APIError("201");
 	        }
 	        return "false";
 	    },
 
 	    // ====================================================
-	    // Data Transfer
+	    // Data Transfer methods
 	    //
 	    GetValue : function (ele) {
 	            lpHandler.debug("LMSGetValue(" + ele + ")", 1);
 	            if ( this._Initialized )
 	            {
-	            	this._APIError("0");
+	            	element = eval(this._datamodel[ele]);
+
+           			if( typeof element == undefined )
+           			{
+           				this._APIError("401"); // Not implemented
+           				return "false";
+           			}
+
+           			if( element.mod == 'w' )
+					{
+						this._APIError("405");
+						return false;
+					}
+
+					this._APIError("0");
+					return element.value;
 
 	                switch (ele)
 	                {
-	                	case 'cmi._children' :
-	                			return this._datamodel.elementList[ele];
-	                			break;
-	                    case 'cmi._version' :
-	                            return lpHandler.elementList[ele];
-	                            break;
-	                    case 'cmi.comments_from_learner._children' :
-	                            return lpHandler.elementList[ele];
-	                            break;
-	                    case 'cmi.comments_from_learner._count' :
-	                            return lpHandler.elementList[ele].length;
-	                            break;
+						// TODO handle completion_threshold and completion_status and progress_measure
 	                    // TODO cmi.comment_from_learner.n.comment/location/timestamp
-	                    case 'cmi.comments_from_lms._children' :
-	                            return lpHandler.elementList[ele];
-	                            break;
-	                    case 'cmi.comments_from_lms._count' :
-	                            return lpHandler.elementList[ele].length;
-	                            break;
 	                    // TODO cmi.comment_from_lms.n.comment/location/timestamp
-	                    case 'cmi.completion_status' :  // TODO handle completion_threshold and completion_status and progress_measure
-	                            return lpHandler.elementList[ele];
-	                            break;
 	                    case 'cmi.completion_threshold' :
 	                    		return lpHandler.elementList[ele];
 	                    		break;
@@ -265,10 +265,7 @@
 	                            this._APIError("0");
 	                            return lpHandler.elementList[ele];
 	                            break;
-	                    case 'cmi.exit' :
-	                            this._APIError("405"); // write only
-	                            return "";
-	                            break;
+
 	                    case 'cmi.launch_data' :
 	                            if( lpHandler.elementList[ele] == "" )
 	                            {
@@ -442,40 +439,46 @@
 	            lpHandler.debug("LMSSetValue(" + ele +","+ val + ")", 1);
 	            if ( this._Initialized )
 	            {
+					element = eval(this._datamodel[ele]);
+
+					// exists ?
+           			if( typeof element == undefined )
+           			{
+           				this._APIError("401"); // Not implemented
+           				return "false";
+           			}
+
+					// writeable ?
+					if( element.mod == 'r' )
+					{
+						this._APIError("404");
+						return false;
+					}
+
+					// is format ok ?
+					if( typeof element.format != undefined )
+					{
+						expression = new RegExp(element.format);
+                        value = element.value + '';
+                        value = value.toLowerCase();
+                        matches = value.match(expression);
+                        if( (matches != null) && ( (matches.join('').length > 0) || (value.length == 0) ) )
+                        {
+                        	this._APIError("406");
+                        	return false;
+                        }
+                    }
+
+                    // is range ok ?
+
+
+					// everything seems ok
+					this._APIError("0");
+					element.value = val;
+					return false;
+
 	                switch (ele)
 	                {
-	                    case 'cmi._version' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.comments_from_learner._children' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.comments_from_learner._count' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.comments_from_lms._children' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.comments_from_lms._count' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.completion_status' :
-	                            var upperCaseVal = val.toUpperCase();
-	                            if ( upperCaseVal != "COMPLETED" && upperCaseVal != "INCOMPLETE"
-	                                && upperCaseVal != "NOT ATTEMPTED" && upperCaseVal != "UNKNOWN" )
-	                            {
-	                                this._APIError("406"); // data model element type mismatch
-	                                return "false";
-	                            }
-	                            lpHandler.elementList[ele] = val;
-	                            this._APIError("0");
-	                            return "true";
-	                            break;
 	                    case 'cmi.progress_measure' :
 	                            if( isNaN(parseFloat(val)) )
 	                            {
@@ -503,10 +506,7 @@
 	                            return "true";
 	                            break;
 
-	                    case 'cmi.entry' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
+
 	                    case 'cmi.exit' :
 	                            var upperCaseVal = val.toUpperCase();
 	                            if ( upperCaseVal != "TIME-OUT" && upperCaseVal != "SUSPEND"
@@ -519,18 +519,6 @@
 	                            this._APIError("0");
 	                            return "true";
 	                            break;
-	                    case 'cmi.launch_data' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.learner_id' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.learner_name' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
 	                    case 'cmi.location' :
 	                            if( val.length > 255 )
 	                            {
@@ -541,26 +529,7 @@
 	                            this._APIError("0");
 	                            return "true";
 	                            break;
-	                    case 'cmi.max_time_allowed' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.mode' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.credit' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.scaled_passing_score' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
-	                    case 'cmi.score._children' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
+
 	                    case 'cmi.score.scaled' :
 	                            if( isNaN(parseFloat(val)) )
 	                            {
@@ -623,18 +592,10 @@
 	                            this._APIError("0");
 	                            return "true";
 	                            break;
-	                    case 'cmi.total_time' :
-	                            this._APIError("404"); // read only
-	                            return "false";
-	                            break;
 	                    case 'cmi.suspend_data' :
 	                            lpHandler.elementList[ele] = val;
 	                            this._APIError("0");
 	                            return "true";
-	                            break;
-	                    case 'cmi.time_limit_action' :
-	                            this._APIError("404"); // read only
-	                            return "false";
 	                            break;
 	                    default :
 	                            // not implemented error
@@ -675,7 +636,7 @@
 
 
 	    // ====================================================
-	    // State Management
+	    // Support methods
 	    //
 	    GetLastError : function () {
             lpHandler.debug("LMSGetLastError() : returns " + this.APILastError, 1);
@@ -784,7 +745,9 @@
 	            return "";
 	    },
 
-
+	    // ====================================================
+	    // internal methods
+	    //
 	    _APIError : function (num) {
 	            this.APILastError = num;
 	    },
