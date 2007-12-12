@@ -1,0 +1,124 @@
+// paste this in scripted test tab of proddingSco package
+// AVOID USE END LINE COMMENTS
+Initialize("")
+
+//-- cmi._children : full list, r
+// big list of items
+GetValue("cmi._children")
+// error 404
+SetValue("cmi._children", "trash")
+// big list of items
+GetValue("cmi._children")
+
+//-- cmi._version : 1.0, r
+// 1.0
+GetValue("cmi._version")
+// error 404
+SetValue("cmi._version", "0.2")
+// 1.0
+GetValue("cmi._version")
+
+//-- cmi.comments_from_learner._children :  "comment,location,timestamp", r
+// comment,location,timestamp
+GetValue("cmi.comments_from_learner._children")
+// error 404
+SetValue("cmi.comments_from_learner._children", "trash")
+// comment,location,timestamp
+GetValue("cmi.comments_from_learner._children")
+
+//-- cmi.comments_from_learner._count :  "comment,location,timestamp", r
+// value is modified internally
+// 0
+GetValue("cmi.comments_from_learner._count")
+// error 404
+SetValue("cmi.comments_from_learner._count", "trash")
+// 0
+GetValue("cmi.comments_from_learner._count")
+
+
+
+
+//-- cmi.comments_from_lms._children :  "comment,location,timestamp", r
+// comment,location,timestamp
+GetValue("cmi.comments_from_lms._children")
+// error 404
+SetValue("cmi.comments_from_lms._children", "trash")
+// comment,location,timestamp
+GetValue("cmi.comments_from_lms._children")
+
+//-- cmi.comments_from_lms._count :  "comment,location,timestamp", r
+// value is modified internally
+// 0
+GetValue("cmi.comments_from_lms._count")
+// error 404
+SetValue("cmi.comments_from_lms._count", "trash")
+// 0
+GetValue("cmi.comments_from_lms._count")
+
+
+
+//-- cmi.comments_from_lms._count :  "unknown" or "completed" or "not attempted" or "incomplete", rw
+// value is modified internally
+// unknown
+GetValue("cmi.completion_status")
+// true
+SetValue("cmi.completion_status", "completed")
+// completed
+GetValue("cmi.completion_status")
+// true
+SetValue("cmi.completion_status", "COMPLETED")
+// completed
+GetValue("cmi.completion_status")
+// error 406
+SetValue("cmi.completion_status", "trash")
+// completed
+GetValue("cmi.completion_status")
+
+
+
+//-- cmi.credit :  "credit" or "no-credit", rw
+// value is modified internally
+// credit
+GetValue("cmi.credit")
+// true
+SetValue("cmi.credit", "no-credit")
+// no-credit
+GetValue("cmi.credit")
+// true
+SetValue("cmi.credit", "credit")
+// credit
+GetValue("cmi.credit")
+// error 406
+SetValue("cmi.credit", "trash")
+// credit
+GetValue("cmi.credit")
+
+
+//-- cmi.entry :  "ab-initio" or "resume" or "", rw
+// value is modified internally
+// ab-initio
+GetValue("cmi.entry")
+// true
+SetValue("cmi.entry", "resume")
+// resume
+GetValue("cmi.entry")
+// true
+SetValue("cmi.entry", "")
+// ""
+GetValue("cmi.entry")
+// error 406
+SetValue("cmi.entry", "trash")
+// ""
+GetValue("cmi.entry")
+
+
+//-- cmi.entry :  "time-out" or "suspend" or "logout" or "normal" or "", w
+// value is modified internally
+// error 405
+GetValue("cmi.entry")
+// true
+SetValue("cmi.entry", "logout")
+
+
+
+Terminate("")
