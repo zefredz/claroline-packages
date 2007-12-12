@@ -10,7 +10,7 @@
     /**
      * Main Controller for Blog Application
      *
-     * @version     1.9 $Revision: 163 $
+     * @version     1.9 $Revision$
      * @copyright   2001-2007 Universite catholique de Louvain (UCL)
      * @author      Frederic Minne <zefredz@claroline.net>
      * @license     http://www.gnu.org/copyleft/gpl.html 

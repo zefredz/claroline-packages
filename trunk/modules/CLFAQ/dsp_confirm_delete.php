@@ -15,7 +15,7 @@ if ($is_allowedToAdmin == false)
 /**
  * CLAROLINE
  *
- * @version 1.9 $Revision: 344 $
+ * @version 1.9 $Revision$
  *
  * @copyright 2001-2007 Universite catholique de Louvain (UCL)
  *
