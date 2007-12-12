@@ -2,7 +2,7 @@
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
  *
- * @version 0.1 $Revision: 51 $
+ * @version 0.1 $Revision$
  *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *

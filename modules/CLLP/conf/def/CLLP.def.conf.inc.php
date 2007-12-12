@@ -5,7 +5,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * This file describe the parameter for CLJCHAT config file
  *
- * @version 1.8 $Revision: 130 $
+ * @version 1.8 $Revision$
  *
  * @copyright 2001-2006 Universite catholique de Louvain (UCL)
  *
