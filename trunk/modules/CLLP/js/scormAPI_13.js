@@ -45,6 +45,15 @@
 	    NAVBoolean : '^unknown$|^true$|^false$',
 	    NAVTarget : '^previous$|^continue$|^choice.{target:\\S{0,200}[a-zA-Z0-9]}$',
 
+	    // Data ranges
+	    _rangeOf : {
+	    	"scaled" : '-1#1',
+		    "audio" : '0#*',
+		    "speed" : '0#*',
+		    "text" : '-1#1',
+		    "progress" : '0#1'
+	    },
+
 	    // Children lists
 	    _childrenOf : {
 	    	"cmi" : "_version, comments_from_learner, comments_from_lms, completion_status, credit, entry, exit, interactions, launch_data, learner_id, learner_name, learner_preference, location, max_time_allowed, mode, objectives, progress_measure, scaled_passing_score, score, session_time, success_status, suspend_data, time_limit_action, total_time",
@@ -77,6 +86,18 @@
 		        'cmi.entry':{'value':'ab-initio', 'format' : this.CMIEntry, 'mod':'r'},
 		        'cmi.exit':{'value':'', 'format': this.CMIExit, 'mod':'w'},
 
+		        'cmi.interactions._children':{'value': this._childrenOf['cmi.interactions'], 'mod':'r'},
+		        'cmi.interactions._count':{'value':'0', 'mod':'r'},
+
+		        'cmi.launch_data':{'value': null, 'mod':'r'},
+
+		        'cmi.learner_id':{'value':'-1', 'mod':'r'},
+		        'cmi.learner_name':{'value':'Anonymous User', 'mod':'r'},
+		        'cmi.learner_preference._children':{'value': this._childrenOf['cmi.learner_preference'], 'mod':'r'},
+		        'cmi.learner_preference.audio_level':{'value':'1', 'format': this.CMIDecimal, 'range': this._rangeOf['audio'], 'mod':'rw'},
+		        'cmi.learner_preference.language':{'value':'', 'format': this.CMILang, 'mod':'rw'},
+		        'cmi.learner_preference.delivery_speed':{'value':'1', 'format': this.CMIDecimal, 'range': this._rangeOf['speed'], 'mod':'rw'},
+		        'cmi.learner_preference.audio_captioning':{'value':'0', 'format': this.CMISInteger, 'range': this._rangeOf['text'], 'mod':'rw'},
 		    };
 		    /*
 		        'cmi.comments_from_learner.n.comment':{'format':CMILangString4000, 'mod':'rw'},
@@ -86,8 +107,6 @@
 		        'cmi.comments_from_lms.n.location':{'format':CMIString250, 'mod':'r'},
 		        'cmi.comments_from_lms.n.timestamp':{'format':CMITime, 'mod':'r'},
 		        'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.interactions._children':{'value': this._childrenOf['cmi.interactions'], 'mod':'r'},
-		        'cmi.interactions._count':{'mod':'r', 'value':'0'},
 		        'cmi.interactions.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
 		        'cmi.interactions.n.type':{'pattern':CMIIndex, 'format':CMIType, 'mod':'rw'},
 		        'cmi.interactions.n.objectives._count':{'pattern':CMIIndex, 'mod':'r', 'value':'0'},
@@ -100,14 +119,6 @@
 		        'cmi.interactions.n.result':{'pattern':CMIIndex, 'format':CMIResult, 'mod':'rw'},
 		        'cmi.interactions.n.latency':{'pattern':CMIIndex, 'format':CMITimespan, 'mod':'rw'},
 		        'cmi.interactions.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.launch_data':{'value':<?php echo isset($userdata->datafromlms)?'\''.$userdata->datafromlms.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.learner_id':{'value':'<?php echo $userdata->student_id ?>', 'mod':'r'},
-		        'cmi.learner_name':{'value':'<?php echo addslashes($userdata->student_name) ?>', 'mod':'r'},
-		        'cmi.learner_preference._children':{'value': this._childrenOf['cmi.learner_preference'], 'mod':'r'},
-		        'cmi.learner_preference.audio_level':{'value':'1', 'format':CMIDecimal, 'range':audio_range, 'mod':'rw'},
-		        'cmi.learner_preference.language':{'value':'', 'format':CMILang, 'mod':'rw'},
-		        'cmi.learner_preference.delivery_speed':{'value':'1', 'format':CMIDecimal, 'range':speed_range, 'mod':'rw'},
-		        'cmi.learner_preference.audio_captioning':{'value':'0', 'format':CMISInteger, 'range':text_range, 'mod':'rw'},
 		        'cmi.location':{'value':<?php echo isset($userdata->{'cmi.location'})?'\''.$userdata->{'cmi.location'}.'\'':'null' ?>, 'format':CMIString1000, 'mod':'rw'},
 		        'cmi.max_time_allowed':{'value':<?php echo isset($userdata->maxtimeallowed)?'\''.$userdata->maxtimeallowed.'\'':'null' ?>, 'mod':'r'},
 		        'cmi.mode':{'value':'<?php echo $userdata->mode ?>', 'mod':'r'},
@@ -247,8 +258,16 @@
 						return false;
 					}
 
-					this._APIError("0");
-					return element.value;
+					if( typeof element.value == undefined || element.value == null )
+					{
+						this._APIError("403");
+						return "";
+					}
+					else
+					{
+						this._APIError("0");
+						return element.value;
+					}
 
 	                switch (ele)
 	                {
@@ -266,17 +285,6 @@
 	                            return lpHandler.elementList[ele];
 	                            break;
 
-	                    case 'cmi.launch_data' :
-	                            if( lpHandler.elementList[ele] == "" )
-	                            {
-	                                this._APIError("403"); // data model element value not initialized
-	                                return "";
-	                            }
-	                            else
-	                            {
-	                                return lpHandler.elementList[ele];
-	                            }
-	                            break;
 	                    case 'cmi.progress_measure' :
 	                            if( lpHandler.elementList[ele] == "" )
 	                            {
@@ -459,10 +467,10 @@
 					if( typeof element.format != undefined )
 					{
 						expression = new RegExp(element.format);
-                        value = element.value + '';
+                        value = val + '';
                         value = value.toLowerCase();
                         matches = value.match(expression);
-                        if( (matches != null) && ( (matches.join('').length > 0) || (value.length == 0) ) )
+                        if( matches == null )
                         {
                         	this._APIError("406");
                         	return false;
@@ -475,7 +483,7 @@
 					// everything seems ok
 					this._APIError("0");
 					element.value = val;
-					return false;
+					return true;
 
 	                switch (ele)
 	                {
