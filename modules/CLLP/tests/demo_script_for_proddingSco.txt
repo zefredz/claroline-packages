@@ -1,5 +1,8 @@
 // paste this in scripted test tab of proddingSco package
 // AVOID USE END LINE COMMENTS
+
+// each function call is preceeded by the waited result
+
 Initialize("")
 
 //-- cmi._children : full list, r
@@ -46,7 +49,7 @@ SetValue("cmi.comments_from_lms._children", "trash")
 // comment,location,timestamp
 GetValue("cmi.comments_from_lms._children")
 
-//-- cmi.comments_from_lms._count :  "comment,location,timestamp", r
+//-- cmi.comments_from_lms._count :  0, r
 // value is modified internally
 // 0
 GetValue("cmi.comments_from_lms._count")
@@ -120,5 +123,74 @@ GetValue("cmi.entry")
 SetValue("cmi.entry", "logout")
 
 
+//-- cmi.interactions._children :  "id,type,objectives,timestamp,correct_responses,weighting,learner_response,result,latency,description", r
+// default value
+GetValue("cmi.interactions._children")
+// error 404
+SetValue("cmi.interactions._children", "trash")
+// default value
+GetValue("cmi.interactions._children")
+
+//-- cmi.interactions._count :  0, r
+// value is modified internally
+// 0
+GetValue("cmi.interactions._count")
+// error 404
+SetValue("cmi.interactions._count", "trash")
+// 0
+GetValue("cmi.interactions._count")
+
+
+//-- cmi.launch_data : data from dataFromLMS, r
+// "" and error 403 (not initialized)
+GetValue("cmi.launch_data")
+// error 404
+SetValue("cmi.launch_data", "0.2")
+// "" and error 403 (not initialized)
+GetValue("cmi.launch_data")
+
+
+//-- cmi.learner_id : ?, r
+// -1
+GetValue("cmi.learner_id")
+// error 404
+SetValue("cmi.learner_id", "85")
+// -1
+GetValue("cmi.learner_id")
+
+
+//-- cmi.learner_name : ?, r
+// Anonymous User
+GetValue("cmi.learner_name")
+// error 404
+SetValue("cmi.learner_name", "Fernand")
+// Anonymous User
+GetValue("cmi.learner_name")
+
+
+//-- cmi.learner_preference._children : "audio_level,language,delivery_speed,audio_captioning", r
+// default value
+GetValue("cmi.learner_preference._children")
+// error 404
+SetValue("cmi.learner_preference._children", "trash")
+// default value
+GetValue("cmi.learner_preference._children")
+
+//-- cmi.learner_preference.audio_level : range 0#*, rw
+// value is modified internally
+// 1
+GetValue("cmi.learner_preference.audio_level")
+// true
+SetValue("cmi.learner_preference.audio_level", "4.569")
+// 4.569
+GetValue("cmi.learner_preference.audio_level")
+// error 406
+SetValue("cmi.learner_preference.audio_level", "")
+// 4.569
+GetValue("cmi.learner_preference.audio_level")
+// error 406
+SetValue("cmi.learner_preference.audio_level", "trash")
+// 4.569
+GetValue("cmi.learner_preference.audio_level")
 
 Terminate("")
