@@ -190,7 +190,65 @@ SetValue("cmi.learner_preference.audio_level", "")
 GetValue("cmi.learner_preference.audio_level")
 // error 406
 SetValue("cmi.learner_preference.audio_level", "trash")
+// error 407
+SetValue("cmi.learner_preference.audio_level", "-4.256")
 // 4.569
 GetValue("cmi.learner_preference.audio_level")
+
+
+//-- cmi.learner_preference.language : CMILang, rw
+// value is modified internally
+// ''
+GetValue("cmi.learner_preference.language")
+// true
+SetValue("cmi.learner_preference.language", "fr-CA")
+// fr-CA
+GetValue("cmi.learner_preference.language")
+// error 406
+SetValue("cmi.learner_preference.language", "trash")
+// error 407
+SetValue("cmi.learner_preference.language", "-4.256")
+// fr-CA
+GetValue("cmi.learner_preference.language")
+
+
+//-- cmi.learner_preference.delivery_speed : CMIDecimal, 0#*, rw
+// value is modified internally
+// ''
+GetValue("cmi.learner_preference.delivery_speed")
+// true
+SetValue("cmi.learner_preference.delivery_speed", "4.256")
+// 4.256
+GetValue("cmi.learner_preference.delivery_speed")
+// error 406
+SetValue("cmi.learner_preference.delivery_speed", "trash")
+// error 407
+SetValue("cmi.learner_preference.delivery_speed", "-4.256")
+// 4.256
+GetValue("cmi.learner_preference.delivery_speed")
+
+
+//-- cmi.learner_preference.audio_captioning : CMISInteger, -1#1, rw
+// value is modified internally
+// 0
+GetValue("cmi.learner_preference.audio_captioning")
+// true
+SetValue("cmi.learner_preference.audio_captioning", "1")
+// 1
+GetValue("cmi.learner_preference.audio_captioning")
+// error 406
+SetValue("cmi.learner_preference.audio_captioning", "trash")
+// error 406
+SetValue("cmi.learner_preference.audio_captioning", "1.5")
+// error 407
+SetValue("cmi.learner_preference.audio_captioning", "-4")
+// 1
+GetValue("cmi.learner_preference.audio_captioning")
+
+
+
+
+
+
 
 Terminate("")
