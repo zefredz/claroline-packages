@@ -47,11 +47,11 @@
 
 	    // Data ranges
 	    _rangeOf : {
-	    	"scaled" : '-1#1',
-		    "audio" : '0#*',
-		    "speed" : '0#*',
-		    "text" : '-1#1',
-		    "progress" : '0#1'
+	    	"scaled" : "-1#1",
+		    "audio" : "0#*",
+		    "speed" : "0#*",
+		    "text" : "-1#1",
+		    "progress" : "0#1"
 	    },
 
 	    // Children lists
@@ -246,7 +246,7 @@
 	            {
 	            	element = eval(this._datamodel[ele]);
 
-           			if( typeof element == undefined )
+           			if( typeof element == 'undefined' )
            			{
            				this._APIError("401"); // Not implemented
            				return "false";
@@ -258,7 +258,7 @@
 						return false;
 					}
 
-					if( typeof element.value == undefined || element.value == null )
+					if( typeof element.value == 'undefined' || element.value == null )
 					{
 						this._APIError("403");
 						return "";
@@ -450,7 +450,7 @@
 					element = eval(this._datamodel[ele]);
 
 					// exists ?
-           			if( typeof element == undefined )
+           			if( typeof element == 'undefined' )
            			{
            				this._APIError("401"); // Not implemented
            				return "false";
@@ -464,7 +464,7 @@
 					}
 
 					// is format ok ?
-					if( typeof element.format != undefined )
+					if( typeof element.format != 'undefined' )
 					{
 						expression = new RegExp(element.format);
                         value = val + '';
@@ -478,7 +478,17 @@
                     }
 
                     // is range ok ?
+					if( typeof element.range != 'undefined' )
+					{
+						var ranges = element.range.split('#');
+						value = val*1.0;
 
+						if( value < ranges[0] || ( value > ranges[1] && ranges[1] != '*' )  )
+						{
+							this._APIError("407");
+							return false;
+						}
+					}
 
 					// everything seems ok
 					this._APIError("0");
