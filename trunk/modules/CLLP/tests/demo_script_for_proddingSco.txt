@@ -5,29 +5,26 @@
 
 Initialize("")
 
+
 //-- cmi._children : full list, r
 // big list of items
 GetValue("cmi._children")
 // error 404
 SetValue("cmi._children", "trash")
-// big list of items
-GetValue("cmi._children")
+
 
 //-- cmi._version : 1.0, r
 // 1.0
 GetValue("cmi._version")
 // error 404
 SetValue("cmi._version", "0.2")
-// 1.0
-GetValue("cmi._version")
 
 //-- cmi.comments_from_learner._children :  "comment,location,timestamp", r
 // comment,location,timestamp
 GetValue("cmi.comments_from_learner._children")
 // error 404
 SetValue("cmi.comments_from_learner._children", "trash")
-// comment,location,timestamp
-GetValue("cmi.comments_from_learner._children")
+
 
 //-- cmi.comments_from_learner._count :  "comment,location,timestamp", r
 // value is modified internally
@@ -35,9 +32,6 @@ GetValue("cmi.comments_from_learner._children")
 GetValue("cmi.comments_from_learner._count")
 // error 404
 SetValue("cmi.comments_from_learner._count", "trash")
-// 0
-GetValue("cmi.comments_from_learner._count")
-
 
 
 
@@ -46,8 +40,7 @@ GetValue("cmi.comments_from_learner._count")
 GetValue("cmi.comments_from_lms._children")
 // error 404
 SetValue("cmi.comments_from_lms._children", "trash")
-// comment,location,timestamp
-GetValue("cmi.comments_from_lms._children")
+
 
 //-- cmi.comments_from_lms._count :  0, r
 // value is modified internally
@@ -55,13 +48,10 @@ GetValue("cmi.comments_from_lms._children")
 GetValue("cmi.comments_from_lms._count")
 // error 404
 SetValue("cmi.comments_from_lms._count", "trash")
-// 0
-GetValue("cmi.comments_from_lms._count")
 
 
 
-//-- cmi.comments_from_lms._count :  "unknown" or "completed" or "not attempted" or "incomplete", rw
-// value is modified internally
+//-- cmi.completion_status :  "unknown" or "completed" or "not attempted" or "incomplete", rw
 // unknown
 GetValue("cmi.completion_status")
 // true
@@ -79,48 +69,28 @@ GetValue("cmi.completion_status")
 
 
 
-//-- cmi.credit :  "credit" or "no-credit", rw
+//-- cmi.credit :  "credit" or "no-credit", r
 // value is modified internally
 // credit
 GetValue("cmi.credit")
-// true
+// error 404
 SetValue("cmi.credit", "no-credit")
-// no-credit
-GetValue("cmi.credit")
-// true
-SetValue("cmi.credit", "credit")
-// credit
-GetValue("cmi.credit")
-// error 406
-SetValue("cmi.credit", "trash")
-// credit
-GetValue("cmi.credit")
 
 
-//-- cmi.entry :  "ab-initio" or "resume" or "", rw
+//-- cmi.entry :  "ab-initio" or "resume" or "", r
 // value is modified internally
 // ab-initio
 GetValue("cmi.entry")
-// true
+// error 404
 SetValue("cmi.entry", "resume")
-// resume
-GetValue("cmi.entry")
-// true
-SetValue("cmi.entry", "")
-// ""
-GetValue("cmi.entry")
-// error 406
-SetValue("cmi.entry", "trash")
-// ""
-GetValue("cmi.entry")
 
 
-//-- cmi.entry :  "time-out" or "suspend" or "logout" or "normal" or "", w
+//-- cmi.exit :  "time-out" or "suspend" or "logout" or "normal" or "", w
 // value is modified internally
 // error 405
-GetValue("cmi.entry")
+GetValue("cmi.exit")
 // true
-SetValue("cmi.entry", "logout")
+SetValue("cmi.exit", "logout")
 
 
 //-- cmi.interactions._children :  "id,type,objectives,timestamp,correct_responses,weighting,learner_response,result,latency,description", r
@@ -128,8 +98,6 @@ SetValue("cmi.entry", "logout")
 GetValue("cmi.interactions._children")
 // error 404
 SetValue("cmi.interactions._children", "trash")
-// default value
-GetValue("cmi.interactions._children")
 
 //-- cmi.interactions._count :  0, r
 // value is modified internally
@@ -137,8 +105,6 @@ GetValue("cmi.interactions._children")
 GetValue("cmi.interactions._count")
 // error 404
 SetValue("cmi.interactions._count", "trash")
-// 0
-GetValue("cmi.interactions._count")
 
 
 //-- cmi.launch_data : data from dataFromLMS, r
@@ -146,8 +112,6 @@ GetValue("cmi.interactions._count")
 GetValue("cmi.launch_data")
 // error 404
 SetValue("cmi.launch_data", "0.2")
-// "" and error 403 (not initialized)
-GetValue("cmi.launch_data")
 
 
 //-- cmi.learner_id : ?, r
@@ -155,8 +119,6 @@ GetValue("cmi.launch_data")
 GetValue("cmi.learner_id")
 // error 404
 SetValue("cmi.learner_id", "85")
-// -1
-GetValue("cmi.learner_id")
 
 
 //-- cmi.learner_name : ?, r
@@ -164,8 +126,6 @@ GetValue("cmi.learner_id")
 GetValue("cmi.learner_name")
 // error 404
 SetValue("cmi.learner_name", "Fernand")
-// Anonymous User
-GetValue("cmi.learner_name")
 
 
 //-- cmi.learner_preference._children : "audio_level,language,delivery_speed,audio_captioning", r
@@ -173,8 +133,6 @@ GetValue("cmi.learner_name")
 GetValue("cmi.learner_preference._children")
 // error 404
 SetValue("cmi.learner_preference._children", "trash")
-// default value
-GetValue("cmi.learner_preference._children")
 
 //-- cmi.learner_preference.audio_level : range 0#*, rw
 // value is modified internally
@@ -212,9 +170,9 @@ SetValue("cmi.learner_preference.language", "-4.256")
 GetValue("cmi.learner_preference.language")
 
 
-//-- cmi.learner_preference.delivery_speed : CMIDecimal, 0#*, rw
+//-- cmi.learner_preference.delivery_speed : 1, CMIDecimal, 0#*, rw
 // value is modified internally
-// ''
+// 1
 GetValue("cmi.learner_preference.delivery_speed")
 // true
 SetValue("cmi.learner_preference.delivery_speed", "4.256")
@@ -228,7 +186,7 @@ SetValue("cmi.learner_preference.delivery_speed", "-4.256")
 GetValue("cmi.learner_preference.delivery_speed")
 
 
-//-- cmi.learner_preference.audio_captioning : CMISInteger, -1#1, rw
+//-- cmi.learner_preference.audio_captioning : CMIInteger, -1#1, rw
 // value is modified internally
 // 0
 GetValue("cmi.learner_preference.audio_captioning")
@@ -246,9 +204,57 @@ SetValue("cmi.learner_preference.audio_captioning", "-4")
 GetValue("cmi.learner_preference.audio_captioning")
 
 
+//-- cmi.location : null, range 0#*, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.location")
+// true
+SetValue("cmi.location", "chkPt1.p3.f5")
+// chkPt1.p3.f5
+GetValue("cmi.location")
 
 
+//-- cmi.max_time_allowed : null, r
+// "" and error 403 (not initialized)
+GetValue("cmi.max_time_allowed")
+// error 404
+SetValue("cmi.max_time_allowed", "85")
 
 
+//-- cmi.mode : 'normal', r
+// normal
+GetValue("cmi.mode")
+// error 404
+SetValue("cmi.mode", "85")
+
+//-- cmi.objectives._children : "id,score,success_status,completion_status,progress_measure,description", r
+// default value
+GetValue("cmi.objectives._children")
+// error 404
+SetValue("cmi.objectives._children", "trash")
+
+
+//-- cmi.progress_measure : null, CMIDecimal, 0.0#1.0, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.progress_measure")
+// true
+SetValue("cmi.progress_measure", "0.75")
+// true
+SetValue("cmi.progress_measure", "1")
+// 1
+GetValue("cmi.progress_measure")
+// error 406
+SetValue("cmi.progress_measure", "trash")
+// error 406
+SetValue("cmi.progress_measure", "1.5")
+// error 407
+SetValue("cmi.progress_measure", "-4")
+// 1
+GetValue("cmi.progress_measure")
+
+//-- cmi.scaled_passing_score : null, CMIDecimal, -1#1, r
+// "" and error 403 (not initialized)
+GetValue("cmi.scaled_passing_score")
+// error 404
+SetValue("cmi.scaled_passing_score", "0.75")
 
 Terminate("")
