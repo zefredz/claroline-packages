@@ -98,15 +98,26 @@
 		        'cmi.learner_preference.language':{'value':'', 'format': this.CMILang, 'mod':'rw'},
 		        'cmi.learner_preference.delivery_speed':{'value':'1', 'format': this.CMIDecimal, 'range': this._rangeOf['speed'], 'mod':'rw'},
 		        'cmi.learner_preference.audio_captioning':{'value':'0', 'format': this.CMISInteger, 'range': this._rangeOf['text'], 'mod':'rw'},
+
+		        'cmi.location':{'value': null, 'format': this.CMIString1000, 'mod':'rw'},
+		        'cmi.max_time_allowed':{'value': null, 'mod':'r'},
+		        'cmi.mode':{'value':'normal', 'mod':'r'},
+
+		        'cmi.objectives._children':{'value': this._childrenOf['cmi.objectives'], 'mod':'r'},
+		        'cmi.objectives._count':{'value':'0', 'mod':'r'},
+
+		        'cmi.progress_measure':{'value': null, 'format': this.CMIDecimal, 'range': this._rangeOf['progress'], 'mod':'rw'},
+
+		        'cmi.scaled_passing_score':{'value': null, 'format': this.CMIDecimal, 'range': this._rangeOf['scaled'], 'mod':'r'},
 		    };
 		    /*
+		        'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
 		        'cmi.comments_from_learner.n.comment':{'format':CMILangString4000, 'mod':'rw'},
 		        'cmi.comments_from_learner.n.location':{'format':CMIString250, 'mod':'rw'},
 		        'cmi.comments_from_learner.n.timestamp':{'format':CMITime, 'mod':'rw'},
 		        'cmi.comments_from_lms.n.comment':{'format':CMILangString4000, 'mod':'r'},
 		        'cmi.comments_from_lms.n.location':{'format':CMIString250, 'mod':'r'},
 		        'cmi.comments_from_lms.n.timestamp':{'format':CMITime, 'mod':'r'},
-		        'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
 		        'cmi.interactions.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
 		        'cmi.interactions.n.type':{'pattern':CMIIndex, 'format':CMIType, 'mod':'rw'},
 		        'cmi.interactions.n.objectives._count':{'pattern':CMIIndex, 'mod':'r', 'value':'0'},
@@ -119,11 +130,6 @@
 		        'cmi.interactions.n.result':{'pattern':CMIIndex, 'format':CMIResult, 'mod':'rw'},
 		        'cmi.interactions.n.latency':{'pattern':CMIIndex, 'format':CMITimespan, 'mod':'rw'},
 		        'cmi.interactions.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.location':{'value':<?php echo isset($userdata->{'cmi.location'})?'\''.$userdata->{'cmi.location'}.'\'':'null' ?>, 'format':CMIString1000, 'mod':'rw'},
-		        'cmi.max_time_allowed':{'value':<?php echo isset($userdata->maxtimeallowed)?'\''.$userdata->maxtimeallowed.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.mode':{'value':'<?php echo $userdata->mode ?>', 'mod':'r'},
-		        'cmi.objectives._children':{'value': this._childrenOf['cmi.objectives'], 'mod':'r'},
-		        'cmi.objectives._count':{'mod':'r', 'value':'0'},
 		        'cmi.objectives.n.id':{'pattern':CMIIndex, 'format':CMILongIdentifier, 'mod':'rw'},
 		        'cmi.objectives.n.score._children':{'value': this._childrenOf['cmi.score'], 'pattern':CMIIndex, 'mod':'r'},
 		        'cmi.objectives.n.score.scaled':{'value':null, 'pattern':CMIIndex, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
@@ -134,8 +140,6 @@
 		        'cmi.objectives.n.completion_status':{'value':'unknown', 'pattern':CMIIndex, 'format':CMICStatus, 'mod':'rw'},
 		        'cmi.objectives.n.progress_measure':{'value':null, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
 		        'cmi.objectives.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.progress_measure':{'value':<?php echo isset($userdata->{'cmi.progess_measure'})?'\''.$userdata->{'cmi.progress_measure'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
-		        'cmi.scaled_passing_score':{'value':<?php echo isset($userdata->{'cmi.scaled_passing_score'})?'\''.$userdata->{'cmi.scaled_passing_score'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'r'},
 		        'cmi.score._children':{'value': this._childrenOf['cmi.score'], 'mod':'r'},
 		        'cmi.score.scaled':{'value':<?php echo isset($userdata->{'cmi.score.scaled'})?'\''.$userdata->{'cmi.score.scaled'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
 		        'cmi.score.raw':{'value':<?php echo isset($userdata->{'cmi.score.raw'})?'\''.$userdata->{'cmi.score.raw'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
