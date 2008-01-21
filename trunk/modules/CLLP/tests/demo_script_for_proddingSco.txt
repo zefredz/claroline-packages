@@ -257,4 +257,123 @@ GetValue("cmi.scaled_passing_score")
 // error 404
 SetValue("cmi.scaled_passing_score", "0.75")
 
+//-- cmi.score._children :  "scaled,min,max,raw", r
+// scaled,min,max,raw
+GetValue("cmi.score._children")
+// error 404
+SetValue("cmi.score._children", "trash")
+
+//-- cmi.score.scaled : null, CMIDecimal, -1#1, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.score.scaled")
+// true
+SetValue("cmi.score.scaled", "0.75")
+// true
+SetValue("cmi.score.scaled", "-1")
+// -1
+GetValue("cmi.score.scaled")
+// error 406
+SetValue("cmi.score.scaled", "trash")
+// error 407
+SetValue("cmi.score.scaled", "-4")
+// -1
+GetValue("cmi.score.scaled")
+
+//-- cmi.score.raw : null, CMIDecimal, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.score.raw")
+// true
+SetValue("cmi.score.raw", "0.75")
+// true
+SetValue("cmi.score.raw", "-1.54")
+// -1.54
+GetValue("cmi.score.raw")
+// error 406
+SetValue("cmi.score.raw", "trash")
+// -1.54
+GetValue("cmi.score.raw")
+
+//-- cmi.score.min : null, CMIDecimal, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.score.min")
+// true
+SetValue("cmi.score.min", "0.75")
+// true
+SetValue("cmi.score.min", "-1.54")
+// -1.54
+GetValue("cmi.score.min")
+// error 406
+SetValue("cmi.score.min", "trash")
+// -1.54
+GetValue("cmi.score.min")
+
+//-- cmi.score.max : null, CMIDecimal, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.score.max")
+// true
+SetValue("cmi.score.max", "0.75")
+// true
+SetValue("cmi.score.max", "-1.54")
+// -1.54
+GetValue("cmi.score.max")
+// error 406
+SetValue("cmi.score.max", "trash")
+// -1.54
+GetValue("cmi.score.max")
+
+//-- cmi.session_time :  PT0H0M0S, CMITimespan, w
+// value is modified internally
+// error 405
+GetValue("cmi.session_time")
+// true
+SetValue("cmi.session_time", "PT1H5M")
+// error 406
+SetValue("cmi.session_time", "trash")
+// true
+SetValue("cmi.session_time", "P3Y3M5D")
+
+//-- cmi.success_status : unknown, CMIStatus, rw
+// unknown
+GetValue("cmi.success_status")
+// true
+SetValue("cmi.success_status", "passed")
+// passed
+GetValue("cmi.success_status")
+// error 406
+SetValue("cmi.success_status", "trash")
+// success_status
+GetValue("cmi.success_status")
+
+//-- cmi.suspend_data : null, CMIString64000, rw
+// "" and error 403 (not initialized)
+GetValue("cmi.suspend_data")
+// true
+SetValue("cmi.suspend_data", "<data><intID>1001</intID><ans>A</ans></data>")
+// true
+SetValue("cmi.suspend_data", "A1;B2;C11-3")
+// -1.54
+GetValue("cmi.suspend_data")
+
+//-- cmi.time_limit_action : 'continue, no message', r
+// 'continue, no message'
+GetValue("cmi.time_limit_action")
+// error 404
+SetValue("cmi.time_limit_action", "0.2")
+
+//-- cmi.total_time : 'PT0H0M0S', r
+// 'PT0H0M0S'
+GetValue("cmi.total_time")
+// error 404
+SetValue("cmi.total_time", "0.2")
+
+//-- adl.nav.request : null, NAVEvent, rw
+// "" and error 403 (not initialized)
+GetValue("adl.nav.request")
+// true
+SetValue("adl.nav.request", "previous")
+// error 406
+SetValue("cmi.score.max", "trash")
+// previous
+GetValue("adl.nav.request")
+
 Terminate("")
