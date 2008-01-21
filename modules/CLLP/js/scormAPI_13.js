@@ -25,7 +25,7 @@
 	    CMIString64000 : '^.{0,64000}$',
 	    CMILang : '^([a-zA-Z]{2,3}|i|x)(\-[a-zA-Z0-9\-]{2,8})?$|^$',
 	    CMITime : '^(19[7-9]{1}[0-9]{1}|20[0-2]{1}[0-9]{1}|203[0-8]{1})((-(0[1-9]{1}|1[0-2]{1}))((-(0[1-9]{1}|[1-2]{1}[0-9]{1}|3[0-1]{1}))(T([0-1]{1}[0-9]{1}|2[0-3]{1})((:[0-5]{1}[0-9]{1})((:[0-5]{1}[0-9]{1})((\\.[0-9]{1,2})((Z|([+|-]([0-1]{1}[0-9]{1}|2[0-3]{1})))(:[0-5]{1}[0-9]{1})?)?)?)?)?)?)?)?$',
-	    CMITimespan : '^P(\\d+Y)?(\\d+M)?(\\d+D)?(T(((\\d+H)(\\d+M)?(\\d+(\.\\d{1,2})?S)?)|((\\d+M)(\\d+(\.\\d{1,2})?S)?)|((\\d+(\.\\d{1,2})?S))))?$',
+	    CMITimespan : '^P(\\d+Y)?(\\d+M)?(\\d+D)?(T(((\\d+H)(\\d+M)?(\\d+(\\.\\d{1,2})?S)?)|((\\d+M)(\\d+(\\.\\d{1,2})?S)?)|((\\d+(\\.\\d{1,2})?S))))?$',
 	    CMIInteger : '^\\d+$',
 	    CMISInteger : '^-?([0-9]+)$',
 	    CMIDecimal : '^-?([0-9]{1,4})(\\.[0-9]{1,18})?$',
@@ -109,6 +109,19 @@
 		        'cmi.progress_measure':{'value': null, 'format': this.CMIDecimal, 'range': this._rangeOf['progress'], 'mod':'rw'},
 
 		        'cmi.scaled_passing_score':{'value': null, 'format': this.CMIDecimal, 'range': this._rangeOf['scaled'], 'mod':'r'},
+
+		        'cmi.score._children':{'value': this._childrenOf['cmi.score'], 'mod':'r'},
+		        'cmi.score.scaled':{'value':null, 'format': this.CMIDecimal, 'range': this._rangeOf['scaled'], 'mod':'rw'},
+		        'cmi.score.raw':{'value': null, 'format': this.CMIDecimal, 'mod':'rw'},
+		        'cmi.score.min':{'value': null, 'format': this.CMIDecimal, 'mod':'rw'},
+		        'cmi.score.max':{'value': null, 'format': this.CMIDecimal, 'mod':'rw'},
+
+		        'cmi.session_time':{'value':'PT0H0M0S', 'format': this.CMITimespan, 'mod':'w'},
+		        'cmi.success_status':{'value': 'unknown', 'format': this.CMISStatus, 'mod':'rw'},
+		        'cmi.suspend_data':{'value': null, 'format': this.CMIString64000, 'mod':'rw'},
+		        'cmi.time_limit_action':{'value': 'continue, no message', 'mod':'r'},
+		        'cmi.total_time':{'value': 'PT0H0M0S', 'mod':'r'},
+		        'adl.nav.request':{'value': null, 'format': this.NAVEvent, 'mod': 'rw'}
 		    };
 		    /*
 		        'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},
@@ -140,17 +153,6 @@
 		        'cmi.objectives.n.completion_status':{'value':'unknown', 'pattern':CMIIndex, 'format':CMICStatus, 'mod':'rw'},
 		        'cmi.objectives.n.progress_measure':{'value':null, 'format':CMIDecimal, 'range':progress_range, 'mod':'rw'},
 		        'cmi.objectives.n.description':{'pattern':CMIIndex, 'format':CMILangString250, 'mod':'rw'},
-		        'cmi.score._children':{'value': this._childrenOf['cmi.score'], 'mod':'r'},
-		        'cmi.score.scaled':{'value':<?php echo isset($userdata->{'cmi.score.scaled'})?'\''.$userdata->{'cmi.score.scaled'}.'\'':'null' ?>, 'format':CMIDecimal, 'range':scaled_range, 'mod':'rw'},
-		        'cmi.score.raw':{'value':<?php echo isset($userdata->{'cmi.score.raw'})?'\''.$userdata->{'cmi.score.raw'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.score.min':{'value':<?php echo isset($userdata->{'cmi.score.min'})?'\''.$userdata->{'cmi.score.min'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.score.max':{'value':<?php echo isset($userdata->{'cmi.score.max'})?'\''.$userdata->{'cmi.score.max'}.'\'':'null' ?>, 'format':CMIDecimal, 'mod':'rw'},
-		        'cmi.session_time':{'format':CMITimespan, 'mod':'w', 'value':'PT0H0M0S'},
-		        'cmi.success_status':{'value':'<?php echo isset($userdata->{'cmi.success_status'})?$userdata->{'cmi.success_status'}:'unknown' ?>', 'format':CMISStatus, 'mod':'rw'},
-		        'cmi.suspend_data':{'value':<?php echo isset($userdata->{'cmi.suspend_data'})?'\''.$userdata->{'cmi.suspend_data'}.'\'':'null' ?>, 'format':CMIString64000, 'mod':'rw'},
-		        'cmi.time_limit_action':{'value':<?php echo isset($userdata->timelimitaction)?'\''.$userdata->timelimitaction.'\'':'null' ?>, 'mod':'r'},
-		        'cmi.total_time':{'value':'<?php echo isset($userdata->{'cmi.total_time'})?$userdata->{'cmi.total_time'}:'PT0H0M0S' ?>', 'mod':'r'},
-		        'adl.nav.request':{'value':'_none_', 'format':NAVEvent, 'mod':'rw'}
 		    };*/
 		},
 
@@ -470,9 +472,10 @@
 					// is format ok ?
 					if( typeof element.format != 'undefined' )
 					{
-						expression = new RegExp(element.format);
+
+						expression = new RegExp(element.format, 'g');
+						lpHandler.debug(element.format, 1);
                         value = val + '';
-                        value = value.toLowerCase();
                         matches = value.match(expression);
                         if( matches == null )
                         {
