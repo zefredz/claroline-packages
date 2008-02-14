@@ -31,73 +31,72 @@ class path
      * @var $description statement of the path
      */
     var $description;
-        
+
     /**
      * @var $visibility visibility of the path (default is invisible)
      */
-    var $visibility;      
-    
+    var $visibility;
+
     /**
      * @var $rank order of the path in the path list
      */
     var $rank;
-    
-    /**
-     * @var $type
-     */
-    var $type;
 
     /**
-     * @var $lock 
+     * @var $version
      */
-    var $lock; 
-    
+    var $version;
+
+    /**
+     * @var $lock
+     */
+    var $lock;
+
     /**
      * @var $identifier SCORM manifest ressource identifier
      */
-    var $identifier;        
+    var $identifier;
 
     /**
      * @var $allowReinit allow to start path items again (default is false)
      */
-    var $allowReinit;            
+    var $allowReinit;
 
     /**
      * @var $viewMode embedded or in full screen (default is embedded)
      */
-    var $viewMode;        
-    
+    var $viewMode;
+
     /**
      * @var $encoding encoding of the path (default is utf-8)
      */
-    var $encoding;           
-
+    var $encoding;
 
     /**
      * @var $tblPath
      */
     var $tblPath;
-    
-        
+
+
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     */    
+     */
     function path()
     {
         $this->id = (int) -1;
         $this->title = '';
         $this->description = '';
         $this->visibility = 'INVISIBLE';
-        $this->rank = 0;        
-        $this->type = 'CLAROLINE'; // SCORM
-        $this->lock = 'OPEN';        
+        $this->rank = 0;
+        $this->version = 'scorm12';
+        $this->lock = 'OPEN';
         $this->identifier = '';
         $this->allowReinit = false;
         $this->viewMode = 'EMBEDDED'; // or 'FULLSCREEN'
         $this->encoding = 'UTF-8'; // or 'ISO-8859-1', ...
-        
+
         // define module table names
         $tblNameList = array(
             'lp_path',
@@ -107,7 +106,7 @@ class path
         );
 
         // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
     }
 
@@ -117,7 +116,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer $id id of path
      * @return boolean load successfull ?
-     */    
+     */
     function load($id)
     {
         $sql = "SELECT
@@ -125,8 +124,8 @@ class path
                     `title`,
                     `description`,
                     `visibility`,
-                    `rank`,                    
-                    `type`,
+                    `rank`,
+                    `version`,
                     `lock`,
                     `identifier`,
                     `allow_reinit`,
@@ -143,8 +142,9 @@ class path
             $this->id = (int) $data['id'];
             $this->title = $data['title'];
             $this->description = $data['description'];
-            $this->visibility = $data['visibility'];      
+            $this->visibility = $data['visibility'];
             $this->rank = (int) $data['rank'];
+            $this->version = $data['version'];
             $this->lock = $data['lock'];
             $this->identifier = $data['identifier'];
             $this->allowReinit = $data['allow_reinit'];
@@ -164,20 +164,21 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
-     */    
+     */
     function save()
     {
         if( $this->id == -1 )
         {
             // set correct value for rank on creation
             $this->rank = $this->getHigherRank() + 1 ;
-            
+
             // insert
             $sql = "INSERT INTO `".$this->tblPath."`
                     SET `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `visibility` = '".addslashes($this->visibility)."',
                         `rank` = '".(int) $this->rank."',
+                        `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
                         `identifier` = '".addslashes($this->identifier)."',
                         `allow_reinit` = ".(int) $this->allowReinit.",
@@ -206,6 +207,7 @@ class path
                         `description` = '".addslashes($this->description)."',
   						`visibility` = '".addslashes($this->visibility)."',
                         `rank` = '".(int) $this->rank."',
+                        `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
                         `identifier` = '".addslashes($this->identifier)."',
                         `allow_reinit` = ".(int) $this->allowReinit.",
@@ -230,40 +232,40 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function delete()
     {
         if( $this->id == -1 ) return true;
-        
+
         // delete all items related to this path
         $itemList = new itemList();
         $thisPathItemList = $itemList->load($this->id);
-        
+
         if( !empty($thisPathItemList) )
         {
             foreach( $thisPathItemList as $item )
-            { 
+            {
                 $itemObj = new item();
                 $itemObj->load($item['id']);
-                
+
                 $itemObj->delete();
             }
-        
+
         }
-        
+
         // delete the path
         $sql = "DELETE FROM `" . $this->tblPath . "`
                 WHERE `id` = " . (int) $this->id ;
 
         if( claro_sql_query($sql) == false ) return false;
-        
+
         // delete path repository
         claro_delete_file(get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/path_' . $this->id );
-        
+
         $this->id = -1;
         return true;
     }
-    
+
     /**
      * check if data are valide
      *
@@ -283,9 +285,9 @@ class path
 
         return true; // no errors, form is valide
     }
-     
+
     //-- Getter & Setter
-    
+
     /**
      * get id
      *
@@ -349,7 +351,7 @@ class path
     function setVisible()
     {
         $this->visibility = 'VISIBLE';
-    } 
+    }
 
     /**
      * set invisible
@@ -359,14 +361,14 @@ class path
     function setInvisible()
     {
         $this->visibility = 'INVISIBLE';
-    } 
-    
+    }
+
     /**
      * is the path visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isVisible()
     {
         if( $this->visibility == 'VISIBLE' )    return true;
@@ -378,12 +380,12 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isInvisible()
     {
         return !$this->isVisible();
     }
-            
+
     /**
      * get rank
      *
@@ -404,8 +406,37 @@ class path
     function setRank($value)
     {
         $this->rank = trim($value);
-    }    
-    
+    }
+
+    /**
+     * get version
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @return string
+     */
+    function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * set version
+     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param string $value
+     */
+    function setVersion($value)
+    {
+        $acceptedValues = array('scorm12', 'scorm13');
+
+        if( in_array($value, $acceptedValues) )
+        {
+            $this->version = $value;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * get lock
      *
@@ -414,7 +445,7 @@ class path
      */
     function getLock()
     {
-        return (int) $this->lock;
+        return $this->lock;
     }
 
     /**
@@ -426,7 +457,7 @@ class path
     function setLock($value)
     {
         $this->lock = trim($value);
-    } 
+    }
     /**
      * set lock
      *
@@ -435,7 +466,7 @@ class path
     function lock()
     {
         $this->lock = 'CLOSE';
-    } 
+    }
 
     /**
      * set unlock
@@ -445,14 +476,14 @@ class path
     function unlock()
     {
         $this->lock = 'OPEN';
-    } 
-    
+    }
+
     /**
      * is the path locked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isLocked()
     {
         if( $this->lock == 'CLOSE' )    return true;
@@ -464,12 +495,12 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isUnlocked()
     {
         return !$this->isLocked();
     }
-    
+
     /**
      * set viewMode
      *
@@ -485,7 +516,7 @@ class path
             return true;
         }
         return false;
-    } 
+    }
 
     /**
      * get viewMode
@@ -495,20 +526,20 @@ class path
     function getViewMode()
     {
         return $this->viewMode;
-    } 
-    
+    }
+
     /**
      * show the path fullscreen ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
-     */    
+     */
     function isFullscreen()
     {
         if( $this->viewMode == 'FULLSCREEN' )    return true;
         else                                     return false; // EMBEDDED
     }
-    
+
     /**
      * get the higher rank of available learning path
      *
@@ -532,20 +563,20 @@ class path
  *
  * @author Sebastien Piraux <pir@cerdecam.be>
  * @return boolean
- */    
+ */
 class pathList
 {
     /**
      * @var $tblPath name of the path table
      */
     var $tblPath;
-    
-        
+
+
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     */ 	
+     */
     function pathList()
     {
         $tblNameList = array(
@@ -553,17 +584,17 @@ class pathList
         );
 
         // convert to Claroline course table names
-        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() ); 
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
     }
-    
+
 	/**
      * Load the correct list depending on parameter
      *
      * @param userId integer id of the user we need to display the path progression, can be ommitted default is null
      * @return array 2d array containing list of all available learning paths
      * @author Sebastien Piraux <pir@cerdecam.be>
-     */ 	
+     */
     function load( $userId = null )
     {
         if( !is_null($userId) )
@@ -575,7 +606,7 @@ class pathList
             return $this->loadAll();
         }
     }
-    
+
     /**
      * load list of all learning paths
      *
@@ -589,8 +620,8 @@ class pathList
                     `title`,
                     `description`,
                     `visibility`,
-                    `rank`,                    
-                    `type`,
+                    `rank`,
+                    `version`,
                     `lock`,
                     `identifier`,
                     `allow_reinit`,
@@ -598,17 +629,17 @@ class pathList
                     `encoding`
             FROM `".$this->tblPath."`
             ORDER BY `rank`";
-            
+
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
             return false;
         }
         else
-        { 
+        {
             return $data;
-        }          
+        }
     }
-    
+
     /**
      * load list of learning path progression related to $userId
      *
@@ -618,24 +649,24 @@ class pathList
      */
     function loadUserProgress( $userId )
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     `id`,
                     `title`,
                     `description`
             FROM `".$this->tblPath."`
             WHERE `visibility` = 'VISIBLE'";
-//            AND 'userId' = " . (int) $userId; 
-                    
+//            AND 'userId' = " . (int) $userId;
+
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
             return false;
         }
         else
-        { 
+        {
             return $data;
-        } 
+        }
     }
-    
+
     /**
      * move path one position up in the list if possible (rank becomes lower than before)
      *
@@ -647,7 +678,7 @@ class pathList
     {
         // get path list
         $list = $this->load();
-        
+
         // find where is the path is the list to get the id of the previous one
         $i = 0;
         while( $i < count($list) )
@@ -658,33 +689,33 @@ class pathList
             }
             $i++;
         }
-        
+
         // if the path is the first of the list
         if( $i == 0 )
         {
             return false;
         }
-        
+
         $currentRank = $path->getRank();
         $otherPathId = $list[$i-1]['id'];
-        
-        
+
+
         // get the path that is at the new position
         $otherPath = new path();
         $otherPath->load($otherPathId);
 
         // invert ranks
         $newRank = $otherPath->getRank();
-         
+
         $otherPath->setRank($currentRank);
         $path->setRank($newRank);
-    
+
         // save the two paths
         if( $path->validate() && $otherPath->validate() )
         {
             $path->save();
             $otherPath->save();
-            
+
             return true;
         }
         else
@@ -692,7 +723,7 @@ class pathList
             return false;
         }
     }
-    
+
     /**
      * move path one position down in the list if possible
      *
@@ -704,7 +735,7 @@ class pathList
     {
         // get path list
         $list = $this->load();
-        
+
         // find where is the path is the list to get the id of the next one
         $i = 0;
         while( $i < count($list) )
@@ -715,33 +746,33 @@ class pathList
             }
             $i++;
         }
-        
+
         // if the path is the first of the list
         if( $i == count($list) - 1 )
         {
             return false;
         }
-        
+
         $currentRank = $path->getRank();
         $otherPathId = $list[$i+1]['id'];
-        
-        
+
+
         // get the path that is at the new position
         $otherPath = new path();
         $otherPath->load($otherPathId);
 
         // invert ranks
         $newRank = $otherPath->getRank();
-         
+
         $otherPath->setRank($currentRank);
         $path->setRank($newRank);
-    
+
         // save the two paths
         if( $path->validate() && $otherPath->validate() )
         {
             $path->save();
             $otherPath->save();
-            
+
             return true;
         }
         else
