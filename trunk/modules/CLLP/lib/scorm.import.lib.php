@@ -213,6 +213,26 @@ class ScormImporter
 
         // var_dump($this->manifestContent);
 
+		// try to discover SCORM version
+		if( isset($this->manifestContent['manifest']['#']['metadata'][0]['#']['schemaversion'][0]['#']) )
+		{
+			$schemaVersion = $this->manifestContent['manifest']['#']['metadata'][0]['#']['schemaversion'][0]['#'];
+
+			if( preg_match("/^(CAM )?(1\.3)$/", $schemaVersion, $matches)
+				|| $schemaVersion == '2004 3rd Edition' )
+			{
+				$this->path->setVersion('scorm13');
+			}
+			else
+			{
+				$this->path->setVersion('scorm12');
+			}
+		}
+		else
+		{
+			$this->path->setVersion('1.2');
+		}
+
         // check if we have a xml:base in manifest
 
         if( isset($this->manifestContent['manifest']['@']['xml:base']) )
