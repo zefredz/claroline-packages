@@ -81,15 +81,15 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
  * Send all values to server to store them
  *
  */
-function commit() {
+function commit(datamodel) {
 	debug("Commit",1);
 
-	var scormdata = $.toJSON(lpHandler.elementList);
+	var jsonDatamodel = $.toJSON(datamodel);
 
     $.ajax({
     	type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
-        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + scormdata,
+        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodel,
         success: refreshToc,
         dataType: 'html'
     });
