@@ -37,6 +37,10 @@ require_once dirname( __FILE__ ) . '/../lib/CLLP.lib.php';
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
+require_once dirname( __FILE__ ) . '/../lib/scormInterface.lib.php';
+require_once dirname( __FILE__ ) . '/../lib/scorm12.lib.php';
+require_once dirname( __FILE__ ) . '/../lib/scorm13.lib.php';
+
 /*
  * Shared libraries
  */
@@ -71,7 +75,6 @@ else
     }
 }
 
-claro_set_display_mode_available(false);
 
 $thisAttempt = new attempt();
 
@@ -84,6 +87,20 @@ if( !$thisAttempt->load($pathId, claro_get_current_user_id()) )
 }
 
 $_SESSION['thisAttempt'] = serialize($thisAttempt);
+
+
+if( $path->getVersion() == 'scorm12' )
+{
+	$scormAPI = new Scorm12();
+}
+else
+{
+
+	$scormAPI = new Scorm13();
+}
+
+
+claro_set_display_mode_available(false);
 
 /*
  * Output
@@ -98,16 +115,20 @@ $jsloader->load('CLLP');
 $jsloader->load('scormtime');
 $jsloader->load('claroline');
 
-$jsloader->load('scormAPI_13');
+$jsloader->load($scormAPI->getApiFile());
+
 // prepare html header
 
 $htmlHeaders = "\n"
 .    '<script type="text/javascript">' . "\n"
+
 .	 '  var pathId = "'.(int) $pathId.'";' . "\n"
 .	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
 .	 '  var moduleUrl = "'.get_module_url('CLLP').'/";' . "\n"
 .    '  var debugMode = '.get_conf('scorm_api_debug').';' . "\n\n"
+
 .	 '  var lpHandler = new lpHandler(pathId,cidReq,moduleUrl,debugMode);' . "\n"
+
 .	 '  var lp_top = this;' . "\n"
 .	 '  $(document).ready(function() {' . "\n"
 .    '    setTimeout("lpHandler.refreshToc()", 900);' . "\n"
