@@ -51,6 +51,8 @@ require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
+// load SCORM object depending on SCORM version used for this path
+
 /*
  * Shared libraries
  */
@@ -78,25 +80,15 @@ if( $cmd == 'doCommit' )
 	// get serialized attempt
 	$thisAttempt = unserialize($_SESSION['thisAttempt']);
 
+	// create new attempt for this item
 	$itemAttempt = new itemAttempt();
-
-	// try to load itemAttempt
-	$itemAttempt->load($thisAttempt->getId(), $itemId);
-
-	// set values from jsonized javascript object
 	$itemAttempt->setAttemptId($thisAttempt->getId());
 	$itemAttempt->setItemId($itemId);
-	$itemAttempt->setLocation($decodedScormData['cmi.location']);
-	$itemAttempt->setCompletionStatus($decodedScormData['cmi.completion_status']);
-	$itemAttempt->setEntry($decodedScormData['cmi.entry']);
-	$itemAttempt->setScoreRaw($decodedScormData['cmi.score.raw']);
-	$itemAttempt->setScoreMin($decodedScormData['cmi.score.min']);
-	$itemAttempt->setScoreMax($decodedScormData['cmi.score.max']);
-	$itemAttempt->setSessionTime($decodedScormData['cmi.session_time']);
-	$itemAttempt->setTotalTime($decodedScormData['cmi.total_time']);
-	$itemAttempt->setSuspendData($decodedScormData['cmi.suspend_data']);
-	$itemAttempt->setCredit($decodedScormData['cmi.credit']);
 
+	// try to load itemAttempt
+	//$itemAttempt->load($thisAttempt->getId(), $itemId);
+
+	$scormAdapter->api2ItemAttempt($dataModelValues, $itemAttempt);
 
 	if( $itemAttempt->validate() )
     {
