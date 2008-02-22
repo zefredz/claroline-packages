@@ -50,3 +50,19 @@
 {
 	padding: 2px;
 }
+
+.slideNav
+{
+	font-size: small;
+	text-align: center;
+}
+
+.slideNav .prevSlide
+{
+	float: left;
+}
+
+.slideNav .nextSlide
+{
+	float: right;
+}
