@@ -66,7 +66,8 @@
 		{
 			$page->setTitle($_REQUEST['title']);
 			$page->setDescription($_REQUEST['description']);
-
+            $page->setDisplayMode($_REQUEST['displayMode']);
+            
 			// set author id if creation
 			if( is_null($pageId) )
 			{
@@ -134,7 +135,14 @@
 		    // description
 		    .	 '<label for="description">' . get_lang('Description') . '</label><br />' . "\n"
 		    .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($page->getDescription()).'</textarea><br />'
-
+            // display mode
+		    .	 get_lang('Display') . '&nbsp;<span class="required">*</span><br />' . "\n"
+        	.	 '<input type="radio" name="displayMode" id="displayModePage" value="PAGE" '.($page->getDisplayMode() == 'PAGE' ?'checked="checked"':'').'>'
+        	.	 '<label for="displayModePage">'.get_lang('One page').'</label><br />' . "\n"
+        	.	 '<input type="radio" name="displayMode" id="displayModeSlide" value="SLIDE" '.($page->getDisplayMode() == 'SLIDE' ?'checked="checked"':'').'>'
+        	.	 '<label for="displayModeSlide">'.get_lang('Slideshow').'</label>' . "\n"
+        	.	 '<br /><br />'
+        	// end form
 		    .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
 		    .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
 		    .    claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel'))
