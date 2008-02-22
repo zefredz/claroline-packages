@@ -384,6 +384,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     	private $creationTime = 0;
     	private $lastModificationTime = 0;
     	private $visibility = 'VISIBLE';
+    	private $displayMode = 'PAGE'; // SLIDE or PAGE
 
     	private $componentList;
 
@@ -405,7 +406,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	                    `editorId`,
 	                    `creationTime`,
 	                    `lastModificationTime`,
-	                    `visibility`
+	                    `visibility`,
+	                    `displayMode`
 					FROM `".$tblList['clpages_pages']."`
 					WHERE id = '".(int) $id . "'";
 
@@ -422,6 +424,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	            $this->creationTime = (int) $data['creationTime'];
 	            $this->lastModificationTime = (int) $data['lastModificationTime'];
 	            $this->visibility = $data['visibility'];
+	            $this->displayMode = $data['displayMode'];
 
 
 				$this->createComponents();
@@ -443,13 +446,14 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	        {
 	        	// insert
 	            $sql = "INSERT INTO `".$tblList['clpages_pages']."`
-	                    SET `title` = '".addslashes($this->getTitle())."',
-	                    	`description` = '".addslashes($this->getDescription())."',
+	                    SET `title` = '".claro_sql_escape($this->getTitle())."',
+	                    	`description` = '".claro_sql_escape($this->getDescription())."',
 	                    	`authorId` = '".$this->getAuthorId()."',
 	                    	`editorId` = '".$this->getEditorId()."',
 	                        `creationTime` = FROM_UNIXTIME('".$this->getCreationTime()."'),
 	                        `lastModificationTime` = FROM_UNIXTIME('".$this->getLastModificationTime()."'),
-	                        `visibility` = '".addslashes($this->getVisibility())."'";
+	                        `visibility` = '".claro_sql_escape($this->getVisibility())."',
+	                        `displayMode` = '".claro_sql_escape($this->getDisplayMode())."'";
 
 	            // execute the creation query and get id of inserted assignment
 	            $insertedId = claro_sql_query_insert_id($sql);
@@ -470,11 +474,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	            // update, main query
 	            // do not update creation time and author id on update
 	            $sql = "UPDATE `".$tblList['clpages_pages']."`
-	                    SET `title` = '".addslashes($this->getTitle())."',
-	                    	`description` = '".addslashes($this->getDescription())."',
+	                    SET `title` = '".claro_sql_escape($this->getTitle())."',
+	                    	`description` = '".claro_sql_escape($this->getDescription())."',
 	                    	`editorId` = '".$this->getEditorId()."',
 	                        `lastModificationTime` = FROM_UNIXTIME('".$this->getLastModificationTime()."'),
-	                        `visibility` = '".addslashes($this->getVisibility())."'
+	                        `visibility` = '".claro_sql_escape($this->getVisibility())."',
+	                        `displayMode` = '".claro_sql_escape($this->getDisplayMode())."'
 	                    WHERE `id` = '".$this->id."'";
 
 	            // execute and return main query
@@ -698,6 +703,16 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     		return ( $this->getVisibility() === 'VISIBLE' );
     	}
 
+        public function getDisplayMode()
+    	{
+    		return $this->displayMode;
+    	}
+
+    	public function setDisplayMode( $displayMode )
+    	{
+    		$this->displayMode = ( $displayMode === 'SLIDE' ) ? 'SLIDE' : 'PAGE';
+    	}
+    	
     	public function getComponentList()
     	{
     		return $this->componentList;
