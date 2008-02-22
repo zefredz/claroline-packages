@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__clpages_pages` (
   `creationTime` DATETIME NOT NULL default '0000-00-00 00:00:00',
   `lastModificationTime` DATETIME NOT NULL default '0000-00-00 00:00:00',
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
+  `displayMode` ENUM('PAGE','SLIDE') NOT NULL DEFAULT 'PAGE',
   PRIMARY KEY(id)
 ) TYPE=MyISAM;
 
