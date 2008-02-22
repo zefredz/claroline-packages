@@ -31,6 +31,9 @@
 	if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) ) $pageId = (int) $_REQUEST['pageId'];
 	else                                                                $pageId = null;
 
+	// slide number cannot be negative
+	if( isset($_REQUEST['slide']) && is_numeric($_REQUEST['slide']) ) $slide = max(1,(int) $_REQUEST['slide']);
+	else                                                              $slide = 1;
 
 	/*
 	 * init other vars
@@ -67,7 +70,7 @@
 		// output stuff
 	    $jsloader = JavascriptLoader::getInstance();
 	    $jsloader->load('jquery');
-	    $jsloader->load('jquery.interface');
+	    //$jsloader->load('jquery.interface');
 	    $jsloader->load('jquery.livequery');
 	    $jsloader->load('jquery.json');
 	    $jsloader->load('jquery.form');
@@ -83,6 +86,7 @@
 		.	 '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
 		.    '</script>' . "\n\n";
 
+		// do not work at this time with jsloader
 		$htmlHeaders .= "\n"
 		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce.js" ></script>' . "\n"
 		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce_init.js" ></script>' . "\n";
@@ -96,11 +100,16 @@
 
 	$interbredcrump[]= array ('url' => './index.php' . claro_url_relay_context('?'), 'name' => get_lang('Pages'));
 
-   	$nameTools = get_lang('Edit page');
+	if( $is_allowedToEdit )	$nameTools = get_lang('Edit page');
+	else                    $nameTools = get_lang('Page');
 
-	$out .= claro_html_tool_title($nameTools)
+	$title['mainTitle'] = $nameTools;
+	$title['subTitle'] = $page->getTitle();
+	
+	$out .= claro_html_tool_title($title)
    	.	 '<div id="pageContainer">' . "\n";
 
+   	// edition menu
    	if( $is_allowedToEdit )
    	{
    		$pluginRegistry = pluginRegistry::getInstance();
@@ -147,19 +156,85 @@
    		$out .= '</div>' . "\n";
    	}
 
-
 	$out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
 
 	$componentList = $page->getComponentList();
 
-	foreach( $componentList as $component )
+	if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
 	{
-		if( $component->isVisible() || $is_allowedToEdit )
-		{
-			$out .= $component->renderBlock();
-		}
+	    // slide view only shown as student
+	    $visibleComponent = 0;
+	    foreach( $componentList as $component )
+    	{
+    		if( $component->isVisible() )
+    		{
+    			$visibleComponent++;
+    			
+    			if( $visibleComponent == $slide ) 
+    			{
+    			    $componentToRender = $component;
+    			}
+    		}
+    	}
+    	
+    	if( $visibleComponent == 0 )
+    	{
+    	    $out .= '<div>'.get_lang('Nothing to see').'</div>';
+    	}
+    	else
+    	{
+        	// navigation bar
+    	    $navBar = '<div class="slideNav">' . "\n";
+    	    
+            if( $slide > 1 )
+            {
+                $navBar .= '<span class="prevSlide">'
+                .	 '<a href="'.get_module_url('CLPAGES').'/page.php?pageId='.$pageId.'&slide='.($slide-1).'">'
+                .	 '&lt; '. get_lang('Previous') 
+                .	 '</a>'
+                .	 '</span>' . "\n";
+            }
+            else
+            {
+                $navBar .= '<span class="prevSlide">&nbsp;</span>' . "\n";
+            }
+            
+            if( $slide < $visibleComponent )
+            {
+                $navBar .= '<span class="nextSlide">'
+                .	 '<a href="'.get_module_url('CLPAGES').'/page.php?pageId='.$pageId.'&slide='.($slide+1).'">'
+                .	 get_lang('Next') . ' &gt;' 
+                .	 '</a>'
+                .	 '</span>' . "\n";
+            }
+            else
+            {
+                $navBar .= '<span class="nextSlide">&nbsp;</span>' . "\n";            
+            }
+            
+            $navBar .= '<span class="slideProgress">'. get_lang('Slide %current on %total', array('%current' => $slide, '%total' => $visibleComponent ) ) . '</span>' . "\n";
+                        
+    	    $navBar .= '</div>' . "\n";
+    	    
+    	    
+    	    $out .= $navBar . $componentToRender->render() . $navBar;    	    
+    	}
+	    
 	}
+	else
+	{
+    	// page view
+    	foreach( $componentList as $component )
+    	{
+    		if( $component->isVisible() || $is_allowedToEdit )
+    		{
+    			$out .= $component->renderBlock();
+    		}
+    	}
+	}
+	
 
+	
 	$out .= '</div>' . "\n\n" // componentsContainer
 	.	 '<div class="spacer"></div>' . "\n"
 	.	 '</div>' . "\n\n" // pageContainer
