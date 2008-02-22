@@ -39,8 +39,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 	    		$out = '<div class="captionImg">' . "\n"
 	    		.	 '<img src="'.htmlspecialchars($this->url).'" '.$height.' '.$width.' alt="" /><br />' . "\n"
 	    		.	 '<div class="caption">'.htmlspecialchars($this->caption).'</div>' . "\n"
-	    		.	 '</div>' . "\n"
-				.	 '<div class="spacer"></div>';
+	    		.	 '</div>' . "\n";
 
 	    		return $out;
 
