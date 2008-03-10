@@ -1,0 +1,23 @@
+<module>
+<label>ICMAIL</label>
+<name>Send mail to users</name>
+<description><![CDATA[
+Send mail to users using various filters
+]]></description>
+<version>1.0-alpha</version>
+<license>GPL</license>
+<icon>email.gif</icon>
+<type>applet</type>
+<group>true</group>
+<entry>index.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLVOC</web>
+</author>
+<requirements>
+<claroline>
+<version>1.8</version>
+</claroline>
+</requirements>
+</module>
