@@ -1,0 +1,13 @@
+<schema>
+<class name="PrintServiceAction" table="__CL_MAIN__icprint_actions" />
+<attribute name="id" field="action_id" />
+<attribute name="documentId" field="action_document_id" required="true" />
+<attribute name="action" field="action_name" default="add" values="add|delete|modify" />
+<attribute name="userId" field="action_user_id" required="true" />
+<attribute name="timestamp" field="action_timestamp" required="true" />
+<attribute name="courseId" field="action_course_id" required="true" />
+<attribute name="documentHash" field="action_document_hash" required="true" />
+<attribute name="documentLocalPath" field="action_document_localpath" required="true" />
+<hasone name="document" class="PrintServiceDocument" rel="PrintServiceAction.documentId:PrintServiceDocument.id" />
+<key name="id" />
+</schema>

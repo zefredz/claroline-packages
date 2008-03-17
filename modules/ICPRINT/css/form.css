@@ -1,0 +1,63 @@
+/*
+    Zf default CSS
+ */
+ 
+/*form {
+    max-width: 75%;
+}*/
+
+form br {
+    clear: left;
+}
+
+label, input, textarea, select {
+    display: block;
+    float: left;
+    /* margin: 5px; */
+}
+
+label {
+    text-align: right;
+    width: 20%; 
+    cursor: pointer;
+    color: #369;
+}
+
+label.right {
+    border: 0;
+    text-align: left;
+    width: auto;
+}
+
+fieldset {
+    margin: 2px;
+    background: #D2FFCF;
+}
+
+input, textarea, button, select{
+    border: 1px solid #aaa;
+    color: #369;
+}
+
+input[type=image], input[type=hidden] {
+    border: 0;
+}
+
+input[type=submit], input[type=reset], input[type=button] {
+    background: #fff;
+    border-color: black;
+}
+
+input[type=submit]:hover, input[type=reset]:hover, input[type=button]:hover {
+    background-color: #369;
+    color: #fff;
+}
+
+input.required , textarea.required, select.required{
+    border-color: red;
+}
+
+label.required:after {
+    content: "*";
+    color: red;
+}
