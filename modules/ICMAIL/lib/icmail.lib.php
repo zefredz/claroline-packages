@@ -43,7 +43,8 @@
             // users with no courses
             case 'nocourse':
                 $sql = 'SELECT DISTINCT  user_id AS id
-                        FROM `'.$tbl_user.'` AS u INNER JOIN `'.$tbl_course_user.'` AS cu
+                        FROM `'.$tbl_user.'` AS u 
+                        INNER JOIN `'.$tbl_course_user.'` AS cu
                         ON  u.user_id = cu.user_id
                         WHERE cu.user_id IS NULL';
             break;
@@ -55,7 +56,8 @@
             // course managers
             case 'managers':
                 $sql = 'SELECT DISTINCT user_id AS id
-                        FROM `'.$tbl_user.'` AS u INNER JOIN `'.$tbl_course_user.'` AS cu
+                        FROM `'.$tbl_user.'` AS u 
+                        INNER JOIN `'.$tbl_course_user.'` AS cu
                         ON  u.user_id = cu.user_id
                         AND `isCourseManager` = 1';
         	break;
