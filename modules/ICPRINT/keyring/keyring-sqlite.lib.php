@@ -1,41 +1,52 @@
 <?php // $Id$
 
-    // vim: expandtab sw=4 ts=4 sts=4:
+// vim: expandtab sw=4 ts=4 sts=4:
+
+/**
+ * Sqlite keyring
+ *
+ * @version     1.8-backport $Revision$
+ * @copyright   2001-2007 Universite catholique de Louvain (UCL)
+ * @author      Frederic Minne <zefredz@claroline.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     icprint
+ */
+
+class Keyring // Sqlite implements Keyring
+{
+    protected static $instance = false;
     
-    class Keyring // Sqlite implements Keyring
+    public static function getInstance()
     {
-        protected static $instance = false;
-        
-        public static function getInstance()
+        if ( ! self::$instance )
         {
-            if ( ! self::$instance )
-            {
-                self::$instance = new Keyring;
-            }
-            
-            return self::$instance;
+            self::$instance = new Keyring;
         }
         
-        public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
-        {
-            $mngr = self::getInstance();
-            
-            return $mngr->check ( $serviceName, $serviceHost, $serviceKey );
-        }
+        return self::$instance;
+    }
+    
+    public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
+    {
+        $mngr = self::getInstance();
         
-        protected $serviceKeyring;
+        return $mngr->check ( $serviceName, $serviceHost, $serviceKey );
+    }
+    
+    protected $serviceKeyring;
+    
+    protected function __construct ()
+    {
+        $this->path = dirname (__FILE__) . '/../keyring.db';
         
-        protected function __construct ()
+        if ( ! file_exists( $this->path ) )
         {
-            $this->path = dirname (__FILE__) . '/../keyring.db';
+            $this->sqlite = sqlite_factory( $this->path );
             
-            if ( ! file_exists( $this->path ) )
+            if ( ! $this->sqlite )
             {
-                $this->sqlite = sqlite_factory( $this->path );
-                
-                if ( ! $this->sqlite )
-                {
-                    throw new Exception('Cannot create keyring database');
+                throw new Exception('Cannot create keyring database');
                 }
                 
                 $sql = <<<__CREATE_TABLE__
@@ -49,121 +60,120 @@ __CREATE_TABLE__;
                 if ( ! $this->sqlite->queryExec ( $sql ) )
                 {
                     throw new Exception( 'Cannot create services table : ' 
-                        . sqlite_error_string( $this->sqlite->lastError() ) );
-                }
-            }
-            else
-            {
-                $this->sqlite = sqlite_factory( $this->path );
-            }            
-            
-            if ( ! $this->sqlite )
-            {
-                throw new Exception('Cannot open keyring');
+                    . sqlite_error_string( $this->sqlite->lastError() ) );
             }
         }
-        
-        public function add ( $serviceName, $serviceHost, $serviceKey )
+        else
         {
-            $sql = "INSERT INTO services(serviceName,serviceHost,serviceKey)\n"
-                . "VALUES('"
-                    . sqlite_escape_string($serviceName)."','"
-                    . sqlite_escape_string($serviceHost)."','"
-                    . sqlite_escape_string($serviceKey)
-                ."')"
-                ;
-                
-            if ( ! $this->sqlite->queryExec ( $sql ) )
-            {
-                throw new Exception("Cannot add service key for {$serviceName}:{$serviceHost} in keyring : " 
-                    . sqlite_error_string( $this->sqlite->lastError() ));
-            }
-        }
+            $this->sqlite = sqlite_factory( $this->path );
+        }            
         
-        public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
+        if ( ! $this->sqlite )
         {
-            $sql = "UPDATE services\n"
-                . "SET "
-                    . "serviceName = '" . sqlite_escape_string($serviceName)."',"
-                    . "serviceHost = '" . sqlite_escape_string($serviceHost)."',"
-                    . "serviceKey = '" . sqlite_escape_string($serviceKey)."' "
-                ."WHERE "
-                    . "serviceName = '" . sqlite_escape_string($oldServiceName)."'"
-                    . " AND "
-                    . "serviceHost = '" . sqlite_escape_string($oldServiceHost)."'"
-                ;
-                
-            if ( ! $this->sqlite->queryExec ( $sql ) )
-            {
-                throw new Exception("Cannot update service key for {$serviceName}:{$serviceHost} in keyring : " 
-                    . sqlite_error_string( $this->sqlite->lastError() ));
-            }
-        }
-        
-        public function delete ( $serviceName, $serviceHost )
-        {
-            $sql = "DELETE FROM services\n"
-                ."WHERE "
-                    . "serviceName = '" . sqlite_escape_string($serviceName)."'"
-                    . " AND "
-                    . "serviceHost = '" . sqlite_escape_string($serviceHost)."'"
-                ;
-                
-            if ( ! $this->sqlite->queryExec ( $sql ) )
-            {
-                throw new Exception("Cannot delete service key for {$serviceName}:{$serviceHost} from keyring : " 
-                    . sqlite_error_string( $this->sqlite->lastError() ));
-            }
-        }
-        
-        public function get ( $serviceName, $serviceHost )
-        {
-            $sql = "SELECT serviceName,serviceHost,serviceKey FROM services\n"
-                ."WHERE "
-                    . "serviceName = '" . sqlite_escape_string($serviceName)."'"
-                    . " AND "
-                    . "serviceHost = '" . sqlite_escape_string($serviceHost)."'"
-                ;
-                
-            $result = $this->sqlite->query( $sql );
-                
-            if ( ! $result )
-            {
-                throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring : " 
-                    . sqlite_error_string( $this->sqlite->lastError() ));
-            }
-            elseif ( ! $result->numRows() )
-            {
-                throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring");
-            }
-            else
-            {
-                return $result->fetch( SQLITE_ASSOC );
-            }
-        }
-        
-        public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
-        {
-            $serviceName = $this->get( $serviceName, $serviceHost );
-            
-            return $serviceName['serviceKey'] == $serviceKeyToCheck;
-        }
-        
-        public function getServiceList()
-        {
-            $sql = "SELECT serviceName,serviceHost,serviceKey FROM services";
-            
-            $result = $this->sqlite->query( $sql );
-                
-            if ( ! $result )
-            {
-                throw new Exception ("Cannot get service list from keyring : " 
-                    . sqlite_error_string( $this->sqlite->lastError() ));
-            }
-            else
-            {
-                return $result->fetchAll( SQLITE_ASSOC );
-            }
+            throw new Exception('Cannot open keyring');
         }
     }
-?>
+    
+    public function add ( $serviceName, $serviceHost, $serviceKey )
+    {
+        $sql = "INSERT INTO services(serviceName,serviceHost,serviceKey)\n"
+            . "VALUES('"
+                . sqlite_escape_string($serviceName)."','"
+                . sqlite_escape_string($serviceHost)."','"
+                . sqlite_escape_string($serviceKey)
+            ."')"
+            ;
+            
+        if ( ! $this->sqlite->queryExec ( $sql ) )
+        {
+            throw new Exception("Cannot add service key for {$serviceName}:{$serviceHost} in keyring : " 
+                . sqlite_error_string( $this->sqlite->lastError() ));
+        }
+    }
+    
+    public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
+    {
+        $sql = "UPDATE services\n"
+            . "SET "
+                . "serviceName = '" . sqlite_escape_string($serviceName)."',"
+                . "serviceHost = '" . sqlite_escape_string($serviceHost)."',"
+                . "serviceKey = '" . sqlite_escape_string($serviceKey)."' "
+            ."WHERE "
+                . "serviceName = '" . sqlite_escape_string($oldServiceName)."'"
+                . " AND "
+                . "serviceHost = '" . sqlite_escape_string($oldServiceHost)."'"
+            ;
+            
+        if ( ! $this->sqlite->queryExec ( $sql ) )
+        {
+            throw new Exception("Cannot update service key for {$serviceName}:{$serviceHost} in keyring : " 
+                . sqlite_error_string( $this->sqlite->lastError() ));
+        }
+    }
+    
+    public function delete ( $serviceName, $serviceHost )
+    {
+        $sql = "DELETE FROM services\n"
+            ."WHERE "
+                . "serviceName = '" . sqlite_escape_string($serviceName)."'"
+                . " AND "
+                . "serviceHost = '" . sqlite_escape_string($serviceHost)."'"
+            ;
+            
+        if ( ! $this->sqlite->queryExec ( $sql ) )
+        {
+            throw new Exception("Cannot delete service key for {$serviceName}:{$serviceHost} from keyring : " 
+                . sqlite_error_string( $this->sqlite->lastError() ));
+        }
+    }
+    
+    public function get ( $serviceName, $serviceHost )
+    {
+        $sql = "SELECT serviceName,serviceHost,serviceKey FROM services\n"
+            ."WHERE "
+                . "serviceName = '" . sqlite_escape_string($serviceName)."'"
+                . " AND "
+                . "serviceHost = '" . sqlite_escape_string($serviceHost)."'"
+            ;
+            
+        $result = $this->sqlite->query( $sql );
+            
+        if ( ! $result )
+        {
+            throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring : " 
+                . sqlite_error_string( $this->sqlite->lastError() ));
+        }
+        elseif ( ! $result->numRows() )
+        {
+            throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring");
+        }
+        else
+        {
+            return $result->fetch( SQLITE_ASSOC );
+        }
+    }
+    
+    public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
+    {
+        $serviceName = $this->get( $serviceName, $serviceHost );
+        
+        return $serviceName['serviceKey'] == $serviceKeyToCheck;
+    }
+    
+    public function getServiceList()
+    {
+        $sql = "SELECT serviceName,serviceHost,serviceKey FROM services";
+        
+        $result = $this->sqlite->query( $sql );
+            
+        if ( ! $result )
+        {
+            throw new Exception ("Cannot get service list from keyring : " 
+                . sqlite_error_string( $this->sqlite->lastError() ));
+        }
+        else
+        {
+            return $result->fetchAll( SQLITE_ASSOC );
+        }
+    }
+}
