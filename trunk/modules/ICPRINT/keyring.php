@@ -23,13 +23,20 @@ try
         claro_disp_auth_form();
     }
     
-    require_once dirname(__FILE__) . '/keyring/keyring-sqlite.lib.php';
+    if ( function_exists( 'sqlite_factory' ) )
+    {
+        require_once dirname(__FILE__) . '/keyring/keyring-sqlite.lib.php';
+    }
+    else
+    {
+        require_once dirname(__FILE__) . '/keyring/keyring-csv.lib.php';
+    }
     
     require_once dirname(__FILE__) . '/lib/request/userinput.lib.php';
     require_once dirname(__FILE__) . '/lib/request/inputfilters.lib.php';
     require_once dirname(__FILE__) . '/lib/html/form.lib.php';
     
-    require_once dirname(__FILE__) . '/lib/template/datagrid/clarotable.class.php';
+    require_once dirname(__FILE__) . '/lib/datagrid.lib.php';
     
     $keyring = Keyring::getInstance();
     
@@ -93,24 +100,29 @@ try
         {
             throw new Exception("Missing service name or host !");
         }
+        
+        $service = $keyring->get( $serviceName, $serviceHost );
     }
     
     if ( 'rqAdd' == $cmd )
     {
-        $serviceName = '';
-        $serviceHost = '';
+        $service = array( 
+            'serviceName' => '', 
+            'serviceHost' => '', 
+            'serviceKey' => '' 
+        );
     }
     
     if ( 'rqEdit' == $cmd || 'rqAdd' == $cmd )
     {
         $form = new Form;
-        $input = new InputText( 'serviceName', htmlspecialchars($serviceName) );
+        $input = new InputText( 'serviceName', htmlspecialchars($service['serviceName']) );
         $input->setLabel( get_lang( 'Service' )  . ':' );
         $form->addElement( $input, true );
-        $input = new InputText( 'serviceHost', htmlspecialchars($serviceHost) );
+        $input = new InputText( 'serviceHost', htmlspecialchars($service['serviceHost']) );
         $input->setLabel( get_lang( 'Host address' )  . ':' );
         $form->addElement( $input, true );
-        $input = new InputText( 'serviceKey', '' );
+        $input = new InputText( 'serviceKey', htmlspecialchars($service['serviceKey']) );
         $input->setLabel( get_lang( 'serviceKey' ) . ':' );
         $form->addElement( $input, true );
         
@@ -121,7 +133,7 @@ try
         }
         
         $form->addElement( new InputHidden( 'cmd', ( $cmd == 'rqAdd' ? 'exAdd' : 'exEdit' ) ) );
-        $form->addElement( new InputSubmit( 'submit', get_lang('Add') ) );
+        $form->addElement( new InputSubmit( 'submit', get_lang('Submit') ) );
         $form->addElement( new InputCancel( 'cancel', get_lang('Cancel'), $_SERVER['PHP_SELF'] ) );
     }
     
@@ -166,36 +178,34 @@ try
     if ( 'list' == $cmd )
     {
         $list = $keyring->getServiceList();
-        
-        $serviceList = new DatagridClaroTable;
+
+        $serviceList = new Claro_Utils_Clarogrid;
         
         $serviceList->emphaseLine();
         $serviceList->setEmptyMessage( get_lang( 'No service registered' ) );
         $serviceList->setTitle( get_lang( 'Registered services' ) );
-        $serviceList->setData( $list );
+        $serviceList->setRows( $list );
         
-        $dataFields = array(
-            'serviceName' => 'Service name',
-            'serviceHost' => 'Host address'
-        );
+        $serviceList->addDataColumn( 'serviceName', get_lang( 'Service name' ) );
+        $serviceList->addDataColumn( 'serviceHost', get_lang( 'Service host' ) );
+        $serviceList->addDataColumn( 'serviceKey', get_lang( 'Service key' ) );
         
-        $serviceList->setDataFields( $dataFields );
-        
-        $actionFields = array(
-            'edit' => 'Edit',
-            'delete' => 'Delete'
-        );
-        $serviceList->setActionFields( $actionFields );
-        $actionUrls = array(
-            'edit' => '<a href="'.$_SERVER['PHP_SELF']
+        $serviceList->addColumn(
+            'edit',
+            get_lang('Edit'),
+            '<a href="'.$_SERVER['PHP_SELF']
                 .'?cmd=rqEdit&amp;serviceName=%uu(serviceName)%&amp;serviceHost=%uu(serviceHost)%">'
-                . claro_html_icon('edit').'</a>',
-            'delete' => '<a href="'.$_SERVER['PHP_SELF']
+                . claro_html_icon('edit').'</a>'
+        );
+        
+        $serviceList->addColumn(
+            'delete',
+            get_lang('Delete'),
+            '<a href="'.$_SERVER['PHP_SELF']
                 .'?cmd=rqDelete&amp;serviceName=%uu(serviceName)%&amp;serviceHost=%uu(serviceHost)%" '
                 . 'onclick="return deleteService(\'%serviceName%\',\'%serviceHost%\');">'
                 . claro_html_icon('delete').'</a>'
         );
-        $serviceList->setActionUrls( $actionUrls );
         
         $serviceList->setFooter('<a href="'
             .$_SERVER['PHP_SELF'].'?cmd=rqAdd">'

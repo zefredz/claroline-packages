@@ -38,7 +38,7 @@ try
     require_once dirname(__FILE__) . '/lib/request/inputfilters.lib.php';
     require_once dirname(__FILE__) . '/lib/html/form.lib.php';
     
-    require_once dirname(__FILE__) . '/lib/template/datagrid/clarotable.class.php';
+    require_once dirname(__FILE__) . '/lib/datagrid.lib.php';
     
     require_once dirname(__FILE__) . '/lib/filefinder.lib.php';
     require_once dirname(__FILE__) . '/lib/time.lib.php';
@@ -204,7 +204,7 @@ try
                 $fileList[] = array(
                     'title' => $file->getFilename(), 
                     'path' => $file->getPathname(),
-                    'localpath' => str_replace( '\\', '/', str_replace( $courseDir, '', $file->getPathname() ) ),
+                    'localPath' => str_replace( '\\', '/', str_replace( $courseDir, '', $file->getPathname() ) ),
                     'globalpath' => str_replace( '\\', '/', $file->getPathname() ), 
                     'hash' => $hash,
                     'length' => filesize( $file->getPathname() ),
@@ -212,29 +212,20 @@ try
                 );
             }
         }
-        
-        $fileTable = new DatagridClaroTable;
+
+        $fileTable = new Claro_Utils_Clarogrid;
         
         $fileTable->fullWidth();
         $fileTable->emphaseLine();
         $fileTable->setTitle( get_lang( 'Discovered documents' ) );
-        $fileTable->setData( $fileList );
+        $fileTable->setRows( $fileList );
         $fileTable->setEmptyMessage( get_lang('No document to publish') );
-        $dataFields = array(
-            'title' => get_lang( 'Title' ),
-            'localpath' => get_lang( 'Local path' ),
-            'length' => get_lang( 'Size (octets)' )
-        );
-        $fileTable->setDataFields( $dataFields );
-        
-        $actionFields = array(
-            'publish' => claro_html_icon('print')
-        );
-        $fileTable->setActionFields( $actionFields );
-        $actionUrls = array(
-            'publish' => '<input type="checkbox" name="filesToPublish[%_lineNumber%]" value="%localpath%" />'
-        );
-        $fileTable->setActionUrls( $actionUrls );
+        $fileTable->addDataColumn( 'title', get_lang( 'Title' ) );
+        $fileTable->addDataColumn( 'localPath', get_lang( 'Local path' ) );
+        $fileTable->addDataColumn( 'length', get_lang( 'Size (octets)' ) );
+        $fileTable->prependColumn( 'publish', 
+            claro_html_icon('print'), 
+            '<input type="checkbox" name="filesToPublish[%_lineNumber_%]" value="%localPath%" />' );
         
         $form = new Form;
         $form->addElement( $fileTable );
@@ -284,38 +275,30 @@ try
             $documentMapper->getSchema()->getField( 'courseId' ) . ' = :courseId',
             array( ':courseId' => claro_get_current_course_id() )
         );
-        
-        $publishedFileTable = new DatagridClaroTable;
+
+        $publishedFileTable = new Claro_Utils_Clarogrid;
         
         $publishedFileTable->fullWidth();
         $publishedFileTable->emphaseLine();
         $publishedFileTable->setEmptyMessage( get_lang('No document published') );
         $publishedFileTable->setTitle( get_lang('Published documents') );
-        $publishedFileTable->setData( $documentList );
-        
-        $dataFields = array(
-            'title' => get_lang('Title'),
-            'localPath' => get_lang('Local path'),
-            'length' => get_lang('Size (octets)')
-        );
-        
-        $publishedFileTable->setDataFields( $dataFields );
+        $publishedFileTable->setRows( $documentList );
+        $publishedFileTable->addDataColumn( 'title', get_lang( 'Title' ) );
+        $publishedFileTable->addDataColumn( 'localPath', get_lang( 'Local path' ) );
+        $publishedFileTable->addDataColumn( 'length', get_lang( 'Size (octets)' ) );
         
         if ( claro_is_allowed_to_edit() )
         {
-            $actionFields = array(
-                'delete' => get_lang('Delete'),
-                'selection' => get_lang('Selected')
-            );
-            $publishedFileTable->setActionFields( $actionFields );
-            $actionUrls = array(
-                'delete' => '<a href="'.$_SERVER['PHP_SELF']
+            $publishedFileTable->prependColumn( 'selection', 
+                '', 
+                '<input type="checkbox" name="selectedFiles[%_lineNumber_%]" value="%localPath%" />' );
+                
+            $publishedFileTable->addColumn( 'delete', 
+                get_lang('Delete'), 
+                '<a href="'.$_SERVER['PHP_SELF']
                     .'?cmd=rqDelete&amp;localpath=%uu(localPath)%" '
                     . 'onclick="return deleteDocument(\'%localPath%\');">'
-                    . claro_html_icon('delete').'</a>',
-                'selection' => '<input type="checkbox" name="selectedFiles[%_lineNumber%]" value="%localPath%" />'
-            );
-            $publishedFileTable->setActionUrls( $actionUrls );
+                    . claro_html_icon('delete').'</a>' );
             
             $publishedFileTable->setFooter('<a href="'
                 .$_SERVER['PHP_SELF'].'?cmd=rqPublish" class="claroCmd">'

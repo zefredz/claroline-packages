@@ -20,7 +20,14 @@
     require_once dirname(__FILE__) . '/lib/request/userinput.lib.php';
     require_once dirname(__FILE__) . '/lib/request/inputfilters.lib.php';
     
-    require_once dirname(__FILE__) . '/keyring/keyring.lib.php';
+    if ( function_exists( 'sqlite_factory' ) )
+    {
+        require_once dirname(__FILE__) . '/keyring/keyring-sqlite.lib.php';
+    }
+    else
+    {
+        require_once dirname(__FILE__) . '/keyring/keyring-csv.lib.php';
+    }
     
     $userInput = FilteredUserInput::getInstance();
     
