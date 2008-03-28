@@ -2,7 +2,7 @@
 
     // vim: expandtab sw=4 ts=4 sts=4:
     
-    class Keyring
+    class Keyring // Sqlite implements Keyring
     {
         protected static $instance = false;
         
@@ -49,7 +49,7 @@ __CREATE_TABLE__;
                 if ( ! $this->sqlite->queryExec ( $sql ) )
                 {
                     throw new Exception( 'Cannot create services table : ' 
-                        . sqlite_error_string( sqlite_last_error() ) );
+                        . sqlite_error_string( $this->sqlite->lastError() ) );
                 }
             }
             else
@@ -75,8 +75,8 @@ __CREATE_TABLE__;
                 
             if ( ! $this->sqlite->queryExec ( $sql ) )
             {
-                throw new Exception('Cannot add service in keyring : ' 
-                    . sqlite_error_string( sqlite_last_error() ));
+                throw new Exception("Cannot add service key for {$serviceName}:{$serviceHost} in keyring : " 
+                    . sqlite_error_string( $this->sqlite->lastError() ));
             }
         }
         
@@ -95,14 +95,14 @@ __CREATE_TABLE__;
                 
             if ( ! $this->sqlite->queryExec ( $sql ) )
             {
-                throw new Exception('Cannot update service in keyring : ' 
-                    . sqlite_error_string( sqlite_last_error() ));
+                throw new Exception("Cannot update service key for {$serviceName}:{$serviceHost} in keyring : " 
+                    . sqlite_error_string( $this->sqlite->lastError() ));
             }
         }
         
         public function delete ( $serviceName, $serviceHost )
         {
-            $sql = "DELTE FROM services\n"
+            $sql = "DELETE FROM services\n"
                 ."WHERE "
                     . "serviceName = '" . sqlite_escape_string($serviceName)."'"
                     . " AND "
@@ -111,8 +111,8 @@ __CREATE_TABLE__;
                 
             if ( ! $this->sqlite->queryExec ( $sql ) )
             {
-                throw new Exception('Cannot update service in keyring : ' 
-                    . sqlite_error_string( sqlite_last_error() ));
+                throw new Exception("Cannot delete service key for {$serviceName}:{$serviceHost} from keyring : " 
+                    . sqlite_error_string( $this->sqlite->lastError() ));
             }
         }
         
@@ -129,16 +129,16 @@ __CREATE_TABLE__;
                 
             if ( ! $result )
             {
-                throw new Exception ("No key for {$serviceName}:{$serviceHost}");
+                throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring : " 
+                    . sqlite_error_string( $this->sqlite->lastError() ));
             }
             elseif ( ! $result->numRows() )
             {
-                throw new Exception('Service not found in keyring' 
-                    . sqlite_error_string( sqlite_last_error() ));
+                throw new Exception("No service key found for {$serviceName}:{$serviceHost} in keyring");
             }
             else
             {
-                return $result->fetchArray( SQLITE_ASSOC );
+                return $result->fetch( SQLITE_ASSOC );
             }
         }
         
@@ -157,7 +157,8 @@ __CREATE_TABLE__;
                 
             if ( ! $result )
             {
-                throw new Exception ("Keyring error !");
+                throw new Exception ("Cannot get service list from keyring : " 
+                    . sqlite_error_string( $this->sqlite->lastError() ));
             }
             else
             {
