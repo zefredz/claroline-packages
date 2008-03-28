@@ -226,12 +226,17 @@ try
         $fileTable->prependColumn( 'publish', 
             claro_html_icon('print'), 
             '<input type="checkbox" name="filesToPublish[%_lineNumber_%]" value="%localPath%" />' );
+            
+        $submit = new InputImage( 'submit', get_icon_url('print') );
+        $submit->setLabel( get_lang( 'Publish selected files' ), true, array( 'class' => 'right claroCmd' ) );
+            
+        $fileTable->setFooter( $submit->render() );
         
         $form = new Form;
         $form->addElement( $fileTable );
         $form->addElement( new InputHidden( 'cmd', 'exPublish' ) );
-        $form->addElement( new InputSubmit( 'submit', get_lang( 'Publish selected' ) ) );
-        $form->addElement( new InputCancel( 'cancel', get_lang( 'Cancel' ), $_SERVER['PHP_SELF'] ) );
+        // $form->addElement( new InputSubmit( 'submit', get_lang( 'Publish selected' ) ) );
+        // $form->addElement( new InputCancel( 'cancel', get_lang( 'Cancel' ), $_SERVER['PHP_SELF'] ) );
     }
     
     if ( 'exPublish' == $cmd )
@@ -299,18 +304,13 @@ try
                     .'?cmd=rqDelete&amp;localpath=%uu(localPath)%" '
                     . 'onclick="return deleteDocument(\'%localPath%\');">'
                     . claro_html_icon('delete').'</a>' );
-            
-            $publishedFileTable->setFooter('<a href="'
-                .$_SERVER['PHP_SELF'].'?cmd=rqPublish" class="claroCmd">'
-                .claro_html_icon('print').' Publish a document</a>');
-        }
-        
-        if ( claro_is_allowed_to_edit() )
-        {
-            $publishedDocumentList = new Form('', Form::METHOD_POST, array( 'onsubmit' => 'return deleteSelection(this)' ) );
+                    
             $submit = new InputImage( 'submit1', get_icon_url('delete') );
             $submit->setLabel( get_lang( 'Delete selected files' ), true, array( 'class' => 'right claroCmd' ) );
-            $publishedDocumentList->addElement( $submit, true );
+            
+            $publishedFileTable->setFooter( $submit->render() );
+
+            $publishedDocumentList = new Form('', Form::METHOD_POST, array( 'onsubmit' => 'return deleteSelection(this)' ) );
             $publishedDocumentList->addElement( $publishedFileTable );
             $publishedDocumentList->addElement( new InputHidden( 'cmd', 'rqDeleteSelection' ) );
         }
@@ -383,6 +383,18 @@ function deleteSelection ( thisForm )
     
     if ( 'rqPublish' == $cmd )
     {
+        echo '<p>'.'<a href="'
+            . $_SERVER['PHP_SELF'].'" class="claroCmd">'
+            . claro_html_icon('back').' '.get_lang('Back to list').'</a>'
+            . ( claro_is_platform_admin() 
+                ? ' | <a href="keyring.php" class="claroCmd">'
+                    . claro_html_icon('key')
+                    . ' ' . get_lang('Manage key ring').'</a>'
+                : ''
+                )
+            . '</p>'."\n"
+            ;
+        
         echo $form->render();
     }
     elseif ( 'rqDeleteFiles' == $cmd )
@@ -411,7 +423,9 @@ function deleteSelection ( thisForm )
                 . $_SERVER['PHP_SELF'].'?cmd=rqPublish" class="claroCmd">'
                 . claro_html_icon('print').' '.get_lang('Publish a document').'</a>'
                 . ( claro_is_platform_admin() 
-                    ? ' | <a href="keyring.php" class="claroCmd">'.get_lang('Manage key ring').'</a>'
+                    ? ' | <a href="keyring.php" class="claroCmd">'
+                        . claro_html_icon('key')
+                        . ' ' . get_lang('Manage key ring').'</a>'
                     : ''
                     )
                 . '</p>'."\n"
