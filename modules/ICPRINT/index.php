@@ -1,17 +1,17 @@
 <?php // $Id$
 
-    // vim: expandtab sw=4 ts=4 sts=4:
-    
-    /**
-     * Description
-     *
-     * @version     1.8-backport $Revision$
-     * @copyright   2001-2007 Universite catholique de Louvain (UCL)
-     * @author      Frederic Minne <zefredz@claroline.net>
-     * @license     http://www.gnu.org/copyleft/gpl.html
-     *              GNU GENERAL PUBLIC LICENSE version 2 or later
-     * @package     icprint
-     */
+// vim: expandtab sw=4 ts=4 sts=4:
+
+/**
+ * Main script for Impression Service module
+ *
+ * @version     1.8-backport $Revision$
+ * @copyright   2001-2007 Universite catholique de Louvain (UCL)
+ * @author      Frederic Minne <zefredz@claroline.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     icprint
+ */
 try
 {    
     $tlabelReq = 'ICPRINT';
@@ -186,7 +186,7 @@ try
             . claro_get_course_path()
             .'/document' );
             
-        $pdfFinder = new PdfFindFile( $courseDir );
+        $pdfFinder = new ExtensionFileFinder( $courseDir, '.pdf' );
         
         $fileList = array();
         
