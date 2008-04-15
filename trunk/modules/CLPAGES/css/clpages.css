@@ -72,3 +72,8 @@
 	width: 33%;
 	text-align: right;
 }
+
+.slideNav .navDisabled a
+{
+	color: #ccc;
+}
