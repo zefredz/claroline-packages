@@ -88,11 +88,20 @@
 
 		// do not work at this time with jsloader
 		$htmlHeaders .= "\n"
-		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce.js" ></script>' . "\n"
-		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce_init.js" ></script>' . "\n";
+		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce/tiny_mce.js" ></script>' . "\n"
+		. '<script language="javascript" type="text/javascript">'."\n"
+        .	'var text_dir = "'.get_locale("text_dir").'";' . "\n"
+        .	'</script>'."\n\n"
+		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/advanced.conf.js" ></script>' . "\n";
 
 
 		$claroline->display->header->addHtmlHeader($htmlHeaders);
+	}
+	elseif( $page->getDisplayMode() == 'SLIDE' )
+	{
+	    $jsloader = JavascriptLoader::getInstance();
+	    $jsloader->load('jquery');
+	    $jsloader->load('slide');
 	}
 
 
@@ -160,65 +169,39 @@
 
 	$componentList = $page->getComponentList();
 
-	if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
+    if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
 	{
-	    // slide view only shown as student
-	    $visibleComponent = 0;
+	    $componentsHtml = '';
 	    foreach( $componentList as $component )
     	{
-    		if( $component->isVisible() )
+    		if( $component->isVisible() || $is_allowedToEdit )
     		{
-    			$visibleComponent++;
-    			
-    			if( $visibleComponent == $slide ) 
-    			{
-    			    $componentToRender = $component;
-    			}
+    			$componentsHtml .= $component->renderBlock();
     		}
     	}
     	
-    	if( $visibleComponent == 0 )
-    	{
-    	    $out .= '<div>'.get_lang('Nothing to see').'</div>';
-    	}
-    	else
-    	{
-        	// navigation bar
-    	    $navBar = '<div class="slideNav">' . "\n";
+	    $navBar = '<div class="slideNav">' . "\n";
     	    
-            if( $slide > 1 )
-            {
-                $navBar .= '<span class="prevSlide">'
-                .	 '<a href="'.get_module_url('CLPAGES').'/page.php?pageId='.$pageId.'&slide='.($slide-1).'">'
-                .	 '&lt; '. get_lang('Previous') 
-                .	 '</a>'
-                .	 '</span>' . "\n";
-            }
-            else
-            {
-                $navBar .= '<span class="prevSlide">&nbsp;</span>' . "\n";
-            }
-            
-            if( $slide < $visibleComponent )
-            {
-                $navBar .= '<span class="nextSlide">'
-                .	 '<a href="'.get_module_url('CLPAGES').'/page.php?pageId='.$pageId.'&slide='.($slide+1).'">'
-                .	 get_lang('Next') . ' &gt;' 
-                .	 '</a>'
-                .	 '</span>' . "\n";
-            }
-            else
-            {
-                $navBar .= '<span class="nextSlide">&nbsp;</span>' . "\n";            
-            }
-            
-            $navBar .= '<span class="slideProgress">'. get_lang('Slide %current on %total', array('%current' => $slide, '%total' => $visibleComponent ) ) . '</span>' . "\n";
-                        
-    	    $navBar .= '</div>' . "\n";
-    	    
-    	    
-    	    $out .= $navBar . $componentToRender->render() . $navBar;    	    
-    	}
+        $navBar .= '<span class="prevSlide">'
+        .	 '<a href="#">'
+        .	 '&lt; '. get_lang('Previous') 
+        .	 '</a>'
+        .	 '</span>' . "\n";
+
+        $navBar .= '<span class="nextSlide">'
+        .	 '<a href="#">'
+        .	 get_lang('Next') . ' &gt;' 
+        .	 '</a>'
+        .	 '</span>' . "\n";
+        
+        $navBar .= '<span class="slideProgress">'
+        .     get_lang('Slide %current on %total', array('%current' => '<span class="displayedSlide">0</span>', '%total' => '<span class="lastSlide">0</span>' ) ) 
+        .     '</span>' . "\n";
+                    
+	    $navBar .= '</div>' . "\n";
+	    
+	    
+	    $out .= $navBar . $componentsHtml . $navBar; 
 	    
 	}
 	else
