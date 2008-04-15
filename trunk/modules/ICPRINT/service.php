@@ -20,14 +20,8 @@
     require_once dirname(__FILE__) . '/lib/request/userinput.lib.php';
     require_once dirname(__FILE__) . '/lib/request/inputfilters.lib.php';
     
-    if ( function_exists( 'sqlite_factory' ) )
-    {
-        require_once dirname(__FILE__) . '/keyring/keyring-sqlite.lib.php';
-    }
-    else
-    {
-        require_once dirname(__FILE__) . '/keyring/keyring-csv.lib.php';
-    }
+    require_once dirname(__FILE__) . '/lib/pdocrud/pdofactory.lib.php';
+    require_once dirname(__FILE__) . '/keyring/keyring.lib.php';
     
     $userInput = FilteredUserInput::getInstance();
     
@@ -76,7 +70,7 @@
     require_once get_path('includePath') . '/lib/file.lib.php';
     
     define ( 'APP_PATH', dirname(__FILE__).'/crud' );
-    define ( 'CLARO_DSN', 'mysql://'.get_conf('dbLogin')
+    !defined( 'CLARO_DSN' ) && define ( 'CLARO_DSN', 'mysql://'.get_conf('dbLogin')
         .':'.get_conf('dbPass').'@'.get_conf('dbHost').'/'
         .get_conf('mainDbName') );
  

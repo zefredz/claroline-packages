@@ -44,7 +44,7 @@ try
     require_once dirname(__FILE__) . '/lib/time.lib.php';
     
     define ( 'APP_PATH', dirname(__FILE__).'/crud' );
-    define ( 'CLARO_DSN', 'mysql://'.get_conf('dbLogin')
+    !defined( 'CLARO_DSN' ) && define ( 'CLARO_DSN', 'mysql://'.get_conf('dbLogin')
         .':'.get_conf('dbPass').'@'.get_conf('dbHost').'/'
         .get_conf('mainDbName') );
             
