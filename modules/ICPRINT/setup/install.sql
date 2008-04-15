@@ -21,3 +21,10 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__icprint_actions`(
 	action_document_hash VARCHAR(255) NOT NULL,
 	PRIMARY KEY(action_id)
 ) TYPE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__icprint_services`(
+	serviceName VARCHAR(255) NOT NULL,
+    serviceHost VARCHAR(255) NOT NULL,
+    serviceKey  VARCHAR(255) NOT NULL,
+    PRIMARY KEY(serviceName,serviceHost)
+) Type=MYISAM;
