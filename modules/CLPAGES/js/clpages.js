@@ -73,6 +73,9 @@
 		return false;
 	}
 
+	/*
+	 * Toggle a component editor
+	 */
 	$.fn.toggleEditor = function()
 	{
 		return this.each(function(){
@@ -82,6 +85,7 @@
 
 			if( openedEditors[id] )
 			{
+				// remove tinyMCE if required
 				// close editor
 				// remove editor from the DOM as it seems to be already opened
 				$("#component_" + id + " .componentEditor").remove();
@@ -361,8 +365,8 @@
 	{
 	    return this.each(function(){
 	    	try {
-	    		//$(this).prepend('<!-- content: html tiny_mce -->');
-	    		tinyMCE.addMCEControl(document.getElementById(this.id), this.id);
+	    		
+	    		tinyMCE.execCommand('mceAddControl', false, this.id);
 	    	}
 	    	catch(e)
 	    	{
@@ -387,7 +391,7 @@
 				}
 
 				// force remove of this tinymce instance
-				tinyMCE.removeMCEControl(this.id);
+				tinyMCE.execCommand('mceRemoveControl', false, this.id);
 
 	    	}
 	    	catch(e)
