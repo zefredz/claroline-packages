@@ -142,6 +142,7 @@ class Claro_Html_Element implements Claro_Renderer
 class Claro_Utils_Datagrid extends Claro_Html_Element
 {
     protected $lineNumber = 0;
+    protected $lineCount = 0;
     
     protected $columnsLabels = array();
     protected $columnsValues = array();
@@ -175,6 +176,7 @@ class Claro_Utils_Datagrid extends Claro_Html_Element
     public function setRows( array $rows )
     {
         $this->rows = $rows;
+        $this->lineCount = count( $rows );
     }
     
     public function prependColumn( $key, $label, $value )
@@ -245,9 +247,11 @@ class Claro_Utils_Datagrid extends Claro_Html_Element
                 foreach ( $this->columnsOrder as $column )
                 {
                     $tableRow .= "<td>"
-                        . str_replace( '%_lineNumber_%'
-                            , $this->lineNumber
-                            , $this->columnsValues[$column] )
+                        . str_replace( '%_lineCount_%'
+                            , $this->lineCount,
+                            str_replace( '%_lineNumber_%'
+                                , $this->lineNumber
+                                , $this->columnsValues[$column] ) )
                         ."</td>"
                         ;
                 }
