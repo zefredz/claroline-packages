@@ -9,7 +9,7 @@ foreach( $this->documents as $thisAction ):
     
     if ( $thisAction->action != 'delete' ):
 ?>
-<document>
+<document id="<?php echo $thisDoc->id; ?>">
 <title><?php echo iconv( get_conf('charset'), 'utf-8', $thisDoc->title ); ?></title>
 <hash><?php echo $thisAction->documentHash; ?></hash>
 <path><?php echo $thisAction->documentLocalPath; ?></path>
@@ -32,7 +32,7 @@ foreach( $this->documents as $thisAction ):
 </document><?php
     else: 
 ?>
-<document>
+<document id="<?php echo $thisDoc->id; ?>">
 <hash><?php echo $thisAction->documentHash; ?></hash>
 <path><?php echo $thisAction->documentLocalPath; ?></path>
 <course code="<?php echo iconv( get_conf('charset'), 'utf-8', $courseData['officialCode'] ); ?>"
