@@ -52,8 +52,11 @@ class Keyring // Sqlite implements Keyring
     
     public function add ( $serviceName, $serviceHost, $serviceKey )
     {
-        $sql = "INSERT INTO `__CL_MAIN__icprint_services`(serviceName,serviceHost,serviceKey)\n"
-            . "VALUES( :serviceName, :serviceHost, :serviceKey )"
+        $sql = "INSERT INTO `__CL_MAIN__icprint_services`\n"
+            . "SET\n"
+            . "serviceName = :serviceName,\n"
+            . "serviceHost = :serviceHost,\n"
+            . "serviceKey = :serviceKey"
             ;
             
         $params = array( 
@@ -73,17 +76,17 @@ class Keyring // Sqlite implements Keyring
                 . "serviceHost = :serviceHost,"
                 . "serviceKey = :serviceKey "
             ."WHERE "
-                . "serviceName = :oldServiceName"
+                . "serviceName = ".$this->db->quote( $oldServiceName )
                 . " AND "
-                . "serviceHost = :oldServiceHost"
+                . "serviceHost = ".$this->db->quote( $oldServiceHost )
             ;
         
         $params = array( 
             ':serviceName' => $serviceName,
             ':serviceHost' => $serviceHost,
-            ':serviceKey' => $serviceKey,
-            ':oldServiceName' => $oldServiceName,
-            ':oldServiceHost' => $oldServiceHost
+            ':serviceKey' => $serviceKey //,
+            //':oldServiceName' => $oldServiceName,
+            //':oldServiceHost' => $oldServiceHost
          );
             
         $this->executeQuery ( $sql, $params );
@@ -108,20 +111,15 @@ class Keyring // Sqlite implements Keyring
     
     public function get ( $serviceName, $serviceHost )
     {
-        $sql = "SELECT serviceName,serviceHost,serviceKey\n"
+        $sql = "SELECT serviceName, serviceHost, serviceKey\n"
             . "FROM `__CL_MAIN__icprint_services`\n"
             . "WHERE "
-                . "serviceName = :serviceName"
+                . "serviceName = " . $this->db->quote( $serviceName )
                 . " AND "
-                . "serviceHost = :serviceHost"
+                . "serviceHost = " . $this->db->quote( $serviceHost )
             ;
         
-        $params = array( 
-            ':serviceName' => $serviceName,
-            ':serviceHost' => $serviceHost,
-         );    
-        
-        $result = $this->executeQuery ( $sql, $params );
+        $result = $this->executeQuery ( $sql );
             
         if ( ! $result->rowCount() )
         {
@@ -142,7 +140,9 @@ class Keyring // Sqlite implements Keyring
     
     public function getServiceList()
     {
-        $sql = "SELECT serviceName,serviceHost,serviceKey FROM `__CL_MAIN__icprint_services`";
+        $sql = "SELECT serviceName, serviceHost, serviceKey\n"
+         . "FROM `__CL_MAIN__icprint_services`"
+         ;
         
         $result = $this->executeQuery( $sql );
             
