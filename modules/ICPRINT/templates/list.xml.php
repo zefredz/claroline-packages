@@ -8,6 +8,7 @@ foreach( $this->documents as $thisAction ):
     $courseData = claro_get_course_data( $thisAction->courseId );
     
     if ( $thisAction->action != 'delete' ):
+    
 ?>
 <document id="<?php echo $thisDoc->id; ?>">
 <title><?php echo iconv( get_conf('charset'), 'utf-8', $thisDoc->title ); ?></title>
@@ -28,9 +29,11 @@ foreach( $this->documents as $thisAction ):
     echo iconv( get_conf('charset'), 'utf-8', $userData['firstname'] . ' ' . $userData['lastname'] ); 
 ?></publisher>
 <downloadUrl><?php echo str_replace( get_conf('urlAppend').'/', '', get_path('rootWeb') ) 
-    . $_SERVER['PHP_SELF'] . '?serviceKey='.$this->serviceKey.'&amp;cmd=get&amp;hash='.$thisDoc->hash.'&amp;cidReq='.$thisDoc->courseId; ?></downloadUrl>
+    . $_SERVER['PHP_SELF'] . '?serviceKey='.$this->serviceKey.'&amp;cmd=get&amp;id='.$thisDoc->id.'&amp;cidReq='.$thisDoc->courseId; ?></downloadUrl>
 </document><?php
+
     else: 
+    
 ?>
 <document id="<?php echo $thisDoc->id; ?>">
 <hash><?php echo $thisAction->documentHash; ?></hash>
@@ -50,7 +53,9 @@ foreach( $this->documents as $thisAction ):
 ?></publisher>
 </document>
 <?php 
+
     endif;
-    endforeach; 
+    
+endforeach; 
 ?>
 </documentList>
