@@ -39,6 +39,7 @@ try
     require_once dirname(__FILE__) . '/lib/html/form.lib.php';
     
     require_once dirname(__FILE__) . '/lib/datagrid.lib.php';
+    require_once dirname(__FILE__) . '/lib/pager.lib.php';
     
     require_once dirname(__FILE__) . '/lib/filefinder.lib.php';
     require_once dirname(__FILE__) . '/lib/time.lib.php';

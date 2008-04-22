@@ -127,12 +127,12 @@ try
     // download document
     if ( 'get' == $cmd )
     {
-        $hash = $userInput->getMandatory( 'hash' );
+        $id = $userInput->getMandatory( 'id' );
         
         $doc = $documentMapper->selectOne(
-            $documentMapper->getSchema()->getField( 'hash' ) . ' = :hash'
+            $documentMapper->getSchema()->getField( 'id' ) . ' = :id'
             . ' AND ' . $documentMapper->getSchema()->getField( 'courseId' ) . ' = :courseId',
-            array( ':hash' => $hash, ':courseId' => claro_get_current_course_id() )
+            array( ':id' => $id, ':courseId' => claro_get_current_course_id() )
         );
         
         if ( $doc && file_exists( $doc->globalPath ) )
