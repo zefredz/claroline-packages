@@ -99,8 +99,7 @@
         $claroline->display->header->addHtmlHeader($htmlHeaders);
         
         // dialog box
-        $out .= '<p id="clchat_dialogBox"></p>' . "\n"
-        .    '<div id="clchat_user_list"></div>'.    "\n"
+        $out .= '<div id="clchat_user_list"></div>'.    "\n"
         .    '<div id="clchat_chatarea">'.	 "\n"
         .    ' <div id="clchat_log"></div>' . "\n"
         .    ' <div id="clchat_connectTime">'
@@ -117,7 +116,9 @@
         .    '<input type="submit" name="Submit" value=" &gt;&gt; " />' . "\n"
         .    '</form>' . "\n"
     
-        .    claro_html_menu_horizontal($cmdMenu) . "\n";
+        .    claro_html_menu_horizontal($cmdMenu) . "\n"
+        .	 '<p id="clchat_dialogBox"></p>' . "\n"
+        ;
 
     }
     else
