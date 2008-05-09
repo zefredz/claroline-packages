@@ -1,0 +1,20 @@
+.post{
+    border: 1px silver solid;
+    margin-top: 1em;
+    padding: 5px;
+}
+.postTitle{
+}
+.postInfo{
+    font-size: smaller;
+}
+.postChapo{
+    font-style: italic;
+}
+.postContents{
+}
+.postComment{
+    border: 1px silver solid;
+    margin-top: 1em;
+    padding: 5px;
+}
