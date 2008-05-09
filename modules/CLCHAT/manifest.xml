@@ -6,6 +6,9 @@
   <type>tool</type>
   <entry>index.php</entry>
   <icon>img/chat.gif</icon>
+  
+  <context>course</context>
+  <context>group</context>
 
   <description>
     
