@@ -27,16 +27,18 @@ class ChatUserList
 {
     private $userList = array();
     
-    private $courseId = '';
+    private $courseId = null;
+    private $groupId = null;
     
     private $tblChatUsers = '';
     private $tblUser = '';
     private $tblRelCourseUser = '';
     
-    public function __construct()
+    public function __construct($courseId, $groupId = null)
     {
-        $this->courseId = claro_get_current_course_id();
-            
+        $this->courseId = $courseId;
+        $this->groupId = $groupId;
+        
         $tblNameList = array(
     		'chat_users'
         );
@@ -66,8 +68,18 @@ class ChatUserList
 				`".$this->tblRelCourseUser."` as `RCU` 
 			WHERE `CU`.user_id = U.user_id
 			  AND `U`.`user_id` = `RCU`.`user_id` 
-			  AND `RCU`.`code_cours` = '".$this->courseId."' 
-        	ORDER BY `RCU`.`isCourseManager` DESC,
+			  AND `RCU`.`code_cours` = '".$this->courseId."'";
+
+        if( !is_null($this->groupId) )  
+    	{
+    	    $sql .= " AND `CU`.`group_id` = ".(int) $this->groupId . " ";
+    	} 
+    	else
+    	{
+    	    $sql .= " AND `CU`.`group_id` IS NULL ";
+    	}
+
+    	$sql .= " ORDER BY `RCU`.`isCourseManager` DESC,
         	      `U`.`prenom` ASC,
         	      `U`.`nom` ASC";
 
@@ -124,6 +136,15 @@ class ChatUserList
         $sql = "DELETE FROM `" . $this->tblChatUsers . "`
                       WHERE `last_action` < '" . claro_date('Y-m-d H:i:s', claro_time() - 30 )  . "'";
 
+        if( !is_null($this->groupId) )  
+    	{
+    	    $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
+    	}
+        else
+    	{
+    	    $sql .= " AND `group_id` IS NULL ";
+    	}
+
         claro_sql_query($sql);
     }
     
@@ -138,12 +159,27 @@ class ChatUserList
         
         $sql = "DELETE FROM `" . $this->tblChatUsers . "`
                       WHERE `user_id` = " . (int) $userId;
+    
+        if( !is_null($this->groupId) )  
+    	{
+    	    $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
+    	}
+        else
+    	{
+    	    $sql .= " AND `group_id` IS NULL ";
+    	}
 
         claro_sql_query($sql);
 
         $sql = "INSERT INTO `" . $this->tblChatUsers . "`
-                SET `user_id` = " . (int) $userId . ",
-                    `last_action` = '" . claro_date('Y-m-d H:i:s') . "'";
+                SET `user_id` = " . (int) $userId . ",";
+                
+        if( !is_null($this->groupId) )  
+    	{
+    	    $sql .= " `group_id` = ".(int) $this->groupId . ", ";
+    	}
+
+    	$sql .= " `last_action` = '" . claro_date('Y-m-d H:i:s') . "'";
 
         claro_sql_query($sql);
         return true;
