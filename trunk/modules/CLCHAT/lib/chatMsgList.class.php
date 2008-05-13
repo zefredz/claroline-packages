@@ -19,14 +19,16 @@ class ChatMsgList
 {
     private $msgList = array();
     
-    private $courseId = '';
+    private $courseId = null;
+    private $groupId = null;
     
     private $tblChatMsg = '';
     private $tblUser = '';
     
-    public function __construct()
+    public function __construct($courseId, $groupId = null)
     {
-        $this->courseId = claro_get_current_course_id();
+        $this->courseId = $courseId;
+        $this->groupId = $groupId;
         
         $tblNameList = array(
     		'chat'
@@ -59,6 +61,16 @@ class ChatMsgList
     				`".$this->tblUser."` as `U` 
     			WHERE `JC`.`user_id` = `U`.`user_id` ";
 
+    	if( !is_null($this->groupId) )  
+    	{
+    	    $sql .= " AND `JC`.`group_id` = ".(int) $this->groupId . " ";
+    	}
+        else
+    	{
+    	    $sql .= " AND `JC`.`group_id` IS NULL ";
+    	}
+    	
+    	
     	if( $from != '' )
         {
             $sql .= " HAVING ". (int) $from . " < `unixPostTime` ";
@@ -174,9 +186,14 @@ class ChatMsgList
         if( !empty($message) && $userId )
     	{
         	$sql = "INSERT INTO `".$this->tblChatMsg."`
-        			SET `user_id` = '".(int) $userId."', 
-        				`group_id` = '0',
-        				`message` = '".addslashes(htmlspecialchars($message))."',
+        			SET `user_id` = '".(int) $userId."', ";
+        	
+        	if( !is_null($this->groupId) )  
+        	{
+        	    $sql .= " `group_id` = ".(int) $this->groupId . ", ";
+        	}
+        			
+        	$sql .= "`message` = '".addslashes(htmlspecialchars($message))."',
         				`post_time` = NOW()";
 
         	return claro_sql_query($sql);
