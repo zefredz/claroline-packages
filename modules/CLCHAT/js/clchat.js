@@ -33,7 +33,7 @@ function init()
 	rqRefreshUserList();
 	
 	setInterval(rqRefresh, refreshRate);
-	setInterval(rqRefreshUserList, refreshRate+1);
+	setInterval(rqRefreshUserList, userListRefresh);
 	
     // give focus to form
 	$("#clchat_msg").focus();	
