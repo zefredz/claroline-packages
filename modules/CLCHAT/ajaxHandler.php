@@ -16,6 +16,8 @@
 
 $tlabelReq = 'CLCHAT';
 
+$cidReset = true;
+$gidReset = true;
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 /*
@@ -49,6 +51,23 @@ else                                                                            
 if( isset($_REQUEST['message']) )   $msg = $_REQUEST['message'];
 else                                $msg = '';                                
 
+if( claro_is_in_a_course() )
+{
+    $courseId = claro_get_current_course_id();
+}
+else
+{
+    $courseId = null;
+}
+
+if( claro_is_in_a_group() && claro_is_group_allowed() )
+{
+    $groupId = claro_get_current_group_id();
+}
+else
+{
+    $groupId = null;
+}
 
 /*
  * Force headers
@@ -67,7 +86,7 @@ if( $cmd == 'rqAdd' )
 {
     if( !empty($msg) && claro_is_user_authenticated() )
     {
-        $msgList = new ChatMsgList();
+        $msgList = new ChatMsgList($courseId,$groupId);
 	    $msgList->addMsg($msg, claro_get_current_user_id());
     }
 
@@ -77,13 +96,13 @@ if( $cmd == 'rqAdd' )
 
 if( $cmd == 'rqRefresh' )
 {
-    $msgList = new ChatMsgList();
+    $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load($_SESSION['chat_connectionTime']);
     
 	echo $msgList->render();
 	
 	// keep my user alive in user list
-	$chatUserList = new ChatUserList();
+	$chatUserList = new ChatUserList($courseId,$groupId);
 	$chatUserList->ping(claro_get_current_user_id());
 	$chatUserList->prune();
 	
@@ -92,7 +111,7 @@ if( $cmd == 'rqRefresh' )
 
 if( $cmd == 'rqRefreshUserList' )
 {
-	$chatUserList = new ChatUserList();
+	$chatUserList = new ChatUserList($courseId,$groupId);
     $chatUserList->load();
     
     echo $chatUserList->render();
@@ -106,7 +125,7 @@ if( $cmd == 'rqRefreshUserList' )
 
 if( $cmd == 'rqFlush' && $is_allowedToEdit )
 {
-    $msgList = new ChatMsgList();
+    $msgList = new ChatMsgList($courseId,$groupId);
     if( $msgList->flush() )
     {
         echo get_lang('Chat reset');
@@ -117,7 +136,7 @@ if( $cmd == 'rqFlush' && $is_allowedToEdit )
 
 if( $cmd == 'rqLogs' && $is_allowedToEdit )
 {
-    $msgList = new ChatMsgList();
+    $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load(1, $_SESSION['chat_connectionTime'] );
 
 	echo $msgList->render();
@@ -127,7 +146,7 @@ if( $cmd == 'rqLogs' && $is_allowedToEdit )
 
 if( $cmd == 'rqArchive' && $is_allowedToEdit )
 {
-    $msgList = new ChatMsgList();
+    $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load();
     
     if( $chatFilename = $msgList->archive() )
