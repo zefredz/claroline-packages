@@ -107,8 +107,6 @@
 
    	$out = '';
 
-	$interbredcrump[]= array ('url' => './index.php' . claro_url_relay_context('?'), 'name' => get_lang('Pages'));
-
 	if( $is_allowedToEdit )	$nameTools = get_lang('Edit page');
 	else                    $nameTools = get_lang('Page');
 
@@ -132,7 +130,7 @@
 		ksort($plugins);
 
    		$out .= '<div id="pageSidebar">' . "\n"
-   		.	 '<img src="'.get_module_url('CLPAGES').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
+   		.	 '<img src="'.get_icon_url('loading').'" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
    		.	 '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
 
    		foreach( $plugins as $category => $categoryPlugins )
@@ -180,6 +178,10 @@
     		}
     	}
     	
+    	$bannerToggle = '<p>'
+    	.  '<a href="#" class="bannerToggle">' . get_lang('Show/hide banner') . '</a>'
+    	.  '</p>' . "\n";
+    	
 	    $navBar = '<div class="slideNav">' . "\n";
     	    
         $navBar .= '<span class="prevSlide">'
@@ -201,7 +203,7 @@
 	    $navBar .= '</div>' . "\n";
 	    
 	    
-	    $out .= $navBar . $componentsHtml . $navBar; 
+	    $out .= $bannerToggle . $navBar . $componentsHtml . $navBar; 
 	    
 	}
 	else
@@ -224,7 +226,10 @@
 	;
 
 
-
+    /*
+     * Output rendering
+     */
+	ClaroBreadCrumbs::getInstance()->prepend(get_lang('Pages'), './index.php' . claro_url_relay_context('?'));
 
 
 	$claroline->display->body->appendContent($out);
