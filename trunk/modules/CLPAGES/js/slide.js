@@ -17,6 +17,12 @@
 		lastSlide = $('.sortableComponent').size();
 		
 		updateNav();
+		
+		// banner visibility
+		$('.bannerToggle').click( function(){
+		  $('#topBanner').toggle();
+		  $('#campusFooter').toggle();
+		});
 	});	
 	
 	function next(){
