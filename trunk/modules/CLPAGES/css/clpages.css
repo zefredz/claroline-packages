@@ -24,9 +24,9 @@
 	text-align: center;
 }
 
-.captionImg img
+.captionImg
 {
-	border: 1px solid #ccc;
+	padding: 5px;
 }
 
 .captionImg .caption
@@ -73,7 +73,8 @@
 	text-align: right;
 }
 
-.slideNav .navDisabled a
+.slideNav .navDisabled a,
+.slideNav .navDisabled a:hover
 {
 	color: #ccc;
 }
