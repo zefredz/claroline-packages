@@ -1,0 +1,24 @@
+<module>
+  <label>CLBKMRK</label>
+  <name>Bookmarks</name>
+  <version>1.0-test</version> 
+  <license>GPL</license>
+  <type>applet</type>
+  <icon>icon.png</icon>
+   
+  <description>
+    Bookmark manager user desktop portlet
+  </description>
+  
+  <author>
+     <name>Frederic Minne</name>
+     <email>zefredz@gmail.com</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+ </requirements>
+</module>
