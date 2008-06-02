@@ -48,6 +48,11 @@ class MysqlResultSetCountableIterator implements Iterator, Countable
         unset( $this->valid );
     }
     
+    public function setFetchMode( $mode )
+    {
+        $this->mode = $mode;
+    }
+    
     public function count()
     {
         return $this->numrows;
