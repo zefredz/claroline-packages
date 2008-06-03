@@ -18,13 +18,13 @@ interface UserCrudResource extends CrudResource
     public static function loadAllForUSer( $userId );
 }
 
-class MysqlResultSetCountableIterator implements Iterator, Countable
+class MysqlResultSet implements Iterator, Countable
 {
-    protected $resultSet;
     protected $mode;
     protected $idx;
-    protected $numrows;
     protected $valid;
+    protected $numrows;
+    protected $resultSet;
     
     const FETCH_ASSOC = MYSQL_ASSOC;
     const FETCH_NUM = MYSQL_NUM;
@@ -53,6 +53,18 @@ class MysqlResultSetCountableIterator implements Iterator, Countable
         $this->mode = $mode;
     }
     
+    public function fetch( $mode = self::FETCH_ASSOC )
+    {
+        if ( $this->mode == self::FETCH_OBJECT )
+        {
+            return mysql_fetch_object( $this->resultSet );
+        }
+        else
+        {
+            return mysql_fetch_array( $this->resultSet, $this->mode );
+        }
+    }
+    
     public function count()
     {
         return $this->numrows;
@@ -68,14 +80,7 @@ class MysqlResultSetCountableIterator implements Iterator, Countable
         // Go to the correct data
         @mysql_data_seek( $this->resultSet, $this->idx );
         
-        if ( $this->mode == self::FETCH_OBJECT )
-        {
-            return mysql_fetch_object( $this->resultSet );
-        }
-        else
-        {
-            return mysql_fetch_array( $this->resultSet, $this->mode );
-        }
+        return $this->fetch( $this->mode );
     }
     
     public function next()
