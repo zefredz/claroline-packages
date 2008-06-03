@@ -55,13 +55,13 @@ class MysqlResultSet implements Iterator, Countable
     
     public function fetch( $mode = self::FETCH_ASSOC )
     {
-        if ( $this->mode == self::FETCH_OBJECT )
+        if ( $mode == self::FETCH_OBJECT )
         {
             return mysql_fetch_object( $this->resultSet );
         }
         else
         {
-            return mysql_fetch_array( $this->resultSet, $this->mode );
+            return mysql_fetch_array( $this->resultSet, $mode );
         }
     }
     
