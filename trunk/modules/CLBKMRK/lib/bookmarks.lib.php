@@ -168,9 +168,9 @@ class Bookmark implements UserCrudResource
         
         if ( $res )
         {
-            $it = new MysqlResultSetCountableIterator(
+            $it = new MysqlResultSet(
                 $res,
-                MysqlResultSetCountableIterator::FETCH_OBJECT );
+                MysqlResultSet::FETCH_OBJECT );
             
             return $it;
         }
@@ -199,7 +199,7 @@ class Bookmark implements UserCrudResource
         
         if ( $res )
         {
-            $it = new MysqlResultSetCountableIterator( $res );
+            $it = new MysqlResultSet( $res );
             return $it;
         }
         else
