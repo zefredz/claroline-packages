@@ -1,6 +1,6 @@
 <?php
 
-From::module('CLBKMRK')->uses('database.lib');
+From::module('CLBKMRK')->uses('database.lib', 'crud.lib');
 
 function cut_long_url_for_display( $url )
 {
