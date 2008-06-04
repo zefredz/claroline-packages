@@ -1,12 +1,33 @@
-<?php
+<?php // $Id$
 
+// vim: expandtab sw=4 ts=4 sts=4:
+
+/**
+ * Bookmark management class and utilities
+ *
+ * @version     1.9 $Revision$
+ * @copyright   2001-2008 Universite catholique de Louvain (UCL)
+ * @author      Claroline Team <info@claroline.net>
+ * @author      Frederic Minne <zefredz@claroline.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     CLBKMRK
+ */
+
+// load required libraries
 From::module('CLBKMRK')->uses('database.lib', 'crud.lib');
 
-function cut_long_url_for_display( $url )
+/**
+ * Cut a URL after a given number of characters
+ * @param   string $url
+ * @param   int $size
+ * @return  string
+ */
+function cut_long_url_for_display( $url, $size = 50 )
 {
-    if ( strlen($url) > 50 )
+    if ( strlen($url) > $size )
     {
-        return substr( $url, 0, 45 ) . '[...]';
+        return substr( $url, 0, $size - 5 ) . '[...]';
     }
     else
     {
@@ -14,6 +35,9 @@ function cut_long_url_for_display( $url )
     }
 }
 
+/**
+ * Bookmark management class
+ */
 class Bookmark implements UserCrudResource
 {
     protected $id;
@@ -35,6 +59,10 @@ class Bookmark implements UserCrudResource
         self::$db = new ClarolineQuery;
     }
     
+    /**
+     * Return the id of the bookmark
+     * @return  int
+     */
     public function getId()
     {
         return $this->id;
@@ -45,36 +73,63 @@ class Bookmark implements UserCrudResource
         $this->id = (int) $id;
     }
     
+    /**
+     * Return the name of the bookmark
+     * @return  string
+     */
     public function getName()
     {
         return $this->name;
     }
     
+    /**
+     * Set the name of the bookmark
+     * @param   string $name
+     */
     public function setName( $name )
     {
         $this->name = $name;
     }
     
+    /**
+     * Return the URL of the bookmark
+     * @return  string
+     */
     public function getUrl()
     {
         return $this->url;
     }
     
+    /**
+     * Set the URL of the bookmark
+     * @param   string $url
+     */
     public function setUrl( $url )
     {
         $this->url = $url;
     }
     
+    /**
+     * Return the id of the owner of the bookmark
+     * @return  int
+     */
     public function getOwner()
     {
         return $this->owner;
     }
     
+    /**
+     * Set the id of the owner of the bookmark
+     * @param   int $owner id of the owner
+     */
     public function setOwner( $owner )
     {
         $this->owner = (int) $owner;
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public function create()
     {
         $sql = "INSERT INTO `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
@@ -87,6 +142,9 @@ class Bookmark implements UserCrudResource
         return self::$db->exec( $sql );
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public function delete()
     {
         $sql = "DELETE\n"
@@ -97,6 +155,9 @@ class Bookmark implements UserCrudResource
         return self::$db->exec( $sql );
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public function update()
     {
         $sql = "UPDATE `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
@@ -110,6 +171,10 @@ class Bookmark implements UserCrudResource
         return self::$db->exec( $sql );
     }
     
+    /**
+     * Set the internal state of the object
+     * PHP Magic method, see PHP object model documentation for details
+     */
     public static function __set_state( $properties )
     {
         $bk = new self;
@@ -121,6 +186,9 @@ class Bookmark implements UserCrudResource
         return $bk;
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public static function load( $id )
     {
         self::init();
@@ -142,11 +210,17 @@ class Bookmark implements UserCrudResource
         }
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public static function fromArray( $data )
     {
         return self::__set_state( $data );
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public function toArray()
     {
         return array(
@@ -157,6 +231,9 @@ class Bookmark implements UserCrudResource
         );
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public static function loadAllForUSer( $userId )
     {
         self::init();
@@ -169,6 +246,9 @@ class Bookmark implements UserCrudResource
         return self::$db->query( $sql );
     }
     
+    /**
+     * @see UserCrudResource
+     */
     public static function loadAll()
     {
         self::init();
