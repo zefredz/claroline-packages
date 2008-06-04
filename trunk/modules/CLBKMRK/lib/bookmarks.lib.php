@@ -21,11 +21,18 @@ class Bookmark implements UserCrudResource
     protected $url;
     protected $owner;
     
+    protected static $db;
     protected static $databaseTables;
     
     public function __construct()
     {
         self::init();
+    }
+    
+    protected static function init()
+    {
+        self::$databaseTables = get_module_main_tbl(array('clbkmrk_bookmarks'));
+        self::$db = new ClarolineQuery;
     }
     
     public function getId()
@@ -77,7 +84,7 @@ class Bookmark implements UserCrudResource
             . "`owner_id` = " . (int) $this->owner
             ;
         
-        return claro_sql_query( $sql );
+        return self::$db->exec( $sql );
     }
     
     public function delete()
@@ -87,7 +94,7 @@ class Bookmark implements UserCrudResource
             . "WHERE id = " . (int) $this->id
             ;
         
-        return claro_sql_query( $sql );
+        return self::$db->exec( $sql );
     }
     
     public function update()
@@ -100,7 +107,7 @@ class Bookmark implements UserCrudResource
             . "WHERE id = " . (int) $this->id
             ;
         
-        return claro_sql_query( $sql );
+        return self::$db->exec( $sql );
     }
     
     public static function __set_state( $properties )
@@ -123,7 +130,7 @@ class Bookmark implements UserCrudResource
             . "WHERE id = " . (int) $id
             ;
         
-        $res = claro_sql_query_fetch_single_row( $sql );
+        $res = self::$db->query( $sql )->fetch(MysqlResultSet::FETCH_ASSOC);
         
         if ( $res )
         {
@@ -150,11 +157,6 @@ class Bookmark implements UserCrudResource
         );
     }
     
-    protected static function init()
-    {
-        self::$databaseTables = get_module_main_tbl(array('clbkmrk_bookmarks'));
-    }
-    
     public static function loadAllForUSer( $userId )
     {
         self::init();
@@ -163,28 +165,8 @@ class Bookmark implements UserCrudResource
             . "FROM `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
             . "WHERE `owner_id` = " . (int) $userId
             ;
-        
-        $res = claro_sql_query( $sql );
-        
-        if ( $res )
-        {
-            $it = new MysqlResultSet(
-                $res,
-                MysqlResultSet::FETCH_OBJECT );
             
-            return $it;
-        }
-        else
-        {
-            if ( claro_sql_errno() )
-            {
-                throw new Exception( claro_sql_error(), claro_sql_errno() );
-            }
-            else
-            {
-                throw new Exception("Cannot retrieve user bookmarks");
-            }
-        }
+        return self::$db->query( $sql );
     }
     
     public static function loadAll()
@@ -195,23 +177,6 @@ class Bookmark implements UserCrudResource
             . "FROM `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
             ;
         
-        $res = claro_sql_query_fetch_all_rows( $sql );
-        
-        if ( $res )
-        {
-            $it = new MysqlResultSet( $res );
-            return $it;
-        }
-        else
-        {
-            if ( claro_sql_errno() )
-            {
-                throw new Exception( claro_sql_error(), claro_sql_errno() );
-            }
-            else
-            {
-                throw new Exception("Cannot retrieve bookmarks");
-            }
-        }
+        return self::$db->query( $sql );
     }
 }

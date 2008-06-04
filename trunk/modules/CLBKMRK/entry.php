@@ -61,7 +61,6 @@
     header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
     
-    
     $out = '';
     
     $out .= '<div id="addBookmarkButton">'
@@ -94,8 +93,10 @@
         . "\n"
         ;
     
-    if ( count( $bookmarks ) )
+    if ( ! $bookmarks->isEmpty() )
     {
+        $bookmarks->setFetchMode(MysqlResultSet::FETCH_OBJECT);
+        
         $out .= '<dl>' . "\n";
         
         foreach ( $bookmarks as $bookmark )
@@ -111,11 +112,11 @@
         }
         
         $out .= '</dl>' . "\n";
-        
-        echo $out;
     }
     else
     {
-        echo get_lang('No bookmark');
+        $out .= get_lang('No bookmark');
     }
+    
+    echo $out;
 ?>
