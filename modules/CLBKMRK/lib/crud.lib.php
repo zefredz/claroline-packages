@@ -5,8 +5,7 @@
 /**
  * CRUD (Create-Read-Update-Delete) Resource Interfaces Definition
  *
- * FIXME : move to inc/lib/database/database.lib.php and
- * replace old object-oriented database layer
+ * FIXME : move to inc/lib/database/crud.lib.php
  *
  * @version     1.9 $Revision$
  * @copyright   2001-2008 Universite catholique de Louvain (UCL)
