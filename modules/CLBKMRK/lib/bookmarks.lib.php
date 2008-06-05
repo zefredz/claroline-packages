@@ -134,8 +134,8 @@ class Bookmark implements UserCrudResource
     {
         $sql = "INSERT INTO `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
             . "SET\n"
-            . "`name` = '".claro_sql_escape($this->name)."',\n"
-            . "`url` = '".claro_sql_escape($this->url)."',\n"
+            . "`name` = '".self::$db->escape($this->name)."',\n"
+            . "`url` = '".self::$db->escape($this->url)."',\n"
             . "`owner_id` = " . (int) $this->owner
             ;
         
@@ -162,8 +162,8 @@ class Bookmark implements UserCrudResource
     {
         $sql = "UPDATE `".self::$databaseTables['clbkmrk_bookmarks']."`\n"
             . "SET\n"
-            . "`name` = '".claro_sql_escape($this->name)."',\n"
-            . "`url` = '".claro_sql_escape($this->url)."',\n"
+            . "`name` = '".self::$db->escape($this->name)."',\n"
+            . "`url` = '".self::$db->escape($this->url)."',\n"
             . "`owner_id` = " . (int) $this->owner ."\n"
             . "WHERE id = " . (int) $this->id
             ;

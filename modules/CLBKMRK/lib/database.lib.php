@@ -67,6 +67,20 @@ interface DatabaseQuery
      * @throws  DatabaseQueryException
      */
     public function insertId();
+    
+    /**
+     * Escape dangerous characters in the given string
+     * @param   string $str
+     * @return  string
+     */
+    public function escape( $str );
+    
+    /**
+     * Escape dangerous characters and enquote the given string
+     * @param   string $str
+     * @return  string
+     */
+    public function quote( $str );
 }
 
 /**
@@ -200,6 +214,22 @@ class MysqlQuery implements DatabaseQuery
         
         return $tmp;
     }
+    
+    /**
+     * @see DatabaseQuery
+     */
+    public function escape( $str )
+    {
+        return mysql_real_escape_string( $str, $this->dbLink );
+    }
+    
+    /**
+     * @see DatabaseQuery
+     */
+    public function quote( $str )
+    {
+        return "'".$this->escape($str)."'";
+    }
 }
 
 /**
@@ -268,6 +298,22 @@ class ClarolineQuery implements DatabaseQuery
         $tmp = new MysqlResultSet( $result );
         
         return $tmp;
+    }
+    
+    /**
+     * @see DatabaseQuery
+     */
+    public function escape( $str )
+    {
+        return claro_sql_escape( $str );
+    }
+    
+    /**
+     * @see DatabaseQuery
+     */
+    public function quote( $str )
+    {
+        return "'".claro_sql_escape($str)."'";
     }
 }
 
