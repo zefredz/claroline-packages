@@ -72,12 +72,6 @@ if( !isset($_SESSION['jchat_lastReceivedMsg']) )
 }
 
 /*
- * On the fly install
- */
-
-install_module_in_course( 'CLJCHAT', claro_get_current_course_id() ) ;
-
-/*
  * Admin only commands
  */
 
@@ -193,7 +187,7 @@ if( claro_is_javascript_enabled() && $_uid )
     .	 '</div>' . "\n";
 
     // display form
-    echo '<form action="index.php'.claro_url_relay_context('?').'" id="cl_jchat_form" method="GET" >' . "\n"
+    echo '<form action="index.php'.claro_url_relay_context('?').'" id="cl_jchat_form" method="get" >' . "\n"
     .    claro_form_relay_context() . "\n"
     .    '<img src="'.get_module_url('CLJCHAT').'/img/loading.gif" alt="'.get_lang('Loading...').'" id="cl_jchat_loading" width="16" height="16" />' . "\n"
     .    '<input id="cl_jchat_msg" type="text" name="message" maxlength="200" size="80" />' . "\n"
