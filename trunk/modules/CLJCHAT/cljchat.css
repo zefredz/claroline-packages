@@ -62,12 +62,12 @@
 
 .cl_jchat_msgDate
 {
-    color: #cccccc;
+    color: #999;
 }
 
 .cl_jchat_dayLimit
 {
-    color: #cccccc;
+    color: #999;
     display: block;
     border-bottom: 1px solid #EEEEEE;
 }
