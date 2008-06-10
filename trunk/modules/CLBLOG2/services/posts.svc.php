@@ -57,7 +57,7 @@
     // script initalisation
     uses ( 'html/template.class','html/datagrid/template.class'
         , 'blog/post.class', 'blog/comment.class', 'blog/utils.class'
-        , 'user.lib.php' );
+        , 'user.lib.php', 'utils/htmlsanitizer.lib' );
 }
 // }}}
 // {{{ MODEL
@@ -68,7 +68,7 @@
         
     $bp = new Blog_Post( $claroline->database, $blogTables );
     $bc = new Blog_Comment( $claroline->database, $blogTables );
-    $san = new HTML_Sanitizer;
+    $san = new Claro_Html_Sanitizer;
     $dialogBox = new DialogBox;
 }
 // }}}
@@ -491,7 +491,7 @@
             if ( $postId )
             {
                 $post = $bp->getPost( $postId );
-                $commentList = $bc->getPostComment( $postId );
+                $commentList = iterator_to_array($bc->getPostComment( $postId ));
                 
                 $userIdList = array();
             
@@ -549,7 +549,7 @@
             
         if ( 'showList' === $action )
         {
-            $postList = $bp->getAll( $groupId );
+            $postList = iterator_to_array($bp->getAll( $groupId ));
             $userIdList = array();
             
             foreach ( $postList as $key => $post )

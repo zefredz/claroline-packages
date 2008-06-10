@@ -5,7 +5,7 @@
 Blog tool for Claroline. At this time posting is reserved to the course manager.
 In the future student will also be allowed to post.
 ]]></description>
-<version>1.0</version>
+<version>2.0-alpha</version>
 <license>GPL</license>
 <icon>icon.gif</icon>
 <type>tool</type>
