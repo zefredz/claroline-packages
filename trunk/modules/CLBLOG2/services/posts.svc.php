@@ -115,21 +115,25 @@
             $dialogBox->error(get_lang("You are not allowed to execute this action"));
             $action = 'showList';
         }
-            
-        $postId = (int) $userInput->get( 'postId', 0 );
-            
+        
+        $userInput->setValidator('postId', new Claro_Validator_ValueType('digit') );
+        
+        $postId = $userInput->get( 'postId', null );
+        
         $postTitle = $san->sanitize( trim( $userInput->get( 'postTitle', '' ) ) );
             
         $postChapo = $san->sanitize( trim( $userInput->get( 'postChapo', '' ) ) );
             
         $postContents = $san->sanitize( trim( $userInput->get( 'postContents', '' ) ) );
-            
-        $commentId = (int) $userInput->get( 'commentId', 0 );
+        
+        $userInput->setValidator('commentId', new Claro_Validator_ValueType('digit') );
+        
+        $commentId = $userInput->get( 'commentId', null );
             
         $commentContents = $san->sanitize( trim( $userInput->get( 'commentContents', '' ) ) );
         
         // Check postId and load post
-        if ( $postId && ! $bp->postExists( $postId ) )
+        if ( !empty( $postId ) && ! $bp->postExists( $postId ) )
         {
             $err = get_lang('Cannot execute %s action on given post : %s'); 
             $reason = get_lang('post not found in database');
@@ -141,7 +145,7 @@
             $action = 'showPostList';
             $tag = null;
         }
-        elseif ( $postId )
+        elseif ( !empty($postId) )
         {
             $post = $bp->getPost( $postId );
                   
@@ -162,7 +166,7 @@
         }
         
         // Check comment id
-        if ( $commentId && ! $bc->commentExists( $commentId ) )
+        if ( !empty( $commentId ) && ! $bc->commentExists( $commentId ) )
         {
             $$err = get_lang('Cannot execute %s action on given comment : %s'); 
             $reason = get_lang('comment not found in database');
@@ -182,7 +186,7 @@
         
         if ( 'exDelComment' === $action )
         {
-            if ( $commentId )
+            if ( !empty( $commentId ) )
             {
                 if ( $bc->deleteComment( $commentId ) )
                 {
@@ -215,7 +219,7 @@
         
         if ( 'exDelPost' === $action )
         {
-            if ( $postId )
+            if ( !empty( $postId ) )
             {
                 if ( $bp->deletePost( $postId ) )
                 {
@@ -251,9 +255,9 @@
         {
             if ( !empty ( $commentContents ) )
             {
-                if ( $postId )
+                if ( !empty( $postId ) )
                 {
-                    if ( ! $commentId )
+                    if ( empty( $commentId ) )
                     {
                         $commentId = $bc->addComment( $postId
                             , claro_get_current_user_id()
@@ -303,7 +307,7 @@
         {
             if ( !empty ( $postTitle ) )
             {
-                if ( ! $postId )
+                if ( empty( $postId ) )
                 {
                     $postId = $bp->addPost( claro_get_current_user_id()
                         , $postTitle
@@ -366,7 +370,7 @@
         
         if ( 'rqDelPost' === $action )
         {
-            if ( $postId )
+            if ( !empty( $postId ) )
             {
                 $postTitle = $post['title'];
                 
@@ -410,7 +414,7 @@
         
         if ( 'rqDelComment' === $action )
         {
-            if ( $commentId )
+            if ( !empty( $commentId ) )
             {
                 $confirmDelComment = '<p>'
                     . get_lang( 'You are going to delete the comment.' )
@@ -451,7 +455,7 @@
         
         if ( 'rqEditComment' === $action )
         {
-            if ( $commentId )
+            if ( !empty( $commentId ) )
             {
                 $comment = $bc->getComment( $commentId );
                 
@@ -488,7 +492,7 @@
         
         if ( 'showPost' === $action )
         {
-            if ( $postId )
+            if ( !empty( $postId ) )
             {
                 $post = $bp->getPost( $postId );
                 $commentList = iterator_to_array($bc->getPostComment( $postId ));
@@ -757,7 +761,7 @@
                 . '<div class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
                 . ( $postId ? '<input type="hidden" value="'.$postId.'" name="postId" />' : '' )
-                . ( $commentId ? '<input type="hidden" value="'.$commentId.'" name="commentId" />' : '' )
+                . ( $action === 'rqEditComment' && $commentId ? '<input type="hidden" value="'.$commentId.'" name="commentId" />' : '' )
                 . '<input name="submit" value="'.get_lang('Ok').'" type="submit" />' . "\n"
                 . ( $action === 'rqEditComment' 
                     ? '<input type="button" value="'

@@ -117,7 +117,7 @@ class Blog_Comment
         
         $result = $this->connection->query( $sql );
         
-        return $result->fetch(MysqlResultSet::FETCH_VALUE);
+        return $result->fetch(Mysql_ResultSet::FETCH_VALUE);
     }
     
     public function commentExists( $id )
