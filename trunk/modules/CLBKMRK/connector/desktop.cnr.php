@@ -21,13 +21,8 @@ if ( count( get_included_files() ) == 1 )
 *
 */
 
-// require_once dirname(__FILE__) . '/lib/bookmarks.lib.php';
-
-From::module('CLBKMRK')->uses('bookmarks.lib');
-
 JavascriptLoader::getInstance()->load('jquery');
 JavascriptLoader::getInstance()->load('jquery.form');
-// JavascriptLoader::getInstance()->load('jquery.livequery');
 
 class CLBKMRK_Portlet extends UserDesktopPortlet
 {
