@@ -198,7 +198,7 @@ class Bookmark implements UserCrudResource
             . "WHERE id = " . (int) $id
             ;
         
-        $res = self::$db->query( $sql )->fetch(MysqlResultSet::FETCH_ASSOC);
+        $res = self::$db->query( $sql )->fetch(Mysql_ResultSet::FETCH_ASSOC);
         
         if ( $res )
         {
