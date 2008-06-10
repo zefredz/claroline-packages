@@ -15,7 +15,7 @@
  */
 
 // load required libraries
-From::module('CLBKMRK')->uses('database.lib', 'crud.lib');
+From::module('CLBKMRK')->uses('crud.lib');
 
 /**
  * Cut a URL after a given number of characters
@@ -56,7 +56,7 @@ class Bookmark implements UserCrudResource
     protected static function init()
     {
         self::$databaseTables = get_module_main_tbl(array('clbkmrk_bookmarks'));
-        self::$db = new ClarolineQuery;
+        self::$db = Claroline::getDatabase();
     }
     
     /**
