@@ -470,8 +470,8 @@ $itemListArray = $itemList->getFlatList($pathId);
  * Output
  */
 
-$interbredcrump[]= array ('url' => '../index.php' . claro_url_relay_context('?'), 'name' => get_lang('Learning path list'));
-
+ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path list'), '../index.php'.claro_url_relay_context('?') );
+ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Learning path'), './edit_path.php?pathId='.$pathId.claro_url_relay_context('&amp;') );
 //-- Content
 $out = '';
 
@@ -522,28 +522,28 @@ if( !empty($itemListArray) && is_array($itemListArray) )
 
         // title
         $out .= '<td align="left" style="padding-left:'.(5 + $anItem['deepness']*10).'px;">'
-        .    '<img src="'.get_module_url('CLLP').'/img/'.(($anItem['type'] == 'CONTAINER')? 'chapter.png': 'item.png').'" alt="" />'
+        .    '<img src="'.(($anItem['type'] == 'CONTAINER')? get_icon_url('chapter'): get_icon_url('item')).'" alt="" />'
         .    '&nbsp;' . $anItem['title']
         .    '</td>' . "\n";
 
         // edit
         $out .= '<td>' . "\n"
 	    .    '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-	    .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
+	    .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
 	    .    '</a>'
 	    .    '</td>' . "\n";
 
         // delete
         $out .= '<td>' . "\n"
      	.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-	    .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
+	    .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('Delete') . '" />' . "\n"
     	.    '</a>'
     	.    '</td>' . "\n";
 
         // prerequisites
 		$out .= '<td>' . "\n"
 		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-		.    '<img src="' . get_path('imgRepositoryWeb') . 'unblock.gif" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
+		.    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
 		.    '</a>'
 		.    '</td>' . "\n";
 
@@ -552,7 +552,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         {
         	$out .= '<td>' . "\n"
       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
+      		.    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
       		.    '</a>'
       		.    '</td>' . "\n";
         }
@@ -560,14 +560,14 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         {
 			$out .= '<td>' . "\n"
       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
+      		.    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
       		.    '</a>'
       		.    '</td>' . "\n";
         }
 
         $out .= '<td>' . "\n"
    		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqMove&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-  		.    '<img src="' . get_path('imgRepositoryWeb') . 'move.gif" border="0" alt="' . get_lang('Move') . '" />' . "\n"
+  		.    '<img src="' . get_icon_url('move') . '" border="0" alt="' . get_lang('Move') . '" />' . "\n"
      	.    '</a>'
      	.    '</td>' . "\n";
 
@@ -576,7 +576,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         {
             $out .= '<td>' . "\n"
        		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_path('imgRepositoryWeb') . 'up.gif" border="0" alt="' . get_lang('Move up') . '" />' . "\n"
+      		.    '<img src="' . get_icon_url('move_up') . '" border="0" alt="' . get_lang('Move up') . '" />' . "\n"
          	.    '</a>'
          	.    '</td>' . "\n";
         }
@@ -589,7 +589,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         {
             $out .= '<td>' . "\n"
        		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveDown&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" border="0" alt="' . get_lang('Move down') . '" />' . "\n"
+      		.    '<img src="' . get_icon_url('move_down') . '" border="0" alt="' . get_lang('Move down') . '" />' . "\n"
          	.    '</a>'
          	.    '</td>' . "\n";
         }
