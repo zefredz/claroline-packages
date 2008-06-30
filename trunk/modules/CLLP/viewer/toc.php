@@ -63,7 +63,6 @@ $htmlHeaders .= '<!--[if lt IE 7]>' . "\n"
 /*
  * Output
  */
-$claroline->setDisplayType( CL_PAGE );
 
 $html = '';
 
@@ -77,28 +76,28 @@ $html .= '';
 $html .= '<p>' . "\n"
 //- back to list
 .    '<a href="'.get_module_url('CLLP').'/index.php" title="'.get_lang('Back to list').'" target="_top">'
-.    '<img src="'.get_module_url('CLLP').'/img/go-home.png" alt="'.get_lang('Back to list').'" />'
+.    '<img src="'.get_icon_url('go-home').'" alt="'.get_lang('Back to list').'" />'
 .    '</a>' . "\n"
 //- tracking
 .	 '&nbsp;&nbsp;'
 .    '<a href="#" title="'.get_lang('View statistics').'" onClick="lpHandler.openStatistics(); return false;">'
-.    '<img src="'.get_module_url('CLLP').'/img/statistics.gif" alt="'.get_lang('View statistics').'" />'
+.    '<img src="'.get_icon_url('statistics').'" alt="'.get_lang('View statistics').'" />'
 .    '</a>' . "\n"
 //- previous and next buttons
 .	 '&nbsp;&nbsp;'
 .    '<a href="#" title="'.get_lang('Previous').'" onClick="lpHandler.goPrevious(); return false;" id="goPrevious">'
-.    '<img src="'.get_module_url('CLLP').'/img/go-previous.png" alt="'.get_lang('Previous').'" />'
+.    '<img src="'.get_icon_url('go_left').'" alt="'.get_lang('Previous').'" />'
 .    '</a>' . "\n"
 .    '<a href="#" title="'.get_lang('Next').'" onClick="lpHandler.goNext(); return false;" id="goNext">'
-.    '<img src="'.get_module_url('CLLP').'/img/go-next.png" alt="'.get_lang('Next').'" />'
+.    '<img src="'.get_icon_url('go_right').'" alt="'.get_lang('Next').'" />'
 .    '</a>' . "\n"
 //- full screen switch
 .	 '&nbsp;&nbsp;'
 .    '<a href="#" title="'.get_lang('Fullscreen').'" onClick="lpHandler.setFullscreen(); return false;">'
-.    '<img src="'.get_module_url('CLLP').'/img/view-fullscreen.png" alt="'.get_lang('Fullscreen').'" />'
+.    '<img src="'.get_icon_url('view-fullscreen').'" alt="'.get_lang('Fullscreen').'" />'
 .    '</a>' . "\n"
 .    '<a href="#" title="'.get_lang('Embedded').'" onClick="lpHandler.setEmbedded(); return false;">'
-.    '<img src="'.get_module_url('CLLP').'/img/view-embedded.png" alt="'.get_lang('Embedded').'" />'
+.    '<img src="'.get_icon_url('view-embedded').'" alt="'.get_lang('Embedded').'" />'
 .    '</a>' . "\n"
 
 .    '</p>' . "\n\n";
