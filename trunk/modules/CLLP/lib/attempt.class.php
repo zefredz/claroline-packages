@@ -538,7 +538,7 @@ class itemAttempt
 	function load($attemptId, $itemId)
 	{
     	$sql = "SELECT `id`,
-    			`attempt_id`
+    			`attempt_id`,
     			`item_id`,
     			`location`,
     			`completion_status`,
@@ -599,7 +599,7 @@ class itemAttempt
                     	`entry` = '".addslashes($this->entry)."',
                     	`score_raw` = '".(int) $this->scoreRaw."',
                     	`score_min` = '".(int) $this->scoreMin."',
-                    	`score_raw` = '".(int) $this->scoreMax."',
+                    	`score_max` = '".(int) $this->scoreMax."',
                     	`total_time` = '".addslashes($this->totalTime)."',
                     	`session_time` = '".addslashes($this->sessionTime)."',
                     	`suspend_data` = '".addslashes($this->suspendData)."',
