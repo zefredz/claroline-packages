@@ -22,11 +22,10 @@ require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.in
 /*
  * Output
  */
-$claroline->setDisplayType( CL_PAGE );
-
-$interbredcrump[] = array ('url' => '../index.php', 'name' => get_lang('Learning path list'));
-
 $nameTools = get_lang('Learning path');
+
+ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path list'), '../index.php' );
+ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools );
 
 $claroline->display->body->hideClaroBody();
 $claroline->display->footer->hide();
