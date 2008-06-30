@@ -114,8 +114,8 @@ $dialogBox = new DialogBox();
  * Output
  */
 
-$interbredcrump[]= array ('url' => '../index.php' . claro_url_relay_context('?'), 'name' => get_lang('Learning path list'));
-$interbredcrump[]= array ('url' => './admin/edit_path.php?pathId=' . $pathId . claro_url_relay_context('&amp;'), 'name' => get_lang('Learning path'));
+ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path list'), '../index.php' );
+ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path'), './admin/edit_path.php?pathId=' . $pathId . claro_url_relay_context('&amp;') );
 
 //-- Content
 $out = '';
