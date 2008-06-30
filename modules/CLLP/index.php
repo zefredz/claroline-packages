@@ -42,7 +42,6 @@ if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = 
 else                                                                  $pathId = null;
 
 
-
 /*
  * init other vars
  */
@@ -280,21 +279,21 @@ if( $is_allowedToEdit )
             // title
             $out .= '<td align="left">'
             .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'learnpath.gif" alt="" border="0" />'
+            .    '<img src="' . get_icon_url('learnpath') .'" alt="" border="0" /> '
             .    htmlspecialchars($aPath['title'])
             .    '</a>' . "\n"
             .    '</td>';
             // edit
             $out .= '<td>' . "\n"
 	        .    '<a href="admin/edit_path.php?pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
+	        .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
             // delete
             $out .= '<td>' . "\n"
 	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
+	        .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('delete') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
@@ -303,7 +302,7 @@ if( $is_allowedToEdit )
             {
 	            $out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_path('imgRepositoryWeb') . 'unblock.gif" border="0" alt="' . get_lang('Block') . '" />' . "\n"
+		        .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Block') . '" />' . "\n"
 		        .    '</a>'
 		        .    '</td>' . "\n";
             }
@@ -311,7 +310,7 @@ if( $is_allowedToEdit )
             {
 				$out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_path('imgRepositoryWeb') . 'block.gif" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
+		        .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
 		        .    '</a>'
 		        .    '</td>' . "\n";
             }
@@ -320,7 +319,7 @@ if( $is_allowedToEdit )
             {
 	            $out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
+		        .    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
 		        .    '</a>'
 		        .    '</td>' . "\n";
             }
@@ -328,7 +327,7 @@ if( $is_allowedToEdit )
             {
 				$out .= '<td>' . "\n"
 		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
+		        .    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
 		        .    '</a>'
 		        .    '</td>' . "\n";
             }
@@ -338,7 +337,7 @@ if( $is_allowedToEdit )
             {
                 $out .= '<td>' . "\n"
                 .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveUp&amp;pathId=' . $aPath['id'] . '">' . "\n"
-                .    '<img src="' . get_path('imgRepositoryWeb') . 'up.gif" alt="' . get_lang('Move up') . '" border="0" />' . "\n"
+                .    '<img src="' . get_icon_url('move_up') . '" alt="' . get_lang('Move up') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
                 .    '</td>' . "\n";
             }
@@ -352,7 +351,7 @@ if( $is_allowedToEdit )
             {
                 $out .= '<td>' . "\n"
                 .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;pathId=' . $aPath['id'] . '">' . "\n"
-                .    '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" alt="' . get_lang('Move down') . '" border="0" />' . "\n"
+                .    '<img src="' . get_icon_url('move_down') . '" alt="' . get_lang('Move down') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
                 .    '</td>' . "\n";
             }
@@ -364,14 +363,14 @@ if( $is_allowedToEdit )
             // export
             $out .= '<td>' . "\n"
 	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_path('imgRepositoryWeb') . 'export.gif" border="0" alt="' . get_lang('Export') . '" />' . "\n"
+	        .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
             // tracking
             $out .= '<td>' . "\n"
-	        .    '<a href="' . get_path('clarolineRepositoryWeb') . 'tracking/learnPath_details.php?pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_path('imgRepositoryWeb') . 'statistics.gif" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
+	        .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . 'tracking/learnPath_details.php?pathId=' . $aPath['id'] . '">' . "\n"
+	        .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
 
@@ -383,7 +382,7 @@ if( $is_allowedToEdit )
     {
         $out .= '<tfoot>' . "\n"
         .    '<tr>' . "\n"
-        .    '<td align="center" colspan="8">' . get_lang('No learning path') . '</td>' . "\n"
+        .    '<td align="center" colspan="9">' . get_lang('No learning path') . '</td>' . "\n"
         .    '</tr>' . "\n"
         .    '</tfoot>' . "\n";
     }
@@ -413,7 +412,7 @@ else
             // title
             $out .= '<td>' . "\n"
             .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'learnpath.gif" alt="" border="0" />'
+            .    '<img src="' . get_icon_url('learnpath') . '" alt="" border="0" />'
             .    htmlspecialchars($aPath['title'])
             .    '</a>' . "\n"
             .    '</td>' . "\n";
@@ -442,7 +441,7 @@ else
         $out .= '</tbody>' . "\n\n"
         .    '<tfoot>' . "\n"
         .    '<tr>' . "\n"
-        .    '<td colspan="3">' . "\n"
+        .    '<td colspan="2">' . "\n"
         .    '&nbsp;' . "\n"
         .    '</td>' . "\n"
         .    '</tr>' . "\n"
