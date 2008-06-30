@@ -51,12 +51,13 @@ require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
-// load SCORM object depending on SCORM version used for this path
+require_once dirname( __FILE__ ) . '/../lib/scormInterface.lib.php';
+require_once dirname( __FILE__ ) . '/../lib/scorm12.lib.php';
+require_once dirname( __FILE__ ) . '/../lib/scorm13.lib.php';
 
 /*
  * Shared libraries
  */
-include_once get_path('incRepositorySys') . '/lib/embed.lib.php';
 require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
 
 // end script here if no cmd is set
@@ -70,12 +71,9 @@ header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 if( $cmd == 'doCommit' )
 {
-	require_once dirname( __FILE__ ) . '/../lib/JSON.php';
+    lpDebug('doCommit');
 
-	$json = new Services_JSON();
-	// it returns an object so we have to cast it to an array to be able to use it correctly
-	// do not forget to also cast sub-arrays like cmi.comments_from_learner
-	$decodedScormData = (array) $json->decode($_REQUEST['scormdata']);
+    $decodedScormData = json_decode($_REQUEST['scormdata']);
 
 	// get serialized attempt
 	$thisAttempt = unserialize($_SESSION['thisAttempt']);
@@ -86,19 +84,36 @@ if( $cmd == 'doCommit' )
 	$itemAttempt->setItemId($itemId);
 
 	// try to load itemAttempt
-	//$itemAttempt->load($thisAttempt->getId(), $itemId);
-
-	$scormAdapter->api2ItemAttempt($dataModelValues, $itemAttempt);
-
+	$itemAttempt->load($thisAttempt->getId(), $itemId);
+	
+	// load path
+    if( is_null($pathId) || !$path->load($pathId) )
+    {
+        // cannot find path ... 
+        return false;
+    }
+    
+    if( $path->getVersion() == 'scorm12' )
+    {
+        $scormAPI = new Scorm12();
+    }
+    else
+    {
+    
+        $scormAPI = new Scorm13();
+    }
+lpDebug($dataModelValues);
+	$scormAPI->api2ItemAttempt($dataModelValues, $itemAttempt);
 	if( $itemAttempt->validate() )
     {
         if( $itemAttempt->save() )
         {
-        	dump("saved");
+        	lpDebug('item attempt saved');
         	// get new item attempt list
         	// compute new values of attempt
         	// save attempt
 
+        	// what does a save attempt do here ?
         	$thisAttempt->save();
 			return true;
         }
@@ -204,11 +219,16 @@ if( $cmd == 'rqToc' )
     echo $html;
 }
 
-function dump($var)
+function lpDebug($var)
 {
-	$fp = fopen('debug.txt','a');
-	fwrite($fp, "\n" . '------------------------------' . "\n" . print_r($var,true));
-	fclose($fp);
+    if( claro_debug_mode() )
+    {
+        $debugFile = get_path('rootSys') . 'tmp/debug.txt';
+        
+        $msg = '['.date('d-M-Y H:i:s'). '] ' . $var . "\n";     
+    
+    	$fp = file_put_contents($debugFile,$msg, FILE_APPEND);
+    } 
 }
 // ajax output
 ?>
