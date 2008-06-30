@@ -115,7 +115,7 @@ $jsloader->load('CLLP');
 $jsloader->load('scormtime');
 $jsloader->load('claroline');
 
-$jsloader->load($scormAPI->getApiFile());
+$jsloader->load($scormAPI->getApiFileName());
 
 // prepare html header
 
