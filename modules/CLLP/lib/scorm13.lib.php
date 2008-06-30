@@ -25,7 +25,7 @@ class Scorm13 implements ScormInterface
 
 	public function getApiFileName()
 	{
-		return $this->apiName;
+		return $this->apiFileName;
 	}
 
 	public function getVersion()
