@@ -164,8 +164,6 @@ SetValue("cmi.learner_preference.language", "fr-CA")
 GetValue("cmi.learner_preference.language")
 // error 406
 SetValue("cmi.learner_preference.language", "trash")
-// error 407
-SetValue("cmi.learner_preference.language", "-4.256")
 // fr-CA
 GetValue("cmi.learner_preference.language")
 
@@ -244,7 +242,7 @@ SetValue("cmi.progress_measure", "1")
 GetValue("cmi.progress_measure")
 // error 406
 SetValue("cmi.progress_measure", "trash")
-// error 406
+// error 407
 SetValue("cmi.progress_measure", "1.5")
 // error 407
 SetValue("cmi.progress_measure", "-4")
@@ -341,7 +339,7 @@ SetValue("cmi.success_status", "passed")
 GetValue("cmi.success_status")
 // error 406
 SetValue("cmi.success_status", "trash")
-// success_status
+// passed
 GetValue("cmi.success_status")
 
 //-- cmi.suspend_data : null, CMIString64000, rw
@@ -351,7 +349,7 @@ GetValue("cmi.suspend_data")
 SetValue("cmi.suspend_data", "<data><intID>1001</intID><ans>A</ans></data>")
 // true
 SetValue("cmi.suspend_data", "A1;B2;C11-3")
-// -1.54
+// A1;B2;C11-3
 GetValue("cmi.suspend_data")
 
 //-- cmi.time_limit_action : 'continue, no message', r
