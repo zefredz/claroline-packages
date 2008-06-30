@@ -311,7 +311,7 @@
 					if( typeof element.format != 'undefined' )
 					{
 
-						expression = new RegExp(element.format, 'g');
+						expression = new RegExp(element.format, 'gi');
 						lpHandler.debug(element.format, 1);
                         value = val + '';
                         matches = value.match(expression);
