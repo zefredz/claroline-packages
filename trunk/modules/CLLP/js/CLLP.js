@@ -84,12 +84,29 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 function commit(datamodel) {
 	debug("Commit",1);
 
-	var jsonDatamodel = $.toJSON(datamodel);
+    var datamodelValues = new Array();
+    // avoid sending complete datamodel so get only key and values
+    for( var key in datamodel )
+    {
+        var item = datamodel[key];
+
+        if(typeof(item) == 'object')
+        {
+            datamodelValues[key] = item['value'];
+            debug(item['value'], 1);
+        }
+        else
+        {
+            // do nothing, this should be an array with value, mod and format as keys
+        }
+    }
+    
+	var jsonDatamodelValues = $.toJSON(datamodelValues);
 
     $.ajax({
     	type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
-        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodel,
+        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
         success: refreshToc,
         dataType: 'html'
     });
