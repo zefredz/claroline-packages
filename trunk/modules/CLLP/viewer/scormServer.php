@@ -73,8 +73,16 @@ if( $cmd == 'doCommit' )
 {
     lpDebug('doCommit');
 
-    $decodedScormData = json_decode($_REQUEST['scormdata']);
-
+    try
+    {
+        $decodedScormData = json_decode($_REQUEST['scormdata']);
+    }
+    catch ( Exception $e )
+    {
+        lpDebug('doCommit failed : cannot to decode json in '.__FILE__.' at line ' . __LINE__);
+        return false;
+    }
+    
 	// get serialized attempt
 	$thisAttempt = unserialize($_SESSION['thisAttempt']);
 
@@ -102,7 +110,7 @@ if( $cmd == 'doCommit' )
     
         $scormAPI = new Scorm13();
     }
-lpDebug($dataModelValues);
+
 	$scormAPI->api2ItemAttempt($dataModelValues, $itemAttempt);
 	if( $itemAttempt->validate() )
     {
