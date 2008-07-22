@@ -36,7 +36,7 @@ class CLBKMRK_Portlet extends UserDesktopPortlet
 
     public function renderContent()
     {
-        $output = '<div id="bookmarkList"><img src="'.get_icon_url('loading','CLBKMRK').'" alt="" /></div>';
+        $output = '<div id="bookmarkList"><img src="'.get_icon_url('loading').'" alt="" /></div>';
 
         $output .= "<script type=\"text/javascript\">
 $(document).ready( function(){
