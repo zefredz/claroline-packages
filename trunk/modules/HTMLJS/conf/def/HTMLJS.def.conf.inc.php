@@ -25,7 +25,7 @@ array ( 'htmljs_text'
 // PROPERTIES
 
 $conf_def_property_list['htmljs_text'] =
-array ( 'label'       => 'HTML / JS '
+array ( 'label'       => 'HTML/JS'
       , 'description' => 'Can contain html and/or javascript'
       , 'default'     => ''
       , 'type'        => 'text'
