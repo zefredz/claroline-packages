@@ -23,7 +23,7 @@ class LoginListener extends EventDriven
     function LoginListener ()
     {
         $tbl_names = claro_sql_get_tbl('user_online', array('course'=>null));
-		$this->tblUserOnline = $tbl_names['user_online'];
+        $this->tblUserOnline = $tbl_names['user_online'];
     }
 
     /**
@@ -70,12 +70,13 @@ class LoginListener extends EventDriven
      */
     function refresh_login_DB()
     {
-        // Refresh time should not be less than 10 minutes
         $refreshTime = get_conf('clonline_refreshTime',5);
+        
+        $someTimeAgo = date('Y-m-d H:i:s', time() - ( $refreshTime * 60 ) );
 
         $sql = "DELETE
                 FROM `" . $this->tblUserOnline . "`
-                WHERE `last_action` < DATE_SUB( NOW() , INTERVAL " . $refreshTime . " MINUTE )";
+                WHERE `last_action` < '".$someTimeAgo."'";
 
         claro_sql_query($sql);
     }
