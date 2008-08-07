@@ -623,11 +623,18 @@ class itemAttempt
         {
             // update, main query
             $sql = "UPDATE `".$this->tblItemAttempt."`
-	           		SET `path_id` = '".(int) $this->pathId."',
-                        `user_id` = '".(int) $this->userId."',
-                        `last_item_id` = '".(int) $this->lastItemId."',
-                    	`progress` = '".(int) $this->progress."',
-                        `attempt_number` = '".(int) $this->attemptNumber."'
+                    SET `attempt_id` = '".(int) $this->attemptId."',
+                        `item_id` = '".(int) $this->itemId."',
+                        `location` = '".addslashes($this->location)."',
+                        `completion_status` = '".addslashes($this->completionStatus)."',
+                        `entry` = '".addslashes($this->entry)."',
+                        `score_raw` = '".(int) $this->scoreRaw."',
+                        `score_min` = '".(int) $this->scoreMin."',
+                        `score_max` = '".(int) $this->scoreMax."',
+                        `total_time` = '".addslashes($this->totalTime)."',
+                        `session_time` = '".addslashes($this->sessionTime)."',
+                        `suspend_data` = '".addslashes($this->suspendData)."',
+                        `credit` = '".addslashes($this->credit)."'
                     WHERE `id` = '".(int) $this->id."'";
 
             // execute and return main query
@@ -967,10 +974,6 @@ class itemAttempt
 	 {
 	 	return $this->credit;
 	 }
-
-
-
-
 
 }
 
