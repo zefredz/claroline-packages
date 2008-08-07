@@ -129,7 +129,11 @@ if( $cmd == 'exEdit' )
 	$path->setTitle($_REQUEST['title']);
 	$path->setDescription($_REQUEST['description']);
 	$path->setViewMode($_REQUEST['viewMode']);
-	$path->setVersion(Path::VERSION_CLAROLINE);
+	// if we edit do not change version, only change it if manual creation of a claroline path
+	if( is_null($pathId) ) 
+	{
+	   $path->setVersion(Path::VERSION_CLAROLINE);
+	}
 
 	if( $path->validate() )
     {
