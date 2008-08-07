@@ -20,62 +20,62 @@ class path
     /**
      * @var $id id of path, -1 if path doesn't exist already
      */
-    var $id;
+    private $id;
 
     /**
      * @var $title name of the path
      */
-    var $title;
+    private $title;
 
     /**
      * @var $description statement of the path
      */
-    var $description;
+    private $description;
 
     /**
      * @var $visibility visibility of the path (default is invisible)
      */
-    var $visibility;
+    private $visibility;
 
     /**
      * @var $rank order of the path in the path list
      */
-    var $rank;
+    private $rank;
 
     /**
      * @var $version
      */
-    var $version;
+    private $version;
 
     /**
      * @var $lock
      */
-    var $lock;
+    private $lock;
 
     /**
      * @var $identifier SCORM manifest ressource identifier
      */
-    var $identifier;
+    private $identifier;
 
     /**
      * @var $allowReinit allow to start path items again (default is false)
      */
-    var $allowReinit;
+    private $allowReinit;
 
     /**
      * @var $viewMode embedded or in full screen (default is embedded)
      */
-    var $viewMode;
+    private $viewMode;
 
     /**
      * @var $encoding encoding of the path (default is utf-8)
      */
-    var $encoding;
+    private $encoding;
 
     /**
      * @var $tblPath
      */
-    var $tblPath;
+    private $tblPath;
 
     const VERSION_CLAROLINE = 'claroline';
     const VERSION_12 = 'scorm12';
@@ -86,7 +86,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function path()
+    public function __construct()
     {
         $this->id = (int) -1;
         $this->title = '';
@@ -120,7 +120,7 @@ class path
      * @param integer $id id of path
      * @return boolean load successfull ?
      */
-    function load($id)
+    public function load($id)
     {
         $sql = "SELECT
                     `id`,
@@ -168,7 +168,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-    function save()
+    public function save()
     {
         if( $this->id == -1 )
         {
@@ -236,7 +236,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function delete()
+    public function delete()
     {
         if( $this->id == -1 ) return true;
 
@@ -275,7 +275,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function validate()
+    public function validate()
     {
         // title is a mandatory element
         $title = strip_tags($this->title);
@@ -297,7 +297,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getId()
+    public function getId()
     {
         return (int) $this->id;
     }
@@ -308,7 +308,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getTitle()
+    public function getTitle()
     {
         return $this->title;
     }
@@ -319,7 +319,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setTitle($value)
+    public function setTitle($value)
     {
         $this->title = trim($value);
     }
@@ -330,7 +330,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getDescription()
+    public function getDescription()
     {
         return $this->description;
     }
@@ -341,7 +341,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setDescription($value)
+    public function setDescription($value)
     {
         $this->description = trim($value);
     }
@@ -351,7 +351,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setVisible()
+    public function setVisible()
     {
         $this->visibility = 'VISIBLE';
     }
@@ -361,7 +361,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setInvisible()
+    public function setInvisible()
     {
         $this->visibility = 'INVISIBLE';
     }
@@ -372,7 +372,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isVisible()
+    public function isVisible()
     {
         if( $this->visibility == 'VISIBLE' )    return true;
         else                                    return false;
@@ -384,7 +384,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isInvisible()
+    public function isInvisible()
     {
         return !$this->isVisible();
     }
@@ -395,7 +395,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getRank()
+    public function getRank()
     {
         return (int) $this->rank;
     }
@@ -406,7 +406,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setRank($value)
+    public function setRank($value)
     {
         $this->rank = trim($value);
     }
@@ -417,7 +417,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getVersion()
+    public function getVersion()
     {
         return $this->version;
     }
@@ -428,7 +428,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setVersion($value)
+    public function setVersion($value)
     {
         $acceptedValues = array(self::VERSION_CLAROLINE, self::VERSION_12, self::VERSION_13);
 
@@ -446,7 +446,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getLock()
+    public function getLock()
     {
         return $this->lock;
     }
@@ -457,7 +457,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setLock($value)
+    public function setLock($value)
     {
         $this->lock = trim($value);
     }
@@ -466,7 +466,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function lock()
+    public function lock()
     {
         $this->lock = 'CLOSE';
     }
@@ -476,7 +476,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function unlock()
+    public function unlock()
     {
         $this->lock = 'OPEN';
     }
@@ -487,7 +487,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isLocked()
+    public function isLocked()
     {
         if( $this->lock == 'CLOSE' )    return true;
         else                            return false;
@@ -499,7 +499,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isUnlocked()
+    public function isUnlocked()
     {
         return !$this->isLocked();
     }
@@ -509,7 +509,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setViewMode($value)
+    public function setViewMode($value)
     {
         $acceptedValues = array('FULLSCREEN', 'EMBEDDED');
 
@@ -526,7 +526,7 @@ class path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function getViewMode()
+    public function getViewMode()
     {
         return $this->viewMode;
     }
@@ -537,7 +537,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isFullscreen()
+    public function isFullscreen()
     {
         if( $this->viewMode == 'FULLSCREEN' )    return true;
         else                                     return false; // EMBEDDED
@@ -549,7 +549,7 @@ class path
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int higher path rank
      */
-    function getHigherRank()
+    public function getHigherRank()
     {
         $sql = "SELECT max(`rank`)
                 FROM `" . $this->tblPath . "`";
@@ -567,12 +567,13 @@ class path
  * @author Sebastien Piraux <pir@cerdecam.be>
  * @return boolean
  */
-class pathList
+class pathListIterator implements SeekableIterator, Countable
 {
     /**
      * @var $tblPath name of the path table
      */
-    var $tblPath;
+    private $tblPath;
+    private $pathList;
 
 
     /**
@@ -580,7 +581,7 @@ class pathList
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function pathList()
+    public function __construct()
     {
         $tblNameList = array(
             'lp_path'
@@ -589,6 +590,8 @@ class pathList
         // convert to Claroline course table names
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
+        
+        $this->pathList = array();
     }
 
 	/**
@@ -598,15 +601,15 @@ class pathList
      * @return array 2d array containing list of all available learning paths
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function load( $userId = null )
+    public function load( $userId = null )
     {
         if( !is_null($userId) )
         {
-            return $this->loadUserProgress($userId);
+            $this->pathList = $this->loadUserProgress($userId);
         }
         else
         {
-            return $this->loadAll();
+            $this->pathList = $this->loadAll();
         }
     }
 
@@ -616,7 +619,7 @@ class pathList
      * @return array 2d array containing list of all available learning paths
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function loadAll()
+    public function loadAll()
     {
         $sql = "SELECT
                     `id`,
@@ -650,8 +653,9 @@ class pathList
      * @return array 2d array containing list of visible learning paths and progression of userId in it
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function loadUserProgress( $userId )
+    public function loadUserProgress( $userId )
     {
+        // TODO ... write the correct code ?
         $sql = "SELECT
                     `id`,
                     `title`,
@@ -677,16 +681,13 @@ class pathList
      * @param $path object path to move up
      * @return boolean result of operation
      */
-    function movePathUp($path)
+    public function movePathUp($path)
     {
-        // get path list
-        $list = $this->load();
-
-        // find where is the path is the list to get the id of the previous one
+        // find where is the path in the list to get the id of the previous one
         $i = 0;
-        while( $i < count($list) )
+        while( $i < count($this->pathList) )
         {
-            if( $list[$i]['id'] == $path->getId() )
+            if( $this->pathList[$i]['id'] == $path->getId() )
             {
                 break;
             }
@@ -700,7 +701,7 @@ class pathList
         }
 
         $currentRank = $path->getRank();
-        $otherPathId = $list[$i-1]['id'];
+        $otherPathId = $this->pathList[$i-1]['id'];
 
 
         // get the path that is at the new position
@@ -719,6 +720,10 @@ class pathList
             $path->save();
             $otherPath->save();
 
+            // then move paths in the list
+            $tempPath = $this->pathList[$i-1];
+            $this->pathList[$i-1] = $this->pathList[$i];
+            $this->pathList[$i] = $tempPath;
             return true;
         }
         else
@@ -734,16 +739,13 @@ class pathList
      * @param $path object path to move down
      * @return boolean result of operation
      */
-    function movePathDown($path)
+    public function movePathDown($path)
     {
-        // get path list
-        $list = $this->load();
-
         // find where is the path is the list to get the id of the next one
         $i = 0;
-        while( $i < count($list) )
+        while( $i < count($this->pathList) )
         {
-            if( $list[$i]['id'] == $path->getId() )
+            if( $this->pathList[$i]['id'] == $path->getId() )
             {
                 break;
             }
@@ -751,13 +753,13 @@ class pathList
         }
 
         // if the path is the first of the list
-        if( $i == count($list) - 1 )
+        if( $i == count($this->pathList) - 1 )
         {
             return false;
         }
 
         $currentRank = $path->getRank();
-        $otherPathId = $list[$i+1]['id'];
+        $otherPathId = $this->pathList[$i+1]['id'];
 
 
         // get the path that is at the new position
@@ -775,12 +777,79 @@ class pathList
         {
             $path->save();
             $otherPath->save();
-
+            
+            // then move paths in the list
+            $tempPath = $this->pathList[$i+1];
+            $this->pathList[$i+1] = $this->pathList[$i];
+            $this->pathList[$i] = $tempPath;
             return true;
         }
         else
         {
             return false;
+        }
+    }
+    
+    // iterator implementation
+    public function first()
+    {
+        $this->seek(0);
+        return $this->current();
+    }
+    
+    public function last()
+    {
+        $this->seek($this->count() - 1);
+        return $this->current();
+    }
+    
+    // Countable
+    
+    public function count()
+    {
+        return count( $this->pathList );
+    }
+    
+    // Iterator
+    
+    protected $idx = 0;
+    
+    public function valid()
+    {
+        return !empty($this->pathList)
+            && $this->idx >= 0
+            && $this->idx < $this->count();
+    }
+    
+    public function rewind()
+    {
+        $this->idx = 0;
+    }
+    
+    public function next()
+    {
+        $this->idx++;
+    }
+    
+    public function current()
+    {
+        return $this->pathList[$this->idx];
+    }
+    
+    public function key()
+    {
+        return $this->idx;
+    }
+    
+    // SeekableIterator
+    
+    public function seek( $index )
+    {
+        $this->idx = $index;
+        
+        if ( !$this->valid() )
+        {
+            throw new OutOfBoundsException('Invalid seek position');
         }
     }
 }
