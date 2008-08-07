@@ -13,14 +13,14 @@ div#navigation {
 	position: fixed;
 	top: 0;
 	left: 0;
-	height: 100px;
+	height: 80px;
 	width: 100%;
 	border-top: 1px solid #999;
-	background: url('../img/bg_body.png') top left repeat-x;
+	background: #fff;
 }
 
 div#table_of_content {
-	padding-top: 100px;
+	padding-top: 80px;
 }
 
 .active a,
