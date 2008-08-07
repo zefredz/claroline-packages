@@ -24,7 +24,6 @@ require_once dirname( __FILE__ ) . '/lib/path.class.php';
 require_once dirname( __FILE__ ) . '/lib/item.class.php';
 require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
 
-
 /*
  * init request vars
  */
@@ -230,12 +229,12 @@ $out .= $dialogBox->render();
 $cmdMenu = array();
 if($is_allowedToEdit)
 {
-    $cmdMenu[] = claro_html_cmd_link('admin/edit_path.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new learning path'));
-    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqImport' . claro_url_relay_context('&amp;'),get_lang('Import a learning path'));
+    $cmdMenu[] = claro_html_cmd_link('admin/edit_path.php?cmd=rqEdit'. claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('learnpath_new') . '" border="0" alt="" />' . get_lang('Create a new learning path'));
+    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqImport' . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('import') . '" border="0" alt="" />' . get_lang('Import a learning path'));
 
     if( get_conf('is_trackingEnabled') )
     {
-        $cmdMenu[] = claro_html_cmd_link( get_path('clarolineRepositoryWeb') . 'tracking/learnPath_detailsAllPath.php'. claro_url_relay_context('?'),get_lang('Learning paths tracking'));
+        $cmdMenu[] = claro_html_cmd_link( './track_path_list.php'. claro_url_relay_context('?'), '<img src="' . get_icon_url('statistics') . '" border="0" alt="" />' . get_lang('Learning paths tracking'));
     }
 }
 
@@ -369,7 +368,7 @@ if( $is_allowedToEdit )
 
             // tracking
             $out .= '<td>' . "\n"
-	        .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . 'tracking/learnPath_details.php?pathId=' . $aPath['id'] . '">' . "\n"
+	        .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . './track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
 	        .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
 	        .    '</a>'
 	        .    '</td>' . "\n";
@@ -435,7 +434,7 @@ else
             $out .= '</tr>' . "\n\n";
         }
 
-        // $i should not be lower than 1, but to avoid ugly error we use max trick to prevent division by 0
+        // $i should not be lower than 1, but we use max trick to prevent division by 0
         $courseProgress = round( $totalProgress / max(1,$i) );
 
         $out .= '</tbody>' . "\n\n"
