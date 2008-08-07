@@ -199,11 +199,19 @@ function refreshToc() {
  */
 function goPrevious() {
     debug("goPrevious()",1);
-    // simulate a click in toc ? <-- best for ressources
-    // or ask what's next, then activate next ? <-- best for prerequisite and sequencing
-    
-    // I just need item Id
-    this.setContent(39);
+
+    $.ajax({
+        type: "POST",
+        url: lpHandler.moduleUrl + "viewer/scormServer.php",
+        data: "cmd=getPrevious&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+        success: function(response){
+            if( isInteger(response) )
+            {
+                lpHandler.setContent(response);
+            }
+        },
+        dataType: 'html'
+    });
 }
 
 /**
@@ -213,8 +221,18 @@ function goPrevious() {
 function goNext() {
     debug("goNext()",1);
     
-    
-    this.setContent(41);
+    $.ajax({
+        type: "POST",
+        url: lpHandler.moduleUrl + "viewer/scormServer.php",
+        data: "cmd=getNext&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+        success: function(response){
+            if( isInteger(response) )
+            {
+                lpHandler.setContent(response);
+            }
+        },
+        dataType: 'html'
+    });
 }
 
 /**
@@ -308,6 +326,10 @@ function isDefined(a)
 function isNull(a)
 {
     return typeof a == 'object' && !a;
+}
+
+function isInteger(s) {
+    return (s.toString().search(/^-?[0-9]+$/) == 0);
 }
 
 function dump(arr,level) {
