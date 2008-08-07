@@ -43,13 +43,19 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 	this.mkOpenItem = mkOpenItem;
 
 	// Presentation function :
-
+	
 	/**
-	 * Remove headers, footers,... from a claroline content inserted as a module
+	 * jump to the previous module if any
 	 *
 	 */
-	this.isolateContent = isolateContent;
-
+	this.goPrevious = goPrevious;
+	
+	/**
+     * jump to the next module if any
+     *
+     */
+    this.goNext = goNext;
+    
 	/**
 	 * Resize frameset to have a fullscreen
 	 *
@@ -84,7 +90,7 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 function commit(datamodel) {
 	debug("Commit",1);
 
-    var datamodelValues = new Array();
+    var datamodelValues = {};
     // avoid sending complete datamodel so get only key and values
     for( var key in datamodel )
     {
@@ -92,21 +98,20 @@ function commit(datamodel) {
 
         if(typeof(item) == 'object')
         {
-            datamodelValues[key] = item['value'];
-            debug(item['value'], 1);
+            datamodelValues[ key ] = item['value'];
         }
         else
         {
             // do nothing, this should be an array with value, mod and format as keys
         }
     }
-    
+
 	var jsonDatamodelValues = $.toJSON(datamodelValues);
 
     $.ajax({
     	type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
-        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
+        data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
         success: refreshToc,
         dataType: 'html'
     });
@@ -186,20 +191,30 @@ function refreshToc() {
     return true;
 }
 
-// Presentation function :
+// Presentation
 
 /**
- * Remove headers, footers,... from a claroline content inserted as a module
+ * jump to the previous module if any
  *
  */
-function isolateContent() {
-	debug("isolateContent()",1);
+function goPrevious() {
+    debug("goPrevious()",1);
+    // simulate a click in toc ? <-- best for ressources
+    // or ask what's next, then activate next ? <-- best for prerequisite and sequencing
+    
+    // I just need item Id
+    this.setContent(39);
+}
 
-	$("#topBanner", lp_top.frames["lp_content"].document).hide();
-	$("#userBanner", lp_top.frames["lp_content"].document).hide();
-	$("#courseBanner", lp_top.frames["lp_content"].document).hide();
-	$("#breadcrumbLine", lp_top.frames["lp_content"].document).hide();
-	$("#campusFooter", lp_top.frames["lp_content"].document).hide();
+/**
+ * jump to the next module if any
+ *
+ */
+function goNext() {
+    debug("goNext()",1);
+    
+    
+    this.setContent(41);
 }
 
 /**
@@ -230,7 +245,6 @@ function debug(msg, level) {
 
     if( lpHandler.debugMode > level )
     {
-
         if( $.browser.msie || !top.window.console || !top.window.console.log )
         {
         	$("#lp_debug", lp_top.frames["lp_toc"].document).append(msg + "<br />\n\n");
