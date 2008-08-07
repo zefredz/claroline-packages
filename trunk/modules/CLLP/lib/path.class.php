@@ -77,6 +77,9 @@ class path
      */
     var $tblPath;
 
+    const VERSION_CLAROLINE = 'claroline';
+    const VERSION_12 = 'scorm12';
+    const VERSION_13 = 'scorm13';
 
     /**
      * Constructor
@@ -90,7 +93,7 @@ class path
         $this->description = '';
         $this->visibility = 'INVISIBLE';
         $this->rank = 0;
-        $this->version = 'scorm12';
+        $this->version = self::VERSION_13;
         $this->lock = 'OPEN';
         $this->identifier = '';
         $this->allowReinit = false;
@@ -427,7 +430,7 @@ class path
      */
     function setVersion($value)
     {
-        $acceptedValues = array('scorm12', 'scorm13');
+        $acceptedValues = array(self::VERSION_CLAROLINE, self::VERSION_12, self::VERSION_13);
 
         if( in_array($value, $acceptedValues) )
         {
