@@ -53,6 +53,13 @@ else                                                                  $pathId = 
 $htmlHeaders = '<link rel="stylesheet" type="text/css" href="' . get_module_url('CLLP') . '/css/cllp.css" media="screen, projection, tv" />' . "\n"
 .	 '<script type="text/javascript">' . "\n"
 .	 '	var lpHandler = window.parent.lpHandler;' . "\n"
+.    '  function exitConfirmation() ' . "\n"
+.    '  {' . "\n"
+.    '    if( confirm(\''.clean_str_for_javascript(get_lang('Are you sure to leave this learning path ?')).'\'))' . "\n" 
+.    '    {return true;}' . "\n"
+.    '    else '. "\n"
+.    '    {return false;}' . "\n"
+.    '  }' . "\n"
 .	 '</script>' . "\n";
 
 // to fix png transparency problem using IE < 7
@@ -75,12 +82,12 @@ $html .= '';
 
 $html .= '<p>' . "\n"
 //- back to list
-.    '<a href="'.get_module_url('CLLP').'/index.php" title="'.get_lang('Back to list').'" target="_top">'
+.    '<a href="'.get_module_url('CLLP').'/index.php" title="'.get_lang('Back to list').'" target="_top" onClick="return exitConfirmation();">'
 .    '<img src="'.get_icon_url('go-home').'" alt="'.get_lang('Back to list').'" />'
 .    '</a>' . "\n"
 //- tracking
 .	 '&nbsp;&nbsp;'
-.    '<a href="#" title="'.get_lang('View statistics').'" onClick="lpHandler.openStatistics(); return false;">'
+.    '<a href="'.get_module_url('CLLP').'/track_path.php?path_id='.$pathId.'" title="'.get_lang('View statistics').'" target="_top" onClick="return exitConfirmation();">'
 .    '<img src="'.get_icon_url('statistics').'" alt="'.get_lang('View statistics').'" />'
 .    '</a>' . "\n"
 //- previous and next buttons
