@@ -382,9 +382,9 @@
 
 	    GetErrorString : function (num) {
 
-	        if (param != "") {
+	        if (num != "") {
 	            var errorString = "";
-	            switch(param) {
+	            switch(num) {
 	                case "0":
 	                    errorString = "No error";
 	                break;
