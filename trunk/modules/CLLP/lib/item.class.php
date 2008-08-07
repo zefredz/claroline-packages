@@ -20,83 +20,83 @@ class item
     /**
      * @var $id id of item, -1 if item doesn't exist already
      */
-    var $id;
+    private $id;
 
     /**
      * @var $pathId id of path containing this item
      */
-    var $pathId;
+    private $pathId;
 
     /**
      * @var $type type of the item
      */
-    var $type;
+    private $type;
 
     /**
      * @var $title name of the item
      */
-    var $title;
+    private $title;
 
     /**
      * @var $description statement of the item
      */
-    var $description;
+    private $description;
 
     /**
      * @var $visibility visibility of the item (default is invisible)
      */
-    var $visibility;
+    private $visibility;
 
     /**
      * @var $rank order of the item in the item list
      */
-    var $rank;
+    private $rank;
 
     /**
      * @var $identifier SCORM manifest ressource identifier
      */
-    var $identifier;
+    private $identifier;
 
     /**
      * @var $sysPath physical location of item ressources
      */
-    var $sysPath;
+    private $sysPath;
 
     /**
      * @var $parentId id of item that is direct parent of this
      */
-    var $parentId;
+    private $parentId;
 
     /**
      * @var $previousId id of the item previous of this
      */
-    var $previousId;
+    private $previousId;
 
     /**
      * @var $nextId id of the item next to this
      */
-    var $nextId;
+    private $nextId;
 
     /**
      * @var $launchData text data required by the SCO to be launched (has been read in the manifest)
      */
-    var $launchData;
+    private $launchData;
 
     /**
      * @var $timeLimitAction define how the LMS must handle the sco if time is out
      * possible values are : 'exit,message', 'exit,no message', 'continue,message', 'continue,no message'
      */
-    var $timeLimitAction;
+    private $timeLimitAction;
 
     /**
      * @var $completionThreshold defineshow must be computed the completion status
      */
-    var $completionThreshold;
+    private $completionThreshold;
 
     /**
      * @var $tblItem name of the item table
      */
-    var $tblItem;
+    private $tblItem;
 
 
     /**
@@ -105,7 +105,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
 
-    function item()
+    public function __construct()
     {
         $this->id = (int) -1;
         $this->pathId = (int) -1;
@@ -140,7 +140,7 @@ class item
      * @param integer $id id of path
      * @return boolean load successfull ?
      */
-    function load($id)
+    public function load($id)
     {
         $sql = "SELECT
                     `id`,
@@ -197,7 +197,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-    function save()
+    public function save()
     {
         if( $this->id == -1 )
         {
@@ -273,7 +273,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function delete()
+    public function delete()
     {
         if( $this->id == -1 ) return true;
 
@@ -292,7 +292,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function validate()
+    public function validate()
     {
         // title is a mandatory element
         $title = strip_tags($this->title);
@@ -314,7 +314,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getId()
+    public function getId()
     {
         return (int) $this->id;
     }
@@ -325,7 +325,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getPathId()
+    public function getPathId()
     {
         return (int) $this->pathId;
     }
@@ -337,7 +337,7 @@ class item
      * @param $value int id of the path
      * @return int
      */
-    function setPathId($value)
+    public function setPathId($value)
     {
         $this->pathId = (int) $value;
     }
@@ -348,7 +348,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getType()
+    public function getType()
     {
         return $this->type;
     }
@@ -359,7 +359,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setType($value)
+    public function setType($value)
     {
         $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM');
 
@@ -377,7 +377,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getTitle()
+    public function getTitle()
     {
         return $this->title;
     }
@@ -388,7 +388,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setTitle($value)
+    public function setTitle($value)
     {
         $this->title = trim($value);
     }
@@ -399,7 +399,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getDescription()
+    public function getDescription()
     {
         return $this->description;
     }
@@ -410,7 +410,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setDescription($value)
+    public function setDescription($value)
     {
         $this->description = trim($value);
     }
@@ -420,7 +420,7 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setVisible()
+    public function setVisible()
     {
         $this->visibility = 'VISIBLE';
     }
@@ -430,7 +430,7 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setInvisible()
+    public function setInvisible()
     {
         $this->visibility = 'INVISIBLE';
     }
@@ -441,7 +441,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isVisible()
+    public function isVisible()
     {
         if( $this->visibility == 'VISIBLE' )    return true;
         else                                    return false;
@@ -453,7 +453,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isInvisible()
+    public function isInvisible()
     {
         return !$this->isVisible();
     }
@@ -464,7 +464,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getIdentifier()
+    public function getIdentifier()
     {
         return $this->identifier;
     }
@@ -475,7 +475,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setIdentifier($value)
+    public function setIdentifier($value)
     {
         $this->identifier = trim($value);
     }
@@ -486,7 +486,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getRank()
+    public function getRank()
     {
         return (int) $this->rank;
     }
@@ -497,7 +497,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setRank($value)
+    public function setRank($value)
     {
         $this->rank = (int) $value;
     }
@@ -507,7 +507,7 @@ class item
      *
      *
      */
-    function setHigherRank($pathId)
+    public function setHigherRank($pathId)
     {
         $this->rank = (int) $this->getHigherRank($pathId) + 1;
     }
@@ -518,7 +518,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getLock()
+    public function getLock()
     {
         return (int) $this->lock;
     }
@@ -529,7 +529,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setLock($value)
+    public function setLock($value)
     {
         $this->lock = trim($value);
     }
@@ -539,7 +539,7 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function lock()
+    public function lock()
     {
         $this->lock = 'CLOSE';
     }
@@ -549,7 +549,7 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function unlock()
+    public function unlock()
     {
         $this->lock = 'OPEN';
     }
@@ -560,7 +560,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isLocked()
+    public function isLocked()
     {
         if( $this->lock == 'CLOSE' )    return true;
         else                            return false;
@@ -572,7 +572,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isUnlocked()
+    public function isUnlocked()
     {
         return !$this->isLocked();
     }
@@ -583,7 +583,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
      */
-    function getSysPath()
+    public function getSysPath()
     {
         return $this->sysPath;
     }
@@ -594,7 +594,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
      */
-    function setSysPath($value)
+    public function setSysPath($value)
     {
         $this->sysPath = trim($value);
     }
@@ -605,7 +605,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getParentId()
+    public function getParentId()
     {
         return (int) $this->parentId;
     }
@@ -617,7 +617,7 @@ class item
      * @param $value int id of the parent
      * @return int
      */
-    function setParentId($value)
+    public function setParentId($value)
     {
         $this->parentId = (int) $value;
     }
@@ -628,7 +628,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string data provided by manifest to the SCO
      */
-    function getLaunchData()
+    public function getLaunchData()
     {
         return $this->launchData;
     }
@@ -639,7 +639,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value data provided by manifest to the SCO
      */
-    function setLaunchData($value)
+    public function setLaunchData($value)
     {
         $this->launchData = trim($value);
     }
@@ -650,7 +650,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string defines how the LMS must handle SCO when time is out
      */
-    function getTimeLimitAction()
+    public function getTimeLimitAction()
     {
         return $this->timeLimitAction;
     }
@@ -661,7 +661,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string defines how the LMS must handle SCO when time is out
      */
-    function setTimeLimitAction($value)
+    public function setTimeLimitAction($value)
     {
         $acceptedValues = array('exit,message', 'exit,no message', 'continue,message', 'continue,no message');
 
@@ -679,7 +679,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string value of threshold required if setted to compute tu completion_status
      */
-    function getCompletionThreshold()
+    public function getCompletionThreshold()
     {
         return $this->completionThreshold;
     }
@@ -690,7 +690,7 @@ class item
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string value of threshold required if setted to compute tu completion_status
      */
-    function setCompletionThreshold($value)
+    public function setCompletionThreshold($value)
     {
         $this->completionThreshold = trim($value);
     }
@@ -703,7 +703,7 @@ class item
      * @param $parentId
      * @return int higher item rank for items that have same parentId
      */
-    function getHigherRank($pathId)
+    private function getHigherRank($pathId)
     {
         $sql = "SELECT max(`rank`)
                 FROM `" . $this->tblItem . "`
@@ -719,10 +719,10 @@ class item
 
 class itemList
 {
-	var $tblPath;
-	var $tblItem;
+	private $tblPath;
+	private $tblItem;
 
-	function itemList()
+	public function __construct()
     {
         $tblNameList = array(
             'lp_path',
@@ -736,7 +736,7 @@ class itemList
     }
 
     // load correct flat list of modules depending on parameters
-    function getFlatList($pathId = null, $userId = null)
+    public function getFlatList($pathId = null, $userId = null)
     {
         $list = $this->load($pathId,$userId);
 
@@ -754,7 +754,7 @@ class itemList
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
-    function buildTree($list, $id = -1, $depth = 0)
+    public function buildTree($list, $id = -1, $depth = 0)
     {
         $tree = array();
 
@@ -804,7 +804,7 @@ class itemList
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
-    function flatList($treeList, $deepness = 0)
+    public function flatList($treeList, $deepness = 0)
     {
         $count = 0;
         $itemIsFirst = true;
@@ -847,7 +847,7 @@ class itemList
     }
 
     // load correct list of modules depending on parameters
-	function load($pathId, $userId = null)
+	public function load($pathId, $userId = null)
 	{
 		if( !is_null($pathId) )
 		{
@@ -866,38 +866,9 @@ class itemList
 		}
 	}
 
-	// should return a list of all available module (for module pool if any)
-	function loadAll()
-	{
-        $sql = "SELECT
-                    `id`,
-                    `path_id`,
-                    `type`,
-                    `title`,
-                    `description`,
-                    `visibility`,
-                    `rank`,
-                    `identifier`,
-                    `sys_path`,
-                    `parent_id`,
-                    `previous_id`,
-                    `next_id`,
-                    `launch_data`
-            FROM `".$this->tblItem."`
-            ORDER BY `rank` ASC";
-
-        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
-        {
-            return array();
-        }
-        else
-        {
-            return $data;
-        }
-	}
 
 	// should return a tree list of path items for course administrator
-	function loadPath($pathId)
+	public function loadPath($pathId)
 	{
 		// prevent a query made on incorrect data
 		if( is_null($pathId) || !is_numeric($pathId) )
@@ -934,12 +905,12 @@ class itemList
 	}
 
 	// should return a tree list of path items for a single user with its progression
-	function loadPathUserProgress($pathId, $userId)
+	public function loadPathUserProgress($pathId, $userId)
 	{
 
 	}
 
-	function loadContainerList($pathId)
+	public function loadContainerList($pathId)
 	{
 	   $sql = "SELECT
                     `id`,
@@ -977,7 +948,7 @@ class itemList
      * @param $item object item to move up
      * @return boolean result of operation
      */
-    function moveItemUp($item,$path)
+    public function moveItemUp($item,$path)
     {
         $list = $this->getNodeChildren($path->getId(), $item->getParentId());
 
@@ -1033,7 +1004,7 @@ class itemList
      * @param $item object item to move down
      * @return boolean result of operation
      */
-    function moveItemDown($item,$path)
+    public function moveItemDown($item,$path)
     {
 
         $list = $this->getNodeChildren($path->getId(), $item->getParentId());
@@ -1091,7 +1062,7 @@ class itemList
      * @param $nodeId int id of the node to get
      * @return boolean result of operation
      */
-    function getNodeChildren($pathId,$itemId)
+    public function getNodeChildren($pathId,$itemId)
     {
         $list = array();
 
@@ -1126,7 +1097,7 @@ class itemList
      * @param $nodeId int id of the node to get
      * @return boolean result of operation
      */
-	function getNode($tree,$nodeId)
+	public function getNode($tree,$nodeId)
 	{
 	    foreach( $tree as $branch )
 	    {
