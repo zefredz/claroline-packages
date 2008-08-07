@@ -129,6 +129,7 @@ if( $cmd == 'exEdit' )
 	$path->setTitle($_REQUEST['title']);
 	$path->setDescription($_REQUEST['description']);
 	$path->setViewMode($_REQUEST['viewMode']);
+	$path->setVersion(Path::VERSION_CLAROLINE);
 
 	if( $path->validate() )
     {
@@ -291,6 +292,12 @@ if( $cmd == 'rqAddItem' )
         $htmlAddItem .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
     }
 
+    $htmlAddItem .= '<div id="lnk_panel">' 
+    . '<div id="lnk_resources"></div>' . "\n" 
+    . '<div id="lnk_selected_resources"></div>' . "\n" 
+    . '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n"
+    . '</div>' . "\n";
+    
     $htmlAddItem .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
     .    '</form>' . "\n";
 
@@ -487,10 +494,10 @@ $cmdMenu = array();
 // do not display commands to student or when creating a new path (rqEdit)
 if( $is_allowedToEdit && !is_null($pathId) )
 {
-	$cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Play path'));
-    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Edit path settings'));
-    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Create chapter'));
-    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'),get_lang('Add item(s)'));
+	$cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('play') . '" border="0" alt="" />' . get_lang('Play path'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('edit') . '" border="0" alt="" />' . get_lang('Edit path settings'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('chapter_add') . '" border="0" alt="" />' . get_lang('Add chapter'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('item_add') . '" border="0" alt="" />' . get_lang('Add item(s)'));
 }
 
 $out .= '<p><small>' . htmlspecialchars($path->getDescription()). '</small></p>' . "\n";
