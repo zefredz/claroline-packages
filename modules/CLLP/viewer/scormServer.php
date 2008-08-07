@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getNext');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -130,8 +130,7 @@ if( $cmd == 'doCommit' )
         	// get new item attempt list
         	// compute new values of attempt (progress,...)
         	
-        	// save attempt
-        
+        	// save attempt        
         	$thisAttempt->save();
 			return true;
         }
@@ -244,6 +243,18 @@ if( $cmd == 'rqToc' )
     $html .= '</table>';
 
     echo $html;
+}
+
+if( $cmd == 'getPrevious' )
+{
+    $itemList = new itemList();
+
+    echo "39";
+}
+
+if( $cmd == 'getNext' )
+{
+    echo "41";
 }
 
 function lpDebug($var)
