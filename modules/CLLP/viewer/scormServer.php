@@ -72,17 +72,22 @@ header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 if( $cmd == 'doCommit' )
 {
     lpDebug('doCommit');
-
-    try
+    if( empty($_REQUEST['scormdata']) )
     {
-        $decodedScormData = json_decode($_REQUEST['scormdata']);
-    }
-    catch ( Exception $e )
-    {
-        lpDebug('doCommit failed : cannot to decode json in '.__FILE__.' at line ' . __LINE__);
+        lpDebug("No data received.");
         return false;
     }
     
+    try
+    {
+        $dataModelValues = json_decode($_REQUEST['scormdata']);
+    }
+    catch ( Exception $e )
+    {
+        lpDebug('doCommit failed : cannot decode json in '.__FILE__.' at line ' . __LINE__ . ' with message : ' . $e->getMessage());
+        return false;
+    }
+
 	// get serialized attempt
 	$thisAttempt = unserialize($_SESSION['thisAttempt']);
 
@@ -93,45 +98,55 @@ if( $cmd == 'doCommit' )
 
 	// try to load itemAttempt
 	$itemAttempt->load($thisAttempt->getId(), $itemId);
-	
+
 	// load path
+	$path = new Path();
     if( is_null($pathId) || !$path->load($pathId) )
     {
         // cannot find path ... 
+        lpDebug('cannot find path #' . $pathId);
         return false;
     }
     
     if( $path->getVersion() == 'scorm12' )
     {
         $scormAPI = new Scorm12();
+        lpDebug('Choose api 1.2');
     }
     else
     {
     
         $scormAPI = new Scorm13();
+        lpDebug('Choose api 1.3');
     }
 
-	$scormAPI->api2ItemAttempt($dataModelValues, $itemAttempt);
+    $scormAPI->api2ItemAttempt($dataModelValues, $itemAttempt);
+	
 	if( $itemAttempt->validate() )
     {
         if( $itemAttempt->save() )
         {
         	lpDebug('item attempt saved');
         	// get new item attempt list
-        	// compute new values of attempt
+        	// compute new values of attempt (progress,...)
+        	
         	// save attempt
-
-        	// what does a save attempt do here ?
+        
         	$thisAttempt->save();
 			return true;
         }
         else
         {
+            lpDebug('Cannot save itemAttempt');
         	return false;
         }
     }
+    else
+    {
+        lpDebug('Cannot validate itemAttempt');
+        return false;
+    }
 
-    return false;
 }
 
 
@@ -148,8 +163,8 @@ if( $cmd == 'rqContentUrl' )
         if( $item->getType() == 'MODULE' )
         {
         	$resolver = new Resolver(get_path('rootWeb'));
-
-        	$itemUrl = $resolver->resolve($item->getSysPath());
+            // fix ? or &amp; depending if there is already a ? in url
+        	$itemUrl = $resolver->resolve($item->getSysPath()) .'&calledFrom=CLLP&embedded=true' ;
         }
         elseif( $item->getType() == 'SCORM' )
         {
@@ -173,11 +188,15 @@ if( $cmd == 'rqContentUrl' )
 
 if( $cmd == 'rqToc' )
 {
-    // check that we have all parameters required
-    if( is_null($pathId) )
+    // load path
+    $path = new Path();
+    if( is_null($pathId) || !$path->load($pathId) )
     {
-        return get_lang("Error : missing parameters");
+        // cannot find path ... 
+        lpDebug('cannot find path #' . $pathId);
+        return false;
     }
+    
     // prepare list to display
     $itemList = new itemList();
 
@@ -196,7 +215,7 @@ if( $cmd == 'rqToc' )
 
 	// TODO path title
 	$html .= '<tr>' . "\n"
-	.	 '<th>Path title here</th>' . "\n"
+	.	 '<th>'.htmlspecialchars($path->getTitle()).'</th>' . "\n"
 	.	 '</tr>' . "\n";
 
     foreach( $itemListArray as $anItem )
