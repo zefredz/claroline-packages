@@ -56,9 +56,6 @@ if( !is_null($pathId) )
     }
 }
 
-$pathList = new pathList();
-
-
 claro_set_display_mode_available(true);
 
 $is_allowedToEdit = claro_is_allowed_to_edit();
@@ -66,6 +63,20 @@ $user_id = claro_get_current_user_id();
 
 $dialogBox = new DialogBox();
 
+/*
+ * Load list of paths
+ */
+// prepare list to display
+$pathList = new pathListIterator();
+
+if( $is_allowedToEdit )
+{
+    $pathList->load();
+}
+else
+{
+    $pathList->load($user_id);
+}
 /*
  * Admin only commands
  */
@@ -199,15 +210,7 @@ if( $is_allowedToEdit )
     }
 }
 
-// prepare list to display
-if( $is_allowedToEdit )
-{
-    $pathListArray = $pathList->load();
-}
-else
-{
-    $pathListArray = $pathList->load($user_id);
-}
+
 
 
 /*
@@ -263,14 +266,14 @@ if( $is_allowedToEdit )
     $out .= '</tr>' . "\n"
     .    '</thead>' . "\n";
 
-    if( !empty($pathListArray) && is_array($pathListArray) )
+    $lpCount = count($pathList);
+    if( $lpCount > 0 )
     {
         $i = 0;
-        $lpCount = count($pathListArray);
 
         $out .= '<tbody>' . "\n";
 
-        foreach( $pathListArray as $aPath )
+        foreach( $pathList as $aPath )
         {
             $i++;
 
@@ -395,15 +398,15 @@ else
     .    '</tr>' . "\n"
     .    '</thead>' . "\n\n";
 
-    if( !empty($pathListArray) && is_array($pathListArray) )
+    $lpCount = count($pathList);
+    if( $lpCount > 0 )
     {
         $i = 0;
-        $lpCount = count($pathListArray);
         $totalProgress = 0;
 
         $out .= '<tbody>' . "\n";
 
-        foreach( $pathListArray as $aPath )
+        foreach( $pathList as $aPath )
         {
             $i++;
             $out .= '<tr>' . "\n";
