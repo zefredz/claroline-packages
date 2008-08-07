@@ -38,17 +38,17 @@ class Scorm13 implements ScormInterface
 	 */
 	public function api2ItemAttempt( $dataModelValues, &$itemAttempt)
 	{
-
-		$itemAttempt->setLocation($dataModelValues['cmi.location']);
-		$itemAttempt->setCompletionStatus($dataModelValues['cmi.completion_status']);
-		$itemAttempt->setEntry($dataModelValues['cmi.entry']);
-		$itemAttempt->setScoreRaw($dataModelValues['cmi.score.raw']);
-		$itemAttempt->setScoreMin($dataModelValues['cmi.score.min']);
-		$itemAttempt->setScoreMax($dataModelValues['cmi.score.max']);
-		$itemAttempt->setSessionTime($dataModelValues['cmi.session_time']);
-		$itemAttempt->setTotalTime($dataModelValues['cmi.total_time']);
-		$itemAttempt->setSuspendData($dataModelValues['cmi.suspend_data']);
-		$itemAttempt->setCredit($dataModelValues['cmi.credit']);
+	    // FIXME find better mechanism to do that
+		$itemAttempt->setLocation($dataModelValues->cmi.location);
+		$itemAttempt->setCompletionStatus($dataModelValues->cmi.completion_status);
+		$itemAttempt->setEntry($dataModelValues->cmi.entry);
+		$itemAttempt->setScoreRaw($dataModelValues->cmi.score.raw);
+		$itemAttempt->setScoreMin($dataModelValues->cmi.score.min);
+		$itemAttempt->setScoreMax($dataModelValues->cmi.score.max);
+		$itemAttempt->setSessionTime($dataModelValues->cmi.session_time);
+		$itemAttempt->setTotalTime($dataModelValues->cmi.total_time);
+		$itemAttempt->setSuspendData($dataModelValues->cmi.suspend_data);
+		$itemAttempt->setCredit($dataModelValues->cmi.credit);
 
 		return true;
 	}
