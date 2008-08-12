@@ -101,17 +101,17 @@ if( $cmd == 'rqRefresh' )
     
 	echo $msgList->render();
 	
-	// keep my user alive in user list
-	$chatUserList = new ChatUserList($courseId,$groupId);
-	$chatUserList->ping(claro_get_current_user_id());
-	$chatUserList->prune();
-	
     return;
 }
 
 if( $cmd == 'rqRefreshUserList' )
 {
 	$chatUserList = new ChatUserList($courseId,$groupId);
+	// keep my user alive in user list
+	$chatUserList->ping(claro_get_current_user_id());
+	// delete user that have not ping recently
+	$chatUserList->prune();
+	// load the refreshed list
     $chatUserList->load();
     
     echo $chatUserList->render();
