@@ -90,9 +90,14 @@
         $htmlHeaders = '<script type="text/javascript">' . "\n"
         .    'var refreshRate = "' . (get_conf('msg_list_refresh_rate',5)*1000) . '";' . "\n"
         .    'var userListRefresh = "'. (get_conf('user_list_refresh_rate')*1000).'";' . "\n"
-        .    'var cidReq = "' . claro_get_current_course_id() . '";' . "\n"
-        .    'var gidReq = "' . claro_get_current_group_id() . '";' . "\n"
-        .    'var lang = new Array();' . "\n"
+        .    'var cidReq = "' . claro_get_current_course_id() . '";' . "\n";
+        
+        if( claro_is_in_a_group() )
+        {
+            $htmlHeaders .= 'var gidReq = "' . claro_get_current_group_id() . '";' . "\n";
+        }
+        
+        $htmlHeaders .= 'var lang = new Array();' . "\n"
         .    'lang["confirmFlush"] = "' . clean_str_for_javascript(get_lang('Are you sure to delete all logs ?')) . '";'
         .	 '</script>';
         
