@@ -60,7 +60,7 @@ function exRefresh(response)
 function rqRefresh()
 {
     $.ajax({
-        url: "ajaxHandler.php?cmd=rqRefresh&cidReq=" + cidReq, 
+        url: "ajaxHandler.php?cmd=rqRefresh&cidReq=" + cidReq + getGidReqParam(), 
         ifModified: true, 
         success: function(response){
             exRefresh(response)
@@ -79,7 +79,7 @@ function exRefreshUserList(response)
 function rqRefreshUserList()
 {
     $.ajax({
-        url: "ajaxHandler.php?cmd=rqRefreshUserList&cidReq=" + cidReq, 
+        url: "ajaxHandler.php?cmd=rqRefreshUserList&cidReq=" + cidReq + getGidReqParam(), 
         ifModified: true, 
         success: function(response){
             exRefreshUserList(response)
@@ -114,7 +114,7 @@ function exDisplayLogs(response)
 function rqDisplayLogs()
 {
     $.ajax({
-        url: "ajaxHandler.php?cmd=rqLogs&cidReq=" + cidReq, 
+        url: "ajaxHandler.php?cmd=rqLogs&cidReq=" + cidReq + getGidReqParam(), 
         success: function(response){
             exDisplayLogs(response);
             }, 
@@ -154,7 +154,7 @@ function addMsg()
     if( $("#clchat_msg").val().length > 0 )
     {
         $.ajax({
-            url: "ajaxHandler.php?cmd=rqAdd&cidReq=" + cidReq, 
+            url: "ajaxHandler.php?cmd=rqAdd&cidReq=" + cidReq + getGidReqParam(), 
             data: $("#clchat_msg").serialize(), 
             success: function(response){
                 exRefresh(response);
@@ -176,7 +176,7 @@ function addMsg()
 function rqArchive()
 {
     $.ajax({
-        url: "ajaxHandler.php?cmd=rqArchive&cidReq=" + cidReq, 
+        url: "ajaxHandler.php?cmd=rqArchive&cidReq=" + cidReq + getGidReqParam(), 
         success: function(response){
             showDialog(response);
             }, 
@@ -191,7 +191,7 @@ function rqFlush()
     if( confirm(lang["confirmFlush"]) )
     {
         $.ajax({
-            url: "ajaxHandler.php?cmd=rqFlush&cidReq=" + cidReq, 
+            url: "ajaxHandler.php?cmd=rqFlush&cidReq=" + cidReq + getGidReqParam(), 
             success: function(response){
                 showDialog(response);
                 rqRefresh();
@@ -200,4 +200,16 @@ function rqFlush()
             dataType: 'html'});
     }
     return false;
+}
+
+function getGidReqParam()
+{
+	if( typeof gidReq != 'undefined' )
+	{
+	    return '&gidReq=' + gidReq;
+	}
+	else
+	{
+	    return '';
+	}
 }
