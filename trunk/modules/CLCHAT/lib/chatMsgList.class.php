@@ -31,7 +31,7 @@ class ChatMsgList
         $this->groupId = $groupId;
         
         $tblNameList = array(
-    		'chat'
+            'chat'
         );
 
         $tbl_chat_names = get_module_course_tbl( $tblNameList, $this->courseId ); 
@@ -52,26 +52,25 @@ class ChatMsgList
      */ 
     public function load($from = '', $to = '')
     {
-    	$sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
-    				`JC`.`message`, 
-    				`U`.`nom` as `lastname`,
-    				`U`.`prenom` as `firstname`, 
-    				`U`.`isCourseCreator` 
-    			FROM `".$this->tblChatMsg."` as `JC`, 
-    				`".$this->tblUser."` as `U` 
-    			WHERE `JC`.`user_id` = `U`.`user_id` ";
+        $sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
+                    `JC`.`message`, 
+                    `U`.`nom` as `lastname`,
+                    `U`.`prenom` as `firstname`, 
+                    `U`.`isCourseCreator` 
+                FROM `".$this->tblChatMsg."` as `JC`, 
+                    `".$this->tblUser."` as `U` 
+                WHERE `JC`.`user_id` = `U`.`user_id` ";
 
-    	if( !is_null($this->groupId) )  
-    	{
-    	    $sql .= " AND `JC`.`group_id` = ".(int) $this->groupId . " ";
-    	}
+        if( !is_null($this->groupId) )  
+        {
+            $sql .= " AND `JC`.`group_id` = ".(int) $this->groupId . " ";
+        }
         else
-    	{
-    	    $sql .= " AND `JC`.`group_id` IS NULL ";
-    	}
-    	
-    	
-    	if( $from != '' )
+        {
+            $sql .= " AND `JC`.`group_id` IS NULL ";
+        }
+
+        if( $from != '' )
         {
             $sql .= " HAVING ". (int) $from . " < `unixPostTime` ";
             if( $to != '' )
@@ -80,19 +79,19 @@ class ChatMsgList
             }
         }
         
-    	$sql .=	" ORDER BY `post_time`";
+        $sql .=    " ORDER BY `post_time`";
 
-    	$messageList = claro_sql_query_fetch_all_rows($sql);
+        $messageList = claro_sql_query_fetch_all_rows($sql);
         
-    	if( $messageList )
-    	{
-    	    $this->msgList = $messageList;
-    	    return true;
-    	}
-    	else
-    	{
-    	    return false;
-    	}    	
+        if( $messageList )
+        {
+            $this->msgList = $messageList;
+            return true;
+        }
+        else
+        {
+            return false;
+        }        
     }    
     
     /**
@@ -103,38 +102,38 @@ class ChatMsgList
      */ 
     public function render()
     {
-    	$resetLastReceivedMsg = false;
-    	
-    	$html = '';
-    	$previousDayTimestamp = 0; // keep track of the day of the last displayed message
-    	
-    	foreach( $this->msgList as $message )
-    	{
-    		if( get_days_from_timestamp($previousDayTimestamp) < get_days_from_timestamp($message['unixPostTime']) )
-    		{
-    		    // display day separator
-    		    $html .= "\n" . '<span class="clchat_dayLimit">'.claro_html_localised_date(get_locale('dateFormatLong'), $message['unixPostTime']).'</span>' . "\n";
-    		    
-    		    $previousDayTimestamp = $message['unixPostTime'];
-    		}
-    			
-    		if( $_SESSION['chat_lastReceivedMsg'] < $message['unixPostTime'] )
-    		{	
-    			$spanClass = ' newLine'; 
-    			$resetLastReceivedMsg = true;
-    		}
-    		else
-    		{
-    			$spanClass = '';	
-    		}
-    		
-    		$html .= "\n" . '<span class="clchat_msgLine' . $spanClass . '">'.$this->renderSingleMsg($message).'</span>' . "\n";
-    	}
+        $resetLastReceivedMsg = false;
         
-        // keep track of the last display time 
-    	if( $resetLastReceivedMsg ) $_SESSION['chat_lastReceivedMsg'] = time();
+        $html = '';
+        $previousDayTimestamp = 0; // keep track of the day of the last displayed message
+        
+        foreach( $this->msgList as $message )
+        {
+            if( get_days_from_timestamp($previousDayTimestamp) < get_days_from_timestamp($message['unixPostTime']) )
+            {
+                // display day separator
+                $html .= "\n" . '<span class="clchat_dayLimit">'.claro_html_localised_date(get_locale('dateFormatLong'), $message['unixPostTime']).'</span>' . "\n";
+                
+                $previousDayTimestamp = $message['unixPostTime'];
+            }
+                
+            if( $_SESSION['chat_lastReceivedMsg'] < $message['unixPostTime'] )
+            {    
+                $spanClass = ' newLine'; 
+                $resetLastReceivedMsg = true;
+            }
+            else
+            {
+                $spanClass = '';
+            }
 
-    	return $html;   
+            $html .= "\n" . '<span class="clchat_msgLine' . $spanClass . '">'.$this->renderSingleMsg($message).'</span>' . "\n";
+        }
+
+        // keep track of the last display time 
+        if( $resetLastReceivedMsg ) $_SESSION['chat_lastReceivedMsg'] = time();
+
+        return claro_utf8_encode($html);
     }
     
     /**
@@ -148,17 +147,17 @@ class ChatMsgList
     {
         $userName = $message['firstname'] . ' '. $message['lastname'];
         if (strlen($userName) > get_conf('max_nick_length') ) $userName = $message['firstname'] . ' '. $message['lastname'][0] . '.';
-    
+
         // transform url to clickable links
-    	$chatLine = claro_parse_user_text($message['message']);    
+        $chatLine = claro_parse_user_text($message['message']);    
         
         $html = '';
-    		
-    	$html .= '<span class="clchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostTime']) . '&nbsp;|</span>'
-    	.	 ' <span class="clchat_userName">' . utf8_encode($userName) 
-    	.	 '</span>&nbsp;: ' . $chatLine . "\n";
-    	
-    	return $html;
+            
+        $html .= '<span class="clchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostTime']) . '&nbsp;|</span>'
+        .     ' <span class="clchat_userName">' . $userName 
+        .     '</span>&nbsp;: ' . $chatLine . "\n";
+
+        return $html;
     }
     
     /**
@@ -173,7 +172,7 @@ class ChatMsgList
         
         return claro_sql_query($sql);
     }
-    
+
     /**
      * Add a message to chat
      *
@@ -184,19 +183,19 @@ class ChatMsgList
     function addMsg($message, $userId)
     {
         if( !empty($message) && $userId )
-    	{
-        	$sql = "INSERT INTO `".$this->tblChatMsg."`
-        			SET `user_id` = '".(int) $userId."', ";
-        	
-        	if( !is_null($this->groupId) )  
-        	{
-        	    $sql .= " `group_id` = ".(int) $this->groupId . ", ";
-        	}
-        			
-        	$sql .= "`message` = '".addslashes(htmlspecialchars($message))."',
-        				`post_time` = NOW()";
+        {
+            $sql = "INSERT INTO `".$this->tblChatMsg."`
+                    SET `user_id` = '".(int) $userId."', ";
+            
+            if( !is_null($this->groupId) )  
+            {
+                $sql .= " `group_id` = ".(int) $this->groupId . ", ";
+            }
+                    
+            $sql .= "`message` = '".addslashes(htmlspecialchars($message))."',
+                        `post_time` = NOW()";
 
-        	return claro_sql_query($sql);
+            return claro_sql_query($sql);
         }
         else
         {
@@ -214,22 +213,20 @@ class ChatMsgList
     function archive()
     {
         // Prepare archive file content
-    	$htmlContentHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n"
+        $htmlContentHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n"
         .    '<html>' . "\n"
         .    '<head>' . "\n"
         .    '<title>' . get_lang('Chat') . '</title>'
         .    '</head>' . "\n"
         .    '<body>' . "\n\n";
-    
+
         $htmlContentFooter = '</body>' . "\n\n"
         .    '</html>' . "\n";
-    
-        
+
         $htmlContent = $this->render();
         
         $htmlContent = $htmlContentHeader . $htmlContent . $htmlContentFooter; 
-        
-        
+
         // filepath
         $courseDir = claro_get_course_path() .'/document';
         $baseWorkDir = get_path('coursesRepositorySys') . $courseDir;

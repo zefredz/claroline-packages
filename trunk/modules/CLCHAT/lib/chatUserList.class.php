@@ -40,7 +40,7 @@ class ChatUserList
         $this->groupId = $groupId;
         
         $tblNameList = array(
-    		'chat_users'
+            'chat_users'
         );
 
         $tbl_chat_names = get_module_course_tbl( $tblNameList, $this->courseId ); 
@@ -59,41 +59,41 @@ class ChatUserList
     public function load()
     {
     
-	    $sql = "SELECT 
-				`U`.`prenom` as `firstname`, 
-				`U`.`nom` as `lastname`,
-				`RCU`.`isCourseManager` 
-			FROM `".$this->tblChatUsers."` as `CU`, 
-				`".$this->tblUser."` as `U`,
-				`".$this->tblRelCourseUser."` as `RCU` 
-			WHERE `CU`.user_id = U.user_id
-			  AND `U`.`user_id` = `RCU`.`user_id` 
-			  AND `RCU`.`code_cours` = '".$this->courseId."'";
+        $sql = "SELECT 
+                `U`.`prenom` as `firstname`, 
+                `U`.`nom` as `lastname`,
+                `RCU`.`isCourseManager` 
+            FROM `".$this->tblChatUsers."` as `CU`, 
+                `".$this->tblUser."` as `U`,
+                `".$this->tblRelCourseUser."` as `RCU` 
+            WHERE `CU`.user_id = U.user_id
+              AND `U`.`user_id` = `RCU`.`user_id` 
+              AND `RCU`.`code_cours` = '".$this->courseId."'";
 
         if( !is_null($this->groupId) )  
-    	{
-    	    $sql .= " AND `CU`.`group_id` = ".(int) $this->groupId . " ";
-    	} 
-    	else
-    	{
-    	    $sql .= " AND `CU`.`group_id` IS NULL ";
-    	}
+        {
+            $sql .= " AND `CU`.`group_id` = ".(int) $this->groupId . " ";
+        } 
+        else
+        {
+            $sql .= " AND `CU`.`group_id` IS NULL ";
+        }
 
-    	$sql .= " ORDER BY `RCU`.`isCourseManager` DESC,
-        	      `U`.`prenom` ASC,
-        	      `U`.`nom` ASC";
+        $sql .= " ORDER BY `RCU`.`isCourseManager` DESC,
+                  `U`.`prenom` ASC,
+                  `U`.`nom` ASC";
 
-    	$userList = claro_sql_query_fetch_all_rows($sql);
-    	
-    	if( $userList )
-    	{
-    	    $this->userList = $userList;
-    	    return true;
-    	}
-    	else
-    	{
-    	    return false;
-    	}
+        $userList = claro_sql_query_fetch_all_rows($sql);
+        
+        if( $userList )
+        {
+            $this->userList = $userList;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
         
     }
     
@@ -118,8 +118,8 @@ class ChatUserList
             }
             
             $html .= "\n" . '<span class="clchat_user '.$userClass.'">' 
-    		.    claro_utf8_encode(get_lang('%firstname %lastname', array('%firstname' => $user['firstname'], '%lastname' => $user['lastname']))) 
-    		. 	 '</span>' . "\n";
+            . claro_utf8_encode(get_lang('%firstname %lastname', array('%firstname' => $user['firstname'], '%lastname' => $user['lastname']))) 
+            . '</span>' . "\n";
         }
         
         return $html;
@@ -137,13 +137,13 @@ class ChatUserList
                       WHERE `last_action` < '" . claro_date('Y-m-d H:i:s', claro_time() - 30 )  . "'";
 
         if( !is_null($this->groupId) )  
-    	{
-    	    $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
-    	}
+        {
+            $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
+        }
         else
-    	{
-    	    $sql .= " AND `group_id` IS NULL ";
-    	}
+        {
+            $sql .= " AND `group_id` IS NULL ";
+        }
 
         claro_sql_query($sql);
     }
@@ -161,13 +161,13 @@ class ChatUserList
                       WHERE `user_id` = " . (int) $userId;
     
         if( !is_null($this->groupId) )  
-    	{
-    	    $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
-    	}
+        {
+            $sql .= " AND `group_id` = ".(int) $this->groupId . " ";
+        }
         else
-    	{
-    	    $sql .= " AND `group_id` IS NULL ";
-    	}
+        {
+            $sql .= " AND `group_id` IS NULL ";
+        }
 
         claro_sql_query($sql);
 
@@ -175,11 +175,11 @@ class ChatUserList
                 SET `user_id` = " . (int) $userId . ",";
                 
         if( !is_null($this->groupId) )  
-    	{
-    	    $sql .= " `group_id` = ".(int) $this->groupId . ", ";
-    	}
+        {
+            $sql .= " `group_id` = ".(int) $this->groupId . ", ";
+        }
 
-    	$sql .= " `last_action` = '" . claro_date('Y-m-d H:i:s') . "'";
+        $sql .= " `last_action` = '" . claro_date('Y-m-d H:i:s') . "'";
 
         claro_sql_query($sql);
         return true;
