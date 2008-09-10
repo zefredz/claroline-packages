@@ -33,43 +33,41 @@
     $is_allowedToEdit = claro_is_allowed_to_edit();
 
 
-
     if( !isset($_SESSION['chat_connectionTime']) )
     {
-    	// to avoid displaying message that were sent before arrival on the chat
-    	$_SESSION['chat_connectionTime'] = time(); // should not be reset 
+        // to avoid displaying message that were sent before arrival on the chat
+        $_SESSION['chat_connectionTime'] = time(); // should not be reset 
     }
     
     if( !isset($_SESSION['chat_lastReceivedMsg']) )
     {
-    	// to add a visual effect when lines are added
-    	// (this var is reset each time new messages are received)
-    	$_SESSION['chat_lastReceivedMsg'] = time();	 
+        // to add a visual effect when lines are added
+        // (this var is reset each time new messages are received)
+        $_SESSION['chat_lastReceivedMsg'] = time(); 
     }
 
 
-		   
     $cmdMenu = array();
     if( $is_allowedToEdit )
     {
-    	$cmdMenu[] = claro_html_cmd_link( '#'
+    $cmdMenu[] = claro_html_cmd_link( '#'
                                         , get_lang('Show/hide logs')
                                         , array('id' => 'clchat_cmd_logs')
                                         );
         $cmdMenu[] = claro_html_cmd_link( '#'
-                                        , get_lang('Store Chat')                                   
+                                        , get_lang('Store Chat')
                                         , array('id' => 'clchat_cmd_archive')
-                                        );	
+                                        );
         $cmdMenu[] = claro_html_cmd_link( '#'
-                                        , get_lang('Reset')                                   
+                                        , get_lang('Reset')
                                         , array('id' => 'clchat_cmd_flush')
-                                        );	                                    			
+                                        );
     }
-		   
+   
     /*
      * Output
      */
-	$cssLoader = CssLoader::getInstance();
+    $cssLoader = CssLoader::getInstance();
     $cssLoader->load( 'clchat', 'screen'); 
     
 
@@ -99,19 +97,19 @@
         
         $htmlHeaders .= 'var lang = new Array();' . "\n"
         .    'lang["confirmFlush"] = "' . clean_str_for_javascript(get_lang('Are you sure to delete all logs ?')) . '";'
-        .	 '</script>';
+        . '</script>';
         
         $claroline->display->header->addHtmlHeader($htmlHeaders);
         
         // dialog box
         $out .= '<div id="clchat_user_list"></div>'.    "\n"
-        .    '<div id="clchat_chatarea">'.	 "\n"
+        .    '<div id="clchat_chatarea">'. "\n"
         .    ' <div id="clchat_log"></div>' . "\n"
         .    ' <div id="clchat_connectTime">'
         .    get_lang('Start of this chat session (%connectTime)', array('%connectTime' => claro_html_localised_date(get_locale('dateTimeFormatLong'), $_SESSION['chat_connectionTime']))) 
-        .	 '</div>' . "\n"
+        . '</div>' . "\n"
         .    ' <div id="clchat_text"></div>' . "\n"
-        .	 '</div>' . "\n";
+        . '</div>' . "\n";
     
         // display form
         $out .= '<form action="#" id="clchat_form" method="get" >' . "\n"
@@ -122,7 +120,7 @@
         .    '</form>' . "\n"
     
         .    claro_html_menu_horizontal($cmdMenu) . "\n"
-        .	 '<p id="clchat_dialogBox"></p>' . "\n"
+        . '<p id="clchat_dialogBox"></p>' . "\n"
         ;
 
     }

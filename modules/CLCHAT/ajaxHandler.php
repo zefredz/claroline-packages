@@ -38,12 +38,12 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 /*
  * Init request vars
  */
-$acceptedCmdList = array(	'rqRefresh',
-							'rqAdd',
-							'rqFlush', 
-							'rqLogs', 
-							'rqArchive',
-                            'rqRefreshUserList'
+$acceptedCmdList = array('rqRefresh',
+                        'rqAdd',
+                        'rqFlush', 
+                        'rqLogs', 
+                        'rqArchive',
+                        'rqRefreshUserList'
                         );
 if ( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
 else                                                                             $cmd = null;
@@ -87,11 +87,11 @@ if( $cmd == 'rqAdd' )
     if( !empty($msg) && claro_is_user_authenticated() )
     {
         $msgList = new ChatMsgList($courseId,$groupId);
-	    $msgList->addMsg($msg, claro_get_current_user_id());
+        $msgList->addMsg($msg, claro_get_current_user_id());
     }
 
     // always request refresh to have a response for ajax call
-	$cmd = 'rqRefresh';    
+$cmd = 'rqRefresh';    
 }
 
 if( $cmd == 'rqRefresh' )
@@ -99,19 +99,19 @@ if( $cmd == 'rqRefresh' )
     $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load($_SESSION['chat_connectionTime']);
     
-	echo $msgList->render();
-	
+echo $msgList->render();
+
     return;
 }
 
 if( $cmd == 'rqRefreshUserList' )
 {
-	$chatUserList = new ChatUserList($courseId,$groupId);
-	// keep my user alive in user list
-	$chatUserList->ping(claro_get_current_user_id());
-	// delete user that have not ping recently
-	$chatUserList->prune();
-	// load the refreshed list
+    $chatUserList = new ChatUserList($courseId,$groupId);
+    // keep my user alive in user list
+    $chatUserList->ping(claro_get_current_user_id());
+    // delete user that have not ping recently
+    $chatUserList->prune();
+// load the refreshed list
     $chatUserList->load();
     
     echo $chatUserList->render();
@@ -130,8 +130,8 @@ if( $cmd == 'rqFlush' && $is_allowedToEdit )
     {
         echo get_lang('Chat reset');
     }
-	
-    return;	
+    
+    return;    
 }
 
 if( $cmd == 'rqLogs' && $is_allowedToEdit )
@@ -139,9 +139,9 @@ if( $cmd == 'rqLogs' && $is_allowedToEdit )
     $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load(1, $_SESSION['chat_connectionTime'] );
 
-	echo $msgList->render();
-	
-    return;	
+    echo $msgList->render();
+    
+    return;    
 }
 
 if( $cmd == 'rqArchive' && $is_allowedToEdit )
@@ -153,7 +153,7 @@ if( $cmd == 'rqArchive' && $is_allowedToEdit )
     {
         $downloadLink = '<a href="'.get_module_url('CLDOC').'/document.php'.claro_url_relay_context('?').'">' . basename($chatFilename) . '</a>';
         
-        echo get_lang('%chat_filename is now in the document tool. (<em>This file is visible</em>)',array('%chat_filename' => $downloadLink));
+        echo claro_utf8_encode(get_lang('%chat_filename is now in the document tool. (<em>This file is visible</em>)',array('%chat_filename' => $downloadLink)));
         return;
     }
     else
