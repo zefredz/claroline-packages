@@ -21,6 +21,7 @@ div#navigation {
 
 div#table_of_content {
 	padding-top: 80px;
+	overflow: vertical;
 }
 
 .active a,
