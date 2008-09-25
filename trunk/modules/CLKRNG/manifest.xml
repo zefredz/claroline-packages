@@ -1,0 +1,24 @@
+<module>
+<label>CLKRNG</label>
+<name>Keyring Manager</name>
+<description><![CDATA[
+  Key Ring Manager for tool for administrator
+  ]]></description>
+<version>1.0-alpha</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>admin</type>
+<entry>index.php</entry>
+
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/wiki/CLVOC</web>
+</author>
+
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>
