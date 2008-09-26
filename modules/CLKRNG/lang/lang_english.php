@@ -18,6 +18,7 @@ $_lang['Register a service'] ='Register a service';
 $_lang['Service ']='Service ';
 $_lang['Service host'] ='Service host';
 $_lang['Service key'] ='Service key';
+$_lang['Service key already exist for service '] ='Une clé de service existe déjà pour le service ';
 $_lang['Service key administration'] ='Service key administration';
 $_lang['Service key added for service '] ='Service key added for service ';
 $_lang['Service key changed for service '] ='Service key changed for service ';
