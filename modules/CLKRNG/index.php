@@ -192,6 +192,12 @@ if('exAdd'== $cmd)
 		$errorMessage .= get_lang('Missing new service key');
 		$ok = false;
 	}
+	
+	if($keyring->check($serviceName, $serviceHost, $serviceKey))
+	{
+		$errorMessage = get_lang('Service key already exist for service ') . $serviceName . ':'. $serviceHost;
+		$ok = false;
+	}
 
 	if ( !$ok )
 	{
@@ -215,10 +221,10 @@ if('exAdd'== $cmd)
 	}
 	else
 	{
-		$keyring->add( $serviceName, $serviceHost, $serviceKey );
-		$successMessage = get_lang('Service key added for service ') . $serviceName . ':'. $serviceHost;
-		$cmd = 'list';
-	}
+		  $keyring->add( $serviceName, $serviceHost, $serviceKey );
+		  $successMessage = get_lang('Service key added for service ') . $serviceName . ':'. $serviceHost;
+		  $cmd = 'list';
+	}	
 }
 
 //Edition execution
