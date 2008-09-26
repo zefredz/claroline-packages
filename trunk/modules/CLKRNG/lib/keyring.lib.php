@@ -1,154 +1,153 @@
 <?php // $Id$
 
-    // vim: expandtab sw=4 ts=4 sts=4:
+// vim: expandtab sw=4 ts=4 sts=4:
+
+class Keyring // Csv implements Keyring
+{
+protected static $instance = false;
+
+public static function getInstance()
+{
+if ( ! self::$instance )
+{
+    self::$instance = new Keyring;
+}
+
+return self::$instance;
+}
+
+public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
+{
+$mngr = self::getInstance();
+
+return $mngr->check ( $serviceName, $serviceHost, $serviceKey );
+}
+
+protected $serviceKeyring;
+
+protected function __construct ()
+{
+$this->keyring = array();
+$this->path = get_path('rootSys'). 'platform/keyring.lst';
+$this->load();
+
+}
+
+protected function load ()
+{   
+if ( file_exists( $this->path ) )
+{
+    $serviceKeyring = file( $this->path );
     
-    class Keyring // Csv implements Keyring
+    foreach ( $serviceKeyring as $line )
     {
-        protected static $instance = false;
-        
-        public static function getInstance()
-        {
-            if ( ! self::$instance )
-            {
-                self::$instance = new Keyring;
-            }
-            
-            return self::$instance;
-        }
-        
-        public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
-        {
-            $mngr = self::getInstance();
-            
-            return $mngr->check ( $serviceName, $serviceHost, $serviceKey );
-        }
-        
-        protected $serviceKeyring;
-        
-        protected function __construct ()
-        {
-            $this->keyring = array();
-            $this->path = get_path('rootSys'). 'platform/keyring.lst';
-            $this->load();
-            
-        }
-        
-        protected function load ()
-        {   
-            if ( file_exists( $this->path ) )
-            {
-                $serviceKeyring = file( $this->path );
-                
-                foreach ( $serviceKeyring as $line )
-                {
-                    $line = trim( $line );
-                    
-                    if ( empty ( $line ) 
-                        || preg_match( '/^\s*\#/', $line ) )
-                    {
-                        continue;
-                    }
-                    
-                    if ( ! strpos( $line, ':' ) )
-                    {
-                        throw new Exception ("Invalid key ring file {$this->path}");
-                    }
-                    
-                    $tmp = explode(':', $line);
-                    
-                    if ( count ( $tmp ) != 3 )
-                    {
-                        throw new Exception ("Invalid key ring file {$this->path}");
-                    }
-                    
-                    $this->keyring[]= array( 'serviceName' => $tmp[0], 'serviceHost' => $tmp[1], 'serviceKey' => $tmp[2] );
-                }
-            }
-        }
-        
-        protected function save()
-        {
-            $content = '';
-            
-            foreach ( $this->keyring as $serviceName )
-            {
-                $content .= "{$serviceName['serviceName']}:{$serviceName['serviceHost']}:{$serviceName['serviceKey']}\n";
-            } 
-            
-            file_put_contents( $this->path, $content );
-        }
-        
-        public function add ( $serviceName, $serviceHost, $serviceKey )
-        {
-			foreach ( $this->keyring as $idx => $value )
-            {
-                if ( $value['serviceName'] == $serviceName
-                    && $value['serviceHost'] == $serviceHost )
-                {
-                    $this->keyring[$idx] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' => $serviceKey );
-                    return;
-                }
-            }
-            
-            $this->keyring[] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' =>$serviceKey );
-            
-            $this->save();
-        }
-        
-        public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
-        {
-            $this->delete ( $oldServiceName, $oldServiceHost );
-            $this->add ( $serviceName, $serviceHost, $serviceKey );
-        }
-        
-        public function delete ( $serviceName, $serviceHost )
-        {
-           foreach ( $this->keyring as $idx => $value )
-            {
-                if ( $value['serviceName'] == $serviceName
-                    && $value['serviceHost'] == $serviceHost )
-                {
-                    unset ( $this->keyring[$idx] );
-                    $this->save();
-                    return;
-                }
-            }
-            
-            throw new Exception ("no key for {$serviceName}:{$serviceHost}");
-        }
-        
-        public function get ( $serviceName, $serviceHost )
-        {
-           foreach ( $this->keyring as $idx => $value )
-            {
-                if ( $value['serviceName'] == $serviceName
-                    && $value['serviceHost'] == $serviceHost )
-                {
-                    return $this->keyring[$idx];
-                }
-            }
-            
-            throw new Exception ("no key for {$serviceName}:{$serviceHost}");
-        }
-        
-        public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
-        {
-           foreach ( $this->keyring as $idx => $value )
-            {
-                if ( $value['serviceName'] == $serviceName
-                    && $value['serviceHost'] == $serviceHost
-                    && $value['serviceKey'] == $serviceKeyToCheck )
-                {
-                    return true;
-                }
-            }
-            
-            return false;
-        }
-        
-        public function getServiceList()
-        {
-            return $this->keyring;
-        }
+    $line = trim( $line );
+    
+    if ( empty ( $line ) 
+        || preg_match( '/^\s*\#/', $line ) )
+    {
+        continue;
     }
-?>
+    
+    if ( ! strpos( $line, ':' ) )
+    {
+        throw new Exception ("Invalid key ring file {$this->path}");
+    }
+    
+    $tmp = explode(':', $line);
+    
+    if ( count ( $tmp ) != 3 )
+    {
+        throw new Exception ("Invalid key ring file {$this->path}");
+    }
+    
+    $this->keyring[]= array( 'serviceName' => $tmp[0], 'serviceHost' => $tmp[1], 'serviceKey' => $tmp[2] );
+    }
+}
+}
+
+protected function save()
+{
+$content = '';
+
+foreach ( $this->keyring as $serviceName )
+{
+    $content .= "{$serviceName['serviceName']}:{$serviceName['serviceHost']}:{$serviceName['serviceKey']}\n";
+} 
+
+file_put_contents( $this->path, $content );
+}
+
+public function add ( $serviceName, $serviceHost, $serviceKey )
+{
+foreach ( $this->keyring as $idx => $value )
+{
+    if ( $value['serviceName'] == $serviceName
+    && $value['serviceHost'] == $serviceHost )
+    {
+    $this->keyring[$idx] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' => $serviceKey );
+    return;
+    }
+}
+
+$this->keyring[] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' =>$serviceKey );
+
+$this->save();
+}
+
+public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
+{
+$this->delete ( $oldServiceName, $oldServiceHost );
+$this->add ( $serviceName, $serviceHost, $serviceKey );
+}
+
+public function delete ( $serviceName, $serviceHost )
+{
+   foreach ( $this->keyring as $idx => $value )
+{
+    if ( $value['serviceName'] == $serviceName
+    && $value['serviceHost'] == $serviceHost )
+    {
+    unset ( $this->keyring[$idx] );
+    $this->save();
+    return;
+    }
+}
+
+throw new Exception ("no key for {$serviceName}:{$serviceHost}");
+}
+
+public function get ( $serviceName, $serviceHost )
+{
+   foreach ( $this->keyring as $idx => $value )
+{
+    if ( $value['serviceName'] == $serviceName
+    && $value['serviceHost'] == $serviceHost )
+    {
+    return $this->keyring[$idx];
+    }
+}
+
+throw new Exception ("no key for {$serviceName}:{$serviceHost}");
+}
+
+public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
+{
+   foreach ( $this->keyring as $idx => $value )
+{
+    if ( $value['serviceName'] == $serviceName
+    && $value['serviceHost'] == $serviceHost
+    && $value['serviceKey'] == $serviceKeyToCheck )
+    {
+    return true;
+    }
+}
+
+return false;
+}
+
+public function getServiceList()
+{
+return $this->keyring;
+}
+}
