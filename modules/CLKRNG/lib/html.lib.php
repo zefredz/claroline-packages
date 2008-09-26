@@ -1,92 +1,91 @@
 <?php // $Id$
 
-    // vim: expandtab sw=4 ts=4 sts=4:
-    
-    /**
-     * Description
-     *
-     * @version     1.9 $Revision$
-     * @copyright   2001-2007 Universite catholique de Louvain (UCL)
-     * @author      Claroline Team <info@claroline.net>
-     * @author      Frederic Minne <zefredz@claroline.net>
-     * @license     http://www.gnu.org/copyleft/gpl.html
-     *              GNU GENERAL PUBLIC LICENSE version 2 or later
-     * @package     PACKAGE_NAME
-     */
+// vim: expandtab sw=4 ts=4 sts=4:
 
-    if ( count( get_included_files() ) == 1 )
+/**
+ * Description
+ *
+ * @version     1.9 $Revision$
+ * @copyright   2001-2007 Universite catholique de Louvain (UCL)
+ * @author      Claroline Team <info@claroline.net>
+ * @author      Frederic Minne <zefredz@claroline.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     PACKAGE_NAME
+ */
+
+if ( count( get_included_files() ) == 1 )
+{
+    die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+}
+
+class HtmlElement
+{
+    protected $attributes;
+    protected $elementName;
+    
+    protected static $id = 1;
+    
+    public function __construct( $elementName, $attributes = null )
     {
-        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
+        $this->elementName = $elementName;
+        $this->attributes = is_array( $attributes ) ? $attributes : array();
     }
     
-    class HtmlElement
+    public function setAttribute( $name, $value )
     {
-        protected $attributes;
-        protected $elementName;
-        
-        protected static $id = 1;
-        
-        public function __construct( $elementName, $attributes = null )
-        {
-            $this->elementName = $elementName;
-            $this->attributes = is_array( $attributes ) ? $attributes : array();
-        }
-        
-        public function setAttribute( $name, $value )
-        {
-            $this->attributes[$name] = $value;
-        }
-        
-        public function unsetAttribute( $name )
-        {
-            unset( $this->attributes[$name] );
-        }
-        
-        public function appendAttributes( $attr = null )
-        {
-            if ( is_array( $attr ) )
-            {
-                $this->attributes = array_merge( $this->attributes, $attr );
-            }
-        }
-        
-        public function renderAttributes()
-        {
-            $str = '';
-            
-            foreach ( $this->attributes as $name => $value )
-            {
-                $str .= " {$name}=\"{$value}\"";
-            }
-            
-            return $str;
-        }
+        $this->attributes[$name] = $value;
     }
     
-    class AutoCloseHtmlElement extends HtmlElement
+    public function unsetAttribute( $name )
     {
-        public function render()
+        unset( $this->attributes[$name] );
+    }
+    
+    public function appendAttributes( $attr = null )
+    {
+        if ( is_array( $attr ) )
         {
-            return "<{$this->elementName}".$this->renderAttributes()." />";
+            $this->attributes = array_merge( $this->attributes, $attr );
         }
     }
     
-    class OpenCloseHtmlElement extends HtmlElement
+    public function renderAttributes()
     {
-        protected $content = '';
+        $str = '';
         
-        public function setContent( $content )
+        foreach ( $this->attributes as $name => $value )
         {
-            $this->content = $content;
+            $str .= " {$name}=\"{$value}\"";
         }
         
-        public function render()
-        {
-            return "<{$this->elementName}".$this->renderAttributes().">"
-                . $this->content
-                . "</{$this->elementName}>"
-                ;
-        }
+        return $str;
+    }
+}
+
+class AutoCloseHtmlElement extends HtmlElement
+{
+    public function render()
+    {
+        return "<{$this->elementName}".$this->renderAttributes()." />";
+    }
+}
+
+class OpenCloseHtmlElement extends HtmlElement
+{
+    protected $content = '';
+    
+    public function setContent( $content )
+    {
+        $this->content = $content;
     }
     
-?>
+    public function render()
+    {
+        return "<{$this->elementName}".$this->renderAttributes().">"
+            . $this->content
+            . "</{$this->elementName}>"
+            ;
+    }
+}
+
