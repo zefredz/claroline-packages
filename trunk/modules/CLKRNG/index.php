@@ -349,6 +349,8 @@ if ( 'list' == $cmd)
 	$claroline->display->body->appendContent($serviceList->render());
 }
 
+ClaroBreadCrumbs::getInstance()->prepend( get_lang('Administration'), get_path('rootAdminWeb') );
+
 //return body html required
 echo $claroline->display->render();
 ?>
