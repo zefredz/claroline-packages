@@ -1,0 +1,32 @@
+<?php
+$_lang['Are you sure to delete'] ='Êtes-vous certain de vouloir effacer';
+$_lang['Are you sure to delete the selected documents ?'] ='Êtes-vous certain de vouloir effacer les documents sélectionnés ?';
+$_lang['Back to list'] ='Retour à la liste';
+$_lang['Continue ?'] ='Continuer ?';
+$_lang['Delete selected files'] ='Effacer les fichiers sélectionnés';
+$_lang['Discovered documents'] ='Documents découverts';
+$_lang['Document %document% deleted'] ='Le document %document% a été effacé';
+$_lang['Document %document% not found'] ='Document %document% non trouvé';
+$_lang['Document %document% published'] ='Le document %document% a été publié';
+$_lang['Invalid action'] ='Invalid action';
+$_lang['Local path'] ='Chemin local';
+$_lang['Manage key ring'] ='Gestion du trousseau de clés';
+$_lang['Missing new service name, host or key !'] ='Nouveau nom, hôte ou clé de service manquant !';
+$_lang['Missing old service name or host !'] ='Missing old service name or host !';
+$_lang['Missing service name or key !'] ='Clé ou nom de service manquant';
+$_lang['Missing service name or host !'] ='Hôte ou nom de service manquant !';
+$_lang['Not allowed !'] ='Non permis !';
+$_lang['No document published'] ='Aucun document publié';
+$_lang['No document selected !'] ='Aucun document sélectionné !';
+$_lang['No document to publish !'] ='Aucun document à publier !';
+$_lang['No document to publish'] ='Aucun document à publier';
+$_lang['No file to delete !'] ='Aucun fichier à effacer !';
+$_lang['No file selected'] ='Aucun fichier sélectionné';
+$_lang['Print Service'] ='Service d\'impression';
+$_lang['Publish a document'] ='Publier un document';
+$_lang['Published documents'] ='Documents publiés';
+$_lang['Publish selected files'] ='Publier les fichiers sélectionnés';
+$_lang['Service key administration'] ='Service key administration';
+$_lang['Size (octets)'] ='Taille (octets)';
+$_lang['You are going to delete the following documents:'] ='Vous allez effacer les documents suivants:';
+?>

@@ -1,0 +1,13 @@
+<schema>
+<class name="PrintServiceDocument" table="__CL_MAIN__icprint_documents" />
+<attribute name="id" field="document_id" />
+<attribute name="title" field="document_title" required="true" />
+<attribute name="localPath" field="document_localpath" required="true" />
+<attribute name="globalPath" field="document_globalpath" required="true" />
+<attribute name="length" field="document_length" required="true" />
+<attribute name="hash" field="document_hash" required="true" />
+<attribute name="publisher" field="document_publisher" required="true" />
+<attribute name="courseId" field="document_course_id" required="true" />
+<hasone name="action" class="PrintServiceAction" rel="PrintServiceDocument.id:PrintServiceAction.documentId" />
+<key name="id" />
+</schema>

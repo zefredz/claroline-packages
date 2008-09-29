@@ -1,0 +1,32 @@
+<?php
+$_lang['Are you sure to delete'] ='Are you sure to delete';
+$_lang['Are you sure to delete the selected documents ?'] ='Are you sure to delete the selected documents ?';
+$_lang['Back to list'] ='Back to list';
+$_lang['Continue ?'] ='Continue ?';
+$_lang['Delete selected files'] ='Delete selected files';
+$_lang['Discovered documents'] ='Discovered documents';
+$_lang['Document %document% deleted'] ='Document %document% deleted';
+$_lang['Document %document% not found'] ='Document %document% not found';
+$_lang['Document %document% published'] ='Document %document% published';
+$_lang['Invalid action'] ='Invalid action';
+$_lang['Local path'] ='Local path';
+$_lang['Manage key ring'] ='Manage key ring';
+$_lang['Missing new service name, host or key !'] ='Missing new service name, host or key !';
+$_lang['Missing old service name or host !'] ='Missing old service name or host !';
+$_lang['Missing service name or key !'] ='Missing service name or key !';
+$_lang['Missing service name or host !'] ='Missing service name or host !';
+$_lang['Not allowed !'] ='Not allowed !';
+$_lang['No document published'] ='No document published';
+$_lang['No document selected !'] ='No document selected !';
+$_lang['No document to publish !'] ='No document to publish !';
+$_lang['No document to publish'] ='No document to publish';
+$_lang['No file to delete !'] ='No file to delete !';
+$_lang['No file selected'] = 'No file selected';
+$_lang['Print Service'] ='Print Service';
+$_lang['Publish a document'] ='Publish a document';
+$_lang['Published documents'] ='Published documents';
+$_lang['Publish selected files'] ='Publish selected files';
+$_lang['Service key administration'] ='Service key administration';
+$_lang['Size (octets)'] ='Size (octets)';
+$_lang['You are going to delete the following documents:'] ='You are going to delete the following documents:';
+?>
