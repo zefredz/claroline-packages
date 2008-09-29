@@ -5,7 +5,7 @@
 <?php
 foreach( $this->documents as $thisAction ):
     $thisDoc = $this->actionMapper->hasOne( $thisAction, 'document' ); 
-    $courseData = claro_get_course_data( $thisAction->courseId );
+	$courseData = claro_get_course_data( $thisAction->courseId );
     
     if ( $thisAction->action != 'delete' ):
     
@@ -33,9 +33,10 @@ foreach( $this->documents as $thisAction ):
 </document><?php
 
     else: 
-    
+
 ?>
-<document id="<?php echo $thisDoc->id; ?>">
+
+<document id="<?php echo $thisAction->documentId; ?>">
 <hash><?php echo $thisAction->documentHash; ?></hash>
 <path><?php echo $thisAction->documentLocalPath; ?></path>
 <course code="<?php echo iconv( get_conf('charset'), 'utf-8', $courseData['officialCode'] ); ?>"
