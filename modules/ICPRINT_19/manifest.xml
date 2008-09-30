@@ -17,7 +17,7 @@ Envoi de document aux services d'impression
 </author>
 <requirements>
 <claroline>
-<version>1.8.4</version>
+<version>1.9</version>
 </claroline>
 </requirements>
 </module>
