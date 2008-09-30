@@ -31,7 +31,7 @@ class ChatMsgList
         $this->groupId = $groupId;
         
         $tblNameList = array(
-            'chat'
+    		'chat'
         );
 
         $tbl_chat_names = get_module_course_tbl( $tblNameList, $this->courseId ); 
@@ -52,8 +52,8 @@ class ChatMsgList
      */ 
     public function load($from = '', $to = '')
     {
-        $sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
-                    `JC`.`message`, 
+    	$sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
+    		        `JC`.`message`, 
                     `U`.`nom` as `lastname`,
                     `U`.`prenom` as `firstname`, 
                     `U`.`isCourseCreator` 
@@ -69,7 +69,8 @@ class ChatMsgList
         {
             $sql .= " AND `JC`.`group_id` IS NULL ";
         }
-
+        
+        
         if( $from != '' )
         {
             $sql .= " HAVING ". (int) $from . " < `unixPostTime` ";
@@ -124,16 +125,16 @@ class ChatMsgList
             }
             else
             {
-                $spanClass = '';
+                $spanClass = '';    
             }
-
+            
             $html .= "\n" . '<span class="clchat_msgLine' . $spanClass . '">'.$this->renderSingleMsg($message).'</span>' . "\n";
         }
-
+        
         // keep track of the last display time 
         if( $resetLastReceivedMsg ) $_SESSION['chat_lastReceivedMsg'] = time();
 
-        return claro_utf8_encode($html);
+        return $html;
     }
     
     /**
@@ -147,7 +148,7 @@ class ChatMsgList
     {
         $userName = $message['firstname'] . ' '. $message['lastname'];
         if (strlen($userName) > get_conf('max_nick_length') ) $userName = $message['firstname'] . ' '. $message['lastname'][0] . '.';
-
+    
         // transform url to clickable links
         $chatLine = claro_parse_user_text($message['message']);    
         
@@ -156,7 +157,7 @@ class ChatMsgList
         $html .= '<span class="clchat_msgDate">' . claro_html_localised_date('%H:%M:%S', $message['unixPostTime']) . '&nbsp;|</span>'
         .     ' <span class="clchat_userName">' . $userName 
         .     '</span>&nbsp;: ' . $chatLine . "\n";
-
+        
         return $html;
     }
     
@@ -172,7 +173,7 @@ class ChatMsgList
         
         return claro_sql_query($sql);
     }
-
+    
     /**
      * Add a message to chat
      *
@@ -219,14 +220,16 @@ class ChatMsgList
         .    '<title>' . get_lang('Chat') . '</title>'
         .    '</head>' . "\n"
         .    '<body>' . "\n\n";
-
+    
         $htmlContentFooter = '</body>' . "\n\n"
         .    '</html>' . "\n";
-
+    
+        
         $htmlContent = $this->render();
         
         $htmlContent = $htmlContentHeader . $htmlContent . $htmlContentFooter; 
-
+        
+        
         // filepath
         $courseDir = claro_get_course_path() .'/document';
         $baseWorkDir = get_path('coursesRepositorySys') . $courseDir;
