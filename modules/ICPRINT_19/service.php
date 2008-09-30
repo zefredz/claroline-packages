@@ -40,7 +40,33 @@ try
         $serviceUser = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
         $serviceKey = $userInput->getMandatory('serviceKey');
         
-        if ( ! Keyring::checkKey( 'icprint', $serviceUser, $serviceKey ) )
+        $checked = false;
+        
+        if ( !empty( $serviceUser ) )
+        {
+            $serviceHostList = array( $serviceUser );
+    
+            $serviceHostList[] = @gethostbyaddr( $serviceUser );
+            $serviceHostList[] = @gethostbyname( $serviceUser );
+    
+            if ( false !== ( $hostNameList = @gethostbynamel( $serviceUser ) ) ) 
+            {   
+                foreach ( $hostNameList as $hostName )
+                {   
+                    $serviceHostList[] = $hostName;
+                }   
+            }   
+    
+            foreach ( $serviceHostList as $serviceHost )
+            {   
+                if ( $checked = Keyring::checkKey( 'icprint', $serviceHost, $serviceKey ) ) 
+                {   
+                    break;
+                }   
+            }
+        }
+    
+        if ( ! $checked )
         {
             header( 'Forbidden', true, 403 );
             echo '<h1>Forbidden !</h1>';
