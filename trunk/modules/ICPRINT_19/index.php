@@ -406,7 +406,7 @@ if ( 'rqPublish' == $cmd )
 elseif ( 'rqDeleteFiles' == $cmd )
 {
 
-    $listToDelScript = get_lang('You are going to delete the following documents:') . '<ul>';
+    $listToDelScript = get_lang('You are going to delete the following documents') . ' :<ul>';
         
     foreach ( $filesToDelete as $path )
     {
