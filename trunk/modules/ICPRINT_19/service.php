@@ -3,19 +3,19 @@
 // vim: expandtab sw=4 ts=4 sts=4:
 
 /**
- * Description
+ * ICPRINT web service access point
  *
- * @version     1.8-backport $Revision$
+ * @version     1.9 $Revision$
  * @copyright   2001-2008 Universite catholique de Louvain (UCL)
  * @author      Claroline Team <info@claroline.net>
  * @author      Frederic Minne <zefredz@claroline.net>
  * @license     http://www.gnu.org/copyleft/gpl.html
  *              GNU GENERAL PUBLIC LICENSE version 2 or later
- * @package     PACKAGE_NAME
+ * @package     ICPRINT
  */
  
 try
-{    
+{
     // load Claroline kernel
     require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
     
@@ -186,4 +186,3 @@ catch ( Exception $e )
         claro_die( $e->getMessage() );
     }
 }
-?>
