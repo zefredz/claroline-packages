@@ -118,8 +118,8 @@ class ChatUserList
             }
             
             $html .= "\n" . '<span class="clchat_user '.$userClass.'">' 
-            . claro_utf8_encode(get_lang('%firstname %lastname', array('%firstname' => $user['firstname'], '%lastname' => $user['lastname']))) 
-            . '</span>' . "\n";
+            .    get_lang('%firstname %lastname', array('%firstname' => $user['firstname'], '%lastname' => $user['lastname']))
+            .    '</span>' . "\n";
         }
         
         return $html;
