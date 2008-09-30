@@ -1,14 +1,14 @@
 <?php // $Id$
 
 /**
- * Description
+ * Keyring management
  *
- * @version       1.9-backport $Revision$
- * @copyright   2001-2007 Universite catholique de Louvain (UCL)
- * @author         Frederic Minne <zefredz@claroline.net> Revision by Sokay Benjamin
- * @license        http://www.gnu.org/copyleft/gpl.html
- *                        GNU GENERAL PUBLIC LICENSE version 2 or later
- * @package      icprint
+ * @version     1.9$Revision$
+ * @copyright   2001-2008 Universite catholique de Louvain (UCL)
+ * @author      Frederic Minne <zefredz@claroline.net> Revision by Sokay Benjamin
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     CLKRNG
  */
 
 //admin tool
@@ -60,7 +60,7 @@ if ('exDelete' == $cmd)
 
     if ( empty ( $serviceName ) || empty ( $serviceHost ) )
     {
-        $errorMesssage = get_lang('Missing service name or host !');
+        $errorMesssage = get_lang('Missing service name or host');
         $error = true;
         $cmd = 'list';
     }
@@ -70,13 +70,14 @@ if ('exDelete' == $cmd)
         try
         {
             $keyring->delete( $serviceName, $serviceHost);
-            $successMessage = 'service ' . htmlspecialchars($serviceName)
-            . ':' . htmlspecialchars($serviceHost) . get_lang(' deleted');
+            $successMessage = get_lang('Service %service deleted',
+                array( '%service' => htmlspecialchars($serviceName.':'.$serviceHost) ) );
             $cmd = 'list';
         }
         catch(Exception $e)
         {
-            $errorMessage = get_lang('Service '). $serviceName . ':' . $serviceHost . get_lang('don\'t exist !');
+            $errorMessage = get_lang('Cannot delete service %service',
+                array( '%service' => htmlspecialchars($serviceName.':'.$serviceHost) ) );
             $cmd = 'list';
         }
     }
@@ -91,14 +92,15 @@ if ( 'rqDelete' == $cmd)
 
     if ( empty ( $serviceName ) || empty ( $serviceHost ) )
     {
-        $errorMesssage = get_lang('Missing service name or host !');
+        $errorMesssage = get_lang('Missing service name or host');
         $error = true;
         $cmd = 'list';
     }
     else
     {
 
-        $confirmMessage = get_lang('Delete service ') .$serviceName. ':' . $serviceHost . ' ?';
+        $confirmMessage = get_lang('Delete service %service ?',
+            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
 
         $form = new Form;
         $form->addElement( new InputHidden( 'cmd', 'exDelete' ) );
@@ -117,7 +119,7 @@ if ( 'rqEdit' == $cmd )
 
     if ( empty ( $serviceName ) || empty ( $serviceHost ) )
     {
-        $errorMessage = get_lang('Missing service name or host !');
+        $errorMessage = get_lang('Missing service name or host');
         $error = true;
         $cmd = 'list';
     }
@@ -138,10 +140,10 @@ if ( ('rqEdit' == $cmd || 'rqAdd' == $cmd) && !$error )
 {
     $form = new Form;
     $input = new InputText('serviceName', htmlspecialchars($service['serviceName']) );
-    $input->setLabel('Service' . ':' );
+    $input->setLabel( get_lang('Service name') . ':' );
     $form->addElement( $input, true );
     $input = new InputText( 'serviceHost', htmlspecialchars($service['serviceHost']) );
-    $input->setLabel( get_lang( 'Host address' )  . ':' );
+    $input->setLabel( get_lang( 'Service host' )  . ':' );
     $form->addElement( $input, true );
     $input = new InputText( 'serviceKey', htmlspecialchars($service['serviceKey']) );
     $input->setLabel( get_lang('Service key') . ':' );
@@ -195,7 +197,8 @@ if('exAdd'== $cmd)
     
     if($keyring->check($serviceName, $serviceHost, $serviceKey))
     {
-        $errorMessage = get_lang('Service key already exist for service ') . $serviceName . ':'. $serviceHost;
+        $errorMessage = get_lang('Key already exist for service %service',
+            array( '%service' => htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $ok = false;
     }
 
@@ -205,10 +208,10 @@ if('exAdd'== $cmd)
 
         $form = new Form;
         $input = new InputText('serviceName', htmlspecialchars($serviceName) );
-        $input->setLabel('Service' . ':' );
+        $input->setLabel(get_lang('Service name') . ':' );
         $form->addElement( $input, true );
         $input = new InputText( 'serviceHost', htmlspecialchars($serviceHost) );
-        $input->setLabel( get_lang( 'Host address' )  . ':' );
+        $input->setLabel( get_lang( 'Service host' )  . ':' );
         $form->addElement( $input, true );
         $input = new InputText( 'serviceKey', htmlspecialchars($serviceKey) );
         $input->setLabel( get_lang('Service key') . ':' );
@@ -221,9 +224,10 @@ if('exAdd'== $cmd)
     }
     else
     {
-          $keyring->add( $serviceName, $serviceHost, $serviceKey );
-          $successMessage = get_lang('Service key added for service ') . $serviceName . ':'. $serviceHost;
-          $cmd = 'list';
+        $keyring->add( $serviceName, $serviceHost, $serviceKey );
+        $successMessage = get_lang('Service key added for service %service',
+            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+        $cmd = 'list';
     }    
 }
 
@@ -238,20 +242,21 @@ if ('exEdit' == $cmd)
 
     if ( empty ( $oldServiceName ) || empty( $oldServiceHost ))
     {
-        $errorMessage = get_lang('Missing old service name or host !');
+        $errorMessage = get_lang('Missing old service name or host');
         $error = true;
         $cmd = 'list';
     }
     else if    (empty( $serviceName) || empty ($serviceKey)|| empty ($serviceHost))
     {
-        $errorMessage = get_lang('Missing service name, key or host !');
+        $errorMessage = get_lang('Missing service name, key or host');
         $error = true;
         $cmd = 'list';
     }
     else
     {
         $keyring->update( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey );
-        $successMessage = get_lang('Service key changed for service ') . $serviceName . ':' . $serviceHost;
+        $successMessage = get_lang('Service key changed for service %service',
+            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $cmd = 'list';
     }
 }
