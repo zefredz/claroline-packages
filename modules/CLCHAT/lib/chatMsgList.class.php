@@ -31,7 +31,7 @@ class ChatMsgList
         $this->groupId = $groupId;
         
         $tblNameList = array(
-    		'chat'
+            'chat'
         );
 
         $tbl_chat_names = get_module_course_tbl( $tblNameList, $this->courseId ); 
@@ -52,8 +52,8 @@ class ChatMsgList
      */ 
     public function load($from = '', $to = '')
     {
-    	$sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
-    		        `JC`.`message`, 
+        $sql = "SELECT UNIX_TIMESTAMP(`JC`.`post_time`) as `unixPostTime`, 
+                    `JC`.`message`, 
                     `U`.`nom` as `lastname`,
                     `U`.`prenom` as `firstname`, 
                     `U`.`isCourseCreator` 
@@ -92,8 +92,8 @@ class ChatMsgList
         else
         {
             return false;
-        }        
-    }    
+        }
+    }
     
     /**
      * Produce html to display the message list
