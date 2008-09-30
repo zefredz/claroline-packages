@@ -28,5 +28,5 @@ $_lang['Published documents'] ='Documents publiés';
 $_lang['Publish selected files'] ='Publier les fichiers sélectionnés';
 $_lang['Service key administration'] ='Service key administration';
 $_lang['Size (octets)'] ='Taille (octets)';
-$_lang['You are going to delete the following documents:'] ='Vous allez effacer les documents suivants:';
+$_lang['You are going to delete the following documents'] ='Vous allez effacer les documents suivants';
 ?>
