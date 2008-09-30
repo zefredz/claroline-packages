@@ -9,52 +9,52 @@ function init()
     // form submission
     $("#clchat_form").submit(addMsg);  
     // commands
-    $("#clchat_cmd_logs").click(switchDisplayLog);
-    $("#clchat_cmd_archive").click(rqArchive);
-    $("#clchat_cmd_flush").click(rqFlush);
+$("#clchat_cmd_logs").click(switchDisplayLog);
+$("#clchat_cmd_archive").click(rqArchive);
+$("#clchat_cmd_flush").click(rqFlush);
 
 
-    // hide some interface elements
-    $("#clchat_loading").hide();
-    $("#clchat_dialogBox").hide();
+// hide some interface elements
+$("#clchat_loading").hide();
+$("#clchat_dialogBox").hide();
 
-    // set event for ajax call start and stop
-    $("#clchat_loading").ajaxStart(function(){
-        $(this).show();
-    });
+// set event for ajax call start and stop
+$("#clchat_loading").ajaxStart(function(){
+$(this).show();
+});
 
-    $("#clchat_loading").ajaxStop(function(){
-        $(this).hide();
-    });
+$("#clchat_loading").ajaxStop(function(){
+$(this).hide();
+});
 
-    // set interval does not execute function directly but wait for the first interval.
-    // so call refresh one time at launch before setting up the interval
-    rqRefresh();
-    rqRefreshUserList();
-    
-    setInterval(rqRefresh, refreshRate);
-    setInterval(rqRefreshUserList, userListRefresh);
+// set interval does not execute function directly but wait for the first interval.
+// so call refresh one time at launch before setting up the interval
+rqRefresh();
+rqRefreshUserList();
+
+setInterval(rqRefresh, refreshRate);
+setInterval(rqRefreshUserList, userListRefresh);
 
     // give focus to form
-    $("#clchat_msg").focus();
+$("#clchat_msg").focus();
 }
 
 /* Refresh text */
 function exRefresh(response)
 {
-    $("#clchat_text").empty();
-    $("#clchat_text").append(response);
+$("#clchat_text").empty();
+$("#clchat_text").append(response);
 
-    // only if we can find newlines in updated chatarea
-    if( $(".newLine").size() )
-    {
-        // scroll to bottom of clchat_chatarea
-        // do not work with jquery selector
-        document.getElementById("clchat_chatarea").scrollTop = document.getElementById("clchat_chatarea").scrollHeight;
-        
-        // Add a display effect for all lines that are added since last refresh
-        $(".newLine").fadeIn("slow");
-    }
+// only if we can find newlines in updated chatarea
+if( $(".newLine").size() )
+{
+// scroll to bottom of clchat_chatarea
+// do not work with jquery selector
+document.getElementById("clchat_chatarea").scrollTop = document.getElementById("clchat_chatarea").scrollHeight;
+
+// Add a display effect for all lines that are added since last refresh
+$(".newLine").fadeIn("slow");
+}
 }
 
 function rqRefresh()
@@ -65,14 +65,15 @@ function rqRefresh()
         success: function(response){
             exRefresh(response)
             }, 
+
         dataType: "html"});
 }
 
 /* Refresh user list */
 function exRefreshUserList(response)
 {
-    $("#clchat_user_list").empty();
-    $("#clchat_user_list").append(response);
+$("#clchat_user_list").empty();
+$("#clchat_user_list").append(response);
 }
 
 function rqRefreshUserList()
@@ -90,24 +91,24 @@ function rqRefreshUserList()
 /* logs */
 function switchDisplayLog()
 {
-    if(! logDisplayed )
-    {
-        rqDisplayLogs();
-        logDisplayed = true;
-    }
-    else
-    {
-        exHideLogs();
-        logDisplayed = false;
-    }
+if(! logDisplayed )
+{
+rqDisplayLogs();
+logDisplayed = true;
+}
+else
+{
+exHideLogs();
+logDisplayed = false;
+}
 }
 
 function exDisplayLogs(response)
 {
     $("#clchat_log").hide();
     $("#clchat_log").empty();
-    $("#clchat_log").append(response);
-    $("#clchat_log").show();
+$("#clchat_log").append(response);
+$("#clchat_log").show();    
 }
 
 function rqDisplayLogs()
@@ -137,7 +138,7 @@ function showDialog(msg)
     $("#clchat_dialogBox").empty();
     $("#clchat_dialogBox").append(msg);
     $("#clchat_dialogBox").show("slow");
-
+    
     msgTimeout = setTimeout(hideDialog,refreshRate);
 }
 
@@ -203,12 +204,12 @@ function rqFlush()
 
 function getGidReqParam()
 {
-    if( typeof gidReq != 'undefined' )
-    {
-        return '&gidReq=' + gidReq;
-    }
-    else
-    {
-        return '';
-    }
+if( typeof gidReq != 'undefined' )
+{
+    return '&gidReq=' + gidReq;
+}
+else
+{
+    return '';
+}
 }
