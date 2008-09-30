@@ -44,26 +44,7 @@ try
         
         if ( !empty( $serviceUser ) )
         {
-            $serviceHostList = array( $serviceUser );
-    
-            $serviceHostList[] = @gethostbyaddr( $serviceUser );
-            $serviceHostList[] = @gethostbyname( $serviceUser );
-    
-            if ( false !== ( $hostNameList = @gethostbynamel( $serviceUser ) ) ) 
-            {   
-                foreach ( $hostNameList as $hostName )
-                {   
-                    $serviceHostList[] = $hostName;
-                }   
-            }   
-    
-            foreach ( $serviceHostList as $serviceHost )
-            {   
-                if ( $checked = Keyring::checkKey( 'icprint', $serviceHost, $serviceKey ) ) 
-                {   
-                    break;
-                }   
-            }
+            $checked = Keyring::checkKeyForHost( 'icprint', $serviceUser, $serviceKey );
         }
     
         if ( ! $checked )
