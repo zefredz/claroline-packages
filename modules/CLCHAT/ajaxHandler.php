@@ -87,11 +87,11 @@ if( $cmd == 'rqAdd' )
     if( !empty($msg) && claro_is_user_authenticated() )
     {
         $msgList = new ChatMsgList($courseId,$groupId);
-        $msgList->addMsg($msg, claro_get_current_user_id());
+        $msgList->addMsg(claro_utf8_decode($msg), claro_get_current_user_id());
     }
 
     // always request refresh to have a response for ajax call
-$cmd = 'rqRefresh';    
+    $cmd = 'rqRefresh';    
 }
 
 if( $cmd == 'rqRefresh' )
@@ -99,7 +99,7 @@ if( $cmd == 'rqRefresh' )
     $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load($_SESSION['chat_connectionTime']);
     
-echo $msgList->render();
+    echo claro_utf8_encode($msgList->render());
 
     return;
 }
@@ -111,10 +111,10 @@ if( $cmd == 'rqRefreshUserList' )
     $chatUserList->ping(claro_get_current_user_id());
     // delete user that have not ping recently
     $chatUserList->prune();
-// load the refreshed list
+    // load the refreshed list
     $chatUserList->load();
     
-    echo $chatUserList->render();
+    echo claro_utf8_encode($chatUserList->render());
     
     return;
 }
@@ -128,7 +128,7 @@ if( $cmd == 'rqFlush' && $is_allowedToEdit )
     $msgList = new ChatMsgList($courseId,$groupId);
     if( $msgList->flush() )
     {
-        echo get_lang('Chat reset');
+        echo claro_utf8_encode(get_lang('Chat reset'));
     }
     
     return;    
@@ -139,7 +139,7 @@ if( $cmd == 'rqLogs' && $is_allowedToEdit )
     $msgList = new ChatMsgList($courseId,$groupId);
     $msgList->load(1, $_SESSION['chat_connectionTime'] );
 
-    echo $msgList->render();
+    echo claro_utf8_encode($msgList->render());
     
     return;    
 }
@@ -158,8 +158,8 @@ if( $cmd == 'rqArchive' && $is_allowedToEdit )
     }
     else
     {
-        echo get_lang('Store failed');
+        echo claro_utf8_encode(get_lang('Store failed'));
         return;
-    }    
+    }
 }
 ?>
