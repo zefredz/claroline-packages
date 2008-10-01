@@ -115,7 +115,12 @@ try
         $fromDate = $userInput->get( 'fromDate' );
         
         if ( $fromDate )
-        {            
+        {
+            if ( Claro_Utils_Time::isIso8601( $fromDate ) )
+             {
+                $fromDate = Claro_Utils_Time::iso8601ToDatetime( $fromDate );
+             }
+             
             $documents = $actionMapper->selectAll(
                 $actionMapper->getSchema()->getField( 'timestamp' ) . ' > :fromDate',
                 array( ':fromDate' => Claro_Utils_Time::dateToDatetime( $fromDate ) )
