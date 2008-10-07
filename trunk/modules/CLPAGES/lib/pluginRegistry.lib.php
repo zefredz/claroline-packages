@@ -16,89 +16,89 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  */
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-	class PluginRegistry
-	{
-		private static $instance = false;
+    class PluginRegistry
+    {
+        private static $instance = false;
 
-		private $plugins;
+        private $plugins;
 
-		public function __construct()
-		{
-			$this->plugins = array();
+        public function __construct()
+        {
+            $this->plugins = array();
 
-			$this->loadAll();
-		}
+            $this->loadAll();
+        }
 
-		public function register($type, $displayName, $className = '', $category = '', $img = '' )
-		{
-			$type = strtolower($type);
+        public function register($type, $displayName, $className = '', $category = '', $img = '' )
+        {
+            $type = strtolower($type);
 
-			$this->plugins[$type]['displayName'] = $displayName;
+            $this->plugins[$type]['displayName'] = $displayName;
 
-			if( $className == '' ) $className = $type;
-			$this->plugins[$type]['className'] = $className;
+            if( $className == '' ) $className = $type;
+            $this->plugins[$type]['className'] = $className;
 
-			$this->plugins[$type]['category'] = strtolower($category);
+            $this->plugins[$type]['category'] = strtolower($category);
 
-			if( $img == '' ) $img = '';
-			$this->plugins[$type]['img'] = $img;
-		}
+            if( $img == '' ) $img = '';
+            $this->plugins[$type]['img'] = $img;
+        }
 
-		public function getRegisteredTypes()
-		{
-			return array_key( $this->plugins );
-		}
+        public function getRegisteredTypes()
+        {
+            return array_key( $this->plugins );
+        }
 
-		public function loadAll()
-		{
-			$allowedExtensions = array('.php','.php3','.php4','.php4','.php6');
+        public function loadAll()
+        {
+            $allowedExtensions = array('.php','.php3','.php4','.php4','.php6');
 
-	    	$path = get_module_path('CLPAGES') . '/lib/plugins';
+            $path = get_module_path('CLPAGES') . '/lib/plugins';
 
-	        $dirname = realpath($path) . '/' ;
-	        if ( is_dir($dirname) )
-	        {
-	            $handle = opendir($dirname);
-	            while ( false !== ($elt = readdir($handle) ) )
-	            {
-	                // skip '.', '..' and 'CVS'
-	                if ( $elt == '.' || $elt == '..' || $elt == 'CVS' ) continue;
+            $dirname = realpath($path) . '/' ;
+            if ( is_dir($dirname) )
+            {
+                $handle = opendir($dirname);
+                while ( false !== ($elt = readdir($handle) ) )
+                {
+                    // skip '.', '..' and 'CVS'
+                    if ( $elt == '.' || $elt == '..' || $elt == 'CVS' ) continue;
 
-	                // skip folders
-	                if ( !is_file($dirname.$elt) ) continue ;
+                    // skip folders
+                    if ( !is_file($dirname.$elt) ) continue ;
 
-					// skip file with wrong extension
-	                $ext = strrchr($elt, '.');
-					if ( !in_array(strtolower($ext),$allowedExtensions) ) continue;
+                    // skip file with wrong extension
+                    $ext = strrchr($elt, '.');
+                    if ( !in_array(strtolower($ext),$allowedExtensions) ) continue;
 
-	                // add elt to array
-					require_once $path . '/' . $elt;
-	            }
-	        }
-	        else
-	        {
-	            return false;
-	        }
-		}
+                    // add elt to array
+                    require_once $path . '/' . $elt;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
 
-		public function getPluginClass( $type )
-		{
-			$type = strtolower($type);
+        public function getPluginClass( $type )
+        {
+            $type = strtolower($type);
 
-			if( isset($this->plugins[$type]['className']) )
-			{
-				return $this->plugins[$type]['className'];
-			}
-			else
-			{
-				return '';
-			}
-		}
+            if( isset($this->plugins[$type]['className']) )
+            {
+                return $this->plugins[$type]['className'];
+            }
+            else
+            {
+                return '';
+            }
+        }
 
-		public function getList()
-		{
-			return $this->plugins;
-		}
+        public function getList()
+        {
+            return $this->plugins;
+        }
 
         public static function getInstance()
         {
@@ -110,6 +110,6 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
             return PluginRegistry::$instance;
         }
 
-	}
+    }
 
 ?>
