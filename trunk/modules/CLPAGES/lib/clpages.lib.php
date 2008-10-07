@@ -48,7 +48,7 @@ abstract class Component
      * get the component data
      * @return array component data
      */
-    abstract function getData();
+    abstract public function getData();
 
     // title
     public function getTitle()
