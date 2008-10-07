@@ -1,238 +1,236 @@
 <?php // $Id$
+
 /**
  * CLAROLINE
  *
  * $Revision$
  *
- * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
+ * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLPAGES
- *
  * @author Claroline team <info@claroline.net>
- *
+ * 
  */
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-    // load Claroline kernel
-    $tlabelReq = 'CLPAGES';
-    require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+// vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-	require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
-	require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
-	// load and register all plugins
-	$pluginRegistry = pluginRegistry::getInstance();
+// load Claroline kernel
+$tlabelReq = 'CLPAGES';
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
+require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
+require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
 
-	/*
-	 * init request vars
-	 */
-	if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) ) $pageId = (int) $_REQUEST['pageId'];
-	else                                                                $pageId = null;
+// load and register all plugins
+$pluginRegistry = pluginRegistry::getInstance();
 
-	// slide number cannot be negative
-	if( isset($_REQUEST['slide']) && is_numeric($_REQUEST['slide']) ) $slide = max(1,(int) $_REQUEST['slide']);
-	else                                                              $slide = 1;
+/*
+ * init request vars
+ */
+if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) ) $pageId = (int) $_REQUEST['pageId'];
+else                                                                $pageId = null;
 
-	/*
-	 * init other vars
-	 */
-	claro_set_display_mode_available(true);
-	$is_allowedToEdit = claro_is_allowed_to_edit();
+// slide number cannot be negative
+if( isset($_REQUEST['slide']) && is_numeric($_REQUEST['slide']) ) $slide = max(1,(int) $_REQUEST['slide']);
+else                                                              $slide = 1;
 
-	if( is_null($pageId) )
-	{
-		header("Location: ./index.php");
-		exit();
-	}
-	else
-	{
-	    $page = new Page();
+/*
+ * init other vars
+ */
+claro_set_display_mode_available(true);
+$is_allowedToEdit = claro_is_allowed_to_edit();
 
-	    if( !$page->load($pageId) )
-	    {
-	        // required
-	        header("Location: ../index.php");
-	    	exit();
-	    }
-	}
+if( is_null($pageId) )
+{
+    header("Location: ./index.php");
+    exit();
+}
+else
+{
+    $page = new Page();
 
-	/*
-	 * Output
-	 */
-	$cssLoader = CssLoader::getInstance();
-    $cssLoader->load( 'clpages', 'screen');
+    if( !$page->load($pageId) )
+    {
+        // required
+        header("Location: ../index.php");
+        exit();
+    }
+}
 
-	if( $is_allowedToEdit )
-	{
-		// we should not need any javascript for normal user
-		// output stuff
-	    $jsloader = JavascriptLoader::getInstance();
-	    $jsloader->load('jquery');
-	    //$jsloader->load('jquery.interface');
-	    $jsloader->load('jquery.livequery');
-	    $jsloader->load('jquery.json');
-	    $jsloader->load('jquery.form');
-	    $jsloader->load('claroline');
-	    $jsloader->load('clpages');
+/*
+ * Output
+ */
+$cssLoader = CssLoader::getInstance();
+$cssLoader->load( 'clpages', 'screen');
 
-		$cssLoader->load( 'clpages_admin', 'screen');
+if( $is_allowedToEdit )
+{
+    // we should not need any javascript for normal user
+    // output stuff
+    $jsloader = JavascriptLoader::getInstance();
+    $jsloader->load('jquery');
+    //$jsloader->load('jquery.interface');
+    $jsloader->load('jquery.livequery');
+    $jsloader->load('jquery.json');
+    $jsloader->load('jquery.form');
+    $jsloader->load('claroline');
+    $jsloader->load('clpages');
 
-		$htmlHeaders = "\n"
-		.    '<script type="text/javascript">' . "\n"
-		.	 '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
-		.	 '  var pageId = "'.$page->getId().'";' . "\n"
-		.	 '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
-		.    '</script>' . "\n\n";
+    $cssLoader->load( 'clpages_admin', 'screen');
 
-		// do not work at this time with jsloader
-		$htmlHeaders .= "\n"
-		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce/tiny_mce.js" ></script>' . "\n"
-		. '<script language="javascript" type="text/javascript">'."\n"
-        .	'var text_dir = "'.get_locale("text_dir").'";' . "\n"
-        .	'</script>'."\n\n"
-		.	 '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/advanced.conf.js" ></script>' . "\n";
+    $htmlHeaders = "\n"
+    .    '<script type="text/javascript">' . "\n"
+    .     '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
+    .     '  var pageId = "'.$page->getId().'";' . "\n"
+    .     '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
+    .    '</script>' . "\n\n";
 
-
-		$claroline->display->header->addHtmlHeader($htmlHeaders);
-	}
-	elseif( $page->getDisplayMode() == 'SLIDE' )
-	{
-	    $jsloader = JavascriptLoader::getInstance();
-	    $jsloader->load('jquery');
-	    $jsloader->load('slide');
-	}
+    // do not work at this time with jsloader
+    $htmlHeaders .= "\n"
+    .     '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce/tiny_mce.js" ></script>' . "\n"
+    . '<script language="javascript" type="text/javascript">'."\n"
+    .    'var text_dir = "'.get_locale("text_dir").'";' . "\n"
+    .    '</script>'."\n\n"
+    .     '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/advanced.conf.js" ></script>' . "\n";
 
 
-   	$out = '';
+    $claroline->display->header->addHtmlHeader($htmlHeaders);
+}
+elseif( $page->getDisplayMode() == 'SLIDE' )
+{
+    $jsloader = JavascriptLoader::getInstance();
+    $jsloader->load('jquery');
+    $jsloader->load('slide');
+}
 
-	if( $is_allowedToEdit )	$nameTools = get_lang('Edit page');
-	else                    $nameTools = get_lang('Page');
 
-	$title['mainTitle'] = $nameTools;
-	$title['subTitle'] = $page->getTitle();
-	
-	$out .= claro_html_tool_title($title)
-   	.	 '<div id="pageContainer">' . "\n";
+   $out = '';
 
-   	// edition menu
-   	if( $is_allowedToEdit )
-   	{
-   		$pluginRegistry = pluginRegistry::getInstance();
-   		$availablePlugins = $pluginRegistry->getList();
-   		$plugins = array();
-		// sort by category
-		foreach( $availablePlugins as $type => $details )
-		{
-			$plugins[$details['category']][$type] = $details;
-		}
-		ksort($plugins);
+if( $is_allowedToEdit )    $nameTools = get_lang('Edit page');
+else                    $nameTools = get_lang('Page');
 
-   		$out .= '<div id="pageSidebar">' . "\n"
-   		.	 '<img src="'.get_icon_url('loading').'" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
-   		.	 '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
+$title['mainTitle'] = $nameTools;
+$title['subTitle'] = $page->getTitle();
 
-   		foreach( $plugins as $category => $categoryPlugins )
-		{
-			if( !empty($category) ) $out .= '<p class="pluginCategory">'.ucfirst(strtolower($category)).'</>' . "\n";
-			$out .= '<ul class="pluginList">'. "\n";
+$out .= claro_html_tool_title($title)
+   .     '<div id="pageContainer">' . "\n";
 
-			foreach( $categoryPlugins as $type => $pluginDetails )
-			{
-				$img = '';
-				if( !empty($pluginDetails['img']) )
-				{
-					$iconUrl = get_icon_url($pluginDetails['img']);
+   // edition menu
+   if( $is_allowedToEdit )
+   {
+       $pluginRegistry = pluginRegistry::getInstance();
+       $availablePlugins = $pluginRegistry->getList();
+       $plugins = array();
+    // sort by category
+    foreach( $availablePlugins as $type => $details )
+    {
+        $plugins[$details['category']][$type] = $details;
+    }
+    ksort($plugins);
 
-					if( !is_null($iconUrl) )
-					{
-						$img = 'style="background: url('.$iconUrl.') center right no-repeat; "';
-					}
-				}
+       $out .= '<div id="pageSidebar">' . "\n"
+       .     '<img src="'.get_icon_url('loading').'" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
+       .     '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
 
-				$out .= '<li '.$img.'>'
-				.	 '<a href="#" onclick="javascript:addComponent(\''.$type.'\');return false;">'
-				.	 $pluginDetails['displayName']
-				.	 '</a>'
-				.	 '</li>';
-			}
+       foreach( $plugins as $category => $categoryPlugins )
+    {
+        if( !empty($category) ) $out .= '<p class="pluginCategory">'.ucfirst(strtolower($category)).'</>' . "\n";
+        $out .= '<ul class="pluginList">'. "\n";
 
-			$out .= '</ul>' . "\n";
-		}
-   		$out .= '</div>' . "\n";
-   	}
+        foreach( $categoryPlugins as $type => $pluginDetails )
+        {
+            $img = '';
+            if( !empty($pluginDetails['img']) )
+            {
+                $iconUrl = get_icon_url($pluginDetails['img']);
 
-	$out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
+                if( !is_null($iconUrl) )
+                {
+                    $img = 'style="background: url('.$iconUrl.') center right no-repeat; "';
+                }
+            }
 
-	$componentList = $page->getComponentList();
+            $out .= '<li '.$img.'>'
+            .     '<a href="#" onclick="javascript:addComponent(\''.$type.'\');return false;">'
+            .     $pluginDetails['displayName']
+            .     '</a>'
+            .     '</li>';
+        }
 
-    if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
-	{
-	    $componentsHtml = '';
-	    foreach( $componentList as $component )
-    	{
-    		if( $component->isVisible() || $is_allowedToEdit )
-    		{
-    			$componentsHtml .= $component->renderBlock();
-    		}
-    	}
-    	
-    	$bannerToggle = '<p>'
-    	.  '<a href="#" class="bannerToggle">' . get_lang('Show/hide banner') . '</a>'
-    	.  '</p>' . "\n";
-    	
-	    $navBar = '<div class="slideNav">' . "\n";
-    	    
-        $navBar .= '<span class="prevSlide">'
-        .	 '<a href="#">'
-        .	 '&lt; '. get_lang('Previous') 
-        .	 '</a>'
-        .	 '</span>' . "\n";
+        $out .= '</ul>' . "\n";
+    }
+       $out .= '</div>' . "\n";
+   }
 
-        $navBar .= '<span class="nextSlide">'
-        .	 '<a href="#">'
-        .	 get_lang('Next') . ' &gt;' 
-        .	 '</a>'
-        .	 '</span>' . "\n";
+$out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
+
+$componentList = $page->getComponentList();
+
+if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
+{
+    $componentsHtml = '';
+    foreach( $componentList as $component )
+    {
+        if( $component->isVisible() || $is_allowedToEdit )
+        {
+            $componentsHtml .= $component->renderBlock();
+        }
+    }
+    
+    $bannerToggle = '<p>'
+    .  '<a href="#" class="bannerToggle">' . get_lang('Show/hide banner') . '</a>'
+    .  '</p>' . "\n";
+    
+    $navBar = '<div class="slideNav">' . "\n";
         
-        $navBar .= '<span class="slideProgress">'
-        .     get_lang('Slide %current on %total', array('%current' => '<span class="displayedSlide">0</span>', '%total' => '<span class="lastSlide">0</span>' ) ) 
-        .     '</span>' . "\n";
-                    
-	    $navBar .= '</div>' . "\n";
-	    
-	    
-	    $out .= $bannerToggle . $navBar . $componentsHtml . $navBar; 
-	    
-	}
-	else
-	{
-    	// page view
-    	foreach( $componentList as $component )
-    	{
-    		if( $component->isVisible() || $is_allowedToEdit )
-    		{
-    			$out .= $component->renderBlock();
-    		}
-    	}
-	}
-	
+    $navBar .= '<span class="prevSlide">'
+    .     '<a href="#">'
+    .     '&lt; '. get_lang('Previous') 
+    .     '</a>'
+    .     '</span>' . "\n";
 
-	
-	$out .= '</div>' . "\n\n" // componentsContainer
-	.	 '<div class="spacer"></div>' . "\n"
-	.	 '</div>' . "\n\n" // pageContainer
-	;
+    $navBar .= '<span class="nextSlide">'
+    .     '<a href="#">'
+    .     get_lang('Next') . ' &gt;' 
+    .     '</a>'
+    .     '</span>' . "\n";
+    
+    $navBar .= '<span class="slideProgress">'
+    .     get_lang('Slide %current on %total', array('%current' => '<span class="displayedSlide">0</span>', '%total' => '<span class="lastSlide">0</span>' ) ) 
+    .     '</span>' . "\n";
+                
+    $navBar .= '</div>' . "\n";
+    
+    
+    $out .= $bannerToggle . $navBar . $componentsHtml . $navBar; 
+    
+}
+else
+{
+    // page view
+    foreach( $componentList as $component )
+    {
+        if( $component->isVisible() || $is_allowedToEdit )
+        {
+            $out .= $component->renderBlock();
+        }
+    }
+}
 
 
-    /*
-     * Output rendering
-     */
-	ClaroBreadCrumbs::getInstance()->prepend(get_lang('Pages'), './index.php' . claro_url_relay_context('?'));
+
+$out .= '</div>' . "\n\n" // componentsContainer
+.     '<div class="spacer"></div>' . "\n"
+.     '</div>' . "\n\n" // pageContainer
+;
 
 
-	$claroline->display->body->appendContent($out);
+/*
+ * Output rendering
+ */
+ClaroBreadCrumbs::getInstance()->prepend(get_lang('Pages'), './index.php' . claro_url_relay_context('?'));
 
-    echo $claroline->display->render();
-?>
+
+$claroline->display->body->appendContent($out);
+
+echo $claroline->display->render();
