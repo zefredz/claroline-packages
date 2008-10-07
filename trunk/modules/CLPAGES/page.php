@@ -115,52 +115,54 @@ $title['subTitle'] = $page->getTitle();
 $out .= claro_html_tool_title($title)
    .     '<div id="pageContainer">' . "\n";
 
-   // edition menu
-   if( $is_allowedToEdit )
-   {
-       $pluginRegistry = pluginRegistry::getInstance();
-       $availablePlugins = $pluginRegistry->getList();
-       $plugins = array();
+// edition menu
+if( $is_allowedToEdit )
+{
+    $pluginRegistry = pluginRegistry::getInstance();
+    $availablePlugins = $pluginRegistry->getList();
+    $plugins = array();
+    
     // sort by category
     foreach( $availablePlugins as $type => $details )
     {
         $plugins[$details['category']][$type] = $details;
     }
+    
     ksort($plugins);
-
-       $out .= '<div id="pageSidebar">' . "\n"
-       .     '<img src="'.get_icon_url('loading').'" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
-       .     '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
-
-       foreach( $plugins as $category => $categoryPlugins )
+    
+    $out .= '<div id="pageSidebar">' . "\n"
+    .     '<img src="'.get_icon_url('loading').'" alt="'.get_lang('Loading...').'" id="loading" width="16" height="16" />' . "\n"
+    .     '<strong>'.get_lang('Add a composant').'</strong>' . "\n";
+    
+    foreach( $plugins as $category => $categoryPlugins )
     {
-        if( !empty($category) ) $out .= '<p class="pluginCategory">'.ucfirst(strtolower($category)).'</>' . "\n";
+        if( !empty($category) ) $out .= '<p class="pluginCategory">'.ucfirst(strtolower($category)).'</p>' . "\n";
         $out .= '<ul class="pluginList">'. "\n";
-
+       
         foreach( $categoryPlugins as $type => $pluginDetails )
         {
-            $img = '';
-            if( !empty($pluginDetails['img']) )
-            {
-                $iconUrl = get_icon_url($pluginDetails['img']);
-
-                if( !is_null($iconUrl) )
-                {
-                    $img = 'style="background: url('.$iconUrl.') center right no-repeat; "';
-                }
-            }
-
-            $out .= '<li '.$img.'>'
-            .     '<a href="#" onclick="javascript:addComponent(\''.$type.'\');return false;">'
-            .     $pluginDetails['displayName']
-            .     '</a>'
-            .     '</li>';
-        }
-
-        $out .= '</ul>' . "\n";
+           $img = '';
+           if( !empty($pluginDetails['img']) )
+           {
+               $iconUrl = get_icon_url($pluginDetails['img']);
+      
+               if( !is_null($iconUrl) )
+               {
+                   $img = 'style="background: url('.$iconUrl.') center right no-repeat; "';
+               }
+           }
+      
+           $out .= '<li '.$img.'>'
+           .     '<a href="#" onclick="javascript:addComponent(\''.$type.'\');return false;">'
+           .     $pluginDetails['displayName']
+           .     '</a>'
+           .     '</li>';
+       }
+      
+       $out .= '</ul>' . "\n";
     }
-       $out .= '</div>' . "\n";
-   }
+    $out .= '</div>' . "\n";
+}
 
 $out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
 
@@ -228,7 +230,7 @@ $out .= '</div>' . "\n\n" // componentsContainer
 /*
  * Output rendering
  */
-ClaroBreadCrumbs::getInstance()->prepend(get_lang('Pages'), './index.php' . claro_url_relay_context('?'));
+ClaroBreadCrumbs::getInstance()->prepend(htmlspecialchars(Url::Contextualize(get_lang('Pages'), './index.php')));
 
 
 $claroline->display->body->appendContent($out);
