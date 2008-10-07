@@ -90,10 +90,12 @@ class DailyTubeComponent extends Component
                     return $this->setDailyMotionPlayer($input,'id',$width, $height);
                 }
             }
+            
             if($inputError)
             {
                 $dialogBox = new DialogBox();
                 $dialogBox->error($message);
+                
                 return '<center>' . "\n"
                         .     $dialogBox->render(). "\n"
                         .     '</center>' . "\n";
