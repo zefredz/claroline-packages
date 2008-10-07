@@ -243,15 +243,18 @@ class DailyTubeComponent extends Component
         .     '<input type ="radio" name="videoInputType_'.$this->getId().'" id="videoInputId_'.$this->getId().'" value="id" '.$this->check($this->videoInputType,'id'). ' onchange="disableUrl();"><label for="videoInputId_'.$this->getId().'">'. get_lang('Video identification') . '</label>' . "\n"
         .     '<input type="text" name="videoId_'.$this->getId().'" id="videoId_'.$this->getId().'" maxlength="255" value=" '.htmlspecialchars($this->videoId).'" '.$this->initEnable($this->videoInputType,'url').'/>' . "\n"
         .     '<select name="videoIdType_'.$this->getId().'" id="videoIdType_'.$this->getId().'" size="1" '.$this->initEnable($this->videoInputType,'url').'>
-                  <option value="YouTube" selected>YouTube</option>
-                  <option value="DailyMotion">DailyMotion</option>
+                  <option value="YouTube" '.$this->select($this->videoIdType,'YouTube').'>YouTube</option>
+                  <option value="DailyMotion" '.$this->select($this->videoIdType, 'DailyMotion') .'>DailyMotion</option>
                </select> <br /><br />' . "\n"
         .     '<label for="videoSize">' . get_lang('Video size') . '<br />' . "\n"
         .     '<input type ="radio" name="videoSize_'.$this->getId().'" id="videoSizeS_'.$this->getId().'" value="small" '.$this->check($this->videoSize,'small').'><label for="videoSizeS_'.$this->getId().'">'. get_lang('Small') . '</label><br/>' . "\n"
         .     '<input type ="radio" name="videoSize_'.$this->getId().'" id="videoSizeM_'.$this->getId().'" value="medium" '.$this->check($this->videoSize,'medium').'><label for="videoSizeM_'.$this->getId().'">'. get_lang('Medium') . '</label><br/>' . "\n"
         .     '<input type ="radio" name="videoSize_'.$this->getId().'" id="videoSizeL_'.$this->getId().'" value="large" '.$this->check($this->videoSize,'large').'><label for="videoSizeL_'.$this->getId().'">'. get_lang('Large') . '</label><br/>' . "\n";
     }
-    
+       
+    /**
+     * @set the checked status if inputs equal
+     */
     private function check($var,$value)
     {
         if($var == $value)
@@ -259,7 +262,21 @@ class DailyTubeComponent extends Component
             return 'checked="checked"';
         } 
     }
-    
+        
+   /**
+     * @set the selected status if inputs equal
+     */
+     private function select($var,$value)
+    {
+        if($var == $value)
+        {
+            return 'selected="selected"';
+        }
+    }
+        
+    /**
+     * @set the disabled status if inputs equal
+     */
     private function initEnable($var,$value)
     {
         if($var == $value)
