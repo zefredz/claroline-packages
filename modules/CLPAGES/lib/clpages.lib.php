@@ -50,13 +50,11 @@ abstract class Component
      */
     abstract function getData();
 
-
-
     // title
-       public function getTitle()
-       {
-           return $this->title;
-       }
+    public function getTitle()
+    {
+        return $this->title;
+    }
 
     public function setTitle( $title )
     {
@@ -97,10 +95,10 @@ abstract class Component
     }
 
     // type
-       public function getType()
-       {
-           return $this->type;
-       }
+    public function getType()
+    {
+        return $this->type;
+    }
 
     public function setType( $type )
     {

@@ -3,15 +3,10 @@
  * CLAROLINE
  *
  * @version 0.1 $Revision$
- *
- * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
+ * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLPAGES
- *
  * @author Sebastien Piraux
- *
  */
 
 $tlabelReq = 'CLPAGES';
@@ -29,9 +24,9 @@ if ( !claro_is_allowed_to_edit() || !claro_is_in_a_course() )
  */
 require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
 require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
+
 // load and register all plugins
 $pluginRegistry = pluginRegistry::getInstance();
-
 
 /*
  * init request vars
