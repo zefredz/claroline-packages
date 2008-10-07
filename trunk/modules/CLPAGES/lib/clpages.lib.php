@@ -16,7 +16,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  */
 
-// vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+// vim: expandtab sw=4 ts=4 sts=4:
 
 abstract class Component
 {
@@ -341,7 +341,7 @@ abstract class Component
         return true;
     }
 
-    function getHigherRank()
+    public function getHigherRank()
     {
         $tblList = get_module_course_tbl( array( 'clpages_contents' ), claro_get_current_course_id() );
 
@@ -363,7 +363,7 @@ abstract class Component
         }
     }
 
-    function getFromRequest( $key )
+    public function getFromRequest( $key )
     {
         if( !empty($_REQUEST[$key]) )
         {
@@ -579,7 +579,7 @@ class Page
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function validate()
+    public function validate()
     {
         // title is a mandatory element
         $title = strip_tags($this->title);
@@ -736,7 +736,7 @@ class PageList
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function __construct()
+    public function __construct()
     {
         $tblNameList = array(
             'clpages_pages'
@@ -750,7 +750,7 @@ class PageList
     /**
      * Load the correct list
      */
-    function load( $loadAll = false )
+    public function load( $loadAll = false )
     {
         if( $loadAll )
         {
@@ -762,7 +762,7 @@ class PageList
         }
     }
 
-    function loadAll()
+    public function loadAll()
     {
         $sql = "SELECT
                     `id`,
@@ -786,7 +786,7 @@ class PageList
         }
     }
 
-    function loadVisible()
+    public function loadVisible()
     {
         $sql = "SELECT
                     `id`,
