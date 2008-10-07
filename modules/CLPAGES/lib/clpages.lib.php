@@ -31,18 +31,18 @@ abstract class Component
     // data fields is handled by extending classes
 
     // Abstract methods
-    abstract function render();
+    abstract public function render();
 
-    abstract function editor();
+    abstract public function editor();
 
-    abstract function getEditorData();
+    abstract public function getEditorData();
 
     /**
      * set the component data
      * @param $data array data
      * @return boolean success of operation
      */
-    abstract function setData( $data );
+    abstract public function setData( $data );
 
     /**
      * get the component data
