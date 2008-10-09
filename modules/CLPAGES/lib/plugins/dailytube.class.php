@@ -172,16 +172,14 @@ class DailyTubeComponent extends Component
         {
             $id = $input;
             $id = preg_replace('/(.*)youtube.com\/watch\?v=/','',$id);
+            $id = preg_replace('/&(.*)/','',$id);
         }
     
         return '<center>' . "\n"
-            .     '<object width="'.$width.'" height="'.$height.'">' . "\n"
-            .     '<param name="movie" value="http://www.youtube.com/v/'.htmlspecialchars($id).'&rel=1"></param>' . "\n"
-            .     '<param name="wmode" value="transparent"></param>' . "\n"
-            .     '<embed src="http://www.youtube.com/v/'.$id.'&rel=0" type="application/x-shockwave-flash" wmode="transparent" width="'.$width.'" height="'.$height.'"></embed>' . "\n"
-            .     '</object>' . "\n"
+            .    '<object type="application/x-shockwave-flash" style="width:'.$width.'px;height:'.$height.'px;" data="http://www.youtube.com/v/'.$id.'&rel=0">' . "\n"
+            .    '<param name="movie" value="http://www.youtube.com/v/'.htmlspecialchars($id).'&rel=0">' . "\n"
+            .    '</object>' . "\n"
             .     '</center>' . "\n";
-    
     }
     
     /**
@@ -208,14 +206,17 @@ class DailyTubeComponent extends Component
             $id = preg_replace('/_(.*)/','',$id);
         }                      
         return '<center>' . "\n"
-            .     '<object width="'.$width.'" height="'.$height.'">' . "\n"
-            .    '<param name="movie" value="http://www.dailymotion.com/swf/'.htmlspecialchars($id).'&related=1"></param>' . "\n"
-            .    '<param name="allowFullScreen" value="true"></param><param name="allowScriptAccess" value="always"></param>' . "\n" //allowScriptAccess="always"
-            .    '<embed src= "http://www.dailymotion.com/swf/'.$id.'&related=0" type="application/x-shockwave-flash" wmode="transparent" width="'.$width.'" height="'.$height.'" allowFullScreen="true"></embed>' . "\n"
+            .    '<object type="application/x-shockwave-flash" style="width:'.$width.'px;height:'.$height.'px;" data="http://www.dailymotion.com/swf/'.$id.'&related=0" allowFullScreen="true" allowScriptAccess="always">' . "\n" 
+            .    '<param name="movie" value="http://www.dailymotion.com/swf/'.htmlspecialchars($id).'&related=0"></param>' . "\n"
+            .    '<param name="allowFullScreen" value="true"></param>' . "\n" 
+            .    '<param name="allowScriptAccess" value="always"></param>' . "\n" 
             .    '</object>' . "\n"
             .    '</center>' . "\n";
     }
-    
+
+    /**
+     * @see Component
+     */
     public function editor()
     {
         return
@@ -251,7 +252,7 @@ class DailyTubeComponent extends Component
         .     '<input type ="radio" name="videoSize_'.$this->getId().'" id="videoSizeM_'.$this->getId().'" value="medium" '.$this->check($this->videoSize,'medium').'><label for="videoSizeM_'.$this->getId().'">'. get_lang('Medium') . '</label><br/>' . "\n"
         .     '<input type ="radio" name="videoSize_'.$this->getId().'" id="videoSizeL_'.$this->getId().'" value="large" '.$this->check($this->videoSize,'large').'><label for="videoSizeL_'.$this->getId().'">'. get_lang('Large') . '</label><br/>' . "\n";
     }
-       
+    
     /**
      * @set the checked status if inputs equal
      */
