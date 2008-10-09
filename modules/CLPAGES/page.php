@@ -106,8 +106,7 @@ elseif( $page->getDisplayMode() == 'SLIDE' )
 
    $out = '';
 
-if( $is_allowedToEdit )    $nameTools = get_lang('Edit page');
-else                    $nameTools = get_lang('Page');
+$nameTools = get_lang('Page');
 
 $title['mainTitle'] = $nameTools;
 $title['subTitle'] = $page->getTitle();
@@ -230,7 +229,15 @@ $out .= '</div>' . "\n\n" // componentsContainer
 /*
  * Output rendering
  */
-ClaroBreadCrumbs::getInstance()->prepend(htmlspecialchars(Url::Contextualize(get_lang('Pages'), './index.php')));
+
+if ( claro_is_allowed_to_edit() )
+{
+    ClaroBreadCrumbs::getInstance()->append( get_lang('Edit'), htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES').'/page.php?pageId='.(int)$pageId)) );
+}
+else
+{
+    ClaroBreadCrumbs::getInstance()->append( get_lang('View'), htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES').'/page.php?pageId='.(int)$pageId)) );
+}
 
 
 $claroline->display->body->appendContent($out);
