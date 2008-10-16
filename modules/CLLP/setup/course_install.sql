@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_path` (
   `description` TEXT NOT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
   `rank` INT(11) NOT NULL default '0',
-  `version` ENUM('claroline','scorm12','scorm13') NOT NULL default 'scorm12',
+  `version` ENUM('scorm12','scorm13') NOT NULL default 'scorm12',
   `lock` enum('OPEN','CLOSE') NOT NULL default 'OPEN',
   `identifier` VARCHAR(255) default '',
   `allow_reinit` ENUM('YES', 'NO') NOT NULL DEFAULT 'YES',
