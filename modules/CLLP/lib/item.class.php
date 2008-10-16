@@ -719,11 +719,16 @@ class item
 
 class itemList
 {
-	private $tblPath;
-	private $tblItem;
+    protected $pathId;
+    protected $tblPath;
+    protected $tblItem;
+    protected $treeItemList;
 
-	public function __construct()
+
+	public function __construct($pathId)
     {
+        $this->pathId = (int) $pathId;
+        
         $tblNameList = array(
             'lp_path',
             'lp_item'
@@ -736,13 +741,16 @@ class itemList
     }
 
     // load correct flat list of modules depending on parameters
-    public function getFlatList($pathId = null, $userId = null)
+    public function getFlatList()
     {
-        $list = $this->load($pathId,$userId);
-
-		return $this->flatList( $this->buildTree($list,-1) );
+        return $this->flatList( $this->treeItemList );
     }
 
+    public function getItemTree()
+    {
+        return $this->treeItemList;
+    }
+    
     /**
      * Build an tree of $list from $id using the 'parent'
      * table. (recursive function)
@@ -754,11 +762,20 @@ class itemList
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
-    public function buildTree($list, $id = -1, $depth = 0)
+    protected function buildTree($list, $excludedItemId = null)
+    {
+        return $this->recursiveBuildTree($list, $excludedItemId);
+    }
+    
+    protected function recursiveBuildTree($list, $excludedItemId = null, $id = -1, $depth = 0 )
     {
         $tree = array();
-
-        if( is_array($list) && !empty($list) )
+        
+        if( !is_array($list) || empty($list) )
+        {
+            return $tree;
+        }
+        else
         {
             foreach ($list as $item)
             {
@@ -775,21 +792,21 @@ class itemList
 
             foreach ($list as $item)
             {
-                if( $item['parent_id'] == $id && $item['parent_id'] != $item['id'] )
+                if( $item['parent_id'] == $id && $item['parent_id'] != $item['id'] && $item['id'] != $excludedItemId )
                 {
                     if($id == -1)
                     {
-                        $tree[] = $this->buildTree($list, $item['id'], $depth++);
+                        array_push($tree, $this->recursiveBuildTree($list, $excludedItemId, $item['id'], $depth++));
                     }
                     else
                     {
-                        $tree['children'][] = $this->buildTree($list,  $item['id'], $depth++);
+                        $tree['children'][] = $this->recursiveBuildTree($list, $excludedItemId, $item['id'], $depth++);
                     }
                 }
             }
+            return $tree;
         }
 
-        return $tree;
     }
 
     /**
@@ -804,7 +821,7 @@ class itemList
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
-    public function flatList($treeList, $deepness = 0)
+    protected function flatList($treeList, $deepness = 0)
     {
         $count = 0;
         $itemIsFirst = true;
@@ -846,100 +863,7 @@ class itemList
         return  $flatList;
     }
 
-    // load correct list of modules depending on parameters
-	public function load($pathId, $userId = null)
-	{
-		if( !is_null($pathId) )
-		{
-			if( !is_null($userId) )
-			{
-				return $this->loadUserPath($pathId, $userId);
-			}
-			else
-			{
-				return $this->loadPath($pathId);
-			}
-		}
-		else
-		{
-			return array();
-		}
-	}
 
-
-	// should return a tree list of path items for course administrator
-	public function loadPath($pathId)
-	{
-		// prevent a query made on incorrect data
-		if( is_null($pathId) || !is_numeric($pathId) )
-		{
-			return array();
-		}
-
-		$sql = "SELECT
-                    `id`,
-                    `path_id`,
-                    `type`,
-                    `title`,
-                    `description`,
-                    `visibility`,
-                    `rank`,
-                    `identifier`,
-                    `sys_path`,
-                    `parent_id`,
-                    `previous_id`,
-                    `next_id`,
-                    `launch_data`
-            FROM `".$this->tblItem."`
-            WHERE `path_id` = ".(int) $pathId."
-            ORDER BY `rank` ASC";
-
-        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
-        {
-            return array();
-        }
-        else
-        {
-            return $data;
-        }
-	}
-
-	// should return a tree list of path items for a single user with its progression
-	public function loadPathUserProgress($pathId, $userId)
-	{
-
-	}
-
-	public function loadContainerList($pathId)
-	{
-	   $sql = "SELECT
-                    `id`,
-                    `path_id`,
-                    `type`,
-                    `title`,
-                    `description`,
-                    `visibility`,
-                    `rank`,
-                    `identifier`,
-                    `sys_path`,
-                    `parent_id`,
-                    `previous_id`,
-                    `next_id`,
-                    `launch_data`
-            FROM `".$this->tblItem."`
-            WHERE `type` = 'container'
-            AND `path_id` = ".(int) $pathId."
-            ORDER BY `rank` ASC";
-
-        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
-        {
-            return array();
-        }
-        else
-        {
-            return $data;
-        }
-	}
 
 	/**
      * move item one position up in the tree if possible
@@ -1115,5 +1039,185 @@ class itemList
 	    // not found
 	    return false;
 	}
+	
+    // methods used to jump from one item to another in LP viewer
+    public function getNext()
+    {
+        
+    }
+    
+    public function getPrevious()
+    {
+        
+    }
+}
+
+class PathItemList extends ItemList
+{
+    public function __construct($pathId)
+    {
+        parent::__construct($pathId);
+
+        $this->treeItemList = $this->buildTree($this->load());
+    }
+    
+    public function load()
+    {
+        // prevent a query made on incorrect data
+        if( is_null($this->pathId) || !is_numeric($this->pathId) )
+        {
+            return array();
+        }
+
+        $sql = "SELECT
+                    `id`,
+                    `path_id`,
+                    `type`,
+                    `title`,
+                    `description`,
+                    `visibility`,
+                    `rank`,
+                    `identifier`,
+                    `sys_path`,
+                    `parent_id`,
+                    `previous_id`,
+                    `next_id`,
+                    `launch_data`
+            FROM `".$this->tblItem."`
+            WHERE `path_id` = ".(int) $this->pathId."
+            ORDER BY `rank` ASC";
+
+        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
+        {
+            return array();
+        }
+        else
+        {
+            return $data;
+        }
+    }
+
+
+    public function loadContainerList()
+    {
+    // prevent a query made on incorrect data
+        if( is_null($this->pathId) || !is_numeric($this->pathId) )
+        {
+            return array();
+        }
+        
+        $sql = "SELECT
+                    `id`,
+                    `path_id`,
+                    `type`,
+                    `title`,
+                    `description`,
+                    `visibility`,
+                    `rank`,
+                    `identifier`,
+                    `sys_path`,
+                    `parent_id`,
+                    `previous_id`,
+                    `next_id`,
+                    `launch_data`
+            FROM `".$this->tblItem."`
+            WHERE `type` = 'container'
+            AND `path_id` = ".(int) $this->pathId."
+            ORDER BY `rank` ASC";
+
+        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
+        {
+            return array();
+        }
+        else
+        {
+            return $data;
+        }
+    }
+    
+    public function getContainerList()
+    {
+        return $this->loadContainerList();
+    }
+    
+    public function getContainerTree()
+    {
+        return $this->buildTree($this->loadContainerList());
+    }
+}
+
+class PathUserItemList extends ItemList 
+{
+    private $userId;
+    private $attemptId;
+    private $tblAttempt;
+    private $tblItemAttempt;
+    
+    public function __construct($pathId, $userId, $attemptId)
+    {
+        parent::__construct($pathId);
+        
+        $this->userId = (int) $userId;
+        $this->attemptId = (int) $attemptId;
+        
+        $tblNameList = array(
+            'lp_attempt',
+            'lp_item_attempt'
+        );
+        // convert to Claroline course table names
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+        $this->tblAttempt = $tbl_lp_names['lp_attempt'];
+        $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
+        
+        $this->treeItemList = $this->buildTree($this->load());
+    }
+    
+    public function load()
+    {
+        if( is_null($this->pathId) || !is_numeric($this->pathId) )
+        {
+            return array();
+        }
+
+        $sql = "SELECT
+                    `I`.`id`,
+                    `I`.`path_id`,
+                    `I`.`type`,
+                    `I`.`title`,
+                    `I`.`description`,
+                    `I`.`visibility`,
+                    `I`.`rank`,
+                    `I`.`identifier`,
+                    `I`.`sys_path`,
+                    `I`.`parent_id`,
+                    `I`.`previous_id`,
+                    `I`.`next_id`,
+                    `I`.`launch_data`,
+                    `IA`.`location`,
+                    `IA`.`completion_status`,
+                    `IA`.`entry`,
+                    `IA`.`score_raw`,
+                    `IA`.`score_min`,
+                    `IA`.`score_max`,
+                    `IA`.`total_time`,
+                    `IA`.`session_time`,
+                    `IA`.`suspend_data`,
+                    `IA`.`credit`
+            FROM `".$this->tblItem."` AS `I`
+            LEFT JOIN `".$this->tblItemAttempt."` AS `IA`
+              ON `IA`.`item_id` = `I`.`id`
+              AND `IA`.`attempt_id` = ".(int) $this->attemptId."
+            WHERE `path_id` = ".(int) $this->pathId."
+            ORDER BY `rank` ASC";
+
+        if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
+        {
+            return array();
+        }
+        else
+        {
+            return $data;
+        }
+    }
 }
 ?>
