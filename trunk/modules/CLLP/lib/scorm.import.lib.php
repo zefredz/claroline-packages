@@ -1,12 +1,10 @@
 <?php
 
-require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
-require_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
-require_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
-require_once get_path('incRepositorySys') . '/lib/file.lib.php';
-// for handling of error messages
-require_once get_path('incRepositorySys') . '/lib/backlog.class.php';
-
+FromKernel::uses( 'fileManage.lib',
+                  'fileDisplay.lib',
+                  'fileUpload.lib',
+                  'file.lib', 
+                  'backlog.class');
 
 class ScormImporter
 {
@@ -134,7 +132,7 @@ class ScormImporter
             return false;
         }
 
-        include_once get_path('incRepositorySys') . '/lib/pclzip/pclzip.lib.php';
+        FromKernel::uses( 'thirdparty/pclzip/pclzip.lib');
 
 
         if ( preg_match('/.zip$/i', $this->uploadedZipFile['name'])
