@@ -31,49 +31,49 @@ class attempt
     /**
      * @var $id id of attempt, -1 if attempt doesn't exist already
      */
-    var $id;
+    private $id;
 
     /**
      * @var $pathId id of the path related to this attempt
      */
-    var $pathId;
+    private $pathId;
 
     /**
      * @var $userId id of the user that realize this attempt
      */
-    var $userId;
+    private $userId;
 
     /**
      * @var $lastItem id of the last item the user was in (to resume progression when re-entering the path)
      */
-    var $lastItemId;
+    private $lastItemId;
 
     /**
      * @var $progress pourcent of progression in path $pathId for user $userId
      */
-    var $progress;
+    private $progress;
 
     /**
      * @var $attemptNumber this attempt is the $attemptNumber for path $pathId
      */
-    var $attemptNumber;
+    private $attemptNumber;
 
 	/**
 	 * @var $itemAttemptList object that represent the list of all item attempts
 	 */
-	var $itemAttemptList;
+	private $itemAttemptList;
 
     /**
      * @var $tblAttempt name of the item table
      */
-    var $tblAttempt;
+    private $tblAttempt;
 
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	function attempt()
+	public function __construct()
 	{
         $this->id = (int) -1;
         $this->pathId = (int) -1;
@@ -102,7 +102,7 @@ class attempt
      * @param integer $id id of path
      * @return boolean load successfull ?
      */
-	function load($pathId, $userId, $attemptNumber = null)
+	public function load($pathId, $userId, $attemptNumber = null)
 	{
 		// $userId will be null if user is anonymous
 		if( is_null($userId) )
@@ -163,7 +163,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-	function save()
+	public function save()
 	{
 		// TODO compute progress from itemAttemptList and save itemAttemptList
 		if( $this->id == -1 )
@@ -225,7 +225,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	function delete()
+	public function delete()
 	{
         if( $this->id == -1 ) return true;
 
@@ -248,7 +248,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getId()
+    public function getId()
     {
         return (int) $this->id;
     }
@@ -259,7 +259,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getPathId()
+    public function getPathId()
     {
         return (int) $this->pathId;
     }
@@ -271,7 +271,7 @@ class attempt
      * @param $value int id of the path
      * @return int
      */
-    function setPathId($value)
+    public function setPathId($value)
     {
         $this->pathId = (int) $value;
     }
@@ -282,7 +282,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getUserId()
+    public function getUserId()
     {
         return (int) $this->userId;
     }
@@ -294,7 +294,7 @@ class attempt
      * @param $value int id of the user
      * @return int
      */
-    function setUserId($value)
+    public function setUserId($value)
     {
         $this->userId = (int) $value;
     }
@@ -305,7 +305,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getLastItemId()
+    public function getLastItemId()
     {
         return (int) $this->lastItemId;
     }
@@ -317,7 +317,7 @@ class attempt
      * @param $value int id of the last item viewed
      * @return int
      */
-    function setLastItemId($value)
+    public function setLastItemId($value)
     {
         $this->lastItemId = (int) $value;
     }
@@ -328,7 +328,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getProgress()
+    public function getProgress()
     {
         return (int) $this->progress;
     }
@@ -340,7 +340,7 @@ class attempt
      * @param $value int progression
      * @return int
      */
-    function setProgress($value)
+    public function setProgress($value)
     {
     	// value must be between 0 and 100
     	$value = max(0,$value);
@@ -355,7 +355,7 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getAttemptNumber()
+    public function getAttemptNumber()
     {
         return (int) $this->attemptNumber;
     }
@@ -367,7 +367,7 @@ class attempt
      * @param $value int progression
      * @return int
      */
-    function setAttemptNumber($value)
+    public function setAttemptNumber($value)
     {
         $this->attemptNumber = (int) $value;
     }
@@ -379,7 +379,7 @@ class attempt
      * @param $value int progression
      * @return int
      */
-    function setHigherAttemptNumber()
+    public function setHigherAttemptNumber()
     {
     	// use max instead of count to handle suppressed attempts
     	$sql = "SELECT MAX(`attempt_number`)
@@ -427,79 +427,79 @@ class itemAttempt
     /**
      * @var $id id of item attempt, -1 if item attempt doesn't exist already
      */
-    var $id;
+    private $id;
 
     /**
      * @var $attemptId id of the attempt
      */
-    var $attemptId;
+    private $attemptId;
 
     /**
      * @var $itemId id of the item
      */
-    var $itemId;
+    private $itemId;
 
     /**
      * @var $location SCORM location (position in the SCO)
      */
-    var $location;
+    private $location;
 
     /**
-     * @var $completionStation SCORM completion_status (completion level of the SCO)
+     * @var $completionStatus SCORM completion_status (completion level of the SCO)
      */
-    var $completionStation;
+    private $completionStatus;
 
     /**
      * @var $entry SCORM entry (is the learner entered in the SCO)
      */
-    var $entry;
+    private $entry;
 
 	/**
 	 * @var $scoreRaw SCORM score.raw (score of the learner)
 	 */
-	var $scoreRaw;
+	private $scoreRaw;
 
 	/**
 	 * @var $scoreMin SCORM score.min (minimum possible score)
 	 */
-	var $scoreMin;
+	private $scoreMin;
 
 	/**
 	 * @var $scoreMax SCORM score.max (maximum possible score)
 	 */
-	var $scoreMax;
+	private $scoreMax;
 
     /**
      * @var $totalTime SCORM total_time (sum of all session_time of this SCO)
      */
-    var $totalTime;
+    private $totalTime;
 
 	/**
 	 * @var $sessionTime SCORM session_time (time spent by learner for this session in the SCO)
 	 */
-	var $sessionTime;
+	private $sessionTime;
 
 	/**
 	 * @var $suspendData SCORM suspend_data (data the SCO would like to get back on next attempt)
 	 */
-	var $suspendData;
+	private $suspendData;
 
 	/**
 	 * @var $credit SCORM credit ( indicates whether the learner will be credited for performance)
 	 */
-	var $credit;
+	private $credit;
 
     /**
      * @var $tblItemAttempt name of the item table
      */
-    var $tblItemAttempt;
+    private $tblItemAttempt;
 
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	function itemAttempt()
+	public function __construct()
 	{
         $this->id = (int) -1;
         $this->attemptId = (int) -1;
@@ -535,7 +535,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	function load($attemptId, $itemId)
+	public function load($attemptId, $itemId)
 	{
     	$sql = "SELECT `id`,
     			`attempt_id`,
@@ -586,7 +586,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-	function save()
+	public function save()
 	{
 		if( $this->id == -1 )
         {
@@ -655,7 +655,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	function delete()
+	public function delete()
 	{
         if( $this->id == -1 ) return true;
 
@@ -673,7 +673,7 @@ class itemAttempt
 	/**
 	 * check that all scorm data are consistent and that value are correct
 	 */
-	function validate()
+	public function validate()
 	{
 		return true;
 	}
@@ -684,7 +684,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getId()
+    public function getId()
     {
         return (int) $this->id;
     }
@@ -695,7 +695,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getAttemptId()
+    public function getAttemptId()
     {
         return (int) $this->attemptId;
     }
@@ -706,7 +706,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int id of the attempt
      */
-    function setAttemptId($value)
+    public function setAttemptId($value)
     {
         $this->attemptId = (int) $value;
     }
@@ -717,7 +717,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getItemId()
+    public function getItemId()
     {
         return (int) $this->itemId;
     }
@@ -728,7 +728,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int id of the item
      */
-    function setItemId($value)
+    public function setItemId($value)
     {
         $this->itemId = (int) $value;
     }
@@ -739,7 +739,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value location in the SCO
 	 */
-	 function setLocation($value)
+	 public function setLocation($value)
 	 {
 	 	$this->location = trim($value);
 	 }
@@ -750,7 +750,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string location in the SCO
      */
-	 function getLocation()
+	 public function getLocation()
 	 {
 	 	return $this->location;
 	 }
@@ -761,11 +761,11 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value completionStatus of the SCO
 	 */
-	 function setCompletionStatus($value)
+	 public function setCompletionStatus($value)
 	 {
 	 	$acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
 
-        if( in_array($value, $acceptedValues) )
+        if( in_array(strtoupper($value), $acceptedValues) )
         {
             $this->completionStatus = $value;
             return true;
@@ -779,7 +779,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string completionStatus of the SCO
      */
-	 function getCompletionStatus()
+	 public function getCompletionStatus()
 	 {
 	 	return $this->completionStatus;
 	 }
@@ -790,11 +790,11 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value entry of the SCO
 	 */
-	 function setEntry($value)
+	 public function setEntry($value)
 	 {
 	 	$acceptedValues = array('AB-INITIO','RESUME','');
 
-        if( in_array($value, $acceptedValues) )
+        if( in_array(strtoupper($value), $acceptedValues) )
         {
             $this->entry = $value;
             return true;
@@ -808,7 +808,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string entry of the SCO
      */
-	 function getEntry()
+	 public function getEntry()
 	 {
 	 	return $this->entry;
 	 }
@@ -819,7 +819,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score raw
      */
-    function getScoreRaw()
+    public function getScoreRaw()
     {
         return (int) $this->scoreRaw;
     }
@@ -830,7 +830,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int score raw
      */
-    function setScoreRaw($value)
+    public function setScoreRaw($value)
     {
         $this->scoreRaw = (int) $value;
     }
@@ -841,7 +841,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score min
      */
-    function getScoreMin()
+    public function getScoreMin()
     {
         return (int) $this->scoreMin;
     }
@@ -852,7 +852,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int score min
      */
-    function setScoreMin($value)
+    public function setScoreMin($value)
     {
         $this->scoreMin = (int) $value;
     }
@@ -863,7 +863,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score max
      */
-    function getScoreMax()
+    public function getScoreMax()
     {
         return (int) $this->scoreMax;
     }
@@ -874,7 +874,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int score max
      */
-    function setScoreMax($value)
+    public function setScoreMax($value)
     {
         $this->scoreMax = (int) $value;
     }
@@ -885,7 +885,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int session time in SCO
      */
-    function getSessionTime()
+    public function getSessionTime()
     {
         return $this->sessionTime;
     }
@@ -896,7 +896,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int sessionTime
      */
-    function setSessionTime($value)
+    public function setSessionTime($value)
     {
         $this->sessionTime = (int) $value;
     }
@@ -907,7 +907,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int total time in SCO
      */
-    function getTotalTime()
+    public function getTotalTime()
     {
         return $this->totalTime;
     }
@@ -918,7 +918,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value int totalTime
      */
-    function setTotalTime($value)
+    public function setTotalTime($value)
     {
         $this->totalTime = (int) $value;
     }
@@ -930,7 +930,7 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string suspend data
      */
-    function getSuspendData()
+    public function getSuspendData()
     {
         return $this->suspendData;
     }
@@ -941,53 +941,53 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value string suspend data
      */
-    function setSuspendData($value)
+    public function setSuspendData($value)
     {
         $this->suspendData = $value;
     }
 
-	/**
-	 * set credit
-	 *
-     * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value credit of the SCO
-	 */
-	 function setCredit($value)
-	 {
-	 	$acceptedValues = array('CREDIT','NO-CREDIT');
-
-        if( in_array($value, $acceptedValues) )
+    /**
+    * set credit
+    *
+    * @author Sebastien Piraux <pir@cerdecam.be>
+    * @param $value credit of the SCO
+    */
+    public function setCredit($value)
+    {
+        $acceptedValues = array('CREDIT','NO-CREDIT');
+        
+        if( in_array(strtoupper($value), $acceptedValues) )
         {
             $this->credit = $value;
             return true;
         }
         return false;
-	 }
-
+    }
+    
     /**
-     * get credit
-     *
-     * @author Sebastien Piraux <pir@cerdecam.be>
-     * @return string credit of the SCO
-     */
-	 function getCredit()
-	 {
-	 	return $this->credit;
-	 }
+    * get credit
+    *
+    * @author Sebastien Piraux <pir@cerdecam.be>
+    * @return string credit of the SCO
+    */
+    public function getCredit()
+    {
+        return $this->credit;
+    }
 
 }
 
 class itemAttemptList
 {
-	var $tblPath;
-	var $tblItem;
+	private $tblPath;
+	private $tblItem;
 
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	function itemAttemptList()
+	public function __construct()
     {
         // define module table names
         $tblNameList = array(
@@ -999,7 +999,7 @@ class itemAttemptList
         $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
     }
 
-    function load($attemptId)
+    public function load($attemptId)
     {
     	$sql = "SELECT `id`,
     			`item_id`,
