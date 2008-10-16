@@ -77,7 +77,6 @@ class path
      */
     private $tblPath;
 
-    const VERSION_CLAROLINE = 'claroline';
     const VERSION_12 = 'scorm12';
     const VERSION_13 = 'scorm13';
 
@@ -241,8 +240,8 @@ class path
         if( $this->id == -1 ) return true;
 
         // delete all items related to this path
-        $itemList = new itemList();
-        $thisPathItemList = $itemList->load($this->id);
+        $itemList = new PathItemList($this->id);
+        $thisPathItemList = $itemList->load();
 
         if( !empty($thisPathItemList) )
         {
@@ -430,7 +429,7 @@ class path
      */
     public function setVersion($value)
     {
-        $acceptedValues = array(self::VERSION_CLAROLINE, self::VERSION_12, self::VERSION_13);
+        $acceptedValues = array(self::VERSION_12, self::VERSION_13);
 
         if( in_array($value, $acceptedValues) )
         {
