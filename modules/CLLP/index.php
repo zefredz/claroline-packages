@@ -64,20 +64,6 @@ $user_id = claro_get_current_user_id();
 $dialogBox = new DialogBox();
 
 /*
- * Load list of paths
- */
-// prepare list to display
-$pathList = new pathListIterator();
-
-if( $is_allowedToEdit )
-{
-    $pathList->load();
-}
-else
-{
-    $pathList->load($user_id);
-}
-/*
  * Admin only commands
  */
 
@@ -117,13 +103,13 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'rqImport' )
     {
-		include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
-		include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
+        include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
+        include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
 
-    	$maxFilledSpace = 100000000;
+        $maxFilledSpace = 100000000;
 
-		$courseDir   = claro_get_course_path() . '/scormPackages/';
-		$baseWorkDir = get_path('coursesRepositorySys').$courseDir;
+        $courseDir   = claro_get_course_path() . '/scormPackages/';
+        $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
 
         $dialogBox->form("\n\n"
         .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
@@ -132,9 +118,9 @@ if( $is_allowedToEdit )
         .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
         .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
         .    '<br />' . "\n"
-		.	 '<input type="file" name="uploadedPackage" />' . "\n"
-		.	 '<br />' . "\n"
-		.	 '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
+        .     '<input type="file" name="uploadedPackage" />' . "\n"
+        .     '<br />' . "\n"
+        .     '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
         .    '<br /><br />' . "\n"
         .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
         .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
@@ -144,20 +130,20 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'exDelete' )
     {
-    	if( $path->delete() )
-    	{
-    		$dialogBox->success( get_lang('Path succesfully deleted') );
-    	}
-    	else
-    	{
-    		$dialogBox->error( get_lang('Fatal error : cannot delete path') );
-    	}
+        if( $path->delete() )
+        {
+            $dialogBox->success( get_lang('Path succesfully deleted') );
+        }
+        else
+        {
+            $dialogBox->error( get_lang('Fatal error : cannot delete path') );
+        }
     }
 
     if( $cmd == 'rqDelete' )
     {
         $htmlConfirmDelete = get_lang('Are you sure to delete learning path "%pathTitle" ?', array('%pathTitle' => htmlspecialchars($path->getTitle()) ))
-		.	 '<br /><br />'
+        .     '<br /><br />'
         .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pathId='.$pathId.'">' . get_lang('Yes') . '</a>'
         .    '&nbsp;|&nbsp;'
         .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
@@ -168,49 +154,80 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'exLock' )
     {
-    	$path->lock();
+        $path->lock();
 
-    	$path->save();
+        $path->save();
     }
 
     if( $cmd == 'exUnlock' )
     {
-    	$path->unlock();
+        $path->unlock();
 
-    	$path->save();
+        $path->save();
     }
 
     if( $cmd == 'exVisible' )
     {
-    	$path->setVisible();
+        $path->setVisible();
 
-    	$path->save();
+        $path->save();
     }
 
     if( $cmd == 'exInvisible' )
     {
-    	$path->setInvisible();
+        $path->setInvisible();
 
-    	$path->save();
+        $path->save();
     }
 
-    if( $cmd == 'exMoveUp' )
+    if( $cmd == 'exMoveUp' || $cmd == 'exMoveDown' )
     {
-    	$pathList->movePathUp($path);
-    }
-
-    if( $cmd == 'exMoveDown' )
-    {
-    	$pathList->movePathDown($path);
+        // load list to be able to move path up or down
+        $pathList = new pathListIterator();
+        
+        if( $is_allowedToEdit )
+        {
+            $pathList->load();
+        }
+        else
+        {
+            $pathList->load($user_id);
+        }
+        
+        // make the move
+        if( $cmd == 'exMoveUp' )
+        {
+            $pathList->movePathUp($path);
+        }
+    
+        if( $cmd == 'exMoveDown' )
+        {
+            $pathList->movePathDown($path);
+        }
+        // clean 
+        unset($pathList);
     }
 
     if( $cmd == 'exExport' )
     {
-    	// TODO
+        // TODO
     }
 }
 
+/*
+ * Load list of paths
+ */
+// prepare list to display
+$pathList = new pathListIterator();
 
+if( $is_allowedToEdit )
+{
+    $pathList->load();
+}
+else
+{
+    $pathList->load($user_id);
+}
 
 
 /*
@@ -287,51 +304,51 @@ if( $is_allowedToEdit )
             .    '</td>';
             // edit
             $out .= '<td>' . "\n"
-	        .    '<a href="admin/edit_path.php?pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
-	        .    '</a>'
-	        .    '</td>' . "\n";
+            .    '<a href="admin/edit_path.php?pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
+            .    '</a>'
+            .    '</td>' . "\n";
 
             // delete
             $out .= '<td>' . "\n"
-	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('delete') . '" />' . "\n"
-	        .    '</a>'
-	        .    '</td>' . "\n";
+            .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('delete') . '" />' . "\n"
+            .    '</a>'
+            .    '</td>' . "\n";
 
             // block/unblock
             if( $aPath['lock'] == 'OPEN' )
             {
-	            $out .= '<td>' . "\n"
-		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Block') . '" />' . "\n"
-		        .    '</a>'
-		        .    '</td>' . "\n";
+                $out .= '<td>' . "\n"
+                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Block') . '" />' . "\n"
+                .    '</a>'
+                .    '</td>' . "\n";
             }
             else
             {
-				$out .= '<td>' . "\n"
-		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
-		        .    '</a>'
-		        .    '</td>' . "\n";
+                $out .= '<td>' . "\n"
+                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
+                .    '</a>'
+                .    '</td>' . "\n";
             }
             // visible/invisible
             if( $aPath['visibility'] == 'VISIBLE' )
             {
-	            $out .= '<td>' . "\n"
-		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
-		        .    '</a>'
-		        .    '</td>' . "\n";
+                $out .= '<td>' . "\n"
+                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
+                .    '</a>'
+                .    '</td>' . "\n";
             }
             else
             {
-				$out .= '<td>' . "\n"
-		        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
-		        .    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
-		        .    '</a>'
-		        .    '</td>' . "\n";
+                $out .= '<td>' . "\n"
+                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
+                .    '</a>'
+                .    '</td>' . "\n";
             }
             // order
             // Move up
@@ -364,17 +381,17 @@ if( $is_allowedToEdit )
 
             // export
             $out .= '<td>' . "\n"
-	        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
-	        .    '</a>'
-	        .    '</td>' . "\n";
+            .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
+            .    '</a>'
+            .    '</td>' . "\n";
 
             // tracking
             $out .= '<td>' . "\n"
-	        .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . './track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
-	        .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
-	        .    '</a>'
-	        .    '</td>' . "\n";
+            .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . './track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
+            .    '</a>'
+            .    '</td>' . "\n";
 
             $out .= '</tr>' . "\n\n";
         }
