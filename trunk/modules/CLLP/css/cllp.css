@@ -1,27 +1,39 @@
 body {
-	text-align: center;
+    text-align: center;
 }
 
 body {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 div#navigation {
-	text-align: center;
-	font-size: small;
-	position: fixed;
-	top: 0;
-	left: 0;
-	height: 80px;
-	width: 100%;
-	border-top: 1px solid #999;
-	background: #fff;
+    text-align: center;
+    font-size: small;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2em;
+    width: 100%;
+    border-top: 1px solid #999;
+    background: #fff;
+}
+
+div#progress {
+    text-align: center;
+    padding: 3px;
 }
 
 div#table_of_content {
-	padding-top: 80px;
-	overflow: vertical;
+    padding: 3em 3px 2px 3px;
+    overflow: vertical;
+    width: 96%;
+    font-size: small;
+    text-align: left;    
+}
+
+div#table_of_content_inner {
+
 }
 
 .active a,
@@ -29,9 +41,5 @@ div#table_of_content {
 .active a:visited,
 .active a:hover,
 .active a:active {
-	font-weight: bold;
-}
-
-.active {
-	border-bottom: 1px solid grey;
+    font-weight: bold;
 }
