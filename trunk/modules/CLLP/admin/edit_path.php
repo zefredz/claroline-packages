@@ -20,35 +20,35 @@ require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.in
 
 if ( !claro_is_tool_allowed() )
 {
-	if ( claro_is_in_a_course() )
-	{
-		claro_die( get_lang( "Not allowed" ) );
-	}
+    if ( claro_is_in_a_course() )
+    {
+        claro_die( get_lang( "Not allowed" ) );
+    }
     else
-	{
-		claro_disp_auth_form( true );
-	}
+    {
+        claro_disp_auth_form( true );
+    }
 }
+
+/*
+ * Shared libraries
+ */
+require_once get_conf( 'includePath' ) . '/lib/core/linker.lib.php';
 
 /*
  * Tool libraries
  */
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
-
-require_once dirname( __FILE__ ) . '/../linker/linker.inc.php';
-
-/*
- * Shared libraries
- */
+require_once dirname( __FILE__ ) . '/../lib/linker.lib.php';
 
 
 /*
  * init request vars
  */
 $acceptedCmdList = array(   'rqEdit', 'exEdit',
-							'rqAddItem', 'exAddItem',
-							'rqAddContainer', 'exAddContainer',
+                            'rqAddItem', 'exAddItem',
+                            'rqAddContainer', 'exAddContainer',
                             'rqDelete', 'exDelete',
                             'rqPrereq', 'exPrereq',
                             'exVisible', 'exInvisible',
@@ -77,27 +77,27 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 // admin only page and path is required as we edit a path ...
 if( !$is_allowedToEdit )
 {
-	header("Location: ../index.php");
-	exit();
+    header("Location: ../index.php");
+    exit();
 }
 else
 {
     $path = new path();
 
-	if( !is_null($pathId) )
-	{
-	    if( !$path->load($pathId) )
-	    {
-	        // path is required exept for creation
-	        header("Location: ../index.php");
-	    	exit();
-	    }
-	}
-	else
-	{
-		// no pathId so force cmd to rqEdit but do not force if we are creating the path(exEdit)
-		$cmd == 'exEdit' ? $cmd = 'exEdit': $cmd = 'rqEdit';
-	}
+    if( !is_null($pathId) )
+    {
+        if( !$path->load($pathId) )
+        {
+            // path is required exept for creation
+            header("Location: ../index.php");
+            exit();
+        }
+    }
+    else
+    {
+        // no pathId so force cmd to rqEdit but do not force if we are creating the path(exEdit)
+        $cmd == 'exEdit' ? $cmd = 'exEdit': $cmd = 'rqEdit';
+    }
 }
 
 
@@ -107,8 +107,6 @@ $dialogBox = new DialogBox();
  * Admin only page
  */
 
-// obejct that will be used to handle the list of items (display and move of items...)
-$itemList = new itemList();
 
 /*
  * Commands that acts on or create an item require $item to be set
@@ -126,27 +124,22 @@ if( !is_null($itemId) )
 
 if( $cmd == 'exEdit' )
 {
-	$path->setTitle($_REQUEST['title']);
-	$path->setDescription($_REQUEST['description']);
-	$path->setViewMode($_REQUEST['viewMode']);
-	// if we edit do not change version, only change it if manual creation of a claroline path
-	if( is_null($pathId) ) 
-	{
-	   $path->setVersion(Path::VERSION_CLAROLINE);
-	}
-
-	if( $path->validate() )
+    $path->setTitle($_REQUEST['title']);
+    $path->setDescription($_REQUEST['description']);
+    $path->setViewMode($_REQUEST['viewMode']);
+    
+    if( $path->validate() )
     {
         if( $insertedId = $path->save() )
         {
-        	if( is_null($pathId) )
+            if( is_null($pathId) )
             {
                 $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
             }
             else
             {
-            	$dialogBox->success( get_lang('Learning path successfully modified') );
+                $dialogBox->success( get_lang('Learning path successfully modified') );
             }
         }
         else
@@ -168,50 +161,50 @@ if( $cmd == 'exEdit' )
 
 if( $cmd == 'rqEdit' )
 {
-	// show form
+    // show form
     $htmlEditForm = "\n\n";
 
     if( !is_null($pathId) )
     {
-    	$htmlEditForm .= '<strong>' . get_lang('Edit learning path settings') . '</strong>' . "\n";
-    	$cancelUrl = $_SERVER['PHP_SELF'] . '?pathId='.$pathId;
+        $htmlEditForm .= '<strong>' . get_lang('Edit learning path settings') . '</strong>' . "\n";
+        $cancelUrl = $_SERVER['PHP_SELF'] . '?pathId='.$pathId;
     }
     else
     {
-    	$htmlEditForm .= '<strong>' . get_lang('Create a new learning path') . '</strong>' . "\n";
-    	$cancelUrl = get_module_url('CLLP') . '/index.php';
+        $htmlEditForm .= '<strong>' . get_lang('Create a new learning path') . '</strong>' . "\n";
+        $cancelUrl = get_module_url('CLLP') . '/index.php';
     }
 
     $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
-    .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
-    .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
+    .     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
+    .     '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
 
     // title
-    .	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-    .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($path->getTitle()).'" /><br />' . "\n"
+    .     '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+    .     '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($path->getTitle()).'" /><br />' . "\n"
     // description
-    .	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
-    .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($path->getDescription()).'</textarea><br />'
+    .     '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
+    .     '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($path->getDescription()).'</textarea><br />'
     /*
     // allow reinit : TODO
-    .	 get_lang('Allow reinit') . '&nbsp;<span class="required">*</span><br />' . "\n"
-	.	 '<input type="radio" name="allowReinit" id="allowReinitYes" value="true">'
-	.	 '<label for="allowReinitYes">'.get_lang('Yes').'</label><br />' . "\n"
-	.	 '<input type="radio" name="allowReinit" id="allowReinitNo" value="false" >'
-	.	 '<label for="allowReinitNo">'.get_lang('No').'</label>' . "\n"
-	.	 '<br /><br />'
-	*/
+    .     get_lang('Allow reinit') . '&nbsp;<span class="required">*</span><br />' . "\n"
+    .     '<input type="radio" name="allowReinit" id="allowReinitYes" value="true">'
+    .     '<label for="allowReinitYes">'.get_lang('Yes').'</label><br />' . "\n"
+    .     '<input type="radio" name="allowReinit" id="allowReinitNo" value="false" >'
+    .     '<label for="allowReinitNo">'.get_lang('No').'</label>' . "\n"
+    .     '<br /><br />'
+    */
     // viewmode
-    .	 get_lang('Default view mode') . '&nbsp;<span class="required">*</span><br />' . "\n"
-	.	 '<input type="radio" name="viewMode" id="viewModeEmb" value="EMBEDDED" '.($path->isFullscreen()?'':'checked="checked"').'>'
-	.	 '<label for="viewModeEmb">'.get_lang('Embedded').'</label><br />' . "\n"
-	.	 '<input type="radio" name="viewMode" id="viewModeFull" value="FULLSCREEN" '.($path->isFullscreen()?'checked="checked"':'').'>'
-	.	 '<label for="viewModeFull">'.get_lang('Fullscreen').'</label>' . "\n"
-	.	 '<br /><br />'
+    .     get_lang('Default view mode') . '&nbsp;<span class="required">*</span><br />' . "\n"
+    .     '<input type="radio" name="viewMode" id="viewModeEmb" value="EMBEDDED" '.($path->isFullscreen()?'':'checked="checked"').'>'
+    .     '<label for="viewModeEmb">'.get_lang('Embedded').'</label><br />' . "\n"
+    .     '<input type="radio" name="viewMode" id="viewModeFull" value="FULLSCREEN" '.($path->isFullscreen()?'checked="checked"':'').'>'
+    .     '<label for="viewModeFull">'.get_lang('Fullscreen').'</label>' . "\n"
+    .     '<br /><br />'
     // charset : TODO
 
-    .	 '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
+    .     '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
     .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
     .    claro_html_button($cancelUrl, get_lang('Cancel'))
     .    '</form>' . "\n"
@@ -223,15 +216,18 @@ if( $cmd == 'rqEdit' )
 
 if( $cmd == 'exAddItem' )
 {
-    if( isset($_REQUEST['itemList']) && is_array($_REQUEST['itemList']) && count($_REQUEST['itemList']) )
+    if( isset($_REQUEST['resourceList']) && is_array($_REQUEST['resourceList']) && count($_REQUEST['resourceList']) )
     {
         $i = 0;
-        foreach( $_REQUEST['itemList'] as $itemToAdd )
+        foreach( $_REQUEST['resourceList'] as $crl )
         {
-            // get title in path
-            if( !empty($_REQUEST['titleList'][$i]) )
+            // get title 
+            ResourceLinker::init();
+            $resourceName = ResourceLinker::$Resolver->getResourceName(ClarolineResourceLocator::parse( $crl ));
+            
+            if( !empty($resourceName) )
             {
-                $title = substr($_REQUEST['titleList'][$i], strrpos($_REQUEST['titleList'][$i],'>') + 2);
+                $title = substr($resourceName, strrpos($resourceName,'>') + 2);
             }
             else
             {
@@ -239,12 +235,12 @@ if( $cmd == 'exAddItem' )
             }
 
             $addedItem = new item();
-          	$addedItem->setType('MODULE');
+            $addedItem->setType('MODULE');
             $addedItem->setTitle($title);
             $addedItem->setPathId($pathId);
-        	$addedItem->setSysPath(urldecode($itemToAdd));
+            $addedItem->setSysPath(urldecode($crl));
 
-        	if( $addedItem->validate() )
+            if( $addedItem->validate() )
             {
                 if( $addedItem->save() )
                 {
@@ -261,48 +257,23 @@ if( $cmd == 'exAddItem' )
     }
     else
     {
-    	$dialogBox->error( get_lang('You didn\'t choose any ressource to add as item.') );
-    	$cmd = 'rqAddItem';
+        $dialogBox->error( get_lang('You didn\'t choose any ressource to add as item.') );
+        $cmd = 'rqAddItem';
     }
 }
 
 if( $cmd == 'rqAddItem' )
 {
-    //------------------------
-    //linker
-    linker_init_session();
-    linker_html_head_xtra();
-
-
     $htmlAddItem = "\n\n"
     .    '<strong>' . get_lang('Add item(s)') . '</strong>' . "\n"
     .    '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context() . "\n"
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'."\n"
-    .    '<input type="hidden" name="cmd" value="exAddItem" />' . "\n";
+    .    '<input type="hidden" name="cmd" value="exAddItem" />' . "\n"
+    .    CLLP_ResourceLinker::renderLinkerBlock(get_module_url('CLLP').'/backends/linker.php');
 
-    if( claro_is_jpspan_enabled() )
-    {
-        linker_set_local_crl( isset ($_REQUEST['id']) );
-        $htmlAddItem .= linker_set_display();
-
-        $htmlAddItem .= '<input type="submit" onclick="linker_confirm();" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
-    }
-    else
-    {
-        if(isset($_REQUEST['id'])) $htmlAddItem .= linker_set_display($_REQUEST['id']);
-        else                       $htmlAddItem .= linker_set_display();
-
-        $htmlAddItem .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n";
-    }
-
-    $htmlAddItem .= '<div id="lnk_panel">' 
-    . '<div id="lnk_resources"></div>' . "\n" 
-    . '<div id="lnk_selected_resources"></div>' . "\n" 
-    . '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n"
-    . '</div>' . "\n";
-    
-    $htmlAddItem .= claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
+    $htmlAddItem .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n"
+    .    claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))
     .    '</form>' . "\n";
 
     $dialogBox->form($htmlAddItem);
@@ -310,7 +281,7 @@ if( $cmd == 'rqAddItem' )
 
 if( $cmd == 'exAddContainer' )
 {
-	$item->setType('CONTAINER');
+    $item->setType('CONTAINER');
     $item->setTitle($_REQUEST['title']);
     $item->setVisible();
     $item->setPathId($pathId);
@@ -328,8 +299,8 @@ if( $cmd == 'exAddContainer' )
     }
     else
     {
-    	$dialogBox->error( get_lang('Missing field : title is mandatory.') );
-    	$cmd = 'rqAddContainer';
+        $dialogBox->error( get_lang('Missing field : title is mandatory.') );
+        $cmd = 'rqAddContainer';
     }
 }
 
@@ -355,21 +326,21 @@ if( $cmd == 'rqAddContainer' )
 
 if( $cmd == 'exDelete' )
 {
-	if( $item->delete() )
-	{
-		$dialogBox->success( get_lang('Item succesfully deleted') );
-	}
-	else
-	{
-		$dialogBox->error( get_lang('Fatal error : cannot delete item') );
-	}
+    if( $item->delete() )
+    {
+        $dialogBox->success( get_lang('Item succesfully deleted') );
+    }
+    else
+    {
+        $dialogBox->error( get_lang('Fatal error : cannot delete item') );
+    }
 }
 
 if( $cmd == 'rqDelete' )
 {
 
-	$htmlConfirmDelete = get_lang('Are you sure to delete item "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
-	.	 '<br /><br />'
+    $htmlConfirmDelete = get_lang('Are you sure to delete item "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+    .     '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'">' . get_lang('No') . '</a>'
@@ -380,8 +351,8 @@ if( $cmd == 'rqDelete' )
 
 if( $cmd == 'exMove' )
 {
-    // check that moved item is not itself or one descendant
-    // liste complète, on extrait le noeud ou on doit mettre, on vérifie que l'item n'est pas dans ce noeud ou ses fils
+    // TODO check that moved item is not itself or one descendant ?
+
     // change parent of item
     $item->setParentId($_REQUEST['newParentId']);
 
@@ -405,16 +376,20 @@ if( $cmd == 'exMove' )
 if( $cmd == 'rqMove' )
 {
     // get list of available target : every container but not this one if this is a container too
-    $containerList = new itemList();
-    $containerListArray = $containerList->loadContainerList($pathId);
+    $containerList = new PathItemList($pathId);
+    $containerListTree = $containerList->getContainerTree();
 
-    $containerListTree = $containerList->buildTree($containerListArray);
 
+    if (!is_array($containerListTree)) 
+    {
+        $containerListTree = array();
+    }
+    // remove current item to avoid an item being a child of its parent
+    
     // add root to containerListTree
     $topElement['name'] = get_lang('Root');
     $topElement['value'] = -1;
-
-    if (!is_array($containerListTree)) $containerListTree = array();
+    
     array_unshift($containerListTree,$topElement);
 
     // show form
@@ -436,19 +411,21 @@ if( $cmd == 'rqMove' )
 
 if( $cmd == 'exMoveUp' )
 {
+    $itemList = new PathItemList($pathId);
     $itemList->moveItemUp($item,$path);
 }
 
 if( $cmd == 'exMoveDown' )
 {
+    $itemList = new PathItemList($pathId);
     $itemList->moveItemDown($item,$path);
 }
 
 if( $cmd == 'exPrereq' )
 {
-	// check save prerequisites
+    // check save prerequisites
 
-	$item->save();
+    $item->save();
 }
 
 if( $cmd == 'rqPrereq' )
@@ -459,23 +436,24 @@ if( $cmd == 'rqPrereq' )
 
 if( $cmd == 'exVisible' )
 {
-	$item->setVisible();
+    $item->setVisible();
 
-	$item->save();
+    $item->save();
 }
 
 if( $cmd == 'exInvisible' )
 {
-	$item->setInvisible();
+    $item->setInvisible();
 
-	$item->save();
+    $item->save();
 }
 
 
 
 
 // prepare list to display
-$itemListArray = $itemList->getFlatList($pathId);
+$itemList = new PathItemList($pathId);
+$itemListArray = $itemList->getFlatList();
 
 /*
  * Output
@@ -498,7 +476,7 @@ $cmdMenu = array();
 // do not display commands to student or when creating a new path (rqEdit)
 if( $is_allowedToEdit && !is_null($pathId) )
 {
-	$cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('play') . '" border="0" alt="" />' . get_lang('Play path'));
+    $cmdMenu[] = claro_html_cmd_link('../viewer/index.php?pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('play') . '" border="0" alt="" />' . get_lang('Play path'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('edit') . '" border="0" alt="" />' . get_lang('Edit path settings'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('chapter_add') . '" border="0" alt="" />' . get_lang('Add chapter'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('item_add') . '" border="0" alt="" />' . get_lang('Add item(s)'));
@@ -513,13 +491,13 @@ $out .= '<p>'
 $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
-.	 '<th>' . get_lang('Item') . '</th>' . "\n"
-.	 '<th>' . get_lang('Modify') . '</th>' . "\n"
-.	 '<th>' . get_lang('Delete') . '</th>' . "\n"
-.	 '<th>' . get_lang('Prerequisites') . '</th>' . "\n"
-.	 '<th>' . get_lang('Visibility') . '</th>' . "\n"
-.	 '<th>' . get_lang('Move') . '</th>' . "\n"
-.	 '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
+.     '<th>' . get_lang('Item') . '</th>' . "\n"
+.     '<th>' . get_lang('Modify') . '</th>' . "\n"
+.     '<th>' . get_lang('Delete') . '</th>' . "\n"
+.     '<th>' . get_lang('Prerequisites') . '</th>' . "\n"
+.     '<th>' . get_lang('Visibility') . '</th>' . "\n"
+.     '<th>' . get_lang('Move') . '</th>' . "\n"
+.     '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
 .    '</tr>' . "\n"
 .    '</thead>' . "\n";
 
@@ -539,57 +517,57 @@ if( !empty($itemListArray) && is_array($itemListArray) )
 
         // edit
         $out .= '<td>' . "\n"
-	    .    '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-	    .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
-	    .    '</a>'
-	    .    '</td>' . "\n";
+        .    '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
+        .    '</a>'
+        .    '</td>' . "\n";
 
         // delete
         $out .= '<td>' . "\n"
-     	.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-	    .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('Delete') . '" />' . "\n"
-    	.    '</a>'
-    	.    '</td>' . "\n";
+         .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('Delete') . '" />' . "\n"
+        .    '</a>'
+        .    '</td>' . "\n";
 
         // prerequisites
-		$out .= '<td>' . "\n"
-		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-		.    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
-		.    '</a>'
-		.    '</td>' . "\n";
+        $out .= '<td>' . "\n"
+        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
+        .    '</a>'
+        .    '</td>' . "\n";
 
         // visible/invisible
         if( $anItem['visibility'] == 'VISIBLE' )
         {
-        	$out .= '<td>' . "\n"
-      		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
-      		.    '</a>'
-      		.    '</td>' . "\n";
+            $out .= '<td>' . "\n"
+              .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+              .    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
+              .    '</a>'
+              .    '</td>' . "\n";
         }
         else
         {
-			$out .= '<td>' . "\n"
-      		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
-      		.    '</a>'
-      		.    '</td>' . "\n";
+            $out .= '<td>' . "\n"
+              .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+              .    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
+              .    '</a>'
+              .    '</td>' . "\n";
         }
 
         $out .= '<td>' . "\n"
-   		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqMove&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-  		.    '<img src="' . get_icon_url('move') . '" border="0" alt="' . get_lang('Move') . '" />' . "\n"
-     	.    '</a>'
-     	.    '</td>' . "\n";
+           .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqMove&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+          .    '<img src="' . get_icon_url('move') . '" border="0" alt="' . get_lang('Move') . '" />' . "\n"
+         .    '</a>'
+         .    '</td>' . "\n";
 
         // order
         if( $anItem['canMoveUp'] )
         {
             $out .= '<td>' . "\n"
-       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_icon_url('move_up') . '" border="0" alt="' . get_lang('Move up') . '" />' . "\n"
-         	.    '</a>'
-         	.    '</td>' . "\n";
+               .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+              .    '<img src="' . get_icon_url('move_up') . '" border="0" alt="' . get_lang('Move up') . '" />' . "\n"
+             .    '</a>'
+             .    '</td>' . "\n";
         }
         else
         {
@@ -599,10 +577,10 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         if( $anItem['canMoveDown'] )
         {
             $out .= '<td>' . "\n"
-       		.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveDown&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-      		.    '<img src="' . get_icon_url('move_down') . '" border="0" alt="' . get_lang('Move down') . '" />' . "\n"
-         	.    '</a>'
-         	.    '</td>' . "\n";
+               .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveDown&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+              .    '<img src="' . get_icon_url('move_down') . '" border="0" alt="' . get_lang('Move down') . '" />' . "\n"
+             .    '</a>'
+             .    '</td>' . "\n";
         }
         else
         {
