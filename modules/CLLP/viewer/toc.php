@@ -20,14 +20,14 @@ require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.in
 
 if ( !claro_is_tool_allowed() )
 {
-	if ( claro_is_in_a_course() )
-	{
-		claro_die( get_lang( "Not allowed" ) );
-	}
+    if ( claro_is_in_a_course() )
+    {
+        claro_die( get_lang( "Not allowed" ) );
+    }
     else
-	{
-		claro_disp_auth_form( true );
-	}
+    {
+        claro_disp_auth_form( true );
+    }
 }
 
 /*
@@ -51,8 +51,8 @@ else                                                                  $pathId = 
 
 // prepare html header
 $htmlHeaders = '<link rel="stylesheet" type="text/css" href="' . get_module_url('CLLP') . '/css/cllp.css" media="screen, projection, tv" />' . "\n"
-.	 '<script type="text/javascript">' . "\n"
-.	 '	var lpHandler = window.parent.lpHandler;' . "\n"
+.     '<script type="text/javascript">' . "\n"
+.     '    var lpHandler = window.parent.lpHandler;' . "\n"
 .    '  function exitConfirmation() ' . "\n"
 .    '  {' . "\n"
 .    '    if( confirm(\''.clean_str_for_javascript(get_lang('Are you sure to leave this learning path ?')).'\'))' . "\n" 
@@ -60,12 +60,8 @@ $htmlHeaders = '<link rel="stylesheet" type="text/css" href="' . get_module_url(
 .    '    else '. "\n"
 .    '    {return false;}' . "\n"
 .    '  }' . "\n"
-.	 '</script>' . "\n";
+.     '</script>' . "\n";
 
-// to fix png transparency problem using IE < 7
-$htmlHeaders .= '<!--[if lt IE 7]>' . "\n"
-.	 '<script defer type="text/javascript" src="pngfix.js"></script>' . "\n"
-.	 '<![endif]-->' . "\n";
 
 /*
  * Output
@@ -86,12 +82,12 @@ $html .= '<p>' . "\n"
 .    '<img src="'.get_icon_url('go-home').'" alt="'.get_lang('Back to list').'" />'
 .    '</a>' . "\n"
 //- tracking
-.	 '&nbsp;&nbsp;'
+.     '&nbsp;&nbsp;'
 .    '<a href="'.get_module_url('CLLP').'/track_path.php?path_id='.$pathId.'" title="'.get_lang('View statistics').'" target="_top" onClick="return exitConfirmation();">'
 .    '<img src="'.get_icon_url('statistics').'" alt="'.get_lang('View statistics').'" />'
 .    '</a>' . "\n"
 //- previous and next buttons
-.	 '&nbsp;&nbsp;'
+.     '&nbsp;&nbsp;'
 .    '<a href="#" title="'.get_lang('Previous').'" onClick="lpHandler.goPrevious(); return false;" id="goPrevious">'
 .    '<img src="'.get_icon_url('go_left').'" alt="'.get_lang('Previous').'" />'
 .    '</a>' . "\n"
@@ -99,7 +95,7 @@ $html .= '<p>' . "\n"
 .    '<img src="'.get_icon_url('go_right').'" alt="'.get_lang('Next').'" />'
 .    '</a>' . "\n"
 //- full screen switch
-.	 '&nbsp;&nbsp;'
+.     '&nbsp;&nbsp;'
 .    '<a href="#" title="'.get_lang('Fullscreen').'" onClick="lpHandler.setFullscreen(); return false;">'
 .    '<img src="'.get_icon_url('view-fullscreen').'" alt="'.get_lang('Fullscreen').'" />'
 .    '</a>' . "\n"
@@ -107,12 +103,8 @@ $html .= '<p>' . "\n"
 .    '<img src="'.get_icon_url('view-embedded').'" alt="'.get_lang('Embedded').'" />'
 .    '</a>' . "\n"
 
-.    '</p>' . "\n\n";
-
-// progression
-$html .= '<p>' . claro_html_progress_bar(46, 1) . '&nbsp;<a href="#" onClick="lpHandler.isolateContent();return false;" >46%</a></p>' . "\n";
-
-$html .= '</div>' . "\n";
+.    '</p>' . "\n\n"
+.    '</div>' . "\n";
 
 // table of content
 $html .= "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
