@@ -42,11 +42,6 @@ require_once dirname( __FILE__ ) . '/../lib/scorm12.lib.php';
 require_once dirname( __FILE__ ) . '/../lib/scorm13.lib.php';
 
 /*
- * Shared libraries
- */
-require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
-
-/*
  * init request vars
  */
 if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = (int) $_REQUEST['pathId'];
@@ -152,7 +147,7 @@ $contentFrame->noFrameBorder();
 
 // inner frameset that contains toc and content frames
 $innerFrameset = new ClaroFrameSet();
-$innerFrameset->addCol($tocFrame, '200');
+$innerFrameset->addCol($tocFrame, '240');
 $innerFrameset->addCol($contentFrame, '*');
 
 
