@@ -20,14 +20,14 @@ require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.in
 
 if ( !claro_is_tool_allowed() )
 {
-	if ( claro_is_in_a_course() )
-	{
-		claro_die( get_lang( "Not allowed" ) );
-	}
+    if ( claro_is_in_a_course() )
+    {
+        claro_die( get_lang( "Not allowed" ) );
+    }
     else
-	{
-		claro_redirect("index.php");
-	}
+    {
+        claro_redirect("index.php");
+    }
 }
 
 /*
@@ -44,6 +44,8 @@ else                                                                  $pathId = 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemId = null;
 
+
+$userId = claro_get_current_user_id();
 /*
  * Tool libraries
  */
@@ -58,7 +60,7 @@ require_once dirname( __FILE__ ) . '/../lib/scorm13.lib.php';
 /*
  * Shared libraries
  */
-require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
+FromKernel::uses('core/linker.lib');
 
 // end script here if no cmd is set
 if( is_null($cmd) ) echo 'Error : no command.';
@@ -88,19 +90,19 @@ if( $cmd == 'doCommit' )
         return false;
     }
 
-	// get serialized attempt
-	$thisAttempt = unserialize($_SESSION['thisAttempt']);
+    // get serialized attempt
+    $thisAttempt = unserialize($_SESSION['thisAttempt']);
 
-	// create new attempt for this item
-	$itemAttempt = new itemAttempt();
-	$itemAttempt->setAttemptId($thisAttempt->getId());
-	$itemAttempt->setItemId($itemId);
+    // create new attempt for this item
+    $itemAttempt = new itemAttempt();
+    $itemAttempt->setAttemptId($thisAttempt->getId());
+    $itemAttempt->setItemId($itemId);
 
-	// try to load itemAttempt
-	$itemAttempt->load($thisAttempt->getId(), $itemId);
+    // try to load itemAttempt
+    $itemAttempt->load($thisAttempt->getId(), $itemId);
 
-	// load path
-	$path = new Path();
+    // load path
+    $path = new Path();
     if( is_null($pathId) || !$path->load($pathId) )
     {
         // cannot find path ... 
@@ -121,23 +123,47 @@ if( $cmd == 'doCommit' )
     }
 
     $scormAPI->api2ItemAttempt($dataModelValues, $itemAttempt);
-	
-	if( $itemAttempt->validate() )
+    
+    if( $itemAttempt->validate() )
     {
         if( $itemAttempt->save() )
         {
-        	lpDebug('item attempt saved');
-        	// get new item attempt list
-        	// compute new values of attempt (progress,...)
-        	
-        	// save attempt        
-        	$thisAttempt->save();
-			return true;
+            lpDebug('Item attempt saved');
+            // get new item attempt list
+            // compute new values of attempt (progress,...)
+            $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+            $itemListArray = $itemList->getFlatList();
+
+            if( !empty($itemListArray) )
+            {
+                $progressTotal = 0;
+                foreach ( $itemListArray as $anItem)
+                {
+                    if( $anItem['score_max'] > 0 )
+                    {
+                        // fixme : take into account the fact that min may be more than 0
+                        $progressTotal += $anItem['score_raw'] / $anItem['score_max'] * 100; 
+                    }
+                }
+
+                $thisAttempt->setProgress($progressTotal / count($itemListArray));
+            }
+            else
+            {
+                $thisAttempt->setProgress(0);
+            }
+            // save attempt        
+            if( $thisAttempt->save() )
+            {
+                lpDebug('Attempt saved');
+                $_SESSION['thisAttempt'] = serialize($thisAttempt);
+            }
+            return true;
         }
         else
         {
             lpDebug('Cannot save itemAttempt');
-        	return false;
+            return false;
         }
     }
     else
@@ -161,13 +187,24 @@ if( $cmd == 'rqContentUrl' )
     {
         if( $item->getType() == 'MODULE' )
         {
-        	$resolver = new Resolver(get_path('rootWeb'));
+            $resolver = new ResourceLinkerResolver();
+            $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
+            
             // fix ? or &amp; depending if there is already a ? in url
-        	$itemUrl = $resolver->resolve($item->getSysPath()) .'&calledFrom=CLLP&embedded=true' ;
+            $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
+            
+            $itemUrl .= 'calledFrom=CLLP&embedded=true'; 
+            
+            // temporary fix for document tool (FIXME when linker will be updated)
+            // we have to open a frame that will discuss with API and open the document instead 
+            // of directly opening it
+            lpDebug($itemUrl);
+            $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
+            lpDebug($itemUrl);
         }
         elseif( $item->getType() == 'SCORM' )
         {
-        	$scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
+            $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
 
             $itemUrl = $scormBaseUrl . $item->getSysPath();
         }
@@ -176,12 +213,12 @@ if( $cmd == 'rqContentUrl' )
             return false;
         }
 
-	    echo $itemUrl;
-	    return true;
+        echo $itemUrl;
+        return true;
     }
     else
     {
-    	return false;
+        return false;
     }
 }
 
@@ -197,64 +234,84 @@ if( $cmd == 'rqToc' )
     }
     
     // prepare list to display
-    $itemList = new itemList();
+    if( $userId )
+    {
+        // get serialized attempt
+        $thisAttempt = unserialize($_SESSION['thisAttempt']);
+        
+        $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+    }
+    else
+    {
+        $itemList = new PathItemList($pathId);
+    }
 
-    $itemListArray = $itemList->getFlatList($pathId);
+    $itemListArray = $itemList->getFlatList();
 
+    // Output
+    $html = "\n"
+    .    '<div id="progress">' . claro_html_progress_bar($thisAttempt->getProgress(), 1) . '&nbsp;'.$thisAttempt->getProgress().'%</div>' . "\n"
+    .    '<div id="table_of_content_inner" >' . "\n";
 
-    // init what will be required to resolve urls
-    //  urls of claroline tools
-    $resolver = new Resolver(get_path('rootWeb'));
-    //  urls of scorm packages
-    $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
-
-    $html = "\n";
-
-    $html .= '<table style="font-size: small;" width="100%" border="0" cellspacing="2" id="toc" >' . "\n";
-
-	// TODO path title
-	$html .= '<tr>' . "\n"
-	.	 '<th>'.htmlspecialchars($path->getTitle()).'</th>' . "\n"
-	.	 '</tr>' . "\n";
+    $html .= '<h3>'.htmlspecialchars($path->getTitle()).'</h3>' . "\n";
 
     foreach( $itemListArray as $anItem )
     {
-        $html .= '<tr id="item_'.$anItem['id'].'">' . "\n";
+        $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
+        $html .= '<a id="item_'.$anItem['id'].'_anchor">' . "\n";
 
         // title
-        $html .= '<td align="left" style="padding-left:'.($anItem['deepness']*10).'px;">';
+        $html .= '<div style="padding-left:'.($anItem['deepness']*10).'px;" class="item" id="item_'.$anItem['id'].'">';
 
         if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' )
         {
             $html .= '<img src="'.get_module_url('CLLP').'/img/item.png" alt="" />'
-			.	 '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>';
+            .     '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>'
+            .    '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url($completionIcon).'" />';
         }
         else
         {
             $html .= '<img src="'.get_module_url('CLLP').'/img/chapter.png" alt="" />'
-			.	 '&nbsp;' . $anItem['title'];
+            .     '&nbsp;' . $anItem['title'];
         }
 
-        $html .= '</td>' . "\n";
-
-        $html .= '</tr>' . "\n";
+        $html .= '</div>' . "\n";
     }
 
-    $html .= '</table>';
+    $html .= '</div>';
 
-    echo $html;
+    echo claro_utf8_encode($html);
 }
 
 if( $cmd == 'getPrevious' )
 {
-    $itemList = new itemList();
-
-    echo "39";
+    if( $userId )
+    {
+        // get serialized attempt
+        $thisAttempt = unserialize($_SESSION['thisAttempt']);
+        
+        $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+    }
+    else
+    {
+        $itemList = new PathItemList($pathId);
+    }
+    
 }
 
 if( $cmd == 'getNext' )
 {
-    echo "41";
+    if( $userId )
+    {
+        // get serialized attempt
+        $thisAttempt = unserialize($_SESSION['thisAttempt']);
+        
+        $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+    }
+    else
+    {
+        $itemList = new PathItemList($pathId);
+    }
 }
 
 function lpDebug($var)
@@ -265,7 +322,7 @@ function lpDebug($var)
         
         $msg = '['.date('d-M-Y H:i:s'). '] ' . $var . "\n";     
     
-    	$fp = file_put_contents($debugFile,$msg, FILE_APPEND);
+        $fp = file_put_contents($debugFile,$msg, FILE_APPEND);
     } 
 }
 // ajax output
