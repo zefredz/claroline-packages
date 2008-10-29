@@ -27,7 +27,6 @@ class DailyTubeComponent extends Component
     
     public function render()
     {
-        $inputError = false;
         $inputType = $this->videoInputType;
         $idType = $this->videoIdType;
         $videoSize = $this->videoSize;
@@ -35,9 +34,8 @@ class DailyTubeComponent extends Component
         //default = small
         $width = 380;
         $height = 320;
-    
+        
         //input reception
-        $input = '';
         if('url' == $inputType)
         {
             $input = $this->videoUrl;
@@ -58,7 +56,6 @@ class DailyTubeComponent extends Component
             $width = 750;
             $height = 625;
         }
-    
         
         if ($input != null)
         {
@@ -73,11 +70,6 @@ class DailyTubeComponent extends Component
                     $urlType = $this->defineUrlType($input);
                     return $this->setDailyMotionPlayer($input,$urlType,$width,$height);
                 }
-                else
-                {
-                    $inputError = true;
-                    $message = get_lang('Not a correct video address');
-                }
             }
             else if ('id' == $inputType)
             {
@@ -89,16 +81,6 @@ class DailyTubeComponent extends Component
                 {
                     return $this->setDailyMotionPlayer($input,'id',$width, $height);
                 }
-            }
-            
-            if($inputError)
-            {
-                $dialogBox = new DialogBox();
-                $dialogBox->error($message);
-                
-                return '<center>' . "\n"
-                        .     $dialogBox->render(). "\n"
-                        .     '</center>' . "\n";
             }
         }
     }
@@ -151,9 +133,8 @@ class DailyTubeComponent extends Component
         }
         else
         {
+            $this->setErrorMessage('test 2');
             return 'error';
-            $error = true;
-            $message = get_lang('Not a correct video address');
         }
     }
     
@@ -214,13 +195,40 @@ class DailyTubeComponent extends Component
             .    '</center>' . "\n";
     }
 
+    public function validate()
+    {
+        $inputType = $this->videoInputType;
+        if('url' == $inputType)
+        {
+            $input = $this->videoUrl;
+            if ($input != null)
+            {
+                if($this->isYouTubeUrl($input)||$this->isDailyMotionUrl($input))
+                {
+                    return 'true';
+                }
+                else
+                {
+                    $message = get_lang('Not a correct and valid video Url').' :  <br> '.htmlspecialchars($input) ;
+                    $errorMessage= $this->renderErrorMessage($message);
+                    return $errorMessage;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+                
+        return true; //allow id input type
+    }
+
     /**
      * @see Component
      */
     public function editor()
     {
         return
-    
             '<script type="text/javascript">
             
                 function disableId()
@@ -257,14 +265,14 @@ class DailyTubeComponent extends Component
      * @set the checked status if inputs equal
      */
     private function check($var,$value)
-    {
+    { 
         if($var == $value)
         {
             return 'checked="checked"';
         } 
     }
         
-   /**
+    /**
      * @set the selected status if inputs equal
      */
      private function select($var,$value)
@@ -320,4 +328,4 @@ class DailyTubeComponent extends Component
 
 }
 
-PluginRegistry::register('dailytube',get_lang('YouTube and DailyMotion video'),'DailyTubeComponent', 'Externals', 'youtubeIco');
+//PluginRegistry::register('dailytube',get_lang('YouTube and DailyMotion video'),'DailyTubeComponent', 'Externals', 'youtubeIco');
