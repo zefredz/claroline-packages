@@ -3,10 +3,15 @@
  * CLAROLINE
  *
  * @version 0.1 $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ *
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ *
  * @package CLPAGES
+ *
  * @author Sebastien Piraux
+ *
  */
 
 $tlabelReq = 'CLPAGES';
@@ -18,13 +23,11 @@ if ( !claro_is_allowed_to_edit() || !claro_is_in_a_course() )
     claro_die( get_lang( "Not allowed" ) );
 }
 
-
 /*
  * Tool libraries
  */
 require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
 require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
-
 // load and register all plugins
 $pluginRegistry = pluginRegistry::getInstance();
 
@@ -32,7 +35,7 @@ $pluginRegistry = pluginRegistry::getInstance();
  * init request vars
  */
 $acceptedCmdList = array(   
-    'addComponent', 
+    'addComponent',
     'deleteComponent',
     'exEdit',
     'getEditor',
@@ -49,7 +52,7 @@ if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) )
 }
 else
 {
-    claro_die( get_lang('Missing or invalid command') );
+    die( get_lang('Missing or invalid command').var_export($_REQUEST['cmd'],true) );
 }
 
 if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) )
@@ -78,6 +81,16 @@ else
 {
     $itemType = null;
 }
+
+if( isset($_REQUEST['errorMessage']) )
+{
+    $errorMessage = $_REQUEST['errorMessage'];
+}
+else
+{
+    $errorMessage = null;
+}
+
 
 // force headers
 header('Content-Type: text/html; charset=UTF-8'); // Charset
@@ -165,7 +178,6 @@ if( $cmd == 'mkUp' || $cmd == 'mkDown' )
     }
 }
 
-
 if( $cmd == 'addComponent')
 {
     if( is_null($pageId) || is_null($itemType) ) return false;
@@ -185,7 +197,6 @@ if( $cmd == 'addComponent')
         echo claro_utf8_encode($component->renderBlock());
         return true;
     }
-
     return false;
 }
 
@@ -206,7 +217,6 @@ if( $cmd == 'getComponent')
         }
         return false;
     }
-
     return false;
 }
 
@@ -249,7 +259,6 @@ if( $cmd == 'mkVisible' )
             return true;
         }
     }
-
     echo 'false';
     return false;
 
@@ -271,7 +280,6 @@ if( $cmd == 'mkInvisible' )
             return true;
         }
     }
-
     echo 'false';
     return false;
 }
@@ -287,19 +295,18 @@ if( $cmd == 'getEditor' )
     {
         if( $component->load( $itemId ) )
         {
-            echo claro_utf8_encode($component->renderEditor());
+            
+            echo claro_utf8_encode($component->renderEditor($errorMessage));
 
             return true;
         }
     }
-
     return false;
 }
 
-
-
 if( $cmd == 'exEdit' )
 {
+    error_log('test');
     $factory = new ComponentFactory();
 
     $component = $factory->createComponent( $itemType );
@@ -321,16 +328,23 @@ if( $cmd == 'exEdit' )
             }
 
             $component->setTitle($title);
+            
             $component->getEditorData();
+            if( 'true' == $component->validate())
+            {
             $component->save();
-
+            }
+            else
+            {
+                echo $component->validate();
+                return $component->validate();
+            }
             echo 'true';
             return true;
         }
     }
-
-    echo 'false';
-    return false;
+    echo 'Component state unstable';
+    return 'Component state unstable';
 }
 
 ?>

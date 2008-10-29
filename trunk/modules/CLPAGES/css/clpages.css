@@ -1,11 +1,11 @@
 .sortableComponent
 {
-	margin: 15px 0;
+    margin: 15px 0;
 }
 
 .sortableComponent .componentHeader
 {
-	color: #669933;
+    color: #669933;
     font-weight: bold;
     padding: 2px 5px 2px 5px;
     background-color: #EDF1E3;
@@ -14,67 +14,67 @@
 
 .sortableComponent .componentContent
 {
-	padding: 5px;
-	background: #FFF;
+    padding: 5px;
+    background: #FFF;
 }
 
 .captionImg
 {
-	padding: 5px;
-	text-align: center;
+    padding: 5px;
+    text-align: center;
 }
 
 .captionImg
 {
-	padding: 5px;
+    padding: 5px;
 }
 
 .captionImg .caption
 {
-	text-align: center;
-	font-size: small;
+    text-align: center;
+    font-size: small;
 }
 
 
 .componentRssItem
 {
-	margin: 5px;
+    margin: 5px;
 }
 
 .componentRssItemHeader
 {
-	border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .componentRssItemContent
 {
-	padding: 2px;
+    padding: 2px;
 }
 
 .slideNav
 {
-	font-size: small;
-	text-align: center;
-	padding: 3px;
-	border: 1px solid #ededed; 
+    font-size: small;
+    text-align: center;
+    padding: 3px;
+    border: 1px solid #ededed; 
 }
 
 .slideNav .prevSlide
 {
-	float: left;
-	width: 33%;
-	text-align: left;
+    float: left;
+    width: 33%;
+    text-align: left;
 }
 
 .slideNav .nextSlide
 {
-	float: right;
-	width: 33%;
-	text-align: right;
+    float: right;
+    width: 33%;
+    text-align: right;
 }
 
 .slideNav .navDisabled a,
 .slideNav .navDisabled a:hover
 {
-	color: #ccc;
+    color: #ccc;
 }

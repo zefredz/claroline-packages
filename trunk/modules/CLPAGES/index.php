@@ -212,7 +212,7 @@
     $cmdMenu = array();
     if($is_allowedToEdit)
     {
-        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars(Url::Contextualize('index.php?cmd=rqEdit') ) ,get_lang('Create a new page'));
+        $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new page'));
     }
 
     $out .= '<p>'
@@ -310,8 +310,6 @@
 
             $out .=  '</tr>' . "\n\n";
         }
-        
-        $out .= '</tbody>' . "\n";
     }
     else
     {
