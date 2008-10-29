@@ -18,47 +18,47 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
     class TextComponent extends Component
     {
-    	private $content = '';
+        private $content = '';
 
-		/**
-		 * @see Component
-		 */
-    	function render()
-    	{
-			return claro_parse_user_text($this->content);
-    	}
+        /**
+         * @see Component
+         */
+        function render()
+        {
+            return claro_parse_user_text($this->content);
+        }
 
-		/**
-		 * @see Component
-		 */
-    	function editor()
-    	{
-    		return '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->render()).'</textarea>';
-    	}
+        /**
+         * @see Component
+         */
+        function editor()
+        {
+            return '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->content).'</textarea>';
+        }
 
-		/**
-		 * @see Component
-		 */
-    	function getEditorData()
-    	{
-    		$this->content = $this->getFromRequest('content_'.$this->getId());
-    	}
+        /**
+         * @see Component
+         */
+        function getEditorData()
+        {
+            $this->content = $this->getFromRequest('content_'.$this->getId());
+        }
 
-		/**
-		 * @see Component
-		 */
-    	function setData( $data )
-    	{
-  			$this->content = $data['content'];
-    	}
+        /**
+         * @see Component
+         */
+        function setData( $data )
+        {
+              $this->content = $data['content'];
+        }
 
-		/**
-		 * @see Component
-		 */
-    	function getData()
-    	{
-    		return array('content' => $this->content);
-    	}
+        /**
+         * @see Component
+         */
+        function getData()
+        {
+            return array('content' => $this->content);
+        }
     }
 
     PluginRegistry::register('text',get_lang('Text'),'TextComponent', '', 'textIco');
