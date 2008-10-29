@@ -72,7 +72,7 @@ class TextAndImageComponent extends Component
         // Text
         $out .= '<fieldset>' . "\n"
         .     '<legend>'.get_lang('Text').'</legend>' . "\n"
-        .     '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->content)).'</textarea>'
+        .     '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->content).'</textarea>'
         .     '</fieldset>' . "\n"
         ;
 
