@@ -31,7 +31,9 @@ class TextComponent extends Component
      */
     public function editor()
     {
-        return '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->render()).'</textarea>';
+        return '<textarea name="content_'.$this->getId().'" id="content_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'
+        .   htmlspecialchars($this->content)
+        .   '</textarea>';
     }
 
     /**

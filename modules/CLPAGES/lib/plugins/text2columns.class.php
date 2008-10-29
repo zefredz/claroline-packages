@@ -50,13 +50,13 @@ class Text2ColumnsComponent extends Component
 
         $out .= '<fieldset>' . "\n"
         .     '<legend>'.get_lang('Text A').'</legend>' . "\n"
-        .     '<textarea name="contentA_'.$this->getId().'" id="contentA_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->contentA)).'</textarea>'
+        .     '<textarea name="contentA_'.$this->getId().'" id="contentA_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->contentA).'</textarea>'
         .     '</fieldset>' . "\n"
         ;
 
         $out .= '<fieldset>' . "\n"
         .     '<legend>'.get_lang('Text B').'</legend>' . "\n"
-        .     '<textarea name="contentB_'.$this->getId().'" id="contentB_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars(claro_parse_user_text($this->contentB)).'</textarea>'
+        .     '<textarea name="contentB_'.$this->getId().'" id="contentB_'.$this->getId().'" rows="20" cols="80" style="width: 100%;">'.htmlspecialchars($this->contentB).'</textarea>'
         .     '</fieldset>' . "\n"
         ;
 
