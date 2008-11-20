@@ -2,6 +2,7 @@
 $_lang['%duration hour(s)'] = '%duration hour(s)';
 $_lang['(d/m/y hh:mm)'] = '(d/m/y hh:mm)';
 $_lang['Are you sure to delete conference "%conferenceTitle" ?'] = 'Are you sure to delete conference "%conferenceTitle" ?';
+$_lang['Are you sure to delete conference'] = 'Are you sure to delete conference';
 $_lang['Attendee mikes'] = 'Attendee mikes';
 $_lang['Audio'] = 'Audio';
 $_lang['Audio/Video'] = 'Audio/Video';

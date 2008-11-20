@@ -3,78 +3,91 @@
  * CLAROLINE
  *
  * $Revision$
- *
+ * @version 1.9 Revision
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
+ * @author Sebastien Piraux - Revision 1.9 by Sokay Benjamin
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package DIMDIM
- *
- * @author Sebastien Piraux
  *
  */
 
+//Tool label
 $tlabelReq = 'DIMDIM';
 
+//load claroline kernel
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
+//tool name
+$nameTools = get_lang('Video webconference');
+
+//load used lib
+FromKernel::uses('utils/input.lib');
+FromKernel::uses('form.lib');
+
+require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
+
+//check
 if ( !claro_is_tool_allowed() )
 {
 	if ( claro_is_in_a_course() )
 	{
 		claro_die( get_lang( "Not allowed" ) );
 	}
-    else
+	else
 	{
 		claro_disp_auth_form( true );
 	}
 }
 
-/*
- * On the fly install
- */
-
-install_module_in_course( 'DIMDIM', claro_get_current_course_id() ) ;
-
-add_module_lang_array('DIMDIM');
-
-require_once dirname( __FILE__ ) . '/lib/DIMDIM.class.php';
-require_once get_path('incRepositorySys') . '/lib/form.lib.php';
+claro_set_display_mode_available(true);
+$is_allowedToEdit = claro_is_allowed_to_edit();
 
 /*
  * init request vars
  */
 
 $acceptedCmdList = array('rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exInvisible', 'rqView');
+$userInput = Claro_UserInput::getInstance();
+$cmdTest = $userInput->get('cmd');
+$confIdTest = $userInput->get('confId');
 
-if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
-else                                                                            $cmd = null;
+if( isset($cmdTest) && in_array($cmdTest, $acceptedCmdList) )   
+{
+	$cmd = $userInput->get('cmd');
+}
+else                                                                
+{
+	$cmd = null;
+}
 
-if( isset($_REQUEST['confId']) && is_numeric($_REQUEST['confId']) )   $confId = (int) $_REQUEST['confId'];
-else                                                                  $confId = null;
+if( isset($cmdTest) && is_numeric($confIdTest) )
+{
+	$confId = (int) $userInput->get('confId');
+}   
+else  
+{
+	$confId = null;
+}                                                              
 
 /*
  * init other vars
  */
 
-$conference = new conference();
+$conference = new Conference();
 
 if( !is_null($confId) )
 {
-    if( !$conference->load($confId) )
-    {
-        $cmd = null;
-        $confId = null;
-    }
+	if( !$conference->load($confId) )
+	{
+		$cmd = null;
+		$confId = null;
+	}
 }
 
-$conferenceList = new conferenceList();
+$conferenceList = new ConferenceList();
 
-claro_set_display_mode_available(true);
-
-$is_allowedToEdit = claro_is_allowed_to_edit();
-
-$dialogBox = '';
+$message = '';
+$dialogBox = new DialogBox();
 
 /*
  * Admin only commands
@@ -82,312 +95,307 @@ $dialogBox = '';
 
 if( $is_allowedToEdit )
 {
-    if( $cmd == 'exEdit' )
-    {
-    	$conference->setTitle($_REQUEST['title']);
-    	$conference->setDescription($_REQUEST['description']);
-    	$conference->setWaitingArea($_REQUEST['waitingArea']);
-    	$conference->setMaxUsers($_REQUEST['maxUsers']);
-    	$conference->setDuration($_REQUEST['duration']);
-    	$conference->setType($_REQUEST['type']);
-    	$conference->setAttendeeMikes($_REQUEST['attendeeMikes']);
-    	$conference->setNetwork($_REQUEST['network']);
-    	$conference->setStartTime(mktime($_REQUEST['startHour'],$_REQUEST['startMinute'],0,$_REQUEST['startMonth'],$_REQUEST['startDay'],$_REQUEST['startYear']) );
+	if( $cmd == 'exEdit' )
+	{
+		$conference->setTitle($userInput->get('title'));
+		$conference->setDescription($userInput->get('description'));
+		$conference->setWaitingArea($userInput->get('waitingArea'));
+		$conference->setMaxUsers($userInput->get('maxUsers'));
+		$conference->setDuration($userInput->get('duration'));
+		$conference->setType($userInput->get('type'));
+		$conference->setAttendeeMikes($userInput->get('attendeeMikes'));
+		$conference->setNetwork($userInput->get('network'));
+		$conference->setStartTime(mktime($userInput->get('startHour'),$userInput->get('startMinute'),0,$userInput->get('startMonth'),$userInput->get('startDay'),$userInput->get('startYear')) );
 
-    	if( $conference->validate() )
-        {
-            if( $insertedId = $conference->save() )
-            {
-            	if( is_null($confId) )
-                {
-                    $dialogBox .= get_lang('Conference successfully created');
-                    $confId = $insertedId;
-                }
-                else
-                {
-                	$dialogBox .= get_lang('Conference successfully modified');
-                }
-            }
-            else
-            {
-                // sql error in save() ?
-                $cmd = 'rqEdit';
-            }
+		if( $conference->validate() )
+		{
+			if( $insertedId = $conference->save() )
+			{
+				if( is_null($confId) )
+				{
+					$dialogBox->success(get_lang('Conference successfully created'));
+					$confId = $insertedId;
+				}
+				else
+				{
+					$dialogBox->success(get_lang('Conference successfully modified'));
+				}
+			}
+			else
+			{
+				$dialogBox->success('test');
+				$cmd = 'rqEdit';
+			}
 
-        }
-        else
-        {
-            if( claro_failure::get_last_failure() == 'conference_no_title' )
-            {
-                $dialogBox .= '<p>' . get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) . '</p>';
-            }
+		}
+		else
+		{
+			if( claro_failure::get_last_failure() == 'conference_no_title' )
+			{
+				$message = get_lang('Field \'%name\' is required', array('%name' => get_lang('Title')));
+				$dialogBox->error($message);
+			}
 
-            if( claro_failure::get_last_failure() == 'conference_invalid_date' )
-            {
-                $dialogBox .= '<p>' . get_lang('Date is in the past') . '</p>';
-            }
-            $cmd = 'rqEdit';
-        }
-    }
+			if( claro_failure::get_last_failure() == 'conference_invalid_date' )
+			{
+				$message = get_lang('Date is in the past');
+				$dialogBox->error($message);
+			}
+			$cmd = 'rqEdit';
+		}
+	}
 
-    if( $cmd == 'rqEdit' )
-    {
-    	// show form
-        $dialogBox .= "\n\n";
+	if( $cmd == 'rqEdit' )
+	{
+		// show form
+		$message = "\n\n";
 
-        if( !is_null($confId) )
-        {
-        	$dialogBox .= '<strong>' . get_lang('Edit conference settings') . '</strong>' . "\n";
-        }
-        else
-        {
-        	$dialogBox .= '<strong>' . get_lang('Create a new conference') . '</strong>' . "\n";
-        }
+		if( !is_null($confId) )
+		{
+			$message .= '<strong>' . get_lang('Edit conference settings') . '</strong>' . "\n";
+		}
+		else
+		{
+			$message .= '<strong>' . get_lang('Create a new conference') . '</strong>' . "\n";
+		}
 
-        $dialogBox .= '<form action="' . $_SERVER['PHP_SELF'] . '?confId='.$confId.'" method="post">' . "\n"
-        .    claro_form_relay_context()
-        .	 '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
-        .	 '<input type="hidden" name="cmd" value="exEdit" />' . "\n";
+		$message .= '<form action="' . $_SERVER['PHP_SELF'] . '?confId='.$confId.'" method="post">' . "\n"
+		.    claro_form_relay_context()
+		.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
+		.    '<input type="hidden" name="cmd" value="exEdit" />' . "\n";
 
-        // title
-        $dialogBox .=	 '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-        .	 '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($conference->getTitle()).'" /><br />' . "\n";
+		// title
+		$message .=    '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+		.    '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($conference->getTitle()).'" /><br />' . "\n";
 
-        // description
-        $dialogBox .=	 '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
-        .	 '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($conference->getDescription()).'</textarea><br />';
+		// description
+		$message .=    '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
+		.    '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($conference->getDescription()).'</textarea><br />';
 
-        // startTime
-        $dialogBox .= get_lang('Start date') . '<br />' . "\n"
-        . claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long')
-        . ' - '
-        . claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
-    	. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
+		// startTime
+		$message .= get_lang('Start date') . '<br />' . "\n"
+		. claro_html_date_form('startDay', 'startMonth', 'startYear', $conference->getStartTime(), 'long')
+		. ' - '
+		. claro_html_time_form("startHour", "startMinute", $conference->getStartTime())
+		. '<small>' . get_lang('(d/m/y hh:mm)') . '</small><br />' . "\n";
 
-        // duration in hours
+		// duration in hours
+		$message .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
 
-        $dialogBox .= '<label for="label_duration"  >'.get_lang('Duration').'</label><br />' . "\n" ;
+		$durationValueList = array('1','2','3','4','5');
 
-        $durationValueList = array('1','2','3','4','5');
+		$message .= '<select id="label_duration" name="duration">' . "\n";
 
-        $dialogBox .= '<select id="label_duration" name="duration">' . "\n";
+		foreach ( $durationValueList as $durationValue )
+		{
+			if ( $durationValue == $conference->getDuration() )
+			{
+				$message .= '<option value="'. htmlspecialchars($durationValue) .'" selected="selected">' . $durationValue .'</option>' . "\n";
+			}
+			else
+			{
+				$message .= '<option value="'. htmlspecialchars($durationValue) .'" >' . $durationValue .'</option>' . "\n";
+			}
+		}
 
-        foreach ( $durationValueList as $durationValue )
-        {
-            if ( $durationValue == $conference->getDuration() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" selected="selected">' . $durationValue .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($durationValue) .'" >' . $durationValue .'</option>' . "\n";
-            }
-        }
+		$message .= '</select><br />' . "\n";
 
-        $dialogBox .= '</select><br />' . "\n";
+		// waiting area
+		$message .= get_lang('Waiting Area') . '<br />' . "\n"
+		. '<input id="label_waiting_area_TRUE"  type="radio" name="waitingArea" value="ENABLE"  '
+		. ( $conference->getWaitingArea() == 'ENABLE' ? ' checked="checked" ':' ') . ' >'
+		. '<label for="label_waiting_area_TRUE"  >' . get_lang('Yes') . '</label>' . '&nbsp;'
+		. '<input id="label_waiting_area_FALSE" type="radio" name="waitingArea" value="DISABLE" '
+		. ( $conference->getWaitingArea() == 'DISABLE' ? ' checked="checked" ': ' ') . ' >'
+		. '<label for="label_waiting_area_FALSE" >' . get_lang('No') . '</label><br />' . "\n";
 
-        // waiting area
-        $dialogBox .= get_lang('Waiting Area') . '<br />' . "\n"
-        . '<input id="label_waiting_area_TRUE"  type="radio" name="waitingArea" value="ENABLE"  '
-        . ( $conference->getWaitingArea() == 'ENABLE' ? ' checked="checked" ':' ') . ' >'
-        . '<label for="label_waiting_area_TRUE"  >' . get_lang('Yes') . '</label>' . '&nbsp;'
-        . '<input id="label_waiting_area_FALSE" type="radio" name="waitingArea" value="DISABLE" '
-        . ( $conference->getWaitingArea() == 'DISABLE' ? ' checked="checked" ': ' ') . ' >'
-        . '<label for="label_waiting_area_FALSE" >' . get_lang('No') . '</label><br />' . "\n";
+		// maximum users
+		$message .= '<label for="label_max_users"  >'.get_lang('Maximum users').'</label><br />' . "\n" ;
+		
+		// display select dialogBox with accepted value
+		$maxUserValueList = array('20', '40', '60', '80', '100', '200', '300', '400', '500');
 
-        // maximum users
+		$message .= '<select id="label_max_users" name="maxUsers">' . "\n";
 
-        $dialogBox .= '<label for="label_max_users"  >'.get_lang('Maximum users').'</label><br />' . "\n" ;
+		foreach ( $maxUserValueList as $maxUserValue )
+		{
+			if ( $maxUserValue == $conference->getMaxUsers() )
+			{
+				$message .= '<option value="'. htmlspecialchars($maxUserValue) .'" selected="selected">' . $maxUserValue .'</option>' . "\n";
+			}
+			else
+			{
+				$message .= '<option value="'. htmlspecialchars($maxUserValue) .'" >' . $maxUserValue .'</option>' . "\n";
+			}
+		} // end foreach
 
-        // display select box with accepted value
+		$message .= '</select><br />' . "\n";
 
-        $maxUserValueList = array('20', '40', '60', '80', '100', '200', '300', '400', '500');
+		// attendee Mikes
+		$message .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
 
-        $dialogBox .= '<select id="label_max_users" name="maxUsers">' . "\n";
+		$attendeeMikesValueList = array('1','2','3','4','5');
 
-        foreach ( $maxUserValueList as $maxUserValue )
-        {
-            if ( $maxUserValue == $conference->getMaxUsers() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($maxUserValue) .'" selected="selected">' . $maxUserValue .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($maxUserValue) .'" >' . $maxUserValue .'</option>' . "\n";
-            }
-        } // end foreach
+		$message .= '<select id="label_attendeeMikes" name="attendeeMikes">' . "\n";
 
-        $dialogBox .= '</select><br />' . "\n";
+		foreach ( $attendeeMikesValueList as $attendeeMikesValue )
+		{
+			if ( $attendeeMikesValue == $conference->getAttendeeMikes() )
+			{
+				$message .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" selected="selected">' . $attendeeMikesValue .'</option>' . "\n";
+			}
+			else
+			{
+				$message .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" >' . $attendeeMikesValue .'</option>' . "\n";
+			}
+		}
 
-        // attendee Mikes
+		$message .= '</select><br />' . "\n";
 
-        $dialogBox .= '<label for="label_attendeeMikes"  >'.get_lang('Attendee mikes').'</label><br />' . "\n" ;
+		// type video and audio or audio only, default is audio
+		$message .= '<label for="label_type"  >'.get_lang('Type').'</label><br />' . "\n" ;
 
-        $attendeeMikesValueList = array('1','2','3','4','5');
+		$typeValueList = array('AUDIO' => get_lang('Audio') , 'VIDEO' => get_lang('Audio/Video'));
 
-        $dialogBox .= '<select id="label_attendeeMikes" name="attendeeMikes">' . "\n";
+		$message .= '<select id="label_type" name="type">' . "\n";
 
-        foreach ( $attendeeMikesValueList as $attendeeMikesValue )
-        {
-            if ( $attendeeMikesValue == $conference->getAttendeeMikes() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" selected="selected">' . $attendeeMikesValue .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($attendeeMikesValue) .'" >' . $attendeeMikesValue .'</option>' . "\n";
-            }
-        }
+		foreach ( $typeValueList as $typeValue => $typeLabel )
+		{
+			if ( $typeValue == $conference->getType() )
+			{
+				$message .= '<option value="'. htmlspecialchars($typeValue) .'" selected="selected">' . $typeLabel .'</option>' . "\n";
+			}
+			else
+			{
+				$message .= '<option value="'. htmlspecialchars($typeValue) .'" >' . $typeLabel .'</option>' . "\n";
+			}
+		} // end foreach
+		$message .= '</select><br />' . "\n";
 
-        $dialogBox .= '</select><br />' . "\n";
+		// network type
+		$message .= '<label for="network_type"  >'.get_lang('Network').'</label><br />' . "\n" ;
 
-        // type video and audio or audio only, default is audio
+		$networkValueList = array('DIALUP' => get_lang('Dial up') , 'CABLEDSL' => get_lang('Cable/Dsl'), 'LAN' => get_lang('LAN') );
 
-        $dialogBox .= '<label for="label_type"  >'.get_lang('Type').'</label><br />' . "\n" ;
+		$message .= '<select id="label_network" name="network">' . "\n";
 
-        $typeValueList = array('AUDIO' => get_lang('Audio') , 'VIDEO' => get_lang('Audio/Video'));
+		foreach ( $networkValueList as $networkValue => $networkLabel )
+		{
+			if ( $networkValue == $conference->getNetwork() )
+			{
+				$message .= '<option value="'. htmlspecialchars($networkValue) .'" selected="selected">' . $networkLabel .'</option>' . "\n";
+			}
+			else
+			{
+				$message .= '<option value="'. htmlspecialchars($networkValue) .'" >' . $networkLabel .'</option>' . "\n";
+			}
+		} // end foreach
 
-        $dialogBox .= '<select id="label_type" name="type">' . "\n";
+		$message .= '</select><br />' . "\n";
 
-        foreach ( $typeValueList as $typeValue => $typeLabel )
-        {
-            if ( $typeValue == $conference->getType() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($typeValue) .'" selected="selected">' . $typeLabel .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($typeValue) .'" >' . $typeLabel .'</option>' . "\n";
-            }
-        } // end foreach
+		$message .= '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
+		.    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
+		.    claro_html_button($_SERVER['PHP_SELF'] . '?confId='.$confId, get_lang('Cancel'))
+		.    '</form>' . "\n"
+		;
+		$dialogBox->form($message);
 
-        $dialogBox .= '</select><br />' . "\n";
+	}
 
-        // network type
-        $dialogBox .= '<label for="network_type"  >'.get_lang('Network').'</label><br />' . "\n" ;
+	if( $cmd == 'exDelete' )
+	{
+		if( $conference->delete() )
+		{
+			$dialogBox->success(get_lang('Conference succesfully deleted'));
+		}
+		else
+		{
+			$dialogBox->error(get_lang('Fatal error : cannot delete conference'));
+		}
+	}
 
-        $networkValueList = array('DIALUP' => get_lang('Dial up') , 'CABLEDSL' => get_lang('Cable/Dsl'), 'LAN' => get_lang('LAN') );
+	if( $cmd == 'rqDelete' )
+	{
+		$message = get_lang('Are you sure to delete conference "%conferenceTitle" ?', array('%conferenceTitle' => htmlspecialchars($conference->getTitle()) ));
 
-        $dialogBox .= '<select id="label_network" name="network">' . "\n";
+		$message .= '<p>'
+		.    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;confId='.$confId.'">' . get_lang('Yes') . '</a>'
+		.    '&nbsp;|&nbsp;'
+		.    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
+		.    '</p>' . "\n";
 
-        foreach ( $networkValueList as $networkValue => $networkLabel )
-        {
-            if ( $networkValue == $conference->getNetwork() )
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($networkValue) .'" selected="selected">' . $networkLabel .'</option>' . "\n";
-            }
-            else
-            {
-                $dialogBox .= '<option value="'. htmlspecialchars($networkValue) .'" >' . $networkLabel .'</option>' . "\n";
-            }
-        } // end foreach
+		$dialogBox->question($message);
+	}
 
-        $dialogBox .= '</select><br />' . "\n";
+	if( $cmd == 'exVisible' )
+	{
+		$conference->setVisible();
 
-        $dialogBox .= '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
-        .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
-        .    claro_html_button($_SERVER['PHP_SELF'] . '?confId='.$confId, get_lang('Cancel'))
-        .    '</form>' . "\n"
-        ;
+		$conference->save();
+	}
 
-    }
+	if( $cmd == 'exInvisible' )
+	{
+		$conference->setInvisible();
 
-    if( $cmd == 'exDelete' )
-    {
-    	if( $conference->delete() )
-    	{
-    		$dialogBox .= get_lang('Conference succesfully deleted');
-    	}
-    	else
-    	{
-    		$dialogBox .= get_lang('Fatal error : cannot delete conference');
-    	}
-    }
-
-    if( $cmd == 'rqDelete' )
-    {
-        $dialogBox .= get_lang('Are you sure to delete conference "%conferenceTitle" ?', array('%conferenceTitle' => htmlspecialchars($conference->getTitle()) ));
-
-        $dialogBox .= '<p>'
-        .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;confId='.$confId.'">' . get_lang('Yes') . '</a>'
-        .    '&nbsp;|&nbsp;'
-        .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>'
-        .    '</p>' . "\n";
-    }
-
-    if( $cmd == 'exVisible' )
-    {
-    	$conference->setVisible();
-
-    	$conference->save();
-    }
-
-    if( $cmd == 'exInvisible' )
-    {
-    	$conference->setInvisible();
-
-    	$conference->save();
-    }
+		$conference->save();
+	}
 
 }
 
 if( $cmd == 'rqView' )
 {
-	$dialogBox .= '<strong>'.$conference->getTitle().'</strong>' . "\n"
-	.	 '<blockquote>'.$conference->getDescription().'</blockquote>' . "\n";
+	$message = '<strong>'.$conference->getTitle().'</strong>' . "\n"
+	.    '<blockquote>'.$conference->getDescription().'</blockquote>' . "\n";
 
 	if( $is_allowedToEdit )
 	{
 		// teacher
-		$dialogBox .= '<a href="'.$conference->buildUrl(true).'" target="_blank">'.get_lang('Join conference as administrator').'</a>'
-		.	 '&nbsp;|&nbsp;'
-		.	 '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference as attendee').'</a>' . "\n";
+		$message .= '<a href="'.$conference->buildUrl(true).'" target="_blank">'.get_lang('Join conference as administrator').'</a>'
+		.    '&nbsp;|&nbsp;'
+		.    '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference as attendee').'</a>' . "\n";
 	}
-	elseif( time() < $conference->startTime )
+	elseif( time() < $conference->getStartTime() )
 	{
 		// conference not yet available
-		$dialogBox .= get_lang('Conference is not yet available.  Will start on %startTime',
-							array('%startTime' => claro_disp_localised_date($dateTimeFormatLong, $conference->getStartTime()))) . "\n";
+		$message .= get_lang('Conference is not yet available.  Will start on %startTime',
+		array('%startTime' => claro_disp_localised_date($dateTimeFormatLong, $conference->getStartTime()))) . "\n";
 	}
-	elseif( $conference->startTime < ( time() - ( $conference->duration + 1 ) * 3600 ) )
+	elseif( $conference->getStartTime() < ( time() - ( $conference->getDuration() + 1 ) * 3600 ) )
 	{
 		// conference has ended (startTime + duration + 1 hour)
-		$dialogBox .= get_lang('Conference is finished and closed') . "\n";
+		$message .= get_lang('Conference is finished and closed') . "\n";
 	}
 	else
 	{
 		// conference is available to students
-		$dialogBox .= '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference').'</a>' . "\n";
+		$message .= '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference').'</a>' . "\n";
 	}
+	$dialogBox->form($message);
+
 }
 
-//-- prepare list to display
+//add breadcrumb
+ClaroBreadCrumbs::getInstance()->setCurrent($nameTools,get_module_entry($tlabelReq));
+
+//add title
+$claroline->display->body->appendContent(claro_html_tool_title($nameTools));
+
+//add display dialogBox content to the body 
+$claroline->display->body->appendContent($dialogBox->render());
+
 $conferenceListArray = $conferenceList->load();
 
-/*
- * Output
- */
-
-//-- Content
-$nameTools = get_lang('Video webconference');
-
-include  get_path('includePath') . '/claro_init_header.inc.php';
-
-echo claro_html_tool_title($nameTools);
-
-if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
-
 $cmdMenu = array();
+
 if($is_allowedToEdit)
 {
-    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit' . claro_url_relay_context('&amp;'),get_lang('Schedule a conference'));
+	$cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit' . claro_url_relay_context('&amp;'),get_lang('Schedule a conference'));
 }
 
-echo '<p>'
-.    claro_html_menu_horizontal( $cmdMenu )
-.    '</p>';
+$claroline->display->body->appendContent(claro_html_menu_horizontal($cmdMenu ));
 
-echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
+$confList = '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
 .    '<th>' . get_lang('Conference') . '</th>' . "\n"
@@ -396,103 +404,121 @@ echo '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing=
 
 if( $is_allowedToEdit )
 {
-    // display conference name and tools to edit it
-    // titles
-    echo '<th>' . get_lang('Modify') . '</th>' . "\n"
-    .    '<th>' . get_lang('Delete') . '</th>' . "\n"
-    .    '<th>' . get_lang('Visibility') . '</th>' . "\n";
+	// display conference name and tools to edit it
+	// titles
+	$confList .= '<th>' . get_lang('Modify') . '</th>' . "\n"
+	.    '<th>' . get_lang('Delete') . '</th>' . "\n"
+	.    '<th>' . get_lang('Visibility') . '</th>' . "\n";
 }
 
-echo '</tr>' . "\n"
+$confList .=
+'</tr>' . "\n"
 .    '</thead>' . "\n";
 
 $displayedConfCount = 0;
 
 if( !empty($conferenceListArray) && is_array($conferenceListArray) )
 {
-	echo '<tbody>' . "\n";
+	$confList .= '<tbody>' . "\n";
 
-    foreach( $conferenceListArray as $aConference )
-    {
-        // do not display to student if conf is not visible
-        if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) continue;
+	foreach( $conferenceListArray as $aConference )
+	{
+		// do not display to student if conf is not visible
+		if( $aConference['visibility'] == 'INVISIBLE' && !$is_allowedToEdit ) continue;
 
 		$displayedConfCount++;
 
-        echo '<tr align="center"' . (($aConference['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
+		$confList.= '<tr align="center"' . (($aConference['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
 
-        // title
-        // TODO : add link to join conference
-        echo '<td align="left">'
-        .    '<a href="index.php?cmd=rqView&amp;confId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
-        .    htmlspecialchars($aConference['title'])
-        .    '</a>' . "\n"
-        .    '</td>';
+		// title
+		$confList .=  '<td align="left">'
+		.    '<a href="index.php?cmd=rqView&amp;confId='.$aConference['id'].'" title="'.htmlspecialchars(strip_tags($aConference['description'])).'">'
+		.    htmlspecialchars($aConference['title'])
+		.    '</a>' . "\n"
+		.    '</td>';
 
 
-        // startTime
-        echo '<td>'
-        .    claro_disp_localised_date($dateTimeFormatLong, $aConference['startTime'])
-        .    '</td>';
+		// startTime
+		$confList .= '<td>'
+		.    claro_disp_localised_date($dateTimeFormatLong, $aConference['startTime'])
+		.    '</td>';
 
-        // duration
-        echo '<td>'
-        .    get_lang("%duration hour(s)", array("%duration" => htmlspecialchars($aConference['duration'])))
-        .    '</td>';
+		// duration
+		$confList .= '<td>'
+		.    get_lang("%duration hour(s)", array("%duration" => htmlspecialchars($aConference['duration'])))
+		.    '</td>';
 
-        if( $is_allowedToEdit )
-        {
-            // edit
-            echo '<td>' . "\n"
-            .    '<a href="index.php?cmd=rqEdit&amp;confId=' . $aConference['id'] . '">' . "\n"
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
-            .    '</a>'
-            .    '</td>' . "\n";
+			
+		if( $is_allowedToEdit )
+		{
+			// edit
+			$confList .= '<td>' . "\n"
+			.    '<a href="index.php?cmd=rqEdit&amp;confId=' . $aConference['id'] . '">' . "\n"
+			.    '<img src="'. get_icon_url('edit').'" />' . "\n"
+			.    '</a>'
+			.    '</td>' . "\n";
 
-            // delete
-            // TODO add js confirmation
-            echo '<td>' . "\n"
-            .    '<a href="index.php?cmd=rqDelete&amp;confId=' . $aConference['id'] . '">' . "\n"
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="' . get_lang('delete') . '" />' . "\n"
-            .    '</a>'
-            .    '</td>' . "\n";
+			// delete
+			$confList .= '<td>' . "\n"
+			.    '<a href="index.php?cmd=rqDelete&amp;confId=' . $aConference['id']. '" onclick="javascript:return confirmDeleteConference('.$aConference['id'].',\''.$aConference['title'].'\')">' . "\n"
+			.    '<img src="' . get_icon_url('delete').'" />' . "\n"
+			.    '</a>'
+			.    '</td>' . "\n";
+			
+			// visible/invisible
+			if( $aConference['visibility'] == 'VISIBLE' )
+			{
+				$confList .= '<td>' . "\n"
+				.    '<a href="index.php?cmd=exInvisible&amp;confId=' . $aConference['id'] . '">' . "\n"
+				.    '<img src="' . get_icon_url('visible').'" />' . "\n"
+				.    '</a>'
+				.    '</td>' . "\n";
+			}
+			else
+			{
+				$confList .= '<td>' . "\n"
+				.    '<a href="index.php?cmd=exVisible&amp;confId=' . $aConference['id'] . '">' . "\n"
+				.    '<img src="' . get_icon_url('invisible').'" />' . "\n"
+				.    '</a>'
+				.    '</td>' . "\n";
+			}
+		}
 
-            // visible/invisible
-            if( $aConference['visibility'] == 'VISIBLE' )
-            {
-                echo '<td>' . "\n"
-    	        .    '<a href="index.php?cmd=exInvisible&amp;confId=' . $aConference['id'] . '">' . "\n"
-    	        .    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
-    	        .    '</a>'
-    	        .    '</td>' . "\n";
-            }
-            else
-            {
-    			echo '<td>' . "\n"
-    	        .    '<a href="index.php?cmd=exVisible&amp;confId=' . $aConference['id'] . '">' . "\n"
-    	        .    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
-    	        .    '</a>'
-    	        .    '</td>' . "\n";
-            }
-         }
+		$confList .= '</tr>' . "\n\n";
+	}
 
-        echo '</tr>' . "\n\n";
-    }
-
-    echo '</tbody>' . "\n";
+	$confList .=  '</tbody>' . "\n";
 }
 
 if( $displayedConfCount == 0 )
 {
-    echo '<tfoot>' . "\n"
-    .    '<tr>' . "\n"
-    .    '<td align="center" colspan="8">' . get_lang('No conference scheduled') . '</td>' . "\n"
-    .    '</tr>' . "\n"
-    .    '</tfoot>' . "\n";
+	$confList .= '<tfoot>' . "\n"
+	.    '<tr>' . "\n"
+	.    '<td align="center" colspan="8">' . get_lang('No conference scheduled') . '</td>' . "\n"
+	.    '</tr>' . "\n"
+	.    '</tfoot>' . "\n";
 }
 
-echo '</table>' . "\n";
+$confList .= '</table>' . "\n";
 
-include  get_path('includePath') . '/claro_init_footer.inc.php';
+$claroline->display->header->addHtmlHeader('<script type="text/javascript">
+
+function confirmDeleteConference(id,title) {
+	if(confirm("'.get_lang('Are you sure to delete conference').'"+" "+title+" ?")){
+		window.location="index.php?cmd=exDelete&confId=" +id;
+		return false;
+	}
+	else {
+		return false;
+	}
+	
+}
+
+</script>');
+
+$claroline->display->body->appendContent($confList);
+
+//return body html required
+echo $claroline->display->render();
 
 ?>
