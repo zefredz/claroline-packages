@@ -14,73 +14,108 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
  */
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-class videoDailyMotionComponent
+class VideoDailyMotion implements VideoPlugin
 {
-     /**
-     * Check if input equals correct and active DailyMotion url 
-     */
-     
+     //video plugin properties
      private $input;
      private $inputType;
      private $width;
      private $height;
     
-    public function isValidUrl($url)
-    {
-        if (preg_match('/dailymotion.com/',$url))
-        {
-            return true;
-        }
-        else
-        {   
-            return false;
-        } 
-    }
+//Interface methods implementation
     
-    public function setSizes($sizes)
+    /**
+    * Return the specific video plugin identifiers array
+    * 
+    * @return array The automatic identifiers array (see documentation for API)
+    * ex : ['default' => 'Url',
+    *       'identifiers' => ['Url' => 'Video Internet Adress',
+    *                         'Id'=> 'Video identification', ...]]
+    */
+    public function getIdentifiers()
     {
-        //default dimensions = small
-        $this->width = 380;
-        $this->height = 320;
-        
-        //size dimensions
-        if('medium' == $sizes)
-        
-        {
-            $this->width = 550;
-            $this->height = 460;
-        }
-        if('large' == $sizes)
-        {
-            $this->width = 750;
-            $this->height = 625;
-        }
-    }
-    
-     /**
-     * Check if input equals correct and active DailyMotion url 
-     */
-    
-    private function defineUrlType($url)
-    {
-        if (preg_match('/swf/',$url))
-        {
-            return 'videoUrl';
-        }
-        else if (preg_match('/video/',$url))
-        {   
-            return 'webPageUrl';
-        }
-        else
-        {
-            return 'error';
-        }
+        return array('default' => 'Url',
+                     'identifiers' => array('Url' => 'Video internet address',
+                                            'Id'=> 'Video identification'));
     }
     
     /**
-     * Set DailyMotion web player from correct DailyMotion id, webPage url or video url
-     */
+    * Return the specific video plugin parameters informations array
+    *
+    * @return array The automatic parameters array (see documentation for API)
+    * ex : ['Nom' => ['type' => 'radio',
+    *                 'display' => get_lang('Size'),
+    *                 'default' => 'medium',
+    *                 'data' => ['small' => 'Small',
+    *                            'medium' => 'Medium',
+    *                            'large' => 'Large']] ,
+    *   ...]
+    */
+    public function getParameters()
+    {
+        return array('Size' => array( 'type' => 'radio',
+                                      'display' => 'Size',
+                                      'default' => 'medium',
+                                      'data' => array('small' => 'Small',
+                                                      'medium' => 'Medium',
+                                                      'large' => 'Large')));
+    }
     
+    /**
+    * Set the differents video plugin properties
+    *
+    * @param array $data The specific video plugin data needed to set the web player
+    * ex : $data => ['input' => 'youtube' ,
+    *                'inputType' => 'Url' ,
+    *                'parameters' => ['Size' => 'medium, ...]
+    *               ]
+    */
+    public function setData($data)
+    {
+        $this->input = $data['input'];
+        $this->inputType = $data['inputType'];
+        $parameters = $data['parameters'];
+        $this->setSizes($parameters['Size']);
+    }
+    
+    /**
+    * Test the submited inputs to define the validation status
+    * Return true if inputs are validate and error message if the validation abord
+    *
+    * @return string The validation result, true or an error message
+    */
+    public function validate()
+    {
+        if('Url' == $this->inputType)
+        {
+            $input = $this->input;
+            if ($input != null)
+            {
+                if($this->isValidUrl($input))
+                {
+                    return 'true';
+                }
+                else
+                {
+                    $message = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => ' DailyMotion', "%wrongInput" => htmlspecialchars($input)));
+                    return $message;
+                }
+            }
+            else
+            {
+                $message = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => ' DailyMotion', "%wrongInput" => htmlspecialchars($input)));
+                return $message;
+            }
+        }
+        //allow id input type        
+        return 'true';
+    }
+    
+    /**
+    * Create and return video plugin player html code
+    *
+    * @return string The video plugin player html code
+    */
     public function setPlayer()
     {
         $id ='';
@@ -114,56 +149,71 @@ class videoDailyMotionComponent
             .    '</object>' . "\n"
             .    '</center>' . "\n";
     }
-
-    public function validate()
+    
+    /**
+    * Check if the input url is a valid video plug in url
+    *
+    * @param string $url An Url
+    * @return bool true if input is a valid url, false if it isn't
+    */
+    public function isValidUrl($url)
     {
-        if('Url' == $this->inputType)
+        if (preg_match('/dailymotion.com/',$url))
         {
-            $input = $this->input;
-            if ($input != null)
-            {
-                if($this->isValidUrl($input))
-                {
-                    return 'true';
-                }
-                else
-                {
-                    $message = get_lang('Not a correct and valid DailyMotion video web address').' :  <br> '.htmlspecialchars($input) ;
-                    return $message;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
-        //allow id input type        
-        return true;
+        else
+        {   
+            return false;
+        } 
     }
     
-    public function getReferences()
-    {
-        $references =  array('Url' => 'Video Internet Adress', 'Id'=> 'Video identification');
-        return array('default' => 'Url', 'references' => $references);
-    }
+//Specific video plugin methods
 
-    /*
-     * 
-     */
-    public function getParameters()
+    /**
+    * Define if the input url is the direct video url or the original DailyMotion url page
+    *
+    * @param string $url An Url
+    * @return string 'videoUrl' for direct video url,'webPageUrl' for original DailyMotion url page or 'error' for unvalidated url
+    */
+    private function defineUrlType($url)
     {
-        $size = array('type' => 'radio', 'display' => get_lang('Size'),'default' => 'medium','data' => array('small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
-        return array('Size' => $size);
+        if (preg_match('/swf/',$url))
+        {
+            return 'videoUrl';
+        }
+        else if (preg_match('/video/',$url))
+        {   
+            return 'webPageUrl';
+        }
+        else
+        {
+            return 'error';
+        }
     }
-
     
-    public function setData($data)
+    /**
+    * Set the width and height DailyMotion player from the size parameter
+    * Set as small by default
+    * 
+    * @param string $sizes The wanted video sizes
+    */
+    private function setSizes($sizes)
     {
-    $this->input = $data['input'];
-    $this->inputType = $data['inputType'];
-    $parameters = $data['parameters'];
-    $this->setSizes($parameters['Size']);
+        $this->width = 380;
+        $this->height = 320;
+        
+        if('medium' == $sizes)
+        {
+            $this->width = 550;
+            $this->height = 460;
+        }
+        if('large' == $sizes)
+        {
+            $this->width = 750;
+            $this->height = 625;
+        }
     }
 }
 
-VideoRegistry::register('dailymotion',get_lang('DailyMotion'),'videoDailyMotionComponent', 'Externals');
+VideoPluginRegistry::register('dailymotion','DailyMotion','VideoDailyMotion', 'Externals');

@@ -14,54 +14,108 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
  */
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
-class videoYouTubeComponent
+class VideoYouTube implements VideoPlugin
 {
-    
+//video plugin properties
      private $input;
      private $inputType;
-     private $height;
      private $width;
+     private $height;
      
-     /**
-     * Check if input equals correct and active YouTube url
-     */
+//Interface methods implementation
     
-    public function isValidUrl($url)
+    /**
+    * Return the specific video plugin identifiers array
+    * 
+    * @return array The automatic identifiers array (see documentation for API)
+    * ex : ['default' => 'Url',
+    *       'identifiers' => ['Url' => 'Video Internet Adress',
+    *                         'Id'=> 'Video identification', ...]]
+    */
+    public function getIdentifiers()
     {
-        if (preg_match('/youtube.com\/watch\?v=/',$url))
-        {
-            return true;
-        }
-        else
-        {   
-            return false;
-        }
+        return array('default' => 'Url',
+                     'identifiers' => array('Url' => 'Video internet address',
+                                            'Id'=> 'Video identification'));
     }
     
-    public function setSizes($sizes)
+    /**
+    * Return the specific video plugin parameters informations array
+    *
+    * @return array The automatic parameters array (see documentation for API)
+    * ex : ['Nom' => ['type' => 'radio',
+    *                 'display' => get_lang('Size'),
+    *                 'default' => 'medium',
+    *                 'data' => ['small' => 'Small',
+    *                            'medium' => 'Medium',
+    *                            'large' => 'Large']] ,
+    *   ...]
+    */
+    public function getParameters()
     {
-        //default dimensions = small
-        $this->width = 380;
-        $this->height = 320;
-        
-        //size dimensions
-        if('medium' == $sizes)
-        
-        {
-            $this->width = 550;
-            $this->height = 460;
-        }
-        if('large' == $sizes)
-        {
-            $this->width = 750;
-            $this->height = 625;
-        }
+        return array('Size' => array( 'type' => 'radio',
+                                      'display' => 'Size',
+                                      'default' => 'medium',
+                                      'data' => array('small' => 'Small',
+                                                      'medium' => 'Medium',
+                                                      'large' => 'Large')));
     }
     
-     /**
-     * Set YouTube web player from YouTube url or id
-     */
+    /**
+    * Set the differents video plugin properties
+    *
+    * @param array $data The specific video plugin data needed to set the web player
+    * ex : $data => ['input' => 'youtube' ,
+    *                'inputType' => 'Url' ,
+    *                'parameters' => ['Size' => 'medium, ...]
+    *               ]
+    */
+    public function setData($data)
+    {
+    $this->input = $data['input'];
+    $this->inputType = $data['inputType'];
+    $parameters = $data['parameters'];
+    $this->setSizes($parameters['Size']);
+    }
     
+    /**
+    * Test the submited inputs to define the validation status
+    * Return true if inputs are validate and error message if the validation abord
+    *
+    * @return string The validation result, true or an error message
+    */
+    public function validate()
+    {
+        if('Url' == $this->inputType)
+        {
+            $input = $this->input;
+            if ($input != null)
+            {
+                if($this->isValidUrl($input))
+                {
+                    return 'true';
+                }
+                else
+                {
+                    $message = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => ' YouTube', "%wrongInput" => htmlspecialchars($input)));
+                    return $message;
+                }
+            }
+            else
+            {
+                $message = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => ' YouTube', "%wrongInput" => htmlspecialchars($input)));
+                return $message;
+            }
+        }
+        //allow id input type         
+        return 'true';
+    }
+    
+    /**
+    * Create and return video plugin player html code
+    *
+    * @return string The video plugin player html code
+    */
     public function setPlayer()
     {
         $id='';
@@ -82,59 +136,50 @@ class videoYouTubeComponent
             .    '</object>' . "\n"
             .     '</center>' . "\n";
     }
-
-    public function validate()
+    
+    /**
+    * Check if the input url is a valid YouTube url
+    *
+    * @param string $url An Url
+    * @return bool true if input is a valid url, false if it isn't
+    */
+    public function isValidUrl($url)
     {
-        if('Url' == $this->inputType)
+        if (preg_match('/youtube.com\/watch\?v=/',$url))
         {
-            $input = $this->input;
-            if ($input != null)
-            {
-                if($this->isValidUrl($input))
-                {
-                    return 'true';
-                }
-                else
-                {
-                    $message = get_lang('Not a correct and valid YouTube video web addresse').' :  <br> '.htmlspecialchars($input) ;
-                    return $message;
-                }
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
-        //allow id input type         
-        return true;
+        else
+        {   
+            return false;
+        }
     }
     
+//Specific video plugin methods
     
-    /*
-     * 
-     */
-    public function getReferences()
+    /**
+    * Set the width and height YouTube player from the size parameter
+    * Set as small by default
+    * 
+    * @param string $sizes The wanted video sizes
+    */
+    private function setSizes($sizes)
     {
-        $references =  array('Url' => 'Video Internet Adress', 'Id'=> 'Video identification');
-        return array('default' => 'Url', 'references' => $references);
+        $this->width = 380;
+        $this->height = 320;
+        
+        if('medium' == $sizes)
+        {
+            $this->width = 550;
+            $this->height = 460;
+        }
+        if('large' == $sizes)
+        {
+            $this->width = 750;
+            $this->height = 625;
+        }
     }
     
-    /*
-     * 
-     */
-    public function getParameters()
-    {
-        $size = array('type' => 'radio', 'display' => get_lang('Size'),'default' => 'medium','data' => array('small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
-        return array('Size' => $size);
-    }
-    
-    public function setData($data)
-    {
-    $this->input = $data['input'];
-    $this->inputType = $data['inputType'];
-    $parameters = $data['parameters'];
-    $this->setSizes($parameters['Size']);
-    }
 }
 
-VideoRegistry::register('youtube',get_lang('YouTube'),'videoYouTubeComponent', 'Externals');
+VideoPluginRegistry::register('youtube','YouTube','VideoYouTube', 'Externals');

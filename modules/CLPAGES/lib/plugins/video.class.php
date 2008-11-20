@@ -13,741 +13,676 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
  *
  */
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
-    
-     require_once dirname( __FILE__ ) . '/../videoRegistry.lib.php';
-    
-    
+
+require_once dirname( __FILE__ ) . '/../videoPluginRegistry.lib.php';
+
+$jsloader = JavascriptLoader::getInstance();
+$jsloader->load('videoComponent');
+
 class VideoComponent extends Component
 {
     //Properties
-    private $availableVideos;
-    private $video;
-    private $videosData;
-    private $videoInput;
     private $videoType;
+    private $videoInput;
     private $videoInputType;
-    private $videoParameters;
-    private $defaultValues;
-    private $htmlData;
-    private $idList;
+    private $videoParameterList;
     
-    function VideoComponent ()
-    {
-        //set default properties
-        
-        //Enable the automatic video type research
-        $this->videoType = 'automatic';
-        
-        //Create a video oject and video parameters list from the available video class
-        $this->availableVideos = array();
-        $this->RegisterVideosType();
-        
-        //Set the video form input content as empty
-        $this->videoInput = '';
-        
-        //Set the  videos data property as an empty array
-        $this->videosData = array();
-        $this->htmlData = array();
-        
-        //Set the  video parameters property as an empty array
-        $this->videoParameters = array();
-
-        //
-        $this->idList = array();
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    Register all the available video class and fill the availableVideos property
-    ex: $availableVideos = ['youtube' => ['displayName' => 'YouTube', 'videoObject' => YouTubeComponent Object], ...]
+    private $videoRegister;
+    
+    private $videoDataList;
+    private $videoDefaultValueList;
+    private $videoHtmlCodeList;
+    
+    private $domIdList;
+    
+    /**
+     * Constructor
+     * Set properties default values
+     * 
      */
-    public function RegisterVideosType()
-    {
-        $videoRegistry = videoRegistry::getInstance();
-        $videosList = $videoRegistry->getList();
-        $videos = array();
-        foreach( $videosList as $type => $details )
-        {
-            $videos[$details['category']][$type] = $details;
-        }
-        foreach( $videos as $category => $categoryVideos )
-        {
-            foreach( $categoryVideos as $type => $videoDetails )
-            {
-                $videoObject = new $videoDetails['className']();
-                $data = array('displayName' => $videoDetails['displayName'],'videoObject' => $videoObject);
-                $this->availableVideos[$type]= $data;
-                $this->idList[$type] = array('references' => array(), 'parameters' => array());
-            }
-        }
-    }
-//VVVVVVVVVVVVVVVV    
-    public function setDefaultValues()
-    {
-        
-        $references = array();
-        $references['automatic'] = 'Url';
-        $parameters = array();
-        $parameters['automatic'] = array( 'Size' =>'small');
-        $this->defaultValues = array('references' => $references, 'parameters' => $parameters);
-        
-        foreach($this->availableVideos as $type => $data)
-        {
-            $videoObject = $data['videoObject'];
-            $references = $videoObject->getReferences();
-            $this->defaultValues['references'][$type]=$references['default'];
-            $parameters = $videoObject->getParameters();
-            foreach($parameters as $name => $data)
-            {
-                $this->defaultValues['parameters'][$type][$name]=$data['default'];
-            }
-        }
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    Create the video form HTML code
-    */
-    public function render()
-    {
-        //Recup the VideoComponent property values
-        $input = $this->videoInput;
-        $inputType = $this->videoInputType;
-        $video = $this->video;
-        
-        if ($input != null && isset($video))
-        {
-            $video->setData(array('input' => $input, 'inputType' => $inputType , 'parameters' => $this->videoParameters));
-            //Call the specific videoplayer html code of the selected video type
-            return $this->video->setPlayer();
-        }
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    Find the video the type from the input url reference and set the video property with the found video object
-    */ 
-    public function defineVideoType($url)
-    {
-        foreach( $this->availableVideos as $type => $videoData)
-        {
-            $videoTest = $videoData['videoObject'];
-            if($videoTest->isValidUrl($url))
-            {
-                $this->videoType = $type;
-                $this->video = $videoTest;
-                return true;
-            }
-        }
-        return false;
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    set the video property with the video object associated to the input type
-    */
-    public function setVideo($videoType)
-    {
-        foreach( $this->availableVideos as $type => $data)
-        {
-            if($type == $videoType)
-            {
-                $this->video = $data['videoObject'];
-            }
-        }
-    }
-//VVVVVVVVVVVVVVVV    
-    /*
-    Test the input to define correspondance and validation with some available video
-    Return true if inputs are valide and error message if the validation abord
-    */
-    public function validate()
-    {
-        if($this->videoType == 'automatic' && $this->videoInputType == 'Url')
-        {
-            if($this->defineVideoType($this->videoInput))
-            {
-                $this->video->setData(array('input' => $this->videoInput, 'inputType' => $this->videoInputType,'parameters' => $this->videoParameters));
-            }
-            else
-            {
-                $errorMessage = get_lang('Not a correct available video web address').' :  <br> '.htmlspecialchars($this->videoInput) ;
-                return $this->renderErrorMessage($errorMessage);
-            }
-        }
-        else
-        {
-        $this->setVideo($this->videoType);
-        $this->video->setData(array('input' => $this->videoInput, 'inputType' => $this->videoInputType,'parameters' => $this->videoParameters));
-        }
-        $test = $this->video->validate();
-        if('true' == $test)
-        {
-            return 'true';
-        }
-        else
-        {
-            return $this->renderErrorMessage($test);
-        }
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    Fill the video type listbox with the available videos display name
-    */
-    public function getTypeOptions()
-    {
-        $options =
-        '<option value="automatic" '.$this->select($this->videoType,'automatic'). '>'.get_lang('Automatic').'</option>'. "\n";
-        foreach( $this->availableVideos as $type => $data)
-        {
-            $options.='<option value="'.$type.'" '.$this->select($this->videoType,$type). '>'.$data['displayName'].'</option>'. "\n";
-        }
-        return $options;
-    }
-//VVVVVVVVVVVVVVVV
-    /*
-    
-    */
-    public function setVideosData()
-    {
-        $videosData = array ();
-        foreach( $this->availableVideos as $type => $data)
-        {
-            $references = $data['videoObject']->getReferences();
-            $parameters = $data['videoObject']->getParameters();
-            $videosData [$type] = array('references' => $references , 'parameters' => $parameters);
-        }
-        $this->videosData = $videosData;
-    }
-//VVVVVVVVVVVVVVVV    
-    /*
-    
-    */
-    public function setHtmlData()
-    {
-        $htmlData = array();
-        $script_js = 'var data = new Array();';
-        
-        //set automatic reference (url) and property (size)
-        $automaticRef = array('Url' => 'Video Internet Adress');
-        $references = array('default' => 'Url', 'references' => $automaticRef);
-        $size = array('type' => 'radio', 'display' => get_lang('Size'),'default' => 'medium','data' => array('small' => 'Small', 'medium' => 'Medium', 'large' => 'Large'));
-        $parameters = array('Size' => $size);
-        $htmlReferences = $this->getReferences($references,'automatic');
-        $htmlParameters = $this->getParameters($parameters,'automatic');
-        $htmlData ['automatic'] = array ('references' => $htmlReferences, 'parameters' => $htmlParameters);
-        
-        $script_js .= 'var videoData = new Array();';
-        $script_js .= 'videoData[\'references\'] =\''.$htmlReferences.'\';';
-        $script_js .= 'videoData[\'parameters\'] =\''.$htmlParameters.'\';';
-        $script_js .= 'data["automatic"] = videoData;';
+    public function __construct()
+    { 
 
-        //set video plugin references and  property
-        foreach( $this->videosData as $type => $data)
-        {
-            $references = $data['references'];
-            $parameters = $data['parameters'];
-            $htmlReferences = $this->getReferences($references,$type);
-            $htmlParameters = $this->getParameters($parameters,$type);
-            $htmlData [$type] = array ('references' => $htmlReferences, 'parameters' => $htmlParameters);
-            
-            $script_js .= 'videoData = new Array();';
-            $script_js .= 'videoData[\'references\'] =\''.$htmlReferences.'\';';
-            $script_js .= 'videoData[\'parameters\'] =\''.$htmlParameters.'\';';
-            $script_js .= 'data["'.$type.'"] = videoData;';
-        }
-        $this->htmlData = $htmlData;
-        return $script_js;
-    }
-//VVVVVVVVVVVVVVVV
-
-    /*
-    
-    */
-    public function setJSdata()
-    {
-        $script_js = 'var temp = new Array();';
-        foreach($this->idList as $videoType => $data)
-        {
-            $script_js .= 'temp["'.$videoType.'"] = new Array();';
-            $script_js .= 'temp["'.$videoType.'"]["references"] = new Array();';
-            foreach($data['references'] as $nom => $info)
-            {
-                $script_js .= 'temp["'.$videoType.'"]["references"]["'.$nom.'"] = new Array();';
-                $script_js .= 'temp["'.$videoType.'"]["references"]["'.$nom.'"]["type"] = "'.$info['type'].'";';
-                $script_js .= 'temp["'.$videoType.'"]["references"]["'.$nom.'"]["id"] = "'.$info['id'].'";';
-                $script_js .= 'temp["'.$videoType.'"]["references"]["'.$nom.'"]["value"] = "'.$info['default'].'";';
-            }
-            $script_js .= 'temp["'.$videoType.'"]["parameters"] = new Array();';
-            foreach($data['parameters'] as $nom => $info)
-            {   
-                $script_js .= 'temp["'.$videoType.'"]["parameters"]["'.$nom.'"] = new Array();';
-                $script_js .= 'temp["'.$videoType.'"]["parameters"]["'.$nom.'"]["type"] = "'.$info['type'].'";';
-                $script_js .= 'temp["'.$videoType.'"]["parameters"]["'.$nom.'"]["id"] = "'.$info['id'].'";';
-                $script_js .= 'temp["'.$videoType.'"]["parameters"]["'.$nom.'"]["value"] = "'.$info['default'].'";';
-            }
-        }
-        return $script_js;
-    }
-    /*
-    
-    */
-    public function getReferences($data,$videoType)
-    {
-        $htmlCode = '';
-        $type ='radio';
+        $this->videoType = 'automatic';
+        $this->videoInput = '';
+        $this->videoInputType = 'Url';
+        $this->videoParameterList = array();
         
-        $references = $data['references'];
-        $default = $data['default'];
+        $this->videoRegister = new videoPluginRegistry();
+        
+        $this->videoDataList = array();
+        $this->videoDefaultValueList = array();
+        $this->videoHtmlCodeList = array();
+        
+        $this->initDomIdList();
+    }
     
-        if(count($references)==1)
-        {
-            $type = 'hidden';
-        }
-        foreach( $references as $name => $displayName)
-        {
-            $htmlCode .= $this->CreateReferenceInput ($type, $name, $displayName,$default,$videoType);
-        }
-        return $htmlCode;
-    }
-//VVVVVVVVVVVVVVVV    
-    public function getParameters($parameters,$videoType)
+    /**
+     * Initiate the domIdList property structure based on the registered videos
+     * 
+     */
+    private function initDomIdList()
     {
-        $htmlCode ='';
-        foreach($parameters as $name => $property)
+        foreach ($this->videoRegister->getRegisteredVideoTypes() as $type)
         {
-            $type = $property['type'];
-            $display = $property['display'];
-            $data = $property['data'];
-            $default = $property['default'];
-            $htmlCode .= $this->createParameter($type,$name,$display,$default,$data,$videoType);
-        }
-        return $htmlCode;
-    }
-//VVVVVVVVVVVVVVVV    
-    /*
-    Create the $type reference input form HTML code
-    */
-    public function createReferenceInput ($type, $name, $display,$default,$videoType)
-    {
-        if($name == $default)
-        {
-            $defaultValue = "checked";
-        }
-        else
-        {
-            $defaultValue = "";
-        }    
-        $this->idList[$videoType]['references']['radio'.$name]= array('type'=>'radio','id' =>'#videoInput'.$name.'_'.$this->getId(),'default' => $defaultValue);
-        $this->idList[$videoType]['references']['text'.$name]= array('type'=>'textBox','id' =>'#video'.$name.'_'.$this->getId(), 'default' => '');
-        $reference=
-                '<input type ="'.$type.'" name="videoInputType_'.$this->getId().'" id="videoInput'.$name.'_'.$this->getId().'" value="'.$name.'" '.$this->checkReference($videoType,$name).'>'
-        .       '<label for="videoInput'.$name.'_'.$this->getId().'">'. get_lang($display). '</label>'
-        .       '<input type="text" name="video'.$name.'_'.$this->getId().'" id="video'.$name.'_'.$this->getId().'" maxlength="255" '.$this->setReferenceValue($this->videoInputType,$name).'/><br /><br />';   
-        return $reference;
-    }
-//VVVVVVVVVVVVVVVV    
-    /*
-    Create parameter input HTML code
-    */
-    public function createParameter($type,$name,$display,$default,$data,$videoType)
-    {
-        $param ='';
-        if($type=='radio')
-        {
-            $param .=
-                '<div class ="parameter'.$name.'_'.$this->getId().'">'
-            .   '<label for="video'.$name.'_'.$this->getId().'">'.get_lang($display).'<br />';
-            
-            foreach( $data as $radioValue => $radioDisplay)
-            {
-                if($radioValue == $default)
-                {
-                    $defaultValue = "checked";
-                }
-                else
-                {
-                    $defaultValue = "";
-                }    
-                $this->idList[$videoType]['parameters'][$name.'_'.$radioValue]= array('type'=>'radio','id' =>'#video'.$name.'_'.$radioValue.'_'.$this->getId(), 'default' => $defaultValue);
-                $param .=
-                '<input type ="radio" name="video'.$name.'_'.$this->getId().'" id="video'.$name.'_'.$radioValue.'_'.$this->getId().'" value="'.$radioValue.'" '.$this->checkParameter($videoType,$name,$radioValue).'>'
-            .   '<label for="video'.$name.'_'.$radioValue.'_'.$this->getId().'">'.get_lang($radioDisplay).'</label><br />';
-            }
-            $param .= '</div><br/>';
-            return $param;
-        }
-        else if($type =='select')
-        {
-            $param .=
-                '<div class ="parameter'.$name.'_'.$this->getId().'">'
-            .   '<label for="video'.$name.'_'.$this->getId().'">'.get_lang($display).'<br />'
-            .   '<select name="video'.$name.'_'.$this->getId().'" id="video'.$name.'_'.$this->getId().'" size="1">';
-            foreach( $data as $selectValue => $selectDisplay)
-            {
-                if($selectValue == $default)
-                {
-                    $defaultValue = "selected";
-                }
-                else
-                {
-                    $defaultValue = "";
-                }    
-                $this->idList[$videoType]['parameters']['select'.$name.$selectValue]= array('type'=>'select','id' =>'#video'.$name.'_'.$selectValue.'_'.$this->getId(), 'default' => $defaultValue);
-                $param .=
-                '<option value="'.$selectValue.'" id="video'.$name.'_'.$selectValue.'_'.$this->getId().'"' .$this->selectParameter($videoType,$name,$selectValue).'>'.get_lang($selectDisplay).'</option>';
-            }
-            $param .=
-                '</select></div><br />';
-           return $param;
-        }
-        else if($type =='textBox')
-        {
-            $this->idList[$videoType]['parameters']['text'.$name]= array('type'=>'textBox','id' =>'#video'.$name.'_'.$this->getId(), 'default' => $default);
-            $param.=
-                '<div class ="parameter'.$name.'_'.$this->getId().'">'
-            .   '<label for="video'.$name.'_'.$this->getId().'">'.get_lang($display).'</label>'
-            .   '<input type="'.$data['type'].'" name="video'.$name.'_'.$this->getId().'" id="video'.$name.'_'.$this->getId().'" maxlength="255"  '.$this->setParameterValue($videoType,$name).'"/></div><br/>';
-            return $param;
+            $this->domIdList[$type] = array(
+                                        'identifiers' => array(),
+                                        'parameters' => array());
         }
     }
-//VVVVVVVVVVVVVVVV //
+
+    /**
+     * Create the videoComponent form HTML code (PHP and Javascript)
+     *
+     * @return string videoComponent form HTML code
+     */
     public function editor()
     {
-            $this->setDefaultValues();
-            $this->setVideosData();
-            $editor=
+        $this->setVideoDefaultValueList();
+        $this->setVideoDataList();
+        $this->setVideoHtmlCodeList();
+
+        $editor=
             
             '<script type="text/javascript">
             
-            '.$this->setHtmlData().'
-            '.$this->setJSdata().'
+                '.$this->setJSVideoHtmlCodeList().'
+                '.$this->setJSVideoDataList().'
                 
                 var lastType = "'.$this->videoType.'";
-            
-                 function setForm(id)
-                {
-                    saveTemp(lastType);
-                    var divType = "#videoType_" + id;
-                    var type = $(divType).val();
-                    var divReferences = "#videoReferences_" + id;
-                    $(divReferences).empty();
-                    $(divReferences).append(data[type]["references"]);
-                    var divParameters = "#videoParameters_" + id;
-                    $(divParameters).empty();
-                    $(divParameters).append(data[type]["parameters"]);
-                    loadTemp(type);
-                    lastType = type;
-                }
                 
-                function saveTemp(type)
-                {
-                    for (var reference in temp[type]["references"])
-                    {
-                        var typeRef = temp[type]["references"][reference]["type"];
-                        var id = temp[type]["references"][reference]["id"];
-                        var value = temp[type]["references"][reference]["value"];
-                        
-                        if (typeRef == "radio" )
-                        {
-                            if($(id).attr("checked"))
-                            {
-                                temp[type]["references"][reference]["value"] = "checked";
-                            }
-                            else
-                            {
-                                temp[type]["references"][reference]["value"] = "";
-                            }
-                        }
-                        
-                        if (typeRef == "textBox" )
-                        {
-                            temp[type]["references"][reference]["value"] = $(id).attr("value");
-                        }
-                        
-                        
-                    }
-                    
-                    for (var parameter in temp[type]["parameters"])
-                    {
-                        var typeParam = temp[type]["parameters"][parameter]["type"];
-                        var id = temp[type]["parameters"][parameter]["id"];
-                        var value = temp[type]["parameters"][parameter]["value"];
-                        
-                        if (typeParam == "radio" )
-                        {
-                            if($(id).attr("checked"))
-                            {
-                                temp[type]["parameters"][parameter]["value"] = "checked";
-                            }
-                            else
-                            {
-                                temp[type]["parameters"][parameter]["value"] = "";
-                            }
-                        }
-                        
-                        if (typeParam == "select" )
-                        {
-                            
-                            if($(id).attr("selected"))
-                            {
-                                temp[type]["parameters"][parameter]["value"] = "selected";
-                            }
-                            else
-                            {
-                                temp[type]["parameters"][parameter]["value"] = "";
-                            }
-                        }
-                        
-                        if (typeParam == "textBox" )
-                        {
-                            temp[type]["parameters"][parameter]["value"] = $(id).attr("value");
-                        }
-                        
-                    }
-                }
-
                 
-                function loadTemp(type)
-                {
-                    for (var reference in temp[type]["references"])
-                    {
-                        var typeRef = temp[type]["references"][reference]["type"];
-                        var id = temp[type]["references"][reference]["id"];
-                        var value = temp[type]["references"][reference]["value"];
-                        
-                        if (typeRef == "radio" )
-                        {
-                            if(value == "checked")
-                            {
-                                $(id).attr("checked","checked");
-                            }
-                            else
-                            {
-                                $(id).removeAttr("checked");
-                            }
-                        }
-                        if (typeRef == "textBox" )
-                        {
-                            $(id).val(value);
-                        }
-                    }
-
-                    for (var parameter in temp[type]["parameters"])
-                    {
-                        var typeParam = temp[type]["parameters"][parameter]["type"];
-                        var id = temp[type]["parameters"][parameter]["id"];
-                        var value = temp[type]["parameters"][parameter]["value"];
-
-                        if (typeParam == "radio" )
-                        {
-                            if(value == "checked")
-                            {
-                                $(id).attr("checked","checked");
-                            }
-                            else
-                            {
-                                $(id).removeAttr("checked");
-                            }
-                        }
-                        if (typeParam == "select" )
-                        {
-                            if(value == "selected")
-                            {
-                                $(id).attr("selected","selected");
-                            }
-                            else
-                            {
-                                $(id).removeAttr("selected");
-                            }
-                        }
-                        if (typeParam == "textBox" )
-                        {
-                            $(id).val(value);
-                        }
-                    }
-                }
             </script>' . "\n"
             
+            .    '<label for="videoType_'.$this->getId().'">' . get_lang('Video type') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+            .    '<select name="videoType_'.$this->getId().'" id="videoType_'.$this->getId().'" size="1" onChange="setForm('.$this->getId().');">'. "\n"
+
+            .        $this->getTypeOptions()           
+
+            .    '</select><br /><br />'. "\n"
         
-        //Video type list box
-        .    '<label for="videoType">' . get_lang('Video type') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-        .    '<select name="videoType_'.$this->getId().'" id="videoType_'.$this->getId().'" size="1" onChange="setForm('.$this->getId().');">'. "\n"
-        .    $this->getTypeOptions()           
-        .    '</select><br /><br />'. "\n"
-        
-        //Video reference input and radio box
-        .    '<label for="videoRef">' . get_lang('Video reference') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-        .    '<div class="videoReferences" id="videoReferences_'.$this->getId().'">';
-        //Insert reference html code depends video type
-        //Default = automatic reference
-        $editor .=
-        
-            $this->htmlData[$this->videoType]['references']
-             .'</div>'. "\n"
-        
-        //Video parameters inputs
-        .    '<label>' . get_lang('Video parameters') . '</label><br />' . "\n"
-        .    '<div class ="videoParameters" id="videoParameters_'.$this->getId().'">';
-        //Insert parameter html code depends video type
-            $editor .=
+            .    '<label for="videoIdentifiers_'.$this->getId().'">' . get_lang('Video identifiers') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+            .    '<div class="videoIdentifiers" id="videoIdentifiers_'.$this->getId().'">'. "\n"
+
+            .        $this->videoHtmlCodeList[$this->videoType]['identifiers']. "\n"
             
-            $this->htmlData[$this->videoType]['parameters']
-            .'</div>' ."\n";
+            .    '</div>'. "\n"
+        
+            .    '<label>' . get_lang('Video parameters') . '</label><br />' . "\n"
+            .    '<div class ="videoParameters" id="videoParameters_'.$this->getId().'">'. "\n"
+            
+            .        $this->videoHtmlCodeList[$this->videoType]['parameters']. "\n"
+            
+            .    '</div>' ."\n";
+
         return $editor;
     }
-//VVVVVVVVVVVVVVVV    
+    
     /**
-     * @set the checked status if inputs equal
+     * Define the different available videos parameters and Identifiers default values
+     * and save them in the videoDefaultValueList properties
+     * videoDefaultValueList => ['identifiers' => ['youtube' => ['Url'],'DailyMotion' => ['Id'], ...],
+     *                           'parameters' => ['youtube' => [['Size'] => 'medium', ...] ]
      */
-    private function checkReference($videoType,$inputType)
+    private function setVideoDefaultValueList()
     {
-        if($videoType != 'automatic')
-        {
-            $video = $this->availableVideos[$videoType]['videoObject'];
-            $data = $video->getReferences();
-            $references = $data['references'];
         
-            if(isset($this->videoInputType) && isset($references[$this->videoInputType]))
+        foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
+        {
+            $video = $this->videoRegister->getVideoClassInstance( $videoType );
+            $identifiers = $video->getIdentifiers();
+            $this->videoDefaultValueList['identifiers'][$videoType]=$identifiers['default'];
+            $parameters = $video->getParameters();
+            
+            foreach($parameters as $parameterName => $parameterData)
             {
-                if($this->videoInputType == $inputType)
-                {
-                return 'checked="checked"';
-                }
+                $this->videoDefaultValueList['parameters'][$videoType][$parameterName]=$parameterData['default'];
             }
-            else
+            
+        }
+    }
+
+    /**
+     * Define the different available videos Identifiers and parameters
+     * and save them in the videoDataList property
+     * videoDataList = ['youtube' => ['identifiers' => ['Url' => 'Video Internet Adress',
+     *                                                 'Id'=> 'Video identification']
+     *                                'parameters' => ['type' => 'radio',
+     *                                                 'display' => get_lang('Size'),
+     *                                                 'default' => 'medium',
+     *                                                 'data' => array('small' => 'Small',
+     *                                                                 'medium' => 'Medium',
+     *                                                                 'large' => 'Large') ] ], ... ]
+     */
+    private function setVideoDataList()
+    {
+
+        foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
+        {
+            $video = $this->videoRegister->getVideoClassInstance( $videoType );
+            
+            $this->videoDataList [$videoType] =
+                array('identifiers' => $video->getIdentifiers(),
+                      'parameters' => $video->getParameters());
+        }
+    }
+
+    /*
+     * Define the different available videos identifiers and parameters html codes
+     * and save them in the videoHtmlCodeList property
+     * videoHtmlCodeList is used to set specific video plugin form
+     */
+    private function setVideoHtmlCodeList()
+    {
+        
+        foreach( $this->videoDataList as $videoType => $videoData)
+        {
+            $this->videoHtmlCodeList [$videoType] =
+                array ('identifiers' => $this->getIdentifiers($videoData['identifiers'],$videoType),
+                       'parameters' => $this->getParameters($videoData['parameters'],$videoType));
+        }
+    }
+    
+    /**
+     * Define the different available video identifiers and parameters html codes
+     * and create a script sequence to enable them in javascript
+     *
+     * @return string The script sequence able to create the htmlCode Javascript variable
+     */
+    private function setJSVideoHtmlCodeList()
+    {
+        $script_js = 'var videoHtmlCode = new Array();';
+
+        foreach($this->videoDataList as $videoType => $videoData)
+        {
+            $htmlIdentifiersCode = $this->getIdentifiers($videoData['identifiers'],$videoType);
+            $htmlParametersCode = $this->getParameters($videoData['parameters'],$videoType);
+            
+            $script_js .= 'videoData = new Array();';
+            $script_js .= 'videoData[\'identifiers\'] =\''.$htmlIdentifiersCode.'\';';
+            $script_js .= 'videoData[\'parameters\'] =\''.$htmlParametersCode.'\';';
+            $script_js .= 'videoHtmlCode["'.$videoType.'"] = videoData;';
+        }
+        
+        return $script_js;
+    }
+    
+    /**
+     * Define the different available videos identifiers and parameters types, id and values
+     * and save them in the javascript videoDataList property
+     * var videoDataList = ['youtube' => ['identifiers' => ['Url' => ['type' => radio,
+     *                                                               'id' =>youtubeUrl_198,
+     *                                                               'default' => ''],
+     *                                                     'Id'  => ['type' => radio,
+     *                                                               'id' => youtubeId_198,
+     *                                                               'default' => ''],...]
+     *                                    'parameters' => ['Size' => ['type' => inputBox,
+     *                                                                'id' => Size_198,
+     *                                                                'default' => 'medium'], ... ]]
+     *
+     * @return string The script sequence able to create the videoDataList Javascript variable
+     */
+    private function setJSVideoDataList()
+    {
+        $script_js = 'var videoDataList = new Array();';
+       
+        foreach($this->domIdList as $videoType => $videoData)
+        {
+            $script_js .= 'videoDataList["'.$videoType.'"] = new Array();';
+            $script_js .= 'videoDataList["'.$videoType.'"]["identifiers"] = new Array();';
+            
+            foreach($videoData['identifiers'] as $identifierName => $identifierData)
             {
-                if($this->defaultValues['references'][$videoType] == $inputType )
+                $script_js .= 'videoDataList["'.$videoType.'"]["identifiers"]["'.$identifierName.'"] = new Array();';
+                $script_js .= 'videoDataList["'.$videoType.'"]["identifiers"]["'.$identifierName.'"]["type"] = "'.$identifierData['type'].'";';
+                $script_js .= 'videoDataList["'.$videoType.'"]["identifiers"]["'.$identifierName.'"]["id"] = "'.$identifierData['id'].'";';
+                $script_js .= 'videoDataList["'.$videoType.'"]["identifiers"]["'.$identifierName.'"]["value"] = "'.$identifierData['default'].'";';
+            }
+           
+            $script_js .= 'videoDataList["'.$videoType.'"]["parameters"] = new Array();';
+            
+            foreach($videoData['parameters'] as $parameterName => $parameterData)
+            {   
+                $script_js .= 'videoDataList["'.$videoType.'"]["parameters"]["'.$parameterName.'"] = new Array();';
+                $script_js .= 'videoDataList["'.$videoType.'"]["parameters"]["'.$parameterName.'"]["type"] = "'.$parameterData['type'].'";';
+                $script_js .= 'videoDataList["'.$videoType.'"]["parameters"]["'.$parameterName.'"]["id"] = "'.$parameterData['id'].'";';
+                $script_js .= 'videoDataList["'.$videoType.'"]["parameters"]["'.$parameterName.'"]["value"] = "'.$parameterData['default'].'";';
+            }
+        
+        }
+        
+        return $script_js;
+    } 
+    
+    /**
+     * Create and return the specific "$videoType" video identifiers html codes from the "$videoData"
+     *
+     * @param array $videoIdentifiers The specified video type identifiers list
+     * @param string $videoType A video type
+     * @return string The specific video identifiers html code
+     */
+    private function getIdentifiers($videoIdentifiers,$videoType)
+    {
+        $htmlCode = '';
+        $identifierInputType ='radio';
+        
+        $identifiers = $videoIdentifiers['identifiers'];
+        $defaultIdentifier = $videoIdentifiers['default'];
+    
+        //To hide the radio button if only one identifier choice exist
+        if(count($identifiers)==1)
+        {
+            $identifierInputType = 'hidden';
+        }
+        
+        foreach( $identifiers as $identiferName => $identifierDisplayName)
+        {
+            $htmlCode .= $this->CreateIdentifierInput ($identifierInputType, $identiferName, $identifierDisplayName,$defaultIdentifier,$videoType);
+        }
+        
+        return $htmlCode;
+    }
+    
+    /**
+     * Create and return the specific "$videoType" video parameters html codes from the "$videoData"
+     *
+     * @param array $videoParameters The specified video type parameters list
+     * @param string $videoType A video type
+     * @return string The specific video parameters html code
+     */
+    private function getParameters($videoParameters,$videoType)
+    {
+        $htmlCode ='';
+        
+        foreach($videoParameters as $parameterName => $parameterData)
+        {
+            $parameterInputType = $parameterData['type'];
+            $parameterDisplayName = $parameterData['display'];
+            $specificParameterData = $parameterData['data'];
+            $defaultParameterValue = $parameterData['default'];
+            $htmlCode .= $this->createParameter($parameterInputType,$parameterName,$parameterDisplayName,$defaultParameterValue,$specificParameterData,$videoType);
+        }
+        
+        return $htmlCode;
+    }
+  
+    /**
+     * Create and return a specified identifier html codes
+     *
+     * @param string $identifierInputType The form input type used for the parameter
+     * @param string $identifierName The identifier name
+     * @param string $identifierDisplayName The identifier display name
+     * @param string $defaultIdentifier The videoType default identifier type
+     * @param string $videoType A video type
+     * @return string The specified video identifier form sequence html code
+     */
+    private function createIdentifierInput ($identifierInputType, $identifierName, $identifierDisplayName,$defaultIdentifier,$videoType)
+    {
+        $defaultValue = "";
+        
+        if($identifierName == $defaultIdentifier)
+        {
+            $defaultValue = "checked";
+        }
+        
+        $this->domIdList[$videoType]['identifiers']['radio'.$identifierName]= array('type'=>'radio','id' =>'#videoInput'.$identifierName.'_'.$this->getId(),'default' => $defaultValue);
+        $this->domIdList[$videoType]['identifiers']['text'.$identifierName]= array('type'=>'textBox','id' =>'#video'.$identifierName.'_'.$this->getId(), 'default' => '');
+        
+        $identifier=
+                '<input type ="'.$identifierInputType.'" name="videoInputType_'.$this->getId().'" id="videoInput'.$identifierName.'_'.$this->getId().'" value="'.$identifierName.'" '.$this->checkIdentifier($videoType,$identifierName).'>'
+        .       '<label for="video'.$identifierName.'_'.$this->getId().'">'. get_lang($identifierDisplayName). '</label>'
+        .       '<input type="text" name="video'.$identifierName.'_'.$this->getId().'" id="video'.$identifierName.'_'.$this->getId().'" maxlength="255" '.$this->setIdentifierValue($videoType,$identifierName).'/><br /><br />';   
+        
+        return $identifier;
+    }
+  
+    /**
+     * Set the checked attribute to the identifier radio input if
+     * the specific videoType equals the current videoInputType property
+     *
+     * @param string $videoType A video type
+     * @param string $identifierName A identifier name
+     * @return string The checked attribute of an identifier radio input html element
+     */
+    private function checkIdentifier($videoType,$identifierName)
+    {
+        if($videoType == $this->videoType)
+        {
+            if($identifierName == $this->videoInputType)
+            {
+                return 'checked="checked"';
+            }
+        }
+        else
+        { 
+            if($identifierName == $this->videoDefaultValueList['identifiers'][$videoType])
+            {
+                return 'checked="checked"';
+            }            
+        }
+    }
+    
+    /**
+     * Return the identifier value attribute of the identifier html element if
+     * the identifier name equals the current video input type
+     *
+     * @param string $identifierName A identifier name
+     * @param string $identifierValue A identifier input value
+     * @return string The value attribute of an identifier hmtl element
+     */
+    private function setIdentifierValue($videoType,$identifierName)
+    {
+        if($videoType == $this->videoType)
+        {
+            if($identifierName == $this->videoInputType)
+            {
+                return 'value="'.htmlspecialchars(trim($this->videoInput)).'"';
+            }
+        }
+    }
+  
+    /**
+     * Create and return a specified parameter html codes
+     *
+     * @param string $parameterInputType A video parameter form input type
+     * @param string $paramerterName The specific video parameter name
+     * @param string $parameterDisplayName The specific video parameter display name
+     * $param string $parameterDefaultValue The specific video parameter default value 
+     * @param array  $parameterData The specific video parameter data
+     * @param string $videoType A video type
+     * @return string The specified video parameter form sequence html code
+     */
+    private function createParameter($parameterInputType,$parameterName,$parameterDisplayName,$parameterDefaultValue,$parameterData,$videoType)
+    {
+        $htmlCode ='';
+        
+        if($parameterInputType =='radio')
+        {
+            $htmlCode .=
+                '<div class ="parameter'.$parameterName.'_'.$this->getId().'">'
+            .   '<label for="video'.$parameterName.'_'.$this->getId().'">'.get_lang($parameterDisplayName).'<br />';
+            
+            foreach( $parameterData as $radioValue => $radioDisplay)
+            {
+                if($radioValue == $parameterDefaultValue)
                 {
+                    $parameterChecked = "checked";
+                }
+                else
+                {
+                    $parameterChecked = "";
+                }    
+                $this->domIdList[$videoType]['parameters'][$parameterName.'_'.$radioValue]= array('type'=>'radio','id' =>'#video'.$parameterName.'_'.$radioValue.'_'.$this->getId(), 'default' => $parameterChecked);
+                
+                $htmlCode .=
+                    '<input type ="radio" name="video'.$parameterName.'_'.$this->getId().'" id="video'.$parameterName.'_'.$radioValue.'_'.$this->getId().'" value="'.$radioValue.'" '.$this->checkParameter($videoType,$parameterName,$radioValue).'>'
+                .   '<label for="video'.$parameterName.'_'.$radioValue.'_'.$this->getId().'">'.get_lang($radioDisplay).'</label><br />';
+            }
+            
+            $htmlCode .=
+                '</div><br/>';
+            
+            return $htmlCode;
+        
+        }
+        else if($parameterInputType =='select')
+        {
+            $htmlCode .=
+                '<div class ="parameter'.$parameterName.'_'.$this->getId().'">'
+            .   '<label for="video'.$parameterName.'_'.$this->getId().'">'.get_lang($parameterDisplayName).'<br />'
+            .   '<select name="video'.$parameterName.'_'.$this->getId().'" id="video'.$parameterName.'_'.$this->getId().'" size="1">';
+            
+            foreach( $parameterData as $selectOptionValue => $selectOptionDisplay)
+            {
+                if($selectOptionValue == $parameterDefaultValue)
+                {
+                    $parameterDefaultValue = "selected";
+                }
+                else
+                {
+                    $parameterDefaultValue = "";
+                }
+                
+                $this->domIdList[$videoType]['parameters']['select'.$parameterName.$selectOptionValue]= array('type'=>'select','id' =>'#video'.$parameterName.'_'.$selectOptionValue.'_'.$this->getId(), 'default' => $parameterDefaultValue);
+                
+                $htmlCode .=
+                    '<option value="'.$selectOptionValue.'" id="video'.$parameterName.'_'.$selectOptionValue.'_'.$this->getId().'"' .$this->selectParameterOption($videoType,$parameterName,$selectOptionValue).'>'.get_lang($selectOptionDisplay).'</option>';
+            }
+            
+            $htmlCode .=
+                '</select></div><br />';
+           
+            return $htmlCode;
+        
+        }
+        else if($parameterInputType =='textBox')
+        {
+            $this->domIdList[$videoType]['parameters']['text'.$parameterName]= array('type'=>'textBox','id' =>'#video'.$parameterName.'_'.$this->getId(), 'default' => $parameterDefaultValue);
+            
+            $htmlCode .=
+                '<div class ="parameter'.$parameterName.'_'.$this->getId().'">'
+            .   '<label for="video'.$parameterName.'_'.$this->getId().'">'.get_lang($parameterDisplayName).'</label>'
+            .   '<input type="'.$parameterData['type'].'" name="video'.$parameterName.'_'.$this->getId().'" id="video'.$parameterName.'_'.$this->getId().'" maxlength="255"  '.$this->setParameterValue($videoType,$parameterName).'"/></div><br/>';
+            
+            return $htmlCode;
+        
+        }
+    }
+    
+    /**
+     * Set the checked attribute to the parameter radio input if
+     * the relatif videoParameterList value or the parameter default value equals the specified parameter value
+     * 
+     * @param string $videoType A video type
+     * @param string $parameterName A identifier name
+     * @param string $parameterValue A parameter value
+     * @return string The checked attribute of a parameter radio input html element
+     */
+    private function checkParameter($videoType,$parameterName,$parameterValue)
+    {
+        if($videoType == $this->videoType && $videoType != 'automatic')
+        {
+            if(isset($this->videoParameterList[$parameterName]))
+            {
+                if($this->videoParameterList[$parameterName] == $parameterValue)
+                {
+            
                     return 'checked="checked"';
                 }
             }
         }
-    }
-//VVVVVVVVVVVVVVVV    
-    /**
-     * @set the checked status if inputs equal
-     */
-    private function checkParameter($videoType,$name,$value)
-    { 
-        if(isset($this->videoParameters[$name]))
-        {
-            if($this->videoParameters[$name] == $value)
-            {
-            return 'checked="checked"';
-            }
-        }
         else
         {
-            if($this->defaultValues['parameters'][$videoType][$name] == $value )
+            if($this->videoDefaultValueList['parameters'][$videoType][$parameterName] == $parameterValue )
             {
                 return 'checked="checked"';
             }
         }
-    }   
-//VVVVVVVVVVVVVVVV        
+    }
+    
     /**
-     * @set the selected status if inputs equal
+     * Set the selected attribute to the parameter select option if
+     * the relatif videoParameterList value or the parameter default value equals the specified parameter value
+     * 
+     * @param string $videoType A video type
+     * @param string $parameterName A identifier name
+     * @param string $parameterValue A parameter value
+     * @return string The selected attribute of a parameter select option html element
      */
-     private function selectParameter($videoType,$name,$selectedValue)
+     private function selectParameterOption($videoType,$parameterName,$selectOptionValue)
     {
-        if(isset($this->videoParameters[$name]))
+        if($videoType == $this->videoType)
         {
-            if($this->videoParameters[$name] == $selectedValue)
+            if(isset($this->videoParameterList[$parameterName]))
             {
-            return 'selected="selected"';
+                if($this->videoParameterList[$parameterName] == $selectOptionValue)
+                {
+                
+                    return 'selected="selected"';
+                }
             }
         }
         else
         {
-            if($this->defaultValues['parameters'][$videoType][$name] == $selectedValue )
+            if($this->videoDefaultValueList['parameters'][$videoType][$parameterName] == $selectOptionValue)
             {
+            
                 return 'selected="selected"';
             }
         }
     }
     
-//VVVVVVVVVVVVVVVV    
-    private function setReferenceValue($var,$value)
+    /**
+     * Return the identifier value attribute of the parameter html element if
+     * the parameter name equals the current video input type
+     *
+     * @param string $videoType A video type
+     * @param string $parameterName A identifier name
+     * @return string The value attribute of an identifier hmtl element
+     */
+    private function setParameterValue($videoType,$parameterName)
     {
-        if($var == $value)
+        if($videoType == $this->videoType)
         {
-            return 'value="'.htmlspecialchars($this->videoInput).'"';
+            if(isset($this->videoParameterList[$parameterName]))
+            {
+                
+                return 'value="'.htmlspecialchars(trim($this->videoParameterList[$parameterName])).'"';
+            }
         }
         else
         {
-            return 'value=""';
-        }
-    }
-//VVVVVVVVVVVVVVVV    
-    private function setParameterValue($videoType,$name)
-    {
-        if(isset($this->videoParameters[$name]))
-        {
-            return 'value="'.htmlspecialchars($this->videoParameters[$name]).'"';
-        }
-        else
-        {
-            return 'value="'.htmlspecialchars($this->defaultValues['parameters'][$videoType][$name]).'"';
-            
+            return 'value="'.htmlspecialchars(trim($this->videoDefaultValueList['parameters'][$videoType][$parameterName])).'"';
         }
     }
     
-//VVVVVVVVVVVVVVVV        
     /**
-     * @set the selected status if inputs equal
+     * Create and return the html code to fill the video type listbox with the available videos display name
+     *
+     * @return string The option select form element html code
      */
-     private function select($var,$selectedValue)
+    private function getTypeOptions()
     {
-        if($var == $selectedValue)
+        $options = '';
+        
+        foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
+        {
+            $options.='<option value="'.$videoType.'" '.$this->selectVideoTypeOption($videoType). '>'.$this->videoRegister->getVideoDisplayName( $videoType ).'</option>'. "\n";
+        }
+        return $options;
+    }
+
+    /**
+     * Set the selected attribute to the video type select option if
+     * the specified videotype equals the current videoType video property
+     * 
+     * @param string $videoType A video type
+     * @return string The selected attribute of a parameter select option html element
+     */
+     private function selectVideoTypeOption($videoType)
+    {
+        if($videoType == $this->videoType)
         {
             return 'selected="selected"';
         }
     }
-//VVVVVVVVVVVVVVVV        
+
     /**
-     * @set the disabled status if inputs equal
-     */
-    private function initEnable($var,$value)
-    {
-        if($var == $value)
-        {
-            return 'disabled="disabled"';
-        } 
-    }
-//VVVVVVVVVVVVVVVV    
-    /**
-     * @see Component
+     * Set the video properties with the form inputs after submition
      */
     public function getEditorData()
     {
         $this->videoInputType = $this->getFromRequest('videoInputType_'.$this->getId());
         $this->videoInput = $this->getFromRequest('video'.$this->videoInputType.'_'.$this->getId());
         $this->videoType = $this->getFromRequest('videoType_'.$this->getId());
-        $this->getVideoParameters();
+        $this->getVideoParameterList();
     }
-//VVVVVVVVVVVVVVVV    
-    public function getVideoParameters()
+ 
+    /**
+     * Set the videoParameter property with the selected video parameters inputs after submition
+     */
+    private function getVideoParameterList()
     {
-        $videoParameters = array();
-        $videoType = $this->videoType;
-        if ($videoType == 'automatic')
+        $videoParameterList = array();
+
+        foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
         {
-        $id = 'videoSize_'.$this->getId();
-        $this->videoParameters['Size']= $this->getFromRequest($id);
-        }
-        
-        foreach( $this->availableVideos as $type => $data)
-        {
-            if($videoType == $type)
+            if($videoType == $this->videoType)
             {
-                $parameters = $data['videoObject']->getParameters();
                 $videoParam = array();
-                foreach($parameters as $name => $data)
+
+                foreach($this->videoRegister->getVideoClassInstance($videoType)->getParameters() as $parameterName => $parameterData)
                 {
-                    $id = 'video'.$name.'_'.$this->getId();
-                    $this->videoParameters[$name]= $this->getFromRequest($id);
+                    $id = 'video'.$parameterName.'_'.$this->getId();
+                    $this->videoParameterList[$parameterName]= $this->getFromRequest($id);
                 }
             }
         }
     }
-//VVVVVVVVVVVVVVVV    
+    
+   /**
+    * Test the submited inputs to define the validation status
+    * Return true if inputs are validate and error message if the validation abord
+    *
+    * @return string The validation result, true or an error message
+    */
+    public function validate()
+    {
+        $video = '';
+        
+        if($this->videoType == 'automatic' && $this->videoInputType == 'Url')
+        {
+            $definedVideoType = $this->videoRegister->defineVideoType($this->videoInput);
+            
+            if($definedVideoType != false)
+            {
+                $this->videoType = $definedVideoType;
+                $video = $this->videoRegister->getVideoClassInstance($definedVideoType);
+                $video->setData(array('input' => $this->videoInput, 'inputType' => $this->videoInputType,'parameters' => $this->videoParameterList));
+            }
+            else
+            {
+                $errorMessage = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => '', "%wrongInput" => htmlspecialchars($this->videoInput)));
+                return $this->renderErrorMessage($errorMessage);
+            }
+        }
+        else
+        {
+            $video = $this->videoRegister->getVideoClassInstance($this->videoType);
+            $video->setData(array('input' => $this->videoInput, 'inputType' => $this->videoInputType,'parameters' => $this->videoParameterList));
+        }
+        
+        $validation = $video->validate();
+        
+        if('true' == $validation)
+        {
+            
+            return 'true';
+        }
+        else
+        {
+            
+            return $this->renderErrorMessage($validation);
+        }
+    }
+    
+    /**
+     * Create the current video type video player HTML code
+     *
+     * @return string The video player HTML code
+     */
+    public function render()
+    {
+        if ($this->videoInput != null && $this->videoType!= 'automatic')
+        {
+            $video = $this->videoRegister->getVideoClassInstance($this->videoType);
+            
+            $video->setData(array('input' => $this->videoInput, 'inputType' => $this->videoInputType , 'parameters' => $this->videoParameterList));
+
+            return $video->setPlayer();
+        }
+    }
+    
     /**
      * @see Component
      */
@@ -756,18 +691,17 @@ class VideoComponent extends Component
         $this->videoInput = trim($data['videoInput']);
         $this->videoInputType = $data['videoInputType'];
         $this->videoType = $data['videoType'];
-        $this->video = $data['video'];
-        $this->videoParameters = $data['parameters'];
+        $this->videoParameterList = $data['parameters'];
         
     }
-//VVVVVVVVVVVVVVVV    
-    /**
-     * @see Component
+   
+    /***
+     * see Component
      */
     public function getData()
     {
-        return array('videoInput' => $this->videoInput,'videoInputType' => $this->videoInputType, 'videoType' => $this->videoType, 'video' =>$this->video, 'parameters' =>$this->videoParameters);
+        return array('videoInput' => $this->videoInput,'videoInputType' => $this->videoInputType, 'videoType' => $this->videoType, 'parameters' =>$this->videoParameterList);
     }
 }
 
-PluginRegistry::register('video',get_lang('Web video'),'VideoComponent', 'Externals', 'youtubeIco');
+PluginRegistry::register('video',get_lang('Web video'),'VideoComponent', 'Externals', 'videoIco');
