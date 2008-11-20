@@ -4,15 +4,10 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * CLAROLINE
  *
  * $Revision$
- *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLPAGES
- *
  * @author Claroline team <info@claroline.net>
- *
  */
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
@@ -20,6 +15,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     {
         private $id = 0;
         private $pageId = 0;
+        private $pageDisplayMode = 'PAGE';
         private $title = '';
         private $type = '';
         private $visibility = 'VISIBLE';
@@ -91,6 +87,18 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
         {
             $this->pageId = (int) $pageId;
         }
+        
+        // page display mode
+        public function getPageDisplayMode()
+        {
+            return $this->pageDisplayMode;
+        }
+
+        public function setPageDisplayMode( $pageDisplayMode )
+        {
+            $this->pageDisplayMode = $pageDisplayMode;
+        }
+        
 
         // type
            public function getType()
@@ -177,8 +185,18 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                     .     '<a href="#" class="mkVisibleCmd" '.($this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('invisible') . '</a>'
                     .     '&nbsp;'
                     .     '<a href="#" class="toggleEditorCmd">' . claro_html_icon('edit') . '</a>'
-                    .      '&nbsp;'
-                    .     '<a href="#" class="deleteComponentCmd">' . claro_html_icon('delete') . '</a>'
+                    .      '&nbsp;';
+                    
+                    //preview only for slide display mode
+                    if($this->getPageDisplayMode() == 'SLIDE')
+                    {
+                    $out .=
+                         '<a rel="popup" href="lib/s5/s5.php?pageId='.$this->getPageId().'&componentId='.$this->getId().'" class="s5ViewerCmd">' . claro_html_icon('exe') . '</a>'
+                    .      '&nbsp;';
+                    }
+                    
+                    $out .=
+                         '<a href="#" class="deleteComponentCmd">' . claro_html_icon('delete') . '</a>'
                     .      '  </span>' . "\n";
                 }
                 
@@ -195,12 +213,32 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
             return $out;
         }
 
-        public function validate()
+        /**
+         * Return the XTHML component s5 slide code
+         *
+         * @return string The XTHML component s5 slide code
+         */
+        public function s5RenderBlock()
+        {
+            $out = 
+               '<div class="slide">' . "\n"
+               .   '<h1>'.$this->getTitle().'</h1>' . "\n"
+               .   '<ul>'. "\n"
+               .   $this->render()
+               .   '</ul>'."\n"
+               .   '<div class="handout">'."\n"
+               .   '</div>'."\n"
+               .   '</div>'."\n"
+               ;
+            return $out;
+        }
+
+        public function validate() //must be surcharged by other children component
         {
             return true;
         }
 
-        public function renderEditor($message)
+        public function renderEditor()
         {
             $out =
              ' <div class="componentEditor">' . "\n"
@@ -387,6 +425,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
         }
     }
 
+    //PAGE CLASS DEFINITION
+    
     class Page
     {
         private $id = 0;
@@ -405,7 +445,6 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
         {
             $this->componentList = array();
         }
-
 
         // load
         public function load( $id )
@@ -562,6 +601,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                     {
                         $component->setId($componentData['id']);
                         $component->setPageId($componentData['pageId']);
+                        $component->setPageDisplayMode($this->getDisplayMode());
                         $component->setTitle($componentData['title']);
                         $component->setType($componentData['type']);
                         $component->setVisibility($componentData['visibility']);

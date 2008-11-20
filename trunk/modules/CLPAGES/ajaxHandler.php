@@ -64,6 +64,15 @@ else
     $pageId = null;
 }
 
+if( isset($_REQUEST['pageDisplayMode']))
+{
+    $pageDisplayMode = $_REQUEST['pageDisplayMode'];
+}
+else
+{
+    $pageDisplayMode = null;
+}
+
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )
 {
     $itemId = (int) $_REQUEST['itemId'];
@@ -179,10 +188,11 @@ if( $cmd == 'mkUp' || $cmd == 'mkDown' )
 }
 
 if( $cmd == 'addComponent')
-{
+{            
     if( is_null($pageId) || is_null($itemType) ) return false;
 
     $factory = new ComponentFactory();
+
 
     $component = $factory->createComponent( $itemType );
 
@@ -190,6 +200,7 @@ if( $cmd == 'addComponent')
     {
         // save component as we need to have an id for it !
         $component->setPageId($pageId);
+        $component->setPageDisplayMode($pageDisplayMode);
         $component->setType($itemType);
         $component->setInvisible();
         $component->save();

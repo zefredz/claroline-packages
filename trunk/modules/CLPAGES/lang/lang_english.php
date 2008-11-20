@@ -1,12 +1,26 @@
 <?php
-$_lang['Display title'] ='Display title';
+//Page
+$_lang['Run the slides show'] ='Run the slides show';
+
+//PLUGINS
+
+//Video.class
+$_lang['Not a correct available%videoType video web address : <br> %wrongInput'] ='Not a correct available%videoType video web address : <br> %wrongInput';
+$_lang['Video identifiers'] ='Video identifiers';
+$_lang['Video type'] ='Video type';
+$_lang['Video parameters'] ='Video parameters';
+$_lang['Web video'] ='Web video';
+
+//VIDEOPLUGINS
+
+$_lang['Automatic'] ='Automatic';
+$_lang['DailyMotion'] ='DailyMotion';
 $_lang['Large'] ='Large';
 $_lang['Medium'] ='Medium';
-$_lang['Not a correct video address'] ='Not a correct video address';
+$_lang['Size'] ='Size';
 $_lang['Small'] ='Small';
 $_lang['Video identification'] ='Video identification';
 $_lang['Video internet address'] ='Video internet address';
-$_lang['Video reference'] ='Video reference';
-$_lang['Video size'] ='Video size';
-$_lang['YouTube and DailyMotion video'] ='YouTube and DailyMotion video';
+$_lang['YouTube'] ='YouTube';
+
 ?>

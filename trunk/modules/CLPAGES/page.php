@@ -61,7 +61,7 @@
      /*
       * Output
       */
-     $cssLoader = CssLoader::getInstance();
+    $cssLoader = CssLoader::getInstance();
     $cssLoader->load( 'clpages', 'screen');
 
      if( $is_allowedToEdit )
@@ -82,6 +82,7 @@
           $htmlHeaders = "\n"
           .    '<script type="text/javascript">' . "\n"
           .      '  var cidReq = "'.claro_get_current_course_id().'";' . "\n"
+          .      '  var pageDisplayMode ="'.$page->getDisplayMode().'";' . "\n"
           .      '  var pageId = "'.$page->getId().'";' . "\n"
           .      '  var moduleUrl = "'.get_module_url('CLPAGES').'/";' . "\n"
           .    '</script>' . "\n\n";
@@ -163,47 +164,33 @@
              $out .= '</div>' . "\n";
         }
 
+    //add s5 slide show path
+    
+    if( $page->getDisplayMode() == 'SLIDE' )
+    {
+    $out .=
+    '<span>
+
+        <a href="lib/s5/s5.php?pageId='.$page->getId().'" rel="popup">'.get_lang('Run the slides show').'</a>
+
+    </span>
+    ';
+    }
+    
      $out .= '<div id="componentsContainer" class="componentWrapper">' . "\n\n";
 
      $componentList = $page->getComponentList();
 
     if( $page->getDisplayMode() == 'SLIDE' && !$is_allowedToEdit )
      {
-         $componentsHtml = '';
+        
          foreach( $componentList as $component )
          {
-              if( $component->isVisible() || $is_allowedToEdit )
+              if( $component->isVisible() || $is_allowedToEdit ) //check allowEdit use
               {
-                   $componentsHtml .= $component->renderBlock();
+                   
               }
          }
-         
-         $bannerToggle = '<p>'
-         .  '<a href="#" class="bannerToggle">' . get_lang('Show/hide banner') . '</a>'
-         .  '</p>' . "\n";
-         
-         $navBar = '<div class="slideNav">' . "\n";
-             
-        $navBar .= '<span class="prevSlide">'
-        .      '<a href="#">'
-        .      '&lt; '. get_lang('Previous') 
-        .      '</a>'
-        .      '</span>' . "\n";
-
-        $navBar .= '<span class="nextSlide">'
-        .      '<a href="#">'
-        .      get_lang('Next') . ' &gt;' 
-        .      '</a>'
-        .      '</span>' . "\n";
-        
-        $navBar .= '<span class="slideProgress">'
-        .     get_lang('Slide %current on %total', array('%current' => '<span class="displayedSlide">0</span>', '%total' => '<span class="lastSlide">0</span>' ) ) 
-        .     '</span>' . "\n";
-                    
-         $navBar .= '</div>' . "\n";
-         
-         
-         $out .= $bannerToggle . $navBar . $componentsHtml . $navBar; 
          
      }
      else

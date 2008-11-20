@@ -10,7 +10,11 @@
         $('a.mkInvisibleCmd').livequery('click', mkInvisible);
         $('a.mkUpCmd').livequery('click', mkUp);
         $('a.mkDownCmd').livequery('click', mkDown);
-        
+        $('A[rel="popup"]').click( function()
+        {
+            window.open( $(this).attr('href') );
+            return false;
+        });
 
         updateMoveCmdVisibility();
     });
@@ -22,7 +26,7 @@
     {
         $.ajax({
             url: moduleUrl + "ajaxHandler.php",
-            data: "cmd=addComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type,
+            data: "cmd=addComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&pageDisplayMode=" + pageDisplayMode + "&itemType=" + type,
             success: function(response){
                 var addedHtmlId = getComponentIdFromHtml(response);
                 // append block at the end list
