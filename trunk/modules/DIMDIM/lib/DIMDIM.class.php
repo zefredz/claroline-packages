@@ -1,4 +1,5 @@
 <?php // $Id$
+
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
  * CLAROLINE
@@ -11,98 +12,99 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  * @package DIMDIM
  *
- * @author Sebastien Piraux
+ * @author Sebastien Piraux - Sokay Benjamin
  *
  */
 
-class conference
+class Conference
 {
     /**
-     * @var $id id of conference, -1 if conference doesn't exist already
+     * @private variable $id id of conference, -1 if conference doesn't exist already
      */
-    var $id;
+    private $_id;
 
     /**
-     * @var $title name of the conference
+     * @private variable $title name of the conference
      */
-    var $title;
+    private $_title;
 
     /**
-     * @var $description statement of the conference
+     *@ private variable $description statement of the conference
      */
-    var $description;
+    private $_description;
 
     /**
-     * @var $visibility visibility of the conference (default is visible)
+     * @private variable $visibility visibility of the conference (default is visible)
      */
-    var $visibility;
+    private $_visibility;
 
     /**
-     * @var $waitingArea enable or disable the dimdim waiting area (default is disable)
+     * @private variable $waitingArea enable or disable the dimdim waiting area (default is disable)
      */
-    var $waitingArea;
+    private $_waitingArea;
 
     /**
-     * @var $maxUsers int
+     * @private variable $maxUsers int
      */
-    var $maxUsers;
+    private $_maxUsers;
 
     /**
-     * @var $duration int
+     *@ private variable $duration int
      */
-    var $duration;
+    private $_duration;
 
     /**
-     * @var $type video and audio or audio only, default is audio
+     * @private variable $type video and audio or audio only, default is audio
      */
-    var $type;
+    private $_type;
+	
+    /**
+     * @private variable $attendeeMikes
+     */
+    private $_attendeeMikes;
 
     /**
-     * @var $attendeeMikes
+     * @private variable $network network type
      */
-    var $attendeeMikes;
+    private $_network;
 
     /**
-     * @var $network network type
+     * @private variable $startTime
      */
-    var $network;
+    private $_startTime;
 
     /**
-     * @var $startTime
+     * @private variable $confKey conference key
      */
-    var $startTime;
+    private $_confKey;
 
     /**
-     * @var $confKey conference key
+     * @private variable $tblConference
      */
-    var $confKey;
+    private $_tblConference;
 
-    /**
-     * @var $tblConference
-     */
-    var $tblConference;
-
-
+	
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function conference()
+    public function __construct()
     {
-        $this->id = (int) -1;
-        $this->title = '';
-        $this->description = '';
-        $this->visibility = 'VISIBLE';
-        $this->waitingArea = 'DISABLE';
-        $this->maxUsers = (int) 20;
-        $this->duration = (int) 1;
-        $this->type = 'AUDIO';
-        $this->attendeeMikes = (int) 0;
-        $this->network = 'DIALUP';
-        $this->startTime = claro_time()+3600;
-        $tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
-        $this->tblConference = $tbl_names['dim_conference'];
+        $this->_id = (int) -1;
+        $this->_title = '';
+        $this->_description = '';
+        $this->_visibility = 'VISIBLE';
+        $this->_waitingArea = 'DISABLE';
+        $this->_maxUsers = (int) 20;
+        $this->_duration = (int) 1;
+        $this->_type = 'AUDIO';
+        $this->_attendeeMikes = (int) 0;
+        $this->_network = 'DIALUP';
+        $this->_startTime = claro_time()+3600;
+        
+		$tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
+        $this->_tblConference = $tbl_names['dim_conference'];
     }
 
     /**
@@ -112,9 +114,9 @@ class conference
      * @param integer $id id of conference
      * @return boolean load successfull ?
      */
-    function load($id)
+    public function load($id)
     {
-        $sql = "SELECT
+       $sql = "SELECT
                     `id`,
                     `title`,
                     `description`,
@@ -127,7 +129,7 @@ class conference
                     `network`,
                     UNIX_TIMESTAMP(`startTime`) AS `startTime`,
                     `confKey`
-            FROM `".$this->tblConference."`
+            FROM `".$this->_tblConference."`
             WHERE `id` = ".(int) $id;
 
         $data = claro_sql_query_get_single_row($sql);
@@ -135,18 +137,18 @@ class conference
         if( !empty($data) )
         {
             // from query
-            $this->id = (int) $data['id'];
-            $this->title = $data['title'];
-            $this->description = $data['description'];
-            $this->visibility = $data['visibility'];
-            $this->waitingArea = $data['waitingArea'];
-            $this->maxUsers = (int) $data['maxUsers'];
-            $this->duration = (int) $data['duration'];
-            $this->type = $data['type'];
-            $this->attendeeMikes = (int) $data['attendeeMikes'];
-            $this->network = $data['network'];
-            $this->startTime = $data['startTime'];
-            $this->confKey = $data['confKey'];
+            $this->_id = (int) $data['id'];
+            $this->_title = $data['title'];
+            $this->_description = $data['description'];
+            $this->_visibility = $data['visibility'];
+            $this->_waitingArea = $data['waitingArea'];
+            $this->_maxUsers = (int) $data['maxUsers'];
+            $this->_duration = (int) $data['duration'];
+            $this->_type = $data['type'];
+            $this->_attendeeMikes = (int) $data['attendeeMikes'];
+            $this->_network = $data['network'];
+            $this->_startTime = $data['startTime'];
+            $this->_confKey = $data['confKey'];
 
             return true;
         }
@@ -162,34 +164,34 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-    function save()
+    public function save()
     {
-        if( $this->id == -1 )
+        if( $this->_id == -1 )
         {
-            $this->confKey = $this->generateConferenceKey();
+            $this->_confKey = $this->generateConferenceKey();
 
             // insert
-            $sql = "INSERT INTO `".$this->tblConference."`
-                    SET `title` = '".addslashes($this->title)."',
-                        `description` = '".addslashes($this->description)."',
-                        `visibility` = '".addslashes($this->visibility)."',
-                        `waitingArea` = '".addslashes($this->waitingArea)."',
-                        `maxUsers` = '".(int) $this->maxUsers."',
-                        `duration` = '".(int) $this->duration."',
-                        `type` = '".addslashes($this->type)."',
-                        `attendeeMikes` = ".(int) $this->attendeeMikes.",
-                        `network` = '".addslashes($this->network)."',
-                        `startTime` = FROM_UNIXTIME('".$this->startTime."'),
-                        `confKey` = '".addslashes($this->confKey)."'";
+            $sql = "INSERT INTO `".$this->_tblConference."`
+                    SET `title` = '".addslashes($this->_title)."',
+                        `description` = '".addslashes($this->_description)."',
+                        `visibility` = '".addslashes($this->_visibility)."',
+                        `waitingArea` = '".addslashes($this->_waitingArea)."',
+                        `maxUsers` = '".(int) $this->_maxUsers."',
+                        `duration` = '".(int) $this->_duration."',
+                        `type` = '".addslashes($this->_type)."',
+                        `attendeeMikes` = ".(int) $this->_attendeeMikes.",
+                        `network` = '".addslashes($this->_network)."',
+                        `startTime` = FROM_UNIXTIME('".$this->_startTime."'),
+                        `confKey` = '".addslashes($this->_confKey)."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
 
             if( $insertedId )
             {
-                $this->id = (int) $insertedId;
+                $this->_id = (int) $insertedId;
 
-                return $this->id;
+                return $this->_id;
             }
             else
             {
@@ -199,23 +201,23 @@ class conference
         else
         {
             // update, main query
-            $sql = "UPDATE `".$this->tblConference."`
-                    SET `title` = '".addslashes($this->title)."',
-                        `description` = '".addslashes($this->description)."',
-                        `visibility` = '".addslashes($this->visibility)."',
-                        `waitingArea` = '".addslashes($this->waitingArea)."',
-                        `maxUsers` = '".(int) $this->maxUsers."',
-                        `duration` = '".(int)$this->duration."',
-                        `type` = '".addslashes($this->type)."',
-                        `attendeeMikes` = ".(int) $this->attendeeMikes.",
-                        `network` = '".addslashes($this->network)."',
-                        `startTime` = FROM_UNIXTIME('".$this->startTime."')
-                    WHERE `id` = '".$this->id."'";
+            $sql = "UPDATE `".$this->_tblConference."`
+                    SET `title` = '".addslashes($this->_title)."',
+                        `description` = '".addslashes($this->_description)."',
+                        `visibility` = '".addslashes($this->_visibility)."',
+                        `waitingArea` = '".addslashes($this->_waitingArea)."',
+                        `maxUsers` = '".(int) $this->_maxUsers."',
+                        `duration` = '".(int)$this->_duration."',
+                        `type` = '".addslashes($this->_type)."',
+                        `attendeeMikes` = ".(int) $this->_attendeeMikes.",
+                        `network` = '".addslashes($this->_network)."',
+                        `startTime` = FROM_UNIXTIME('".$this->_startTime."')
+                    WHERE `id` = '".$this->_id."'";
 
             // execute and return main query
             if( claro_sql_query($sql) )
             {
-                return $this->id;
+                return $this->_id;
             }
             else
             {
@@ -230,17 +232,17 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function delete()
+    public function delete()
     {
-        if( $this->id == -1 ) return true;
+        if( $this->_id == -1 ) return true;
 
         // delete the conference
-        $sql = "DELETE FROM `" . $this->tblConference . "`
-                WHERE `id` = " . (int) $this->id ;
+        $sql = "DELETE FROM `" . $this->_tblConference . "`
+                WHERE `id` = " . (int) $this->_id ;
 
         if( claro_sql_query($sql) == false ) return false;
 
-        $this->id = -1;
+        $this->_id = -1;
         return true;
     }
 
@@ -250,10 +252,10 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function validate()
+    public function validate()
     {
         // title is a mandatory element
-        $title = strip_tags($this->title);
+        $title = strip_tags($this->_title);
 
         if( empty($title) )
         {
@@ -262,7 +264,7 @@ class conference
         }
 
         // time must be now or in the future but decount duration
-        if( $this->startTime < ( time() - $this->duration*3600 ) )
+        if( $this->_startTime < ( time() - $this->_duration*3600 ) )
         {
             claro_failure::set_failure('conference_invalid_date');
             return false;
@@ -277,7 +279,7 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function generateConferenceKey()
+    public function generateConferenceKey()
     {
         $confKey = '';
 
@@ -308,7 +310,7 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function buildUrl($confAdmin = false)
+    public function buildUrl($confAdmin = false)
     {
         $url = get_conf('dimdim_server_url');
 
@@ -357,9 +359,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
      */
-    function getId()
+    public function getId()
     {
-        return (int) $this->id;
+        return (int) $this->_id;
     }
 
     /**
@@ -368,9 +370,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getTitle()
+    public function getTitle()
     {
-        return $this->title;
+        return $this->_title;
     }
 
     /**
@@ -379,9 +381,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setTitle($value)
+    public function setTitle($value)
     {
-        $this->title = trim($value);
+        $this->_title = trim($value);
     }
 
     /**
@@ -390,9 +392,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getDescription()
+    public function getDescription()
     {
-        return $this->description;
+        return $this->_description;
     }
 
     /**
@@ -401,9 +403,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setDescription($value)
+    public function setDescription($value)
     {
-        $this->description = trim($value);
+        $this->_description = trim($value);
     }
 
     /**
@@ -411,9 +413,9 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setVisible()
+    public function setVisible()
     {
-        $this->visibility = 'VISIBLE';
+        $this->_visibility = 'VISIBLE';
     }
 
     /**
@@ -421,9 +423,9 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setInvisible()
+    public function setInvisible()
     {
-        $this->visibility = 'INVISIBLE';
+        $this->_visibility = 'INVISIBLE';
     }
 
     /**
@@ -432,10 +434,16 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isVisible()
+    public function isVisible()
     {
-        if( $this->visibility == 'VISIBLE' )    return true;
-        else                                    return false;
+        if( $this->_visibility == 'VISIBLE' ) 
+		{
+			return true;
+		}
+        else
+		{
+			return false;
+		}	
     }
 
     /**
@@ -444,7 +452,7 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-    function isInvisible()
+    public function isInvisible()
     {
         return !$this->isVisible();
     }
@@ -455,15 +463,15 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getWaitingArea($url = false)
+    public function getWaitingArea($url = false)
     {
         if( !$url )
         {
-            return $this->waitingArea;
+            return $this->_waitingArea;
         }
         else
         {
-            return ($this->waitingArea == 'ENABLE' ) ? true: false;
+            return ($this->_waitingArea == 'ENABLE' ) ? true: false;
         }
     }
 
@@ -473,9 +481,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setWaitingArea($value)
+    public function setWaitingArea($value)
     {
-        $this->waitingArea = trim($value);
+        $this->_waitingArea = trim($value);
     }
 
     /**
@@ -483,13 +491,13 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setMaxUsers($value)
+    public function setMaxUsers($value)
     {
         $acceptedValues = array('20', '40', '60', '80', '100', '200', '300', '400', '500');
 
         if( in_array($value, $acceptedValues) )
         {
-            $this->maxUsers = (int) $value;
+            $this->_maxUsers = (int) $value;
             return true;
         }
         return false;
@@ -500,9 +508,9 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function getMaxUsers()
+    public function getMaxUsers()
     {
-        return (int) $this->maxUsers;
+        return (int) $this->_maxUsers;
     }
 
     /**
@@ -511,9 +519,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return integer
      */
-    function getDuration()
+    public function getDuration()
     {
-        return (int) $this->duration;
+        return (int) $this->_duration;
     }
 
     /**
@@ -522,9 +530,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer value
      */
-    function setDuration($value)
+    public function setDuration($value)
     {
-        $this->duration = (int) $value;
+        $this->_duration = (int) $value;
     }
 
     /**
@@ -533,15 +541,15 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getType($url = false)
+    public function getType($url = false)
     {
         if( !$url )
         {
-            return $this->type;
+            return $this->_type;
         }
         else
         {
-            return ($this->type == 'AUDIO' ) ? 'audio' : 'av';
+            return ($this->_type == 'AUDIO' ) ? 'audio' : 'av';
         }
     }
 
@@ -551,9 +559,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setType($value)
+    public function setType($value)
     {
-        $this->type = trim($value);
+        $this->_type = trim($value);
     }
 
     /**
@@ -561,9 +569,9 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function getAttendeeMikes()
+    public function getAttendeeMikes()
     {
-        return (int) $this->attendeeMikes;
+        return (int) $this->_attendeeMikes;
     }
 
     /**
@@ -571,11 +579,11 @@ class conference
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function setAttendeeMikes($value)
+    public function setAttendeeMikes($value)
     {
         if( 0 <= $value && $value <= 5  )
         {
-            $this->attendeeMikes = (int) $value;
+            $this->_attendeeMikes = (int) $value;
             return true;
         }
         return false;
@@ -587,16 +595,16 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getNetwork($url = false)
+    public function getNetwork($url = false)
     {
         if( !$url )
         {
-            return $this->network;
+            return $this->_network;
         }
         else
         {
-            if( $this->network == 'DIALUP' ) return 1;
-            elseif( $this->network == 'CABLEDSL' ) return 2;
+            if( $this->_network == 'DIALUP' ) return 1;
+            elseif( $this->_network == 'CABLEDSL' ) return 2;
             else return 3;
         }
     }
@@ -607,9 +615,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setNetwork($value)
+    public function setNetwork($value)
     {
-        $this->network = trim($value);
+        $this->_network = trim($value);
     }
 
     /**
@@ -618,9 +626,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return integer
      */
-    function getStartTime()
+    public function getStartTime()
     {
-        return (int) $this->startTime;
+        return (int) $this->_startTime;
     }
 
     /**
@@ -629,9 +637,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer value
      */
-    function setStartTime($value)
+    public function setStartTime($value)
     {
-        $this->startTime = (int) $value;
+        $this->_startTime = (int) $value;
     }
 
     /**
@@ -640,9 +648,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
      */
-    function getConfKey()
+    public function getConfKey()
     {
-        return $this->confKey;
+        return $this->_confKey;
     }
 
     /**
@@ -651,9 +659,9 @@ class conference
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value
      */
-    function setConfKey($value)
+    public function setConfKey($value)
     {
-        $this->confKey = trim($value);
+        $this->_confKey = trim($value);
     }
 
 }
@@ -664,22 +672,22 @@ class conference
  * @author Sebastien Piraux <pir@cerdecam.be>
  * @return boolean
  */
-class conferenceList
+class ConferenceList
 {
     /**
-     * @var $tblConference name of the path table
+     * @private variable $tblConference name of the path table
      */
-    var $tblConference;
+    private $_tblConference;
 
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function conferenceList()
+    public function __construct()
     {
         $tbl_names = get_module_course_tbl( array( 'dim_conference'),  claro_get_current_course_id() );
-        $this->tblConference = $tbl_names['dim_conference'];
+        $this->_tblConference = $tbl_names['dim_conference'];
     }
 
 	/**
@@ -689,7 +697,7 @@ class conferenceList
      * @return array 2d array containing list of all available learning paths
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-    function load( $userId = null )
+    public function load( $userId = null )
     {
         $sql = "SELECT
                     `id`,
@@ -703,7 +711,7 @@ class conferenceList
                     `attendeeMikes`,
                     `network`,
                     UNIX_TIMESTAMP(`startTime`) AS `startTime`
-            FROM `". $this->tblConference ."`
+            FROM `". $this->_tblConference ."`
             ORDER BY `startTime` ASC";
 
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
