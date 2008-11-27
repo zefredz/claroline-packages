@@ -177,12 +177,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                 {
                     // commands
                     $out .= '  <span class="componentHeaderCmd">'
-                    .     '<a href="#" class="mkUpCmd">' . claro_html_icon('up') . '</a>'
+                    .     '<a href="#" class="mkUpCmd">' . claro_html_icon('move_up', null, get_lang('Move up')) . '</a>'
                     .      '&nbsp;'
-                    .     '<a href="#" class="mkDownCmd">' . claro_html_icon('down') . '</a>'
-                    .     '&nbsp;&nbsp;'
-                    .     '<a href="#" class="mkInvisibleCmd" '.(!$this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('visible') . '</a>'
-                    .     '<a href="#" class="mkVisibleCmd" '.($this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('invisible') . '</a>'
+                    .     '<a href="#" class="mkDownCmd">' . claro_html_icon('move_down', null, get_lang('Move down')) . '</a>'
+                    .     '&nbsp;'
+                    .     '<a href="#" class="mkInvisibleCmd" '.(!$this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('visible', null, get_lang('Make invisible')) . '</a>'
+                    .     '<a href="#" class="mkVisibleCmd" '.($this->isVisible()? 'style="display:none"':'').'>' . claro_html_icon('invisible', null, get_lang('Make visible')) . '</a>'
                     .     '&nbsp;'
                     .     '<a href="#" class="toggleEditorCmd">' . claro_html_icon('edit') . '</a>'
                     .      '&nbsp;';
@@ -190,13 +190,12 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
                     //preview only for slide display mode
                     if($this->getPageDisplayMode() == 'SLIDE')
                     {
-                    $out .=
-                         '<a rel="popup" href="lib/s5/s5.php?pageId='.$this->getPageId().'&componentId='.$this->getId().'" class="s5ViewerCmd">' . claro_html_icon('exe') . '</a>'
-                    .      '&nbsp;';
+                        $out .=
+                             '<a rel="popup" href="lib/s5/s5.php?pageId='.$this->getPageId().'&componentId='.$this->getId().'" class="s5ViewerCmd">' . claro_html_icon('exe', null, get_lang('View')) . '</a>'
+                        .      '&nbsp;';
                     }
                     
-                    $out .=
-                         '<a href="#" class="deleteComponentCmd">' . claro_html_icon('delete') . '</a>'
+                    $out .= '<a href="#" class="deleteComponentCmd">' . claro_html_icon('delete', null, get_lang('Delete')) . '</a>'
                     .      '  </span>' . "\n";
                 }
                 
