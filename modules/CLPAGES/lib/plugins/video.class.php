@@ -330,7 +330,7 @@ class VideoComponent extends Component
         
         $identifier=
                 '<input type ="'.$identifierInputType.'" name="videoInputType_'.$this->getId().'" id="videoInput'.$identifierName.'_'.$this->getId().'" value="'.$identifierName.'" '.$this->checkIdentifier($videoType,$identifierName).'>'
-        .       '<label for="video'.$identifierName.'_'.$this->getId().'">'. get_lang($identifierDisplayName). '</label>'
+        .       '<label for="video'.$identifierName.'_'.$this->getId().'">'. get_lang($identifierDisplayName). '</label>&nbsp;'
         .       '<input type="text" name="video'.$identifierName.'_'.$this->getId().'" id="video'.$identifierName.'_'.$this->getId().'" maxlength="255" '.$this->setIdentifierValue($videoType,$identifierName).'/><br /><br />';   
         
         return $identifier;
