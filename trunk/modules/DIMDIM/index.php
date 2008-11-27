@@ -371,7 +371,7 @@ if( $cmd == 'rqView' )
         // conference is available to students
         $message .= '<a href="'.$conference->buildUrl().'" target="_blank">'.get_lang('Join conference').'</a>' . "\n";
     }
-    $dialogBox->form($message);
+    $dialogBox->question($message);
 
 }
 
