@@ -232,7 +232,7 @@ if ( 'rqDelete' == $cmd )
 
         $fileTable->fullWidth();
         $fileTable->emphaseLine();
-        $fileTable->setTitle( get_lang( 'Discovered documents' ) );
+        $fileTable->setTitle( '<strong>'.get_lang( 'Discovered documents' ) . '</strong>' );
         $fileTable->setRows( $fileList );
         $fileTable->setEmptyMessage( get_lang('No document to publish') );
         $fileTable->addDataColumn( 'title', get_lang( 'Title' ) );
@@ -298,7 +298,7 @@ if ( 'rqDelete' == $cmd )
         $publishedFileTable->fullWidth();
         $publishedFileTable->emphaseLine();
         $publishedFileTable->setEmptyMessage( get_lang('No document published') );
-        $publishedFileTable->setTitle( get_lang('Published documents') );
+        $publishedFileTable->setTitle( '<strong>'.get_lang('Published documents').'</strong>' );
         $publishedFileTable->setRows( $documentList );
         $publishedFileTable->addDataColumn( 'title', get_lang( 'Title' ) );
         $publishedFileTable->addDataColumn( 'localPath', get_lang( 'Local path' ) );
@@ -388,11 +388,9 @@ ClaroBreadCrumbs::getInstance()->setCurrent($nameTools,get_module_entry($tlabelR
 $claroline->display->body->appendContent(claro_html_tool_title($nameTools));
 
 //message display
+$dialogBox->warning(get_lang('Only pdf files are allowed at this time.'));
+$claroline->display->body->appendContent($dialogBox->render());
 
-if ( isset($dialogBox))
-{
-    $claroline->display->body->appendContent($dialogBox->render());
-}
 
 if ( 'rqPublish' == $cmd )
 {
@@ -431,7 +429,7 @@ elseif ( 'list' == $cmd )
         . '</p>'."\n"
         );
     }
-
+    
     $claroline->display->body->appendContent($publishedDocumentList->render());
 }
 
