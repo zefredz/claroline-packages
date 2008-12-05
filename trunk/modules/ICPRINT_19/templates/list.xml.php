@@ -47,7 +47,7 @@ foreach( $this->documents as $thisAction ):
 ?></course>
 <action><?php echo $thisAction->action; ?></action>
 <date><?php echo $thisAction->timestamp; ?></date>
-<iso8601><?php echo Claro_Utils_Time::dateToIso8601(strtotime($thisAction->timestamp)); ?></iso8601>
+<iso8601><?php echo Claro_Utils_Time::dateToIso8601($thisAction->timestamp); ?></iso8601>
 <publisher><?php 
     $userData = user_get_properties( $thisAction->userId );
     echo iconv( get_conf('charset'), 'utf-8', $userData['firstname'] . ' ' . $userData['lastname'] ); 
