@@ -29,4 +29,4 @@ $_lang['Publish selected files'] ='Publish selected files';
 $_lang['Service key administration'] ='Service key administration';
 $_lang['Size (octets)'] ='Size (octets)';
 $_lang['You are going to delete the following documents'] ='You are going to delete the following documents';
-?>
+$_lang['Only pdf files are allowed at this time.'] = 'Only pdf files are allowed at this time.';
