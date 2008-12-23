@@ -550,10 +550,10 @@ class itemAttempt
     			`session_time`,
     			`suspend_data`,
     			`credit`
-    			FROM ". $this->tblItemAttempt."
+    			FROM `". $this->tblItemAttempt."`
     			WHERE `attempt_id` = ". (int) $attemptId ."
     			AND `item_id` = ". (int) $itemId ;
-
+	
         $data = claro_sql_query_get_single_row($sql);
 
         if( $data !== false && !empty($data) )
@@ -1013,7 +1013,7 @@ class itemAttemptList
     			`session_time`,
     			`suspend_data`,
     			`credit`
-    			FROM ". $this->tblItemAttempt."
+    			FROM `". $this->tblItemAttempt."`
     			WHERE `attempt_id` = ". (int) $attemptId ;
 
     	$data = claro_sql_query_fetch_all_rows($sql);

@@ -100,7 +100,7 @@ if( $cmd == 'doCommit' )
 
     // try to load itemAttempt
     $itemAttempt->load($thisAttempt->getId(), $itemId);
-
+    lpDebug($this->Attempt->getId());
     // load path
     $path = new Path();
     if( is_null($pathId) || !$path->load($pathId) )

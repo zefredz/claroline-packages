@@ -17,7 +17,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  *
  */
     // include for the linker
-    require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
+    /*require_once get_path('clarolineRepositorySys') . '/linker/resolver.lib.php';
     require_once get_path('clarolineRepositorySys') . '/linker/linker_sql.lib.php';
     require_once get_path('clarolineRepositorySys') . '/linker/CRLTool.php';
     require_once get_path('clarolineRepositorySys') . '/linker/linker.lib.php';
@@ -33,5 +33,5 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     {
         require_once dirname(__FILE__) . '/linker_popup.lib.php';
     }
-
+  */
 ?>
