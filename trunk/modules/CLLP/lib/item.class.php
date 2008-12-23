@@ -998,7 +998,7 @@ class itemList
             // only those with same parent as itemId so the node made of the parent of this one
             $parentNode = $this->getNode( $itemList, $itemId );
 
-            if( is_array($parentNode['children']) && !empty($parentNode['children']) )
+            if( isset($parentNode['children']) && is_array($parentNode['children']) && !empty($parentNode['children']) )
             {
                 // list of the children of parent, the item to move and its sibblings
                 $list = $parentNode['children'];
@@ -1010,6 +1010,31 @@ class itemList
             $list = $itemList;
         }
 
+        return $list;
+    }
+    
+    /**
+     * returns an array of all children ids
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @param $tree array that represent a tree
+     * @return array
+     * 
+     */
+    public function getNodeChildrenId( $pathId, $itemId )
+    {
+        $tree = $this->flatList( $this->getNodeChildren( $pathId, $itemId ) );
+        $list = array();
+        
+        if( is_array( $tree ) && $treeCount = count( $tree ) )
+        {
+            $tree = $this->flatList($tree);
+            for( $i = 0; $i < $treeCount; $i++ )
+            {
+                $list[] = $tree[$i]['id'];
+            }
+            
+        }
+        
         return $list;
     }
 
@@ -1178,7 +1203,7 @@ class PathUserItemList extends ItemList
         {
             return array();
         }
-
+        // TODO : manage visibility for teacher/student/admin
         $sql = "SELECT
                     `I`.`id`,
                     `I`.`path_id`,
@@ -1207,9 +1232,9 @@ class PathUserItemList extends ItemList
             LEFT JOIN `".$this->tblItemAttempt."` AS `IA`
               ON `IA`.`item_id` = `I`.`id`
               AND `IA`.`attempt_id` = ".(int) $this->attemptId."
-            WHERE `path_id` = ".(int) $this->pathId."
+            WHERE `path_id` = ".(int) $this->pathId." AND `I`.`visibility` = 'VISIBLE'
             ORDER BY `rank` ASC";
-
+        
         if ( false === ( $data = claro_sql_query_fetch_all_rows($sql) ) )
         {
             return array();

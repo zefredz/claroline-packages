@@ -216,6 +216,7 @@ if( $cmd == 'rqEdit' )
 
 if( $cmd == 'exAddItem' )
 {
+    
     if( isset($_REQUEST['resourceList']) && is_array($_REQUEST['resourceList']) && count($_REQUEST['resourceList']) )
     {
         $i = 0;
@@ -224,7 +225,6 @@ if( $cmd == 'exAddItem' )
             // get title 
             ResourceLinker::init();
             $resourceName = ResourceLinker::$Resolver->getResourceName(ClarolineResourceLocator::parse( $crl ));
-            
             if( !empty($resourceName) )
             {
                 $title = substr($resourceName, strrpos($resourceName,'>') + 2);
@@ -233,7 +233,7 @@ if( $cmd == 'exAddItem' )
             {
                 $title = get_lang('No title');
             }
-
+            
             $addedItem = new item();
             $addedItem->setType('MODULE');
             $addedItem->setTitle($title);
@@ -351,25 +351,33 @@ if( $cmd == 'rqDelete' )
 
 if( $cmd == 'exMove' )
 {
-    // TODO check that moved item is not itself or one descendant ?
-
-    // change parent of item
-    $item->setParentId($_REQUEST['newParentId']);
-
-    // get new rank of item for this path
-    $item->setHigherRank($path->getId());
-
-    if( $item->validate() )
+    $itemList = new PathItemList($pathId);
+    $itemListArray = $itemList->getNodeChildrenId( $path->getId(), $item->getId() );
+    
+    if( $_REQUEST['newParentId'] == $item->getId() || in_array( $_REQUEST['newParentId'], $itemListArray ) )
     {
-        if( $item->save() )
-        {
-            $dialogBox->success( get_lang('Item succesfully moved') );
-        }
-        else
-        {
-            $dialogBox->error( get_lang('Fatal error : cannot move item') );
-        }
+        $dialogBox->error( get_lang('Fatal error : new Parent item is the item iteself or one descendant') );    
     }
+    else
+    {
+        // change parent of item
+        $item->setParentId($_REQUEST['newParentId']);
+        
+        // get new rank of item for this path
+        $item->setHigherRank($path->getId());
+        
+        if( $item->validate() )
+        {
+            if( $item->save() )
+            {
+                $dialogBox->success( get_lang('Item succesfully moved') );
+            }
+            else
+            {
+                $dialogBox->error( get_lang('Fatal error : cannot move item') );
+            }
+        }    
+    }    
 
 }
 
