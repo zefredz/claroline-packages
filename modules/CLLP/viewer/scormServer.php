@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getNext');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -100,7 +100,11 @@ if( $cmd == 'doCommit' )
 
     // try to load itemAttempt
     $itemAttempt->load($thisAttempt->getId(), $itemId);
+<<<<<<< .mine
+    
+=======
     lpDebug($this->Attempt->getId());
+>>>>>>> .r580
     // load path
     $path = new Path();
     if( is_null($pathId) || !$path->load($pathId) )
@@ -212,7 +216,7 @@ if( $cmd == 'rqContentUrl' )
         {
             return false;
         }
-
+        
         echo $itemUrl;
         return true;
     }
@@ -299,6 +303,24 @@ if( $cmd == 'getPrevious' )
     
 }
 
+if( $cmd == 'getPreviousId' )
+{
+    if( $userId )
+    {
+        // get serialized attempt
+        $thisAttempt = unserialize($_SESSION['thisAttempt']);
+        
+        $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+    }
+    else
+    {
+        $itemList = new PathItemList($pathId);
+    }
+    
+    echo $itemList->getPrevious( $itemId );
+    return true;
+}
+
 if( $cmd == 'getNext' )
 {
     if( $userId )
@@ -312,6 +334,24 @@ if( $cmd == 'getNext' )
     {
         $itemList = new PathItemList($pathId);
     }
+}
+
+if ($cmd == 'getNextId' )
+{
+   if( $userId )
+    {
+        // get serialized attempt
+        $thisAttempt = unserialize($_SESSION['thisAttempt']);
+        
+        $itemList = new PathUserItemList($pathId, $userId, $thisAttempt->getId());
+    }
+    else
+    {
+        $itemList = new PathItemList($pathId);
+    }
+    
+    echo $itemList->getNext( $itemId );
+    return true;    
 }
 
 function lpDebug($var)
