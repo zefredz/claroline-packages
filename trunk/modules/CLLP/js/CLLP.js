@@ -200,12 +200,10 @@ function refreshToc() {
 function goPrevious() {
     debug("goPrevious()",1);
     
-    /*
-    // todo ask server which is really the previous
     $.ajax({
         type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
-        data: "cmd=getPrevious&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+        data: "cmd=getPreviousId&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
         success: function(response){
             if( isInteger(response) )
             {
@@ -214,7 +212,7 @@ function goPrevious() {
         },
         dataType: 'html'
     });
-    */
+    
 }
 
 /**
@@ -223,8 +221,20 @@ function goPrevious() {
  */
 function goNext() {
     debug("goNext()",1);
-    
-    if( $(".active", lp_top.frames["lp_toc"].document).size() == 1 )
+    $.ajax({
+	type: "POST",
+	url: lpHandler.moduleUrl + "viewer/scormServer.php",
+	data: "cmd=getNextId&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+	success: function(response){
+	    if( isInteger(response) )
+	    {	
+		lpHandler.setContent(response);
+	    }
+	},
+	dataType: 'html'
+    }); 
+
+    /*if( $(".active", lp_top.frames["lp_toc"].document).size() == 1 )
     {
         var nextItemId = $(".active", lp_top.frames["lp_toc"].document).next().attr("id");
     }
@@ -232,33 +242,23 @@ function goNext() {
     {
         // take the first
         var nextItemId = $(".item:first", lp_top.frames["lp_toc"].document).attr("id");
-    }
+    }    
     
     if( isDefined(nextItemId) )
     {
         var id = nextItemId.substring( nextItemId.indexOf('_') + 1);
+	if(id.indexOf('_'))
+	{
+		id = id.substring( 0, id.indexOf('_'));
+	}
         debug(id, 1);
         lpHandler.setContent(id);
     }
     else
     {
         return false;
-    }
-    /*
-    // todo ask server which is really the next
-    $.ajax({
-        type: "POST",
-        url: lpHandler.moduleUrl + "viewer/scormServer.php",
-        data: "cmd=getNext&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-        success: function(response){
-            if( isInteger(response) )
-            {
-                lpHandler.setContent(response);
-            }
-        },
-        dataType: 'html'
-    });
-    */
+    }*/
+
 }
 
 /**
