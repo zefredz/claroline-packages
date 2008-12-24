@@ -351,10 +351,18 @@ if( $cmd == 'rqDelete' )
 
 if( $cmd == 'exMove' )
 {
+<<<<<<< .mine
+
     $itemList = new PathItemList($pathId);
     $itemListArray = $itemList->getNodeChildrenId( $path->getId(), $item->getId() );
     
     if( $_REQUEST['newParentId'] == $item->getId() || in_array( $_REQUEST['newParentId'], $itemListArray ) )
+=======
+    $itemList = new PathItemList($pathId);
+    $itemListArray = $itemList->getNodeChildrenId( $path->getId(), $item->getId() );
+    
+    if( $_REQUEST['newParentId'] == $item->getId() || in_array( $_REQUEST['newParentId'], $itemListArray ) )
+>>>>>>> .r580
     {
         $dialogBox->error( get_lang('Fatal error : new Parent item is the item iteself or one descendant') );    
     }
