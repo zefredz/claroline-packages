@@ -499,8 +499,8 @@ class itemAttempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->id = (int) -1;
         $this->attemptId = (int) -1;
         $this->itemId = (int) -1;
@@ -508,12 +508,12 @@ class itemAttempt
         $this->completionStatus = 'NOT ATTEMPTED';
         $this->entry = 'AB-INITIO';
         $this->scoreRaw = (int) 0;
-		$this->scoreMin = (int) 0;
-		$this->scoreMax = (int) 100;
-		$this->totalTime = ''; // TODO correct format
-		$this->sessionTime = ''; // TODO correct format
-		$this->suspendData = '';
-		$this->credit = 'NO-CREDIT';
+	$this->scoreMin = (int) 0;
+	$this->scoreMax = (int) 100;
+	$this->totalTime = ''; // TODO correct format
+	$this->sessionTime = ''; // TODO correct format
+	$this->suspendData = '';
+	$this->credit = 'NO-CREDIT';
 
         // define module table names
         $tblNameList = array(
@@ -524,7 +524,7 @@ class itemAttempt
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
 
-	}
+    }
 
 	/**
      * load item attempt
@@ -535,8 +535,8 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	public function load($attemptId, $itemId)
-	{
+    public function load($attemptId, $itemId)
+    {
     	$sql = "SELECT `id`,
     			`attempt_id`,
     			`item_id`,
@@ -578,7 +578,7 @@ class itemAttempt
         {
             return false;
         }
-	}
+    }
 
     /**
      * save item attempt to DB
