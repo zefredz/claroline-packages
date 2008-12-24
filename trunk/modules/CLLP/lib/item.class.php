@@ -276,7 +276,24 @@ class item
     public function delete()
     {
         if( $this->id == -1 ) return true;
-
+        
+        if( $this->type == 'CONTAINER' )
+        {
+            $itemList = new PathItemList( $this->pathId );
+            $itemListChildren = $itemList->getNodeChildrenId( $this->pathId, $this->id );
+            foreach( $itemListChildren as $itemId)
+            {
+                $sql = "DELETE FROM `" . $this->tblItem . "`
+                        WHERE `id` = ". (int) $itemId;
+                
+                if( claro_sql_query($sql) == false )
+                {
+                    return false;
+                    break;
+                }
+            }
+        }
+        
         $sql = "DELETE FROM `" . $this->tblItem . "`
                 WHERE `id` = " . (int) $this->id ;
 
@@ -725,7 +742,7 @@ class itemList
     protected $treeItemList;
 
 
-	public function __construct($pathId)
+    public function __construct($pathId)
     {
         $this->pathId = (int) $pathId;
         
@@ -1046,8 +1063,8 @@ class itemList
      * @param $nodeId int id of the node to get
      * @return boolean result of operation
      */
-	public function getNode($tree,$nodeId)
-	{
+    public function getNode($tree,$nodeId)
+    {
 	    foreach( $tree as $branch )
 	    {
     	    if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
