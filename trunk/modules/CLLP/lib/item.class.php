@@ -1066,14 +1066,86 @@ class itemList
 	}
 	
     // methods used to jump from one item to another in LP viewer
-    public function getNext()
+    public function getNext( $currentId )
     {
+        $itemFlatList = $this->getFlatList();
+        $itemFlatListCount = count( $itemFlatList );
         
+        for( $i = 0; $i < $itemFlatListCount; $i++ )
+        {
+            if($itemFlatList[$i]['id'] ==  $currentId){
+                break;
+            }
+        }
+        // check if it's not the last item of the array
+        if( $i < $itemFlatListCount-1 ){
+            //set pointer at the good position in the array
+            while( $i != key( $itemFlatList ))
+            {
+                next( $itemFlatList );
+            }
+            
+            //get the next item which is not a CONTAINER
+            do
+            {
+                $item = next( $itemFlatList );    
+            }while( $item['type'] == 'CONTAINER' );
+            
+            if( $item ['type'] != 'CONTAINER' )
+            {
+                $nextId = $item[ 'id' ];
+                return $nextId;
+            }
+            else
+            {
+                return false;
+            }            
+        }
+        else
+        {
+            return false;
+        }
     }
     
-    public function getPrevious()
+    public function getPrevious( $currentId )
     {
+        $itemFlatList = $this->getFlatList();
+        $itemFlatListCount = count( $itemFlatList );
         
+        for( $i = 0; $i < $itemFlatListCount; $i++ )
+        {
+            if($itemFlatList[$i]['id'] ==  $currentId){
+                break;
+            }
+        }
+        // check if it's not the first item of the array
+        if( $i != 0 ){
+            //set pointer at the good position in the array
+            while( $i != key( $itemFlatList ))
+            {
+                next( $itemFlatList );
+            }
+            
+            //get the previous item which is not a CONTAINER
+            do
+            {
+                $item = prev( $itemFlatList );    
+            }while( $item['type'] == 'CONTAINER' );
+            
+            if( $item ['type'] != 'CONTAINER' )
+            {
+                $previousId = $item[ 'id' ];
+                return $previousId;
+            }
+            else
+            {
+                return false;
+            }            
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
