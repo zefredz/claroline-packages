@@ -18,6 +18,8 @@
 $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
+require_once dirname( __FILE__ ) . '/../lib/path.class.php';
+require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
 
 /*
  * init request vars
@@ -26,7 +28,7 @@ if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = 
 else                                                                  $pathId = null;
 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
-else                                                                  $itemid = null;
+else                                                                  $itemId = null;
 
 
 header( 'Content-Type: text/javascript' );
@@ -34,10 +36,64 @@ header( 'Content-Type: text/javascript' );
 ?>
 if( ! $.browser.msie && top.window.console && top.window.console.log )
 {
-	console.info("API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>");
+	var info = "API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>";
+        console.info(info);
 }
 
-API_1484_11.init();
+<?php
+
+if( is_null( $pathId ) )
+{
+    //header("Location: ../index.php");
+    exit();
+}
+else
+{
+    $path = new path();
+    if( !$path->load( $pathId ) )
+    {
+        //header("Location: ../index.php");
+    	exit();
+    }
+    else
+    {
+        if( $path->getVersion() == 'scorm12' )
+        {
+            ?>
+            var _api = API;
+            <?php
+        }
+        else
+        {
+            ?>
+            var _api = API_1484_11;
+            <?php
+        }
+    }
+}
+
+?>
+
+_api.init();
+<?php
+
+if( isset( $_SESSION['thisAttempt'] ) )
+{
+    $thisAttempt = unserialize( $_SESSION[ 'thisAttempt' ] );
+    $itemAttempt = new itemAttempt();
+    if( $itemAttempt->load($thisAttempt->getId(), $itemId) )
+    {
+        ?>
+        _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>        
+        <?php
+        
+    }
+}
+
+
+?>
+
+
 <?php
 /*
 //
