@@ -19,7 +19,7 @@ $tlabelReq = 'CLLP';
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 require_once dirname( __FILE__ ) . '/lib/path.class.php';
-
+require_once dirname( __FILE__ ) . '/lib/attempt.class.php';
 // those include should not be required when user is a student
 require_once dirname( __FILE__ ) . '/lib/item.class.php';
 require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
@@ -436,9 +436,29 @@ else
             .    '</a>' . "\n"
             .    '</td>' . "\n";
 
-            // TODO get
-            $lpProgress = rand(0,100);
-
+            //load Attempt
+	    $thisAttempt = new Attempt();
+	    $lpProgress = 0;
+	    if( is_null($aPath['id']) )
+	    {
+		// cannot find path ... 
+		lpDebug('cannot find attempt');
+	    }
+	    else
+	    {
+		if( $user_id )
+		{
+		    $thisAttempt->load( $aPath['id'], $user_id );
+		    $itemList = new PathUserItemList($aPath['id'], $user_id, $thisAttempt->getId());
+		}
+		else
+		{
+		    $itemList = new PathItemList( $aPath['id'] );
+		}
+		
+		$lpProgress = $thisAttempt->getProgress();
+	    }
+            
             // compute global progression
             $totalProgress += max(0,$lpProgress);
 
