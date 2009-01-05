@@ -98,7 +98,7 @@ else
 	if( is_null($itemId) || !$item->load($itemId) )
 	{
 	    // item is required
-	    header("Location: ./admin/edit_path.php?pathId" . $pathId);
+	    header("Location: ../admin/edit_path.php?pathId=" . $pathId);
 	    exit();
 	}
 }
