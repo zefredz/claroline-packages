@@ -258,7 +258,7 @@ if( $cmd == 'rqToc' )
     foreach( $itemListArray as $anItem )
     {
         $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
-        $html .= '<a id="item_'.$anItem['id'].'_anchor">' . "\n";
+        $html .= '<a id="item_'.$anItem['id'].'_anchor"></a>' . "\n";
 
         // title
         $html .= '<div style="padding-left:'.($anItem['deepness']*10).'px;" class="item" id="item_'.$anItem['id'].'">';
