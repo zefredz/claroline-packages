@@ -388,7 +388,7 @@ if( $is_allowedToEdit )
 
             // tracking
             $out .= '<td>' . "\n"
-            .    '<a href="' . get_icon_url('clarolineRepositoryWeb') . './track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<a href="' . get_module_url('CLLP') . '/track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
             .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";

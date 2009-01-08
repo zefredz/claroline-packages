@@ -62,3 +62,13 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
   `credit` enum('CREDIT','NO-CREDIT') NOT NULL default 'NO-CREDIT',
   PRIMARY KEY(`id`)
 ) TYPE=MyISAM;
+
+CREATE TABLE `__CL_COURSE__lp_item_blockcondition` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) NOT NULL DEFAULT '0',
+  `cond_item_id` int(11) NOT NULL DEFAULT '0',
+  `completion_status` enum('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN') NOT NULL,
+  `operator` enum('=') NOT NULL,
+  `condition` enum('-1','AND','OR') NOT NULL,
+  PRIMARY KEY (`id`)
+) TYPE=MyISAM

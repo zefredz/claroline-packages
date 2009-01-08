@@ -140,7 +140,6 @@ function setContent(itemId) {
  */
 function rqOpenItem() {
     debug("rqOpenItem()",1);
-
     // get url and set frame location to this url
     $.ajax({
         url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
@@ -381,4 +380,64 @@ function dump(arr,level) {
         dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
     }
     return dumped_text;
+}
+
+function addBlockingCondition( pathId) {
+    var div = $("<div>").attr("id", "");
+    
+    if( $("select[name='item[]']").size() > 0)
+    {
+      var sConditions = $("<select>").attr("name","condition[]");
+      $.ajax({
+        type: "POST",
+        url: "../viewer/scormServer.php",
+        data: "cmd=getConditions",
+        success : function(response){
+            $(sConditions).append(response);
+        },
+        dataType: 'html'
+      });
+      $(div).append(sConditions);
+      
+      var bRemove = $("<button>")
+                    .append("Remove")
+                    .click(function(){
+                        $(div).remove();
+                    });                    
+      $(div).append(bRemove);
+      $(div).append("<br />");
+    }
+    
+    var sItems = $("<select>").attr("name","item[]");
+    $(div).append(sItems);
+    $.ajax({
+        type: "POST",
+        url: "../viewer/scormServer.php",
+        data: "cmd=getItems&pathId=" + pathId,
+        success: function(response){
+            $(sItems).append(response);
+        },
+        dataType: 'html'
+    });
+    
+    var sOperators = $("<select>").attr("name","operator[]");
+    $(sOperators).append('<option value="=">=</option>');
+    $(div).append(sOperators);
+    
+    var sStatus = $("<select>").attr("name","status[]");
+    $(div).append(sStatus);
+    $.ajax({
+        type: "POST",
+        url: "../viewer/scormServer.php",
+        data: "cmd=getStatus",
+        success : function(response){
+            $(sStatus).append(response);
+       },
+       dataType: 'html'
+    });
+    
+    
+    
+    $(div).insertBefore("#block_condition_button");
+    
 }
