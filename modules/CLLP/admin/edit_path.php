@@ -526,10 +526,10 @@ if( !empty($itemListArray) && is_array($itemListArray) )
 
         // edit
         $out .= '<td>' . "\n"
-        .    '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        .   '<a href="./edit_item.php?pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
         .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
         .    '</a>'
-        .    '</td>' . "\n";
+        .   '</td>' . "\n";
 
         // delete
         $out .= '<td>' . "\n"

@@ -75,6 +75,7 @@ else
 ?>
 
 _api.init();
+
 <?php
 
 if( isset( $_SESSION['thisAttempt'] ) )

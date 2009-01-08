@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -52,6 +52,7 @@ $userId = claro_get_current_user_id();
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
+require_once dirname( __FILE__ ) . '/../lib/blockingcondition.class.php';
 
 require_once dirname( __FILE__ ) . '/../lib/scormInterface.lib.php';
 require_once dirname( __FILE__ ) . '/../lib/scorm12.lib.php';
@@ -185,36 +186,61 @@ if( $cmd == 'rqContentUrl' )
 
     if( $item->load($itemId) )
     {
-        if( $item->getType() == 'MODULE' )
+        //load blocking conditions
+        $aPath = new path();
+        $displayPage = true;
+        if( $aPath->load($pathId) && $aPath->getLock() == 'CLOSE' )
         {
-            $resolver = new ResourceLinkerResolver();
-            $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
-            
-            // fix ? or &amp; depending if there is already a ? in url
-            $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
-            
-            $itemUrl .= 'calledFrom=CLLP&embedded=true'; 
-            
-            // temporary fix for document tool (FIXME when linker will be updated)
-            // we have to open a frame that will discuss with API and open the document instead 
-            // of directly opening it
-            lpDebug($itemUrl);
-            $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
-            lpDebug($itemUrl);
-        }
-        elseif( $item->getType() == 'SCORM' )
+            $blockconds = new blockingcondition( $itemId );
+            // load blocking conditions for item and parents
+            $evalConds = $blockconds->evalBlockConds( $itemId, true);
+            foreach($evalConds as $cond)
+            {
+                if(!$cond)
+                {
+                    $displayPage = $cond;
+                }
+            }            
+        }        
+        
+        if( $displayPage )
         {
-            $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
-
-            $itemUrl = $scormBaseUrl . $item->getSysPath();
+            if( $item->getType() == 'MODULE' )
+            {
+                $resolver = new ResourceLinkerResolver();
+                $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
+                
+                // fix ? or &amp; depending if there is already a ? in url
+                $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
+                
+                $itemUrl .= 'calledFrom=CLLP&embedded=true'; 
+                
+                // temporary fix for document tool (FIXME when linker will be updated)
+                // we have to open a frame that will discuss with API and open the document instead 
+                // of directly opening it
+                lpDebug($itemUrl);
+                $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
+                lpDebug($itemUrl);
+            }
+            elseif( $item->getType() == 'SCORM' )
+            {
+                $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
+    
+                $itemUrl = $scormBaseUrl . $item->getSysPath();
+            }
+            else
+            {
+                return false;
+            }
+            
+            echo $itemUrl;
+            return true;    
         }
         else
         {
             return false;
         }
         
-        echo $itemUrl;
-        return true;
     }
     else
     {
@@ -348,6 +374,52 @@ if ($cmd == 'getNextId' )
     
     echo $itemList->getNext( $itemId );
     return true;    
+}
+
+if( $cmd == 'getItems' )
+{
+    $itemList = new PathItemList($pathId);
+    $itemListArray = $itemList->getFlatList();
+    
+    #$options = '<option value="0">'.get_lang( 'Select an item' ).'</option>';
+    $options = "";
+    
+    foreach( $itemListArray as $anItem )
+    {
+        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+    }
+    
+    echo $options;
+    
+    return true;
+}
+
+if( $cmd == 'getStatus' )
+{
+    $status['COMPLETED'] = get_lang('completed');
+    $status['INCOMPLETE'] = get_lang('incomplete');
+    $status['PASSED'] = get_lang('passed');
+    
+    $options = "";
+    foreach( $status as $key => $value)
+    {
+        $options .= '<option value="'.$key.'">'.$value.'</option>';
+    }
+    
+    echo $options;
+}
+
+if( $cmd == 'getConditions' )
+{
+    $conditions['AND'] = get_lang('AND');
+    $conditions['OR'] = get_lang('OR');
+    
+    $options = "";
+    foreach( $conditions as $key => $value){
+        $options .= '<option value="'.$key.'">'.$value.'</option>';
+    }
+    
+    echo $options;
 }
 
 function lpDebug($var)
