@@ -440,7 +440,11 @@ if( $cmd == 'exPrereq' )
 if( $cmd == 'rqPrereq' )
 {
     // show prerequisites form
-
+    $htmlPrereqContainer = '<form action="'.$_SERVER['PHP_SELF'].'?cmd=exPrereq&pathId='. $pathId .'&itemId='.$itemId.'" method="post">' . "\n"
+    .   '...' . "\n"
+    .   '</form>' . "\n";
+    
+    $dialogBox->form( $htmlPrereqContainer );
 }
 
 if( $cmd == 'exVisible' )
