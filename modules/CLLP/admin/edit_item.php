@@ -203,14 +203,14 @@ if( $item->load( $itemId ) )
         if( count($blockcondsDependencies) )
         {            
             $htmlBlockCondDep = '<div>' . "\n"
-            .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br /> <br />' . "\n";
+            .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br />' . "\n";
             foreach( $blockcondsDependencies  as $dependency)
             {
                if( isset( $dependency['data'] ) )
                {
                     $blockconds = $dependency['data'];
                     $htmlBlockCondDep .= '<div>' . "\n"
-                    .    '<strong>'. htmlspecialchars($dependency['title']) .'</strong>';
+                    .    '<strong><a href="'. $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'&itemId='.$dependency['id']. '">'. htmlspecialchars($dependency['title']) .'</a></strong>';
                     foreach( $blockconds['item'] as $key => $value)
                     {
                          $htmlBlockCondDep .= '<div>' . "\n";
