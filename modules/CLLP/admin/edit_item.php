@@ -43,7 +43,7 @@ require_once dirname( __FILE__ ) . '/../linker/linker.inc.php';
 /*
  * init request vars
  */
-$acceptedCmdList = array(   'blockcondAdd', 'blockcondDelete'
+$acceptedCmdList = array(   'blockcondAdd', 'blockcondDelete', 'exEdit'
                     );
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
@@ -96,6 +96,34 @@ $dialogBox = new DialogBox();
  * Commands
  */
 $blockcond = new blockingcondition( $itemId );
+
+if( $cmd == 'exEdit' )
+{
+    $item->setTitle( $_REQUEST['title'] );
+    
+    if( $item->validate() )
+    {
+        if( $insertedId = $item->save() )
+        {
+            $dialogBox->success( get_lang('Item successfully modified') );
+        }
+        else
+        {
+            $dialogBox->error( get_lang('Fatal error : unable to save item') );
+        }
+    }
+    else
+    {
+        if( claro_failure::get_last_failure() == 'item_no_title' )
+        {
+            $dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
+        }
+        else
+        {
+            $dialogBox->error( get_lang('Fatal error : unable to save item') );
+        }
+    }
+}
 
 if( $cmd == 'blockcondAdd' )
 {
@@ -157,57 +185,66 @@ $out .= $dialogBox->render();
 $itemList = new PathItemList($pathId);
 $itemListArray = $itemList->getFlatList();
 
-// load blocking conditions dependencies
-
-$item = new item();
 if( $item->load( $itemId ) )
 {
+    // edit title if type is container    
+    $htmlEditTitleForm = '<strong>' . get_lang( 'Edit title' ) . '</strong>'. "\n"
+    .   '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=exEdit&pathId='.$pathId.'&itemId='.$itemId.'"  method="post">' . "\n"
+    .   '<input type="text" name="title" value="' . htmlspecialchars( $item->getTitle() ) . '" /> <br />' . "\n"
+    .   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
+    .   '</form> <br />' . "\n";
+    
+    $out .= $htmlEditTitleForm;
+    
+    // load blocking conditions dependencies
     if ( $item->getParentId() > 0 )
     {
         $blockcondsDependencies = array_reverse( $blockcond->loadRecursive( $item->getParentId(), true ) );
-        
-        $htmlBlockCondDep = '<div>' . "\n"
-        .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br /> <br />' . "\n";
-        foreach( $blockcondsDependencies  as $dependency)
-        {
-           if( isset( $dependency['data'] ) )
-           {
-                $blockconds = $dependency['data'];
-                $htmlBlockCondDep .= '<div>' . "\n"
-                .    '<strong>'. htmlspecialchars($dependency['title']) .'</strong>';
-                foreach( $blockconds['item'] as $key => $value)
-                {
-                     $htmlBlockCondDep .= '<div>' . "\n";
-                     if( $key > 0 )
-                     {
-                         $htmlBlockCondDep .= '<select name="_condition[]" disabled="disabled">' . "\n"
-                         .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
-                         .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
+        if( count($blockcondsDependencies) )
+        {            
+            $htmlBlockCondDep = '<div>' . "\n"
+            .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br /> <br />' . "\n";
+            foreach( $blockcondsDependencies  as $dependency)
+            {
+               if( isset( $dependency['data'] ) )
+               {
+                    $blockconds = $dependency['data'];
+                    $htmlBlockCondDep .= '<div>' . "\n"
+                    .    '<strong>'. htmlspecialchars($dependency['title']) .'</strong>';
+                    foreach( $blockconds['item'] as $key => $value)
+                    {
+                         $htmlBlockCondDep .= '<div>' . "\n";
+                         if( $key > 0 )
+                         {
+                             $htmlBlockCondDep .= '<select name="_condition[]" disabled="disabled">' . "\n"
+                             .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
+                             .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
+                             .   '</select>'
+                             .   '<br />' . "\n";
+                         }
+                         
+                         $htmlBlockCondDep .= '<select name="_item[]" disabled="disabled">' . "\n";
+                         foreach( $itemListArray as $anItem )
+                         {
+                             $htmlBlockCondDep .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+                         }
+                         $htmlBlockCondDep .= '</select>'
+                         .   '<select name="_operator[]" disabled="disabled">' . "\n"
+                         .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
                          .   '</select>'
-                         .   '<br />' . "\n";
-                     }
-                     
-                     $htmlBlockCondDep .= '<select name="_item[]" disabled="disabled">' . "\n";
-                     foreach( $itemListArray as $anItem )
-                     {
-                         $htmlBlockCondDep .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
-                     }
-                     $htmlBlockCondDep .= '</select>'
-                     .   '<select name="_operator[]" disabled="disabled">' . "\n"
-                     .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
-                     .   '</select>'
-                     .   '<select name="_status[]" disabled="disabled">' . "\n"
-                     .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
-                     .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
-                     .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
-                     .   '</select>'
-                     .   '</div>' . "\n";
-                }
-           }           
+                         .   '<select name="_status[]" disabled="disabled">' . "\n"
+                         .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
+                         .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
+                         .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
+                         .   '</select>'
+                         .   '</div>' . "\n";
+                    }
+               }           
+            }
+            $htmlBlockCondDep .=   '</div> <br />' . "\n";
+            
+            $out .= $htmlBlockCondDep;
         }
-        $htmlBlockCondDep .=   '</div> <br />' . "\n";
-        
-        $out .= $htmlBlockCondDep;   
     }    
 }
 

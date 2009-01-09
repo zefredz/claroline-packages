@@ -241,7 +241,7 @@ class blockingcondition
         
         $sql = "SELECT * FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$item_id."' ORDER BY `id`";
         $_data = claro_sql_query_fetch_all_rows($sql);
-        if( $printable )
+        if( $printable  && count($_data) )
         {
             foreach( $_data as $k => $d){
                 $data[$item_id]['data']['item'][] = $d['cond_item_id'];
