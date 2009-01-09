@@ -253,6 +253,7 @@ class blockingcondition
                 }
             }
             $data[$item_id]['title'] = $item['title'];
+            $data[$item_id]['id'] = $item['id'];
         }
         else
         {
