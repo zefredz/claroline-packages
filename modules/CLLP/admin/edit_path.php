@@ -449,107 +449,110 @@ if( $cmd == 'exPrereq' )
 
 if( $cmd == 'rqPrereq' )
 {    
-    $blockcond = new blockingcondition( $itemId );
-    
-    $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
-    
-    // load blocking conditions dependencies
-    if ( $item->getParentId() > 0 )
+    if( !is_null( $itemId ) )
     {
-        $blockcondsDependencies = array_reverse( $blockcond->loadRecursive( $item->getParentId(), true ) );
-        if( count($blockcondsDependencies) )
-        {            
-            $htmlPrereqContainer .= '<div>' . "\n"
-            .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br />' . "\n";
-            foreach( $blockcondsDependencies  as $dependency)
-            {
-               if( isset( $dependency['data'] ) )
-               {
-                    $blockconds = $dependency['data'];
-                    $htmlPrereqContainer .= '<div>' . "\n"
-                    .    '<strong><a href="'. $_SERVER['PHP_SELF'] . '?&cmd=rqPrereq&pathId='.$pathId.'&itemId='.$dependency['id']. '">'. htmlspecialchars($dependency['title']) .'</a></strong>';
-                    foreach( $blockconds['item'] as $key => $value)
-                    {
-                         $htmlPrereqContainer .= '<div>' . "\n";
-                         if( $key > 0 )
-                         {
-                             $htmlPrereqContainer .= '<select name="_condition[]" disabled="disabled">' . "\n"
-                             .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
-                             .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
-                             .   '</select>'
-                             .   '<br />' . "\n";
-                         }
-                         
-                         $htmlPrereqContainer .= '<select name="_item[]" disabled="disabled">' . "\n";
-                         foreach( $itemListArray as $anItem )
-                         {
-                             $htmlPrereqContainer .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
-                         }
-                         $htmlPrereqContainer .= '</select>'
-                         .   '<select name="_operator[]" disabled="disabled">' . "\n"
-                         .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
-                         .   '</select>'
-                         .   '<select name="_status[]" disabled="disabled">' . "\n"
-                         .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
-                         .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
-                         .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
-                         .   '</select>'
-                         .   '</div>' . "\n";
-                    }
-                    $htmlPrereqContainer .= '</div>' . "\n";
-               }           
-            }
-            $htmlPrereqContainer .=   '</div> <br />' . "\n";
-        }
-    }
-    
-    // show prerequisites form
-    $htmlPrereqContainer .= '<strong>'.get_lang('Blocking conditions').'</strong>' . "\n"
-    .   '<form action="'.$_SERVER['PHP_SELF'].'?cmd=exPrereq&pathId='. $pathId .'&itemId='.$itemId.'" method="post">' . "\n\n";
-    
-    if( $blockcond->load() )
-    {
-        $blockconds = $blockcond->getBlockConds();
+        $blockcond = new blockingcondition( $itemId );
         
-        foreach( $blockconds['item'] as $key => $value )
+        $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
+        
+        // load blocking conditions dependencies
+        if ( $item->getParentId() > 0 )
         {
-            $htmlPrereqContainer .= '<div>' . "\n";
-            if( $key > 0 )
-            {
-                $htmlPrereqContainer .= '<select name="condition[]">' . "\n"
-                .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
-                .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
-                .   '</select>'
-                .   '<button onclick="$(this).parent().remove();">'.get_lang('Remove').'</button>'
-                .   '<br />' . "\n";
+            $blockcondsDependencies = array_reverse( $blockcond->loadRecursive( $item->getParentId(), true ) );
+            if( count($blockcondsDependencies) )
+            {            
+                $htmlPrereqContainer .= '<div>' . "\n"
+                .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br />' . "\n";
+                foreach( $blockcondsDependencies  as $dependency)
+                {
+                   if( isset( $dependency['data'] ) )
+                   {
+                        $blockconds = $dependency['data'];
+                        $htmlPrereqContainer .= '<div>' . "\n"
+                        .    '<strong><a href="'. $_SERVER['PHP_SELF'] . '?&cmd=rqPrereq&pathId='.$pathId.'&itemId='.$dependency['id']. '">'. htmlspecialchars($dependency['title']) .'</a></strong>';
+                        foreach( $blockconds['item'] as $key => $value)
+                        {
+                             $htmlPrereqContainer .= '<div>' . "\n";
+                             if( $key > 0 )
+                             {
+                                 $htmlPrereqContainer .= '<select name="_condition[]" disabled="disabled">' . "\n"
+                                 .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
+                                 .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
+                                 .   '</select>'
+                                 .   '<br />' . "\n";
+                             }
+                             
+                             $htmlPrereqContainer .= '<select name="_item[]" disabled="disabled">' . "\n";
+                             foreach( $itemListArray as $anItem )
+                             {
+                                 $htmlPrereqContainer .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+                             }
+                             $htmlPrereqContainer .= '</select>'
+                             .   '<select name="_operator[]" disabled="disabled">' . "\n"
+                             .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
+                             .   '</select>'
+                             .   '<select name="_status[]" disabled="disabled">' . "\n"
+                             .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
+                             .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
+                             .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
+                             .   '</select>'
+                             .   '</div>' . "\n";
+                        }
+                        $htmlPrereqContainer .= '</div>' . "\n";
+                   }           
+                }
+                $htmlPrereqContainer .=   '</div> <br />' . "\n";
             }
-            
-            $htmlPrereqContainer .= '<select name="item[]">' . "\n";
-            foreach( $itemListArray as $anItem )
-            {
-                $htmlPrereqContainer .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
-            }
-            $htmlPrereqContainer .= '</select>'
-            .   '<select name="operator[]">' . "\n"
-            .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
-            .   '</select>'
-            .   '<select name="status[]">' . "\n"
-            .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
-            .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
-            .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
-            .   '</select>'
-            .   '</div>' . "\n";
         }
+        
+        // show prerequisites form
+        $htmlPrereqContainer .= '<strong>'.get_lang('Blocking conditions').'</strong>' . "\n"
+        .   '<form action="'.$_SERVER['PHP_SELF'].'?cmd=exPrereq&pathId='. $pathId .'&itemId='.$itemId.'" method="post">' . "\n\n";
+        
+        if( $blockcond->load() )
+        {
+            $blockconds = $blockcond->getBlockConds();
+            
+            foreach( $blockconds['item'] as $key => $value )
+            {
+                $htmlPrereqContainer .= '<div>' . "\n";
+                if( $key > 0 )
+                {
+                    $htmlPrereqContainer .= '<select name="condition[]">' . "\n"
+                    .   '<option value="AND" '.($blockconds['condition'][$key-1] == 'AND' ? 'selected="selected"' : '').'>'.get_lang('AND').'</option>' . "\n"
+                    .   '<option value="OR" '.($blockconds['condition'][$key-1] == 'OR' ? 'selected="selected"' : '').'>'.get_lang('OR').'</option>' . "\n"
+                    .   '</select>'
+                    .   '<button onclick="$(this).parent().remove();">'.get_lang('Remove').'</button>'
+                    .   '<br />' . "\n";
+                }
+                
+                $htmlPrereqContainer .= '<select name="item[]">' . "\n";
+                foreach( $itemListArray as $anItem )
+                {
+                    $htmlPrereqContainer .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($value == $anItem['id'] && $anItem['type'] != 'CONTAINER' ? 'selected="selected"' : '').' '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+                }
+                $htmlPrereqContainer .= '</select>'
+                .   '<select name="operator[]">' . "\n"
+                .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
+                .   '</select>'
+                .   '<select name="status[]">' . "\n"
+                .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
+                .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
+                .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
+                .   '</select>'
+                .   '</div>' . "\n";
+            }
+        }
+        
+        $htmlPrereqContainer .= '<input type="button" value="'. get_lang( 'Add a blocking condition' ) .'" id="block_condition_button" onclick="addBlockingCondition('.$pathId.')" />' . "\n"
+        .   '<input type="submit" value="'.get_lang( 'Save the blocking condition(s)' ) .'" />' . "\n"    
+        .   '</form>' . "\n"
+        .   '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=rqDeletePrereq&pathId='.$pathId.'&itemId='.$itemId.'"  method="post" id="blocking_conditions">' . "\n"
+        .   '<input type="submit" value="'.get_lang( 'Remove all blocking conditions' ).'" />' . "\n"
+        .   '</form>' . "\n";
+        
+        $dialogBox->form( $htmlPrereqContainer );
     }
-    
-    $htmlPrereqContainer .= '<input type="button" value="'. get_lang( 'Add a blocking condition' ) .'" id="block_condition_button" onclick="addBlockingCondition('.$pathId.')" />' . "\n"
-    .   '<input type="submit" value="'.get_lang( 'Save the blocking condition(s)' ) .'" />' . "\n"    
-    .   '</form>' . "\n"
-    .   '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=rqDeletePrereq&pathId='.$pathId.'&itemId='.$itemId.'"  method="post" id="blocking_conditions">' . "\n"
-    .   '<input type="submit" value="'.get_lang( 'Remove all blocking conditions' ).'" />' . "\n"
-    .   '</form>' . "\n";
-    
-    $dialogBox->form( $htmlPrereqContainer );
 }
 
 if( $cmd == 'exDeletePrereq' )
