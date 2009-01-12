@@ -450,7 +450,8 @@ if( $cmd == 'exPrereq' )
 if( $cmd == 'rqPrereq' )
 {    
     $blockcond = new blockingcondition( $itemId );
-    $htmlPrereqContainer = "";
+    
+    $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
     
     // load blocking conditions dependencies
     if ( $item->getParentId() > 0 )
@@ -458,7 +459,7 @@ if( $cmd == 'rqPrereq' )
         $blockcondsDependencies = array_reverse( $blockcond->loadRecursive( $item->getParentId(), true ) );
         if( count($blockcondsDependencies) )
         {            
-            $htmlPrereqContainer = '<div>' . "\n"
+            $htmlPrereqContainer .= '<div>' . "\n"
             .   '<strong>'. get_lang('Blocking conditions dependencies') .'</strong> <br />' . "\n";
             foreach( $blockcondsDependencies  as $dependency)
             {
