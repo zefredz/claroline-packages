@@ -97,7 +97,11 @@ class item
      * @var $tblItem name of the item table
      */
     private $tblItem;
-
+    
+    /**
+     * @var $tblBlockCond
+     */
+    private $tblBlockCond;
 
     /**
      * Constructor
@@ -125,12 +129,13 @@ class item
 
         // define module table names
         $tblNameList = array(
-            'lp_item'
+            'lp_item', 'lp_item_blockcondition'
         );
 
         // convert to Claroline course table names
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblItem = $tbl_lp_names['lp_item'];
+        $this->tblBlockCond = $tbl_lp_names['lp_item_blockcondition'];
     }
 
     /**
@@ -291,6 +296,16 @@ class item
                     return false;
                     break;
                 }
+                
+                // delete blocking conditions
+                $sql = "DELETE FROM `" . $this->tblBlockCond . "`
+                        WHERE `item_id` = ". (int) $itemId;
+                
+                if( claro_sql_query($sql) == false )
+                {
+                    return false;
+                    break;
+                }
             }
         }
         
@@ -298,6 +313,12 @@ class item
                 WHERE `id` = " . (int) $this->id ;
 
         if( claro_sql_query($sql) == false ) return false;
+        
+        // delete blocking conditions
+        $sql = "DELETE FROM `" . $this->tblBlockCond . "`
+                WHERE `item_id` = ". $this->id;
+        
+        if( claro_sql_query($sql) == fasle ) return false;
 
         $this->id = -1;
         return true;
