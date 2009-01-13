@@ -72,7 +72,7 @@ else                                                                  $itemId = 
 
 claro_set_display_mode_available(false);
 
-$is_allowedToEdit = claro_is_allowed_to_edit();
+$is_allowedToEdit = claro_is_allowed_to_edit(); 
 
 // admin only page and path is required as we edit a path ...
 if( !$is_allowedToEdit )
