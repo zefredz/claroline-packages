@@ -169,19 +169,7 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
 }
 else
 {
-		$dialogbox = new DialogBox();
-		
-		$dialogbox->error( get_lang( 'Not allowed' ) );
-		
-		$out = "";
-		$nameTools = get_lang('Learning path');
-		$toolTitle['mainTitle'] = $nameTools;
-		$toolTitle['subTitle'] = htmlspecialchars($path->getTitle());
-		
-		$out .= claro_html_tool_title($toolTitle);
-		$out .= $dialogbox->render();
-		
-		$claroline->display->body->appendContent($out);
+		claro_die( get_lang( 'Not allowed' ) );
 }
 
 
