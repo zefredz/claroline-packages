@@ -103,7 +103,7 @@ function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=
 *
 * @author Philippe Dekimpe <dkp@ecam.be>
 */
-function move_survey($item_id, $cmd, $context=null)
+function move_survey($item_id, $cmd, $context=null,$cid)
 {
     $tbl = claro_sql_get_tbl('survey_list', $context);
 
@@ -126,6 +126,7 @@ function move_survey($item_id, $cmd, $context=null)
                 SELECT id_survey,
                          rank
                 FROM `" . $tbl['survey_list'] . "`
+		WHERE cid='".$cid. "'
                 ORDER BY `rank` " . $sortDirection;
 
         $result = claro_sql_query($sql);
@@ -475,7 +476,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
 	                  ON Q.id_question = S.id_question
 			  WHERE S.id_survey = " . (int) $surveyId."
 			    AND Q.`cid` = '" . addslashes($courseId) . "'
-			  ORDER BY Q.id_question";
+			  ORDER BY S.rank";
 
     return  claro_sql_query_fetch_all_rows($sql) ;
 }

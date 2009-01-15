@@ -28,6 +28,8 @@ require '../../claroline/inc/claro_init_global.inc.php';
 
 $context = array( CLARO_CONTEXT_COURSE=> claro_get_current_course_id());
 
+add_module_lang_array($tlabelReq);
+
 if ( ! get_init('in_course_context') || ! get_init('is_courseAllowed') || !get_init('is_authenticated') ) claro_disp_auth_form(true);
 
 claro_set_display_mode_available(TRUE);
@@ -107,11 +109,11 @@ if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
     {
         if ( 'exMoveDown' == $cmd  )
         {
-            $return = move_survey($idSurvey,'DOWN','id_survey');
+            $return = move_survey($idSurvey,'DOWN','id_survey',get_init('_cid'));
         }
         if ( 'exMoveUp' == $cmd )
         {
-            $return = move_survey($idSurvey,'UP','id_survey');
+            $return = move_survey($idSurvey,'UP','id_survey',get_init('_cid'));
         }
         if ($return)
         {
