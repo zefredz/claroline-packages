@@ -128,7 +128,10 @@ if( $cmd == 'rqFlush' && $is_allowedToEdit )
     $msgList = new ChatMsgList($courseId,$groupId);
     if( $msgList->flush() )
     {
-        echo claro_utf8_encode(get_lang('Chat reset'));
+        $dialogBox = new DialogBox();
+        $dialogBox->success(get_lang('Chat reset'));
+        
+        echo claro_utf8_encode($dialogBox->render());
     }
     
     return;    
@@ -153,12 +156,18 @@ if( $cmd == 'rqArchive' && $is_allowedToEdit )
     {
         $downloadLink = '<a href="'.get_module_url('CLDOC').'/document.php'.claro_url_relay_context('?').'">' . basename($chatFilename) . '</a>';
         
-        echo claro_utf8_encode(get_lang('%chat_filename is now in the document tool. (<em>This file is visible</em>)',array('%chat_filename' => $downloadLink)));
+        $dialogBox = new DialogBox();
+        $dialogBox->success(get_lang('%chat_filename is now in the document tool. (<em>This file is visible</em>)',array('%chat_filename' => $downloadLink)));
+
+        echo claro_utf8_encode($dialogBox->render());
         return;
     }
     else
     {
-        echo claro_utf8_encode(get_lang('Store failed'));
+        $dialogBox = new DialogBox();
+        $dialogBox->error(get_lang('Store failed'));
+
+        echo claro_utf8_encode($dialogBox->render());
         return;
     }
 }
