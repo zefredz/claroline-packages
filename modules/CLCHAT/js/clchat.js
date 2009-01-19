@@ -193,8 +193,8 @@ function rqFlush()
             url: "ajaxHandler.php?cmd=rqFlush&cidReq=" + cidReq + getGidReqParam(), 
             success: function(response){
                 showDialog(response);
+                exHideLogs();
                 rqRefresh();
-            closeLogs();
                 }, 
             dataType: 'html'});
     }
