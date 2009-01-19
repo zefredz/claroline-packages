@@ -1,26 +1,23 @@
 <module>
-<label>CLOPML</label>
-<name>OPML Generator</name>
+<label>CLFRMRSS</label>
+<name>Forum RSS Generator</name>
 <description><![CDATA[
-OPML Generator applet for Claroline.
-&lt;small&gt;Note : You can use Firefox OPML Reader extension to
-auto-detect OPML feeds in webpages
-(https://addons.mozilla.org/en-US/firefox/addon/3555)&lt;/small&gt;
+Forum RSS Generator applet for Claroline.
 ]]></description>
 <version>1.0</version>
 <license>GPL</license>
 <icon>icon.png</icon>
 <type>applet</type>
 <entry>entry.php</entry>
-<default_dock>campusHomePageRightMenu</default_dock>
+<default_dock>courseBannerRight</default_dock>
 <author>
-<name>Frederic Minne</name>
-<email>zefredz@claroline.net</email>
-<web>http://www.claroline.net/wiki/CLOPML</web>
+<name>Dimitri Rambout</name>
+<email>dimitri.rambout@uclouvain.be</email>
+<web>http://www.claroline.net/wiki/CLFRMRSS</web>
 </author>
 <requirements>
 <claroline>
-<version>1.8.6</version>
+<version>1.9</version>
 </claroline>
 </requirements>
 </module>
