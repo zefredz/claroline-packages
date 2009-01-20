@@ -19,47 +19,13 @@
     }
 
     // add a link to current user opml file in Claroline html header
-    if ( claro_is_user_authenticated() && claro_is_allowed_to_edit() )
+    if ( claro_is_user_authenticated() )
     {
         $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
             . ' type="application/rss+xml"'
-            . ' title="'.get_lang('Last messages in the forum of this course').'"'
+            . ' title="'.get_lang('List of RSS for all my forums').'"'
             . ' href="'.get_module_url('CLFRMRSS')
             . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true" />'
             ;
-        
-        $forum_id = isset($_REQUEST['forum']) ? (int) $_REQUEST['forum'] : null;
-        $topic_id = isset($_REQUEST['topic']) ? (int) $_REQUEST['topic'] : null;
-        
-        if( !is_null($topic_id) )
-        {
-            FromKernel::uses('forum.lib');
-            
-            $topic_settings = get_topic_settings( $topic_id );
-            if( $topic_settings )
-            {
-                $forum_id = $topic_settings['forum_id'];
-            }
-        }
-        
-        if( $GLOBALS['tlabelReq'] == 'CLFRM' && !is_null($forum_id) )
-        {
-            $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
-                . ' type="application/rss+xml"'
-                . ' title="'.get_lang('Last messages in this forum').'"'
-                . ' href="'.get_module_url('CLFRMRSS')
-                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'" />'
-                ;
-        }
-        
-        if( $GLOBALS['tlabelReq'] == 'CLFRM' && !is_null($topic_id) )
-        {
-            $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
-                . ' type="application/rss+xml"'
-                . ' title="'.get_lang('Last messages in this topic').'"'
-                . ' href="'.get_module_url('CLFRMRSS')
-                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'&topicId=' . (int) $topic_id . '" />'
-                ;
-        }
     }
 ?>

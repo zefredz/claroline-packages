@@ -3,7 +3,7 @@
 /**
 * Forum RSS Generator function : generate forum rss from user course
 *
-* @version     1.9 $Revision: 373 $
+* @version     1.9 $Revision$
 * @copyright   2001-2009 Universite catholique de Louvain (UCL)
 * @author      Dimitri Rambout <dimitri.rambout@uclouvain.be>
 * @license     http://www.gnu.org/copyleft/gpl.html

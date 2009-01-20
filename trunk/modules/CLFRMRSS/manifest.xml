@@ -1,0 +1,23 @@
+<module>
+<label>CLFRMRSS</label>
+<name>Forum RSS Generator</name>
+<description><![CDATA[
+Forum RSS Generator applet for Claroline.
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>applet</type>
+<entry>entry.php</entry>
+<default_dock>courseBannerRight</default_dock>
+<author>
+<name>Dimitri Rambout</name>
+<email>dimitri.rambout@uclouvain.be</email>
+<web>http://www.claroline.net/wiki/CLFRMRSS</web>
+</author>
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>
