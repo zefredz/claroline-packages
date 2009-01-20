@@ -19,7 +19,7 @@ try
     // load Claroline kernel
     require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
     
-    Fromkernel::uses('utils/input.lib','utils/validator.lib','utils/time.lib');
+    Fromkernel::uses('utils/input.lib','utils/validator.lib','utils/time.lib','language.lib');
     From::Module('CLKRNG')->uses('keyring.lib');
     
     require_once get_path('includePath') . '/lib/user.lib.php';
@@ -52,6 +52,10 @@ try
             header( 'Forbidden', true, 403 );
             echo '<h1>Forbidden !</h1>';
             echo '<p>Worng service key or host</p>';
+            if ( claro_debug_mode() )
+            {
+                var_dump( $serviceUser.'::'.$serviceKey );
+            }
             exit();
         }
     }
@@ -136,7 +140,7 @@ try
         $tpl->assign( 'documents', $documents ); 
         $tpl->assign( 'actionMapper', $actionMapper );
         $tpl->assign( 'serviceKey', $serviceKey );
-        echo $tpl->render();
+        echo claro_utf8_encode( $tpl->render() );
     }
     
     // download document

@@ -7,7 +7,7 @@ foreach( $this->documents as $thisAction ):
     $thisDoc = $this->actionMapper->hasOne( $thisAction, 'document' ); 
 	$courseData = claro_get_course_data( $thisAction->courseId );
     
-    if ( $thisAction->action != 'delete' ):
+    if ( $thisAction->action != 'delete' && $thisAction->action != 'coursedelete' ):
     
 ?>
 <document id="<?php echo $thisDoc->id; ?>">

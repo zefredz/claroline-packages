@@ -388,7 +388,11 @@ ClaroBreadCrumbs::getInstance()->setCurrent($nameTools,get_module_entry($tlabelR
 $claroline->display->body->appendContent(claro_html_tool_title($nameTools));
 
 //message display
-$dialogBox->warning(get_lang('Only pdf files are allowed at this time.'));
+if ( 'rqPublish' == $cmd )
+{
+    $dialogBox->warning(get_lang('Only pdf files are allowed at this time.'));
+}
+
 $claroline->display->body->appendContent($dialogBox->render());
 
 

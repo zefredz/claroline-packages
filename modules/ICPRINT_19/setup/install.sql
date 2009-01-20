@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__icprint_documents`(
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__icprint_actions`(
 	action_id INT(11) NOT NULL AUTO_INCREMENT,
 	action_document_id INT(11) NOT NULL,
-	action_name ENUM('add', 'delete','modify') NOT NULL,
+	action_name ENUM('add', 'delete','modify','coursedelete') NOT NULL,
 	action_course_id VARCHAR(40) NOT NULL,
 	action_user_id INT(11) NOT NULL,
 	action_timestamp DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__icprint_actions`(
 	PRIMARY KEY(action_id)
 ) TYPE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__Keyring_services`(
-	serviceName VARCHAR(255) NOT NULL,
-    serviceHost VARCHAR(255) NOT NULL,
-    serviceKey  VARCHAR(255) NOT NULL,
-    PRIMARY KEY(serviceName,serviceHost)
-) Type=MYISAM;
+#CREATE TABLE IF NOT EXISTS `__CL_MAIN__Keyring_services`(
+#	serviceName VARCHAR(255) NOT NULL,
+#    serviceHost VARCHAR(255) NOT NULL,
+#    serviceKey  VARCHAR(255) NOT NULL,
+#    PRIMARY KEY(serviceName,serviceHost)
+#) Type=MYISAM;
