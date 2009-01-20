@@ -63,7 +63,7 @@
         }
     }
     
-    if ( ( claro_is_platform_admin() || claro_is_course_manager() ) && claro_is_in_a_course() )
+    if ( ( claro_is_platform_admin() || claro_is_allowed_to_edit() ) && claro_is_in_a_course() )
     {
         $rss = generate_forum_rss( claro_get_current_course_id() );
         
@@ -72,6 +72,14 @@
             header("Content-Type: application/rss+xml");
             echo $rss;
         }
+        else
+        {
+            claro_die( get_lang('No RSS available'));
+        }
+    }
+    else
+    {
+        claro_die( get_lang('Not allowed'));
     }
     
 ?>
