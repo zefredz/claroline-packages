@@ -226,7 +226,7 @@ if('exAdd'== $cmd)
     {
         $keyring->add( $serviceName, $serviceHost, $serviceKey );
         $successMessage = get_lang('Service key added for service %service',
-            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service' => htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $cmd = 'list';
     }    
 }
