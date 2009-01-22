@@ -11,6 +11,7 @@
  * @package CLLP
  *
  * @author Sebastien Piraux
+ * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
  *
  */
 
@@ -276,7 +277,8 @@ if( $is_allowedToEdit )
     .    '<th>' . get_lang('Block') . '</th>' . "\n"
     .    '<th>' . get_lang('Visibility') . '</th>' . "\n"
     .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
-    .    '<th>' . get_lang('Export').'</th>' . "\n";
+    //.    '<th>' . get_lang('Export').'</th>' . "\n"
+    ;
 
     if( get_conf('is_trackingEnabled') ) $out .= '<th>' . get_lang('Tracking') . '</th>' . "\n";
 
@@ -380,11 +382,11 @@ if( $is_allowedToEdit )
             }
 
             // export
-            $out .= '<td>' . "\n"
+            /*$out .= '<td>' . "\n"
             .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
             .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
             .    '</a>'
-            .    '</td>' . "\n";
+            .    '</td>' . "\n";*/
 
             // tracking
             $out .= '<td>' . "\n"

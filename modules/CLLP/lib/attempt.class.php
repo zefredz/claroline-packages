@@ -58,10 +58,10 @@ class attempt
      */
     private $attemptNumber;
 
-	/**
-	 * @var $itemAttemptList object that represent the list of all item attempts
-	 */
-	private $itemAttemptList;
+    /**
+     * @var $itemAttemptList object that represent the list of all item attempts
+     */
+    private $itemAttemptList;
 
     /**
      * @var $tblAttempt name of the item table
@@ -73,8 +73,8 @@ class attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	public function __construct()
-	{
+    public function __construct()
+    {
         $this->id = (int) -1;
         $this->pathId = (int) -1;
         $this->userId = (int) -1;
@@ -92,7 +92,7 @@ class attempt
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblAttempt = $tbl_lp_names['lp_attempt'];
 
-	}
+    }
 
     /**
      * if no attemptNumber is specified load the last attempt for $userId in $pathId from DB
@@ -102,13 +102,13 @@ class attempt
      * @param integer $id id of path
      * @return boolean load successfull ?
      */
-	public function load($pathId, $userId, $attemptNumber = null)
+    public function load($pathId, $userId, $attemptNumber = null)
+    {
+	// $userId will be null if user is anonymous
+	if( is_null($userId) )
 	{
-		// $userId will be null if user is anonymous
-		if( is_null($userId) )
-		{
-			return false;
-		}
+		return false;
+	}
 
         $sql = "SELECT
                     `id`,
@@ -117,9 +117,9 @@ class attempt
                     `last_item_id`,
                     `progress`,
                     `attempt_number`
-            FROM `".$this->tblAttempt."`
-            WHERE `path_id` = ".(int) $pathId . "
-            AND `user_id` = ".(int) $userId;
+		FROM `".$this->tblAttempt."`
+		WHERE `path_id` = ".(int) $pathId . "
+		AND `user_id` = ".(int) $userId;
 
         if( is_null($attemptNumber) )
         {
@@ -155,7 +155,7 @@ class attempt
         {
             return false;
         }
-	}
+    }
 
     /**
      * save attempt to DB
@@ -163,16 +163,16 @@ class attempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-	public function save()
-	{
-		// TODO compute progress from itemAttemptList and save itemAttemptList
-		if( $this->id == -1 )
+    public function save()
+    {
+	// TODO compute progress from itemAttemptList and save itemAttemptList
+	if( $this->id == -1 )
         {
-			// if no attemptNumber find the higher possible value
-			if( $this->attemptNumber == -1 )
-			{
-				$this->setHigherAttemptNumber();
-			}
+	    // if no attemptNumber find the higher possible value
+	    if( $this->attemptNumber == -1 )
+	    {
+		    $this->setHigherAttemptNumber();
+	    }
 
             // insert
             $sql = "INSERT INTO `".$this->tblAttempt."`
@@ -200,7 +200,7 @@ class attempt
         {
             // update, main query
             $sql = "UPDATE `".$this->tblAttempt."`
-	           		SET `path_id` = '".(int) $this->pathId."',
+		    SET `path_id` = '".(int) $this->pathId."',
                         `user_id` = '".(int) $this->userId."',
                         `last_item_id` = '".(int) $this->lastItemId."',
                     	`progress` = '".(int) $this->progress."',
@@ -217,19 +217,19 @@ class attempt
                 return false;
             }
         }
-	}
+    }
 
-	/**
+    /**
      * delete attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	public function delete()
-	{
+    public function delete()
+    {
         if( $this->id == -1 ) return true;
 
-		// TODO delete all item_attempts
+	// TODO delete all item_attempts
 
         $sql = "DELETE FROM `" . $this->tblAttempt . "`
                 WHERE `id` = " . (int) $this->id ;
@@ -238,7 +238,7 @@ class attempt
 
         $this->id = -1;
         return true;
-	}
+    }
 
     //-- Getter & Setter
 
@@ -454,40 +454,40 @@ class itemAttempt
      */
     private $entry;
 
-	/**
-	 * @var $scoreRaw SCORM score.raw (score of the learner)
-	 */
-	private $scoreRaw;
+    /**
+     * @var $scoreRaw SCORM score.raw (score of the learner)
+     */
+    private $scoreRaw;
 
-	/**
-	 * @var $scoreMin SCORM score.min (minimum possible score)
-	 */
-	private $scoreMin;
+    /**
+     * @var $scoreMin SCORM score.min (minimum possible score)
+     */
+    private $scoreMin;
 
-	/**
-	 * @var $scoreMax SCORM score.max (maximum possible score)
-	 */
-	private $scoreMax;
+    /**
+     * @var $scoreMax SCORM score.max (maximum possible score)
+     */
+    private $scoreMax;
 
     /**
      * @var $totalTime SCORM total_time (sum of all session_time of this SCO)
      */
     private $totalTime;
 
-	/**
-	 * @var $sessionTime SCORM session_time (time spent by learner for this session in the SCO)
-	 */
-	private $sessionTime;
+    /**
+     * @var $sessionTime SCORM session_time (time spent by learner for this session in the SCO)
+     */
+    private $sessionTime;
 
-	/**
-	 * @var $suspendData SCORM suspend_data (data the SCO would like to get back on next attempt)
-	 */
-	private $suspendData;
+    /**
+     * @var $suspendData SCORM suspend_data (data the SCO would like to get back on next attempt)
+     */
+    private $suspendData;
 
-	/**
-	 * @var $credit SCORM credit ( indicates whether the learner will be credited for performance)
-	 */
-	private $credit;
+    /**
+     * @var $credit SCORM credit ( indicates whether the learner will be credited for performance)
+     */
+    private $credit;
 
     /**
      * @var $tblItemAttempt name of the item table
@@ -586,9 +586,9 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
      */
-	public function save()
-	{
-		if( $this->id == -1 )
+    public function save()
+    {
+	if( $this->id == -1 )
         {
             // insert
             $sql = "INSERT INTO `".$this->tblItemAttempt."`
@@ -647,16 +647,16 @@ class itemAttempt
                 return false;
             }
         }
-	}
+    }
 
-	/**
+    /**
      * delete item attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
-	public function delete()
-	{
+    public function delete()
+    {
         if( $this->id == -1 ) return true;
 
 		// TODO delete all item_attempts
@@ -668,15 +668,15 @@ class itemAttempt
 
         $this->id = -1;
         return true;
-	}
+    }
 
-	/**
-	 * check that all scorm data are consistent and that value are correct
-	 */
-	public function validate()
-	{
-		return true;
-	}
+    /**
+     * check that all scorm data are consistent and that value are correct
+     */
+    public function validate()
+    {
+	    return true;
+    }
 
     /**
      * get id
@@ -733,16 +733,16 @@ class itemAttempt
         $this->itemId = (int) $value;
     }
 
-	/**
-	 * set location
-	 *
-     * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value location in the SCO
-	 */
-	 public function setLocation($value)
-	 {
-	 	$this->location = trim($value);
-	 }
+    /**
+    * set location
+    *
+    * @author Sebastien Piraux <pir@cerdecam.be>
+    * @param $value location in the SCO
+    */
+    public function setLocation($value)
+    {
+	   $this->location = trim($value);
+    }
 
     /**
      * get location
@@ -750,20 +750,20 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string location in the SCO
      */
-	 public function getLocation()
-	 {
-	 	return $this->location;
-	 }
+    public function getLocation()
+    {
+	   return $this->location;
+    }
 
-	/**
-	 * set completionStatus
-	 *
+    /**
+     * set completionStatus
+     *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value completionStatus of the SCO
 	 */
-	 public function setCompletionStatus($value)
-	 {
-	 	$acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
+    public function setCompletionStatus($value)
+    {
+	$acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
 
         if( in_array(strtoupper($value), $acceptedValues) )
         {
@@ -771,7 +771,7 @@ class itemAttempt
             return true;
         }
         return false;
-	 }
+    }
 
     /**
      * get completionStatus
@@ -779,20 +779,20 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string completionStatus of the SCO
      */
-	 public function getCompletionStatus()
-	 {
-	 	return $this->completionStatus;
-	 }
+    public function getCompletionStatus()
+    {
+	return $this->completionStatus;
+    }
 
-	/**
-	 * set entry
-	 *
+    /**
+     * set entry
+     *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $value entry of the SCO
-	 */
-	 public function setEntry($value)
-	 {
-	 	$acceptedValues = array('AB-INITIO','RESUME','');
+     */
+    public function setEntry($value)
+    {
+	$acceptedValues = array('AB-INITIO','RESUME','');
 
         if( in_array(strtoupper($value), $acceptedValues) )
         {
@@ -800,7 +800,7 @@ class itemAttempt
             return true;
         }
         return false;
-	 }
+    }
 
     /**
      * get entry
@@ -808,10 +808,10 @@ class itemAttempt
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string entry of the SCO
      */
-	 public function getEntry()
-	 {
-	 	return $this->entry;
-	 }
+    public function getEntry()
+    {
+	   return $this->entry;
+    }
 
     /**
      * get score raw

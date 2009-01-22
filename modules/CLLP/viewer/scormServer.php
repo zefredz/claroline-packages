@@ -138,15 +138,23 @@ if( $cmd == 'doCommit' )
             if( !empty($itemListArray) )
             {
                 $progressTotal = 0;
-                foreach ( $itemListArray as $anItem)
+                foreach ( $itemListArray as $_id => $anItem)
                 {
-                    if( $anItem['score_max'] > 0 )
+                    // remove container from list
+                    if( $anItem['type'] == 'CONTAINER')
                     {
-                        // fixme : take into account the fact that min may be more than 0
-                        $progressTotal += $anItem['score_raw'] / $anItem['score_max'] * 100; 
+                        unset( $itemListArray[$_id] );
                     }
-                }
-
+                    else
+                    {
+                        if( $anItem['score_max'] > 0 )
+                        {
+                            // fixme : take into account the fact that min may be more than 0
+                            $progressTotal += $anItem['score_raw'] / $anItem['score_max'] * 100; 
+                        }                        
+                    }                    
+                }              
+                
                 $thisAttempt->setProgress($progressTotal / count($itemListArray));
             }
             else
