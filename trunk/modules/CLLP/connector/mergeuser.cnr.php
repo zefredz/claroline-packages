@@ -20,7 +20,7 @@ class CLLP_MergeUser implements Module_MergeUser
 
         if ( ! claro_sql_query($sql) )
         {
-            throw new Exception("Cannot update lp_attempt in {$thisCourseCode}");
+            throw new Exception("Cannot update lp_attempt in {$courseId}");
         }
         
     }
