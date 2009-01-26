@@ -16,8 +16,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 //$tlabelReq = 'RSSREAD';
 include_once claro_get_conf_repository().'RSSREAD.conf.php';
 
-require_once get_path('incRepositorySys') . '/lib/lastRSS/lastRSS.php';
-
+require_once get_path('incRepositorySys') . '/lib//thirdparty/lastRSS/lastRSS.lib.php';
 
 $rss = new lastRSS;
 
@@ -28,40 +27,48 @@ $rss->stripHTML = TRUE;
 
 if( get_conf('feedCharset') != '' ) $rss->cp = get_conf('feedCharset');
 
-$html = '';
+    /*
+     * Output
+     */
+    $cssLoader = CssLoader::getInstance();
+    $cssLoader->load( 'rssread', 'all'); 
 
-if( false !== $rs = $rss->get( get_conf('feedUrl') ) )
-{
-    $feedTitle = ( get_conf('feedTitle') == '' ) ? $rs['title'] : get_conf('feedTitle');
-    
-    $html .= '<p>' . "\n";
-    $html .= '<strong>' . $feedTitle . '</strong><br />' . "\n";
-
-    $limit = get_conf('itemsToShow');
-    $i = 0;
-    foreach( $rs['items'] as $item )
-    {
-        if( $i < $limit )
-        {
-            $html .= '- <a href="' . $item['link'] . '">' . $item['title'] . '</a><br />' . "\n";
-            $i++;
-        }
-        else
-        {
-            break;
-        }
-    }
-
-    $html .= '</p>' . "\n";
-}
-else
-{
-    if( claro_is_platform_admin() )
-    {
-        $html .= '<p>' . get_lang('Error : cannot read RSS feed (Check feed url and if php setting "allow_url_fopen" is turned on).') . '</p>' . "\n";
-    }
-}
-
-$claro_buffer->append($html);
+	$html = '';
+	
+	if( false !== $rs = $rss->get( get_conf('feedUrl') ) )
+	{
+	    $feedTitle = ( get_conf('feedTitle') == '' ) ? $rs['title'] : get_conf('feedTitle');
+	    
+	    $html .= '<p>' . "\n";
+	    $html .= '<div class="rssTitle">' . $feedTitle . '</div>' . "\n";
+	    $html .= '<ul>'. "\n";
+	
+	    $limit = get_conf('itemsToShow');
+	    $i = 0;
+	    
+	    foreach( $rs['items'] as $item )
+	    {
+	        if( $i < $limit )
+	        {
+	            $html .= '<div class="rssItem"><li><a href="' . $item['link'] . '">' . $item['title'] . '</a></li></div>' . "\n";
+	            $i++;
+	        }
+	        else
+	        {
+	            break;
+	        }
+	    }
+	
+	    $html .= '</p>' . "\n";
+	}
+	else
+	{
+	    if( claro_is_platform_admin() )
+	    {
+	        $html .= '<p>' . get_lang('Error : cannot read RSS feed (Check feed url and if php setting "allow_url_fopen" is turned on).') . '</p>' . "\n";
+	    }
+	}
+	$html .= '</ul>'. "\n";
+	$claro_buffer->append($html);
 
 ?>
