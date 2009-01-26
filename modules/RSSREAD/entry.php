@@ -16,7 +16,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 //$tlabelReq = 'RSSREAD';
 include_once claro_get_conf_repository().'RSSREAD.conf.php';
 
-require_once get_path('incRepositorySys') . '/lib//thirdparty/lastRSS/lastRSS.lib.php';
+require_once get_path('incRepositorySys') . '/lib/thirdparty/lastRSS/lastRSS.lib.php';
 
 $rss = new lastRSS;
 
