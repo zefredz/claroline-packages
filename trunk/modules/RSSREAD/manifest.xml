@@ -1,7 +1,7 @@
 <module>
   <label>RSSREAD</label>
   <name>Display titles of a RSS feed</name>
-  <version>0.1</version>
+  <version>0.2</version>
   <license>GPL</license>
   <default_dock>campusHomePageRightMenu</default_dock>
   <type>applet</type>
@@ -18,7 +18,7 @@
 
   <requirements>
     <claroline>
-      <version>1.8</version>
+      <version>1.9</version>
     </claroline>
  </requirements>
 </module>
