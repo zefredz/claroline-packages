@@ -1,0 +1,25 @@
+<module>
+  <label>CLOOVOO</label>
+  <name>Show teacher ooVoo link</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <default_dock>courseBannerRight</default_dock>
+  <type>applet</type>
+  <icon>icon.gif</icon>
+
+  <description>
+    This plugin shows the ooVoo link of the teacher to its course visitors.
+  </description>
+
+  <author>
+     <name>Sebastien Piraux</name>
+     <email>seb@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8</version>
+    </claroline>
+ </requirements>
+</module>
