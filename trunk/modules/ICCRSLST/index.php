@@ -74,11 +74,26 @@ try
     // get list
     if ( 'list' == $cmd )
     {
-        $officialCode = $userInput->get( 'officialCode' );
+        $officialCode = trim( $userInput->get( 'officialCode' ) );
         
-        if ( is_null( $officialCode ) )
+        if ( empty( $officialCode ) )
         {
             throw new Exception( "Missing user" );
+        }
+        
+        $filter = $userInput->get( 'filter', 'both' );
+        
+        if ( $filter == 'managed' )
+        {
+            $sqlCourseFilter = "AND cu.isCourseManager = 1";
+        }
+        elseif ( $filter == 'unmanaged' )
+        {
+            $sqlCourseFilter = "AND cu.isCourseManager = 0";
+        }
+        else
+        {
+            $sqlCourseFilter = "";
         }
         
         $tbl = claro_sql_get_main_tbl();
@@ -99,12 +114,12 @@ try
         if ( $user )
         {
             $courses = Claroline::getDatabase()->query(
-                "SELECT c.code AS id, c.administrativeNumber AS officialCode, c.intitule AS title
+                "SELECT c.code AS id, c.administrativeNumber AS officialCode, c.intitule AS title, cu.isCourseManager AS isCourseManager
                 FROM `{$tbl['course']}` AS c
                 INNER JOIN `{$tbl['rel_course_user']}` AS cu
                 ON cu.code_cours = c.code
                 WHERE cu.user_id = ".Claroline::getDatabase()->quote($user['id'])."
-                AND cu.isCourseManager = 1"
+                " . Claroline::getDatabase()->escape($sqlCourseFilter)
             );
             
             header("Content-type: text/xml; charset=utf-8");
