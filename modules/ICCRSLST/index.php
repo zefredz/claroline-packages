@@ -83,6 +83,8 @@ try
         
         $filter = $userInput->get( 'filter', 'both' );
         
+        $sqlCourseFilter = "";
+        
         if ( $filter == 'managed' )
         {
             $sqlCourseFilter = "AND cu.isCourseManager = 1";
@@ -90,6 +92,24 @@ try
         elseif ( $filter == 'unmanaged' )
         {
             $sqlCourseFilter = "AND cu.isCourseManager = 0";
+        }
+        elseif ( $filter == 'profile' )
+        {
+            $profile = trim($userInput->get( 'profile' ));
+            
+            if( empty( $profile ) )
+            {
+                throw new Exception( "Missing profile" );
+            }
+            
+            $profileId = claro_get_profile_id( $profile );
+            
+            if ( ! $profileId )
+            {
+                throw new Exception( "Invalid profile" );
+            }
+            
+            $sqlCourseFilter = "AND cu.profile_id = " . Claroline::getDatabase()->quote( $profileId );
         }
         else
         {
@@ -99,7 +119,8 @@ try
         $tbl = claro_sql_get_main_tbl();
         
         $res = Claroline::getDatabase()->query(
-            "SELECT user_id AS id, officialCode AS officialCode, nom AS lastname, prenom AS firstname, email AS email
+            "SELECT user_id AS id, officialCode AS officialCode,
+                nom AS lastname, prenom AS firstname, email AS email
             FROM `{$tbl['user']}`
             WHERE officialCode = " . Claroline::getDatabase()->quote( $officialCode ) . "
             # AND authSource = 'ldap'
@@ -114,12 +135,14 @@ try
         if ( $user )
         {
             $courses = Claroline::getDatabase()->query(
-                "SELECT c.code AS id, c.administrativeNumber AS officialCode, c.intitule AS title, cu.isCourseManager AS isCourseManager
+                "SELECT c.code AS id, c.administrativeNumber AS officialCode,
+                    c.intitule AS title, cu.isCourseManager AS isCourseManager,
+                    cu.profile_id AS profileId
                 FROM `{$tbl['course']}` AS c
                 INNER JOIN `{$tbl['rel_course_user']}` AS cu
                 ON cu.code_cours = c.code
                 WHERE cu.user_id = ".Claroline::getDatabase()->quote($user['id'])."
-                " . Claroline::getDatabase()->escape($sqlCourseFilter)
+                " . $sqlCourseFilter
             );
             
             header("Content-type: text/xml; charset=utf-8");
