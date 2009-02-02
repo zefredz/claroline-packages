@@ -6,7 +6,7 @@ Send mail to users using various filters
 ]]></description>
 <version>1.0-alpha $Revision$</version>
 <license>GPL</license>
-<icon>email.gif</icon>
+<icon>icon.png</icon>
 <type>admin</type>
 <group>true</group>
 <entry>index.php</entry>
