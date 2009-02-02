@@ -1,0 +1,34 @@
+
+.clsurv2QuestionList{
+	padding : 0;
+}
+
+.clsurv2Question {
+	margin : 10px 0px;
+	border: 1px #cccccc solid;
+	padding : 0px;
+	
+}
+	
+.clsurv2QuestionTitle {
+
+	list-style-type : decimal;
+	list-style-position: inside;
+	margin:0 0 0px 0;
+	color: #693;
+    font-weight: bold;
+    padding: 2px 5px 2px 5px;
+    background-color: #EDF1E3;
+    border: 0px #96BB7A solid;
+    /*border: 1px #96BB7A solid;*/
+}
+
+.clsurv2QuestionContent {
+	padding : 5px;
+}
+
+.clsurv2QuestionContent ul{
+	list-style:none;
+	padding : 0px;
+	margin : 0px;
+}

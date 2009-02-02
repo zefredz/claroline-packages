@@ -1,0 +1,41 @@
+<module>
+  <label>LVSURVEY</label>
+  <name>Survey</name>
+  <version>2.0.0</version>
+  <state>beta</state>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>survey_list.php</entry>
+  <icon>survey.gif</icon>
+
+  <description><![CDATA[
+     This module allows to create and manage surveys
+]]></description>
+
+  <author>
+     <name>Baudet Gregory</name>
+     <email>gregory.baudet@gmail.com</email>
+  </author>
+    <author>
+     <name>Philippe Dekimpe</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.vinci.be</web>
+  </author>
+  <credit>
+     <name>Baudet Gregory</name>
+     <email>gregory.baudet@gmail.com</email>
+     <web>http://www.claroline.net</web>
+  </credit>
+    <credit>
+     <name>Philippe Dekimpe</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.vinci.be</web>
+  </credit>
+
+  <requirements>
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+
+ </requirements>
+</module>
