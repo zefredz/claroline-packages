@@ -1,55 +1,63 @@
 <?php
 try
 {
-    $nameTools = get_lang('Send mail to users');
+    
     // load Claroline kernel
     require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+    $nameTools = get_lang('Send mail to users');
 
     if ( ! claro_is_platform_admin() )
     {
         claro_die('Not allowed');
     }
     
-    require_once dirname(__FILE__) . '/lib/userinput.lib.php';
-    require_once dirname(__FILE__) . '/lib/inputfilters.lib.php';
-    require_once dirname(__FILE__) . '/lib/form.lib.php';
+    FromKernel::uses('utils/input.lib', 'utils/validator.lib', 'sendmail.lib');
+    require_once dirname(__FILE__) . '/lib/icmail.lib.php';
     
-    $userInput = FilteredUserInput::getInstance();
+    $userInput = Claro_UserInput::getInstance();
+    $dialogBox = new DialogBox();
     
-    $allowedCommands = array( 'compose', 'checkBefore', 'send' );
+    $allowedCommands = array( 'compose', 'send' );
     $defaultCommand = 'compose';
     
-    $allowedAddressees = array( 'all', 'creators', 'managers', 'nocourse', 'admin' );
+    $allowedAddressees = array(
+        // 'all',
+        'creators',
+        'managers',
+        // 'nocourse',
+        'admin' );
+    
     $defaultAddressee = 'admin';
     
-    $userInput->setFilter( 
+    $userInput->setValidator( 
         'cmd', 
-        array( new AllowedValueListFilter( $allowedCommands ), 'isValid' )
+        new Claro_Validator_AllowedList( $allowedCommands )
     );
     
-    $userInput->setFilter( 
+    $userInput->setValidator( 
         'addressee', 
-        array( new AllowedValueListFilter( $allowedAddressees ), 'isValid' )
+        new Claro_Validator_AllowedList( $allowedAddressees )
     );
     
     // get user variables
     $cmd = $userInput->get( 'cmd', $defaultCommand );
-    $cmd = $userInput->get( 'addressee', $defaultAddressee );
+    $addressee = $userInput->get( 'addressee', $defaultAddressee );
     
-    if ( $cmd == 'checkBefore' || $cmd == 'send' )
+    if ( $cmd == 'send' )
     {
-        $userInput->setFilter( 
+        $userInput->setValidator( 
             'subject', 
-            array( new NotEmptyFilter(), 'isValid' )
+            new Claro_Validator_NotEmpty()
         );
         
-        $userInput->setFilter( 
+        $userInput->setValidator( 
             'message', 
-            array( new NotEmptyFilter(), 'isValid' )
+            new Claro_Validator_NotEmpty()
         );
         
         $subject = $userInput->getMandatory('subject');
         $message = $userInput->getMandatory('message');
+        $copyToAdmin = $message = $userInput->get('copyToAdmin');
     }
     else
     {
@@ -60,45 +68,62 @@ try
     if ( $cmd == 'compose' )
     {
         $optionList = array();
-        $optionList['nocourse'] = get_lang('Users with no course');
+        // $optionList['nocourse'] = get_lang('Users with no course');
         $optionList['admin'] = get_lang('Administrators');
         $optionList['managers'] = get_lang('Course managers');
         // $optionList['todelete'] = get_lang('Users marked to delete');
         $optionList['creators'] = get_lang('Course creators');
-        $optionList['all'] = get_lang('All users');
+        // $optionList['all'] = get_lang('All users');
         
-        $form = new Form;
-        $form->addElement( new InputHidden( 'cmd', 'checkBefore' ) );
-        $input = new InputText( 'subject', htmlspecialchars($subject) );
-        $input->setLabel( get_lang( 'Subject' )  . ' : ' );
-        $form->addElement( $input, true );
-        $text = new Textarea( 'message', $message, 80, 30 );
-        $text->setLabel( get_lang( 'Message' )  . ' : ' );
-        $form->addElement( $text, true );
-        $select = SelectBox::fromArray( 'adressee', $optionList, $addressee );
-        $select->setLabel( get_lang( 'Addressee' )  . ' : ' );
-        $form->addElement( $select, true );
-        $form->addElement( new InputSubmit( 'submit', get_lang('Check before sending') ) );
-        $form->addElement( new InputCancel( 'cancel', get_lang('Cancel'), $_SERVER['PHP_SELF'] ) );
+        $form = new PhpTemplate( dirname(__FILE__) . '/templates/mailform.tpl.php' );
+        $form->assign( 'subject', $subject );
+        $form->assign( 'message', $message );
+        $form->assign( 'addresseeTypeList', $optionList );
+        $form->assign( 'selectedAddressee', $addressee );
     }
-
-// <------------------------------- CONTINUE FROM HERE
-
-    require_once get_path('includePath') . '/claro_init_header.inc.php';
     
-    echo claro_html_tool_title( $nameTools );
-    
-    if ( isset( $message ) )
+    if ( $cmd == 'send' )
     {
-        echo claro_html_message_box( '<p>'.$message.'</p>' );
+        $userList = ICMAIL::getUserList( $addressee );
+        
+        if ( count( $userList ) )
+        {
+            ICMAIL::sendHtmlMailToList( $userList, $message, $subject, get_conf('administrator_email'), get_conf('administrator_name') );
+            
+            // send copy to admin
+            
+            if ( $addressee != 'admin' && $copyToAdmin )
+            {
+                ICMAIL::sendHtmlMailToUser( get_conf('administrator_email'), get_conf('administrator_name'), $message, $subject, get_conf('administrator_email'), get_conf('administrator_name') );
+            }
+            
+            $dialogBox->success('Message sent');
+            
+            $form = new PhpTemplate( dirname(__FILE__) . '/templates/mailhiddenform.tpl.php' );
+            $form->assign( 'subject', $subject );
+            $form->assign( 'message', $message );
+            $form->assign( 'addressee', $addressee );
+            
+            $dialogBox->form( $form->render() );
+        }
+        else
+        {
+            $dialogBox->error('No user found');
+        }
     }
+    
+    // DISPLAY
+
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $nameTools ) );
+    
+    Claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
     
     if ( $cmd == 'compose' )
     {
-        echo $form->render();
+        Claroline::getInstance()->display->body->appendContent( $form->render() );
     }
     
-    require_once get_path('includePath') . '/claro_init_footer.inc.php';
+    echo Claroline::getInstance()->display->render();
 }
 catch ( Exception $e )
 {
@@ -111,4 +136,3 @@ catch ( Exception $e )
         claro_die( $e->getMessage() );
     }
 }
-?>
