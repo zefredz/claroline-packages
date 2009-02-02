@@ -221,7 +221,7 @@ class SurveyList {
                 $out .= '<tr'.$invisibleClass.'>' . "\n"
                 .     '<td>'
                 .     '<a href="show_survey.php?surveyId='.$aSurvey['id'].'" class="item">'
-                .     '<img src="survey.gif" alt="" />'
+                .     '<img src="' .get_icon_url('survey').'" alt="" />'
                 .     $aSurvey['title']
                 .     '</a>'
                 .     '</td>' . "\n";
@@ -274,14 +274,14 @@ class SurveyList {
                     //edit icon
                     $out .=  '<td align="center">'
                     .     '<a href="edit_survey.php?surveyId='.$aSurvey['id'].'">'
-                    .     '<img src="'. get_path('imgRepositoryWeb') . '/edit.gif" border="0" alt="'.get_lang('Modify').'" />'
+                    .     '<img src="'. get_icon_url('edit').'" border="0" alt="'.get_lang('Modify').'" />'
                     .     '</a>'
                     .     '</td>' . "\n";
                     
                     //delete icon
                     $out .=  '<td align="center">'
                     .     '<a href="survey_list.php?surveyId='.$aSurvey['id'].'&amp;cmd=surveyDel" >'
-                    .     '<img src="' . get_path('imgRepositoryWeb') . '/delete.gif" border="0" alt="'.get_lang('Delete').'" />'
+                    .     '<img src="' .get_icon_url('delete').'" border="0" alt="'.get_lang('Delete').'" />'
                     .     '</a>'
                     .     '</td>' . "\n";
                     
@@ -289,11 +289,11 @@ class SurveyList {
                     $updownlinks = '';
                     if($counter != 1)
                     	$updownlinks .= '<a href="survey_list.php?surveyId='.$aSurvey['id'].'&amp;cmd=surveyMoveUp">'
-                        .     '<img src="' . get_path('imgRepositoryWeb') . '/up.gif" border="0" alt="'.get_lang('Move up').'" />'
+                        .     '<img src="' .get_icon_url('move_up').'" border="0" alt="'.get_lang('Move up').'" />'
                         .     '</a>';
                     if(count($this->surveyList)!=$counter)
                     	$updownlinks .= '<a href="survey_list.php?surveyId='.$aSurvey['id'].'&amp;cmd=surveyMoveDown">'
-                        .     '<img src="' . get_path('imgRepositoryWeb') . '/down.gif" border="0" alt="'.get_lang('Move down').'" />'
+                        .     '<img src="' . get_icon_url('move_down').'" border="0" alt="'.get_lang('Move down').'" />'
                         .     '</a>';
                     if($updownlinks=='')
                         $updownlinks='&nbsp;';
@@ -304,7 +304,7 @@ class SurveyList {
                     {
                         $out .=  '<td align="center">'
                         .     '<a href="survey_list.php?surveyId='.$aSurvey['id'].'&amp;cmd=surveyMkInvis">'
-                        .     '<img src="' . get_path('imgRepositoryWeb') . '/visible.gif" border="0" alt="'.get_lang('Make invisible').'" />'
+                        .     '<img src="' .get_icon_url('visible').'" border="0" alt="'.get_lang('Make invisible').'" />'
                         .     '</a>'
                         .     '</td>' . "\n";
                     }
@@ -312,7 +312,7 @@ class SurveyList {
                     {
                         $out .=  '<td align="center">'
                         .     '<a href="survey_list.php?surveyId='.$aSurvey['id'].'&amp;cmd=surveyMkVis">'
-                        .     '<img src="' . get_path('imgRepositoryWeb') . '/invisible.gif" border="0" alt="'.get_lang('Make visible').'" />'
+                        .     '<img src="' . get_icon_url('invisible').'" border="0" alt="'.get_lang('Make visible').'" />'
                         .     '</a>'
                         .     '</td>' . "\n";
                     }

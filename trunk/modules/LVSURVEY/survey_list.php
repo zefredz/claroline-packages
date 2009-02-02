@@ -108,7 +108,7 @@
                 $dialogBox = new DialogBox();
                 $boxcontent = '<ul>
             			<li><a href="survey_list.php">'.
-                        get_lang("Return to survey list")
+                        get_lang("Get back to the survey list")
                         .'</a></li>'."\n"
                         .'</ul>';
                 $dialogBox->success( get_lang('Survey has been deleted')."!".$boxcontent);
