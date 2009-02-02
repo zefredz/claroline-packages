@@ -126,7 +126,7 @@
 
         if($is_allowedToEdit)
         {
-            $cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$surveyId.'">'.'<img src="'. get_path('imgRepositoryWeb') . 'edit.gif" border="0" alt="'.get_lang('Modify').'" />'.get_lang('Edit survey properties').'</a>';
+            $cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$surveyId.'">'.'<img src="' .get_icon_url('edit').'" border="0" alt="'.get_lang('Modify').'" />'.get_lang('Edit survey properties').'</a>';
             $cmd_menu[] = '<a class="claroCmd" href="add_question.php?surveyId='.$surveyId.'">'.get_lang('Add question').'</a>';
             $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$surveyId.'">'.get_lang('View results of this survey').'</a>';
         }

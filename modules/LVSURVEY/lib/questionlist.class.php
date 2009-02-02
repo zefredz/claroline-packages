@@ -137,7 +137,7 @@ class QuestionList {
                 
                 $out .=  '<td align="center">'
                 .     '<a href="edit_question.php?questionId='.$aQuestion['id'].'">'
-                .     '<img src="'. get_path('imgRepositoryWeb') . '/edit.gif" border="0" alt="'.get_lang('Modify').'" />'
+                .     '<img src="' .get_icon_url('edit').'" border="0" alt="'.get_lang('Modify').'" />'
                 .     '</a>'
                 .     '</td>' . "\n";
     
@@ -145,7 +145,7 @@ class QuestionList {
     
                 $out .=  '<td align="center">'
                 .     '<a href="question_pool.php?questionId='.$aQuestion['id'].'&amp;cmd=questionDel" onclick="javascript:if(!confirm(\''.clean_str_for_javascript($confirmString).'\')) return false;">'
-                .     '<img src="' . get_path('imgRepositoryWeb') . '/delete.gif" border="0" alt="'.get_lang('Delete').'" />'
+                .     '<img src="' .get_icon_url('delete').'"" border="0" alt="'.get_lang('Delete').'" />'
                 .     '</a>'
                 .     '</td>' . "\n";
                

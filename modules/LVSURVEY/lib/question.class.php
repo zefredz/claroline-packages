@@ -638,19 +638,19 @@ class Question {
 		{
             if($arrowup == true)
                 $out .= '<a href="show_survey.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'&amp;cmd=questionMoveUp">'
-                    .     '<img src="' . get_path('imgRepositoryWeb') . '/up.gif" border="0" alt="'.get_lang('Move up').'" />'
+                    .     '<img src="' .get_icon_url('move_up').'" border="0" alt="'.get_lang('Move up').'" />'
                     .     '</a>';
             if($arrowdown == true)
                 $out .= '<a href="show_survey.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'&amp;cmd=questionMoveDown">'
-                    .     '<img src="' . get_path('imgRepositoryWeb') . '/down.gif" border="0" alt="'.get_lang('Move down').'" />'
+                    .     '<img src="' .get_icon_url('move_down').'" border="0" alt="'.get_lang('Move down').'" />'
                     .     '</a>';
             $out .= '<a href="edit_question.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'">'
-                 .'<img src="'. get_path('imgRepositoryWeb') . '/edit.gif" border="0" alt="'.get_lang('Modify').'" />'
+                 .'<img src="' .get_icon_url('edit').'" border="0" alt="'.get_lang('Modify').'" />'
                  .'</a>';
 			if((int)$this->surveyId != -1)
             {
     			$out .='<a href="show_survey.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'&amp;cmd=questionRemove" >'
-                     .'<img src="' . get_path('imgRepositoryWeb') . '/delete.gif" border="0" alt="'.get_lang('Delete').'" />'
+                     .'<img src="' .get_icon_url('delete').'" border="0" alt="'.get_lang('Delete').'" />'
                      .'</a>';
             }
         }

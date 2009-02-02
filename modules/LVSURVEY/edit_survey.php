@@ -106,7 +106,9 @@
     
     if($surveyId > 0)
     {
-        $cmd_menu[] = '<a class="claroCmd" href="show_survey.php?surveyId='.$surveyId.'">'.'<img src="'. get_path('imgRepositoryWeb') . '/edit.gif" border="0" alt="'.get_lang('Modify').'" />'.get_lang('Edit questions of this survey').'</a>';
+        $cmd_menu[] = '<a class="claroCmd" href="show_survey.php?surveyId='.$surveyId.'">'
+        .<img src="' .get_icon_url('edit').'" border="0" alt="'.get_lang('Modify').'" />'
+        .get_lang('Edit questions of this survey').'</a>';
     }
     
     //generate output
