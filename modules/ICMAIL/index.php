@@ -40,24 +40,55 @@ try
     );
     
     // get user variables
-    $cmd = $userInput->get( 'cmd', $defaultCommand );
-    $addressee = $userInput->get( 'addressee', $defaultAddressee );
+    try
+    {
+        $cmd = $userInput->get( 'cmd', $defaultCommand );
+    }
+    catch ( Exception $e )
+    {
+        $dialogBox->error('Invalid command');
+    }
+    
+    try
+    {
+        $addressee = $userInput->get( 'addressee', $defaultAddressee );
+    }
+    catch ( Exception $e )
+    {
+        $dialogBox->error('Invalid addressee');
+    }
     
     if ( $cmd == 'send' )
     {
-        $userInput->setValidator( 
-            'subject', 
-            new Claro_Validator_NotEmpty()
-        );
+        try
+        {
+            $userInput->setValidator( 
+                'subject', 
+                new Claro_Validator_NotEmpty()
+            );
+            
+            $subject = $userInput->getMandatory('subject');
+        }
+        catch ( Exception $e )
+        {
+            $dialogBox->error('Missing subject');
+        }
         
-        $userInput->setValidator( 
-            'message', 
-            new Claro_Validator_NotEmpty()
-        );
+        try
+        {
+            $userInput->setValidator( 
+                'message', 
+                new Claro_Validator_NotEmpty()
+            );
+            
+            $message = $userInput->getMandatory('message');
+        }
+        catch ( Exception $e )
+        {
+            $dialogBox->error('Missing message');
+        }
         
-        $subject = $userInput->getMandatory('subject');
-        $message = $userInput->getMandatory('message');
-        $copyToAdmin = $message = $userInput->get('copyToAdmin');
+        $copyToAdmin = $userInput->get('copyToAdmin');
     }
     else
     {
@@ -115,7 +146,6 @@ try
     // DISPLAY
 
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $nameTools ) );
-    
     Claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
     
     if ( $cmd == 'compose' )
