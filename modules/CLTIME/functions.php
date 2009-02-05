@@ -1,6 +1,7 @@
 <?php
     
     ClaroHeader::getInstance()->addHtmlHeader('
+    <script type="text/javascript">
         function timeExam(){
             
                 $.ajax({
@@ -21,6 +22,7 @@
             
             $(function(){
                 timeExam();
-            }); ');
+            });
+    </script>');
     
 ?>
