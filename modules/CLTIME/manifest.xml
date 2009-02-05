@@ -1,0 +1,25 @@
+<module>
+  <label>CLTIME</label>
+  <name>Server time</name>
+  <version>1.0-alpha $Revision$</version> 
+  <license>GPL</license>
+  <type>applet</type>
+  <icon>icon.png</icon>
+  <default_dock>campusFooterLeft</default_dock>
+   
+  <description>
+    This plugin allow to display the time on the server
+  </description>
+  
+  <author>
+     <name>Frederic Minne</name>
+     <email>zefredz@gmail.com</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+ </requirements>
+</module>
