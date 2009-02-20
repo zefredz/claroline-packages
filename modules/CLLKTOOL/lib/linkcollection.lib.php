@@ -1,4 +1,14 @@
-<?php
+<?php // $Id$
+
+/**
+ * Claroline Advanced Link Tool
+ *
+ * @version     CLLKTOOL 1.0-alpha $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLLKTOOL
+ * @author      Frederic Minne <frederic.minne@uclouvain.be>
+ */
 
 class LinkCollection
 {

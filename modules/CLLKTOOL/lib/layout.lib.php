@@ -1,4 +1,14 @@
-<?php
+<?php // $Id$
+
+/**
+ * Claroline Layout library
+ *
+ * @version     Claroline 1.9 $Revision$
+ * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     kernel.display
+ * @author      Frederic Minne <frederic.minne@uclouvain.be>
+ */
 
 interface Layout extends Display {};
 
