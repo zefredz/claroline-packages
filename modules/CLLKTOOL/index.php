@@ -41,8 +41,6 @@ try
     
     // get data
     
-    $list = $collection->load();
-    
     switch ( $cmd )
     {
         case 'list':
@@ -61,7 +59,7 @@ try
                 $id = (int) $link['id'];
                 $url = $link['url'];
                 $title = $link['title'];
-                $params = unserialize( $link['params'] );
+                $options = unserialize( $link['options'] );
                 $type = $link['type'];
             break;
         case 'rqAddLink':
@@ -79,7 +77,7 @@ try
                 
                 $url = $userInput->getMandatory( 'linkUrl' );
                 $title = $userInput->get( 'title', $url );
-                $params = $userInput->get( 'params', array() );
+                $options = $userInput->get( 'options', array() );
                 $type = $userInput->get( 'type', 'iframe' );
             break;
         case 'exDeleteLink':
@@ -92,6 +90,22 @@ try
     $layout = new LeftMenuLayout;
     
     // prepare left menu for any cmd
+    
+    $linkList = '<ul>' . "\n";
+    
+    foreach ( $collection->getAll() as $currentLink )
+    {
+        $linkList .= '<li><a href="'
+            . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&linkId='.(int)$currentLink['id'] ) )
+            . '">'
+            . htmlspecialchars($currentLink['title'])
+            . '</a></li>' . "\n"
+            ;
+    }
+    
+    $linkList .= '</ul>' . "\n";
+    
+    $layout->appendToLeft( $linkList );
     
     // prepare right menu
     switch ( $cmd )
