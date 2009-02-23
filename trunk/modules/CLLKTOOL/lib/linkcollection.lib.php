@@ -26,6 +26,11 @@ class LinkCollection
             FROM `{$tbl['cllktool_links']}`"
         );
         
+        if ( ! $collection )
+        {
+            $collection = new ArrayIterator( array() );
+        }
+        
         return $collection;
     }
     
