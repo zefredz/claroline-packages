@@ -8,34 +8,53 @@
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLKTOOL
  * @author      Frederic Minne <frederic.minne@uclouvain.be>
+ * @author      Dimitri Rambout <dimitri.rambout@uclouvain.be>
  */
 
 $tlabelReq = 'CLLKTOOL';
 
 require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-FromKernel::uses('utils/input.lib','utils/validator.lib');
+
+FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib');
 From::Module('CLLKTOOL')->uses('linkcollection.lib','layout.lib.php');
+
+if ( !claro_is_in_a_course() || !claro_is_course_allowed() ) claro_disp_auth_form(true);
 
 $dialogBox = new DialogBox;
 
 try
 {
+    $is_allowed_to_edit = claro_is_allowed_to_edit();
     
     $collection = LinkCollection::getInstance();
     
+    $internOptionsList = $collection->loadOptionsList();
+    
     $userInput = Claro_UserInput::getInstance();
     
-    $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-        'list', 'visit',
-        'rqAddLink', 'exAddLink',
-        'rqEditLink', 'exEditLink',
-        'rqDeleteLink', 'exDeleteLink'
-    ) ) );
+    if( $is_allowed_to_edit )
+    {
+        $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
+            'list', 'visit',
+            'rqAddLink', 'exAddLink',
+            'rqEditLink', 'exEditLink',
+            'rqDeleteLink', 'exDeleteLink',
+            'exMkVis', 'exMkInvis'
+        ) ) );   
+    }
+    else
+    {
+       $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
+            'list', 'visit'
+        ) ) );  
+    }
     
-    $userInput->setValidator('type', new Claro_Validator_AllowedList(array(
+    $typeList = array(
         'post:json','post:xml','post:plain','widget','iframe','popup'
-    )));
+    );
+    
+    $userInput->setValidator('type', new Claro_Validator_AllowedList( $typeList ));
     
     $cmd = $userInput->get( 'cmd','list' );
     
@@ -48,7 +67,10 @@ try
         case 'visit':
         case 'rqEditLink':
         case 'rqDeleteLink':
+        case 'exMkVis':
+        case 'exMkInvis':
                 $id = $userInput->getMandatory( 'linkId' );
+                
                 $link = $collection->get( $id );
                 
                 if ( ! $link )
@@ -59,8 +81,9 @@ try
                 $id = (int) $link['id'];
                 $url = $link['url'];
                 $title = $link['title'];
-                $options = unserialize( $link['options'] );
+                $options = !empty($link['options']) ? unserialize( $link['options'] ) : array();
                 $type = $link['type'];
+                $visibility = $link['visibility'];
             break;
         case 'rqAddLink':
             break;
@@ -74,11 +97,11 @@ try
                 {
                     $id = null;
                 }
-                
-                $url = $userInput->getMandatory( 'linkUrl' );
-                $title = $userInput->get( 'title', $url );
+                $url = $userInput->getMandatory( 'url' );
+                $title = $userInput->getMandatory( 'title' );
                 $options = $userInput->get( 'options', array() );
                 $type = $userInput->get( 'type', 'iframe' );
+                $visibility = $userInput->get ( 'visibility', 'visible' );
             break;
         case 'exDeleteLink':
                 $id = $userInput->getMandatory( 'linkId' );
@@ -89,24 +112,6 @@ try
     
     $layout = new LeftMenuLayout;
     
-    // prepare left menu for any cmd
-    
-    $linkList = '<ul>' . "\n";
-    
-    foreach ( $collection->getAll() as $currentLink )
-    {
-        $linkList .= '<li><a href="'
-            . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&linkId='.(int)$currentLink['id'] ) )
-            . '">'
-            . htmlspecialchars($currentLink['title'])
-            . '</a></li>' . "\n"
-            ;
-    }
-    
-    $linkList .= '</ul>' . "\n";
-    
-    $layout->appendToLeft( $linkList );
-    
     // prepare right menu
     switch ( $cmd )
     {
@@ -114,22 +119,348 @@ try
                 $layout->appendToRight(get_lang('Choose a link to start'));
             break;
         case 'visit':
-                $layout->appendToRight( $url );
+            {
+                if( !($visibility == 'visible' || $is_allowed_to_edit) )
+                {
+                    $dialogBox->error( 'Error: unable to display the link' );
+                    break;
+                }
+                
+                // GET
+                $gets = "";
+                foreach( $options as $option )
+                {
+                    if($option['method'] == 'get' )
+                    {
+                        if( $gets )
+                        {
+                            $gets .= "&";
+                        }
+                        if( $option['var'] == 'freeValue' )
+                        {
+                            $gets .= $option['name'].'='.$option['value'];
+                        }
+                        else
+                        {
+                            $gets .= $option['name']. '='.$collection->loadInternalOptionValue( $option['var'] );
+                        }                        
+                    }
+                }
+                
+                // POST
+                $posts = "";
+                foreach( $options as $option )
+                {
+                    if($option['method'] == 'get' )
+                    {
+                        if( $posts )
+                        {
+                            $posts .= "&";
+                        }
+                        if( $option['var'] == 'freeValue' )
+                        {
+                            $posts .= $option['name'].'='.$option['value'];
+                        }
+                        else
+                        {
+                            $posts .= $option['name']. '='.$collection->loadInternalOptionValue( $option['var'] );
+                        }                        
+                    }
+                }
+                
+                switch( $type )
+                {
+                    case 'iframe' :
+                        {
+                            
+                            $iframe = '<iframe src="' . $url .'?'. htmlspecialchars($gets) .'" style="width: 100%; height: 500px; border: 0;"></iframe>';
+                            $layout->appendToRight( $iframe );
+                        }
+                        break;
+                }
+            }
             break;
         case 'rqEditLink':
+            {
+                $selectOptionsList =  '<option value="0"></option>'
+                . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
+                ;
+                foreach($internOptionsList as $labelValue => $_options)
+                {
+                    $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
+                    foreach($_options as $key => $value)
+                    {
+                        $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
+                    }
+                    $selectOptionsList .= '</optgroup>';
+                }
+                Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+                Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+                
+                $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
+                $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) ));
+                $form->assign( 'title', $title);
+                $form->assign( 'url', $url);
+                $form->assign( 'typeList', $typeList);
+                $form->assign( 'type', $type);
+                $form->assign( 'options', $options);
+                $form->assign( 'optionsList', $selectOptionsList );
+                $form->assign( 'visibility', $visibility );
+                $form->assign( 'id', $id );
+                
+                $layout->appendToRight( $form->render() );
+            }
             break;
         case 'rqAddLink':
+            {
+                $selectOptionsList =  '<option value="0"></option>'
+                . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
+                ;
+                foreach($internOptionsList as $labelValue => $_options)
+                {
+                    $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
+                    foreach($_options as $key => $value)
+                    {
+                        $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
+                    }
+                    $selectOptionsList .= '</optgroup>';
+                }
+                Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+                Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \'0\';');
+                
+                $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
+                $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) ));
+                $form->assign( 'title', null);
+                $form->assign( 'url', null);
+                $form->assign( 'typeList', $typeList);
+                $form->assign( 'type', 'iframe');
+                $form->assign( 'options', array() );
+                $form->assign( 'optionsList', $selectOptionsList );
+                $form->assign( 'visibility', null );
+                $form->assign( 'id', null );
+                
+                $layout->appendToRight( $form->render() );
+            }
             break;
         case 'rqDeleteLink':
+            {
+                $out = '<p>' . get_lang('Do you want to delete the link: %linkTitle ?', array('%linkTitle' => $title )) . '</p>' . "\n"
+                .   '<form method="post" action="index.php?cmd=exDeleteLink">' . "\n"
+                .   '<input type="hidden" name="linkId" value="' . $id . '" />'
+                .   '<input type="submit" name="" id="" value="'. get_lang('Ok') .'" />&nbsp;&nbsp;'
+                .   claro_html_button('./index.php', get_lang("Cancel") )
+                .   '</form>'
+                ;
+                $dialogBox->question( $out );                
+            }
             break;
         case 'exEditLink':
-                $collection->update( $id, $url, $title, $type, $params );
+            {
+                $error = false;
+                if(is_array($options) && count($options) )
+                {
+                    foreach( $options as $option )
+                    {
+                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) && isset($option['method']) ) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( empty($option['name']) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( empty($option['var']) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( $option['var'] != 'freeValue' )
+                        {
+                            if( ! $collection->checkOptionExist( $option['var'] ) )
+                            {
+                                $error = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if( empty( $option['value']) )
+                            {
+                                $error = true;
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                
+                if( !$error )
+                {
+                    if( $collection->update( $id, $url, $title, $type, $options, $visibility ) )
+                    {
+                        $dialogBox->success( get_lang('Link edited successfully') );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang('Error: unable to edit the link') );
+                    }
+                }
+                else
+                {
+                    $dialogBox->error( get_lang('Error: check Options'));
+                    $selectOptionsList =  '<option value="0"></option>'
+                    . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
+                    ;
+                    foreach($internOptionsList as $labelValue => $_options)
+                    {
+                        $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
+                        foreach($_options as $key => $value)
+                        {
+                            $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
+                        }
+                        $selectOptionsList .= '</optgroup>';
+                    }
+                    
+                    Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+                    Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+                    
+                    $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
+                    $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) ));
+                    $form->assign( 'title', $title);
+                    $form->assign( 'url', $url);
+                    $form->assign( 'typeList', $typeList);
+                    $form->assign( 'type', $type);
+                    $form->assign( 'options', $options);
+                    $form->assign( 'optionsList', $selectOptionsList );
+                    $form->assign( 'visibility', $visibility );
+                    $form->assign( 'id', $id );
+                    
+                    $layout->appendToRight( $form->render() );                    
+                }
+            }
             break;
         case 'exAddLink':
-                $collection->add( $url, $title, $type, $params );
+            {
+                $error = false;
+                if(is_array($options) && count($options) )
+                {
+                    foreach( $options as $option )
+                    {
+                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) && isset($option['method']) ) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( empty($option['name']) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( empty($option['var']) )
+                        {
+                            $error = true;
+                            break;
+                        }
+                        if( $option['var'] != 'freeValue' )
+                        {
+                            if( ! $collection->checkOptionExist( $option['var'] ) )
+                            {
+                                $error = true;
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            if( empty( $option['value']) )
+                            {
+                                $error = true;
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                
+                if( !$error )
+                {
+                    if( $collection->add( $url, $title, $type, $options, $visibility ) )
+                    {
+                        $dialogBox->success( get_lang('Link added successfully') );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang('Error: unable to add the link') );
+                    }
+                }
+                else
+                {
+                    $dialogBox->error( get_lang('Error: check Options'));
+                    $selectOptionsList =  '<option value="0"></option>'
+                    . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
+                    ;
+                    foreach($internOptionsList as $labelValue => $_options)
+                    {
+                        $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
+                        foreach($_options as $key => $value)
+                        {
+                            $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
+                        }
+                        $selectOptionsList .= '</optgroup>';
+                    }
+                    
+                    Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+                    Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+                    
+                    $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
+                    $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) ));
+                    $form->assign( 'title', $title);
+                    $form->assign( 'url', $url);
+                    $form->assign( 'typeList', $typeList);
+                    $form->assign( 'type', $type);
+                    $form->assign( 'options', $options);
+                    $form->assign( 'optionsList', $selectOptionsList );
+                    $form->assign( 'visibility', $visibility );
+                    $form->assign( 'id', null );
+                    
+                    $layout->appendToRight( $form->render() );                    
+                }                
+            }
             break;
         case 'exDeleteLink':
-                $collection->delete( $id );
+                if( $collection->delete( $id ) )
+                {
+                    $dialogBox->success( get_lang('Link deleted successfully') );
+                }
+                else
+                {
+                    $dialogBox->error( get_lang('Error: unable to delete the link') );
+                }
+            break;
+        case 'exMkVis' :
+            {
+                if( $collection->changeVisibility( $id, 'visible' ) )
+                {
+                    $dialogBox->success('The link is now visible');
+                }
+                else
+                {
+                    $dialogBox->error('Unable to change the visibility of the link');
+                }
+            }
+            break;
+        case 'exMkInvis':
+            {
+                if( $collection->changeVisibility( $id, 'invisible' ) )
+                {
+                    $dialogBox->success('The link is now invisible');
+                }
+                else
+                {
+                    $dialogBox->error('Unable to change the visibility of the link');
+                }
+            }
             break;
         default:
             throw new Exception('Unknown command');
@@ -137,7 +468,66 @@ try
     
     $layout->prependToRight( $dialogBox->render() );
     
-    Claroline::getDisplay()->body->append( $layout->render() );
+    
+    // prepare left menu for any cmd
+    
+    $linkList = '<ul>' . "\n";
+    
+    foreach ( $collection->getAll() as $currentLink )
+    {
+        if( $currentLink['visibility'] == 'visible' || $is_allowed_to_edit )
+        {
+            $linkList .= '<li><a href="'
+                . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&linkId='.(int)$currentLink['id'] ) )
+                . '">'
+                . htmlspecialchars($currentLink['title'])
+                . '</a>' . "\n"
+                ;
+            if( $is_allowed_to_edit )
+            {
+                // Edit link
+                $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLink&linkId='.(int)$currentLink['id'] ) ) . '">'
+                . '<img src="./img/link_edit.png" alt="'.get_lang('Modify').'" />'
+                . '</a>' . "\n"
+                // Delete link
+                . ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLink&linkId='.(int)$currentLink['id'] ) ) . '">'
+                . '<img src="./img/link_delete.png" alt="'.get_lang('Delete').'" />'
+                . '</a>' . "\n"
+                ;
+                // Visibility
+                if( $currentLink['visibility'] == 'visible' )
+                {
+                    $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvis&linkId='.(int)$currentLink['id'] ) ) . '">'
+                    . '<img src="' . get_icon_url('visible') . '" alt="'.get_lang('Make Invisible').'" />'
+                    . '</a>' . "\n"
+                    ;  
+                }
+                else
+                {
+                    $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVis&linkId='.(int)$currentLink['id'] ) ) . '">'
+                    . '<img src="' . get_icon_url('invisible') . '" alt="'.get_lang('Make Visible').'" />'
+                    . '</a>' . "\n"
+                    ;   
+                }            
+            }
+            $linkList .= '</li>' . "\n"
+            ;   
+        }        
+    }
+    
+    $linkList .= '</ul>' . "\n";
+    
+    $url_addLink = '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLink' ) ) . '">'
+    . '<img src="./img/link_add.png" /> '
+    . get_lang( 'Create a new link')
+    . '</a>' . "\n"
+    ;
+    
+    $layout->appendToLeft( $url_addLink );
+    $layout->appendToLeft( $linkList );
+    $layout->appendToLeft( $url_addLink );
+    
+    Claroline::getDisplay()->body->appendcontent( $layout->render() );
 }
 catch ( Exception $e )
 {
@@ -150,5 +540,13 @@ catch ( Exception $e )
         $dialogBox->error( $e->getMessage() );
     }
     
-    Claroline::getDisplay()->body->append( $dialogBox->render() );
+    Claroline::getDisplay()->body->appendcontent( $dialogBox->render() );
 }
+
+$jsLoader = JavascriptLoader::getInstance();
+$jsLoader->load( 'cllktool');
+
+$cssLoader = CssLoader::getInstance();
+$cssLoader->load( 'cllktool', 'screen');
+
+echo $claroline->display->render();
