@@ -206,6 +206,50 @@ class LinkCollection
                 break;
         }
     }
+    
+    /**
+     *
+     * Display the form to add/edit link
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     *
+     * @param
+     *
+     * @return string form
+     *
+     */
+    public function displayForm( $formUrl, $title, $url, $typeList, $type, $options, $visibility, $id, $internOptionsList)
+    {
+        $selectOptionsList =  '<option value="0"></option>'
+        . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
+        ;
+        foreach($internOptionsList as $labelValue => $_options)
+        {
+            $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
+            foreach($_options as $key => $value)
+            {
+                $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
+            }
+            $selectOptionsList .= '</optgroup>';
+        }
+        
+        Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+        Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+        
+        $form = new PhpTemplate( dirname(__FILE__) . '/../templates/linkaddeditform.tpl.php' );
+        $form->assign( 'formUrl', $formUrl);
+        $form->assign( 'title', $title);
+        $form->assign( 'url', $url);
+        $form->assign( 'typeList', $typeList);
+        $form->assign( 'type', $type);
+        $form->assign( 'options', $options);
+        $form->assign( 'optionsList', $selectOptionsList );
+        $form->assign( 'visibility', $visibility );
+        $form->assign( 'id', $id );
+        
+        return $form->render();
+                    
+    }
     // Singleton constructor
     
     private static $instance = false;
