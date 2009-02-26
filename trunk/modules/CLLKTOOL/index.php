@@ -182,64 +182,43 @@ try
             break;
         case 'rqEditLink':
             {
-                $selectOptionsList =  '<option value="0"></option>'
-                . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
-                ;
-                foreach($internOptionsList as $labelValue => $_options)
-                {
-                    $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
-                    foreach($_options as $key => $value)
-                    {
-                        $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
-                    }
-                    $selectOptionsList .= '</optgroup>';
-                }
-                Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
-                Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
                 
-                $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
-                $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) ));
-                $form->assign( 'title', $title);
-                $form->assign( 'url', $url);
-                $form->assign( 'typeList', $typeList);
-                $form->assign( 'type', $type);
-                $form->assign( 'options', $options);
-                $form->assign( 'optionsList', $selectOptionsList );
-                $form->assign( 'visibility', $visibility );
-                $form->assign( 'id', $id );
+                $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) );
+                    
+                $form = $collection->displayForm(
+                  $formUrl,
+                  $title,
+                  $url,
+                  $typeList,
+                  $type,
+                  $options,
+                  $visibility,
+                  $id,
+                  $internOptionsList
+                );
                 
-                $layout->appendToRight( $form->render() );
+                $layout->appendToRight( $form );
+                
             }
             break;
         case 'rqAddLink':
             {
-                $selectOptionsList =  '<option value="0"></option>'
-                . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
-                ;
-                foreach($internOptionsList as $labelValue => $_options)
-                {
-                    $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
-                    foreach($_options as $key => $value)
-                    {
-                        $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
-                    }
-                    $selectOptionsList .= '</optgroup>';
-                }
-                Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
-                Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \'0\';');
                 
-                $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
-                $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) ));
-                $form->assign( 'title', null);
-                $form->assign( 'url', null);
-                $form->assign( 'typeList', $typeList);
-                $form->assign( 'type', 'iframe');
-                $form->assign( 'options', array() );
-                $form->assign( 'optionsList', $selectOptionsList );
-                $form->assign( 'visibility', null );
-                $form->assign( 'id', null );
+                $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) );
+                    
+                $form = $collection->displayForm(
+                  $formUrl,
+                  null,
+                  null,
+                  $typeList,
+                  'iframe',
+                  array(),
+                  null,
+                  null,
+                  $internOptionsList
+                );
                 
-                $layout->appendToRight( $form->render() );
+                $layout->appendToRight( $form );                
             }
             break;
         case 'rqDeleteLink':
@@ -310,34 +289,22 @@ try
                 else
                 {
                     $dialogBox->error( get_lang('Error: check Options'));
-                    $selectOptionsList =  '<option value="0"></option>'
-                    . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
-                    ;
-                    foreach($internOptionsList as $labelValue => $_options)
-                    {
-                        $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
-                        foreach($_options as $key => $value)
-                        {
-                            $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
-                        }
-                        $selectOptionsList .= '</optgroup>';
-                    }
                     
-                    Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
-                    Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+                    $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) );
                     
-                    $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
-                    $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) ));
-                    $form->assign( 'title', $title);
-                    $form->assign( 'url', $url);
-                    $form->assign( 'typeList', $typeList);
-                    $form->assign( 'type', $type);
-                    $form->assign( 'options', $options);
-                    $form->assign( 'optionsList', $selectOptionsList );
-                    $form->assign( 'visibility', $visibility );
-                    $form->assign( 'id', $id );
+                    $form = $collection->displayForm(
+                      $formUrl,
+                      $title,
+                      $url,
+                      $typeList,
+                      $type,
+                      $options,
+                      $visibility,
+                      $id,
+                      $internOptionsList
+                    );
                     
-                    $layout->appendToRight( $form->render() );                    
+                    $layout->appendToRight( $form );
                 }
             }
             break;
@@ -397,34 +364,23 @@ try
                 else
                 {
                     $dialogBox->error( get_lang('Error: check Options'));
-                    $selectOptionsList =  '<option value="0"></option>'
-                    . '<option value="freeValue" class="_freeValue">' . get_lang( 'Free value' ) . '</option>'
-                    ;
-                    foreach($internOptionsList as $labelValue => $_options)
-                    {
-                        $selectOptionsList .= '<optgroup label="' . $labelValue . '">';
-                        foreach($_options as $key => $value)
-                        {
-                            $selectOptionsList .= '<option value="' . $key . '" class="_'.$key.'">' . $value . '</option>';
-                        }
-                        $selectOptionsList .= '</optgroup>';
-                    }
                     
-                    Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
-                    Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
+                    $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) );
                     
-                    $form = new PhpTemplate( dirname(__FILE__) . '/templates/linkaddeditform.tpl.php' );
-                    $form->assign( 'formUrl', htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) ));
-                    $form->assign( 'title', $title);
-                    $form->assign( 'url', $url);
-                    $form->assign( 'typeList', $typeList);
-                    $form->assign( 'type', $type);
-                    $form->assign( 'options', $options);
-                    $form->assign( 'optionsList', $selectOptionsList );
-                    $form->assign( 'visibility', $visibility );
-                    $form->assign( 'id', null );
+                    $form = $collection->displayForm(
+                      $formUrl,
+                      $title,
+                      $url,
+                      $typeList,
+                      $type,
+                      $options,
+                      $visibility,
+                      null,
+                      $internOptionsList
+                    );
                     
-                    $layout->appendToRight( $form->render() );                    
+                    $layout->appendToRight( $form );                    
+                    
                 }                
             }
             break;
@@ -473,7 +429,9 @@ try
     
     $linkList = '<ul>' . "\n";
     
-    foreach ( $collection->getAll() as $currentLink )
+    $links = $collection->getAll();
+    
+    foreach ( $links as $currentLink )
     {
         if( $currentLink['visibility'] == 'visible' || $is_allowed_to_edit )
         {
@@ -524,8 +482,11 @@ try
     ;
     
     $layout->appendToLeft( $url_addLink );
-    $layout->appendToLeft( $linkList );
-    $layout->appendToLeft( $url_addLink );
+    if(count($links))
+    {
+        $layout->appendToLeft( $linkList );
+        $layout->appendToLeft( $url_addLink );   
+    }    
     
     Claroline::getDisplay()->body->appendcontent( $layout->render() );
 }
