@@ -278,7 +278,7 @@ try
                 }
                 else
                 {
-                    $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
+                    $podcastList .= ' <a class="invisible" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
                     . '<img src="' . get_icon_url('invisible') . '" alt="'.get_lang('Make Visible').'" />'
                     . '</a>' . "\n"
                     ;   
@@ -291,7 +291,7 @@ try
     
     $podcastList .= '</ul>' . "\n";
     
-    $url_addPodcast = '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ) . '">'
+    $url_addPodcast = '<a class="claroCmd" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ) . '">'
     . '<img src="./img/feed_add.png" /> '
     . get_lang( 'Create a new podcast')
     . '</a>' . "\n"
@@ -325,6 +325,9 @@ catch ( Exception $e )
 
 $jsLoader = JavascriptLoader::getInstance();
 $jsLoader->load( 'flowplayer-3.0.6.min');
+
+$cssLoader = CssLoader::getInstance();
+$cssLoader->load( 'icpcrdr', 'screen');
 
 $nameTools = get_lang("Video podcast reader");
 
