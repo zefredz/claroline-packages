@@ -82,7 +82,7 @@ try
             break;
         case 'exEditPodcast':
         case 'exAddPodcast':
-                if ( 'exEditLink' == $cmd )
+                if ( 'exEditPodcast' == $cmd )
                 {
                     $id = $userInput->getMandatory( 'podcastId' );
                 }
@@ -261,25 +261,25 @@ try
             {
                 // Edit link
                 $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPodcast&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                . '<img src="./img/feed_edit.png" alt="'.get_lang('Modify').'" />'
+                . '<img src="' . get_icon_url('feed_edit') . '" alt="" />'
                 . '</a>' . "\n"
                 // Delete link
                 . ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePodcast&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                . '<img src="./img/feed_delete.png" alt="'.get_lang('Delete').'" />'
+                . '<img src="' . get_icon_url('feed_delete') . '" alt="" />'
                 . '</a>' . "\n"
                 ;
                 // Visibility
                 if( $currentPodcast['visibility'] == 'visible' )
                 {
                     $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('visible') . '" alt="'.get_lang('Make Invisible').'" />'
+                    . '<img src="' . get_icon_url('visible') . '" alt="" />'
                     . '</a>' . "\n"
                     ;  
                 }
                 else
                 {
                     $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('invisible') . '" alt="'.get_lang('Make Visible').'" />'
+                    . '<img src="' . get_icon_url('invisible') . '" alt="" />'
                     . '</a>' . "\n"
                     ;   
                 }            
@@ -292,7 +292,7 @@ try
     $podcastList .= '</ul>' . "\n";
     
     $url_addPodcast = '<a class="claroCmd" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ) . '">'
-    . '<img src="./img/feed_add.png" /> '
+    . '<img src="' . get_icon_url('feed_add') . '" alt="" /> '
     . get_lang( 'Create a new podcast')
     . '</a>' . "\n"
     ;
