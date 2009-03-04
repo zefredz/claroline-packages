@@ -9,17 +9,17 @@
             <dd><input type="text" name="title" id="title" size="60" maxlength="200" value="<?php echo $this->title; ?>" /></dd>
             <dt><label for="url"><?php echo get_lang('Url'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
             <dd><input type="text" name="url" id="url" size="60" maxlength="200" value="<?php echo $this->url; ?>" /></dd>
-            <dt><label for="visibility"><?php echo get_lang('Visibility'); ?>&nbsp;:</label></dt>
+            <dt><?php echo get_lang('Visibility'); ?>&nbsp;:</dt>
             <dd>
-                <select name="visibility">                    
-                    <option value="visible" <?php if( $this->visibility == 'visible' ) : echo 'selected="selected"'; endif; ?>><?php echo get_lang('Visible'); ?></option>
-                    <option value="invisible" <?php if( $this->visibility == 'invisible' ) : echo 'selected="selected"'; endif; ?>><?php echo get_lang('Invisible'); ?></option>
-                </select>
+                <input type="radio" id="visibility_visible" name="visibility" value="visible" <?php if( $this->visibility == 'visible' ) : echo 'checked="checked"'; endif; ?> />
+                <label for="visibility_visible"><?php echo get_lang('Visible'); ?>&nbsp;<img src="<?php echo get_icon_url('visible'); ?>" alt="" /></label><br />
+                <input type="radio" id="visibility_invisible" name="visibility" value="invisible" <?php if( $this->visibility == 'invisible' ) : echo 'checked="checked"'; endif; ?> />
+                <label for="visibility_invisible"><?php echo get_lang('Invisible'); ?>&nbsp;<img src="<?php echo get_icon_url('invisible'); ?>" alt="" /></label>
             </dd>
         </dl>
     </fieldset>
     <div style="text-align: center;">
-        <input type="submit" name="" id="" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
+        <input type="submit" name="submit" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
         <?php echo claro_html_button('./index.php', get_lang("Cancel") ); ?>
     </div>
 </form>
