@@ -48,7 +48,7 @@ class LinkRenderer implements Display
             $selectOptionsList .= '</optgroup>';
         }
         
-        Claroline::getInstance()->display->header->addInlineJavascript('var selectOptionsList = \''. $selectOptionsList .'\';');
+        Claroline::getInstance()->display->header->addInlineJavascript('/*<![CDATA[*/ var selectOptionsList = \''. $selectOptionsList .'\'; /*]]>*/');
         Claroline::getInstance()->display->header->addInlineJavascript('var optionsNb = \''. count( $options ) .'\';');
         
         $form = new PhpTemplate( dirname(__FILE__) . '/../templates/linkaddeditform.tpl.php' );
