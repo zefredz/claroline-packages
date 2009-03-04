@@ -407,7 +407,7 @@ try
         {
             $linkList .= '<li><a href="'
                 . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&linkId='.(int)$currentLink['id'] ) )
-                . '">'
+                . '" ' .($currentLink['visibility'] != 'visible' ? 'class="invisible"' : ''). '>'
                 . htmlspecialchars($currentLink['title'])
                 . '</a>' . "\n"
                 ;
@@ -446,7 +446,7 @@ try
     $linkList .= '</ul>' . "\n";
     
     $url_addLink = '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLink' ) ) . '">'
-    . '<img src="./img/link_add.png" /> '
+    . '<img src="./img/link_add.png" alt="" /> '
     . get_lang( 'Create a new link')
     . '</a>' . "\n"
     ;

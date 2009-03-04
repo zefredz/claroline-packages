@@ -126,7 +126,7 @@ class LinkCollection
         $internOptionsList[ $userInformationLabel ][ 'userName' ] = get_lang( 'Username' );
         $internOptionsList[ $userInformationLabel ][ 'firstName' ] = get_lang( 'Firstname' );
         $internOptionsList[ $userInformationLabel ][ 'lastName' ] = get_lang( 'Lastname' );
-        //$internOptionsList[ $userInformationLabel ][ 'mail' ] = get_lang( 'Mail' );
+        $internOptionsList[ $userInformationLabel ][ 'mail' ] = get_lang( 'Mail' );
         //$internOptionsList[ $userInformationLabel ][ 'officialEmail' ] = get_lang( 'Official email' );
         $internOptionsList[ $userInformationLabel ][ 'officialCode' ] = get_lang( 'Official code' );
         $internOptionsList[ $userInformationLabel ][ 'language' ] = get_lang( 'Language' );
@@ -170,6 +170,10 @@ class LinkCollection
             case 'lastName' :
                 $userProperties = user_get_properties( claro_get_current_user_id() );
                 return $userProperties['lastname'];
+                break;
+            case 'mail' :
+                $userProperties = user_get_properties( claro_get_current_user_id() );
+                return $userProperties['email'];
                 break;
             case 'officialCode' :
                 $userProperties = user_get_properties( claro_get_current_user_id() );

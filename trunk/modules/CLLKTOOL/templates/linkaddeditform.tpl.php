@@ -30,7 +30,7 @@
                         <?php echo get_lang('Name'); ?> :
                         <input type="text" name="options[params][<?php echo $i; ?>][name]" value="<?php echo $option['name']; ?>" id="name_<?php echo $i; ?>" />
                         <?php echo get_lang('Value'); ?> :
-                        <select name="options[params][<?php echo $i; ?>][var]" id="option_<?php echo $i; ?>" onchange="linkLoadOptionValue(this, <?php echo $i; ?>)" ><?php echo $this->optionsList; ?></select>
+                        <select name="options[params][<?php echo $i; ?>][var]" id="options_<?php echo $i; ?>" onchange="linkLoadOptionValue(this, <?php echo $i; ?>)" ><?php echo $this->optionsList; ?></select>
                         <?php
                         if( $option['var'] == 'freeValue' ) :
                         ?><input type="text" name="options[params][<?php echo $i; ?>][value]" value="<?php echo $option['value']; ?>" id="value_<?php echo $i; ?>" style="width: 100px;" />
@@ -59,7 +59,7 @@
         </dl>        
     </fieldset>
     <div style="text-align: center;">
-        <input type="submit" name="" id="" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
-        <?php echo claro_html_button('./index.php', get_lang("Cancel") ); ?>
+        <input type="submit" name="submitButton" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
+        <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><input type="button" name="cancelButton" value="<?php echo get_lang("Cancel"); ?>" /></a>
     </div>
 </form>
