@@ -109,7 +109,7 @@ try
     switch ( $cmd )
     {
         case 'list':
-                $layout->appendToRight(get_lang('Choose a podcast in the list to start'));
+                $dialogBox->info(get_lang('Choose a podcast in the list to start'));
             break;
         case 'visit':
                 if( !($visibility == 'visible' || $is_allowed_to_edit) )
