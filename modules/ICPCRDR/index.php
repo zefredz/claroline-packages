@@ -251,7 +251,7 @@ try
     {
         if( $currentPodcast['visibility'] == 'visible' || $is_allowed_to_edit )
         {
-            $podcastList .= '<li><a href="'
+            $podcastList .= '<li><a'.($currentPodcast['visibility'] == 'visible' ? '' : ' class="invisible"').' href="'
                 . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) )
                 . '">'
                 . htmlspecialchars($currentPodcast['title'])
@@ -278,7 +278,7 @@ try
                 }
                 else
                 {
-                    $podcastList .= ' <a class="invisible" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
+                    $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
                     . '<img src="' . get_icon_url('invisible') . '" alt="'.get_lang('Make Visible').'" />'
                     . '</a>' . "\n"
                     ;   
