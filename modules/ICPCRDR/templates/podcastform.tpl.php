@@ -20,6 +20,6 @@
     </fieldset>
     <div style="text-align: center;">
         <input type="submit" name="submit" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
-        <?php echo claro_html_button('./index.php', get_lang("Cancel") ); ?>
+        <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><input type="button" name="cancel" value="<?php echo get_lang('Cancel'); ?>" /></a>
     </div>
 </form>
