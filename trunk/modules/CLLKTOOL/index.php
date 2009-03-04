@@ -18,6 +18,7 @@ require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
 FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib','display/layout.lib');
 From::Module('CLLKTOOL')->uses('linkcollection.lib');
+From::Module('CLLKTOOL')->uses('linkrenderer.lib');
 
 if ( !claro_is_in_a_course() || !claro_is_course_allowed() ) claro_disp_auth_form(true);
 
@@ -81,7 +82,7 @@ try
                 $id = (int) $link['id'];
                 $url = $link['url'];
                 $title = $link['title'];
-                $options = !empty($link['options']) ? unserialize( $link['options'] ) : array();
+                $options = !empty($link['options']) ? unserialize( $link['options'] ) : array('params','width','height');
                 $type = $link['type'];
                 $visibility = $link['visibility'];
             break;
@@ -99,7 +100,7 @@ try
                 }
                 $url = $userInput->getMandatory( 'url' );
                 $title = $userInput->getMandatory( 'title' );
-                $options = $userInput->get( 'options', array() );
+                $options = $userInput->get( 'options', array('params' => array(),'width' => '','height' => '') );
                 $type = $userInput->get( 'type', 'iframe' );
                 $visibility = $userInput->get ( 'visibility', 'visible' );
             break;
@@ -122,70 +123,37 @@ try
             {
                 if( !($visibility == 'visible' || $is_allowed_to_edit) )
                 {
-                    $dialogBox->error( 'Error: unable to display the link' );
+                    $dialogBox->error( get_lang('Error: unable to display the link') );
                     break;
                 }
-                
-                // GET
-                $gets = "";
-                foreach( $options as $option )
+                $_options = array();
+                if(!(isset($options['params']) && is_array($options['params']) && count($options['params']) ) )
                 {
-                    if($option['method'] == 'get' )
+                    $options['params'] = array();
+                }
+                foreach( $options['params'] as $option )
+                {
+                    if( $option['var'] == 'freeValue' )
                     {
-                        if( $gets )
-                        {
-                            $gets .= "&";
-                        }
-                        if( $option['var'] == 'freeValue' )
-                        {
-                            $gets .= $option['name'].'='.$option['value'];
-                        }
-                        else
-                        {
-                            $gets .= $option['name']. '='.$collection->loadInternalOptionValue( $option['var'] );
-                        }                        
+                        $_options[$option['name']] = $option['value'];
                     }
-                }
-                
-                // POST
-                $posts = "";
-                foreach( $options as $option )
-                {
-                    if($option['method'] == 'get' )
+                    else
                     {
-                        if( $posts )
-                        {
-                            $posts .= "&";
-                        }
-                        if( $option['var'] == 'freeValue' )
-                        {
-                            $posts .= $option['name'].'='.$option['value'];
-                        }
-                        else
-                        {
-                            $posts .= $option['name']. '='.$collection->loadInternalOptionValue( $option['var'] );
-                        }                        
-                    }
+                        $_options[$option['name']] = $collection->loadInternalOptionValue( $option['var'] );
+                    }                        
                 }
+                $options['params'] = $_options;
+                $linkRenderer = new LinkRenderer( $url, $options, $type, $title );
                 
-                switch( $type )
-                {
-                    case 'iframe' :
-                        {
-                            
-                            $iframe = '<iframe src="' . $url .'?'. htmlspecialchars($gets) .'" style="width: 100%; height: 500px; border: 0;"></iframe>';
-                            $layout->appendToRight( $iframe );
-                        }
-                        break;
-                }
+                $layout->appendToRight($linkRenderer->render());                
             }
             break;
         case 'rqEditLink':
             {
                 
                 $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) );
-                    
-                $form = $collection->displayForm(
+                
+                $form = LinkRenderer::displayForm(
                   $formUrl,
                   $title,
                   $url,
@@ -206,13 +174,13 @@ try
                 
                 $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) );
                     
-                $form = $collection->displayForm(
+                $form = LinkRenderer::displayForm(
                   $formUrl,
                   null,
                   null,
                   $typeList,
                   'iframe',
-                  array(),
+                  array('params' => array(),'width' => '','height' => ''),
                   null,
                   null,
                   $internOptionsList
@@ -236,11 +204,11 @@ try
         case 'exEditLink':
             {
                 $error = false;
-                if(is_array($options) && count($options) )
+                if(isset($options['params']) && is_array($options['params']) && count($options['params']) )
                 {
-                    foreach( $options as $option )
+                    foreach( $options['params'] as $option )
                     {
-                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) && isset($option['method']) ) )
+                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) ) )
                         {
                             $error = true;
                             break;
@@ -292,7 +260,7 @@ try
                     
                     $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditLink' ) );
                     
-                    $form = $collection->displayForm(
+                    $form = LinkRenderer::displayForm(
                       $formUrl,
                       $title,
                       $url,
@@ -311,11 +279,11 @@ try
         case 'exAddLink':
             {
                 $error = false;
-                if(is_array($options) && count($options) )
-                {
-                    foreach( $options as $option )
+                if(isset($options['params']) && is_array($options['params']) && count($options['params']) )
+                {                    
+                    foreach( $options['params'] as $option )
                     {
-                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) && isset($option['method']) ) )
+                        if( !( isset($option['name']) && isset($option['var']) && isset($option['value']) ) )
                         {
                             $error = true;
                             break;
@@ -367,7 +335,7 @@ try
                     
                     $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLink' ) );
                     
-                    $form = $collection->displayForm(
+                    $form = LinkRenderer::displayForm(
                       $formUrl,
                       $title,
                       $url,
@@ -385,6 +353,7 @@ try
             }
             break;
         case 'exDeleteLink':
+            {
                 if( $collection->delete( $id ) )
                 {
                     $dialogBox->success( get_lang('Link deleted successfully') );
@@ -393,16 +362,17 @@ try
                 {
                     $dialogBox->error( get_lang('Error: unable to delete the link') );
                 }
+            }
             break;
         case 'exMkVis' :
             {
                 if( $collection->changeVisibility( $id, 'visible' ) )
                 {
-                    $dialogBox->success('The link is now visible');
+                    $dialogBox->success(get_lang('The link is now visible'));
                 }
                 else
                 {
-                    $dialogBox->error('Unable to change the visibility of the link');
+                    $dialogBox->error(get_lang('Unable to change the visibility of the link'));
                 }
             }
             break;
@@ -410,16 +380,16 @@ try
             {
                 if( $collection->changeVisibility( $id, 'invisible' ) )
                 {
-                    $dialogBox->success('The link is now invisible');
+                    $dialogBox->success(get_lang('The link is now invisible'));
                 }
                 else
                 {
-                    $dialogBox->error('Unable to change the visibility of the link');
+                    $dialogBox->error(get_lang('Unable to change the visibility of the link'));
                 }
             }
             break;
         default:
-            throw new Exception('Unknown command');
+            throw new Exception(get_lang('Unknown command'));
     }
     
     $layout->prependToRight( $dialogBox->render() );
