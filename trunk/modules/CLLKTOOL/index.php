@@ -15,10 +15,8 @@ $tlabelReq = 'CLLKTOOL';
 
 require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-
 FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib','display/layout.lib');
-From::Module('CLLKTOOL')->uses('linkcollection.lib');
-From::Module('CLLKTOOL')->uses('linkrenderer.lib');
+From::Module('CLLKTOOL')->uses('linkcollection.lib','linkrenderer.lib');
 
 if ( !claro_is_in_a_course() || !claro_is_course_allowed() ) claro_disp_auth_form(true);
 
