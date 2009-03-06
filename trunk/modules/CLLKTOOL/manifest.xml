@@ -1,6 +1,6 @@
 <module>
 <label>CLLKTOOL</label>
-<name>Advanced Eternal Link Tool</name>
+<name>Advanced external Link Tool</name>
 <description><![CDATA[
 This tool allow to manage and access a list of links within a course with advanced
 options such as adding extra parameters to url
