@@ -1,0 +1,24 @@
+<module>
+<label>LVUNUSED</label>
+<name>Clean unused courses</name>
+<description><![CDATA[
+  Clean unused courses for tool for administrator
+  ]]></description>
+<version>1.0-alpha</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>admin</type>
+<entry>index.php</entry>
+
+<author>
+<name>Philippe Dekimpe</name>
+<email>philippe@claroline.net</email>
+<web>http://www.claroline.net/</web>
+</author>
+
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>
