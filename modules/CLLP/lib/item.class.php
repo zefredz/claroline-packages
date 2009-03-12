@@ -318,7 +318,7 @@ class item
         $sql = "DELETE FROM `" . $this->tblBlockCond . "`
                 WHERE `item_id` = ". $this->id;
         
-        if( claro_sql_query($sql) == fasle ) return false;
+        if( claro_sql_query($sql) == false ) return false;
 
         $this->id = -1;
         return true;
