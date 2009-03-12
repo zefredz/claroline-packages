@@ -383,7 +383,7 @@ class attempt
     {
     	// use max instead of count to handle suppressed attempts
     	$sql = "SELECT MAX(`attempt_number`)
-    			FROM ".$this->tblAttempt."
+    			FROM `".$this->tblAttempt."`
     			WHERE `path_id` = ".(int) $this->pathId."
     			AND `user_id` = ".(int) $this->userId;
 
