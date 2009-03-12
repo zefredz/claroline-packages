@@ -116,7 +116,7 @@ if( $is_allowedToEdit )
         .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
         .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
         .    claro_form_relay_context()
-        .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
+        //.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
         .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
         .    '<br />' . "\n"
         .     '<input type="file" name="uploadedPackage" />' . "\n"
