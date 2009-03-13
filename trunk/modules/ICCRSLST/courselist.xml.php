@@ -8,8 +8,9 @@
     </user>
     <courses><?php if ( count( $this->courses ) ):
     foreach ( $this->courses as $course ) : ?>
-        <course code="<?php echo $course['officialCode']; ?>" id="<?php echo $course['id']; ?>">
+        <course id="<?php echo $course['id']; ?>">
             <title><?php echo $course['title']; ?></title>
+            <code><?php echo $course['officialCode']; ?></code>
             <manager><?php echo $course['isCourseManager'] == 1 ? 'true' : 'false'; ?></manager>
             <profile><?php echo claro_get_profile_name( $course['profileId'] ); ?></profile>
         </course>
