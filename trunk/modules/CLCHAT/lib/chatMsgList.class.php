@@ -213,11 +213,19 @@ class ChatMsgList
      
     function archive()
     {
+        // Load CSS
+        $cssPath = './css/clchat.css';
+        $cssContent = '';
+        if( file_exists($cssPath) && is_readable($cssPath) )
+        {
+            $cssContent = file_get_contents( $cssPath );            
+        }
         // Prepare archive file content
         $htmlContentHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">' . "\n"
         .    '<html>' . "\n"
         .    '<head>' . "\n"
         .    '<title>' . get_lang('Chat') . '</title>'
+        .    (!empty($cssContent) ? '<style type="text/css">'.$cssContent.'</style>' : '')
         .    '</head>' . "\n"
         .    '<body>' . "\n\n";
     
@@ -225,7 +233,7 @@ class ChatMsgList
         .    '</html>' . "\n";
     
         
-        $htmlContent = $this->render();
+        $htmlContent = '<div id="clchat_chatarea" style="height: auto;">'.$this->render().'</div>';
         
         $htmlContent = $htmlContentHeader . $htmlContent . $htmlContentFooter; 
         
