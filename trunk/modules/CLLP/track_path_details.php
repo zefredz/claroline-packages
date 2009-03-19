@@ -28,7 +28,7 @@ if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = 
 else                                                                  $pathId = null;
 
 if( isset($_REQUEST['userId']) && is_numeric($_REQUEST['userId']) )   $userId = (int) $_REQUEST['userId'];
-else                                                                  $userId = null;
+else                                                                  $userId = claro_get_current_user_id();
 
 $path = new path();
 
@@ -45,9 +45,13 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 
 $dialogBox = new DialogBox();
 
-if( !($is_allowedToEdit && !is_null($pathId) && !is_null($userId) ) )
+if( is_null($pathId) )
 {
     claro_die( get_lang('Not allowed') );
+}
+elseif( !$is_allowedToEdit && $userId != claro_get_current_user_id() )
+{
+    claro_die( get_lang('Not allowed'));
 }
 else
 {
@@ -123,8 +127,8 @@ else
                     }
                     
                 }
-                $out .= '<td class="centerContent">' . $itemAttempt->getSessionTime() . '</td>'
-                .   '<td class="centerContent">' . $itemAttempt->getTotalTime() . '</td>'
+                $out .= '<td class="centerContent">' . $itemAttempt->getSessionTime() . '&nbsp;</td>'
+                .   '<td class="centerContent">' . $itemAttempt->getTotalTime() . '&nbsp;</td>'
                 ;
                 
                 switch( $itemAttempt->getCompletionStatus() )

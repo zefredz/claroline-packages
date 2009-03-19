@@ -155,7 +155,7 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
 		$tocFrame->noFrameBorder();
 		
 		// content frame
-		$contentFrame = new ClaroFrame('lp_content', 'blank.htm');
+		$contentFrame = new ClaroFrame('lp_content', 'blank.php');
 		$contentFrame->allowScrolling(true);
 		$contentFrame->noFrameBorder();
 		

@@ -83,7 +83,7 @@ $html .= '<p>' . "\n"
 .    '</a>' . "\n"
 //- tracking
 .     '&nbsp;&nbsp;'
-.    '<a href="'.get_module_url('CLLP').'/track_path.php?path_id='.$pathId.'" title="'.get_lang('View statistics').'" target="_top" onClick="return exitConfirmation();">'
+.    '<a href="'.get_module_url('CLLP').'/'.(claro_is_allowed_to_edit() ? 'track_path.php?' : 'track_path_details.php?').'pathId='.$pathId.'" title="'.get_lang('View statistics').'" target="_top" onClick="return exitConfirmation();">'
 .    '<img src="'.get_icon_url('statistics').'" alt="'.get_lang('View statistics').'" />'
 .    '</a>' . "\n"
 //- previous and next buttons
@@ -108,6 +108,53 @@ $html .= '<p>' . "\n"
 
 // table of content
 $html .= "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
+
+$html .= '<div style="padding: 10px 5px;" class="claroCmd">' . "\n"
+// links - back to list
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="'.get_module_url('CLLP').'/index.php" title="'.get_lang('Back to list').'" target="_top" onClick="return exitConfirmation();">'
+.    '<img src="'.get_icon_url('go-home').'" alt="'.get_lang('Back to list').'" />'
+.    '&nbsp;' . get_lang('Back to list')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+// links - tracking
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="'.get_module_url('CLLP').'/'.(claro_is_allowed_to_edit() ? 'track_path.php?' : 'track_path_details.php?').'pathId='.$pathId.'" title="'.get_lang('View statistics').'" target="_top" onClick="return exitConfirmation();">'
+.    '<img src="'.get_icon_url('statistics').'" alt="'.get_lang('View statistics').'" />'
+.    '&nbsp;' . get_lang('View statistics')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+// links - Previous
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="#" title="'.get_lang('Previous').'" onClick="lpHandler.goPrevious(); return false;" id="goPrevious">'
+.    '<img src="'.get_icon_url('go_left').'" alt="'.get_lang('Previous').'" />'
+.    '&nbsp;' . get_lang('Previous')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+// links - Next
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="#" title="'.get_lang('Next').'" onClick="lpHandler.goNext(); return false;" id="goNext">'
+.    '<img src="'.get_icon_url('go_right').'" alt="'.get_lang('Next').'" />'
+.    '&nbsp;' . get_lang('Next')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+// links - Fullscreen
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="#" title="'.get_lang('Fullscreen').'" onClick="lpHandler.setFullscreen(); return false;">'
+.    '<img src="'.get_icon_url('view-fullscreen').'" alt="'.get_lang('Fullscreen').'" />'
+.    '&nbsp;' . get_lang('Fullscreen')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+// links - Embedded
+.    '<div style="text-align: left;">' . "\n"
+.    '<a href="#" title="'.get_lang('Embedded').'" onClick="lpHandler.setEmbedded(); return false;">'
+.    '<img src="'.get_icon_url('view-embedded').'" alt="'.get_lang('Embedded').'" />'
+.    '&nbsp;' . get_lang('Embedded')
+.    '</a>' . "\n"
+.    '</div>' . "\n"
+//
+.   '</div>'
+;
 
 // debug messages
 $html .= "\n"

@@ -156,14 +156,30 @@ function rqOpenItem() {
  */
 function mkOpenItem(itemUrl) {
     debug("mkOpenItem()",1);
-
-    if( itemUrl != '' )
+		
+		if( itemUrl != '' )
     {
-        lp_top.lp_content.location = itemUrl;
+      var frame = lp_top.frames['lp_content'].document;
+			
+			$.ajax({
+				type: "GET",
+				url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+				success: function(response){
+					$(frame.getElementById('description')).children().remove();
+					if( response )
+					{
+						$(frame.getElementById('description')).append(response);
+					}
+				},
+				dataType: 'html'
+			});
+			//lp_top.lp_content.content.location = itemUrl;
+			$(frame.getElementById('content')).attr('src', itemUrl);
+			
     }
     else
     {
-        lp_top.lp_content.location = 'blank.htm';
+        lp_top.lp_content.location = 'blank.php';
     }
 
     makeItemActive(lpHandler.itemId);
@@ -382,12 +398,12 @@ function dump(arr,level) {
     return dumped_text;
 }
 
-function addBlockingCondition( pathId) {
+function addBlockingCondition( pathId ) {
     var div = $("<div>").attr("id", "");
     
     if( $("select[name='item[]']").size() > 0)
     {
-      var sConditions = $("<select>").attr("name","condition[]");
+      var sConditions = $("<select>").attr("name","condition[]");			
       $.ajax({
         type: "POST",
         url: "../viewer/scormServer.php",
@@ -425,7 +441,31 @@ function addBlockingCondition( pathId) {
     $(div).append(sOperators);
     
     var sStatus = $("<select>").attr("name","status[]");
+		$(sStatus).change( function(){
+				
+				$(div).find('span').remove();
+				var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right');
+				var sSpan = $('<span>');
+				if( $(sStatus).attr("value") == 'COMPLETED' )
+				{
+					$(iPct).attr('type','text');
+					sSpan.append(iPct);
+					sSpan.append('%');
+				}
+				else
+				{
+					$(iPct).attr('type','hidden');
+					sSpan.append(iPct);
+				}
+				$(div).append(sSpan);
+			});
     $(div).append(sStatus);
+		var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right').attr('type','text');		
+		var sSpan = $('<span>');
+		sSpan.append(iPct);
+		sSpan.append('%');
+		$(div).append(sSpan);
+		
     $.ajax({
         type: "POST",
         url: "../viewer/scormServer.php",
