@@ -494,8 +494,9 @@ if( $cmd == 'rqPrereq' )
                              .   '<select name="_status[]" disabled="disabled">' . "\n"
                              .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
                              .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
-                             .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
+                             //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
                              .   '</select>'
+                             .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" disabled="disabled" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
                              .   '</div>' . "\n";
                         }
                         $htmlPrereqContainer .= '</div>' . "\n";
@@ -535,11 +536,28 @@ if( $cmd == 'rqPrereq' )
                 .   '<select name="operator[]">' . "\n"
                 .   '<option value="=" '.( $blockconds['operator'][$key] == '=' ? 'selected="selected"' : '').'>=</option>' . "\n"
                 .   '</select>'
-                .   '<select name="status[]">' . "\n"
+                .   '<select name="status[]" onchange="
+                        $(this).parent().find(\'span\').remove();
+                        var iPct = $(\'<input>\').attr(\'name\',\'raw_to_pass[]\').css(\'width\',\'50px\');
+                        var sSpan = $(\'<span>\');
+                        if( $(this).attr(\'value\') == \'COMPLETED\' )
+                        {
+                          $(iPct).attr(\'type\',\'text\');
+                          sSpan.append(iPct);
+                          sSpan.append(\'%\');
+                        }
+                        else
+                        {
+                          $(iPct).attr(\'type\',\'hidden\');
+                          sSpan.append(iPct);
+                        }
+                        $(this).parent().append(sSpan);
+                    ">' . "\n"
                 .   '<option value="COMPLETED" '.( $blockconds['status'][$key] == 'COMPLETED' ? 'selected="selected"' : '' ).'>'.get_lang('completed').'</option>' . "\n"
                 .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
-                .   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
-                .   '</select>'
+                //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
+                .   '</select>' . "\n"
+                .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
                 .   '</div>' . "\n";
             }
         }

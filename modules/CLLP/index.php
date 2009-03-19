@@ -448,17 +448,17 @@ else
 	    }
 	    else
 	    {
-		if( $user_id )
-		{
-		    $thisAttempt->load( $aPath['id'], $user_id );
-		    $itemList = new PathUserItemList($aPath['id'], $user_id, $thisAttempt->getId());
-		}
-		else
-		{
-		    $itemList = new PathItemList( $aPath['id'] );
-		}
-		
-		$lpProgress = $thisAttempt->getProgress();
+				if( $user_id )
+				{
+						$thisAttempt->load( $aPath['id'], $user_id );
+						$itemList = new PathUserItemList($aPath['id'], $user_id, $thisAttempt->getId());
+				}
+				else
+				{
+						$itemList = new PathItemList( $aPath['id'] );
+				}
+				
+				$lpProgress = $thisAttempt->getProgress();
 	    }
             
             // compute global progression
@@ -466,10 +466,10 @@ else
 
             // progression
             $out .= '<td align="right">'
-            .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.get_lang('See details').'">' . claro_html_progress_bar($lpProgress, 1) . '</a>' . "\n"
+            .    '<a href="' . get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] . '" title="'.get_lang('See details').'">' . claro_html_progress_bar($lpProgress, 1) . '</a>' . "\n"
             .    '</td>' . "\n"
             .    '<td align="left">'
-            .    '<small><a href="" title="'.get_lang('See details').'">' . $lpProgress . '%</a></small>'
+            .    '<small><a href="' . get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] . '" title="'.get_lang('See details').'">' . $lpProgress . '%</a></small>'
             .    '</td>' . "\n"
             ;
 

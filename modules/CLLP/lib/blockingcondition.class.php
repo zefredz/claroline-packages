@@ -80,10 +80,11 @@ class blockingcondition
                             '".(int) $value."',
                             '".$this->blockconds['status'][$key]."',
                             '".$this->blockconds['operator'][$key]."',
-                            '".(isset($this->blockconds['condition'][$key]) ? $this->blockconds['condition'][$key] : -1)."') ";
+                            '".(isset($this->blockconds['condition'][$key]) ? $this->blockconds['condition'][$key] : -1)."',
+														'".(int) $this->blockconds['raw_to_pass'][$key] ."') ";
             }
             $sql = "INSERT INTO `".$this->tblBlockcond."`
-                        ( `item_id`, `cond_item_id`, `completion_status`, `operator`, `condition`) VALUES " . $sql;
+                        ( `item_id`, `cond_item_id`, `completion_status`, `operator`, `condition`, `raw_to_pass`) VALUES " . $sql;
             $insertedId = claro_sql_query_insert_id($sql);
              
             if( $insertedId )
@@ -126,6 +127,7 @@ class blockingcondition
                     $blockconds['item'][] = $d['cond_item_id'];
                     $blockconds['operator'][] = $d['operator'];
                     $blockconds['status'][] = $d['completion_status'];
+										$blockconds['raw_to_pass'][] = $d['raw_to_pass'];
                     if($k)
                     {
                         $blockconds['condition'][] = $data[$k-1]['condition'];
@@ -206,6 +208,10 @@ class blockingcondition
                                 break;
                 }
                 $eval .= "'".$itemAttempt->getCompletionStatus()."'";
+								if( $data['status'][$key] == 'COMPLETED' && $data['raw_to_pass'][$key] > 0 )
+								{
+										$eval .= " && " . (int) $itemAttempt->getScoreRaw() ." > " . (int) $data['raw_to_pass'][$key];
+								}
             }
             
             if( $eval && isset($data['condition'][$key]) )

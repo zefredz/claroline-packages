@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -246,7 +246,8 @@ if( $cmd == 'rqContentUrl' )
         }
         else
         {
-            return false;
+            echo 'blockingconditions.php?pathId='. $pathId .'&itemId=' . $itemId;
+            return true;
         }
         
     }
@@ -406,7 +407,7 @@ if( $cmd == 'getStatus' )
 {
     $status['COMPLETED'] = get_lang('completed');
     $status['INCOMPLETE'] = get_lang('incomplete');
-    $status['PASSED'] = get_lang('passed');
+    //$status['PASSED'] = get_lang('passed');
     
     $options = "";
     foreach( $status as $key => $value)
@@ -430,6 +431,21 @@ if( $cmd == 'getConditions' )
     echo $options;
 }
 
+
+if( $cmd == 'getItemDescription' )
+{
+    $item = new item();
+    if( $item->load($itemId) )
+    {
+        $description = $item->getDescription();
+        header('Content-Type: text/html; charset='.get_locale('charset'));
+        echo claro_parse_user_text( html_entity_decode($description) );
+    }
+    else
+    {
+        return false;
+    }
+}
 function lpDebug($var)
 {
     if( claro_debug_mode() )

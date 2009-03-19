@@ -98,6 +98,7 @@ $dialogBox = new DialogBox();
 if( $cmd == 'exEdit' )
 {
     $item->setTitle( $_REQUEST['title'] );
+		$item->setDescription( $_REQUEST['description'] );
     
     if( $item->validate() )
     {
@@ -154,11 +155,20 @@ $itemListArray = $itemList->getFlatList();
 if( $item->load( $itemId ) )
 {
     // edit title if type is container    
-    $htmlEditTitleForm = '<strong>' . get_lang( 'Edit title' ) . '</strong>'. "\n"
-    .   '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=exEdit&pathId='.$pathId.'&itemId='.$itemId.'"  method="post">' . "\n"
-    .   '<input type="text" name="title" value="' . htmlspecialchars( $item->getTitle() ) . '" /> <br />' . "\n"
+    $htmlEditTitleForm = '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=exEdit&pathId='.$pathId.'&itemId='.$itemId.'"  method="post">' . "\n"
+		.		'<fieldset>' . "\n"
+		.		'<legend>' . get_lang( 'Edit item' ) . '</legend>' . "\n"
+		.		'<dl>' . "\n"
+		.		'<dt><label for="title">' . get_lang( 'Title' ) . '&nbsp;:</label></dt>'
+    .   '<dd><input type="text" name="title" id="title" value="' . htmlspecialchars( $item->getTitle() ) . '" style="width: 700px;" /></dd>' . "\n"
+		.		'<dt><label for="description">' . get_lang( 'Description' ) . '&nbsp;:</label></dt>' . "\n"
+		.		'<dd>' . "\n"
+		.   '<div style="width: 700px;">' . claro_html_textarea_editor('description', $item->getDescription()) . '</div>' . "\n"
+		.		'</dd>' . "\n"
+		.		'</dl>' . "\n"
+		.		'</fieldset>' . "\n"
     .   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
-    .   '</form> <br />' . "\n";
+		.   '</form> <br />' . "\n";
     
     $out .= $htmlEditTitleForm; 
 }
