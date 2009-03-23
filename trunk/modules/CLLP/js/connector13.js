@@ -66,6 +66,7 @@ var _Debug = false;  // set this to false to turn debugging off
 
 // Define exception/error codes
 var _NoError = 0;
+var _GeneralError = 100;
 var _GeneralException = 101;
 var _GeneralInitializationFailure = 102;
 var _AlreadyInitialized = 103;

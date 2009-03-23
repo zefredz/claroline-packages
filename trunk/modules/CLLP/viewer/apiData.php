@@ -73,7 +73,6 @@ else
 }
 
 ?>
-
 _api.init();
 
 <?php
