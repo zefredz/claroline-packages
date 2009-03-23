@@ -113,7 +113,6 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
 		$jsloader->load('CLLP');
 		$jsloader->load('scormtime');
 		$jsloader->load('claroline');
-		
 		$jsloader->load($scormAPI->getApiFileName());
 
 		// prepare html header
@@ -127,7 +126,6 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
 		.    '  var debugMode = '.get_conf('scorm_api_debug').';' . "\n\n"
 		
 		.	 '  var lpHandler = new lpHandler(pathId,cidReq,moduleUrl,debugMode);' . "\n"
-		
 		.	 '  var lp_top = this;' . "\n"
 		.	 '  $(document).ready(function() {' . "\n"
 		.    '    setTimeout("lpHandler.refreshToc()", 900);' . "\n"

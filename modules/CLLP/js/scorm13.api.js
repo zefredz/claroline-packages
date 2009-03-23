@@ -1,6 +1,5 @@
     // ====================================================
     // API Class Constructor
-
     var API_1484_11 = {
 
         // ====================================================
@@ -62,7 +61,7 @@
             "cmi.score" : "scaled,min,max,raw",
             "cmi.objectives" : "id,score,success_status,completion_status,progress_measure,description",
             "cmi.interactions" : "id,type,objectives,timestamp,correct_responses,weighting,learner_response,result,latency,description",
-            "cmi.learner_preference" : "audio_level,language,delivery_speed,audio_captioning",
+            "cmi.learner_preference" : "audio_level,language,delivery_speed,audio_captioning"
         },
 
         // make object ready to use in a fresh context
@@ -490,8 +489,7 @@
 
         _APIDiagnostic : function (string) {
                 lastDiagnostic = string;
-        },
-
+        }
 
     } // end of api object
 
