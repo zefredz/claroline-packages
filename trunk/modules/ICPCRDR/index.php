@@ -240,70 +240,12 @@ try
     
     $layout->prependToRight( $dialogBox->render() );
     
-    
     // prepare left menu for any cmd
     
-    $podcastList = '<ul>' . "\n";
+    $podcastList = new PhpTemplate(dirname(__FILE__) . '/templates/podcastlist.tpl.php');
+    $podcastList->assign( 'podcasts', $collection->getAll() );
     
-    $podcasts = $collection->getAll();
-    
-    foreach ( $podcasts as $currentPodcast )
-    {
-        if( $currentPodcast['visibility'] == 'visible' || $is_allowed_to_edit )
-        {
-            $podcastList .= '<li><a'.($currentPodcast['visibility'] == 'visible' ? '' : ' class="invisible"').' href="'
-                . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) )
-                . '">'
-                . htmlspecialchars($currentPodcast['title'])
-                . '</a>' . "\n"
-                ;
-            if( $is_allowed_to_edit )
-            {
-                // Edit link
-                $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPodcast&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                . '<img src="' . get_icon_url('feed_edit') . '" alt="" />'
-                . '</a>' . "\n"
-                // Delete link
-                . ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePodcast&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                . '<img src="' . get_icon_url('feed_delete') . '" alt="" />'
-                . '</a>' . "\n"
-                ;
-                // Visibility
-                if( $currentPodcast['visibility'] == 'visible' )
-                {
-                    $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('visible') . '" alt="" />'
-                    . '</a>' . "\n"
-                    ;  
-                }
-                else
-                {
-                    $podcastList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('invisible') . '" alt="" />'
-                    . '</a>' . "\n"
-                    ;   
-                }            
-            }
-            $podcastList .= '</li>' . "\n"
-            ;   
-        }        
-    }
-    
-    $podcastList .= '</ul>' . "\n";
-    
-    $url_addPodcast = '<a class="claroCmd" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ) . '">'
-    . '<img src="' . get_icon_url('feed_add') . '" alt="" /> '
-    . get_lang( 'Add a podcast')
-    . '</a>' . "\n"
-    ;
-    
-    $layout->appendToLeft( $url_addPodcast );
-    
-    if(count($podcasts))
-    {
-        $layout->appendToLeft( $podcastList );
-        $layout->appendToLeft( $url_addPodcast );   
-    }    
+    $layout->appendToLeft( $podcastList->render() );  
     
     Claroline::getDisplay()->body->appendcontent( claro_html_tool_title( get_lang("Video podcast reader") ) );
     Claroline::getDisplay()->body->appendcontent( $layout->render() );
