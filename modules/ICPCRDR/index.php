@@ -293,7 +293,7 @@ try
     
     $url_addPodcast = '<a class="claroCmd" href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ) . '">'
     . '<img src="' . get_icon_url('feed_add') . '" alt="" /> '
-    . get_lang( 'Create a new podcast')
+    . get_lang( 'Add a podcast')
     . '</a>' . "\n"
     ;
     
