@@ -127,8 +127,8 @@ else
                     }
                     
                 }
-                $out .= '<td class="centerContent">' . $itemAttempt->getSessionTime() . '&nbsp;</td>'
-                .   '<td class="centerContent">' . $itemAttempt->getTotalTime() . '&nbsp;</td>'
+                $out .= '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getSessionTime())) . '&nbsp;</td>'
+                .   '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getTotalTime())) . '&nbsp;</td>'
                 ;
                 
                 switch( $itemAttempt->getCompletionStatus() )

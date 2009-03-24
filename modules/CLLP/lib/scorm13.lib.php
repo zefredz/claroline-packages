@@ -41,7 +41,7 @@ class Scorm13 implements ScormInterface
         // TODO maybe raise some kind of error if nothing is set ?
         // cast to array for easier use
         $dataModelValues = (array) $dataModelValues;
-
+        $dataModelValues['cmi.total_time'] = $itemAttempt->getTotalTime();
         if( !empty($dataModelValues['cmi.location']) )
         {
             $itemAttempt->setLocation($dataModelValues['cmi.location']);

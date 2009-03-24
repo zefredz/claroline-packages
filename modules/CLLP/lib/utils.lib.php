@@ -56,4 +56,68 @@ function unixToScormTime($unixTime)
         return $scormTime;
     }
 }
+
+function scormToUnixTime( $scormTime )
+{
+    list($days,$hours) = split('T', $scormTime);
+    $days = str_replace('P', '', $days);
+    $hours = str_replace('T', '', $hours);
+    
+    $year = substr( $days, 0, strpos($days, 'Y'));    
+    if( $year )
+    {
+        $days = substr( $days, strpos( $days, 'Y') + 1, strlen( $days ));
+    }
+    
+    $month = substr( $days, 0, strpos( $days, 'M'));
+    if( $month )
+    {
+        $days = substr( $days, strpos( $days, 'M') + 1, strlen( $days ));
+    }
+    
+    $day = substr($days, 0, strpos( $days, 'D'));
+    
+    $hour = substr( $hours, 0, strpos( $hours, 'H'));    
+    if( $hour )
+    {
+        $hours = substr( $hours, strpos( $hours, 'H') + 1, strlen( $hours));        
+    }
+    
+    $min = substr( $hours, 0, strpos( $hours, 'M'));
+    if( $min )
+    {
+        $hours = substr( $hours, strpos( $hours, 'M') + 1, strlen( $hours));
+    }
+    
+    $sec = substr( $hours, 0, strpos( $hours, 'S' ));
+    
+    $time = (int) $year * 31557600
+        +   (int) $month * 2629800
+        +   (int) $day * 86400
+        +   (int) $hour * 3600
+        +   (int) $min * 60
+        +   (int) $sec;
+    
+    return $time;    
+}
+
+function unixToDHMS( $unixTime )
+{
+    $d = floor( $unixTime / (86400 ));
+    $unixTime %= 86400;
+    
+    $h = floor( $unixTime / 3600 );
+    $unixTime %= 3600;
+    
+    $min = floor( $unixTime / 60 );
+    $unixTime %= 60;
+    
+    $s = $unixTime;
+    
+    return str_pad( $h, 2, 0, STR_PAD_LEFT)
+    .   ':'
+    .   str_pad( $min, 2, 0, STR_PAD_LEFT)
+    .   ':'
+    .   str_pad( $s, 2, 0, STR_PAD_LEFT);
+}
 ?>
