@@ -422,6 +422,7 @@ class attempt
   PRIMARY KEY(`id`)
 ) TYPE=MyISAM;
  */
+include_once get_module_path('CLLP') . '/lib/utils.lib.php';
 class itemAttempt
 {
     /**
@@ -508,12 +509,12 @@ class itemAttempt
         $this->completionStatus = 'NOT ATTEMPTED';
         $this->entry = 'AB-INITIO';
         $this->scoreRaw = (int) 0;
-	$this->scoreMin = (int) 0;
-	$this->scoreMax = (int) 100;
-	$this->totalTime = ''; // TODO correct format
-	$this->sessionTime = ''; // TODO correct format
-	$this->suspendData = '';
-	$this->credit = 'NO-CREDIT';
+        $this->scoreMin = (int) 0;
+        $this->scoreMax = (int) 100;
+        $this->totalTime = ''; // TODO correct format
+        $this->sessionTime = ''; // TODO correct format
+        $this->suspendData = '';
+        $this->credit = 'NO-CREDIT';
 
         // define module table names
         $tblNameList = array(
@@ -565,12 +566,13 @@ class itemAttempt
 	        $this->completionStatus = $data['completion_status'];
 	        $this->entry = $data['entry'];
 	        $this->scoreRaw = (int) $data['score_raw'];
-			$this->scoreMin = (int) $data['score_min'];
-			$this->scoreMax = (int) $data['score_max'];
-			$this->totalTime = $data['total_time']; // TODO correct format
-			$this->sessionTime = $data['session_time']; // TODO correct format
-			$this->suspendData = $data['suspend_data'];
-			$this->credit = $data['credit'];
+            $this->scoreMin = (int) $data['score_min'];
+            $this->scoreMax = (int) $data['score_max'];
+            
+            $this->totalTime = unixToScormTime($data['total_time']); // TODO correct format
+            $this->sessionTime = unixToScormTime($data['session_time']); // TODO correct format
+            $this->suspendData = $data['suspend_data'];
+            $this->credit = $data['credit'];
 
             return true;
         }
@@ -587,8 +589,15 @@ class itemAttempt
      * @return mixed false or id of the record
      */
     public function save()
-    {
-	if( $this->id == -1 )
+    {        
+        $tmpSessionTime = scormToUnixTime( $this->sessionTime );
+        $tmpTotalTime = scormToUnixTime( $this->totalTime );
+        //$sessionTime = unixToDHMS( $tmpSessionTime );
+        $sessionTime = $tmpSessionTime;
+        //$totalTime = unixToDHMS( $tmpTotalTime + $tmpSessionTime );
+        $totalTime = $tmpTotalTime + $tmpSessionTime;
+        
+        if( $this->id == -1 )
         {
             // insert
             $sql = "INSERT INTO `".$this->tblItemAttempt."`
@@ -600,8 +609,8 @@ class itemAttempt
                     	`score_raw` = '".(int) $this->scoreRaw."',
                     	`score_min` = '".(int) $this->scoreMin."',
                     	`score_max` = '".(int) $this->scoreMax."',
-                    	`total_time` = '".addslashes($this->totalTime)."',
-                    	`session_time` = '".addslashes($this->sessionTime)."',
+                    	`total_time` = '".addslashes($totalTime)."',
+                    	`session_time` = '".addslashes($sessionTime)."',
                     	`suspend_data` = '".addslashes($this->suspendData)."',
                         `credit` = '".addslashes($this->credit)."'";
 
@@ -631,8 +640,8 @@ class itemAttempt
                         `score_raw` = '".(int) $this->scoreRaw."',
                         `score_min` = '".(int) $this->scoreMin."',
                         `score_max` = '".(int) $this->scoreMax."',
-                        `total_time` = '".addslashes($this->totalTime)."',
-                        `session_time` = '".addslashes($this->sessionTime)."',
+                        `total_time` = '".addslashes($totalTime)."',
+                        `session_time` = '".addslashes($sessionTime)."',
                         `suspend_data` = '".addslashes($this->suspendData)."',
                         `credit` = '".addslashes($this->credit)."'
                     WHERE `id` = '".(int) $this->id."'";
@@ -898,7 +907,7 @@ class itemAttempt
      */
     public function setSessionTime($value)
     {
-        $this->sessionTime = (int) $value;
+        $this->sessionTime = $value;
     }
 
     /**
@@ -920,7 +929,7 @@ class itemAttempt
      */
     public function setTotalTime($value)
     {
-        $this->totalTime = (int) $value;
+        $this->totalTime = $value;
     }
 
 
