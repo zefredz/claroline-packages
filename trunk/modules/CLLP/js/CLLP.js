@@ -105,10 +105,8 @@ function commit(datamodel) {
             // do nothing, this should be an array with value, mod and format as keys
         }
     }
-
-    var jsonDatamodelValues = $.toJSON(datamodelValues);
-
-    $.ajax({
+		var jsonDatamodelValues = $.toJSON(datamodelValues);
+		$.ajax({
         type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
         data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
