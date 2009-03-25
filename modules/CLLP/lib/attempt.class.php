@@ -559,13 +559,13 @@ class itemAttempt
 
         if( $data !== false && !empty($data) )
         {
-        	$this->id = (int) $data['id'];
-	        $this->attemptId = (int) $data['attempt_id'];
-	        $this->itemId = (int) $data['item_id'];
-	        $this->location = $data['location'];
-	        $this->completionStatus = $data['completion_status'];
-	        $this->entry = $data['entry'];
-	        $this->scoreRaw = (int) $data['score_raw'];
+            $this->id = (int) $data['id'];
+            $this->attemptId = (int) $data['attempt_id'];
+            $this->itemId = (int) $data['item_id'];
+            $this->location = $data['location'];
+            $this->completionStatus = $data['completion_status'];
+            $this->entry = $data['entry'];
+            $this->scoreRaw = (int) $data['score_raw'];
             $this->scoreMin = (int) $data['score_min'];
             $this->scoreMax = (int) $data['score_max'];
             

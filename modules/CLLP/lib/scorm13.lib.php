@@ -57,7 +57,7 @@ class Scorm13 implements ScormInterface
             $itemAttempt->setEntry($dataModelValues['cmi.entry']);
         }
         
-        if( !empty($dataModelValues['cmi.score.raw']) )
+        if( !empty($dataModelValues['cmi.score.raw']) || $dataModelValues['cmi.score.raw'] == 0 )
         {
             $itemAttempt->setScoreRaw($dataModelValues['cmi.score.raw']);
         }
