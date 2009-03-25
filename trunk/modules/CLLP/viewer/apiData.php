@@ -20,6 +20,7 @@ $tlabelReq = 'CLLP';
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/attempt.class.php';
+require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 
 /*
  * init request vars
@@ -84,12 +85,19 @@ if( isset( $_SESSION['thisAttempt'] ) )
     if( $itemAttempt->load($thisAttempt->getId(), $itemId) )
     {
         ?>
-        _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>        
+        _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>;       
         <?php
         
     }
+		
+		$item = new Item();
+		if( $item->load( $itemId ) )
+		{
+				?>
+				_api._datamodel['cmi.completion_threshold']['value'] = "<?php echo $item->getCompletionThreshold(); ?>";
+				<?php
+		}
 }
-
 
 ?>
 
