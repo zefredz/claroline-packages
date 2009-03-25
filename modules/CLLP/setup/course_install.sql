@@ -70,5 +70,6 @@ CREATE TABLE `__CL_COURSE__lp_item_blockcondition` (
   `completion_status` enum('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN') NOT NULL,
   `operator` enum('=') NOT NULL,
   `condition` enum('-1','AND','OR') NOT NULL,
+  `raw_to_pass` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) TYPE=MyISAM
