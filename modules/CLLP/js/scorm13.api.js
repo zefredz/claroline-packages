@@ -120,7 +120,9 @@
                 'cmi.suspend_data':{'value': null, 'format': this.CMIString64000, 'mod':'rw'},
                 'cmi.time_limit_action':{'value': 'continue, no message', 'mod':'r'},
                 'cmi.total_time':{'value': 'PT0H0M0S', 'mod':'r'},
-                'adl.nav.request':{'value': null, 'format': this.NAVEvent, 'mod': 'rw'}
+                'adl.nav.request':{'value': null, 'format': this.NAVEvent, 'mod': 'rw'},
+                
+                'cmi.completion_threshold' : {'value' : null, 'mod':'r'}
             };
             /*
                 'cmi.completion_threshold':{'value':<?php echo isset($userdata->threshold)?'\''.$userdata->threshold.'\'':'null' ?>, 'mod':'r'},

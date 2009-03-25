@@ -194,6 +194,7 @@ if( $cmd == 'rqContentUrl' )
 
     if( $item->load($itemId) )
     {
+        $_SESSION['thisItemId'] = $itemId;
         //load blocking conditions
         $aPath = new path();
         $displayPage = true;

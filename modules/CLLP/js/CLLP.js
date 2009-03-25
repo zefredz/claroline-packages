@@ -139,13 +139,13 @@ function setContent(itemId) {
  *
  */
 function rqOpenItem() {
-    debug("rqOpenItem()",1);
-    // get url and set frame location to this url
-    $.ajax({
-        url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-        success: mkOpenItem,
-        dataType: 'html'
-    });
+	debug("rqOpenItem()",1);
+	// get url and set frame location to this url
+	$.ajax({
+			url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+			success: mkOpenItem,
+			dataType: 'html'
+	});
 }
 
 

@@ -99,6 +99,7 @@ if( $cmd == 'exEdit' )
 {
     $item->setTitle( $_REQUEST['title'] );
 		$item->setDescription( $_REQUEST['description'] );
+		$item->setCompletionThreshold( $_REQUEST['completionThreshold'] );
     
     if( $item->validate() )
     {
@@ -165,6 +166,8 @@ if( $item->load( $itemId ) )
 		.		'<dd>' . "\n"
 		.   '<div style="width: 700px;">' . claro_html_textarea_editor('description', $item->getDescription()) . '</div>' . "\n"
 		.		'</dd>' . "\n"
+		.		'<dt><label for="completionThreshold">' . get_lang( 'Completion threshold' ). '&nbsp;:</label></dt>'
+		.		'<dd><input type="text" name="completionThreshold" id="completionThreshold" value="' . htmlspecialchars( $item->getCompletionThreshold() ) . '" style="width: 60px; text-align: right;" />%</dd>' . "\n"
 		.		'</dl>' . "\n"
 		.		'</fieldset>' . "\n"
     .   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
