@@ -230,7 +230,7 @@ class ScormImporter
         {
           $this->path->setVersion('1.2');
         }
-
+        
         // check if we have a xml:base in manifest
 
         if( isset($this->manifestContent['manifest']['@']['xml:base']) )
@@ -313,7 +313,7 @@ class ScormImporter
     function addItems(&$itemList, $parentId = -1)
     {
       $resources = &$this->manifestContent['manifest']['#']['resources'];
-
+      
       // resources xml base
       if( isset($resources['@']['xml:base']) )
       {
@@ -341,18 +341,17 @@ class ScormImporter
           // visibility
           if( isset($item['@']['isvisible']) && $item['@']['isvisible'] == 'true' )
           {
-              $insertedItem->setInvisible();
+              $insertedItem->setVisible();
           }
           else
           {
-              $insertedItem->setVisible(); // IMS consider that the default value of 'isvisible' is true
+              $insertedItem->setInvisible(); // IMS consider that the default value of 'isvisible' is true
           }
-
+          
           // set sys path
           if( isset($item['@']['identifierref']) && !empty($item['@']['identifierref']) )
           {
-              $resourceRef = $this->getResourceByRef($item['@']['identifierref']);
-
+            $resourceRef = $this->getResourceByRef($item['@']['identifierref']);              
             // resource xml base
             if( isset($resourceRef['@']['xml:base']) )
             {
@@ -398,21 +397,21 @@ class ScormImporter
           }
 
           // time limit action
-          if( !empty($item['#']['adlcp:timeLimitAction']) )
+          if( !empty($item['@']['adlcp:timeLimitAction']) )
           {
-              $insertedItem->setTimeLimitAction($item['#']['adlcp:timeLimitAction']);
+              $insertedItem->setTimeLimitAction($item['@']['adlcp:timeLimitAction']);
           }
 
           // launch data
-          if( !empty($item['#']['adlcp:dataFromLms']) )
+          if( !empty($item['@']['adlcp:dataFromLms']) )
           {
-              $insertedItem->setLaunchData($item['#']['adlcp:dataFromLms']);
+              $insertedItem->setLaunchData($item['@']['adlcp:dataFromLms']);
           }
 
           // completionThreshold
-          if( !empty($item['#']['adlcp:completionThreshold']) )
+          if( !empty($item['@']['adlcp:completionThreshold']) )
           {
-              $insertedItem->setCompletionThreshold($item['#']['adlcp:completionThreshold']);
+              $insertedItem->setCompletionThreshold($item['@']['adlcp:completionThreshold']);
           }
 
           // chapter or module
