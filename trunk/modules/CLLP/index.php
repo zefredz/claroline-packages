@@ -217,7 +217,7 @@ if( $is_allowedToEdit )
 		    require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
 				include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
 
-				$pathExport = new pathScormExport( $thisPath );
+				$pathExport = new PathScormExport( $thisPath );
 				if( ! $pathExport->export() )
 				{
 						$dialogBox->error(
