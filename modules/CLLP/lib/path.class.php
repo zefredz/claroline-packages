@@ -560,26 +560,58 @@ class path
     }
 }
 
-class pathScormExport
+
+/**
+ * path scorm export enable to export a learning path to a zip archive in SCORM 2004 formart
+ *
+ * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ *
+ **/
+
+class PathScormExport
 {
+    /**
+     * @var $path object a valid learning path
+     */     
     private $path;
+    /**
+     * @var $pathItemList object the list of items from the $path
+     */     
     private $pathItemList;
-    
+    /**
+     * @var $destDir string path when the files are saved before zip
+     */
     private $destDir;
+    /**
+     * @var $srcDirDocument string path of the old scorm content
+     */
     private $srcDirScorm;
-    private $srcDirDocument;
-    private $srcDirExercise;
-    
+    /**
+     * @var $fromScorm boolean true = need to copy old scorm content
+     */
     private $fromScorm;
-    
+    /**
+     * @var $error string error during export
+     */
     private $error;
     
+    /**
+     * Constructor
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     */
     public function __construct( &$path )
     {
         $this->path = $path;
         $this->fromScorm = false;
     }
     
+    /**
+     * Export the content of a learning path
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
     public function export()
     {
         if( ! $this->fetch() ) return false;
@@ -590,7 +622,12 @@ class pathScormExport
         
         return true;
     }
-    
+    /**
+     * Fetch - load path item list and set directories names
+     *
+     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
     private function fetch()
     {
         $this->pathItemList = new PathItemList( $this->path->getId());
@@ -606,13 +643,17 @@ class pathScormExport
         // Replace ',' too, because pclzip doesn't support it.
         $this->destDir = get_path('coursesRepositorySys') . claro_get_course_path() . '/temp/'
             . str_replace(',', '_', replace_dangerous_char($this->path->getTitle()));
-        $this->srcDirDocument = get_path('coursesRepositorySys') . claro_get_course_path() . '/document';
-        $this->srcDirExercise  = get_path('coursesRepositorySys') . claro_get_course_path() . '/exercise';
         $this->srcDirScorm    = get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/path_'.$this->path->getId();
         
         return true;
     }
     
+    /**
+     * Prepare - copy files (statics & from modules) needed to export the LP
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
     private function prepare()
     {
         // (re)create fresh directory
@@ -684,6 +725,7 @@ class pathScormExport
                 return false;
             }
             
+            // Remove imsmanifest.xml from OrigScorm
             $directory = new RecursiveIteratorIterator(new RecursiveDirectoryIterator( $this->destDir.'/OrigScorm' ), RecursiveIteratorIterator::SELF_FIRST);
             foreach($directory as $file => $fileInfo)
             {
@@ -699,6 +741,13 @@ class pathScormExport
         
     }
     
+    /**
+     * Create a progress frame needed for Documents & co
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @param string $destDir Destination directory when the frame is saved
+     * @return boolean
+     */
     private function createProgressFrame( $destDir )
     {
         $pageContent = '<html>
@@ -754,6 +803,15 @@ class pathScormExport
         
     }
     
+    /**
+     * Prepare item for the zip, copy directories and files in the destination directory
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @param array $item item information from a path
+     * @param string $destDir Destination directory when files are copied
+     * @param int $deepness Deepness of the directory
+     * @return boolean
+     */
     private function prepareItem ( &$item, $destDir, $deepness = 0 )
     {
         $thisItem = new item();
@@ -765,6 +823,7 @@ class pathScormExport
         
         switch( $item['type'])
         {
+            // Create the directory in $destDir and all prepareItem if children exist for the item
             case 'CONTAINER' :
             {
                 $destDir.= '/' . str_replace(',','_',replace_dangerous_char($item['title']));
@@ -786,75 +845,49 @@ class pathScormExport
                 }                
             }
             break;
+            // Set $fromScorm to true (used after prepareItem to copy old Scorm Content in a specific directory )
             case 'SCORM' :
             {
                 $this->fromScorm = true;
             }
             break;
+            // Call the connector from the concerned module (cllp.scormexport.cnr.php) for copy concerned files
             case 'MODULE' :
             {
                 $locator = ClarolineResourceLocator::parse($item['sys_path']);
-                $resourceLinkerResolver = new ResourceLinkerResolver;
-                $url = $resourceLinkerResolver->resolve( $locator );
-                switch( $locator->getModuleLabel() )
+                
+                $connectorPath = get_module_path( $locator->getModuleLabel() ) . '/connector/cllp.scormexport.cnr.php';
+                if( file_exists( $connectorPath ) )
                 {
-                    case 'CLQWZ' :
-                    {                        
-                        if( ! $this->prepareQuiz( $locator->getResourceId(), $thisItem->getCompletionThreshold(), $destDir, $deepness ))
-                        {
-                            return false;
-                        }
-                    }
-                    break;
-                    case 'CLDOC' :
+                    include_once( $connectorPath );
+                    $class = $locator->getModuleLabel().'_ScormExport';
+                    $connector = new $class();
+                    if( ! $connector->prepareFiles($locator->getResourceId(), $thisItem, $destDir, $deepness) )
                     {
-                        
-                        if( ! $this->prepareDoc( $locator->getResourceId(), $thisItem, $destDir, $deepness ))
-                        {
-                            return false;
-                        }
+                       $this->error = $connector->getError();
+                       return false;
                     }
-                }
+                    
+                }                
             }
             break;
         }
         return true;
     }
     
-    private function prepareDoc( $docId, $item, $destDir, $deepness )
-    {
-        $completionThresold = $item->getCompletionThreshold();
-        if( empty($completionThresold) )
-        {
-            $completionThresold = 50;
-        }
-        
-        $docPath = $this->srcDirDocument . '/' . $docId;
-        
-        if( ! file_exists( $docPath ) )
-        {
-            $this->error = get_lang( 'The file %file doesn\'t exist', array( '%file' => $docId ) );
-            return false;
-        }
-        
-        if( ! claro_copy_file( $docPath, $destDir ) )
-        {
-            $this->error = get_lang( 'Unable to copy file %file in temporary directory', array( '%file' => $docId ) );
-            return false;
-        }
-        
-        $frameName = 'frame_for_' . $item->getId() . '.html';
-        
-        if( ! $this->createFrameFile( $frameName, $docId, $completionThresold, $item, $destDir, $deepness ) )
-        {
-            $this->error = get_lang( 'Unable to create frame for document %file.', array( '%file' => $docId ) );
-            return false;
-        }
-        
-        return true;
-    }
-    
-    private function createFrameFile( $frameName, $docId, $completionThresold, $item, $destDir, $deepness )
+    /**
+     * Create a frame file to include item from the module
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @param string $frameName name used to create the file
+     * @param string $docId title of the frame
+     * @param object $item item of a path
+     * @param string $destDir directory when the file is saved
+     * @param int $deepness deepness of the $destDir
+     *
+     * @return boolean
+     */
+    protected function createFrameFile( $frameName, $docId, $item, $destDir, $deepness )
     {
         $deep = '';
         if( $deepness )
@@ -925,179 +958,12 @@ class pathScormExport
         return true;
     }
     
-    private function prepareQuiz( $quizId, $completionThresold = 50, $destDir, $deepness )
-    {
-        $quizId = (int) $quizId;
-        if( empty($completionThresold) )
-        {
-            $completionThresold = 50;
-        }
-        
-        $quiz = new Exercise();
-        if( ! $quiz->load( $quizId ) )
-        {
-            $this->error[] = get_lang('Unable to load the exercise');
-            return false;
-        }
-        
-        $deep = '';
-        if( $deepness )
-        {
-            for($i = $deepness; $i > 0; $i--)
-            {
-                $deep .=' ../';
-            }
-        }
-        
-        // Generate standard page header
-        $pageHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-        <html>
-        <head>
-        <title>'.$quiz->getTitle().'</title>
-        <meta http-equiv="expires" content="Tue, 05 DEC 2000 07:00:00 GMT">
-        <meta http-equiv="Pragma" content="no-cache">
-        <meta http-equiv="Content-Type" content="text/HTML; charset='.get_locale('charset').'"  />
-    
-        <link rel="stylesheet" type="text/css" href="' . $deep . get_conf('claro_stylesheet') . '/main.css" media="screen, projection, tv" />
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/jquery.js"></script>
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.js"></script>
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.ui.js"></script>
-    
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/APIWrapper.js"></script>
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/connector13.js"></script>
-        <script language="javascript" type="text/javascript" src="' . $deep . 'js/scores.js"></script>
-        </head>
-        ' . "\n";
-        
-        $pageBody = '<body onload="loadPage()">
-        <div id="claroBody"><form id="quiz">
-        <table width="100%" border="0" cellpadding="1" cellspacing="0" class="claroTable">' . "\n";
-        
-        // Get the question list
-        $questionList = $quiz->getQuestionList();
-        $questionCount = count($questionList);
-
-        // Keep track of raw scores (ponderation) for each question
-        $questionPonderationList = array();
-
-        // Keep track of correct texts for fill-in type questions
-        // TODO La variable $fillAnswerList n'apparaît qu'une fois
-        $fillAnswerList = array();
-
-        // Display each question
-        $questionCount = 0;
-        foreach( $questionList as $question )
-        {
-
-            // Update question number
-            $questionCount++;
-
-            // read the question, abort on error
-            $scormQuestion = new ScormQuestion();
-            if (!$scormQuestion->load($question['id']))
-            {
-                $this->error[] = get_lang('Unable to load exercise\'s question');
-                return false;
-            }
-            $questionPonderationList[] = $scormQuestion->getGrade();
-
-            $pageBody .=
-                '<tr class="headerX">' . "\n"
-            .    '<th>'.get_lang('Question').' '.$questionCount.'</th>' . "\n"
-            .    '</tr>' . "\n";
-
-            $pageBody .=
-                '<tr>' . "\n" . '<td>' . "\n"
-            .    $scormQuestion->export() . "\n"
-            .    '</td>' . "\n" . '</tr>' . "\n";
-        }
-        
-        $pageEnd = '
-        <tr>
-            <td align="center"><br /><input type="button" value="' . get_lang('Ok') . '" onclick="calcScore()" /></td>
-        </tr>
-        </table>
-        </form>
-        </div></body></html>' . "\n";
-
-        /* Generate the javascript that'll calculate the score
-         * We have the following variables to help us :
-         * $idCounter : number of elements to check. their id are "scorm_XY"
-         * $raw_to_pass : score (on 100) needed to pass the quiz
-         * $fillAnswerList : a list of arrays (text, score) indexed on <input>'s names
-         *
-         */
-        $pageHeader .= '
-        <script type="text/javascript" language="javascript">
-            var raw_to_pass = ' . $completionThresold . ';
-            var weighting = ' . array_sum($questionPonderationList) . ';
-            var rawScore;
-            var scoreCommited = false;
-            var showScore = true;
-            var fillAnswerList = new Array();' . "\n";
-
-        // This is the actual code present in every exported exercise.
-        // use html_entity_decode in output to prevent double encoding errors with some languages...
-            $pageHeader .= '
-    
-            function calcScore()
-            {
-                if( !scoreCommited )
-                {
-                    rawScore = CalculateRawScore(document, ' . getIdCounter() . ', fillAnswerList);
-                    var score = Math.max(Math.round(rawScore * 100 / weighting), 0);
-                    var oldScore = doLMSGetValue("cmi.score.raw");
-        
-                    doLMSSetValue("cmi.score.max", weighting);
-                    doLMSSetValue("cmi.score.min", 0);
-        
-                    computeTime();
-        
-                    if (score > oldScore) // Update only if score is better than the previous time.
-                    {
-                        doLMSSetValue("cmi.raw", rawScore);
-                    }
-                    
-                    var oldStatus = doLMSGetValue( "cmi.completion_status" )
-                    if (score >= raw_to_pass)
-                    {
-                        doLMSSetValue("cmi.completion_status", "completed");
-                    }
-                    else if (oldStatus != "completed" ) // If passed once, never mark it as failed.
-                    {
-                        doLMSSetValue("cmi.completion_status", "failed");
-                    }
-        
-                    doLMSCommit();
-                    doLMSFinish();
-                    scoreCommited = true;
-                    if(showScore) alert(\''.clean_str_for_javascript(html_entity_decode(get_lang('Score'))).' :\n\' + rawScore + \'/\' + weighting );
-                }
-            }
-        
-        </script>
-        ';
-        
-        // Construct the HTML file and save it.
-        $filename = "quiz_" . $quizId . ".html";
-
-        $pageContent = $pageHeader
-                     . $pageBody
-                     . $pageEnd;
-        
-        if (! $f = fopen($destDir . '/' . $filename, 'w') )
-        {
-            $this->error = get_lang('Unable to create file : ') . $filename;
-            return false;
-        }
-        fwrite($f, $pageContent);
-        fclose($f);
-        
-        
-        return true;
-    }
-    
-    
+    /**
+     * Create the manifest needed to use the export
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
     private function createManifest()
     {
         $itemTree = $this->pathItemList->getItemTree();
@@ -1155,6 +1021,13 @@ class pathScormExport
         
     }
     
+    /**
+     * Create items for the manifest
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @param array $item item's data
+     * @return boolean
+     */
     private function createManifestItems( &$item )
     {
         $thisItem = new item();
@@ -1176,6 +1049,14 @@ class pathScormExport
         return $_item;
     }
     
+    /**
+     * Create resources for the manifest
+     *
+     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @param array $item item's data
+     * @param string $destDir destination directory
+     * @return boolean
+     */
     private function createManifestResources( &$item, $destDir )
     {
         $destDir .= '/';
@@ -1220,34 +1101,26 @@ class pathScormExport
             case 'MODULE' :
             {
                 $locator = ClarolineResourceLocator::parse($item['sys_path']);
-                switch( $locator->getModuleLabel() )
+                $connectorPath = get_module_path( $locator->getModuleLabel() ) . '/connector/cllp.scormexport.cnr.php';
+                if( file_exists( $connectorPath ) )
                 {
-                    case 'CLQWZ' :
-                    {
-                        $resource .= '<resource identifier="R_'. $item['id'] .'" type="webcontent"  adlcp:scormType="sco" href="'. $destDir .'quiz_'.$locator->getResourceId().'.html">
-                            <file href="'. $destDir .'quiz_'.$locator->getResourceId().'.html" />
-                            ';
-                    }
-                    break;
-                    case 'CLDOC' :
-                    {
-                        $resource .= '<resource identifier="R_' . $item['id'] . '" type="webcontent" adlcp:scormType="sco" href="'. $destDir .'frame_for_'.$item['id'].'.html">
-                            <file href="'. $destDir .'frame_for_'.$item['id'].'.html" />
-                            <file href="'. $destDir .'sub_frame_for_'.$item['id'].'.html" />
-                            <file href="'. $destDir . $locator->getResourceId().'" />
-                            ';
-                        ;
-                    }
-                    break;
-                }
-                $resource .= '</resource>
-                ';
+                    include_once( $connectorPath );
+                    $class = $locator->getModuleLabel().'_scormExport';
+                    $connector = new $class();
+                    $resource .= $connector->prepareManifestResources( $item, $destDir, $locator);
+                }                
             }
             break;
         }
         return $resource;
     }
     
+    /**
+     * Create a zip file with all the files in $destDir
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
     private function zip()
     {
         include_once get_path('incRepositorySys') . "/lib/thirdparty/pclzip/pclzip.lib.php";
@@ -1267,6 +1140,11 @@ class pathScormExport
         return true;
     }
     
+    /**
+     * Send the zip in the header for direct download
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     */
     private function send()
     {
         $filename = $this->destDir . '.zip';
@@ -1281,28 +1159,17 @@ class pathScormExport
         exit(0);
     }
     
+    /**
+     * Return the error stored in $error
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return string $error
+     */
     public function getError()
     {
         return $this->error;
     }
 }
-
-function getIdCounter()
-{
-    global $idCounter;
-    
-    if( !isset($idCounter) || $idCounter < 0 )
-    {
-        $idCounter = 0;
-    }
-    else
-    {
-        $idCounter++;
-    }
-
-    return $idCounter;
-}
-
 
 /**
  * path list is an class used to get a list of learning path.
