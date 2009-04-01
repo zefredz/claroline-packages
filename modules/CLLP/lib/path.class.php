@@ -560,6 +560,750 @@ class path
     }
 }
 
+class pathScormExport
+{
+    private $path;
+    private $pathItemList;
+    
+    private $destDir;
+    private $srcDirScorm;
+    private $srcDirDocument;
+    private $srcDirExercise;
+    
+    private $fromScorm;
+    
+    private $error;
+    
+    public function __construct( &$path )
+    {
+        $this->path = $path;
+        $this->fromScorm = false;
+    }
+    
+    public function export()
+    {
+        if( ! $this->fetch() ) return false;
+        if( ! $this->prepare() ) return false;
+        if( ! $this->createManifest() ) return false;
+        if( ! $this->zip() ) return false;
+        if( ! $this->send() ) return false;
+        
+        return true;
+    }
+    
+    private function fetch()
+    {
+        $this->pathItemList = new PathItemList( $this->path->getId());
+        
+        if( ! $this->pathItemList->load())
+        {
+            $this->error = get_lang('Learning Path is empty');
+            return false;
+        }
+        
+        /* Build various directories' names */
+
+        // Replace ',' too, because pclzip doesn't support it.
+        $this->destDir = get_path('coursesRepositorySys') . claro_get_course_path() . '/temp/'
+            . str_replace(',', '_', replace_dangerous_char($this->path->getTitle()));
+        $this->srcDirDocument = get_path('coursesRepositorySys') . claro_get_course_path() . '/document';
+        $this->srcDirExercise  = get_path('coursesRepositorySys') . claro_get_course_path() . '/exercise';
+        $this->srcDirScorm    = get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/path_'.$this->path->getId();
+        
+        return true;
+    }
+    
+    private function prepare()
+    {
+        // (re)create fresh directory
+        claro_delete_file($this->destDir);
+        if ( !claro_mkdir($this->destDir, CLARO_FILE_PERMISSIONS , true) )
+        {
+            $this->error = get_lang('Unable to create directory : ') . $this->destDir;
+            return false;
+        }
+        // JS
+        if ( !claro_mkdir($this->destDir.'/js', CLARO_FILE_PERMISSIONS , true) )
+        {
+            $this->error = get_lang('Unable to create directory : ') . $this->destDir . '/js';
+            return false;
+        }
+        //CSS
+        // JS
+        if ( !claro_mkdir($this->destDir.'/' . get_conf('claro_stylesheet'), CLARO_FILE_PERMISSIONS , true) )
+        {
+            $this->error = get_lang('Unable to create directory : ') . $this->destDir . '/' . get_conf('claro_stylesheet');
+            return false;
+        }
+        
+        // Copy usual files (.css, .js, .xsd, etc)
+        if (
+               !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file(dirname(__FILE__).'/../export/APIWrapper.js', $this->destDir.'/js')
+            || !claro_copy_file(dirname(__FILE__).'/../export/scores.js', $this->destDir.'/js')
+            || !claro_copy_file(dirname(__FILE__).'/../export/ims_xml.xsd', $this->destDir)
+            || !claro_copy_file(dirname(__FILE__).'/../export/imscp_rootv1p1p2.xsd', $this->destDir)
+            || !claro_copy_file(dirname(__FILE__).'/../export/imsmd_rootv1p2p1.xsd', $this->destDir)
+            || !claro_copy_file(dirname(__FILE__).'/../export/adlcp_rootv1p2.xsd', $this->destDir)
+            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/jquery.js', $this->destDir.'/js')
+            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.js', $this->destDir.'/js')
+            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.ui.js', $this->destDir.'/js')
+            || !claro_copy_file(get_module_path('CLLP')  . '/js/connector13.js', $this->destDir.'/js')
+            || !claro_copy_file(get_module_path('CLLP')  . '/js/scormtime.js', $this->destDir.'/js')
+            || !claro_copy_file(get_path('clarolineRepositorySys')  . '/document/js/cllp.cnr.js', $this->destDir.'/js')
+           )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files');
+            return false;
+        }
+        
+        if (! $this->createProgressFrame( $this->destDir ) )
+        {
+            return false;
+        }
+        
+        // Create direcotries & files structure
+        $itemTree = $this->pathItemList->getItemTree();
+        foreach( $itemTree as $item )
+        {
+            if( ! $this->prepareItem( $item, $this->destDir ) )
+            {
+                return false;
+            }
+        }
+        
+        if( $this->fromScorm )
+        {
+            // Copy the scorm directory as OrigScorm/
+            if (
+                   !claro_copy_file($this->srcDirScorm,  $this->destDir)
+                || !claro_rename_file($this->destDir.'/path_'.$this->path->getId(), $this->destDir.'/OrigScorm')  )
+            {
+                $this->error = get_lang('Error copying existing SCORM content');
+                return false;
+            }
+            
+            $directory = new RecursiveIteratorIterator(new RecursiveDirectoryIterator( $this->destDir.'/OrigScorm' ), RecursiveIteratorIterator::SELF_FIRST);
+            foreach($directory as $file => $fileInfo)
+            {
+                if( strpos( strtolower($file), 'imsmanifest.xml') !== false  )
+                {
+                    claro_delete_file( $file );
+                }
+            }
+            
+        }
+        
+        return true;
+        
+    }
+    
+    private function createProgressFrame( $destDir )
+    {
+        $pageContent = '<html>
+        <head>
+        <title></title>
+        <meta http-equiv="expires" content="Tue, 05 DEC 2000 07:00:00 GMT">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Content-Type" content="text/HTML; charset='.get_locale('charset').'"  />
+    
+        <link rel="stylesheet" type="text/css" href="' . get_conf('claro_stylesheet') . '/main.css" media="screen, projection, tv" />
+        <script language="javascript" type="text/javascript" src="js/jquery.js"></script>
+        <script language="javascript" type="text/javascript" src="js/claroline.js"></script>
+        <script language="javascript" type="text/javascript" src="js/claroline.ui.js"></script>
+        <script src="js/connector13.js" type="text/javascript"></script> 
+        <script src="js/scormtime.js" type="text/javascript"></script> 
+        <script src="js/cllp.cnr.js" type="text/javascript"></script>
+        </head>
+        <body>
+        <div>
+        <form method="get" action="#" id="progressForm">'
+        .    get_lang('Progress') . ' : ' . "\n"
+        .    '<input type="radio" name="progress" id="none" class="progressRadio" value="0" checked="checked" />' . "\n"
+        .    '<label for="none">0%</label>' . "\n"
+        
+        .    '<input type="radio" name="progress" id="low" class="progressRadio" value="25" />' . "\n"
+        .    '<label for="low">25%</label>' . "\n"
+        
+        .    '<input type="radio" name="progress" id="medium" class="progressRadio" value="50" />' . "\n"
+        .    '<label for="medium">50%</label>' . "\n"
+        
+        .    '<input type="radio" name="progress" id="high" class="progressRadio" value="75" />' . "\n"
+        .    '<label for="high">75%</label>' . "\n"
+        
+        .    '<input type="radio" name="progress" id="full" class="progressRadio" value="100" />' . "\n"
+        .    '<label for="full">100%</label>' . "\n"
+        
+        .    '<input type="button" value="'.get_lang('Done').'" id="progressDone" />' . "\n"
+        .    '</form>
+        </div>
+        </body>
+        </html>
+        ';
+        
+        if (! $f = fopen($destDir . '/progressFrame.html', 'w') )
+        {
+            $this->error = get_lang('Error when creating progress frame.');            
+            return false;
+        }
+        fwrite($f, $pageContent);
+        fclose($f);
+        
+        return true;
+        
+    }
+    
+    private function prepareItem ( &$item, $destDir, $deepness = 0 )
+    {
+        $thisItem = new item();
+        if( ! $thisItem->load( $item['id'] ) )
+        {
+            $this->error = get_lang('Unable to load item %item', array( '%item' => $item['title'] ));
+            return false;
+        }
+        
+        switch( $item['type'])
+        {
+            case 'CONTAINER' :
+            {
+                $destDir.= '/' . str_replace(',','_',replace_dangerous_char($item['title']));
+                if( ! claro_mkdir( $destDir,CLARO_FILE_PERMISSIONS, true ) )
+                {
+                    $this->error = get_lang('Unable to create directory %path in temporary directory.', $destDir);
+                    return false;
+                }
+                if( isset($item['children']) && !empty( $item['children'] ) )
+                {
+                    $deepness++;
+                    foreach( $item['children'] as $itemChild )
+                    {
+                        if( ! $return = $this->prepareItem( $itemChild, $destDir, $deepness) )
+                        {
+                            return false;
+                        }   
+                    }                    
+                }                
+            }
+            break;
+            case 'SCORM' :
+            {
+                $this->fromScorm = true;
+            }
+            break;
+            case 'MODULE' :
+            {
+                $locator = ClarolineResourceLocator::parse($item['sys_path']);
+                $resourceLinkerResolver = new ResourceLinkerResolver;
+                $url = $resourceLinkerResolver->resolve( $locator );
+                switch( $locator->getModuleLabel() )
+                {
+                    case 'CLQWZ' :
+                    {                        
+                        if( ! $this->prepareQuiz( $locator->getResourceId(), $thisItem->getCompletionThreshold(), $destDir, $deepness ))
+                        {
+                            return false;
+                        }
+                    }
+                    break;
+                    case 'CLDOC' :
+                    {
+                        
+                        if( ! $this->prepareDoc( $locator->getResourceId(), $thisItem, $destDir, $deepness ))
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            break;
+        }
+        return true;
+    }
+    
+    private function prepareDoc( $docId, $item, $destDir, $deepness )
+    {
+        $completionThresold = $item->getCompletionThreshold();
+        if( empty($completionThresold) )
+        {
+            $completionThresold = 50;
+        }
+        
+        $docPath = $this->srcDirDocument . '/' . $docId;
+        
+        if( ! file_exists( $docPath ) )
+        {
+            $this->error = get_lang( 'The file %file doesn\'t exist', array( '%file' => $docId ) );
+            return false;
+        }
+        
+        if( ! claro_copy_file( $docPath, $destDir ) )
+        {
+            $this->error = get_lang( 'Unable to copy file %file in temporary directory', array( '%file' => $docId ) );
+            return false;
+        }
+        
+        $frameName = 'frame_for_' . $item->getId() . '.html';
+        
+        if( ! $this->createFrameFile( $frameName, $docId, $completionThresold, $item, $destDir, $deepness ) )
+        {
+            $this->error = get_lang( 'Unable to create frame for document %file.', array( '%file' => $docId ) );
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private function createFrameFile( $frameName, $docId, $completionThresold, $item, $destDir, $deepness )
+    {
+        $deep = '';
+        if( $deepness )
+        {
+            for($i = $deepness; $i > 0; $i--)
+            {
+                $deep .=' ../';
+            }
+        }        
+        
+        $subFrameName = 'sub_' . $frameName;
+        
+        
+        // Generate standard page header
+        $pageHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html>
+        <head>
+        <title>' . $docId . '</title>
+        <meta http-equiv="expires" content="Tue, 05 DEC 2000 07:00:00 GMT">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Content-Type" content="text/HTML; charset='.get_locale('charset').'"  />
+    
+        <link rel="stylesheet" type="text/css" href="' . $deep . get_conf('claro_stylesheet') . '/main.css" media="screen, projection, tv" />
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/jquery.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.ui.js"></script>
+    
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/APIWrapper.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/scores.js"></script>
+        </head>
+        ' . "\n";
+        
+        $pageBody = '
+        <frameset rows="*,50">
+            <frame src="' . $subFrameName . '"/>
+            <frame src="' . $deep . 'progressFrame.html" /> 
+        </frameset>';
+        
+        $subPageBody = '
+        <div id="description">' . claro_parse_user_text($item->getDescription()) . '</div>
+        <iframe src ="' . $docId . '" width="100%" height="100%">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
+        ';
+        
+        $pageFooter = '</html>' . "\n";
+        
+        // Create sub Frame
+        $subPageContent = $pageHeader . $subPageBody . $pageFooter;
+        if (! $f = fopen($destDir . '/' . $subFrameName, 'w') )
+        {
+            $this->error = get_lang('Unable to create file : ') . $subFrameName;
+            return false;
+        }
+        fwrite($f, $subPageContent);
+        fclose($f);
+        unset($f);
+        //Create Fame
+        $pageContent = $pageHeader . $pageBody . $pageFooter;
+        if (! $f = fopen($destDir . '/' . $frameName, 'w') )
+        {
+            $this->error = get_lang('Unable to create file : ') . $frameName;
+            return false;
+        }
+        fwrite($f, $pageContent);
+        fclose($f);
+        
+        return true;
+    }
+    
+    private function prepareQuiz( $quizId, $completionThresold = 50, $destDir, $deepness )
+    {
+        $quizId = (int) $quizId;
+        if( empty($completionThresold) )
+        {
+            $completionThresold = 50;
+        }
+        
+        $quiz = new Exercise();
+        if( ! $quiz->load( $quizId ) )
+        {
+            $this->error[] = get_lang('Unable to load the exercise');
+            return false;
+        }
+        
+        $deep = '';
+        if( $deepness )
+        {
+            for($i = $deepness; $i > 0; $i--)
+            {
+                $deep .=' ../';
+            }
+        }
+        
+        // Generate standard page header
+        $pageHeader = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html>
+        <head>
+        <title>'.$quiz->getTitle().'</title>
+        <meta http-equiv="expires" content="Tue, 05 DEC 2000 07:00:00 GMT">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Content-Type" content="text/HTML; charset='.get_locale('charset').'"  />
+    
+        <link rel="stylesheet" type="text/css" href="' . $deep . get_conf('claro_stylesheet') . '/main.css" media="screen, projection, tv" />
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/jquery.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/claroline.ui.js"></script>
+    
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/APIWrapper.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/connector13.js"></script>
+        <script language="javascript" type="text/javascript" src="' . $deep . 'js/scores.js"></script>
+        </head>
+        ' . "\n";
+        
+        $pageBody = '<body onload="loadPage()">
+        <div id="claroBody"><form id="quiz">
+        <table width="100%" border="0" cellpadding="1" cellspacing="0" class="claroTable">' . "\n";
+        
+        // Get the question list
+        $questionList = $quiz->getQuestionList();
+        $questionCount = count($questionList);
+
+        // Keep track of raw scores (ponderation) for each question
+        $questionPonderationList = array();
+
+        // Keep track of correct texts for fill-in type questions
+        // TODO La variable $fillAnswerList n'apparaît qu'une fois
+        $fillAnswerList = array();
+
+        // Display each question
+        $questionCount = 0;
+        foreach( $questionList as $question )
+        {
+
+            // Update question number
+            $questionCount++;
+
+            // read the question, abort on error
+            $scormQuestion = new ScormQuestion();
+            if (!$scormQuestion->load($question['id']))
+            {
+                $this->error[] = get_lang('Unable to load exercise\'s question');
+                return false;
+            }
+            $questionPonderationList[] = $scormQuestion->getGrade();
+
+            $pageBody .=
+                '<tr class="headerX">' . "\n"
+            .    '<th>'.get_lang('Question').' '.$questionCount.'</th>' . "\n"
+            .    '</tr>' . "\n";
+
+            $pageBody .=
+                '<tr>' . "\n" . '<td>' . "\n"
+            .    $scormQuestion->export() . "\n"
+            .    '</td>' . "\n" . '</tr>' . "\n";
+        }
+        
+        $pageEnd = '
+        <tr>
+            <td align="center"><br /><input type="button" value="' . get_lang('Ok') . '" onclick="calcScore()" /></td>
+        </tr>
+        </table>
+        </form>
+        </div></body></html>' . "\n";
+
+        /* Generate the javascript that'll calculate the score
+         * We have the following variables to help us :
+         * $idCounter : number of elements to check. their id are "scorm_XY"
+         * $raw_to_pass : score (on 100) needed to pass the quiz
+         * $fillAnswerList : a list of arrays (text, score) indexed on <input>'s names
+         *
+         */
+        $pageHeader .= '
+        <script type="text/javascript" language="javascript">
+            var raw_to_pass = ' . $completionThresold . ';
+            var weighting = ' . array_sum($questionPonderationList) . ';
+            var rawScore;
+            var scoreCommited = false;
+            var showScore = true;
+            var fillAnswerList = new Array();' . "\n";
+
+        // This is the actual code present in every exported exercise.
+        // use html_entity_decode in output to prevent double encoding errors with some languages...
+            $pageHeader .= '
+    
+            function calcScore()
+            {
+                if( !scoreCommited )
+                {
+                    rawScore = CalculateRawScore(document, ' . getIdCounter() . ', fillAnswerList);
+                    var score = Math.max(Math.round(rawScore * 100 / weighting), 0);
+                    var oldScore = doLMSGetValue("cmi.score.raw");
+        
+                    doLMSSetValue("cmi.score.max", weighting);
+                    doLMSSetValue("cmi.score.min", 0);
+        
+                    computeTime();
+        
+                    if (score > oldScore) // Update only if score is better than the previous time.
+                    {
+                        doLMSSetValue("cmi.raw", rawScore);
+                    }
+                    
+                    var oldStatus = doLMSGetValue( "cmi.completion_status" )
+                    if (score >= raw_to_pass)
+                    {
+                        doLMSSetValue("cmi.completion_status", "completed");
+                    }
+                    else if (oldStatus != "completed" ) // If passed once, never mark it as failed.
+                    {
+                        doLMSSetValue("cmi.completion_status", "failed");
+                    }
+        
+                    doLMSCommit();
+                    doLMSFinish();
+                    scoreCommited = true;
+                    if(showScore) alert(\''.clean_str_for_javascript(html_entity_decode(get_lang('Score'))).' :\n\' + rawScore + \'/\' + weighting );
+                }
+            }
+        
+        </script>
+        ';
+        
+        // Construct the HTML file and save it.
+        $filename = "quiz_" . $quizId . ".html";
+
+        $pageContent = $pageHeader
+                     . $pageBody
+                     . $pageEnd;
+        
+        if (! $f = fopen($destDir . '/' . $filename, 'w') )
+        {
+            $this->error = get_lang('Unable to create file : ') . $filename;
+            return false;
+        }
+        fwrite($f, $pageContent);
+        fclose($f);
+        
+        
+        return true;
+    }
+    
+    
+    private function createManifest()
+    {
+        $itemTree = $this->pathItemList->getItemTree();
+        
+        $manifest = '<?xml version="1.0" encoding="' . get_locale('charset') . '" ?>
+        <manifest identifier="SingleCourseManifest" version="1.1"
+                xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+                xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xmlns:imsmd="http://www.imsglobal.org/xsd/imsmd_rootv1p2p1"
+                xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd
+                http://www.imsglobal.org/xsd/imsmd_rootv1p2p1 imsmd_rootv1p2p1.xsd
+                http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+                ';
+        $metaData = '<metadata>
+            <schema>ADL SCORM</schema>
+            <schemaversion>2004 3rd Edition</schemaversion>
+            <title><![CDATA['. htmlspecialchars( $this->path->getTitle() ) .']]></title>
+            <description><![CDATA['. htmlspecialchars( $this->path->getDescription() ) .']]></description>
+        </metadata>
+        ';
+        
+        $organizations = '<organizations default="A1">
+            <organization identifier="A1">
+                <title>' . htmlspecialchars( $this->path->getTitle() ) . '</title>
+                <description>' . htmlspecialchars( $this->path->getDescription() ) . '</description>
+                ';
+        $resources = '<resources>
+        ';
+        foreach( $itemTree as $item )
+        {
+            $organizations .= $this->createManifestItems( $item );
+            $resources .= $this->createManifestResources( $item, '.');
+        }
+        $organizations .= '</organization>
+        </organizations>
+        ';
+        $resources .= '</resources>';
+        
+        $manifest .= $metaData
+        .   $organizations
+        .   $resources
+        .   '</manifest>';
+        
+        $manifestPath = $this->destDir . '/imsmanifest.xml';
+        if (! $f = fopen($manifestPath, 'w') )
+        {
+            $this->error = get_lang('Unable to create manifest');
+            return false;
+        }
+        fwrite($f, $manifest);
+        fclose($f);
+        
+        return true;
+        
+    }
+    
+    private function createManifestItems( &$item )
+    {
+        $thisItem = new item();
+        $thisItem->load( $item['id'] );        
+            
+        $_item = '<item identifier="I_'.$thisItem->getId().'" identifierref="R_'.$thisItem->getId().'"
+            adlcp:completionThreshold="'.$thisItem->getCompletionThreshold().'" isvisible="'.($thisItem->isVisible() ? 'true' : 'false' ).'">
+            <title><![CDATA['.htmlspecialchars($thisItem->getTitle()).']]></title>
+            <description><![CDATA[' . htmlspecialchars($thisItem->getDescription()) . ']]></description>';
+        if( $item['type'] == 'CONTAINER' && isset($item['children']) && !empty( $item['children']) )
+        {
+            foreach( $item['children'] as $itemChild )
+            {
+                $_item .= $this->createManifestItems( $itemChild );   
+            }            
+        }
+        $_item .= '</item>';
+        
+        return $_item;
+    }
+    
+    private function createManifestResources( &$item, $destDir )
+    {
+        $destDir .= '/';
+        $resource = '';
+        switch( $item['type'] )
+        {
+            case 'CONTAINER' :
+            {
+                $destDir.= str_replace(',','_',replace_dangerous_char($item['title']));
+                if( isset($item['children']) && !empty( $item['children'] ) )
+                {
+                    $resource .= '<resource identifier="R_' . $item['id'] . '" type="webcontent" adlcp:scormType="sco" href="' . $destDir . '" ></resource>'
+                    ;
+                    foreach( $item['children'] as $itemChild )
+                    {
+                        if( ! $resource .= $this->createManifestResources( $itemChild, $destDir) )
+                        {
+                            return false;
+                        }   
+                    }                    
+                }
+            }
+            break;
+            case 'SCORM' :
+            {
+                $sysPath = $item['sys_path'];
+                if( strpos( $sysPath, './') !== false && strpos( $sysPath, './') == 0 )
+                {
+                    $sysPath = substr( $sysPath, 2 );
+                }
+                $filePath = $this->destDir.'/OrigScorm/' . $sysPath;
+                if( file_exists( $filePath  ) )
+                {
+                    $scormFilePath = '/OrigScorm/' . $sysPath;
+                    $resource .= '<resource identifier="R_' . $item['id']. '" type="webcontent" adlcp:scormType="sco" href="'. $scormFilePath . '">
+                        <file href="' . $scormFilePath . '" />
+                    </resource>
+                    ';
+                }                
+            }
+            break;
+            case 'MODULE' :
+            {
+                $locator = ClarolineResourceLocator::parse($item['sys_path']);
+                switch( $locator->getModuleLabel() )
+                {
+                    case 'CLQWZ' :
+                    {
+                        $resource .= '<resource identifier="R_'. $item['id'] .'" type="webcontent"  adlcp:scormType="sco" href="'. $destDir .'quiz_'.$locator->getResourceId().'.html">
+                            <file href="'. $destDir .'quiz_'.$locator->getResourceId().'.html" />
+                            ';
+                    }
+                    break;
+                    case 'CLDOC' :
+                    {
+                        $resource .= '<resource identifier="R_' . $item['id'] . '" type="webcontent" adlcp:scormType="sco" href="'. $destDir .'frame_for_'.$item['id'].'.html">
+                            <file href="'. $destDir .'frame_for_'.$item['id'].'.html" />
+                            <file href="'. $destDir .'sub_frame_for_'.$item['id'].'.html" />
+                            <file href="'. $destDir . $locator->getResourceId().'" />
+                            ';
+                        ;
+                    }
+                    break;
+                }
+                $resource .= '</resource>
+                ';
+            }
+            break;
+        }
+        return $resource;
+    }
+    
+    private function zip()
+    {
+        include_once get_path('incRepositorySys') . "/lib/thirdparty/pclzip/pclzip.lib.php";
+        $list = 1;
+        $zipFile = new PclZip($this->destDir . '.zip');
+        $list = $zipFile->create($this->destDir, PCLZIP_OPT_REMOVE_PATH, $this->destDir);
+
+        if ( !$list )
+        {
+            $this->error = get_lang('Unable to create the SCORM archive');
+            return false;
+        }
+
+        // Temporary directory can be deleted, now that the zip is made.
+        claro_delete_file($this->destDir);
+
+        return true;
+    }
+    
+    private function send()
+    {
+        $filename = $this->destDir . '.zip';
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/force-download');
+        header('Content-Length: ' . filesize($filename));
+        header('Content-Disposition: attachment; filename=' . basename($filename));
+        readfile($filename);
+        
+        claro_delete_file( $this->destDir . '.zip' );
+        
+        exit(0);
+    }
+    
+    public function getError()
+    {
+        return $this->error;
+    }
+}
+
+function getIdCounter()
+{
+    global $idCounter;
+    
+    if( !isset($idCounter) || $idCounter < 0 )
+    {
+        $idCounter = 0;
+    }
+    else
+    {
+        $idCounter++;
+    }
+
+    return $idCounter;
+}
+
+
 /**
  * path list is an class used to get a list of learning path.
  *
