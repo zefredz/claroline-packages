@@ -123,24 +123,42 @@ else
                     $itemAttempt = new itemAttempt();
                     if( $itemAttempt->load( $attempt->getId(), $anItem['id']) )
                     {                        
-                        $progress = $itemAttempt->getScoreRaw() / $itemAttempt->getScoreMax() * 100;    
+                        $progress = $itemAttempt->getScoreRaw() / $itemAttempt->getScoreMax() * 100;
+                        $out .= '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getSessionTime())) . '&nbsp;</td>'
+                        .   '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getTotalTime())) . '&nbsp;</td>'
+                        ;
                     }
-                    
+                    else
+                    {
+                       $out .= '<td class="centerContent">&nbsp;</td>' . "\n"
+                       .    '<td class="centerContent">&nbsp;</td>' . "\n"
+                       ;
+                    }
                 }
-                $out .= '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getSessionTime())) . '&nbsp;</td>'
-                .   '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getTotalTime())) . '&nbsp;</td>'
-                ;
-                
-                switch( $itemAttempt->getCompletionStatus() )
+                else
                 {
-                    case 'NOT ATTEMPTED' : $completionStatus = get_lang('Not attempted'); break;
-                    case 'PASSED' : $completionStatus = get_lang('Passed'); break;
-                    case 'FAILED' : $completionStatus = get_lang('Failed'); break;
-                    case 'COMPLETED' : $completionStatus = get_lang('Complete'); break;
-                    case 'BROWSED' : $completionStatus = get_lang('Browsed'); break;
-                    case 'INCOMPLETE' : $completionStatus = get_lang('Incomplete'); break;
-                    default : $completionStatus = get_lang('Unknow');
+                    $out .= '<td class="centerContent">&nbsp;</td>' . "\n"
+                    .    '<td class="centerContent">&nbsp;</td>' . "\n"
+                    ;
                 }
+                
+                if( isset( $itempAttempt ) && !is_null( $itemAttempt ) )
+                {
+                   switch( $itemAttempt->getCompletionStatus() )
+                    {
+                        case 'NOT ATTEMPTED' : $completionStatus = get_lang('Not attempted'); break;
+                        case 'PASSED' : $completionStatus = get_lang('Passed'); break;
+                        case 'FAILED' : $completionStatus = get_lang('Failed'); break;
+                        case 'COMPLETED' : $completionStatus = get_lang('Complete'); break;
+                        case 'BROWSED' : $completionStatus = get_lang('Browsed'); break;
+                        case 'INCOMPLETE' : $completionStatus = get_lang('Incomplete'); break;
+                        default : $completionStatus = get_lang('Unknow');
+                    } 
+                }
+                else
+                {
+                    $completionStatus = get_lang('Unknow');
+                }                
                 
                 $out .= '<td class="centerContent">' . $completionStatus . '</td>'
                 .   '<td align="right">' . claro_html_progress_bar($progress, 1) .'</td>'

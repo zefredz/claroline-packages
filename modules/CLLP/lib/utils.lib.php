@@ -59,9 +59,9 @@ function unixToScormTime($unixTime)
 
 function scormToUnixTime( $scormTime )
 {
-    list($days,$hours) = split('T', $scormTime);
-    $days = str_replace('P', '', $days);
-    $hours = str_replace('T', '', $hours);
+    $_dh = split ('T', $scormTime);
+    $days = isset( $_dh[0] ) ? $_dh[0] : 0;
+    $hours = isset( $_dh[1] ) ? $_dh[1] : 0;
     
     $year = substr( $days, 0, strpos($days, 'Y'));    
     if( $year )
