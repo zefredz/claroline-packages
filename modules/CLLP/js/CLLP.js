@@ -479,3 +479,16 @@ function addBlockingCondition( pathId ) {
     $(div).insertBefore("#block_condition_button");
     
 }
+
+function addBranchCondition( pathId )
+{
+	$.ajax({
+		type: "POST",
+		url: "../viewer/scormServer.php",
+		data: "cmd=createBranchCondition&pathId=" + pathId,
+		success:  function(response){
+			$(response).insertBefore("#branch_condition_button");
+		}
+	}
+	);
+}
