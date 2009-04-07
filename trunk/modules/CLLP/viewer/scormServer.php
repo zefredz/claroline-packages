@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription', 'createBranchCondition');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -446,6 +446,38 @@ if( $cmd == 'getItemDescription' )
     {
         return false;
     }
+}
+if( $cmd == 'createBranchCondition' )
+{
+    $out = '<div style="padding: 2px;">'
+    .   get_lang( 'Score') . ' '
+    .   '<select name="branchConditions[sign][]">' . "\n"
+    .   '<option value="0"></option>' . "\n"
+    .   '<option value="&#60;">&#60;</option>' . "\n"
+    .   '<option value="&#8804;">&#8804;</option>' . "\n"
+    .   '<option value="&#62;">&#62;</option>' . "\n"
+    .   '<option value="&#8805;">&#8805;</option>' . "\n"
+    .   '<option value="=">=</option>' . "\n"
+    .   '</select>' . "\n"
+    .   ' ' . get_lang( 'to' ) . ' '
+    .   '<input type="text" name="branchConditions[value][]" value="" style="width: 25px;" /> % ' . get_lang('go to') . ' '
+    .   '<select name="branchConditions[item][]">'
+    ;
+    $itemList = new PathItemList($pathId);
+    $itemListArray = $itemList->getFlatList();
+    
+    $options = '<option value="0"></option>' . "\n";
+    
+    foreach( $itemListArray as $anItem )
+    {
+        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+    }
+    $out .= $options;
+    $out .= '</select>'
+    .   '<img src="' . get_icon_url('delete') . '" alt="' . get_lang('Delete') . '" title="' . get_lang('Delete') . '" onclick="$(this).parent().remove();" />'    
+    .   '</div>' . "\n"
+    ;
+    echo $out;
 }
 function lpDebug($var)
 {

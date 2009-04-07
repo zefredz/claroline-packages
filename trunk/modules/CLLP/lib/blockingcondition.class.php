@@ -239,7 +239,7 @@ class blockingcondition
         
         $blocking_conditions = array();
         
-        $sql = "SELECT i.`id`, i.`parent_id`, `title`
+				$sql = "SELECT i.`id`, i.`parent_id`, `title`
                 FROM `".$this->tblItem."` i
                 WHERE i.`id` = '".$item_id."'
                 LIMIT 1";
@@ -253,6 +253,7 @@ class blockingcondition
                 $data[$item_id]['data']['item'][] = $d['cond_item_id'];
                 $data[$item_id]['data']['operator'][] = $d['operator'];
                 $data[$item_id]['data']['status'][] = $d['completion_status'];
+								$data[$item_id]['data']['raw_to_pass'][] = $d['raw_to_pass'];
                 if($k)
                 {
                     $data[$item_id]['data']['condition'][] = $_data[$k-1]['condition'];

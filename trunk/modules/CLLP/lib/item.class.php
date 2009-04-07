@@ -102,7 +102,17 @@ class item
      * @var $tblBlockCond
      */
     private $tblBlockCond;
-
+    
+    /**
+     * @var $redirectBranchConditions
+     */
+    private $redirectBranchConditions;
+    
+    /**
+     * @var $branchConditions
+     */
+    private $branchConditions;
+    
     /**
      * Constructor
      *
@@ -126,6 +136,7 @@ class item
         $this->launchData = '';
         $this->timeLimitAction = 'continue,no message';
         $this->completionThreshold = '';
+        $this->redirectBranchConditions = 0;
 
         // define module table names
         $tblNameList = array(
@@ -162,7 +173,9 @@ class item
                     `next_id`,
                     `launch_data`,
                     `timeLimitAction`,
-                    `completionThreshold`
+                    `completionThreshold`,
+                    `redirectBranchConditions`,
+                    `branchConditions`
             FROM `".$this->tblItem."`
             WHERE `id` = ".(int) $id;
 
@@ -186,7 +199,8 @@ class item
             $this->launchData = $data['launch_data'];
             $this->timeLimitAction = $data['timeLimitAction'];
             $this->completionThreshold = $data['completionThreshold'];
-
+            $this->redirectBranchConditions = $data['redirectBranchConditions'];
+            $this->branchConditions = $data['branchConditions'];
 
             return true;
         }
@@ -224,7 +238,9 @@ class item
                         `next_id` = ".(int) $this->nextId.",
                         `launch_data` = '".addslashes($this->launchData)."',
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
-                        `completionThreshold` = '".addslashes($this->completionThreshold)."'";
+                        `completionThreshold` = '".addslashes($this->completionThreshold)."',
+                        `redirectBranchConditions` = '".(int) $this->redirectBranchConditions."',
+                        `branchConditions` = '". addslashes( $this->branchConditions ) ."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
@@ -257,7 +273,9 @@ class item
                         `next_id` = ".(int) $this->nextId.",
                         `launch_data` = '".addslashes($this->launchData)."',
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
-                        `completionThreshold` = '".addslashes($this->completionThreshold)."'
+                        `completionThreshold` = '".addslashes($this->completionThreshold)."',
+                        `redirectBranchConditions` = '". (int) $this->redirectBranchConditions ."',
+                        `branchConditions` = '" . addslashes( $this->branchConditions ) ."'
                     WHERE `id` = '".(int) $this->id."'";
 
             // execute and return main query
@@ -752,6 +770,56 @@ class item
 
         if( !is_null($rankMax) || !$rankMax ) return (int) $rankMax;
         else                     			  return 0;
+    }
+    
+    public function getRedirectBranchConditions()
+    {
+        return $this->redirectBranchConditions;
+    }
+    
+    public function setRedirectBranchConditions( $value )
+    {
+        $value = (int) $value;
+        if( $value == 0 || $value == 1)
+        {
+            $this->redirectBranchConditions = $value;
+            return true;
+        }
+        else
+        {
+            return false;
+        }        
+    }
+    
+    public function getBranchConditions()
+    {
+        $_branchConditions = unserialize( $this->branchConditions );
+        
+        return $_branchConditions;
+    }
+    
+    public function setBranchConditions( $branchConditions )
+    {
+        if( !( isset( $branchConditions['sign'] ) && isset( $branchConditions['item'] ) && isset( $branchConditions['value'] ) ) )
+        {
+            return false;
+        }
+        
+        if( !( ( count( $branchConditions['sign'] ) == count( $branchConditions['item'] ) )
+            && ( count( $branchConditions['sign'] ) == count( $branchConditions['value'] ) ) ) )
+        {
+            return false;
+        }
+        
+        $_branchConditions = array();
+        
+        foreach( $branchConditions['sign'] as $key => $sign )
+        {
+            $_branchConditions[$key]['sign'] = $sign;
+            $_branchConditions[$key]['value'] = $branchConditions['value'][$key];
+            $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
+        }
+        $this->branchConditions = serialize( $_branchConditions );
     }
 }
 
