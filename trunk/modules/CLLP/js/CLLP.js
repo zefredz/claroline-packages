@@ -110,7 +110,32 @@ function commit(datamodel) {
         type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
         data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
-        success: refreshToc,
+        success: function( response ){
+					refreshToc();
+					//branching conditions
+					$.ajax({
+						type: "POST",
+						url: lpHandler.moduleUrl + "viewer/scormServer.php",
+						data: "cmd=rqBranchConditions&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+						success: function(response)
+						{
+							if( !isNaN(parseInt(response, 10)) )
+							{								
+								lpHandler.setContent(response);	
+							}
+							else
+							{
+								if( response )
+								{
+									lpHandler.itemId = 0;
+									this.itemId = 0;
+									mkOpenItem( response );
+								}								
+							}
+						},
+						dataType: 'html'
+					});	
+				},
         dataType: 'html'
     });
 
@@ -127,7 +152,8 @@ function setContent(itemId) {
     debug("setContent("+itemId+")",1);
     // set item id
     this.itemId = itemId;
-    // refresh api then refresh content
+		lpHandler.itemId = this.itemId;
+		// refresh api then refresh content
     $.getScript("apiData.php?cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + itemId, rqOpenItem );
 }
 
@@ -154,16 +180,14 @@ function rqOpenItem() {
  */
 function mkOpenItem(itemUrl) {
     debug("mkOpenItem()",1);
-		
 		if( itemUrl != '' )
     {
       var frame = lp_top.frames['lp_content'].document;
-			
+			$(frame.getElementById('description')).children().remove();					
 			$.ajax({
 				type: "GET",
 				url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
 				success: function(response){
-					$(frame.getElementById('description')).children().remove();
 					if( response )
 					{
 						$(frame.getElementById('description')).append(response);

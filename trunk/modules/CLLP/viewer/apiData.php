@@ -77,16 +77,15 @@ else
 _api.init();
 
 <?php
-
 if( isset( $_SESSION['thisAttempt'] ) )
 {
     $thisAttempt = unserialize( $_SESSION[ 'thisAttempt' ] );
     $itemAttempt = new itemAttempt();
     if( $itemAttempt->load($thisAttempt->getId(), $itemId) )
     {
-        ?>
-        _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>;       
-        <?php
+        ?>				
+        _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>;
+				<?php
         
     }
 		
@@ -98,7 +97,6 @@ if( isset( $_SESSION['thisAttempt'] ) )
 				<?php
 		}
 }
-
 ?>
 
 

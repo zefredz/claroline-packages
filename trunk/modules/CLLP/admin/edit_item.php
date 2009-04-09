@@ -122,14 +122,10 @@ if( $cmd == 'exEdit' )
 		{
 			$error = true;
 		}
-		if( !empty( $_REQUEST['redirectBranchConditions'] ) )
-		{
-			$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
-		}
-		else
-		{
-			$error = true;
-		}		
+		
+		$_REQUEST['redirectBranchConditions'] = ( !empty( $_REQUEST['redirectBranchConditions'] ) ? 1 : 0);
+		$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
+				
 		if( !empty( $_REQUEST['branchConditions'] ) )
 		{
 			$item->setBranchConditions( $_REQUEST['branchConditions'] );
@@ -244,6 +240,7 @@ if( $item->load( $itemId ) )
 					}
 					$htmlEditTitleForm .= $options;
 					$htmlEditTitleForm .=		'</select>' . "\n"
+					.	'<img src="'.get_icon_url('delete').'" alt="'.get_lang('Delete').'" title="' . get_lang('Delete') .'" onclick="$(this).parent().remove();" />' . "\n"
 					.	'</div>' . "\n"
 					;
 				}				

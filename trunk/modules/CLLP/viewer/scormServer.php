@@ -33,7 +33,7 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription', 'createBranchCondition');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription', 'createBranchCondition', 'rqBranchConditions');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -71,6 +71,77 @@ if( is_null($cmd) ) echo 'Error : no command.';
 header('Content-Type: text/html; charset=UTF-8'); // Charset
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+
+function rqContentUrl( &$item, $pathId, $itemId)
+{
+    $item = new item();
+    $itemUrl = '';
+
+    if( $item->load($itemId) )
+    {
+        $_SESSION['thisItemId'] = $itemId;
+        //load blocking conditions
+        $aPath = new path();
+        $displayPage = true;
+        if( $aPath->load($pathId) && $aPath->getLock() == 'CLOSE' )
+        {
+            $blockconds = new blockingcondition( $itemId );
+            // load blocking conditions for item and parents
+            $evalConds = $blockconds->evalBlockConds( $itemId, true);
+            foreach($evalConds as $cond)
+            {
+                if(!$cond)
+                {
+                    $displayPage = $cond;
+                }
+            }            
+        }        
+        
+        if( $displayPage )
+        {
+            
+            if( $item->getType() == 'MODULE' )
+            {
+                $resolver = new ResourceLinkerResolver();
+                $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
+                
+                // fix ? or &amp; depending if there is already a ? in url
+                $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
+                
+                $itemUrl .= 'calledFrom=CLLP&embedded=true'; 
+                
+                // temporary fix for document tool (FIXME when linker will be updated)
+                // we have to open a frame that will discuss with API and open the document instead 
+                // of directly opening it
+                lpDebug($itemUrl);
+                $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
+                lpDebug($itemUrl);
+            }
+            elseif( $item->getType() == 'SCORM' )
+            {
+                $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
+    
+                $itemUrl = $scormBaseUrl . $item->getSysPath();
+            }
+            else
+            {
+                return false;
+            }
+            
+            echo $itemUrl;
+            return true;    
+        }
+        else
+        {
+            echo 'blockingconditions.php?pathId='. $pathId .'&itemId=' . $itemId;
+            return true;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
 
 if( $cmd == 'doCommit' )
 {
@@ -189,73 +260,7 @@ if( $cmd == 'doCommit' )
  */
 if( $cmd == 'rqContentUrl' )
 {
-    $item = new item();
-    $itemUrl = '';
-
-    if( $item->load($itemId) )
-    {
-        $_SESSION['thisItemId'] = $itemId;
-        //load blocking conditions
-        $aPath = new path();
-        $displayPage = true;
-        if( $aPath->load($pathId) && $aPath->getLock() == 'CLOSE' )
-        {
-            $blockconds = new blockingcondition( $itemId );
-            // load blocking conditions for item and parents
-            $evalConds = $blockconds->evalBlockConds( $itemId, true);
-            foreach($evalConds as $cond)
-            {
-                if(!$cond)
-                {
-                    $displayPage = $cond;
-                }
-            }            
-        }        
-        
-        if( $displayPage )
-        {
-            if( $item->getType() == 'MODULE' )
-            {
-                $resolver = new ResourceLinkerResolver();
-                $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
-                
-                // fix ? or &amp; depending if there is already a ? in url
-                $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
-                
-                $itemUrl .= 'calledFrom=CLLP&embedded=true'; 
-                
-                // temporary fix for document tool (FIXME when linker will be updated)
-                // we have to open a frame that will discuss with API and open the document instead 
-                // of directly opening it
-                lpDebug($itemUrl);
-                $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
-                lpDebug($itemUrl);
-            }
-            elseif( $item->getType() == 'SCORM' )
-            {
-                $scormBaseUrl = get_path('coursesRepositoryWeb') . claro_get_course_path() . '/scormPackages/path_' . $pathId . '/';
-    
-                $itemUrl = $scormBaseUrl . $item->getSysPath();
-            }
-            else
-            {
-                return false;
-            }
-            
-            echo $itemUrl;
-            return true;    
-        }
-        else
-        {
-            echo 'blockingconditions.php?pathId='. $pathId .'&itemId=' . $itemId;
-            return true;
-        }
-        
-    }
-    else
-    {
-        return false;
-    }
+    return rqContentUrl( $item, $pathId, $itemId );    
 }
 
 if( $cmd == 'rqToc' )
@@ -478,6 +483,31 @@ if( $cmd == 'createBranchCondition' )
     .   '</div>' . "\n"
     ;
     echo $out;
+}
+if( $cmd == 'rqBranchConditions' )
+{
+    $item = new item();
+    if( ! $item->load( $itemId ) )
+    {
+        return false;
+    }
+    
+    $branchConditions = $item->evalBranchConditions( $pathId );
+    if( is_int( $branchConditions ) )
+    {
+        echo $branchConditions;
+    }
+    else if( is_array($branchConditions) && count($branchConditions) )
+    {
+        $_SESSION['branchConditions'] = $branchConditions;
+        echo 'branchingconditions.php?cidReq='. $cidReq .'&pathId=' . $pathId . '&itemId='.$itemId;
+    }
+    else
+    {
+        echo '';
+    }
+    
+    return true;
 }
 function lpDebug($var)
 {

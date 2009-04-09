@@ -821,6 +821,130 @@ class item
         }
         $this->branchConditions = serialize( $_branchConditions );
     }
+    
+    public function evalBranchConditions( $pathId )
+    {
+        $attempt = new attempt();
+        if( !$attempt->load($this->getPathId(), claro_get_current_user_id()) )
+        {
+            return false;
+        }
+        $itemAttempt = new itemAttempt();
+        if( ! $itemAttempt->load( $attempt->getId(), $this->getId() ) )
+        {
+            return false;
+        }
+
+        $branchConditions = $this->getBranchConditions();
+        if( is_array($branchConditions) && count($branchConditions) )
+        {
+        
+            $_conditions = array(
+                                     0 => array(),
+                                     1 => array(),
+                                     2 => array(),
+                                     3 => array(),
+                                     4 => array()
+                                     );
+            //array keys : 0 = '=', 1 = '>', 2 = '>=', 3 = '<=', 4 = '<'
+            foreach( $branchConditions as $branchCondition )
+            {
+                if( $branchCondition['sign'] == '=' )
+                {
+                    $_conditions[0][$branchCondition['value']] = $branchCondition['item'];
+                }
+                elseif( $branchCondition['sign'] == '>' )
+                {
+                    $_conditions[1][$branchCondition['value']] = $branchCondition['item'];
+                }
+                elseif( $branchCondition['sign'] == '&#8805;' )
+                {
+                    $_conditions[2][$branchCondition['value']] = $branchCondition['item'];
+                }
+                elseif( $branchCondition['sign'] == '&#8804;' )
+                {
+                    $_conditions[3][$branchCondition['value']] = $branchCondition['item'];
+                }
+                elseif( $branchCondition['sign'] == '<' )
+                {
+                    $_conditions[4][$branchCondition['value']] = $branchCondition['item'];
+                }                
+            }
+            if( ! $this->getRedirectBranchConditions() )
+            {
+                foreach($_conditions as $key => $condition)
+                {
+                    if(empty($condition))
+                    {
+                        unset($_conditions[$key]);
+                    }
+                }
+                return $_conditions;
+            }
+            else
+            {
+                foreach( $_conditions as $key => $condition )
+                {
+                    krsort($_conditions[$key]);
+                }
+                foreach( $_conditions as $key => $condition )
+                {
+                    foreach($condition as $value => $item )
+                    {
+                        switch( $key )
+                        {
+                            case 0 :
+                            {
+                                if(  $value == $itemAttempt->getScoreRaw() )
+                                {
+                                    return (int) $item;
+                                }
+                            }
+                            break;
+                            case 1 :
+                            {
+                                if( $itemAttempt->getScoreRaw() > $value )
+                                {
+                                    return (int) $item;
+                                }
+                            }
+                            break;
+                            case 2 :
+                            {
+                                if( $itemAttempt->getScoreRaw() >= $value )
+                                {
+                                    return (int) $item;
+                                }
+                            }
+                            break;
+                            case 3 :
+                            {
+                                if( $itemAttempt->getScoreRaw() <= $value )
+                                {
+                                    return (int) $item;
+                                }
+                            }
+                            break;
+                            case 4 :
+                            {
+                                if( $itemAttempt->getScoreRaw() < $value )
+                                {
+                                    return (int) $item;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+                
+                return false;   
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
 }
 
 class itemList
