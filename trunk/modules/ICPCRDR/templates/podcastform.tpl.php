@@ -5,10 +5,13 @@
     <fieldset>
         <legend><?php echo get_lang('Edit information for the curent link'); ?></legend>
         <dl>
-            <dt><label for="title"><?php echo get_lang('Title'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
-            <dd><input type="text" name="title" id="title" size="60" maxlength="200" value="<?php echo $this->title; ?>" /></dd>
-            <dt><label for="url"><?php echo get_lang('Url'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
+            <dt><label for="url"><?php echo get_lang('Feed url'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
             <dd><input type="text" name="url" id="url" size="60" maxlength="200" value="<?php echo $this->url; ?>" /></dd>
+            <dt><label for="title"><?php echo get_lang('Title'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
+            <dd>
+                <input type="text" name="title" id="title" size="60" maxlength="200" value="<?php echo $this->title; ?>" />
+                <input type="button" name="gettitle" id="getTitleFromFeed" value="<?php echo get_lang("Get title from feed");?>" />
+            </dd>
             <dt><?php echo get_lang('Visibility'); ?>&nbsp;:</dt>
             <dd>
                 <input type="radio" id="visibility_visible" name="visibility" value="visible" <?php if( $this->visibility == 'visible' ) : echo 'checked="checked"'; endif; ?> />
@@ -23,3 +26,20 @@
         <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><input type="button" name="cancel" value="<?php echo get_lang('Cancel'); ?>" /></a>
     </div>
 </form>
+<script type="text/javascript">
+$(document).ready( function(){
+    $("#getTitleFromFeed").click(
+        function() {
+            $.get(
+                './proxy.php',
+                {
+                    url: $("#url").val()
+                },
+                function(response){
+                    $("#title").val( $(response).find('channel>title').text() );
+                }
+            );
+        }
+    );
+});
+</script>
