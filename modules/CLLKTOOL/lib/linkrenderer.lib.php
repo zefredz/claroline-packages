@@ -138,13 +138,38 @@ class LinkRenderer implements Display
     
     protected function _renderPopup()
     {
+        $params = isset($this->options['params']) ? $this->options['params'] : array();
+        $data = http_build_query( $params );
         
+        $url = strpos( $this->url, '?' ) !== false ? $this->url . '&' . $data : $this->url . '?' . $data;
+        $width = htmlspecialchars( isset($this->options['width']) ? $this->options['width'] : '100%' );
+        $height = htmlspecialchars( isset($this->options['height']) ? $this->options['height'] : '100%' );
+        $out = '<script>' . "\n"
+        .   '$(document).ready(function(){
+            window.open("'. $url .'", "_blank", "width='.$width.', height='.$height.',menubar=no,status=no,toolbar=no");
+        })' . "\n"
+        .   '</script>'
+        .   '<h4>' . htmlspecialchars( $this->title ) . '</h4>' . "\n"
+        .   get_lang('Link opened on a new window.')
+        ;
+        
+        return $out;
     }
 }
 
 class LinkCollectionRenderer implements Display
 {
     protected $collection;
+    
+    static public function displayMenu( &$links, $is_allowed_to_edit )
+    {   
+        $form = new PhpTemplate( dirname(__FILE__) . '/../templates/menuleft.tpl.php' );
+        $form->assign( 'links', $links);
+        $form->assign( 'is_allowed_to_edit', $is_allowed_to_edit);
+        
+        
+        return $form->render();
+    }
     
     public function render()
     {
