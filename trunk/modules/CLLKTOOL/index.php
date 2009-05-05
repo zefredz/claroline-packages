@@ -394,67 +394,7 @@ try
     
     
     // prepare left menu for any cmd
-    
-    $linkList = '<ul>' . "\n";
-    
-    $links = $collection->getAll();
-    
-    foreach ( $links as $currentLink )
-    {
-        if( $currentLink['visibility'] == 'visible' || $is_allowed_to_edit )
-        {
-            $linkList .= '<li><a href="'
-                . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&linkId='.(int)$currentLink['id'] ) )
-                . '" ' .($currentLink['visibility'] != 'visible' ? 'class="invisible"' : ''). '>'
-                . htmlspecialchars($currentLink['title'])
-                . '</a>' . "\n"
-                ;
-            if( $is_allowed_to_edit )
-            {
-                // Edit link
-                $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLink&linkId='.(int)$currentLink['id'] ) ) . '">'
-                . '<img src="./img/link_edit.png" alt="'.get_lang('Modify').'" />'
-                . '</a>' . "\n"
-                // Delete link
-                . ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLink&linkId='.(int)$currentLink['id'] ) ) . '">'
-                . '<img src="./img/link_delete.png" alt="'.get_lang('Delete').'" />'
-                . '</a>' . "\n"
-                ;
-                // Visibility
-                if( $currentLink['visibility'] == 'visible' )
-                {
-                    $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvis&linkId='.(int)$currentLink['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('visible') . '" alt="'.get_lang('Make Invisible').'" />'
-                    . '</a>' . "\n"
-                    ;  
-                }
-                else
-                {
-                    $linkList .= ' <a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVis&linkId='.(int)$currentLink['id'] ) ) . '">'
-                    . '<img src="' . get_icon_url('invisible') . '" alt="'.get_lang('Make Visible').'" />'
-                    . '</a>' . "\n"
-                    ;   
-                }            
-            }
-            $linkList .= '</li>' . "\n"
-            ;   
-        }        
-    }
-    
-    $linkList .= '</ul>' . "\n";
-    
-    $url_addLink = '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLink' ) ) . '">'
-    . '<img src="./img/link_add.png" alt="" /> '
-    . get_lang( 'Create a new link')
-    . '</a>' . "\n"
-    ;
-    
-    $layout->appendToLeft( $url_addLink );
-    if(count($links))
-    {
-        $layout->appendToLeft( $linkList );
-        $layout->appendToLeft( $url_addLink );   
-    }    
+    $layout->appendToLeft( LinkCollectionRenderer::displayMenu( $collection->getAll(), $is_allowed_to_edit ) );
     
     Claroline::getDisplay()->body->appendcontent( $layout->render() );
 }
