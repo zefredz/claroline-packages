@@ -170,9 +170,10 @@ class ScormImporter
     {
         // main manifest is the one that is the less deep in the zip file
         // according to scorm 2004 it should be at top level so check this first
-        if( in_array($this->uploadDir . 'imsmanifest.xml', $this->zipContent) )
+				
+				if( in_array($this->uploadDir . '/imsmanifest.xml', $this->zipContent) )
         {
-            return $this->uploadDir . 'imsmanifest.xml';
+            return $this->uploadDir . '/imsmanifest.xml';
         }
 
         // if we do not find it at top level search the 'toper' imsmanifest.xml file
@@ -199,8 +200,7 @@ class ScormImporter
     function parseManifest($manifestPath)
     {
         $data = file_get_contents($manifestPath);
-
-        $this->manifestContent = xmlize($data);
+				$this->manifestContent = xmlize($data);
         if( ! is_array($this->manifestContent) )
         {
             // xmlize returns array or error message

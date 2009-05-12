@@ -25,7 +25,16 @@ function xmlize($data, $WHITE=1) {
 
     $data = trim($data);
     $vals = $index = $array = array();
-    $parser = xml_parser_create();
+		preg_match( '@<\?xml.+encoding="([^\s"]+)@si', $data, $matches );
+		if( isset( $matches[1] ) )
+		{
+				$encoding = $matches[1];
+		}
+		else
+		{
+				$encoding = 'UTF-8';
+		}
+    $parser = xml_parser_create( $encoding );
     xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
     xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, $WHITE);
     if ( !xml_parse_into_struct($parser, $data, $vals, $index) )
