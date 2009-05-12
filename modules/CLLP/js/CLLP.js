@@ -201,7 +201,7 @@ function mkOpenItem(itemUrl) {
     }
     else
     {
-        lp_top.lp_content.location = 'blank.php';
+        lp_top.lp_content.location = 'blank.php?pathId=' + lpHandler.pathId;
     }
 
     makeItemActive(lpHandler.itemId);

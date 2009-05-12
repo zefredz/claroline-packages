@@ -67,6 +67,10 @@ class attempt
      * @var $tblAttempt name of the item table
      */
     private $tblAttempt;
+    /**
+     * @var $tblItemAttempt name of the item attempt table
+     */
+    private $tblItemAttempt;
 
     /**
      * Constructor
@@ -85,18 +89,20 @@ class attempt
 
         // define module table names
         $tblNameList = array(
-            'lp_attempt'
+            'lp_attempt',
+            'lp_item_attempt'
         );
 
         // convert to Claroline course table names
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblAttempt = $tbl_lp_names['lp_attempt'];
+        $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
 
     }
 
     /**
      * if no attemptNumber is specified load the last attempt for $userId in $pathId from DB
-     * else loadthe specified attempt
+     * else load the specified attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer $id id of path
@@ -104,11 +110,11 @@ class attempt
      */
     public function load($pathId, $userId, $attemptNumber = null)
     {
-	// $userId will be null if user is anonymous
-	if( is_null($userId) )
-	{
-		return false;
-	}
+        // $userId will be null if user is anonymous
+        if( is_null($userId) )
+        {
+          return false;
+        }
 
         $sql = "SELECT
                     `id`,
@@ -117,9 +123,9 @@ class attempt
                     `last_item_id`,
                     `progress`,
                     `attempt_number`
-		FROM `".$this->tblAttempt."`
-		WHERE `path_id` = ".(int) $pathId . "
-		AND `user_id` = ".(int) $userId;
+                FROM `".$this->tblAttempt."`
+                WHERE `path_id` = ".(int) $pathId . "
+                AND `user_id` = ".(int) $userId;
 
         if( is_null($attemptNumber) )
         {
@@ -145,9 +151,9 @@ class attempt
             $this->progress = $data['progress'];
             $this->attemptNumber = (int) $data['attempt_number'];
 
-			// load list of related item attempts
-			$itemAttemptTmpList = new itemAttemptList();
-			$this->itemAttemptList = $itemAttemptTmpList->load($this->id);
+            // load list of related item attempts
+            $itemAttemptTmpList = new itemAttemptList();
+            $this->itemAttemptList = $itemAttemptTmpList->load($this->id);
 
             return true;
         }
@@ -165,21 +171,21 @@ class attempt
      */
     public function save()
     {
-	// TODO compute progress from itemAttemptList and save itemAttemptList
-	if( $this->id == -1 )
-        {
-	    // if no attemptNumber find the higher possible value
-	    if( $this->attemptNumber == -1 )
-	    {
-		    $this->setHigherAttemptNumber();
-	    }
+        // TODO compute progress from itemAttemptList and save itemAttemptList
+        if( $this->id == -1 )
+              {
+            // if no attemptNumber find the higher possible value
+            if( $this->attemptNumber == -1 )
+            {
+              $this->setHigherAttemptNumber();
+            }
 
             // insert
             $sql = "INSERT INTO `".$this->tblAttempt."`
                     SET `path_id` = '".(int) $this->pathId."',
                         `user_id` = '".(int) $this->userId."',
                         `last_item_id` = '".(int) $this->lastItemId."',
-                    	`progress` = '".(int) $this->progress."',
+                        `progress` = '".(int) $this->progress."',
                         `attempt_number` = '".(int) $this->attemptNumber."'";
 
             // execute the creation query and get id of inserted assignment
@@ -200,10 +206,10 @@ class attempt
         {
             // update, main query
             $sql = "UPDATE `".$this->tblAttempt."`
-		    SET `path_id` = '".(int) $this->pathId."',
+                    SET `path_id` = '".(int) $this->pathId."',
                         `user_id` = '".(int) $this->userId."',
                         `last_item_id` = '".(int) $this->lastItemId."',
-                    	`progress` = '".(int) $this->progress."',
+                        `progress` = '".(int) $this->progress."',
                         `attempt_number` = '".(int) $this->attemptNumber."'
                     WHERE `id` = '".(int) $this->id."'";
 
@@ -229,8 +235,11 @@ class attempt
     {
         if( $this->id == -1 ) return true;
 
-	// TODO delete all item_attempts
-
+        $sql = "DELETE FROM `" . $this->tblItemAttempt . "`
+                WHERE `attempt_id` = " . (int) $this->id;
+        
+        if (claro_sql_query($sql) == false ) return false;
+        
         $sql = "DELETE FROM `" . $this->tblAttempt . "`
                 WHERE `id` = " . (int) $this->id ;
 
