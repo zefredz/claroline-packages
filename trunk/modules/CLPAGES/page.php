@@ -91,8 +91,9 @@
           $htmlHeaders .= "\n"
           .      '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/tiny_mce/tiny_mce.js" ></script>' . "\n"
           . '<script language="javascript" type="text/javascript">'."\n"
-        .     'var text_dir = "'.get_locale("text_dir").'";' . "\n"
-        .     '</script>'."\n\n"
+          .     'var text_dir = "'.get_locale("text_dir").'";' . "\n"
+          .     'var mimeTexURL = "' . get_conf('claro_texRendererUrl') . '";' . "\n"
+          .     '</script>'."\n\n"
           .      '<script type="text/javascript" src="'.get_path('url').'/claroline/editor/tiny_mce/advanced.conf.js" ></script>' . "\n";
 
 
