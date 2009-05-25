@@ -17,61 +17,67 @@
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
     require_once dirname(__FILE__) . '/lib/clopml.lib.php';
-    
-    // need to be in a course
-    /*if( ! claro_is_in_a_course() )
-    {
-        echo '<form >cidReq = <input name="cidReq" type="text" /><input type="submit" /></form>';
-        exit;
-    }
-    else
-    {*/
-        if ( $_course['visibility'] && !claro_is_course_allowed() )
-        {
-            if (!isset($_SERVER['PHP_AUTH_USER']))
-            {
-                header('WWW-Authenticate: Basic realm="'. get_lang('Rss feed for %course', array('%course' => $_course['name']) ) . '"');
-                header('HTTP/1.0 401 Unauthorized');
-                echo '<h2>' . get_lang('You need to be authenticated with your %sitename account', array('%sitename'=>$siteName) ) . '</h2>'
-                .    '<a href="index.php?cidReq=' . claro_get_current_course_id() . '">' . get_lang('Retry') . '</a>'
-                ;
-                exit;
-            }
-            else
-            {
-                if ( get_magic_quotes_gpc() ) // claro_unquote_gpc don't wash
-                {
-                    $_REQUEST['login']    = stripslashes($_SERVER['PHP_AUTH_USER']);
-                    $_REQUEST['password'] = stripslashes($_SERVER['PHP_AUTH_PW']);
-                }
-                else
-                {
-                    $_REQUEST['login']    = $_SERVER['PHP_AUTH_USER'];
-                    $_REQUEST['password'] = $_SERVER['PHP_AUTH_PW'] ;
-                }
-                require get_path('incRepositorySys') . '/claro_init_local.inc.php';
-                if ($_course['visibility'] && !claro_is_course_allowed())
-                {
-                    header('WWW-Authenticate: Basic realm="'. get_lang('Rss feed for %course', array('%course' => $_course['name']) ) .'"');
-                    header('HTTP/1.0 401 Unauthorized');
-                    echo '<h2>' . get_lang('You need to be authenticated with your %sitename account', array('%sitename'=>$siteName) ) . '</h2>'
-                    .    '<a href="index.php?cidReq=' . claro_get_current_course_id() . '">' . get_lang('Retry') . '</a>'
-                    ;
-                    exit;
-                }
-            }
-        }
-    // }
-    
-    if ( ( claro_is_platform_admin() || claro_is_course_manager() ) && claro_is_in_a_course() )
-    {
-        $rss = generate_forum_rss( claro_get_current_course_id() );
+
+    $userId = isset( $_REQUEST['userId'] )
+        ? trim($_REQUEST['userId'])
+        : null
+        ;
         
-        if( $rss )
+    $userName = isset( $_REQUEST['userName'] )
+        ? trim($_REQUEST['userName'])
+        : null
+        ;
+    
+    $officialCode = isset( $_REQUEST['officialCode'] )
+        ? trim($_REQUEST['officialCode'])
+        : null
+        ;
+
+    // get user id from username or official code
+    if ( empty ( $userId ) )
+    {
+        $tblList = claro_sql_get_main_tbl();
+        
+        if ( !empty( $userName ) )
         {
-            header("Content-Type: application/rss+xml");
-            echo $rss;
+            // get userId from userName
+            $sql = "SELECT user_id
+                FROM `".$tblList['user']."`
+                WHERE  username = '" . claro_sql_escape( $userName ) . "'";
+                
+            $res = claro_sql_query_get_single_value( $sql );
+            
+            if ( $res )
+            {
+                $userId = (int) $res;
+            }
+        }
+        elseif ( !empty( $officialCode ) )
+        {
+            // get userId from officialCode
+            $sql = "SELECT user_id
+                FROM `".$tblList['user']."`
+                WHERE  officialCode = '" . claro_sql_escape( $officialCode ) . "'";
+                
+            $res = claro_sql_query_get_single_value( $sql );
+
+            if ( $res )
+            {
+                $userId = (int) $res;
+            }
         }
     }
-    
+        
+    // get opml file from user id
+    if ( !empty( $userId ) )
+    {
+        $opml = generate_opml( $userId );
+        
+        if ( $opml )
+        {
+            // TODO : handle OPML file-type here
+            header("Content-Type: text/xml");
+            echo $opml;
+        }
+    }
 ?>
