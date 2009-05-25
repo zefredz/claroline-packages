@@ -25,7 +25,7 @@
             . ' type="application/rss+xml"'
             . ' title="'.get_lang('List of RSS for all my forums').'"'
             . ' href="'.get_module_url('CLOPML')
-            . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true" />'
+            . '/index.php" />'
             ;
     }
 ?>
