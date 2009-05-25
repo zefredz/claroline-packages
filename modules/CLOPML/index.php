@@ -16,7 +16,7 @@
 
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-    require_once dirname(__FILE__) . '/lib/clfrmrss.lib.php';
+    require_once dirname(__FILE__) . '/lib/clopml.lib.php';
     
     // need to be in a course
     if( ! claro_is_in_a_course() )
