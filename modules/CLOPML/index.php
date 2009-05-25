@@ -19,13 +19,13 @@
     require_once dirname(__FILE__) . '/lib/clopml.lib.php';
     
     // need to be in a course
-    if( ! claro_is_in_a_course() )
+    /*if( ! claro_is_in_a_course() )
     {
         echo '<form >cidReq = <input name="cidReq" type="text" /><input type="submit" /></form>';
         exit;
     }
     else
-    {
+    {*/
         if ( $_course['visibility'] && !claro_is_course_allowed() )
         {
             if (!isset($_SERVER['PHP_AUTH_USER']))
@@ -61,7 +61,7 @@
                 }
             }
         }
-    }
+    // }
     
     if ( ( claro_is_platform_admin() || claro_is_course_manager() ) && claro_is_in_a_course() )
     {
