@@ -22,10 +22,10 @@
     if ( claro_is_user_authenticated() )
     {
         $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
-            . ' type="application/rss+xml"'
-            . ' title="'.get_lang('List of RSS for all my forums').'"'
+            . ' type="text/x-opml"'
+            . ' title="'.get_lang('List of RSS from all my courses').'"'
             . ' href="'.get_module_url('CLOPML')
-            . '/index.php" />'
+            . '/index.php?userId=' . claro_get_current_user_id().'" />'
             ;
     }
 ?>
