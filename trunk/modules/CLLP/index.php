@@ -226,7 +226,6 @@ if( $is_allowedToEdit )
 														.	$pathExport->getError()
 														);
 				}
-				// TODO
     }
 }
 
