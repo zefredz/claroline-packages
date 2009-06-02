@@ -128,11 +128,15 @@
     {
         if( ! claro_is_javascript_enabled() )
         {
-            $out .= claro_html_message_box(get_lang('Javascript must be enabled in order to use this tool.'));
+            $dialogBox = new DialogBox();
+            $dialogBox->error( get_lang('Javascript must be enabled in order to use this tool.'));
+            $out .= $dialogBox->render();
         }
         elseif( ! $_uid )
         {
-            $out .= claro_html_message_box(get_lang('Anonymous users cannot use this tool.'));
+            $dialogBox = new DialogBox();
+            $dialogBox->error( get_lang('Anonymous users cannot use this tool.'));
+            $out .= $dialogBox->render();            
         }
     }    
 
