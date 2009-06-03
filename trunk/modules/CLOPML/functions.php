@@ -24,8 +24,8 @@
         $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
             . ' type="text/x-opml"'
             . ' title="'.get_lang('List of RSS from all my courses').'"'
-            . ' href="'.get_module_url('CLOPML')
-            . '/index.php?userId=' . claro_get_current_user_id().'" />'
+            . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLOPML')
+            . '/index.php?userId=' . claro_get_current_user_id() ) ).'" />'
             ;
     }
 ?>
