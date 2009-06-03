@@ -47,8 +47,8 @@
             $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
                 . ' type="application/rss+xml"'
                 . ' title="'.get_lang('Last messages in this forum').'"'
-                . ' href="'.get_module_url('CLFRMRSS')
-                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'" />'
+                . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLFRMRSS')
+                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id ) ) .'" />'
                 ;
         }
         
@@ -57,8 +57,8 @@
             $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
                 . ' type="application/rss+xml"'
                 . ' title="'.get_lang('Last messages in this topic').'"'
-                . ' href="'.get_module_url('CLFRMRSS')
-                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'&topicId=' . (int) $topic_id . '" />'
+                . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLFRMRSS')
+                . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'&topicId=' . (int) $topic_id ) ) . '" />'
                 ;
         }
     }
