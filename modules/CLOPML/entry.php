@@ -24,8 +24,8 @@
         $GLOBALS['currentModuleLabel'] = 'CLOPML';
         
         $out = '<a href="'
-            . get_module_url('CLOPML')
-            . '/index.php?userId=' . claro_get_current_user_id()
+            . htmlspecialchars( URL::Contextualize( get_module_url('CLOPML')
+            . '/index.php?userId=' . claro_get_current_user_id() ) )
             . '"><img src="'.get_icon('opml.png').'" />&nbsp;'.get_lang('List of RSS from all my courses (opml file format)').'</a>'."\n"
             ;
             
