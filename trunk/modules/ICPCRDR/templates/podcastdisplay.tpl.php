@@ -16,7 +16,7 @@
     id="player<?php echo "_{$videoId}"?>"> 
 </a>
 <script type="text/javascript">
-    flowplayer("player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.0.swf");
+    flowplayer("player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.1.swf");
 </script>
 <?php
     $videoId++;
