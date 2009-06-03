@@ -16,7 +16,13 @@
     id="player<?php echo "_{$videoId}"?>"> 
 </a>
 <script type="text/javascript">
-    flowplayer("player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.1.swf");
+    flowplayer( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.1.swf", { 
+        clip: { 
+            // these two configuration variables does the trick 
+            autoPlay: false,  
+            autoBuffering: true // <- do not place a comma here   
+        } 
+    } );
 </script>
 <?php
     $videoId++;
