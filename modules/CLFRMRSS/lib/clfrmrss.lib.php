@@ -11,11 +11,6 @@
 * @package     CLFRMRSS
 */
 
-if (count(get_included_files() ) == 1 )
-{
-    die('The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
-}
-
 function generate_forum_rss( $courseId )
 {
     include_once get_path('incRepositorySys') . '/lib/forum.lib.php';
@@ -73,5 +68,3 @@ function generate_forum_rss( $courseId )
     
     
 }
-
-?>
