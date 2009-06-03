@@ -1,7 +1,7 @@
 <p>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
-    <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" /> '
-    <?php echo get_lang( 'Add a podcast'); ?>
+    <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
+    <?php echo get_lang( 'Add a podcast' ); ?>
     </a>
 </p>
 
@@ -44,10 +44,12 @@
         <?php endif; ?>
     <?php endforeach; ?>
     </ul>
+    <?php if ( count($this->podcasts) > 10 ): ?>
     <p>
         <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
-        <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" /> '
+        <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
         <?php echo get_lang( 'Add a podcast'); ?>
         </a>
     </p>
+    <?php endif; ?>
 <?php endif; ?>
