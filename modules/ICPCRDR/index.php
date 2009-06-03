@@ -266,7 +266,7 @@ catch ( Exception $e )
 }
 
 $jsLoader = JavascriptLoader::getInstance();
-$jsLoader->load( 'flowplayer-3.1.0.min');
+$jsLoader->load( 'flowplayer-3.1.1.min');
 
 $cssLoader = CssLoader::getInstance();
 $cssLoader->load( 'icpcrdr', 'screen');
