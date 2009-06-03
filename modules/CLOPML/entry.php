@@ -26,7 +26,7 @@ if ( claro_is_user_authenticated() )
     $out = '<a href="'
         . htmlspecialchars( URL::Contextualize( get_module_url('CLOPML')
         . '/index.php?userId=' . claro_get_current_user_id() ) )
-        . '"><img src="'.get_icon('opml.png').'" alt="opml" />&nbsp;'.get_lang('List of RSS from all my courses (opml file format)').'</a>'."\n"
+        . '"><img src="'.get_icon('opml.png').'" alt="" />&nbsp;'.get_lang('List of RSS from all my courses (opml file format)').'</a>'."\n"
         ;
         
     $GLOBALS['currentModuleLabel'] = null;
