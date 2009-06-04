@@ -109,6 +109,8 @@ $html .= '<p>' . "\n"
 // table of content
 $html .= "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
 
+$html .= "\n" .'<hr />' . "\n";
+
 $html .= '<div style="padding: 10px 5px;" class="claroCmd">' . "\n"
 // links - back to list
 .    '<div style="text-align: left;">' . "\n"
