@@ -219,6 +219,9 @@ if( $cmd == 'rqEdit' )
 if( $cmd == 'exAddItem' )
 {
     
+    if( isset( $_REQUEST['containerId']) && is_numeric( $_REQUEST['containerId'] ) ) $containerId = (int) $_REQUEST['containerId'];
+    else                                                                             $containerId = null;
+    
     if( isset($_REQUEST['resourceList']) && is_array($_REQUEST['resourceList']) && count($_REQUEST['resourceList']) )
     {
         $i = 0;
@@ -241,7 +244,12 @@ if( $cmd == 'exAddItem' )
             $addedItem->setTitle($title);
             $addedItem->setPathId($pathId);
             $addedItem->setSysPath(urldecode($crl));
-
+            
+            if( !( is_null( $containerId ) || $containerId == -1 ) )
+            {
+                $addedItem->setParentId( $containerId );
+            }
+            
             if( $addedItem->validate() )
             {
                 if( $addedItem->save() )
@@ -272,7 +280,31 @@ if( $cmd == 'rqAddItem' )
     .    claro_form_relay_context() . "\n"
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'."\n"
     .    '<input type="hidden" name="cmd" value="exAddItem" />' . "\n"
-    .    CLLP_ResourceLinker::renderLinkerBlock(get_module_url('CLLP').'/backends/linker.php');
+    .    CLLP_ResourceLinker::renderLinkerBlock(get_module_url('CLLP').'/backends/linker.php')
+    ;
+    
+    $containerList = new PathItemList($pathId);
+    $containerListTree = $containerList->getContainerTree();
+    
+    if( ! empty( $containerListTree ) )
+    {
+        // add root to containerListTree
+        $topElement['name'] = get_lang('Root');
+        $topElement['value'] = -1;
+        
+        array_unshift($containerListTree,$topElement);
+        
+        
+        $htmlAddItem .= '<br />' . "\n"
+        .       '<strong>' . get_lang('Select chapter where you want to place the item') . '&nbsp;</strong>'
+        .       claro_build_nested_select_menu("containerId",$containerListTree)
+        .       '<br /><br/>' . "\n\n"
+        ;
+    }
+    else
+    {
+        $htmlAddItem .= '<input type="hidden" name="containerId" value="-1" />';
+    }
 
     $htmlAddItem .= '<input type="submit" class="claroButton" name="submitEvent" value="' . get_lang('Ok') . '" />'."\n"
     .    claro_html_button($_SERVER['PHP_SELF'] . '?pathId='.$pathId, get_lang('Cancel'))

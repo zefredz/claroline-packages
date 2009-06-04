@@ -118,26 +118,18 @@ if( $cmd == 'exEdit' )
 		{
 			$item->setCompletionThreshold( $_REQUEST['completionThreshold'] );
 		}
-		else
-		{
-			$error = true;
-		}
 		
 		$_REQUEST['redirectBranchConditions'] = ( !empty( $_REQUEST['redirectBranchConditions'] ) ? 1 : 0);
 		$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
-				
+		
 		if( !empty( $_REQUEST['branchConditions'] ) )
 		{
 			$item->setBranchConditions( $_REQUEST['branchConditions'] );
 		}
-		else
-		{
-			$error = true;
-		}
     
 		if( $item->validate() && !$error )
     {
-        if( $insertedId = $item->save() )
+				if( $insertedId = $item->save() )
         {
             $dialogBox->success( get_lang('Item successfully modified') );
         }
@@ -164,7 +156,8 @@ if( $cmd == 'exEdit' )
  */
 
 ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path list'), '../index.php' );
-ClaroBreadCrumbs::getInstance()->prepend( get_lang('Learning path'), '../admin/edit_path.php?pathId=' . $pathId . claro_url_relay_context('&amp;') );
+ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Learning path'), '../admin/edit_path.php?pathId=' . $pathId . claro_url_relay_context('&amp;') );
+
 //-- Content
 $jsloader = JavascriptLoader::getInstance();
 $jsloader->load('jquery');

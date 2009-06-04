@@ -472,10 +472,9 @@ if( $cmd == 'createBranchCondition' )
     $itemListArray = $itemList->getFlatList();
     
     $options = '<option value="0"></option>' . "\n";
-    
     foreach( $itemListArray as $anItem )
     {
-        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
+        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.htmlspecialchars(claro_utf8_encode( $anItem['title'] ) ).'</option>' . "\n";
     }
     $out .= $options;
     $out .= '</select>'
