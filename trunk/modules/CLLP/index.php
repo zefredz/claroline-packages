@@ -221,7 +221,7 @@ if( $is_allowedToEdit )
 				if( ! $pathExport->export() )
 				{
 						$dialogBox->error(
-															get_lang('Unable to export the past %title', array('%title' => $thisPath->getTitle()))
+															get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
 														.	'<br />' . "\n"
 														.	$pathExport->getError()
 														);
