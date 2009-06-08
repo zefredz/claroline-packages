@@ -1,0 +1,25 @@
+<module>
+  <label>CLL10N</label>
+  <name>Translations</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <type>admin</type>
+  <entry>index.php</entry>
+  <icon>icon.png</icon>
+
+  <description>
+    
+  </description>
+
+  <author>
+     <name>Dimitri Rambout</name>
+     <email>dim@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.9</version>
+    </claroline>
+ </requirements>
+</module>
