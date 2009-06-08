@@ -386,7 +386,7 @@ class ScormImporter
             }
             else
             {
-                $this->backlog->failure(get_lang('An item has an reference to a ressource but that ressource cannot be find.'));
+                $this->backlog->failure(get_lang('An item has an reference to a resource but that ressource cannot be find.'));
                 return false;
             }
           }
