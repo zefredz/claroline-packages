@@ -12,6 +12,35 @@
 
 class TranslationManage{
   
+  public function availableLanguages( $module_label, $returnPath = false )
+  {
+    $path = get_module_path( $module_label ) . '/lang';
+    
+    $availbleLanguages = array( 0 => '');
+    
+    $files = new DirectoryIterator( $path );
+    
+    foreach( $files as $file )
+    {
+      if( !( $file->isDot() || $file->isDir() ) && ( strpos( $file->getFilename(), 'incomplete' ) === false ) && $file->isFile() && substr($file->getFilename(), -4) == '.php' )
+      {
+        $lang = substr( $file->getFilename(), strpos( $file->getFilename(), '_' ) +1 );
+        $lang = substr( $lang, 0, strpos( $lang, '.' ) );
+        
+        if( $returnPath )
+        {
+          $availbleLanguages[$lang] = $file->getPathname();
+        }
+        else
+        {
+          $availbleLanguages[$lang] = $lang;
+        }
+        
+      }
+    }
+    
+    return $availbleLanguages;
+  }
   /**
    * Get the list of module installed on the platform
    *
@@ -59,6 +88,42 @@ class TranslationManage{
     }
     
     return $modules;
+  }
+  
+  /**
+   *
+   *
+   *
+   */
+  public function compareLang( $module_label, $lang )
+  {
+    $path = get_module_path( $module_label ) . '/lang/lang_' . $lang . '.php';
+    
+    if( !is_file ( $path ) )
+    {
+      return false;
+    }
+    
+    require( $path );
+    
+    if( ! ( isset( $_lang ) && is_array( $_lang ) ) )
+    {
+      return false;
+    }
+    
+    $extractedLangs = array_flip( $this->extractLangFromScripts( $module_label ) );
+    
+    $notUsedLangs = array();
+    
+    foreach( $_lang as $key => $value )
+    {
+      if( ! isset( $extractedLangs[$key] ) )
+      {
+        $notUsedLangs[$key] = $value;
+      }
+    }
+    
+    return $notUsedLangs;
   }
   
   /**
@@ -116,22 +181,15 @@ class TranslationManage{
     $languageVarList = $this->extractLangFromScripts( $module_label );
     $nbLanguageVarList = count( $languageVarList );
     
-    $files = new DirectoryIterator( $path );
+    $langs = $this->availableLanguages( $module_label, true);
     
-    foreach( $files as $file )
+    foreach( $langs as $lang => $lang_path )
     {
-      if( !( $file->isDot() || $file->isDir() ) && ( strpos( $file->getFilename(), 'incomplete' ) === false ) && $file->isFile() && substr($file->getFilename(), -4) == '.php' )
-      {
-        $lang = substr( $file->getFilename(), strpos( $file->getFilename(), '_' ) +1 );
-        $lang = substr( $lang, 0, strpos( $lang, '.' ) );
-        
-        $lang_progression = $this->getLangProgression( $file->getPathname(), $languageVarList );
+        $lang_progression = $this->getLangProgression( $lang_path, $languageVarList );
         
         $lang_progression = floor( 100 - (($nbLanguageVarList - $lang_progression) / $nbLanguageVarList * 100) );
         
         $progression[$lang] = $lang_progression;
-        
-      }
     }
     
     return $progression;

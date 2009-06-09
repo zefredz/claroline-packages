@@ -30,6 +30,21 @@ class TranslationRenderer{
   }
   
   /**
+   *
+   *
+   */
+  public static function compareTranslation( $moduleLabel, $availableLanguages, $selectedLanguage = null, $outdatedLangs = null )
+  {
+    $tpl = new PhpTemplate( dirname( __FILE__ ) . '/../templates/compareTranslation.tpl.php' );
+    
+    $tpl->assign( 'availableLanguages', $availableLanguages);
+    $tpl->assign( 'moduleLabel', $moduleLabel);
+    $tpl->assign( 'selectedLanguage', $selectedLanguage);
+    $tpl->assign( 'outdatedLangs', $outdatedLangs);
+    
+    return $tpl->render();
+  }
+  /**
    * Display module translation progression
    *
    * @author Dimitri Rambout<dim@claroline.net>
@@ -37,12 +52,12 @@ class TranslationRenderer{
    *
    * @return string html content
    */
-  public static function moduleProgression( $progression )
+  public static function moduleProgression( $moduleLabel, $progression )
   {
     $tpl = new PhpTemplate( dirname(__FILE__) . '/../templates/moduleProgression.tpl.php' );
     
     $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ), '<img src="' . get_icon('translate') . '" alt="" />' . get_lang('Go back to the list'));
-    $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ), '<img src="' . get_icon('translate_add') . '" alt="" />' . get_lang('Generate language files'));
+    $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ), '<img src="' . get_icon('translate_add') . '" alt="" />' . get_lang('Generate language files'));
     
     $tpl->assign( 'cmdMenu', $cmdMenu);
     $tpl->assign( 'progression', $progression);

@@ -40,7 +40,7 @@ try {
   $userInput = Claro_UserInput::getInstance();
   
   $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-      'list', 'rqGenerate', 'exGenerate', 'rqProgression'
+      'list', 'rqGenerate', 'exGenerate', 'rqProgression', 'rqCompare', 'exCompare'
   ) ) );
   
   $cmd = $userInput->get( 'cmd','list' );
@@ -134,7 +134,51 @@ try {
         
         $progression = $manage->getModuleProgression( $moduleLabel );
         
-        $out .= TranslationRenderer::moduleProgression( $progression );
+        $out .= TranslationRenderer::moduleProgression( $moduleLabel, $progression );
+      }
+      break;
+    
+    case 'exCompare' :
+      {
+        if( is_null( $moduleLabel ) )
+        {
+          claro_die( get_lang( 'Module doesn\'t exist' ) );
+        }
+        
+        $availableLanguages = $manage->availableLanguages( $moduleLabel );
+        
+        if( !( !empty( $_REQUEST['lang'] ) && isset( $availableLanguages[ $_REQUEST['lang'] ] ) && $_REQUEST['lang'] != '0' ) )
+        {
+          claro_die( get_lang( 'Language not supported' ) );
+        }
+        else
+        {
+          $lang = $_REQUEST['lang'];
+        }
+        
+        ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        
+        $outdatedLangs = $manage->compareLang( $moduleLabel, $lang );
+        
+        
+        $out .= TranslationRenderer::compareTranslation( $moduleLabel, $availableLanguages, $lang, $outdatedLangs );
+        
+      }
+      break;
+    case 'rqCompare' :
+      {
+        if( is_null( $moduleLabel ) )
+        {
+          claro_die( get_lang( 'Module doesn\'t exist' ) );
+        }
+        
+        ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        
+        $availableLanguages = $manage->availableLanguages( $moduleLabel );
+        
+        $out .= TranslationRenderer::compareTranslation( $moduleLabel, $availableLanguages );
       }
       break;
   }
