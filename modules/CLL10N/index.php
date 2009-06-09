@@ -33,11 +33,14 @@ $dialogBox = new DialogBox();
 try {
   $manage = TranslationManage::getInstance();
   $moduleList = $manage->moduleList();
+  
+  if( isset($_REQUEST['module']) && isset( $moduleList[$_REQUEST['module']] ) )   $moduleLabel = $_REQUEST['module'];
+  else                                                                           $moduleLabel = null;
 
   $userInput = Claro_UserInput::getInstance();
   
   $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-      'list', 'rqGenerate', 'exGenerate'
+      'list', 'rqGenerate', 'exGenerate', 'rqProgression'
   ) ) );
   
   $cmd = $userInput->get( 'cmd','list' );
@@ -55,12 +58,7 @@ try {
     
     case 'exGenerate' :
       {
-        if( empty( $_REQUEST['module'] ) )
-        {
-          claro_die( get_lang('Module is missing') );
-        }
-        
-        if( !isset( $moduleList[$_REQUEST['module']] ) )
+        if( is_null( $moduleLabel ) )
         {
           claro_die( get_lang( 'Module doesn\'t exist' ) );
         }
@@ -71,10 +69,10 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[$moduleLabel]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         
         // get existing $_lang for existing language files
-        $path = get_module_path( $_REQUEST['module']) . '/lang';
+        $path = get_module_path( $moduleLabel ) . '/lang';
         $return = $manage->createLangFiles( $_SESSION['CLL10N']['langs'], $path);
         
         if( $return )
@@ -86,7 +84,7 @@ try {
           $dialogBox->error( get_lang( 'Unable to create language files' ) );
         }
         
-        //unset( $_SESSION['CLL10N']['langs'] );
+        unset( $_SESSION['CLL10N']['langs'] );
         
         $out .= $dialogBox->render();
       }
@@ -94,15 +92,11 @@ try {
     
     case 'rqGenerate' :
       {
-        if( empty( $_REQUEST['module'] ) )
-        {
-          claro_die( get_lang('Module is missing') );
-        }
-        
-        if( !isset( $moduleList[$_REQUEST['module']] ) )
+        if( is_null( $moduleLabel ) )
         {
           claro_die( get_lang( 'Module doesn\'t exist' ) );
         }
+        
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
         
@@ -128,6 +122,21 @@ try {
       }
       break;
     
+    case 'rqProgression' :
+      {
+        if( is_null( $moduleLabel ) )
+        {
+          claro_die( get_lang( 'Module doesn\'t exist' ) );
+        }
+        
+        ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        
+        $progression = $manage->getModuleProgression( $moduleLabel );
+        
+        $out .= TranslationRenderer::moduleProgression( $progression );
+      }
+      break;
   }
   
   Claroline::getDisplay()->body->appendcontent( $out ); 
