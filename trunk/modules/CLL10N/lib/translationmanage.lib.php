@@ -62,6 +62,83 @@ class TranslationManage{
   }
   
   /**
+   * Return the number of translate sentence in the file
+   *
+   * @author Dimitri Rambout <dim@clarolinet.net>
+   * @param string $lang_file path of the language file
+   * @return int number of translate sentence in array $_lang
+   *
+   */
+  private function getLangProgression( $lang_file, &$langs )
+  {
+    if( !is_file( $lang_file ) )
+    {
+      return 0;
+    }
+    
+    require( $lang_file );
+    if( isset( $_lang ) && is_array( $_lang ) )
+    {
+      $i = 0;
+      
+      foreach( $langs as $lang )
+      {
+        if(isset( $_lang[$lang] ))
+        {
+          $i++;
+        }
+      }
+      return $i;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  /**
+   * Get the translation progression of a module
+   *
+   * @author Dimitri Rambout <dim@claroline.net>
+   * @param string $module_label Label of a module
+   * @return array progressions of language files in %
+   */
+  public function getModuleProgression( $module_label )
+  {
+    $progression = array();
+    
+    $path = get_module_path( $module_label ) . '/lang';
+    
+    if( !is_dir( $path ) )
+    {
+      return $progression;
+    }
+    
+    $languageVarList = $this->extractLangFromScripts( $module_label );
+    $nbLanguageVarList = count( $languageVarList );
+    
+    $files = new DirectoryIterator( $path );
+    
+    foreach( $files as $file )
+    {
+      if( !( $file->isDot() || $file->isDir() ) && ( strpos( $file->getFilename(), 'incomplete' ) === false ) && $file->isFile() && substr($file->getFilename(), -4) == '.php' )
+      {
+        $lang = substr( $file->getFilename(), strpos( $file->getFilename(), '_' ) +1 );
+        $lang = substr( $lang, 0, strpos( $lang, '.' ) );
+        
+        $lang_progression = $this->getLangProgression( $file->getPathname(), $languageVarList );
+        
+        $lang_progression = floor( 100 - (($nbLanguageVarList - $lang_progression) / $nbLanguageVarList * 100) );
+        
+        $progression[$lang] = $lang_progression;
+        
+      }
+    }
+    
+    return $progression;
+    
+  }  
+  
+  /**
    * Extract language strings from get_lang & get_block in a file
    *
    * @author Dimitri Rambout <dim@claroline.net>
@@ -182,7 +259,7 @@ class TranslationManage{
     {
       if( !( $file->isDot() || $file->isDir() ) )
       {
-        $lang = substr( $file->getFilename(), strpos( $file->getFileName(), '_' ) +1 );
+        $lang = substr( $file->getFilename(), strpos( $file->getFilename(), '_' ) +1 );
         $lang = substr( $lang, 0, strpos( $lang, '.' ) );
         if( ! isset( $langs_exported[ $lang ] ) )
         {
