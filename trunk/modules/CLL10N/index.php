@@ -40,7 +40,7 @@ try {
   $userInput = Claro_UserInput::getInstance();
   
   $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-      'list', 'rqGenerate', 'exGenerate', 'rqProgression', 'rqCompare', 'exCompare'
+      'list', 'rqGenerate', 'exGenerate', 'rqProgression', 'rqCompare', 'exCompare', 'exCleanLangFile'
   ) ) );
   
   $cmd = $userInput->get( 'cmd','list' );
@@ -179,6 +179,39 @@ try {
         $availableLanguages = $manage->availableLanguages( $moduleLabel );
         
         $out .= TranslationRenderer::compareTranslation( $moduleLabel, $availableLanguages );
+      }
+      break;
+    case 'exCleanLangFile' :
+      {
+        if( is_null( $moduleLabel ) )
+        {
+          claro_die( get_lang( 'Module doesn\'t exist' ) );
+        }
+        
+        $availableLanguages = $manage->availableLanguages( $moduleLabel );
+        
+        if( !( !empty( $_REQUEST['lang'] ) && isset( $availableLanguages[ $_REQUEST['lang'] ] ) && $_REQUEST['lang'] != '0' ) )
+        {
+          claro_die( get_lang( 'Language not supported' ) );
+        }
+        else
+        {
+          $lang = $_REQUEST['lang'];
+        }
+        
+        ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        
+        if( $manage->cleanLangFile( $moduleLabel, $lang ) )
+        {
+          $dialogBox->success( get_lang( 'Language file (%lang) cleaned successfully.', array( '%lang' => $lang ) ) );
+        }
+        else
+        {
+          $dialogBox->error( get_lang( 'Unable to clean language file (%lang).', array( '%lang' => $lang ) ) );
+        }
+        
+        $out .= $dialogBox->render();
       }
       break;
   }
