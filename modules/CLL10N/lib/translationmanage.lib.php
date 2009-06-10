@@ -337,6 +337,45 @@ class TranslationManage{
     return !$error;
   }
   
+  /**
+   *
+   */
+  public function cleanLangFile( $moduleLabel, $lang )
+  {
+    $deprecatedLang = $this->compareLang( $moduleLabel, $lang );
+    
+    $langFile = get_module_path( $moduleLabel ) . '/lang/lang_' . $lang . '.php';
+    if( is_file( $langFile ) )
+    {
+      require( $langFile );
+      if( !empty( $_lang ) && is_array( $_lang ) )
+      {
+        foreach( $deprecatedLang as $key => $value )
+        {
+          if( isset( $_lang[$key] ) )
+          {
+            unset( $_lang[$key] );
+          }
+        }
+        $content = '<?php ' . "\n\n";
+        foreach( $_lang as $key => $value){
+          $key = str_replace( "'", "\'", $key);
+          $value = str_replace( "'", "\'", $value);
+          $content .= '$_lang[\''. $key .'\'] = \'' . $value . '\';' . "\n";
+        }
+        $content .= "\n" . '?>';
+        return file_put_contents( $langFile, $content);
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
   
   /**
    * Extract language strings from scripts
@@ -359,6 +398,25 @@ class TranslationManage{
         
       }
     }
+    
+    // get langs from core
+    $core_lang = get_path( 'clarolineRepositorySys' ) . 'lang/english/complete.lang.php';
+    if( is_file( $core_lang ) )
+    {
+      require( $core_lang );
+      if( !empty($_lang)  && is_array( $_lang ) )
+      {
+        foreach( $languageVarList as $key => $value)
+        {
+          if( isset( $_lang[$key] ) )
+          {
+            unset( $languageVarList[$key] );
+          }
+        }
+        unset( $_lang );
+      }
+    }
+    
     ksort($languageVarList);
     $languageVarList = array_keys( $languageVarList );
     

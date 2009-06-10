@@ -42,6 +42,10 @@ class TranslationRenderer{
     $tpl->assign( 'selectedLanguage', $selectedLanguage);
     $tpl->assign( 'outdatedLangs', $outdatedLangs);
     
+    $dialogBox = new DialogBox();
+    
+    $tpl->assign( 'dialogBox', $dialogBox);
+    
     return $tpl->render();
   }
   /**

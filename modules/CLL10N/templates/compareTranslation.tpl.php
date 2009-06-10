@@ -15,11 +15,17 @@ if( !is_null( $this->outdatedLangs ) && is_array( $this->outdatedLangs ) ) :
 ?>
 <hr />
 <?php
-  if( !count( $this->outdatedLangs ) ) :
+  if( !count( $this->outdatedLangs ) ) :    
 ?>
-<p style="text-align: center;"><?php echo get_lang( 'No decrecated language variables.' ); ?></p>
+<p style="text-align: center;"><?php echo get_lang( 'No deprecated language variables.' ); ?></p>
 <?php
   else :
+    $this->dialogBox->question( get_lang( 'These language variables seem not used anymore in the module.' ) );
+    $this->dialogBox->question( get_lang( 'Do you want to clean the file ? This will remove deprecated variables in the file.' ) . '<br />' . "\n"
+    . '<a href="'. htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] .'?cmd=exCleanLangFile&module='. $this->moduleLabel .'&lang='.$this->selectedLanguage )) .'">' . get_lang( 'Yes' ) . '</a>'
+    . ' | '
+    . '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang( 'No' ) . '</a>' );
+    echo $this->dialogBox->render();
 ?>
 <p><?php echo get_lang( 'These language variables seem not used anymore in the module.' ); ?></p>
 <table>
