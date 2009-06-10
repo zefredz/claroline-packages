@@ -4,7 +4,7 @@
       <th scope="col" id="c0" ><?php echo get_lang('Module name'); ?></th>
       <th scope="col" id="c1" ><?php echo get_lang('Generate'); ?></th>
       <th scope="col" id="c2" ><?php echo get_lang('Compare'); ?></th>
-      <th scope="col" id="c3" ><?php echo get_lang('Edit'); ?></th>
+      <!--th scope="col" id="c3" ><?php echo get_lang('Edit'); ?></th-->
       <th scope="col" id="c4" ><?php echo get_lang('Progression'); ?></th>
     </tr>
   </thead>
@@ -24,9 +24,9 @@ foreach( $this->moduleList as $id => $module) :
       <td style="text-align: center;" headers="c2">
         <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqCompare&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_compare'); ?>" alt="<?php echo get_lang('Compare script and language files'); ?>" title="<?php echo get_lang('Compare script and language files'); ?>" /></a>
       </td>
-      <td style="text-align: center;" headers="c3">
+      <!--td style="text-align: center;" headers="c3">
         <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqEdit&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_edit'); ?>" alt="<?php echo get_lang('Edit language files'); ?>" title="<?php echo get_lang('Edit language files'); ?>" /></a>
-      </td>
+      </td-->
       <td style="text-align: center;" headers="c4">
         <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqProgression&module=' . $id) ); ?>"><img src="<?php echo get_icon('translate_progression'); ?>" alt="<?php echo get_lang('Progression'); ?>" title="<?php echo get_lang('Progression'); ?>" /></a>
       </td>
