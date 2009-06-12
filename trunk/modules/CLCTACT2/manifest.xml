@@ -1,0 +1,21 @@
+<module>
+    <label>CLCTACT2</label>
+    <name>Contact page generator</name>
+    <description><![CDATA[ A small applet that displays a contact page. ]]></description>
+    <version>1.0beta</version>
+    <license>GPL</license>
+    <icon>mail_close.png</icon>
+    <type>applet</type>
+    <entry>entry.php</entry>
+    <default_dock>campusFooterLeft</default_dock>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@claroline.net</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
