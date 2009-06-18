@@ -123,7 +123,7 @@ else
                     $itemAttempt = new itemAttempt();
                     if( $itemAttempt->load( $attempt->getId(), $anItem['id']) )
                     {                        
-                        $progress = $itemAttempt->getScoreRaw() / $itemAttempt->getScoreMax() * 100;
+                        $progress = $itemAttempt->getScoreMax() ? $itemAttempt->getScoreRaw() / $itemAttempt->getScoreMax() * 100 : 0;
                         $out .= '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getSessionTime())) . '&nbsp;</td>'
                         .   '<td class="centerContent">' . unixToDHMS(scormToUnixTime($itemAttempt->getTotalTime())) . '&nbsp;</td>'
                         ;

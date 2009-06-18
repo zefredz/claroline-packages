@@ -1,5 +1,21 @@
 <?php
+
+$tlabelReq = 'CLLP';
+
 require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';
+
+if ( !claro_is_tool_allowed() )
+{
+    if ( claro_is_in_a_course() )
+    {
+        claro_die( get_lang( "Not allowed" ) );
+    }
+    else
+    {
+        claro_disp_auth_form( true );
+    }
+}
+
 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemId = null;
@@ -90,13 +106,13 @@ else
     }    
   }
   
-  // show prerequisites form
-  $htmlPrereqContainer .= '<strong>'.get_lang('Blocking conditions').'</strong>' . "\n"
-  ;
-  
   if( $blockcond->load() )
   {
     $blockconds = $blockcond->getBlockConds();
+    
+    // show prerequisites form
+    $htmlPrereqContainer .= '<strong>'.get_lang('Blocking conditions').'</strong>' . "\n"
+    ;
     
     foreach( $blockconds['item'] as $key => $value )
     {
@@ -164,6 +180,6 @@ endif;
 <script type="text/javascript" src="<?php echo get_path( 'rootWeb' ); ?>web/js/claroline.ui.js"></script>
 </head>
 <body>
-  <?php echo $out; ?>
+  <?php echo claro_utf8_encode( $out, get_conf('charset') ); ?>
 </body>
 </html>
