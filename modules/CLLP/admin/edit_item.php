@@ -122,6 +122,9 @@ if( $cmd == 'exEdit' )
 		$_REQUEST['redirectBranchConditions'] = ( !empty( $_REQUEST['redirectBranchConditions'] ) ? 1 : 0);
 		$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
 		
+		$_REQUEST['newWindow'] = ( !empty( $_REQUEST['newWindow'] ) ? 1 : 0);
+		$item->setNewWindow( $_REQUEST['newWindow'] );
+		
 		if( !empty( $_REQUEST['branchConditions'] ) )
 		{
 			$item->setBranchConditions( $_REQUEST['branchConditions'] );
@@ -187,7 +190,7 @@ $itemListArray = $itemList->getFlatList();
 if( $item->load( $itemId ) )
 {
     // edit title if type is container    
-    $htmlEditTitleForm = '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=exEdit&pathId='.$pathId.'&itemId='.$itemId.'"  method="post">' . "\n"
+    $htmlEditForm = '<form action="' . $_SERVER['PHP_SELF'] . '?cmd=exEdit&pathId='.$pathId.'&itemId='.$itemId.'"  method="post">' . "\n"
 		.		'<fieldset>' . "\n"
 		.		'<legend>' . get_lang( 'Edit item' ) . '</legend>' . "\n"
 		.		'<dl>' . "\n"
@@ -197,58 +200,66 @@ if( $item->load( $itemId ) )
 		.		'<dd>' . "\n"
 		.   '<div style="width: 700px;">' . claro_html_textarea_editor('description', $item->getDescription()) . '</div>' . "\n"
 		.		'</dd>' . "\n"
-		.		'<dt><label for="completionThreshold">' . get_lang( 'Completion threshold' ). '&nbsp;:</label></dt>'
-		.		'<dd><input type="text" name="completionThreshold" id="completionThreshold" value="' . htmlspecialchars( $item->getCompletionThreshold() ) . '" style="width: 60px; text-align: right;" />%</dd>' . "\n"
-		.		'<dt><label for="branchConditions">' . get_lang( 'Branching conditions' ) . '&nbsp;:</label></dt>'
-		.		'<dd id="branchConditions">'
-		.		'<input type="checkbox" id="redirectBranchConditions" name="redirectBranchConditions" value="1" ' . ($item->getRedirectBranchConditions() ? 'checked="checked"' : '') . ' /> <label for="redirectBranchConditions">' . get_lang( 'Redirect automatically on the good branching condition' ) . '</label>' . "\n"		
 		;
 		
-		$branchConditions = $item->getBranchConditions();
-		if( is_array( $branchConditions ) && count( $branchConditions ) )
+		if( $item->getType() != 'CONTAINER' )
 		{
-			foreach( $branchConditions as $key => $branchCondition )
+			$htmlEditForm .=		'<dt><label for="completionThreshold">' . get_lang( 'Completion threshold' ). '&nbsp;:</label></dt>'
+			.		'<dd><input type="text" name="completionThreshold" id="completionThreshold" value="' . htmlspecialchars( $item->getCompletionThreshold() ) . '" style="width: 60px; text-align: right;" />%</dd>' . "\n"
+			.		'<dt><label for="newWindow">' . get_lang( 'Open in a new window' ). '&nbsp;:</label></dt>'
+			.		'<dd><input type="checkbox" id="newWindow" name="newWindow" value="1" ' . ( $item->getNewWindow() ? 'checked="checked"' : '' ) . ' />'
+			.		'<dt><label for="branchConditions">' . get_lang( 'Branching conditions' ) . '&nbsp;:</label></dt>'
+			.		'<dd id="branchConditions">'
+			.		'<input type="checkbox" id="redirectBranchConditions" name="redirectBranchConditions" value="1" ' . ($item->getRedirectBranchConditions() ? 'checked="checked"' : '') . ' /> <label for="redirectBranchConditions">' . get_lang( 'Redirect automatically on the good branching condition' ) . '</label>' . "\n"		
+			;
+			
+			$branchConditions = $item->getBranchConditions();
+			if( is_array( $branchConditions ) && count( $branchConditions ) )
 			{
-				if(isset($branchCondition['sign']) && isset($branchCondition['value']) && isset($branchCondition['item']))
+				foreach( $branchConditions as $key => $branchCondition )
 				{
-					$htmlEditTitleForm .= '<div style="padding: 2px;">'
-					. get_lang('Score') . ' '
-					.		'<select name="branchConditions[sign][]">' . "\n"
-					.   '<option value="0"></option>' . "\n"
-					.   '<option value="&#60;" '.($branchCondition['sign'] == '<' ? 'selected="selected"' : '' ).'>&#60;</option>' . "\n"
-					.   '<option value="&#8804;" '.($branchCondition['sign'] == '&#8804;' ? 'selected="selected"' : '' ).'>&#8804;</option>' . "\n"
-					.   '<option value="&#62;" '.($branchCondition['sign'] == '>' ? 'selected="selected"' : '' ).'>&#62;</option>' . "\n"
-					.   '<option value="&#8805;" '.($branchCondition['sign'] == '&#8805;' ? 'selected="selected"' : '' ).'>&#8805;</option>' . "\n"
-					.   '<option value="=">=</option>' . "\n"
-					.   '</select>' . "\n"
-					.		get_lang('to') . ' '
-					.		'<input type="text" name="branchConditions[value][]" value="'.(int) $branchCondition['value'].'" style="width: 25px;" /> % ' . get_lang('go to') . ' ' . "\n"
-					.   '<select name="branchConditions[item][]">'
-					;
-					$options = '<option value="0"></option>' . "\n";
-    
-					foreach( $itemListArray as $anItem )
+					if(isset($branchCondition['sign']) && isset($branchCondition['value']) && isset($branchCondition['item']))
 					{
-							$options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').' '. ( $branchCondition['item'] == $anItem['id'] ? 'selected="selected"' : '') .'>'.$anItem['title'].'</option>' . "\n";
-					}
-					$htmlEditTitleForm .= $options;
-					$htmlEditTitleForm .=		'</select>' . "\n"
-					.	'<img src="'.get_icon_url('delete').'" alt="'.get_lang('Delete').'" title="' . get_lang('Delete') .'" onclick="$(this).parent().remove();" />' . "\n"
-					.	'</div>' . "\n"
-					;
-				}				
+						$htmlEditForm .= '<div style="padding: 2px;">'
+						. get_lang('Score') . ' '
+						.		'<select name="branchConditions[sign][]">' . "\n"
+						.   '<option value="0"></option>' . "\n"
+						.   '<option value="&#60;" '.($branchCondition['sign'] == '<' ? 'selected="selected"' : '' ).'>&#60;</option>' . "\n"
+						.   '<option value="&#8804;" '.($branchCondition['sign'] == '&#8804;' ? 'selected="selected"' : '' ).'>&#8804;</option>' . "\n"
+						.   '<option value="&#62;" '.($branchCondition['sign'] == '>' ? 'selected="selected"' : '' ).'>&#62;</option>' . "\n"
+						.   '<option value="&#8805;" '.($branchCondition['sign'] == '&#8805;' ? 'selected="selected"' : '' ).'>&#8805;</option>' . "\n"
+						.   '<option value="=">=</option>' . "\n"
+						.   '</select>' . "\n"
+						.		get_lang('to') . ' '
+						.		'<input type="text" name="branchConditions[value][]" value="'.(int) $branchCondition['value'].'" style="width: 25px;" /> % ' . get_lang('go to') . ' ' . "\n"
+						.   '<select name="branchConditions[item][]">'
+						;
+						$options = '<option value="0"></option>' . "\n";
+			
+						foreach( $itemListArray as $anItem )
+						{
+								$options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').' '. ( $branchCondition['item'] == $anItem['id'] ? 'selected="selected"' : '') .'>'.$anItem['title'].'</option>' . "\n";
+						}
+						$htmlEditForm .= $options;
+						$htmlEditForm .=		'</select>' . "\n"
+						.	'<img src="'.get_icon_url('delete').'" alt="'.get_lang('Delete').'" title="' . get_lang('Delete') .'" onclick="$(this).parent().remove();" />' . "\n"
+						.	'</div>' . "\n"
+						;
+					}				
+				}
 			}
+			
+			
+			$htmlEditForm .=		'<div><input type="button"id="branch_condition_button" value="' . get_lang( 'Add a branching condition' ) . '" onclick="addBranchCondition(' . $pathId .');" /></div>' . "\n"
+			.		'</dd>' . "\n"		
+			.		'</dl>' . "\n"
+			.		'</fieldset>' . "\n"
+			.   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
+			.   '</form> <br />' . "\n"
+			;
 		}
-		
-		
-		$htmlEditTitleForm .=		'<div><input type="button"id="branch_condition_button" value="' . get_lang( 'Add a branching condition' ) . '" onclick="addBranchCondition(' . $pathId .');" /></div>' . "\n"
-		.		'</dd>' . "\n"		
-		.		'</dl>' . "\n"
-		.		'</fieldset>' . "\n"
-    .   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
-		.   '</form> <br />' . "\n";
     
-    $out .= $htmlEditTitleForm; 
+    $out .= $htmlEditForm; 
 }
 
 $claroline->display->body->appendContent($out);

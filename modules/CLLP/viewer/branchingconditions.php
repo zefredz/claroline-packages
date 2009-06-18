@@ -102,7 +102,7 @@ else
     else
     {
       $content .= '<div style="font-weight: bold;">'.get_lang( 'Your score for this module is %score.', array('%score' => $itemAttempt->getScoreRaw() ) ).'</div>' . "\n"
-      .   '<div>'. get_lang('Regarding your score, we propose you to choose the coresponding next module : ') .'</div>' . "\n"      
+      .   '<div>'. get_lang('Regarding your score, we propose you to choose the coresponding next module :') .'</div>' . "\n"      
       ;
       foreach($_SESSION['branchConditions'] as $sign => $branchConditions)
       {

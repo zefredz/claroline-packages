@@ -1,5 +1,20 @@
 <?php
+
+$tlabelReq = 'CLLP';
+
 require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';
+
+if ( !claro_is_tool_allowed() )
+{
+    if ( claro_is_in_a_course() )
+    {
+        claro_die( get_lang( "Not allowed" ) );
+    }
+    else
+    {
+        claro_disp_auth_form( true );
+    }
+}
 
 require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 

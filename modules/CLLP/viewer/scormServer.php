@@ -33,7 +33,9 @@ if ( !claro_is_tool_allowed() )
 /*
  * init request vars
  */
-$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext', 'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription', 'createBranchCondition', 'rqBranchConditions');
+$acceptedCmdList = array('doCommit', 'rqRefresh', 'rqContentUrl', 'rqToc', 'getPrevious', 'getPreviousId', 'getNext',
+                         'getNextId', 'getItems', 'getStatus', 'getConditions', 'getItemDescription',
+                         'createBranchCondition', 'rqBranchConditions', 'getNewWindow');
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'],$acceptedCmdList) ) $cmd = $_REQUEST['cmd'];
 else                                                                         $cmd = null;
@@ -404,7 +406,7 @@ if( $cmd == 'getItems' )
         $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.$anItem['title'].'</option>' . "\n";
     }
     
-    echo $options;
+    echo claro_utf8_encode( $options );
     
     return true;
 }
@@ -421,7 +423,7 @@ if( $cmd == 'getStatus' )
         $options .= '<option value="'.$key.'">'.$value.'</option>';
     }
     
-    echo $options;
+    echo claro_utf8_encode( $options );
 }
 
 if( $cmd == 'getConditions' )
@@ -434,7 +436,7 @@ if( $cmd == 'getConditions' )
         $options .= '<option value="'.$key.'">'.$value.'</option>';
     }
     
-    echo $options;
+    echo claro_utf8_encode( $options );
 }
 
 
@@ -474,14 +476,14 @@ if( $cmd == 'createBranchCondition' )
     $options = '<option value="0"></option>' . "\n";
     foreach( $itemListArray as $anItem )
     {
-        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.htmlspecialchars(claro_utf8_encode( $anItem['title'] ) ).'</option>' . "\n";
+        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.htmlspecialchars( $anItem['title'] ).'</option>' . "\n";
     }
     $out .= $options;
     $out .= '</select>'
     .   '<img src="' . get_icon_url('delete') . '" alt="' . get_lang('Delete') . '" title="' . get_lang('Delete') . '" onclick="$(this).parent().remove();" />'    
     .   '</div>' . "\n"
     ;
-    echo $out;
+    echo claro_utf8_encode($out);
 }
 if( $cmd == 'rqBranchConditions' )
 {
@@ -507,6 +509,18 @@ if( $cmd == 'rqBranchConditions' )
     }
     
     return true;
+}
+if( $cmd == 'getNewWindow' )
+{
+    $item = new item();
+    if( $item->load( $itemId) )
+    {
+        echo $item->getNewWindow();
+    }
+    else
+    {
+        return false;
+    }
 }
 function lpDebug($var)
 {

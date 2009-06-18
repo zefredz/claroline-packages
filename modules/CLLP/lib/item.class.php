@@ -114,6 +114,10 @@ class item
     private $branchConditions;
     
     /**
+     * @var $newWindow
+     **/
+    private $newWindow;
+    /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
@@ -137,6 +141,7 @@ class item
         $this->timeLimitAction = 'continue,no message';
         $this->completionThreshold = '';
         $this->redirectBranchConditions = 0;
+        $this->newWindow = 0;
 
         // define module table names
         $tblNameList = array(
@@ -175,7 +180,8 @@ class item
                     `timeLimitAction`,
                     `completionThreshold`,
                     `redirectBranchConditions`,
-                    `branchConditions`
+                    `branchConditions`,
+                    `newWindow`
             FROM `".$this->tblItem."`
             WHERE `id` = ".(int) $id;
 
@@ -201,6 +207,7 @@ class item
             $this->completionThreshold = $data['completionThreshold'];
             $this->redirectBranchConditions = $data['redirectBranchConditions'];
             $this->branchConditions = $data['branchConditions'];
+            $this->newWindow = $data['newWindow'];
 
             return true;
         }
@@ -240,7 +247,8 @@ class item
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
                         `completionThreshold` = '".addslashes($this->completionThreshold)."',
                         `redirectBranchConditions` = '".(int) $this->redirectBranchConditions."',
-                        `branchConditions` = '". addslashes( $this->branchConditions ) ."'";
+                        `branchConditions` = '". addslashes( $this->branchConditions ) ."',
+                        `newWindows` = '".(int) $this->newWindow."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
@@ -275,7 +283,8 @@ class item
                         `timeLimitAction` = '".addslashes($this->timeLimitAction)."',
                         `completionThreshold` = '".addslashes($this->completionThreshold)."',
                         `redirectBranchConditions` = '". (int) $this->redirectBranchConditions ."',
-                        `branchConditions` = '" . addslashes( $this->branchConditions ) ."'
+                        `branchConditions` = '" . addslashes( $this->branchConditions ) ."',
+                        `newWindow` = '". (int) $this->newWindow ."'
                     WHERE `id` = '".(int) $this->id."'";
 
             // execute and return main query
@@ -820,6 +829,25 @@ class item
             $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
         }
         $this->branchConditions = serialize( $_branchConditions );
+    }
+    
+    public function getNewWindow()
+    {
+        return (int) $this->newWindow;
+    }
+    
+    public function setNewWindow( $value )
+    {
+        $value = (int) $value;
+        if( $value == 0 || $value == 1)
+        {
+            $this->newWindow = $value;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     public function evalBranchConditions( $pathId )
