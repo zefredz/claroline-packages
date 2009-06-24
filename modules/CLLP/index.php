@@ -313,21 +313,21 @@ if( $is_allowedToEdit )
             $out .= '<tr align="center"' . (($aPath['visibility'] == 'INVISIBLE')? 'class="invisible"': '') . '>' . "\n";
             // title
             $out .= '<td align="left">'
-            .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( 'viewer/index.php?pathId='.$aPath['id'] ) ).'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
             .    '<img src="' . get_icon_url('learnpath') .'" alt="" border="0" /> '
             .    htmlspecialchars($aPath['title'])
             .    '</a>' . "\n"
             .    '</td>';
             // edit
             $out .= '<td>' . "\n"
-            .    '<a href="admin/edit_path.php?pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( 'admin/edit_path.php?pathId=' . $aPath['id'] ) ) . '">' . "\n"
             .    '<img src="' . get_icon_url('edit') . '" border="0" alt="' . get_lang('Modify') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
 
             // delete
             $out .= '<td>' . "\n"
-            .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
             .    '<img src="' . get_icon_url('delete') . '" border="0" alt="' . get_lang('delete') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
@@ -336,7 +336,7 @@ if( $is_allowedToEdit )
             if( $aPath['lock'] == 'OPEN' )
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Block') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
@@ -344,7 +344,7 @@ if( $is_allowedToEdit )
             else
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exUnlock&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
@@ -353,7 +353,7 @@ if( $is_allowedToEdit )
             if( $aPath['visibility'] == 'VISIBLE' )
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('visible') . '" border="0" alt="' . get_lang('Make invisible') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
@@ -361,7 +361,7 @@ if( $is_allowedToEdit )
             else
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('invisible') . '" border="0" alt="' . get_lang('Make visible') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
@@ -371,7 +371,7 @@ if( $is_allowedToEdit )
             if( $i > 1 )
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveUp&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exMoveUp&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('move_up') . '" alt="' . get_lang('Move up') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
                 .    '</td>' . "\n";
@@ -385,7 +385,7 @@ if( $is_allowedToEdit )
             if( $i < $lpCount )
             {
                 $out .= '<td>' . "\n"
-                .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;pathId=' . $aPath['id'] . '">' . "\n"
+                .    '<a href="' . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
                 .    '<img src="' . get_icon_url('move_down') . '" alt="' . get_lang('Move down') . '" border="0" />' . "\n"
                 .    '</a>' . "\n"
                 .    '</td>' . "\n";
@@ -397,14 +397,14 @@ if( $is_allowedToEdit )
 
             // export
             $out .= '<td>' . "\n"
-            .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
             .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
 
             // tracking
             $out .= '<td>' . "\n"
-            .    '<a href="' . get_module_url('CLLP') . '/track_path.php?pathId=' . $aPath['id'] . '">' . "\n"
+            .    '<a href="' . htmlspecialchars( Url::Contextualize( get_module_url('CLLP') . '/track_path.php?pathId=' . $aPath['id'] ) ) . '">' . "\n"
             .    '<img src="' . get_icon_url('statistics') . '" border="0" alt="' . get_lang('Statistics') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
@@ -446,7 +446,7 @@ else
 
             // title
             $out .= '<td>' . "\n"
-            .    '<a href="viewer/index.php?pathId='.$aPath['id'].'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
+            .    '<a href="' . htmlspecialchars( Url::Contextualize( 'viewer/index.php?pathId='.$aPath['id'] ) ) .'" title="'.htmlspecialchars(strip_tags($aPath['description'])).'">'
             .    '<img src="' . get_icon_url('learnpath') . '" alt="" border="0" />'
             .    htmlspecialchars($aPath['title'])
             .    '</a>' . "\n"
@@ -480,10 +480,10 @@ else
 
             // progression
             $out .= '<td align="right">'
-            .    '<a href="' . get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] . '" title="'.get_lang('See details').'">' . claro_html_progress_bar($lpProgress, 1) . '</a>' . "\n"
+            .    '<a href="' . htmlspecialchars( Url::Contextualize( get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] ) ) . '" title="'.get_lang('See details').'">' . claro_html_progress_bar($lpProgress, 1) . '</a>' . "\n"
             .    '</td>' . "\n"
             .    '<td align="left">'
-            .    '<small><a href="' . get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] . '" title="'.get_lang('See details').'">' . $lpProgress . '%</a></small>'
+            .    '<small><a href="' . htmlspecialchars( Url::Contextualize( get_module_url('CLLP') . '/track_path_details.php?pathId=' . $aPath['id'] ) ) . '" title="'.get_lang('See details').'">' . $lpProgress . '%</a></small>'
             .    '</td>' . "\n"
             ;
 

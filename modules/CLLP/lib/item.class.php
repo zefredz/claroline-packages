@@ -234,7 +234,7 @@ class item
             $sql = "INSERT INTO `".$this->tblItem."`
                     SET `path_id` = '".(int) $this->pathId."',
                         `type` = '".addslashes($this->type)."',
-                    	`title` = '".addslashes($this->title)."',
+                        `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `visibility` = '".addslashes($this->visibility)."',
                         `rank` = ".(int) $this->rank.",
@@ -248,7 +248,7 @@ class item
                         `completionThreshold` = '".addslashes($this->completionThreshold)."',
                         `redirectBranchConditions` = '".(int) $this->redirectBranchConditions."',
                         `branchConditions` = '". addslashes( $this->branchConditions ) ."',
-                        `newWindows` = '".(int) $this->newWindow."'";
+                        `newWindow` = '".(int) $this->newWindow."'";
 
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
