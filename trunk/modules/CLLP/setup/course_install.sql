@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `completionThreshold` VARCHAR(6) NOT NULL default '',
   `branchConditions` text NULL,
   `redirectBranchConditions` enum('0','1') NOT NULL DEFAULT '0',
+  `newWindow` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
 
