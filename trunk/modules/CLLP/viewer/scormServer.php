@@ -105,8 +105,13 @@ function rqContentUrl( &$item, $pathId, $itemId)
             if( $item->getType() == 'MODULE' )
             {
                 $resolver = new ResourceLinkerResolver();
-                $itemUrl = $resolver->resolve(ClarolineResourceLocator::parse($item->getSysPath()));
+                $clarolineResourceLocator = new ClarolineResourceLocator();
+                $parsedLocator = $clarolineResourceLocator->parse($item->getSysPath());
+                $itemUrl = $resolver->resolve( $parsedLocator );
                 
+                $moduleLabel = $parsedLocator->getModuleLabel();
+                //$itemUrl = str_replace( '/' . get_conf('clarolineRepositoryAppend'), '', $itemUrl );
+                //$itemUrl = '/' . $itemUrl;
                 // fix ? or &amp; depending if there is already a ? in url
                 $itemUrl .= ( false === strpos($itemUrl, '?') )? '?':'&';
                 
@@ -116,7 +121,8 @@ function rqContentUrl( &$item, $pathId, $itemId)
                 // we have to open a frame that will discuss with API and open the document instead 
                 // of directly opening it
                 lpDebug($itemUrl);
-                $itemUrl = str_replace('backends/download.php','document/connector/cllp.frames.cnr.php',$itemUrl);
+                $itemUrl = str_replace( get_conf('clarolineRepositoryAppend') . 'claroline/backends/download.php', get_module_url( $moduleLabel ) . '/connector/cllp.frames.cnr.php',$itemUrl);
+                $itemUrl = str_replace('//','/', $itemUrl);
                 lpDebug($itemUrl);
             }
             elseif( $item->getType() == 'SCORM' )
@@ -290,7 +296,7 @@ if( $cmd == 'rqToc' )
     }
 
     $itemListArray = $itemList->getFlatList();
-
+    //var_dump( $itemListArray );
     // Output
     $html = "\n"
     .    '<div id="progress">' . claro_html_progress_bar($thisAttempt->getProgress(), 1) . '&nbsp;'.$thisAttempt->getProgress().'%</div>' . "\n"
@@ -300,7 +306,9 @@ if( $cmd == 'rqToc' )
 
     foreach( $itemListArray as $anItem )
     {
-        $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
+        //$completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
+        $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? true : false;
+        
         $html .= '<a id="item_'.$anItem['id'].'_anchor"></a>' . "\n";
 
         // title
@@ -310,7 +318,9 @@ if( $cmd == 'rqToc' )
         {
             $html .= '<img src="'.get_module_url('CLLP').'/img/item.png" alt="" />'
             .     '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>'
-            .    '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url($completionIcon).'" />';
+            //.    '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url($completionIcon).'" />';
+            .    ( $completionIcon ? '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url( 'completed' ).'" />' : '')
+            ;
         }
         else
         {

@@ -83,12 +83,12 @@ if( isset( $_SESSION['thisAttempt'] ) )
     $itemAttempt = new itemAttempt();
     if( $itemAttempt->load($thisAttempt->getId(), $itemId) )
     {
-        ?>				
+?>
         _api._datamodel['cmi.score.raw']['value'] = <?php echo $itemAttempt->getScoreRaw(); ?>;
-				<?php
-        
+				_api._datamodel['cmi.suspend_data']['value'] = "<?php echo $itemAttempt->getSuspendData(); ?>";
+<?php
     }
-		
+
 		$item = new Item();
 		if( $item->load( $itemId ) )
 		{

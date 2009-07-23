@@ -199,8 +199,14 @@ function doGetValue(name)
       }
       else
       {
-         
-         return value.toString();
+         if( !isNull( value ) )
+         {
+            return value.toString();
+         }
+         else
+         {
+            return;
+         }
       }
    }
 }
