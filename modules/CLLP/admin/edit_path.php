@@ -238,7 +238,6 @@ if( $cmd == 'exAddItem' )
             {
                 $title = get_lang('No title');
             }
-            
             $addedItem = new item();
             $addedItem->setType('MODULE');
             $addedItem->setTitle($title);
@@ -713,7 +712,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         // title
         $out .= '<td align="left" style="padding-left:'.(5 + $anItem['deepness']*10).'px;">'
         .    '<img src="'.(($anItem['type'] == 'CONTAINER')? get_icon_url('chapter'): get_icon_url('item')).'" alt="" />'
-        .    '&nbsp;' . $anItem['title']
+        .    '&nbsp;' . htmlspecialchars( claro_utf8_decode( $anItem['title'], get_conf('charset') ) )
         .    '</td>' . "\n";
 
         // edit

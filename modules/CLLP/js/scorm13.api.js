@@ -265,8 +265,9 @@
                         return false;
                     }
 
-                    if( typeof element.value == 'undefined' || element.value == null )
+                    if( typeof element.value == 'undefined' )
                     {
+                        //may be check also if null ?
                         this._APIError("403");
                         return "";
                     }
