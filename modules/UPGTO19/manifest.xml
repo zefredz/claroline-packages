@@ -1,0 +1,23 @@
+<module>
+<label>UPGTO19</label>
+<name>Upgrade to 1.9 stable</name>
+<description><![CDATA[
+Upgrade Claroline 1.9 Release Candidates to 1.9.2 Stable
+]]></description>
+<version>1.0-alpha</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>admin</type>
+<!-- group>true</group -->
+<entry>index.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.claroline.net/</web>
+</author>
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>
