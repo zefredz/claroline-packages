@@ -2,7 +2,7 @@
 
 $CourseUpgradeTasks->add(
     new Upgrade_Task_Sql(
-        "ALTER IGNORE TABLE `__CL_COURSE__qwz_rel_exercise_question`
+        "ALTER IGNORE TABLE `__CL_COURSE__qwz_exercise`
          ADD `quizEndMessage` TEXT NOT NULL;",
         "Add message at the end of a quiz",
         Upgrade_TaskConstants::ON_ERROR_INTERRUPT

@@ -29,7 +29,7 @@
             <?php elseif ( $course['status'] == "started" ): ?>
             <td> - </td>
             <?php elseif ( $course['status'] == "error" ): ?>
-            <td> - </td>
+            <td><a href="<?php echo php_self() . '?cmd=resetStatus&cid='.htmlspecialchars($course['code']); ?>"><?php echo get_Lang('Reset status'); ?></td>
             <?php endif; ?>
         </tr>
         <?php endforeach; ?>

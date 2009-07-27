@@ -51,7 +51,7 @@
     <p>
         <a class="claroCmd externalLink" href="./showlog.php?cmd=showCourseUpgradeLog"><?php echo get_lang("Show log"); ?></a>
         |
-        <a class="claroCmd confirmBefore" href="?cmd=upgradeCourseBatch"><?php echo get_lang("Upgrade all remaining courses"); ?></a>
+        <a class="claroCmd confirmBefore" href="?cmd=upgradeCourseBatch"><?php echo get_lang("Upgrade remaining courses as a batch"); ?></a>
         
         <?php if ( claro_debug_mode() ): ?>
         |
