@@ -90,7 +90,79 @@ if ( $cmd == 'setAutoUpgrade' )
 
 // UPGRADE REQUESTS HANDLERS
 
-if ( $cmd == 'upgradeCourse' )
+if ( $cmd == 'upgradeCourseBatch' )
+{
+    try
+    {
+        $executionResult = Upgrade_Course::upgradeNextBunchOfCourses();
+        
+        if ( count( $executionResult['success'] ) == 0
+            && count( $executionResult['partial'] ) == 0
+            &&  count( $executionResult['failure'] ) == 0 )
+        {
+            $dialogBox->info( get_lang("No course upgraded") );
+        }
+        else
+        {
+            if ( count( $executionResult['success'] ) )
+            {
+                $dialogBox->success(
+                    get_lang("%nbrSuccess courses upgraded with success : %courseList",
+                        array(
+                            '%nbrSuccess'=>count($executionResult['success']),
+                            '%courseList'=>implode(',', array_keys($executionResult['success']))
+                        )
+                    )
+                );
+                
+                Console::success( "UPGTO19::Upgrade successful for "
+                    . count($executionResult['success']). " courses : "
+                    . implode(',', array_keys($executionResult['success']) )
+                );
+            }
+            
+            if ( count( $executionResult['partial'] ) )
+            {
+                $dialogBox->warning(
+                    get_lang("%nbrPartial courses partialy upgraded : %courseList",
+                        array(
+                            '%nbrPartial'=>count($executionResult['partial']),
+                            '%courseList'=>implode(',', array_keys($executionResult['partial']))
+                        )
+                    )
+                );
+                
+                Console::success( "UPGTO19::Upgrade partial for "
+                    . count($executionResult['partial']). " courses : "
+                    . implode(',', array_keys($executionResult['partial']) )
+                );
+            }
+            
+            if ( count( $executionResult['failure'] ) )
+            {
+                $dialogBox->error(
+                    get_lang("Upgrade's failed for %nbrError courses : %courseList",
+                        array(
+                            '%nbrError'=>count($executionResult['failure']),
+                            '%courseList'=>implode(',', array_keys($executionResult['failure']))
+                        )
+                    )
+                );
+                
+                Console::success( "UPGTO19::Upgrade fails for "
+                    . count($executionResult['failure']). " courses : "
+                    . implode(',', array_keys($executionResult['failure']) )
+                );
+            }
+        }
+    }
+    catch (Exception $e )
+    {
+        Console::error( "UPGTO19::Exception : {$e->getMessage()}" );
+        $dialogBox->error( get_lang("An error occurs while running the course upgrade tasks (see log for details)") );
+    }
+}
+elseif ( $cmd == 'upgradeCourse' )
 {
     if ( is_null ( $cid ) )
     {
@@ -100,17 +172,27 @@ if ( $cmd == 'upgradeCourse' )
     {
         try
         {
-            $errorSteps = Upgrade_Course::execute( $cid );
-                
-            if ( ! count( $errorSteps ) )
+            $course = Upgrade_CourseDatabase::getCourse( $cid );
+            
+            if ( $course['status'] == 'pending' )
             {
-                $dialogBox->success(get_lang("Course upgrade executed with success for course %cid", array('%cid' => htmlspecialchars( $cid ) )));
-                Console::success( "UPGTO19::Upgrade successful for {$cid}" );
+                $errorSteps = Upgrade_Course::execute( $course );
+                    
+                if ( ! count( $errorSteps ) )
+                {
+                    $dialogBox->success(get_lang("Course upgrade executed with success for course %cid", array('%cid' => htmlspecialchars( $cid ) )));
+                    Console::success( "UPGTO19::Upgrade successful for {$cid}" );
+                }
+                else
+                {
+                    $dialogBox->warning(get_lang("Course upgrade executed with errors for course %cid at step %steps", array('%cid' => htmlspecialchars( $cid ), '%steps' => implode(',',$errorSteps) )));
+                    Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                }
             }
             else
             {
-                $dialogBox->warning(get_lang("Course upgrade executed with errors for course %cid at step %steps", array('%cid' => htmlspecialchars( $cid ), '%steps' => implode(',',$errorSteps) )));
-                Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                $dialogBox->info(get_lang("Course %cid already upgraded with status %status",array('%cid'=>htmlspecialchars($cid),'%status'=>$course['status'])));
+                pushClaroMessage( "UPGTO19::Upgrade already done for {$cid} with status " . $course['status'], 'info' );
             }
         }
         catch (Exception $e )

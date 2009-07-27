@@ -122,15 +122,7 @@ class Upgrade_MainLog extends Claroline_File_Log
 
 class Upgrade_CourseDatabase
 {
-    public static function getUpgradableCourses()
-    {
-        if ( ! self::$courseList )
-        {
-            self::$courseList = new Upgrade_CourseIterator();
-        }
-        
-        return self::$courseList;
-    }
+    
     
     public static function init( $reset = false )
     {
@@ -294,8 +286,10 @@ class Upgrade_CourseIterator implements Iterator, Countable
             throw new OutOfRangeException("Limit must be >= 0 !");
         }
         
-        $this->courseCount = $this->countCourses();
         $this->table = get_module_main_tbl( array('courses_to_upgrade') );
+        
+        $this->courseCount = $this->countCourses();
+        
         $this->iterationCount = $this->countIterations();
     }
     
@@ -337,13 +331,13 @@ class Upgrade_CourseIterator implements Iterator, Countable
     
     public function getNextBunchOfCourses()
     {
-        if ( $this->offset >= $this->countCourses )
+        if ( $this->offset >= $this->courseCount )
         {
             return false;
         }
         
         $result = Claroline::getDatabase()->query("
-            SELECT code, dbName
+            SELECT code, dbName, status, stepFailed
             FROM `{$this->table['courses_to_upgrade']}`
             WHERE status = 'pending'
             LIMIT ".Claroline::getDatabase()->escape($this->limit)."
@@ -418,12 +412,8 @@ class Upgrade_CourseIterator implements Iterator, Countable
 
 class Upgrade_Course
 {
-    public static function execute( $cid = null )
+    public static function execute( $course )
     {
-        $cid = is_null( $cid ) ? claro_get_current_course_id() : $cid;
-        
-        $course = Upgrade_CourseDatabase::getCourse( $cid );
-        
         $errorSteps = array();
         
         if ( $course['status'] == 'pending' )
@@ -437,9 +427,54 @@ class Upgrade_Course
             unset( $CourseUpgradeTasks );
         }
         
-        // free memory
-        unset( $course );
-        
         return $errorSteps;
+    }
+    
+    public static function upgradeNextBunchOfCourses()
+    {
+        $executionResult = array(
+            'partial' => array(),
+            'failure' => array(),
+            'success' => array()
+        );
+        
+        $courseList = new Upgrade_CourseIterator();
+        
+        $CourseUpgradeTasks = new Upgrade_TaskQueue();
+        
+        include_once get_module_path('UPGTO19') .'/tasks/course.tasks.php';
+        
+        if ( $bunch = $courseList->getNextBunchOfCourses() )
+        {
+            foreach ( $bunch as $course )
+            {
+                $errorSteps = array();
+                
+                try
+                {
+                    if ( $course['status'] == 'pending' )
+                    {
+                        $errorSteps = $CourseUpgradeTasks->execute( $course );
+                        
+                        if ( count ( $errorSteps) )
+                        {
+                            $executionResult['partial'][$course['code']] = $errorSteps;
+                        }
+                        else
+                        {
+                            $executionResult['success'][$course['code']] = true;
+                        }
+                    }
+                }
+                catch ( Exception $e )
+                {
+                    $executionResult['failure'][$course['code']] = $e->getMessage();
+                }
+            }
+        }
+        
+        unset( $CourseUpgradeTasks );
+        
+        return $executionResult;
     }
 }
