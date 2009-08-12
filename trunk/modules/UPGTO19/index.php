@@ -173,26 +173,33 @@ elseif ( $cmd == 'upgradeCourse' )
         try
         {
             $course = Upgrade_CourseDatabase::getCourse( $cid );
-            
-            if ( $course['status'] == 'pending' )
+            if ( $course )
             {
-                $errorSteps = Upgrade_Course::execute( $course );
-                    
-                if ( ! count( $errorSteps ) )
+                if ( $course['status'] == 'pending' )
                 {
-                    $dialogBox->success(get_lang("Course upgrade executed with success for course %cid", array('%cid' => htmlspecialchars( $cid ) )));
-                    Console::success( "UPGTO19::Upgrade successful for {$cid}" );
+                    $errorSteps = Upgrade_Course::execute( $course );
+                        
+                    if ( ! count( $errorSteps ) )
+                    {
+                        $dialogBox->success(get_lang("Course upgrade executed with success for course %cid", array('%cid' => htmlspecialchars( $cid ) )));
+                        Console::success( "UPGTO19::Upgrade successful for {$cid}" );
+                    }
+                    else
+                    {
+                        $dialogBox->warning(get_lang("Course upgrade executed with errors for course %cid at step %steps", array('%cid' => htmlspecialchars( $cid ), '%steps' => implode(',',$errorSteps) )));
+                        Console::warning( "UPGTO19::Upgrade failed for {$cid} at steps " . implode( ',', $errorSteps ) );
+                    }
                 }
                 else
                 {
-                    $dialogBox->warning(get_lang("Course upgrade executed with errors for course %cid at step %steps", array('%cid' => htmlspecialchars( $cid ), '%steps' => implode(',',$errorSteps) )));
-                    Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                    $dialogBox->info(get_lang("Course %cid already upgraded with status %status",array('%cid'=>htmlspecialchars($cid),'%status'=>$course['status'])));
+                    pushClaroMessage( "UPGTO19::Upgrade already done for {$cid} with status " . $course['status'], 'info' );
                 }
             }
             else
             {
-                $dialogBox->info(get_lang("Course %cid already upgraded with status %status",array('%cid'=>htmlspecialchars($cid),'%status'=>$course['status'])));
-                pushClaroMessage( "UPGTO19::Upgrade already done for {$cid} with status " . $course['status'], 'info' );
+                $dialogBox->info(get_lang("Course %cid does not exist or does not need to be upgraded",array('%cid'=>htmlspecialchars($cid))));
+                pushClaroMessage("The course {$cid} does not exist or does not need to be upgraded", 'info' );
             }
         }
         catch (Exception $e )
