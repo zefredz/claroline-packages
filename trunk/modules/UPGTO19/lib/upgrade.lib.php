@@ -131,7 +131,7 @@ class Upgrade_CourseDatabase
         Claroline::getDatabase()->exec("
             CREATE TABLE IF NOT EXISTS `{$table['courses_to_upgrade']}` (
                 code VARCHAR(40) NOT NULL,
-                dbName VARCHAR(40) NOT NULL,
+                dbName VARCHAR(50) NOT NULL,
                 step INT,
                 status ENUM ('pending','success','failure','started','partial') DEFAULT 'pending',
                 stepFailed varchar(255),
