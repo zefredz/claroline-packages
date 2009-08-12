@@ -15,22 +15,29 @@ if ( claro_is_in_a_course() )
             {
                 $course = Upgrade_CourseDatabase::getCourse( claro_get_current_course_id() );
                 
-                if ( $course['status'] == 'pending' )
+                if ( $course )
                 {
-                    $errorSteps = Upgrade_Course::execute( $course );
-                    
-                    if ( ! count( $errorSteps ) )
+                    if ( $course['status'] == 'pending' )
                     {
-                        Console::success( "UPGTO19::Upgrade successful for ".claro_get_current_course_id() );
+                        $errorSteps = Upgrade_Course::execute( $course );
+                        
+                        if ( ! count( $errorSteps ) )
+                        {
+                            Console::success( "UPGTO19::Upgrade successful for ".claro_get_current_course_id() );
+                        }
+                        else
+                        {
+                            Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                        }
                     }
                     else
                     {
-                        Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                        pushClaroMessage( "UPGTO19::Upgrade already done for ".claro_get_current_course_id() . " with status " . $course['status'], 'info' );
                     }
                 }
                 else
                 {
-                    pushClaroMessage( "UPGTO19::Upgrade already done for ".claro_get_current_course_id() . " with status " . $course['status'], 'info' );
+                    pushClaroMessage("The course " . htmsplecialchars($cid) . " does not need to be upgraded", 'info' );
                 }
             }
             catch (Exception $e )
