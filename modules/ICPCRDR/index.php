@@ -244,6 +244,7 @@ try
     
     $podcastList = new PhpTemplate(dirname(__FILE__) . '/templates/podcastlist.tpl.php');
     $podcastList->assign( 'podcasts', $collection->getAll() );
+    $podcastList->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
     
     $layout->appendToLeft( $podcastList->render() );  
     
