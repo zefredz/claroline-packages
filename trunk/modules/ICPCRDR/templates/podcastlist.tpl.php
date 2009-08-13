@@ -22,10 +22,10 @@
             
             <?php if (claro_is_allowed_to_edit()): ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
-                <img src="<?php echo get_icon_url('feed_edit'); ?>" alt="" />'
+                <img src="<?php echo get_icon_url('feed_edit'); ?>" alt="<?php echo get_lang( 'Edit feed' ); ?>" />'
                 </a>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
-                <img src="<?php echo get_icon_url('feed_delete'); ?>" alt="" />'
+                <img src="<?php echo get_icon_url('feed_delete'); ?>" alt="<?php echo get_lang( 'Delete feed' ); ?>" />'
                 </a>
                 
                 <?php if ($currentPodcast['visibility'] == 'visible'): ?>
