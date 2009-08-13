@@ -1,11 +1,13 @@
+<?php if ( $this->is_allowed_to_edit ) : ?>
 <p>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
     <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
     <?php echo get_lang( 'Add a podcast' ); ?>
     </a>
 </p>
+<?php endif; ?>
 
-<?php if ( count($this->podcasts) ): ?>
+<?php if ( count($this->podcasts) ) : ?>
     <ul>
     <?php foreach ($this->podcasts as $currentPodcast): ?>
         <?php if( $currentPodcast['visibility'] == 'visible' || claro_is_allowed_to_edit() ) :?>
@@ -52,4 +54,8 @@
         </a>
     </p>
     <?php endif; ?>
+<?php else : ?>
+<p>
+    <em><?php echo get_lang( 'No podcast for now...' ); ?></em>
+</p>
 <?php endif; ?>

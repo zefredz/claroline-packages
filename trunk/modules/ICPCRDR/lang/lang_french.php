@@ -11,6 +11,7 @@ $_lang['Error: unable to delete the podcast'] = 'Erreur: impossible de supprimer
 $_lang['Error: unable to edit the podcast'] = 'Erreur : impossible de modifier ce podcast';
 $_lang['Feed url'] = 'Adresse du flux';
 $_lang['Get title from feed'] = 'Récupérer le titre à partir du flux';
+$_lang['No podcast for now...'] = 'Aucun podcast pour l\'instant...';
 $_lang['Podcast edited successfully'] = 'Le podcast a été modifié avec succès!';
 $_lang['Podcast feed not found'] = 'Le flux du podcast n\'a pas été trouvé';
 $_lang['Suscribe'] = 'S\'abonner';
