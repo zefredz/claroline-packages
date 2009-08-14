@@ -1,3 +1,14 @@
+<!--
+    $Id$
+    
+    Podcast display template
+    * @version     1.9-backport $Revision$
+    * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+    * @author      Frederic Minne <zefredz@claroline.net>
+    * @license     http://www.gnu.org/copyleft/gpl.html
+    *              GNU GENERAL PUBLIC LICENSE version 2 or later
+    * @package     icpcrdr
+-->
 <h3 class="channelTitle"><?php echo htmlspecialchars(claro_utf8_decode($this->channel['title']));?></h3>
 <p><a href="<?php echo htmlspecialchars($this->url);?>"><img src="<?php echo get_icon_url('feed'); ?>" /> <?php echo get_lang('Suscribe');?></a></p>
 <p class="channelPubDate"><?php echo htmlspecialchars($this->channel['pubDate']);?></p>
