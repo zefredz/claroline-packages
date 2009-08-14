@@ -179,7 +179,8 @@ class Upgrade_CourseDatabase
         $result = Claroline::getDatabase()->query("
             SELECT code, dbName, status, step, stepFailed
             FROM `{$table['courses_to_upgrade']}`
-            WHERE status = ".Claroline::getDatabase()->quote($status).";
+            WHERE status = ".Claroline::getDatabase()->quote($status)."
+            ORDER BY code ASC;
         ");
         
         return $result;
@@ -298,7 +299,8 @@ class Upgrade_CourseIterator implements Iterator, Countable
         $result = Claroline::getDatabase()->query("
             SELECT COUNT(*)
             FROM `{$this->table['courses_to_upgrade']}`
-            WHERE status = 'pending';
+            WHERE status = 'pending'
+            ORDER BY code ASC;
         ");
         
         return (int) $result->fetch(Database_ResultSet::FETCH_VALUE);
