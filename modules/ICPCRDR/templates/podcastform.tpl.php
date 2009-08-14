@@ -1,3 +1,14 @@
+<!--
+    $Id$
+    
+    Podcast submission form template
+    * @version     1.9-backport $Revision$
+    * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+    * @author      Frederic Minne <zefredz@claroline.net>
+    * @license     http://www.gnu.org/copyleft/gpl.html
+    *              GNU GENERAL PUBLIC LICENSE version 2 or later
+    * @package     icpcrdr
+-->
 <form name="editPodcast" action="<?php echo $this->actionUrl; ?>" method="post">
 <?php if(!is_null($this->id)) : ?>
     <input type="hidden" name="podcastId" value="<?php echo $this->id; ?>" />

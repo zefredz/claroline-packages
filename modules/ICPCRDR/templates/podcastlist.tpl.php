@@ -1,3 +1,14 @@
+<!--
+    $Id$
+    
+    Podcast list template
+    * @version     1.9-backport $Revision$
+    * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+    * @author      Frederic Minne <zefredz@claroline.net>
+    * @license     http://www.gnu.org/copyleft/gpl.html
+    *              GNU GENERAL PUBLIC LICENSE version 2 or later
+    * @package     icpcrdr
+-->
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <p>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
