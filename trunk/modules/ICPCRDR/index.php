@@ -24,13 +24,11 @@ $dialogBox = new DialogBox;
 
 try
 {
-    $is_allowed_to_edit = claro_is_allowed_to_edit();
-    
     $collection = PodcastCollection::getInstance();
     
     $userInput = Claro_UserInput::getInstance();
     
-    if( $is_allowed_to_edit )
+    if( claro_is_allowed_to_edit() )
     {
         $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
             'list', 'visit',
@@ -112,7 +110,7 @@ try
                 $dialogBox->info(get_lang('Choose a podcast in the list to start'));
             break;
         case 'visit':
-                if( !($visibility == 'visible' || $is_allowed_to_edit) )
+                if( !($visibility == 'visible' || claro_is_allowed_to_edit()) )
                 {
                     $dialogBox->error( get_lang('Not allowed') );
                     break;
@@ -244,7 +242,6 @@ try
     
     $podcastList = new PhpTemplate(dirname(__FILE__) . '/templates/podcastlist.tpl.php');
     $podcastList->assign( 'podcasts', $collection->getAll() );
-    $podcastList->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
     
     $layout->appendToLeft( $podcastList->render() );  
     

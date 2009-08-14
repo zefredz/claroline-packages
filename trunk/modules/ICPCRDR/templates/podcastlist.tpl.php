@@ -1,4 +1,4 @@
-<?php if ( $this->is_allowed_to_edit ) : ?>
+<?php if ( claro_is_allowed_to_edit() ) : ?>
 <p>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
     <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
@@ -46,7 +46,7 @@
         <?php endif; ?>
     <?php endforeach; ?>
     </ul>
-    <?php if ( count($this->podcasts) > 10 ): ?>
+    <?php if ( claro_is_allowed_to_edit() && count($this->podcasts) > 10 ): ?>
     <p>
         <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
         <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
