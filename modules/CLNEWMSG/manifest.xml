@@ -1,0 +1,21 @@
+<module>
+    <label>CLNEWMSG</label>
+    <name>New message notifier</name>
+    <description><![CDATA[ A small applet that displays a little advert when users get new messages. ]]></description>
+    <version>0.8</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>applet</type>
+    <entry>entry.php</entry>
+    <default_dock></default_dock>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@claroline.net</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>

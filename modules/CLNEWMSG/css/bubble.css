@@ -1,0 +1,14 @@
+#newMsg .up
+{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-image: url( "../img/bubble.png" );
+    font-size: 14px;
+    color: #8888CC;
+    text-align: center;
+    padding-top: 10px;
+    margin: 2px;
+    height: 40px;
+    width: 200px;
+}
