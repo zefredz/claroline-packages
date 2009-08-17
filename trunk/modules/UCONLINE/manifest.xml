@@ -1,0 +1,34 @@
+<module>
+    <label>UCONLINE</label>
+    <name>Who is onlin@</name>
+    <version>0.9</version>
+    <license>GPL</license>
+    <default_dock>userBannerRight</default_dock>
+    <type>applet</type>
+    <web>http://www.claroline.net/wiki/UCONLINE/</web>
+    
+    <description>
+        <![CDATA[
+        ( This is a modified version of CLONLINE with new bu... hum... functionalities )
+        This plugin allows to know who is online on the platform with a link to the skype account and the local time of each user.
+        ]]>
+    </description>
+    
+    <author>
+        <name>Claroline team</name>
+        <email>info@claroline.net</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
