@@ -25,7 +25,7 @@ if ( claro_is_user_authenticated() && claro_is_allowed_to_edit() )
         . ' type="application/rss+xml"'
         . ' title="'.get_lang('Last messages in the forum of this course').'"'
         . ' href="'.get_module_url('CLFRMRSS')
-        . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true" />'
+        . '/index.php?cidReq='. claro_get_current_course_id() . htmlspecialchars( '&cidReset=true' ) . '" />'
         ;
     
     $forum_id = isset($_REQUEST['forum']) ? (int) $_REQUEST['forum'] : null;
@@ -48,7 +48,7 @@ if ( claro_is_user_authenticated() && claro_is_allowed_to_edit() )
             . ' type="application/rss+xml"'
             . ' title="'.get_lang('Last messages in this forum').'"'
             . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLFRMRSS')
-            . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id ) ) .'" />'
+            . '/index.php?cidReq='. claro_get_current_course_id() . htmlspecialchars( '&cidReset=true&forumId=' ) . (int) $forum_id ) ) .'" />'
             ;
     }
     
@@ -58,7 +58,7 @@ if ( claro_is_user_authenticated() && claro_is_allowed_to_edit() )
             . ' type="application/rss+xml"'
             . ' title="'.get_lang('Last messages in this topic').'"'
             . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLFRMRSS')
-            . '/index.php?cidReq='. claro_get_current_course_id() . '&cidReset=true&forumId=' . (int) $forum_id .'&topicId=' . (int) $topic_id ) ) . '" />'
+            . '/index.php?cidReq='. claro_get_current_course_id() . htmlspecialchars( '&cidReset=true&forumId=' ) . (int) $forum_id .'&topicId=' . (int) $topic_id ) ) . '" />'
             ;
     }
 }
