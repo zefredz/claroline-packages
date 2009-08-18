@@ -168,7 +168,7 @@ class SkypeStatus
                 
                 if( claro_is_allowed_to_edit() )
                 {
-                    $html .= '<a href="'.get_module_url('CLSKYPE').'/edit.php"><img src="'.get_path('imgRepositoryWeb').'edit.gif" alt="'.get_lang('Modify').'" /></a>' . "\n";
+                    $html .= '<a href="'.get_module_url('CLSKYPE').'/edit.php"><img src="'.get_icon_url('edit').'" alt="'.get_lang('Modify').'" /></a>' . "\n";
                 }
                 
                 $html .= '</span>' . "\n\n";             
