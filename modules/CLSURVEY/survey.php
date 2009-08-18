@@ -191,7 +191,7 @@ if ( $is_allowedToEdit )
     else
     {
         $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqEdit&amp;surveyId=' . $surveyId,
-        '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" alt="" /> ' . get_lang('Edit this survey'));
+        '<img src="' . get_icon_url( 'edit' ) . ' alt="" /> ' . get_lang('Edit this survey'));
     }
 
     $cmdMenu[] = claro_html_cmd_link('survey_result.php?switchMode=rqEdit&amp;surveyId=' . $surveyId
@@ -224,7 +224,7 @@ if ($mode == SURVEY_EDIT_MODE)
     .    '<span style="float:right" >'
     .    '<img src="' . get_path('imgRepositoryWeb') . 'textzone.gif" alt="' . get_lang('Textzone') . '" border="0" />'
     .    claro_html_cmd_link( 'edit_survey.php?cmd=rqEdit&surveyId=' . $surveyId
-                            , '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" alt="" /> ')
+                            , '<img src="' . get_icon_url( 'edit' ) . ' alt="" /> ')
     .    '</span>'
     .    get_lang('Description')
     .    '</th>' . "\n"
@@ -270,7 +270,7 @@ elseif ($displayList)
         $questionMenu[]= claro_html_cmd_link( 'edit_question.php'
         . '?cmd=rqEdit&amp;questionId=' . $questionId
         . '&amp;surveyId=' . $surveyId
-        , '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" alt="' . get_lang('Modify') . '" border="0" />'
+        , '<img src="' . get_icon_url( 'edit' ) . ' alt="' . get_lang('Modify') . '" border="0" />'
         );
         // DELETE  Request LINK
         $questionMenu[]= claro_html_cmd_link( $_SERVER['PHP_SELF']

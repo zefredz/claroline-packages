@@ -178,7 +178,7 @@ foreach ( $surveyList as $thisSurvey)
             // EDIT Request LINK
             $thisRow['edit'] =
                 claro_html_cmd_link( 'survey.php?switchMode=rqEdit&amp;surveyId=' . $thisSurvey['id_survey']
-                                   , '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" alt="' . get_lang('Modify') . '" />');
+                                   , '<img src="' . get_icon_url( 'edit' ) . ' alt="' . get_lang('Modify') . '" />');
 
             // DELETE  Request LINK
             $scriptToChangeSurvey =  $_SERVER['PHP_SELF'] . '?surveyId=' . $thisSurvey['id_survey'] . '&amp;cmd=';

@@ -249,7 +249,7 @@ elseif ($displayList)
         {
             // EDIT Request LINK
             echo '<a href="edit_question.php?cmd=rqEdit&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey . '">'
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'edit.gif" alt="' . get_lang('Modify') . '" />'
+            .    '<img src="' . get_icon_url( 'edit' ) . ' alt="' . get_lang('Modify') . '" />'
             .    '</a>' . "\n"
 
 
