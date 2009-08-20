@@ -4,19 +4,23 @@ class PersistantVariablesRegistry
 {
     protected $registry;
     protected $file, $autoSave;
+    protected $hasChanged;
     
     public function __construct( $file, $autoSave = true )
     {
         $this->registry = drupal_parse_info_file( $file );
         $this->file = $file;
         $this->autoSave = $autoSave ? true : false;
+        $this->hasChanged = false;
     }
     
     public function __destruct()
     {
-        $this->save();
+        $this->hasChanged && $this->save();
         unset ( $this->registry );
         unset ( $this->file );
+        unset ( $this->hasChanged );
+        unset ( $this->autoSave );
     }
     
     public function get( $name, $default = null )
@@ -35,6 +39,8 @@ class PersistantVariablesRegistry
     {
         $this->registry[$name] = serialize( $value );
         
+        $this->hasChanged = true;
+        
         $this->autoSave && $this->save();
     }
     
@@ -48,6 +54,8 @@ class PersistantVariablesRegistry
         $tmp =  $this->registry[$name];
         
         unset($this->registry[$name]);
+        
+        $this->hasChanged = true;
         
         $this->autoSave && $this->save();
         
