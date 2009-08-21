@@ -24,6 +24,7 @@ $conf_def['section']['display']['label']      = 'Display';
 $conf_def['section']['display']['description']= '';
 $conf_def['section']['display']['properties'] = array ( 'showUserId'
                                                       , 'showEmail'
+                                                      , 'showSendMessage'
                                                       , 'showStatus'
                                                       , 'showSkypeStatus'
                                                       , 'showLocalTime'
@@ -50,7 +51,17 @@ array ( 'label'       => 'Show user id'
       , 'readonly'    => FALSE
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
-  
+
+$conf_def_property_list[ 'showSendMessage' ] =
+array ( 'label'       => 'Show a link to send a message'
+      , 'description' => ''
+      , 'default'     => FALSE
+      , 'type'        => 'boolean'
+      , 'display'     => TRUE
+      , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );
+
 $conf_def_property_list[ 'showEmail' ] =
 array ( 'label'       => 'Show user email'
       , 'description' => ''
