@@ -2,7 +2,7 @@
 
 <p><?php echo get_lang( 'List of active users for the last %time minutes :' , array( '%time' => $this->refreshTime ) ); ?></p>
 
-<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
+<table style="text-align: center;" class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <thead>
         <tr class="headerX" align="center" valign="top">
         <?php if( get_conf('showUserId') ) : ?>
@@ -16,6 +16,11 @@
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'firstname' ]; ?>"><?php echo get_lang( 'First name' ); ?></a>
             </th>
+        <?php if( get_conf( 'showSendMessage' ) ) : ?>
+            <th>
+                <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="<?php echo get_lang( 'send a message' ); ?>" />
+            </th>
+        <?php endif; ?>
         <?php if( get_conf( 'showEmail' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'email' ]; ?>"><?php echo get_lang( 'Email' ); ?></a>
@@ -46,6 +51,13 @@
         <?php endif; ?>
             <td><?php echo $user[ 'lastname' ]; ?></td>
             <td><?php echo $user[ 'firstname' ]; ?></td>
+        <?php if( get_conf( 'showSendMessage' ) ) : ?>
+            <td>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'user_id' ] ) ); ?>">
+                    <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
+                </a>
+            </td>
+        <?php endif; ?>
         <?php if( get_conf( 'showEmail' ) ) : ?>
             <td>
             <?php if( ! empty( $user[ 'email' ] ) ) : ?>
