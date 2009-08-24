@@ -18,7 +18,7 @@
             </th>
         <?php if( get_conf( 'showSendMessage' ) ) : ?>
             <th>
-                <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="<?php echo get_lang( 'send a message' ); ?>" />
+                <?php echo get_lang( 'send a message' ); ?>
             </th>
         <?php endif; ?>
         <?php if( get_conf( 'showEmail' ) ) : ?>
@@ -49,7 +49,16 @@
         <?php if( get_conf( 'showUserId' ) ) : ?>
             <td align="center"><?php echo $user[ 'user_id' ]; ?></td>
         <?php endif; ?>
-            <td><?php echo $user[ 'lastname' ]; ?></td>
+            <td>
+                <a href="#" id="user<?php echo $user[ 'user_id' ]; ?>" class="userBlock">
+                    <?php echo $user[ 'lastname' ]; ?>
+                    <?php if ( $user[ 'picture' ] ) : ?>
+                    <span class="userPicture">
+                        <img src="<?php echo user_get_private_folder_url( $user[ 'user_id' ] ) . '/' . $user[ 'picture' ]; ?>" alt="<?php echo get_lang( 'user picture'); ?>"/>
+                    </span>
+                    <?php endif; ?>
+                </a>
+            </td>
             <td><?php echo $user[ 'firstname' ]; ?></td>
         <?php if( get_conf( 'showSendMessage' ) ) : ?>
             <td>
