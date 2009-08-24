@@ -1,0 +1,12 @@
+a .userPicture
+{
+    display: none;
+    position: absolute;
+    border: 1px solid lightgrey;
+    background-color: white;
+}
+
+a:hover .userPicture
+{
+    display: block;
+}
