@@ -49,18 +49,7 @@
         <?php if( get_conf( 'showUserId' ) ) : ?>
             <td align="center"><?php echo $user[ 'user_id' ]; ?></td>
         <?php endif; ?>
-            <td>
-                <a href="#" id="user<?php echo $user[ 'user_id' ]; ?>" class="userBlock">
-                    <?php echo $user[ 'lastname' ]; ?>
-                    <span class="userPicture">
-                    <?php if ( $user[ 'picture' ] ) : ?>
-                        <img src="<?php echo user_get_private_folder_url( $user[ 'user_id' ] ) . '/' . $user[ 'picture' ]; ?>" alt="<?php echo get_lang( 'user picture'); ?>"/>
-                    <?php else : ?>
-                        <img src="<?php echo get_icon( 'nopicture' ); ?>" alt="no picture" />
-                    <?php endif; ?>
-                    </span>
-                </a>
-            </td>
+            <td><?php echo $user[ 'lastname' ]; ?></td>
             <td><?php echo $user[ 'firstname' ]; ?></td>
         <?php if( get_conf( 'showSendMessage' ) ) : ?>
             <td>
