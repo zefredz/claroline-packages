@@ -16,8 +16,6 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 
 FromKernel::uses( 'pager.lib' , 'user.lib' , 'utils/input.lib' , 'display/layout.lib' );
 
-CssLoader::getInstance()->load( 'userpic' , 'screen' );
-
 $userInput = Claro_UserInput::getInstance();
 
 $offset = (int)$userInput->get( 'offset' );
@@ -35,7 +33,6 @@ $sql = "SELECT
             U.`prenom`              AS `firstname`,
             U.`email`               AS `email`,
             U.`user_id`             AS `user_id`,
-            U.`pictureUri`          AS `picture`,
             U.`isCourseCreator`     AS `isCourseCreator`,
             O.`last_action`         AS `last_action`,
             O.`time_offset`         AS `time_offset`,
