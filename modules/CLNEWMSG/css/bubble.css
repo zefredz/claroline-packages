@@ -12,3 +12,8 @@
     height: 40px;
     width: 200px;
 }
+
+#newMsg .up a
+{
+    color: #8888CC;
+}
