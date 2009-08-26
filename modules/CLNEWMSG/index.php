@@ -65,8 +65,8 @@ if ( claro_is_user_authenticated() )
         
         if ( $newMsg )
         {
-            $text='<a href="' . htmlspecialchars( Url::Contextualize( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox' ) ) .'">';
-            $text = ( $newMsg == 1 ) ?  get_lang( 'You got a new message!' ) :
+            $text ='<a href="' . htmlspecialchars( Url::Contextualize( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox' ) ) .'">';
+            $text .= ( $newMsg == 1 ) ?  get_lang( 'You got a new message!' ) :
                                         get_lang( 'You got %newMsg new messages!' , array( '%newMsg' => $newMsg ) );
             $text .='</a>';
         }
