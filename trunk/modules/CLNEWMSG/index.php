@@ -17,7 +17,7 @@ if ( claro_is_user_authenticated() )
     $tbl_messages = $tbl_mdb_names[ 'im_message' ];
     $tbl_msg_status = $tbl_mdb_names[ 'im_message_status' ];
     
-    if ( time() - $_SESSION[ 'start_time' ] < (int)get_conf( 'CLNEWMSG_refreshTime' ) )
+    if ( time() - (int)$_SESSION[ 'start_time' ] < (int)get_conf( 'CLNEWMSG_refreshTime' ) )
     {
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
