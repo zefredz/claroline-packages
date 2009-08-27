@@ -9,7 +9,14 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-if ( ! isset( $_SESSION[ 'start_time' ] ) ) $_SESSION[ 'start_time' ] = time();
+if ( ! claro_is_user_authenticated() )
+{
+    $_SESSION[ 'start_time' ] = null;
+}
+elseif ( ! isset( $_SESSION[ 'start_time' ] ) || ! $_SESSION[ 'start_time' ] )
+{
+    $_SESSION[ 'start_time' ] = time();
+}
 
 CssLoader::getInstance()->load( 'bubble' , 'screen' );
 
