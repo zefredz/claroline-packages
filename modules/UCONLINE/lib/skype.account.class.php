@@ -17,7 +17,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * @property private int $userId
  * @property private string $skypeName : the name of the Skype account
  */
-class SkypeStatus
+class SkypeAccount
 {
     private $userId;
     private $skypeName;

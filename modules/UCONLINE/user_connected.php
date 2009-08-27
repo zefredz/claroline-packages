@@ -16,6 +16,11 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 
 FromKernel::uses( 'pager.lib' , 'user.lib' , 'utils/input.lib' , 'display/layout.lib' );
 
+if ( get_conf( 'showUserPicture' ) )
+{
+    CssLoader::getInstance()->load( 'uconline' , 'screen' );
+}
+
 $userInput = Claro_UserInput::getInstance();
 
 $offset = (int)$userInput->get( 'offset' );
@@ -26,13 +31,13 @@ $toolName = get_lang( 'User(s) online' );
 
 $userPerPage = get_conf( 'usersPerPage' );
 
-$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' ), array( 'course' => null ) );
+$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'cours_user' ), array( 'course' => null ) );
 
-$sql = "SELECT
+$sql = "SELECT DISTINCT
             U.`nom`                 AS `lastname`,
             U.`prenom`              AS `firstname`,
             U.`email`               AS `email`,
-            U.`user_id`             AS `user_id`,
+            U.`user_id`             AS `id`,
             U.`isCourseCreator`     AS `isCourseCreator`,
             O.`last_action`         AS `last_action`,
             O.`time_offset`         AS `time_offset`,
@@ -48,18 +53,58 @@ $sql = "SELECT
         LEFT JOIN
             `{$tbl[ 'user_online' ]}` AS O
             ON
-                O.`user_id` = U.`user_id`
-        WHERE
                 O.`user_id` = U.`user_id`";
+
+if ( claro_is_platform_admin() || get_conf( 'allUsersAllowed' ) )
+{
+    $sql .= "WHERE
+                O.`user_id` = U.`user_id`";
+}
+else
+{
+    $sql .= "LEFT JOIN
+                `{$tbl[ 'cours_user' ]}` AS C
+                ON
+                    C.`user_id` = U.`user_id`
+            WHERE
+                    O.`user_id` = U.`user_id`
+            AND
+                    C.`code_cours` IN (
+                    SELECT
+                        code_cours
+                    FROM
+                        `{$tbl[ 'cours_user' ]}`
+                    WHERE
+                        user_id = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
+}
 
 $myPager = new claro_sql_pager( $sql, $offset, $userPerPage );
 $myPager->set_sort_key( $pagerSortKey , $pagerSortDir );
 
 $userList = $myPager->get_result_list();
 
+if ( get_conf( 'showUserPicture' ) )
+{
+    foreach ( $userList as $index => $user )
+    {
+        $userData = user_get_properties( $user[ 'id' ] );
+        
+        $picturePath = user_get_picture_path( $userData );
+        
+        if ( $picturePath && file_exists( $picturePath ) )
+        {
+            $userList[ $index ][ 'picture' ] = user_get_picture_url( $userData );
+        }
+        else
+        {
+            $userList[ $index ][ 'picture' ] = get_icon_url( 'nopicture' );
+        }
+    }
+}
+
 $sortUrlList = $myPager->get_sort_url_list( $_SERVER['PHP_SELF'] );
 
-$refreshTime = get_conf('UCONLINE_refreshTime',5);
+$refreshTime = get_conf( 'UCONLINE_refreshTime' , 5 );
 
 $listView = new PhpTemplate( dirname( __FILE__ ) . '/templates/onlineusrlist.tpl.php' );
 

@@ -16,6 +16,6 @@ $_lang['Skype options, Privacy panel.'] = 'Options Skype, Confidentialité.';
 $_lang['Skype status notifier successfully deactivated.'] = 'La notification de statut Skype a été désactivée.';
 $_lang['Skype status notifier'] = 'Notification de statut Skype';
 $_lang['User(s) online'] = 'Utilisateurs connectés';
+$_lang['user picture'] = 'photo utilisateur';
 $_lang['user\'s Skype status'] = 'Status Skype de l\'utilisateur';
-
-?>
+$_lang['Warning : you can only see the users registered in YOUR courses!'] = 'Attention! Vous ne pouvez voir que les étudiants inscrits dans les mêmes cours que vous!';

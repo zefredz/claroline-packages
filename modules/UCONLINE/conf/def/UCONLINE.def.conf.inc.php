@@ -27,7 +27,9 @@ $conf_def['section']['display']['properties'] = array ( 'showUserId'
                                                       , 'showSendMessage'
                                                       , 'showStatus'
                                                       , 'showSkypeStatus'
+                                                      , 'showUserPicture'
                                                       , 'showLocalTime'
+                                                      , 'allUsersAllowed'
                                                       , 'usersPerPage' );
 
 // MAIN
@@ -92,8 +94,28 @@ array ( 'label'       => 'Show user\'s Skype account status'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
+$conf_def_property_list[ 'showUserPicture' ] =
+array ( 'label'       => 'Show user\'s picture'
+      , 'description' => ''
+      , 'default'     => FALSE
+      , 'type'        => 'boolean'
+      , 'display'     => TRUE
+      , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );
+
 $conf_def_property_list[ 'showLocalTime' ] =
 array ( 'label'       => 'Show the local time of each user'
+      , 'description' => ''
+      , 'default'     => FALSE
+      , 'type'        => 'boolean'
+      , 'display'     => TRUE
+      , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );
+
+$conf_def_property_list[ 'allUsersAllowed' ] =
+array ( 'label'       => 'users can see ALL the other users!'
       , 'description' => ''
       , 'default'     => FALSE
       , 'type'        => 'boolean'

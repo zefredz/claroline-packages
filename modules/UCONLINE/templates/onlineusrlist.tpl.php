@@ -1,13 +1,18 @@
 <h3 class="claroToolTitle"><?php echo $this->toolName; ?></h3>
 
 <p><?php echo get_lang( 'List of active users for the last %time minutes :' , array( '%time' => $this->refreshTime ) ); ?></p>
+<?php if( ! get_conf( 'allUsersAllowed' ) ) : ?>
+<p>
+    <strong><?php echo get_lang( 'Warning : you can only see the users registered in YOUR courses!' ) ?></strong>
+</p>
+<?php endif; ?>
 
 <table style="text-align: center;" class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <thead>
         <tr class="headerX" align="center" valign="top">
-        <?php if( get_conf('showUserId') ) : ?>
+        <?php if( get_conf( 'showUserId' ) ) : ?>
             <th>
-                <a href="<?php echo $this->sortUrlList[ 'user_id' ]; ?>"><?php echo get_lang( 'No.' ); ?></a>
+                <a href="<?php echo $this->sortUrlList[ 'id' ]; ?>"><?php echo get_lang( 'No.' ); ?></a>
             </th>
         <?php endif; ?>
             <th>
@@ -16,9 +21,14 @@
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'firstname' ]; ?>"><?php echo get_lang( 'First name' ); ?></a>
             </th>
+        <?php if ( get_conf( 'showUserPicture' ) ) : ?>
+            <th>
+                <img src="<?php echo get_icon( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
+            </th>
+        <?php endif; ?>
         <?php if( get_conf( 'showSendMessage' ) ) : ?>
             <th>
-                <?php echo get_lang( 'Send a message' ); ?>
+                <img src="<?php echo get_icon( 'mail_close' ); ?>" alt="<?php echo get_lang( 'Send a message' ); ?>" />
             </th>
         <?php endif; ?>
         <?php if( get_conf( 'showEmail' ) ) : ?>
@@ -47,13 +57,25 @@
     <?php foreach( $this->userList as $user ) : ?>
         <tr>
         <?php if( get_conf( 'showUserId' ) ) : ?>
-            <td align="center"><?php echo $user[ 'user_id' ]; ?></td>
+            <td align="center"><?php echo $user[ 'id' ]; ?></td>
         <?php endif; ?>
             <td><?php echo $user[ 'lastname' ]; ?></td>
             <td><?php echo $user[ 'firstname' ]; ?></td>
+        <?php if ( get_conf( 'showUserPicture' ) ) : ?>
+            <td>
+                <a href="#" id="user<?php echo $user[ 'id' ]; ?>" class="userBlock">
+                    <span>
+                        <img src="<?php echo get_icon( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
+                    </span>
+                    <span class="userPicture">
+                        <img src="<?php echo $user[ 'picture' ]; ?>" alt="<?php echo get_lang( 'user picture' ); ?>"/>
+                    </span>
+                </a>
+            </td>
+        <?php endif; ?>
         <?php if( get_conf( 'showSendMessage' ) ) : ?>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'user_id' ] ) ); ?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
                     <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
                 </a>
             </td>
@@ -69,17 +91,15 @@
         <?php endif; ?>
         <?php if( get_conf( 'showSkypeStatus' ) ) : ?>
             <td>
-            <?php if( ! empty( $user[ 'skype_name' ] ) ) : ?>
+            <?php if ( $user[ 'id' ] == claro_get_current_user_id() ) : ?>
+                <a href="edit.php"><?php echo get_lang( 'Configure your Skype account' ); ?></a>
+            <?php elseif( ! empty( $user[ 'skype_name' ] ) ) : ?>
                 <a href="skype:<?php echo $user[ 'skype_name' ]; ?>?call">
                     <img src="http://mystatus.skype.com/smallclassic/<?php echo $user[ 'skype_name' ]; ?>"
                     style="border: none;" width="100" height="15" alt="<?php echo get_lang('user\'s Skype status'); ?>" />
                 </a>
             <?php else : ?>
                 <em><?php echo get_lang( 'None' ); ?></em>
-            <?php endif; ?>
-            <?php if ( $user[ 'user_id' ] == claro_get_current_user_id() ) : ?>
-                &nbsp;-&nbsp;
-                <a href="edit.php"><?php echo get_lang( 'Configure your Skype account' ); ?></a>
             <?php endif; ?>
             </td>
         <?php endif; ?>
