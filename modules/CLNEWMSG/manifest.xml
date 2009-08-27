@@ -7,7 +7,7 @@
     <icon>icon.png</icon>
     <type>applet</type>
     <entry>entry.php</entry>
-    <default_dock></default_dock>
+    <default_dock>campusBannerRight</default_dock>
     <author>
         <name>Frederic Fervaille</name>
         <email>frederic.fervaille@claroline.net</email>

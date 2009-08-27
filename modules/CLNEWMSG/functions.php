@@ -23,7 +23,7 @@ ClaroHeader::getInstance()->addHtmlHeader( '
                     $("#newMsg").html(data);
                 }
             });
-            setTimeout( msgNotifier, 10000 );
+            setTimeout( msgNotifier, '. (int)get_conf( 'CLNEWMSG_refreshTime' ) * 1000 .' );
         }
         $( function(){ msgNotifier(); } );
     </script>');
