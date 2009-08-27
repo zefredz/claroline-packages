@@ -42,7 +42,7 @@ if ( claro_is_user_authenticated() )
     }
     else
     {
-        $lastCheck = date( 'Y-m-d H:i:s' , time() - 10 );
+        $lastCheck = date( 'Y-m-d H:i:s' , time() - (int)get_conf( 'CLNEWMSG_refreshTime' ) );
         
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
