@@ -1,0 +1,23 @@
+a .userPicture
+{
+    display: none;
+    position: absolute;
+    height: 210px;
+    width: 160px;
+    margin-top: -200px;
+    margin-left: 25px;
+    background-image: url( '../img/popframe.png' );
+}
+
+a:hover .userPicture
+{
+    display: block;
+}
+
+.userPicture img
+{
+    position: inherit;
+    border: solid 1px lightgrey;
+    left: 20px;
+    bottom: 35px;
+}

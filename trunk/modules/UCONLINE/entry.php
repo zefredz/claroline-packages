@@ -21,12 +21,11 @@ $sql = "SELECT COUNT(`id`) AS `user_id` FROM `".$tbl[ 'user_online' ]."`";
 $countOfUsers = claro_sql_query_get_single_value($sql);
 
 // Output
-
 $html= '<a href="' . get_module_url( 'UCONLINE' ) . '/user_connected.php">';
 
 if( $countOfUsers > 1 )
 {
-    $html.= get_lang('%countOfUsers users connected', array('%countOfUsers'=> $countOfUsers));
+    $html.= get_lang( '%countOfUsers users connected' , array( '%countOfUsers' => $countOfUsers ) );
 }
 elseif( $countOfUsers == 1 )
 {

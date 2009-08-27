@@ -14,9 +14,9 @@ require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.p
 if ( ! claro_is_user_authenticated() ) claro_die( get_lang( 'Not allowed' ) );
 
 FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' , 'embed.lib' );
-From::Module( 'UCONLINE' )->uses( 'skype.status.class' );
+From::Module( 'UCONLINE' )->uses( 'skype.account.class' );
 
-$skypeStatusNotifier = new SkypeStatus( claro_get_current_user_id() );
+$skypeAccount = new SkypeAccount( claro_get_current_user_id() );
 
 $userInput = Claro_UserInput::getInstance();
 
@@ -29,7 +29,7 @@ if( $cmd == 'exUpdate' )
 {
     if( ! $newSkypeName )
     {
-        if( $skypeStatusNotifier->delete() )
+        if( $skypeAccount->delete() )
         {
             $dialogBox->success( get_lang( 'Skype status notifier successfully deactivated.' ) );
         }
@@ -40,7 +40,7 @@ if( $cmd == 'exUpdate' )
     }
     else
     {
-        if( $skypeStatusNotifier->save( $newSkypeName ) )
+        if( $skypeAccount->save( $newSkypeName ) )
         {
             $dialogBox->success( get_lang( 'Skype name successfully changed.') );
         }
@@ -59,7 +59,7 @@ if ( $dialogBox )
 
 $skypeEditView = new PhpTemplate( dirname( __FILE__ ) . '/templates/skypeedit.tpl.php' );
 
-$skypeEditView->assign( 'skypeName' , $skypeStatusNotifier->getSkypeName() );
+$skypeEditView->assign( 'skypeName' , $skypeAccount->getSkypeName() );
 
 Claroline::getInstance()->display->body->appendContent( $skypeEditView->render() );
 
