@@ -16,11 +16,6 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 
 FromKernel::uses( 'pager.lib' , 'user.lib' , 'utils/input.lib' , 'display/layout.lib' );
 
-if ( get_conf( 'showUserPicture' ) )
-{
-    CssLoader::getInstance()->load( 'uconline' , 'screen' );
-}
-
 $userInput = Claro_UserInput::getInstance();
 
 $offset = (int)$userInput->get( 'offset' );
@@ -85,6 +80,8 @@ $userList = $myPager->get_result_list();
 
 if ( get_conf( 'showUserPicture' ) )
 {
+    CssLoader::getInstance()->load( 'uconline' , 'screen' );
+    
     foreach ( $userList as $index => $user )
     {
         $userData = user_get_properties( $user[ 'id' ] );

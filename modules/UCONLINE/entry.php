@@ -21,21 +21,24 @@ $sql = "SELECT COUNT(`id`) AS `user_id` FROM `".$tbl[ 'user_online' ]."`";
 $countOfUsers = claro_sql_query_get_single_value($sql);
 
 // Output
-$html= '<a href="' . get_module_url( 'UCONLINE' ) . '/user_connected.php">';
-
-if( $countOfUsers > 1 )
+if ( $countOfUsers < 1 )
 {
-    $html.= get_lang( '%countOfUsers users connected' , array( '%countOfUsers' => $countOfUsers ) );
+        $html = get_lang('No user connected');
 }
-elseif( $countOfUsers == 1 )
+else
 {
-    $html.= get_lang('1 user connected');
+    $html = '<a href="' . get_module_url( 'UCONLINE' ) . '/user_connected.php">';
+    
+    if( $countOfUsers == 1 )
+    {
+        $html .= get_lang('1 user connected');
+    }
+    else // $countOfUsers > 1
+    {
+        $html .= get_lang( '%countOfUsers users connected' , array( '%countOfUsers' => $countOfUsers ) );
+    }
+    
+    $html .= '</a>';
 }
-else // $countOfUsers < 1
-{
-    $html.= get_lang('No user connected');
-}
-
-$html.= '</a>';
 
 $claro_buffer->append($html);
