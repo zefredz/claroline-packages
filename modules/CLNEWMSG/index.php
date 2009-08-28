@@ -17,7 +17,7 @@ if ( claro_is_user_authenticated() )
     $tbl_messages = $tbl_mdb_names[ 'im_message' ];
     $tbl_msg_status = $tbl_mdb_names[ 'im_message_status' ];
     
-    if ( time() - (int)$_SESSION[ 'start_time' ] < (int)get_conf( 'CLNEWMSG_refreshTime' ) )
+    if ( time() - (int)$_SESSION[ 'start_time' ] < get_conf( 'displayTime' ) )
     {
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
@@ -42,7 +42,7 @@ if ( claro_is_user_authenticated() )
     }
     else
     {
-        $lastCheck = date( 'Y-m-d H:i:s' , time() - (int)get_conf( 'CLNEWMSG_refreshTime' ) );
+        $timeTrigger = date( 'Y-m-d H:i:s' , time() - get_conf( 'displayTime' ) );
         
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
@@ -60,7 +60,7 @@ if ( claro_is_user_authenticated() )
             AND
                 STATUS.is_deleted = 0
             WHERE
-                MSG.send_time >" . Claroline::getDatabase()->quote( $lastCheck ) . "
+                MSG.send_time >" . Claroline::getDatabase()->quote( $timeTrigger ) . "
         ;")->fetch( Database_ResultSet::FETCH_VALUE );
         
         if ( $newMsg )
