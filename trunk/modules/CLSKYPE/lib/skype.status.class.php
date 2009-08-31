@@ -176,7 +176,7 @@ class SkypeStatus
             elseif( claro_is_allowed_to_edit() )
             {
                 $html .= '<a href="'.get_module_url('CLSKYPE').'/edit.php" >'
-                .    '<img src="'.get_module_url('CLSKYPE').'/icon.gif" alt="" align="top" />'
+                .    '<img src="'.get_module_url('CLSKYPE').'/icon.png" alt="" align="top" />'
                 .    get_lang('Configure Skype status notifier')
                 .    '</a>' . "\n";
             }
