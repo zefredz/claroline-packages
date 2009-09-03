@@ -193,7 +193,7 @@ $surveyQty = claro_sql_query_affected_rows($sql) ;
 if ( $displayButtonLine )
 {
     $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $idSurvey,
-    '<img src="' . get_path('imgRepositoryWeb') . 'survey.gif" alt="" /> ' . get_lang('Add question'));
+    '<img src="survey.png" alt="" /> ' . get_lang('Add question'));
 }
 $interbredcrump[]= array ('url' => './survey_list.php', 'name' => get_lang('Surveys'));
 
@@ -256,14 +256,14 @@ elseif ($displayList)
             // DELETE  Request LINK
             .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'" '
             .    ' onclick="javascript:if(!confirm(\'' . clean_str_for_javascript(get_lang('Please confirm your choice')) . '\')) return false;">'
-            .    '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" alt="' . get_lang('Delete') . '" border="0" />'
+            .    '<img src="' . get_icon_url( 'delete' ) .'" alt="' . get_lang('Delete') . '" border="0" />'
             .    '</a>' . "\n";
 
             // DISPLAY MOVE UP COMMAND only if it is not the top
             if ($iterator != 1)
             {
                 echo   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
-                .      '<img src="'.get_path('imgRepositoryWeb').'up.gif" alt= "'. get_lang('Move up') . '" border="0" />'."\n"
+                .      '<img src="'.get_icon_url( 'move_up' ) . '" alt= "'. get_lang('Move up') . '" border="0" />'."\n"
                 .      '</a>'."\n";
             }
 
@@ -271,7 +271,7 @@ elseif ($displayList)
             if ($iterator < $surveyQuestionQty)
             {
                 echo   '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
-                .      '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" alt="' . get_lang('Move down') . '" border="0" />'."\n"
+                .      '<img src="' . get_icon_url( 'move_down' ) . '" alt="' . get_lang('Move down') . '" border="0" />'."\n"
                 .      '</a>' . "\n"
                 ;
             }

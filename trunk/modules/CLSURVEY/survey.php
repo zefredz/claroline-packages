@@ -174,7 +174,7 @@ $surveyQty = count($survey) ;
 if ( $mode == SURVEY_EDIT_MODE )
 {
     $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
-    '<img src="' . get_path('imgRepositoryWeb') . 'survey.gif" alt="" /> ' . get_lang('Add question'));
+    '<img src="survey.png" alt="" /> ' . get_lang('Add question'));
 }
 else
 {
@@ -186,7 +186,7 @@ if ( $is_allowedToEdit )
     if ( $mode == SURVEY_EDIT_MODE  )
     {
         $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqVote&amp;surveyId=' . $surveyId,
-        '<img src="' . get_path('imgRepositoryWeb') . 'survey.gif" alt="" /> ' . get_lang('Vote for this survey'));
+        '<img src="survey.png" alt="" /> ' . get_lang('Vote for this survey'));
     }
     else
     {
@@ -195,7 +195,7 @@ if ( $is_allowedToEdit )
     }
 
     $cmdMenu[] = claro_html_cmd_link('survey_result.php?switchMode=rqEdit&amp;surveyId=' . $surveyId
-                                    , '<img src="' . get_path('imgRepositoryWeb') . 'statistics.gif" '
+                                    , '<img src="' . get_icon_url( 'satistics' ) . '" '
                                     . 'alt="' . get_lang('Results') . '" />'
                                     . get_lang('Results'));
 }
@@ -222,7 +222,7 @@ if ($mode == SURVEY_EDIT_MODE)
     echo '<tr class="headerX">' . "\n"
     .    '<th>' . "\n"
     .    '<span style="float:right" >'
-    .    '<img src="' . get_path('imgRepositoryWeb') . 'textzone.gif" alt="' . get_lang('Textzone') . '" border="0" />'
+    .    '<img src="' . get_icon_url( 'textzone' ) .'" alt="' . get_lang('Textzone') . '" border="0" />'
     .    claro_html_cmd_link( 'edit_survey.php?cmd=rqEdit&surveyId=' . $surveyId
                             , '<img src="' . get_icon_url( 'edit' ) . ' alt="" /> ')
     .    '</span>'
@@ -276,7 +276,7 @@ elseif ($displayList)
         $questionMenu[]= claro_html_cmd_link( $_SERVER['PHP_SELF']
         . '?cmd=exDelete&amp;questionId=' . $questionId
         . '&amp;surveyId=' . $surveyId
-        , '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" alt="' . get_lang('Delete') . '" border="0" />'
+        , '<img src="' . get_icon_url( 'delete' ) . '" alt="' . get_lang('Delete') . '" border="0" />'
         , array( 'onclick' => 'javascript:if(!confirm(\'' . clean_str_for_javascript(get_lang('Please confirm your choice')) . '\')) return false;')
         );
 
@@ -285,7 +285,7 @@ elseif ($displayList)
         if ($iterator != 1)
         {
             $questionMenu[]= '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&questionId=' . $questionId . '&surveyId=' . $surveyId .'">'."\n"
-            .      '<img src="'.get_path('imgRepositoryWeb').'up.gif" alt= "'. get_lang('Move up') . '" border="0" />'."\n"
+            .      '<img src="'. get_icon_url( 'move_up' ) .'" alt= "'. get_lang('Move up') . '" border="0" />'."\n"
             .      '</a>'."\n";
         }
 
@@ -293,7 +293,7 @@ elseif ($displayList)
         if ($iterator < count($surveyItemList))
         {
             $questionMenu[] = '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&questionId=' . $questionId . '&surveyId=' . $surveyId .'">'."\n"
-            .      '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" alt="' . get_lang('Move down') . '" border="0" />'."\n"
+            .      '<img src="' . get_icon_url( 'move_down' ) . '" alt="' . get_lang('Move down') . '" border="0" />'."\n"
             .      '</a>' . "\n"
             ;
         }
