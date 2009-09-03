@@ -195,7 +195,7 @@ if ( $is_allowedToEdit )
     }
 
     $cmdMenu[] = claro_html_cmd_link('survey_result.php?switchMode=rqEdit&amp;surveyId=' . $surveyId
-                                    , '<img src="' . get_icon_url( 'satistics' ) . '" '
+                                    , '<img src="' . get_icon_url( 'statistics' ) . '" '
                                     . 'alt="' . get_lang('Results') . '" />'
                                     . get_lang('Results'));
 }
