@@ -172,7 +172,7 @@ foreach ( $surveyList as $thisSurvey)
 
             $thisRow['stats'] =
                 claro_html_cmd_link( 'survey_result.php?surveyId=' . $thisSurvey['id_survey']
-                                   , '<img src="' . get_path('imgRepositoryWeb') . 'statistics.gif" '
+                                   , '<img src="' . get_icon_url( 'statistics' ) . '" '
                                    . 'alt="' . get_lang('Results') . '" />' );
 
             // EDIT Request LINK
@@ -185,7 +185,7 @@ foreach ( $surveyList as $thisSurvey)
 
             $thisRow['delete'] =
             claro_html_cmd_link( $scriptToChangeSurvey . 'exDelete'
-                               , '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" '
+                               , '<img src="' . get_icon_url( 'delete' ) . '" '
                                . 'alt="' . get_lang('Delete') . '" '. 'border="0" />'
                                , array( 'onclick' => 'javascript:if(!confirm(\'' . clean_str_for_javascript(get_lang('Please confirm your choice')) . '\')) return false;'));
 
@@ -195,7 +195,7 @@ foreach ( $surveyList as $thisSurvey)
             {
                 $thisRow['move'] .=
                     claro_html_cmd_link( $scriptToChangeSurvey . 'exMoveUp'
-                        , '<img src="' . get_path('imgRepositoryWeb') . 'up.gif" '
+                        , '<img src="' . get_icon_url( 'move_up' ) . '" '
                         . 'alt="' . get_lang('Move up') . '" ' . 'border="0" />');
             }
 
@@ -205,7 +205,7 @@ foreach ( $surveyList as $thisSurvey)
             {
                 $thisRow['move'] .=
                     claro_html_cmd_link( $scriptToChangeSurvey . 'exMoveDown'
-                        , '<img src="' . get_path('imgRepositoryWeb') . 'down.gif" '
+                        , '<img src="' . get_icon_url( 'move_down' ) . '" '
                         . ' alt="'.get_lang('Move down') . '" border="0" />');
             }
 
@@ -213,13 +213,13 @@ foreach ( $surveyList as $thisSurvey)
             if ($thisSurvey['visibility'] == 'SHOW')
             {
                 $thisRow['disp'] = claro_html_cmd_link( $scriptToChangeSurvey . 'mkHide'
-                ,    '<img src="' . get_path('imgRepositoryWeb') . 'visible.gif" alt="' . get_lang('Invisible').'" />' );
+                ,    '<img src="' . get_icon_url( 'visible' ) . '" alt="' . get_lang('Invisible').'" />' );
             }
             else
             {
 
                 $thisRow['disp'] = claro_html_cmd_link( $scriptToChangeSurvey . 'mkShow'
-                ,    '<img src="' . get_path('imgRepositoryWeb') . 'invisible.gif" alt="' . get_lang('Visible') . '" />');
+                ,    '<img src="' . get_icon_url( 'invisible' ) . '" alt="' . get_lang('Visible') . '" />');
             }
 
         } // end if is_AllowedToEdit

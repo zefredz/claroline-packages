@@ -166,8 +166,8 @@ if (!is_null($surveyId))
 
 if ( $is_allowedToEdit && $displayList )
 {
-    $cmdMenu[] = claro_html_cmd_link('survey_result.php?cmd=exDelete&surveyId='.$surveyId, '<img src="' . get_path('imgRepositoryWeb') . 'delete.gif" border="0" alt="">&nbsp;' . get_lang('Delete all results'));
-    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?cmd=exExport&amp;surveyId=' . $surveyId, '<img src="' . get_path('imgRepositoryWeb') . 'export.gif" border="0" alt="">&nbsp;'  . get_lang("Export results"));
+    $cmdMenu[] = claro_html_cmd_link('survey_result.php?cmd=exDelete&surveyId='.$surveyId, '<img src="' . get_icon_url( 'delete' ) . '" border="0" alt="">&nbsp;' . get_lang('Delete all results'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?cmd=exExport&amp;surveyId=' . $surveyId, '<img src="' . get_icon_url( 'export' ) . '" border="0" alt="">&nbsp;'  . get_lang("Export results"));
 }
 
 $survey = get_survey_data($surveyId,$context);
