@@ -174,7 +174,7 @@ $surveyQty = count($survey) ;
 if ( $mode == SURVEY_EDIT_MODE )
 {
     $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
-    '<img src="survey.png" alt="" /> ' . get_lang('Add question'));
+    '<img src="' . get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Add question'));
 }
 else
 {
@@ -186,7 +186,7 @@ if ( $is_allowedToEdit )
     if ( $mode == SURVEY_EDIT_MODE  )
     {
         $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqVote&amp;surveyId=' . $surveyId,
-        '<img src="survey.png" alt="" /> ' . get_lang('Vote for this survey'));
+        '<img src="' .get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Vote for this survey'));
     }
     else
     {

@@ -193,7 +193,7 @@ $surveyQty = claro_sql_query_affected_rows($sql) ;
 if ( $displayButtonLine )
 {
     $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $idSurvey,
-    '<img src="survey.png" alt="" /> ' . get_lang('Add question'));
+    '<img src="' . get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Add question'));
 }
 $interbredcrump[]= array ('url' => './survey_list.php', 'name' => get_lang('Surveys'));
 
