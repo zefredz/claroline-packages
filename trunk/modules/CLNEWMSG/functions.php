@@ -20,17 +20,20 @@ elseif ( ! isset( $_SESSION[ 'start_time' ] ) || ! $_SESSION[ 'start_time' ] )
 
 CssLoader::getInstance()->load( 'bubble' , 'screen' );
 
-ClaroHeader::getInstance()->addHtmlHeader( '
-    <script type="text/javascript">
-        function msgNotifier()
-        {
-            $.ajax({
-                url: "' . get_module_url( 'CLNEWMSG' ) . '/index.php",
-                success: function(data){
-                    $("#newMsg").html(data);
-                }
-            });
-            setTimeout( msgNotifier, '. get_conf( 'refreshTime' ) * 1000 .' );
-        }
-        $( function(){ msgNotifier(); } );
-    </script>');
+if ( claro_is_user_authenticated() )
+{
+    ClaroHeader::getInstance()->addHtmlHeader( '
+        <script type="text/javascript">
+            function msgNotifier()
+            {
+                $.ajax({
+                    url: "' . get_module_url( 'CLNEWMSG' ) . '/index.php",
+                    success: function(data){
+                        $("#newMsg").html(data);
+                    }
+                });
+                setTimeout( msgNotifier, '. get_conf( 'refreshTime' ) * 1000 .' );
+            }
+            $( function(){ msgNotifier(); } );
+        </script>');
+}
