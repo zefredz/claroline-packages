@@ -12,6 +12,7 @@
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
+$seconds_displayed = get_conf( 'displaySeconds' ) ? 8 : 5;
 
 ClaroHeader::getInstance()->addHtmlHeader( '
     <script type="text/javascript">
@@ -19,13 +20,13 @@ ClaroHeader::getInstance()->addHtmlHeader( '
         {
             localTime = new Date();
             timeShift = localTime.getTime() - ' . time() .'*1000;
-            setTimeout( serverTimeShift , 360000 );
+            setTimeout( serverTimeShift , ' . get_conf( 'refreshTime' ) . '*60000 );
         }
         function serverTimeDisplay()
         {
             localTime = new Date();
             serverTime = new Date ( localTime.getTime() + timeShift );
-            $( "#serverTime" ).html( serverTime.getHours() + ":" + serverTime.getMinutes()) ;
+            $( "#serverTime" ).html( serverTime.toString().substr( 16 , ' . $seconds_displayed . ' ) );
             setTimeout( serverTimeDisplay , 1000 );
         }
         $(function()
