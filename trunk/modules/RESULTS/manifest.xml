@@ -1,0 +1,31 @@
+<module>
+  <label>RESULTS</label>
+  <name>Results</name>
+  <version>0.2</version>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>entry.php</entry>
+  <icon>icon.gif</icon>
+
+  <description>
+  </description>
+
+  <author>
+     <name>David Boudreault</name>
+     <email>david.boudreault@enap.ca</email>
+     <web>http://technopedagogie.enap.ca</web>
+  </author>
+  
+   <credit>
+     <name>Philippe Dekimpe	</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </credit>
+  
+
+  <requirements>
+    <claroline>
+      <version>1.8.4</version>
+    </claroline>
+ </requirements>
+</module>
