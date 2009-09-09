@@ -25,7 +25,7 @@ ClaroHeader::getInstance()->addHtmlHeader( '
         function serverTimeDisplay()
         {
             localTime = new Date();
-            serverTime = new Date ( localTime.getTime() + timeShift );
+            serverTime = new Date ( localTime.getTime() - timeShift );
             $( "#serverTime" ).html( serverTime.toString().substr( 16 , ' . $seconds_displayed . ' ) );
             setTimeout( serverTimeDisplay , 1000 );
         }
