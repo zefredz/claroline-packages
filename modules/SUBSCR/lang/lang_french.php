@@ -1,0 +1,33 @@
+<?php
+$_lang['Subscription'] = 'Inscription';
+$_lang['Allow users to modify their choice'] = 'Autoriser les utilisateurs à modifier leur choix';
+$_lang['Click here to subscribe'] = 'Cliquez ici pour vous inscrire';
+$_lang['Click here to unsubscribe'] = 'Cliquez ici pour vous désinscrire';
+$_lang['Incorrect date range'] = 'Période incorrecte';
+$_lang['Introduction text'] = 'Texte d\'introduction';
+$_lang['Modify subscription'] = 'Modifier cette inscription';
+$_lang['New subscription'] = 'Nouvelle(s) inscription(s)';
+$_lang['New subscription session'] = 'Nouvelle session d\'inscription';
+$_lang['No subscription yet'] = 'Aucune inscription à ce jour';
+$_lang['Remaining places'] = 'Places restantes';
+$_lang['Session created'] = 'Session d\'inscription créée';
+$_lang['Session deleted'] = 'Session d\'inscription supprimée';
+$_lang['Session subscription incompatible with'] = 'Inscription à cette session incompatible avec';
+$_lang['Session updated'] = 'Session d\'inscription mise à jour';
+$_lang['Subscribe'] = 'S\'inscrire';
+$_lang['Subscribe user list'] = 'Inscrire une liste d\'utilisateurs';
+$_lang['Subscribed on %date'] = 'Inscrit(e) le %date';
+$_lang['Subscribers list'] = 'Liste des inscrits';
+$_lang['Subscription'] = 'Inscription';
+$_lang['Subscription impossible'] = 'Inscription impossible';
+$_lang['Subscription failed'] = 'L\'inscription a échouée';
+$_lang['Subscription successful'] = 'L\'inscription a été effectuée';
+$_lang['Subscription tool'] = 'Outil d\'inscription';
+$_lang['The number of places must be numeric'] = 'Le nombre de places doit être numérique';
+$_lang['Title is missing'] = 'Le titre est manquant';
+$_lang['Unsubscription failed'] = 'La désinscription a échouée';
+$_lang['Unsubscription successful'] = 'La désinscription a été effectuée';
+$_lang['Users to subscribe'] = 'Utilisateurs à inscrire';
+$_lang['User successfully unsubscribed'] = 'L\'utilisateur a été désinscrit';
+$_lang['You have not subscribed yet'] = 'Vous n\'êtes pas encore inscrit(e)';
+?>

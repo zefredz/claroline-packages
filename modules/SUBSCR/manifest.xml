@@ -1,0 +1,71 @@
+<module>
+  <label>SUBSCR</label>
+  <name>Subscription</name>
+  <toolname>Subscription tool</toolname>
+  <version>1.1</version> 
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>entry.php</entry>
+  <icon>icon.gif</icon>
+
+  <description>
+  <![CDATA[
+     This module allows students to register to an event set by the course admin
+  ]]>
+  </description>
+  
+  <author>
+     <name>Pierre Raynaud</name>
+     <email>pierre.raynaud@u-clermont1.fr</email>
+     <web>http://www.u-clermont1.fr</web>
+  </author> 
+    <contributor>
+     <name>Philippe Dekimpe</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </contributor> 
+  <context>
+ <course database="kernel"
+         enabling="automatic"
+         default_access="all"
+         access_manager="platform_admin" >
+<!--
+   <link target="commonToolList"
+         path="../../announcements/announcements.php" />
+   <link target="toolSelectBox"
+         path="../../announcements/announcements.php" />
+-->
+ </course>
+<!--
+   <group  db="emule" file="share" enabling="automatic"   default_access="group_member" access_manager="course_admin" />
+-->
+  </context>
+   
+  <requirements>
+   
+    <claroline>
+      <version>1.9</version>
+      <configuration>
+         <conf name="singleDBEnabled" value="true" />
+      </configuration>
+
+    </claroline>
+
+    <php>
+      <minversion>5.1</minversion>       
+      <maxversion>5.3</maxversion> <!-- phpversion() -->
+    </php>
+    
+    <mysql>
+      <minversion>3.23</minversion>       
+      <maxversion>5.1</maxversion> <!-- mysqlversion() -->
+    </mysql>     
+ 
+    <environment>
+      <env    name="OS"              value="Linux/Debian" /> <!-- getenv() -->
+      <server name="SERVER_SOFTWARE" value="Apache" /> <!-- $_SERVER -->
+      <server  name="SERVER_PROTOCOL" value="HTTPS" />
+    </environment>  
+ 
+ </requirements>
+</module>
