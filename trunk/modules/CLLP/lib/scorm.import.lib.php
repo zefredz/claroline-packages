@@ -18,11 +18,11 @@ class ScormImporter
     var $path;
     var $itemList = array();
 
-	var $manifestXmlBase = '';
+    var $manifestXmlBase = '';
 
     var $backlog;
 
-    function ScormImporter(&$uploadedZipFile)
+    function __construct( &$uploadedZipFile )
     {
         $this->uploadedZipFile = $uploadedZipFile;
 
@@ -170,8 +170,8 @@ class ScormImporter
     {
         // main manifest is the one that is the less deep in the zip file
         // according to scorm 2004 it should be at top level so check this first
-				
-				if( in_array($this->uploadDir . '/imsmanifest.xml', $this->zipContent) )
+        
+        if( in_array($this->uploadDir . '/imsmanifest.xml', $this->zipContent) )
         {
             return $this->uploadDir . '/imsmanifest.xml';
         }
@@ -200,68 +200,65 @@ class ScormImporter
     function parseManifest($manifestPath)
     {
         $data = file_get_contents($manifestPath);
-				$this->manifestContent = xmlize($data);
-        if( ! is_array($this->manifestContent) )
+        $this->manifestContent = simplexml_load_file( $manifestPath );
+        
+        if( ! $this->manifestContent )
         {
-            // xmlize returns array or error message
             $this->backlog->debug($this->manifestContent);
             $this->backlog->failure(get_lang('Unable to read XML file'));
             return false;
         }
 
-        // var_dump($this->manifestContent);
-
-        // try to discover SCORM version
-        if( isset($this->manifestContent['manifest']['#']['metadata'][0]['#']['schemaversion'][0]['#']) )
+        // try to discover SCORM version        
+        if( preg_match( '/^(CAM ) ?(1\.3)$/', $this->manifestContent->metadata->schemavestion, $matches1 )
+           || preg_match( '/2004(.*?)Edition/', $this->manifestContent->metadata->schemaversion, $matches2  ) )
         {
-          $schemaVersion = $this->manifestContent['manifest']['#']['metadata'][0]['#']['schemaversion'][0]['#'];
-    
-          if( preg_match("/^(CAM )?(1\.3)$/", $schemaVersion, $matches)
-            || $schemaVersion == '2004 3rd Edition' )
-          {
-            $this->path->setVersion('scorm13');
-          }
-          else
-          {
-            $this->path->setVersion('scorm12');
-          }
+            $this->path->setVersion( 'scorm13' );
         }
         else
         {
-          $this->path->setVersion('1.2');
+            $this->path->setVersion( 'scorm12' );
         }
-        
         // check if we have a xml:base in manifest
-
-        if( isset($this->manifestContent['manifest']['@']['xml:base']) )
+        $manifestAttributes = $this->manifestContent->attributes();
+        if( ! empty( $manifestAttributes['xml:base'] ) )
         {
-            $this->manifestXmlBase = $this->manifestContent['manifest']['@']['xml:base'];
+           $this->manifestXmlBase = $manifestAttributes['xml:base'];
         }
         else
         {
-            $this->manifestXmlBase = '';
+         $this->manifestXmlBase = '';
         }
 
         // we need default organization identifier, fond in organizations 'default' attribute
         // so we will be able to skip any other organization
         // but if there is no default organization set we will take the first of the list
-        if( !empty($this->manifestContent['manifest']['#']['organizations'][0]['@']['default']) )
+        $organizationList = $this->manifestContent->organizations;
+        if( !empty( $organizationList->attributes()->default ) )
         {
-          $defaultOrganizationId = $this->manifestContent['manifest']['#']['organizations'][0]['@']['default'];
+            $defaultOrganizationId = "{$organizationList->attributes()->default}";
         }
         else
         {
-          $defaultOrganizationId = '';
+            $defaultOrganizationId = '';
         }
-
-        $organizationList = &$this->manifestContent['manifest']['#']['organizations'][0]['#']['organization'];
-
-        if( is_array($organizationList) )
+        if( !empty( $organizationList->organization ) )
         {
-            foreach( $organizationList as $organization )
+            foreach( $organizationList->organization as $organization )
             {
                 // take care only of the default organization
                 // take the 1rst one if defaultOrganizationId has not been found
+                if( "{$organization->attributes()->identifier}" == $defaultOrganizationId || empty( $defaultOrganizationId ) )
+                {
+                   
+                   $organizationTitle = trim( $organization->title );
+                   $defaultOrganization = &$organization;
+                   break;
+                }
+                else
+                {
+                    continue;
+                }
                 if( $organization['@']['identifier'] == $defaultOrganizationId || empty($defaultOrganizationId) )
                 {
                     $organizationTitle = trim($organization['#']['title'][0]['#']);
@@ -282,9 +279,8 @@ class ScormImporter
             $this->backlog->failure('No organization in manifest.');
             return false;
         }
-
         // fill path data
-        $this->path->setTitle($organizationTitle);
+        $this->path->setTitle( $organizationTitle );
         $this->path->setInvisible();
         // todo handle identifier ? type ? encoding ? viewmode ?
 
@@ -305,19 +301,19 @@ class ScormImporter
           $this->backlog->failure(get_lang('Cannot save path : informations missing.'));
           return false;
         }
-
-        $this->addItems($defaultOrganization['#']['item']);
+        $defaultOrganization = (array) $defaultOrganization;
+        $this->addItems( $defaultOrganization['item'] );
         return true;
     }
 
     function addItems(&$itemList, $parentId = -1)
     {
-      $resources = &$this->manifestContent['manifest']['#']['resources'];
-      
+      $resources = $this->manifestContent->resources;
+      $resourcesAttributes = $resources->attributes();
       // resources xml base
-      if( isset($resources['@']['xml:base']) )
+      if( !empty( $resourcesAttributes['xml:base'] ) )
       {
-        $resourcesXmlBase = $resources['@']['xml:base'];
+        $resourcesXmlBase = $resourcesAttributes['xml:base'];
       }
       else
       {
@@ -327,19 +323,20 @@ class ScormImporter
       // go through all item ..['item'][0] ['item'][1] ...
       foreach( $itemList as $item )
       {
+          $itemAttributes = $item->attributes();
           $insertedItem = new item();
-          $insertedItem->setTitle($item['#']['title'][0]['#']);
-          $insertedItem->setIdentifier($item['@']['identifier']);
-          $insertedItem->setPathId($this->path->getId());
-          $insertedItem->setType('SCORM');
+          $insertedItem->setTitle( "{$item->title}" );
+          $insertedItem->setIdentifier( "{$itemAttributes->identifier}" );
+          $insertedItem->setPathId( $this->path->getId() );
+          $insertedItem->setType( 'SCORM' );
           // parent
           if( $parentId > -1 )
           {
-              $insertedItem->setParentId($parentId);
+              $insertedItem->setParentId( $parentId );
           }
 
           // visibility
-          if( isset($item['@']['isvisible']) && $item['@']['isvisible'] == 'true' )
+          if( !empty( $itemAttributes->isvisible ) && "{$itemAttributes->isvisible}" == 'true' )
           {
               $insertedItem->setVisible();
           }
@@ -349,40 +346,40 @@ class ScormImporter
           }
           
           // set sys path
-          if( isset($item['@']['identifierref']) && !empty($item['@']['identifierref']) )
+          if( !empty( $itemAttributes->identifierref ) )
           {
-            $resourceRef = $this->getResourceByRef($item['@']['identifierref']);              
+            $resourceRef = $this->getResourceByRef( $itemAttributes->identifierref );
             // resource xml base
-            if( isset($resourceRef['@']['xml:base']) )
+            $resourceRefAttributes = $resourceRef->attributes();
+            if( !empty( $resourceRefAttributes['xml:base']) )
             {
-                $resourceXmlBase = $resourceRef['@']['xml:base'];
+                $resourceXmlBase = $resourceRefAttributes['xml:base'];
             }
             else
             {
                 $resourceXmlBase = '';
             }
-
-            if( is_array($resourceRef) && isset($resourceRef['@']['href']) )
+            
+            if( !empty($resourceRef->attributes()->href) )
             {
               // full path is the sum of all xml:base
-                $itemPath = $this->manifestXmlBase . $resourcesXmlBase . $resourceXmlBase . $resourceRef['@']['href'];
-
+                $itemPath = $this->manifestXmlBase . $resourcesXmlBase . $resourceXmlBase . $resourceRef->attributes()->href;
                 // parameters
-                if( !empty($item['@']['parameters']) )
+                if( !empty( $itemAttributes->parameters ) )
                 {
-                    if( substr($item['@']['parameters'],0,1) == '#' || substr($item['@']['parameters'],0,1) == '?' )
+                    if( substr( "{$itemAttributes->parameters}", 0, 1) == '#' || substr( "{$itemAttributes->parameters}", 0, 1) == '?' )
                     {
                         // anchor or url parameters
-                        $itemPath .= $item['@']['parameters'];
+                        $itemPath .= "{$itemAttributes->parameters}";
                     }
                     else
                     {
                         // url parameters but ? is missing
-                        $itemPath .= '?' . $item['@']['parameters'];
+                        $itemPath .= '?' . "{$itemAttributes->parameters}";
                     }
                 }
 
-                $insertedItem->setSysPath($itemPath);
+                $insertedItem->setSysPath( $itemPath );
             }
             else
             {
@@ -397,25 +394,27 @@ class ScormImporter
           }
 
           // time limit action
-          if( !empty($item['@']['adlcp:timeLimitAction']) )
+          if( !empty( $itemAttributes['adlcp:timeLimitAction']) )
           {
-              $insertedItem->setTimeLimitAction($item['@']['adlcp:timeLimitAction']);
+              $insertedItem->setTimeLimitAction( "{$itemAttributes['adlcp:timeLimitAction']}" );
           }
 
           // launch data
-          if( !empty($item['@']['adlcp:dataFromLms']) )
+          if( !empty( $itemAttributes['adlcp:dataFromLms']) )
           {
-              $insertedItem->setLaunchData($item['@']['adlcp:dataFromLms']);
+              $insertedItem->setLaunchData( "{$itemAttributes['adlcp:dataFromLms']}" );
           }
 
           // completionThreshold
-          if( !empty($item['@']['adlcp:completionThreshold']) )
+          if( !empty( $itemAttributes['adlcp:completionThreshold']) )
           {
-              $insertedItem->setCompletionThreshold($item['@']['adlcp:completionThreshold']);
+              $insertedItem->setCompletionThreshold( "{$itemAttributes['adlcp:completionThreshold']}" );
           }
 
           // chapter or module
-          if( isset($item['#']['item']) && is_array($item['#']['item']) )
+          $items = $item->item;
+          
+          if( !empty( $items ) )
           {
               $insertedItem->setType('CONTAINER');
           }
@@ -442,9 +441,9 @@ class ScormImporter
           }
 
           // get 'children' of this item  if any
-          if( isset($item['#']['item']) )
+          if( !empty( $items ) )
           {
-              $this->addItems($item['#']['item'], $insertedItem->getId());
+              $this->addItems( $items, $insertedItem->getId());
           }
 
       }
@@ -452,20 +451,18 @@ class ScormImporter
 
     function getResourceByRef($identifierref)
     {
-        $resourceList = &$this->manifestContent['manifest']['#']['resources'][0]['#']['resource'];
-
-        if( is_array($resourceList) )
+        $resourceList = $this->manifestContent->resources;
+        if( !empty( $resourceList) )
         {
-            foreach( $resourceList as $resource )
+            foreach( $resourceList->resource as $resource )
             {
-                if( $resource['@']['identifier'] == $identifierref )
+                if( "{$resource->attributes()->identifier}" == "{$identifierref}" )
                 {
                     return $resource;
                 }
                 // else continue
             }
         }
-
         // not found
         return false;
     }
