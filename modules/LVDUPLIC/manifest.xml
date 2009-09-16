@@ -1,0 +1,25 @@
+<module>
+  <label>LVDUPLIC</label>
+  <name>Duplicate course</name>
+  <version>1.0.0</version>
+  <state>beta</state>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>index.php</entry>
+  <icon>duplicate.png</icon>
+
+  <description></description>
+
+  <author>
+     <name>Philippe Van Eerdenbrugghe</name>
+     <email>philippe@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.8.4</version>
+    </claroline>
+
+ </requirements>
+</module>

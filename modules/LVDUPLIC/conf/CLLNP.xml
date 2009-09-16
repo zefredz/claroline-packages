@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<duplication>
+    <files>
+        <path>document/</path>
+        <path>exercise/</path>
+        <path>scormPackages/</path>        
+    </files>
+    <tables>
+        <table>document</table>
+        <table>qwz_exercise</table>
+        <table>qwz_question</table>
+        <table>qwz_rel_exercise_question</table>
+        <table>qwz_answer_truefalse</table>
+        <table>qwz_answer_multiple_choice</table>
+        <table>qwz_answer_fib</table>
+        <table>qwz_answer_matching</table>
+        <table>lp_learnPath</table>
+        <table>lp_rel_learnPath_module</table>
+        <table>lp_user_module_progress</table>
+        <table>lp_module</table>
+        <table>lp_asset</table>        
+    </tables>
+</duplication>
