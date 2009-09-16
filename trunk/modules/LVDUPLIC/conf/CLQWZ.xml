@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<duplication>
+    <files>
+        <path>exercise/</path>
+    </files>
+    <tables>
+        <table>qwz_exercise</table>
+        <table>qwz_question</table>
+        <table>qwz_rel_exercise_question</table>
+        <table>qwz_answer_truefalse</table>
+        <table>qwz_answer_multiple_choice</table>
+        <table>qwz_answer_fib</table>
+        <table>qwz_answer_matching</table>
+        
+    </tables>
+</duplication>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<duplication>
+    <files>
+        <path></path>
+    </files>
+    <tables>
+        <table>calendar_event</table>
+    </tables>
+</duplication>

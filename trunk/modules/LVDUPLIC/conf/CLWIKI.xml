@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<duplication>
+    <tables>
+        <table>wiki_properties</table>
+        <table>wiki_pages</table>
+        <table>wiki_pages_content</table>
+        <table>wiki_acls</table>
+    </tables>
+</duplication>
