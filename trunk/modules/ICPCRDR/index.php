@@ -263,11 +263,8 @@ catch ( Exception $e )
     Claroline::getDisplay()->body->appendcontent( $dialogBox->render() );
 }
 
-$jsLoader = JavascriptLoader::getInstance();
-$jsLoader->load( 'flowplayer-3.1.1.min');
-
-$cssLoader = CssLoader::getInstance();
-$cssLoader->load( 'icpcrdr', 'screen');
+JavascriptLoader::getInstance()->load( 'flowplayer-3.1.4.min' );
+CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
 
 $nameTools = get_lang("Video podcast reader");
 
