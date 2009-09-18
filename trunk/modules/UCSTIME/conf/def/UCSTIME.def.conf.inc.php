@@ -18,17 +18,7 @@ $conf_def['config_name'] = 'Server Time';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'refreshTime' , 'displaySeconds' );
-
-$conf_def_property_list[ 'refreshTime' ] = 
- array ( 'label'       => 'Refresh time'
-       , 'description' => 'Sets the frequency which the client synchronizes with the server'
-       , 'default'     => '30'
-       , 'unit'        => 'minutes'
-       , 'type'        => 'integer'
-        ,'acceptedValue' => array ( 'min'=> 1
-                                  , 'max'=> 60)
-       );
+$conf_def['section']['main']['properties'] = array ( 'displaySeconds' );
 
 $conf_def_property_list[ 'displaySeconds' ] = 
  array ( 'label'       => 'Displays seconds'
