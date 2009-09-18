@@ -20,7 +20,6 @@ ClaroHeader::getInstance()->addHtmlHeader( '
         {
             localTime = new Date();
             timeShift = localTime.getTime() - ' . time() .'*1000;
-            setTimeout( serverTimeShift , ' . get_conf( 'refreshTime' ) . '*60000 );
         }
         function serverTimeDisplay()
         {
