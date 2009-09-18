@@ -68,7 +68,8 @@ class SkypeAccount
                 `{$this->tbl[ 'user_property' ]}`
             SET `userId` = ". Claroline::getDatabase()->escape( $this->userId ) . ",
                 `propertyId` = 'skypeName',
-                `propertyValue` = ". Claroline::getDatabase()->quote( $this->skypeName )
+                `propertyValue` = ". Claroline::getDatabase()->quote( $this->skypeName ) . ",
+                `scope` = \"\""
         );
     }
     
@@ -84,7 +85,9 @@ class SkypeAccount
                 `propertyId` = 'skypeName',
                 `propertyValue` = " . Claroline::getDatabase()->quote( $this->skypeName ) ."
             WHERE
-                `userId` = " . Claroline::getDatabase()->escape( $this->userId )
+                `userId` = " . Claroline::getDatabase()->escape( $this->userId ) . "
+            AND
+                `scope` = \"\""
         );
     }
     
