@@ -33,7 +33,7 @@ class LoginListener extends EventDriven
      */
     function insert_login_online()
     {
-        $timeOffset = ( isset( $_COOKIE[ 'time_offset' ] ) ) ? ( date( "Z" ) / 60 ) + (int)$_COOKIE[ 'time_offset' ] : 0;
+        $timeOffset = ( isset( $_COOKIE[ 'time_offset' ] ) ) ? (int)$_COOKIE[ 'time_offset' ] : 0;
         
         $tbl = claro_sql_get_tbl('user_online', array( 'course'=>null ) );
         
