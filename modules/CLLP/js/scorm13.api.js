@@ -121,6 +121,10 @@
                 'cmi.time_limit_action':{'value': 'continue, no message', 'mod':'r'},
                 'cmi.total_time':{'value': 'PT0H0M0S', 'mod':'r'},
                 'adl.nav.request':{'value': null, 'format': this.NAVEvent, 'mod': 'rw'},
+                'adl.nav.request_valid.continue' : {'value': 'unknow', 'format': this.NAVEvent, 'mod': 'r'},
+                'adl.nav.request_valid.previous' : {'value': 'unknow', 'format': this.NAVEvent, 'mod': 'r'},
+                'adl.nav.request_valid.choice' : {'value': 'unknow', 'format': this.NAVEvent, 'mod': 'r'},
+                'adl.nav.request_valid.jump' : {'value': 'unknow', 'format': this.NAVEvent, 'mod': 'r'},
                 
                 'cmi.completion_threshold' : {'value' : null, 'mod':'r'}
             };
@@ -477,6 +481,21 @@
         },
 
         GetDiagnostic : function (num) {
+            
+            var errDiagn = new Array();
+            errDiagn["0"]   = "No Error";
+            errDiagn["101"] = "Possible Server error.  Contact System Administrator";
+            errDiagn["102"] = "Server is busy and cannot handle the request.  Please try again";
+            errDiagn["201"] = "The course made an incorrect function call.  Contact course vendor or system administrator";
+            errDiagn["202"] = "The course made an incorrect data request. Contact course vendor or system administrator";
+            errDiagn["203"] = "The course made an incorrect data request. Contact course vendor or system administrator";
+            errDiagn["301"] = "The system has not been initialized correctly.  Please contact your system administrator";
+            errDiagn["401"] = "The course made a request for data not supported by Answers.";
+            errDiagn["402"] = "The course made a bad data saving request.  Contact course vendor or system administrator";
+            errDiagn["403"] = "The course tried to write to a read only value.  Contact course vendor";
+            errDiagn["404"] = "The course tried to read a value that can only be written to.  Contact course vendor";
+            errDiagn["405"] = "The course gave an incorrect Data type.  Contact course vendor";
+            
                 lpHandler.debug("LMSGetDiagnostic(" + num + ") : returns " + errDiagn[num], 1);
                 // todo : do something here ^^
 
