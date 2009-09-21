@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<duplication>
-    <tables>
-        <table>bb_categories</table>        
-        <!-- We do not want to copy the other tables -->
-        <!-- <table>bb_forums</table> -->
-    </tables>
-</duplication>

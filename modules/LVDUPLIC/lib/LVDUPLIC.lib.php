@@ -3,7 +3,7 @@
  *
  * @version 1.0.0
  *
- * @copyright (c) 2001-2009 Haute Ecole Léonard de Vinci
+ * @copyright (c) 2001-2009 Haute Ecole Lï¿½onard de Vinci
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
  * @package LVDUPLIC
@@ -58,6 +58,26 @@ function copy_course_managers($source_course_data, $target_course_data)
 						  
 	claro_sql_query($sqlDelete);
 	claro_sql_query($sqlInsert);
+}
+
+function copy_tool($tool_label, $sourceCID, $targetCID)
+{
+	$scriptFile = "script/".$tool_label.".php";
+	$configFile = "conf/".$tool_label.".xml";
+	if(is_file($scriptFile))
+	{
+		$__TOOL_LABEL__ = $tool_label;
+		$__SOURCE_COURSE_DATA__  = claro_get_course_data($sourceCID);
+		$__TARGET_COURSE_DATA__ = claro_get_course_data($targetCID);
+		
+				
+		include($scriptFile);
+	} 
+	elseif(is_file($configFile)) 
+	{
+		$tool_manager = new DUPToolManager($tool_label, $configFile);
+   		$tool_manager->copyTool($sourceCID,$targetCID );
+	}
 }
 
 ?>

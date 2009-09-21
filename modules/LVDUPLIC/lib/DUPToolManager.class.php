@@ -6,7 +6,12 @@ class DUPToolManager{
      * @var string the label of the tool we want to duplicate
      */
     protected $toolLabel;
+    /**
+     * @var int the id of the tool in DB
+     */
+    protected $toolId;
     
+        
     /**
      * @var SimpleXMLElement : contents of the XML file used to configure which data must be copied
      * This is a representation of the file conf/<TOOL_LABEL>.xml
@@ -34,17 +39,26 @@ class DUPToolManager{
     /**
      * @param $toolLabel : string the label of the tool we which we want to load the config
      */
-    public function __construct($toolLabel)
+    public function __construct($toolLabel, $xmlFile)
     {
     	//label
         $this->toolLabel = $toolLabel;
-        //xml
-        $filePath = "conf/".$this->toolLabel.".xml";
-        if(!is_file($filePath))
+        //id
+        //TODO check difference between $tbl['tool'] & $tbl['module']
+        $tbl = claro_sql_get_main_tbl();
+        $sql = "SELECT id      		AS 		toolId
+                FROM `" . $tbl['tool'] . "` 
+                WHERE `claro_label` LIKE '" . $this->toolLabel . "' ";
+        $this->toolId = claro_sql_query_get_single_value($sql);
+        
+        
+        
+        //xml        
+        if(!is_file($xmlFile))
         {
             $this->xml = new SimpleXMLElement();
         }
-        $this->xml = simplexml_load_file($filePath);
+        $this->xml = simplexml_load_file($xmlFile);
         //parse xml
         $this->fileList = $this->getFilesToBeCopied();
         $this->tableList = $this->getTablesToBeCopied();
@@ -131,16 +145,57 @@ class DUPToolManager{
             $sourceTable = $prefixSource . $this->replaceKeyWords($tableName,$sourceCourseData);
             $targetTable = $prefixTarget . $this->replaceKeyWords($tableName,$targetCourseData);
             
-            //TODO PROBLEM : DO NOT COPY CONSTRAINTS
+            
             //TODO handdle transactions
             $sqlDrop = "
-                DROP TABLE IF EXISTS `" . $targetTable . " ";
+                DROP TABLE IF EXISTS `" . $targetTable . "; ";
+            //create like = copy structure with constraints (except fk)
+            $sqlCreate = "
+                CREATE TABLE `" . $targetTable . "` LIKE `" . $sourceTable . "`; ";
             $sqlInsert = "
-                CREATE TABLE `" . $targetTable . "` SELECT * FROM `" . $sourceTable . "` ";
+            	INSERT INTO `" . $targetTable . "` SELECT * FROM `" . $sourceTable . "`; ";
+            
+            //CREATE TABLE ... LIKE ... (INLCUDING DEFAULTS )
             claro_sql_query($sqlDrop);
+            claro_sql_query($sqlCreate);
             claro_sql_query($sqlInsert);
             
         }
+    }
+    
+    private function copy_course_tool_relation($sourceCourseData, $targetCourseData)
+    {
+    	$prefix_source = $sourceCourseData['dbNameGlu'];
+    	$prefix_target = $targetCourseData['dbNameGlu'];
+    	$source_tbl_list = claro_sql_get_course_tbl($prefix_source);
+    	$target_tbl_list = claro_sql_get_course_tbl($prefix_target);
+    	$sqlDelete = "
+    					DELETE FROM `".$target_tbl_list['tool']."` 
+    					WHERE `tool_id` = ".$this->toolId.";  ";
+    	$sqlInsert = "
+    					INSERT INTO `".$target_tbl_list['tool']."` 
+    					( `tool_id` , `rank` , `visibility` , `script_url` , `script_name` , `addedTool` ) 
+    					SELECT  `tool_id` , `rank` , `visibility` , `script_url` , `script_name` , `addedTool` 
+    					FROM `".$source_tbl_list['tool']."` 
+    					WHERE `tool_id` = ".$this->toolId.";  ";
+    	//TODO handle transaction
+    	claro_sql_query($sqlDelete);
+    	claro_sql_query($sqlInsert);
+    }
+    
+	private function copy_course_tool_rights($sourceCourseData, $targetCourseData)
+    {
+    	$main_table_list = claro_sql_get_main_tbl();
+    	$table = $main_table_list['right_rel_profile_action'];
+    	
+    	$sql = "
+    					INSERT INTO `".$table."` 
+    					( `profile_id` , `action_id` , `courseId` , `value` ) 
+    					SELECT  `profile_id` , `action_id` , '".$targetCourseData['sysCode']."' , `value`  
+    					FROM `".$table."` 
+    					WHERE `courseId` LIKE '".$sourceCourseData['sysCode']."';  ";
+    	   	
+    	claro_sql_query($sql);
     }
     
     //========================PUBLIC STUFF ===============================
@@ -158,6 +213,8 @@ class DUPToolManager{
         
         $this->copyFiles($sourceCourseData, $targetCourseData);
         $this->copy_db_tables($sourceCourseData, $targetCourseData);
+        $this->copy_course_tool_relation($sourceCourseData, $targetCourseData);
+        $this->copy_course_tool_rights($sourceCourseData, $targetCourseData);
     }
     
 }
