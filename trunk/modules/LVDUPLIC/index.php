@@ -1,18 +1,14 @@
 <?php
 /**
  * TODO :
- * liste des cours
- * executer un php pour tool speciaux :  Handle problem of group forums
- * copier les infos des outils dupliqués (c_XXX_tool_list)
- * 
- * 
+ * --liste des cours 
  *
- * @version 1.0.0
+ * @version 1.0.0 
  *
- * @copyright (c) 2001-2009 Haute Ecole Léonard de Vinci
+ * @copyright (c) 2001-2009 Haute Ecole Lï¿½onard de Vinci
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
- * @package LVDUPLIC
+ * @package LVDUPLIC 
  *
  * @author Systho <pve@ipl.be>
  * 
@@ -113,12 +109,8 @@ if( DUPConstants::$DUP_STEP_COPY_CONTENTS == $cmd )
     $targetCID = $target_course_data['sysCode'];
    	foreach($selected_tools as $tool_label)
    	{
-   		$tool_manager = new DUPToolManager($tool_label);
-   		$tool_manager->copyTool($sourceCID,$targetCID );	
-   	}          
-    	
-     
-    
+   		copy_tool($tool_label, $sourceCID, $targetCID);	
+   	}              
     
     //PREPARE DISPLAY
     if($sucess)
