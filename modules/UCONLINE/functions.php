@@ -18,12 +18,13 @@ include_once dirname(__FILE__) . '/lib/login.listener.class.php';
 ClaroHeader::getInstance()->addHtmlHeader( '
     <script type="text/javascript">
         function userTime(){
-            userTime = new Date();
-            timeOffset = ( userTime.getTime() / 1000 ) - ' . time() . ';
+            var userDate = new Date();
+            var serverDate = Date.fromDatetime( "'. date( "Y-m-d H:i:s" ) .'");
+            var timeOffset = Math.round( ( userDate.getTime() - serverDate.getTime() ) / 1000 );
             document.cookie = "time_offset = " + timeOffset + ";path = /"
         }
         $( function(){ userTime(); } );
-    </script>');
+    </script>' );
 
 $claroLoginListener = new LoginListener;
 

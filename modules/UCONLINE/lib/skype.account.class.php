@@ -83,7 +83,7 @@ class SkypeAccount
             SET
                 `propertyValue` = " . Claroline::getDatabase()->quote( $this->skypeName ) ."
             WHERE
-            `propertyId` = 'skypeName'
+                `propertyId` = 'skypeName'
             AND
                 `userId` = " . Claroline::getDatabase()->escape( $this->userId ) . "
             AND

@@ -59,7 +59,11 @@
         <?php if( get_conf( 'showUserId' ) ) : ?>
             <td align="center"><?php echo $user[ 'id' ]; ?></td>
         <?php endif; ?>
+            <?php if ( claro_is_platform_admin() ) : ?>
+            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/admin/adminprofile.php?uidToEdit=' . $user[ 'id' ] ) ); ?>"><?php echo $user[ 'lastname' ]; ?></a></td>
+            <?php else : ?>
             <td><?php echo $user[ 'lastname' ]; ?></td>
+            <?php endif; ?>
             <td><?php echo $user[ 'firstname' ]; ?></td>
         <?php if ( get_conf( 'showUserPicture' ) ) : ?>
             <td>
@@ -93,7 +97,9 @@
             <td>
             <?php if ( $user[ 'id' ] == claro_get_current_user_id() ) : ?>
                 <a href="edit.php"><?php echo get_lang( 'Configure your Skype account' ); ?></a>
-            <?php elseif( ! empty( $user[ 'skype_name' ] ) ) : ?>
+                &nbsp;-&nbsp;
+            <?php endif; ?>
+            <?php if( ! empty( $user[ 'skype_name' ] ) ) : ?>
                 <a href="skype:<?php echo $user[ 'skype_name' ]; ?>?call">
                     <img src="http://mystatus.skype.com/smallclassic/<?php echo $user[ 'skype_name' ]; ?>"
                     style="border: none;" width="100" height="15" alt="<?php echo get_lang('user\'s Skype status'); ?>" />
@@ -104,7 +110,7 @@
             </td>
         <?php endif; ?>
         <?php if( get_conf( 'showLocalTime' ) ) : ?>
-            <td>
+            <td class="userTime" >
             <?php echo date( "H:i" , time() + $user[ 'time_offset' ] ); ?>
             </td>
         <?php endif; ?>
