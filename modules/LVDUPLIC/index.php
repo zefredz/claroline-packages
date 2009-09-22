@@ -15,17 +15,36 @@
  *
  */
 
+//=================================
+// Include section
+//=================================
+
 require_once '../../claroline/inc/claro_init_global.inc.php';
-require_once get_path('incRepositorySys') . '/lib/claroCourse.class.php';
 require_once 'lib/LVDUPLIC.lib.php';
 
 
 
+//=================================
+// Security check
+//=================================
+
 // If you want to duplicate a course you need to be able to manage the source course and create a new one.
-if ( ! claro_is_user_authenticated() ) claro_disp_auth_form();
+if ( ! claro_is_user_authenticated() )       claro_disp_auth_form();
 if ( ! claro_is_allowed_to_create_course() ) claro_die(get_lang('Not allowed'));
+// Actually you even need to be admin
+if ( ! claro_is_platform_admin() ) claro_die(get_lang('Not allowed'));
 
 
+//=================================
+// Init section
+//=================================
+
+$nameTools = get_lang('Duplication');
+
+
+//=================================
+// Main Section
+//=================================
 
 
 $cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : null;
@@ -36,30 +55,13 @@ $dialogBox = '';
 if (!isset($cmd) )
 {
 	DUPSessionMgr::clearDupDataFromSession();
-	$cmd = DUPConstants::$DUP_STEP_DEFINE_SOURCE;
+	$cmd = DUPConstants::$DUP_STEP_CHOOSE_SOURCE;
 }
 //STEP 1 memorize current course as source course
-if(DUPConstants::$DUP_STEP_DEFINE_SOURCE == $cmd)
+if(DUPConstants::$DUP_STEP_CHOOSE_SOURCE == $cmd)
 {
-	$cid = isset($_REQUEST['cid'])?$_REQUEST['cid']:NULL;
-	$isAdminContext = isset($_REQUEST['adminContext'])?$_REQUEST['adminContext']==1:false;
-	if(!$isAdminContext)
-	{
-    	$cid = claro_get_current_course_id();
-	}
-    $source_course_data = claro_get_course_data($cid);
-    //Bad or No CID
-    if(! $source_course_data){
-    	claro_die(get_lang('Unknown course'));
-    }
-    if($isAdminContext)
-    {
-    	DUPSessionMgr::setAdminContext(true);
-    	$referer = isset($_SERVER['HTTP_REFERER'])?$_SERVER['HTTP_REFERER']:get_path('rootAdminWeb') . '/admincourses.php';
-    	DUPSessionMgr::setAdminBackURL($referer);
-    } 
-    DUPSessionMgr::setSourceCourseData($source_course_data);    
-    $cmd = DUPConstants::$DUP_STEP_DEFINE_TARGET;
+	claro_redirect("choose_source.php");
+	die();
 }
 //STEP 2 define target course data and memorize it
 if (DUPConstants::$DUP_STEP_DEFINE_TARGET == $cmd)
@@ -143,12 +145,11 @@ if( DUPConstants::$DUP_STEP_COPY_CONTENTS == $cmd )
     
 }
 
-//DISPLAY SECTION
+//=================================
+// Display Section
+//=================================
 
 
-
-
-// Display header
 include get_path('includePath') . '/claro_init_header.inc.php' ;
 if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
 

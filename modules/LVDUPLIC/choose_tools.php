@@ -24,16 +24,22 @@
  * @author Systho
  *
  */
+//=================================
+// Include section
+//=================================
 
-require_once  '../../claroline/inc/claro_init_global.inc.php';
+require_once '../../claroline/inc/claro_init_global.inc.php';
 require_once 'lib/LVDUPLIC.lib.php';
 
 //=================================
 // Security check
 //=================================
 
+// If you want to duplicate a course you need to be able to manage the source course and create a new one.
 if ( ! claro_is_user_authenticated() )       claro_disp_auth_form();
 if ( ! claro_is_allowed_to_create_course() ) claro_die(get_lang('Not allowed'));
+// Actually you even need to be admin
+if ( ! claro_is_platform_admin() ) claro_die(get_lang('Not allowed'));
 
 
 //=================================
