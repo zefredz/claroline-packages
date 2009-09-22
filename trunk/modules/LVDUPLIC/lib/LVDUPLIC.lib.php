@@ -25,7 +25,7 @@ require_once 'DUPToolManager.class.php';
 require_once 'DUPSessionMgr.class.php';
 
 class DUPConstants{
-	public static $DUP_STEP_DEFINE_SOURCE = __LINE__;
+	public static $DUP_STEP_CHOOSE_SOURCE = __LINE__;
 	public static $DUP_STEP_DEFINE_TARGET = __LINE__;
 	public static $DUP_STEP_CHOOSE_TOOLS = __LINE__;
 	public static $DUP_STEP_COPY_CONTENTS = __LINE__;
