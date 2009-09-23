@@ -126,7 +126,7 @@ function move_survey($item_id, $cmd, $context=null,$cid)
                 SELECT id_survey,
                          rank
                 FROM `" . $tbl['survey_list'] . "`
-		WHERE cid='".$cid. "'
+        WHERE cid='".$cid. "'
                 ORDER BY `rank` " . $sortDirection;
 
         $result = claro_sql_query($sql);
@@ -344,19 +344,29 @@ function get_survey_question_list($surveyId, $context)
  */
 function delete_survey($surveyId, $context)
 {
-    $tbl = claro_sql_get_tbl('survey_list', $context);
+    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_user' ) , $context);
     $questionList = get_survey_question_list($surveyId, $context);
+    
     if (count($questionList))
     {
         foreach ($questionList as $thisQuestion)
         {
-            delete_question_survey($thisQuestion);
+            delete_question_survey($thisQuestion['questionId']);
         }
     }
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
-            DELETE FROM `" . $tbl['survey_list'] . "`
-            WHERE id_survey = " . (int) $surveyId;
+            DELETE FROM
+                `" . $tbl['survey_user'] . "`
+            WHERE
+                `id_survey` = " . (int) $surveyId;
+    claro_sql_query($sql);
+    
+    $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
+            DELETE FROM
+                `" . $tbl['survey_list'] . "`
+            WHERE
+                `id_survey` = " . (int) $surveyId;
     return claro_sql_query($sql);
 }
 
@@ -368,9 +378,9 @@ function is_survey_completed_by_user($surveyId, $userId=null)
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
          SELECT count(`id_survey`)
-		    FROM `" . $tbl['survey_user'] . "`
-		 WHERE id_user=" . (int) $userId . "
-		   AND id_survey= " . (int) $surveyId;
+            FROM `" . $tbl['survey_user'] . "`
+         WHERE id_user=" . (int) $userId . "
+            AND id_survey= " . (int) $surveyId;
     return (bool) claro_sql_query_get_single_value($sql);
 }
 
@@ -379,10 +389,10 @@ function is_survey_started_by_user($surveyId, $userId=null)
     if (is_null($userId) ) $userId = claro_get_current_user_id();
     $tbl = claro_sql_get_tbl( 'survey_user');
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
-         SELECT count(`id_survey`)
-		    FROM `" . $tbl['survey_user'] . "`
-		 WHERE id_user=" . (int) $userId . "
-		   AND id_survey= " . (int) $surveyId;
+        SELECT count(`id_survey`)
+        FROM `" . $tbl['survey_user'] . "`
+        WHERE id_user=" . (int) $userId . "
+        AND id_survey= " . (int) $surveyId;
     return claro_sql_query_get_single_value($sql);
 }
 
@@ -404,10 +414,10 @@ function survey_get_survey_question_data($questionId, $context=null)
                    `description`,
                    `option`,
                    `type`
-      FROM `" . $tbl['survey_question_list'] . "`
-	 WHERE `id_question` = " . (int) $questionId . "
-	   AND `cid` = '" . addslashes($cid) . "'";
-
+            FROM `" . $tbl['survey_question_list'] . "`
+            WHERE `id_question` = " . (int) $questionId . "
+            AND `cid` = '" . addslashes($cid) . "'";
+    
     return claro_sql_query_get_single_row($sql);
 
 }
@@ -435,9 +445,9 @@ function survey_get_survey_data($id_survey, $context=null)
                    `date_created`,
                    `visibility`,
                    `rank`
-      			FROM `" . $tbl['survey_list'] . "`
-        		WHERE id_survey = " . (int) $id_survey . "
-        		AND cid = '" . addslashes($courseId) . "'" ;
+            FROM `" . $tbl['survey_list'] . "`
+            WHERE id_survey = " . (int) $id_survey . "
+            AND cid = '" . addslashes($courseId) . "'" ;
     return claro_sql_query_get_single_row($sql);
 
 }
@@ -467,27 +477,19 @@ function survey_get_questions_of_survey($surveyId,$context=null)
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT Q.`id_question` AS questionId,
-	               Q.`title`,
-	               Q.`description`,
-	               Q.`type`,
-	               Q.`option`
-			  FROM `" . $tbl['survey_question'] . "` AS S
-			  INNER JOIN `" . $tbl['survey_question_list'] . "`  AS Q
-	                  ON Q.id_question = S.id_question
-			  WHERE S.id_survey = " . (int) $surveyId."
-			    AND Q.`cid` = '" . addslashes($courseId) . "'
-			  ORDER BY S.rank";
+                   Q.`title`,
+                   Q.`description`,
+                   Q.`type`,
+                   Q.`option`
+            FROM `" . $tbl['survey_question'] . "` AS S
+            INNER JOIN `" . $tbl['survey_question_list'] . "`  AS Q
+                ON Q.id_question = S.id_question
+            WHERE S.id_survey = " . (int) $surveyId."
+            AND Q.`cid` = '" . addslashes($courseId) . "'
+            ORDER BY S.rank";
 
     return  claro_sql_query_fetch_all_rows($sql) ;
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -504,8 +506,8 @@ function survey_get_questions_of_survey($surveyId,$context=null)
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
         SELECT count(`id_question`)
-	    FROM `" . $tbl['survey_question'] . "`
-	    WHERE id_survey = " . (int) $surveyId;
+        FROM `" . $tbl['survey_question'] . "`
+        WHERE id_survey = " . (int) $surveyId;
 
     return claro_sql_query_get_single_value($sql) ;
 
@@ -524,8 +526,8 @@ function survey_get_questions_of_survey($surveyId,$context=null)
      $tbl = claro_sql_get_tbl(array('survey_user'), $context);
      $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
              INSERT INTO `" . $tbl['survey_user'] . "`
-		     SET `id_survey` = " . (int) $surveyId . "
-	         ,   `id_user`   = " . (int) $userId;
+             SET `id_survey` = " . (int) $surveyId . "
+             ,   `id_user`   = " . (int) $userId;
      return  claro_sql_query($sql);
 
  }
@@ -572,10 +574,8 @@ function survey_save_user_answer($surveyId, $answer, $context=null)
             # SURVEY = " . (int) $surveyId . "\n"
          . "INSERT INTO  `" . $tbl['survey_answer'] . "`
                 (`id_survey`, `id_question`, `answer`, `cid` )
-		    VALUES
-		    ". implode(', '."\n",$sqlLines)."
-
-			";
+            VALUES
+            ". implode(', '."\n",$sqlLines);
 
     return claro_sql_query($sql);
 
@@ -626,7 +626,7 @@ function survey_empty_votes($surveyId, $context=null)
  */
 function survey_votes_for_survey($surveyId, $context=null)
 {
-	$votesResult = array();
+    $votesResult = array();
     if (!is_null($context) && !is_array($context))
     {
         trigger_error('Invalid fortmat for context: array or NULL attempt',E_USER_ERROR);
@@ -647,8 +647,8 @@ function survey_votes_for_survey($surveyId, $context=null)
                    count(answer) AS qty
             FROM `" . $tbl['survey_answer'] . "`
             WHERE cid ='" . addslashes($courseId) . "'
-              AND id_survey = " . (int) $surveyId . "
-					GROUP BY id_question, answer";
+            AND id_survey = " . (int) $surveyId . "
+            GROUP BY id_question, answer";
     $answerList = claro_sql_query_fetch_all_rows($sql);
 
     foreach ($answerList as $answerLine)
@@ -701,4 +701,161 @@ function get_survey_data($surveyId,$context=null)
     return claro_sql_query_get_single_row($sql);
 }
 
-?>
+/**
+ * Exports survey with specified id
+ * @param int $surveyId the survey id
+ */
+function exportSurvey( $surveyId )
+{
+    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
+    
+    $result = Claroline::getDatabase()->query("
+        SELECT
+            title, description
+        FROM
+            `{$tbl[ 'survey_list' ]}`
+        WHERE
+            cid = " . Claroline::getDatabase()->escape( $surveyId )
+        )->fetch( Database_ResultSet::FETCH_ASSOC );
+    
+    $csvFileName = $result[ 'title' ] . '_survey';
+    
+    //$csv = '/*' . $result[ 'description' ] . '*/' . "\n" . '"title","description","type","option"' . "\n";
+    $csv = 'title#description#type#option' . "\n";
+    
+    $result = Claroline::getDatabase()->query("
+        SELECT
+            Q.title, Q.description, Q.type, Q.option
+        FROM
+            `{$tbl[ 'survey_question_list' ]}` AS Q,
+            `{$tbl[ 'survey_question' ]}`      AS R
+        WHERE
+            R.id_question = Q.id_question
+        AND
+            R.id_survey = " . Claroline::getDatabase()->escape( $surveyId ) . "
+        ORDER BY
+            R.rank ASC"
+        );
+    
+    foreach( $result as $line )
+    {
+        /*
+        foreach( $line as $index => $item )
+        {
+            $line[ $index ] = '"' . $item . '"';
+        }*/
+        
+        $csv .= implode( '#' , $line ) . "\n";
+    }
+    
+    header( "Content-type: application/csv" );
+    header( 'Content-Disposition: attachment; filename="' . $csvFileName . '.csv"' );
+    echo $csv;
+    exit;
+}
+
+/**
+ * Imports a survey
+ * @param string $csv
+ */
+function importSurvey( $file )
+{
+    FromKernel::uses( 'import_csv.lib' );
+    
+    $csv = new CSV( $file, '#' , 'FIRSTLINE' );
+    
+    $data = array();
+    
+    foreach( $csv->new_data as $index => $line )
+    {
+        if ( ! $index )
+        {
+            if ( $line != 'title#description#type#option' ) return false;
+        }
+        elseif ( $line != "" )
+        {
+            $data[] = explode( "#" , $line );
+        }
+    }
+    
+    return $data;
+}
+
+/**
+ * Create a survey
+ * @param string $title
+ * @param string $descritption
+ * @param array $data
+ */
+function createSurvey( $title , $description , $data )
+{
+    if ( ! $data ) // this means that the submitted file is a well-formed csv, but not a survey import.
+    {
+        return false; 
+    }
+    
+    $courseId = claro_get_current_course_id();
+    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
+    
+    Claroline::getDatabase()->exec( "
+        INSERT INTO
+            `{$tbl['survey_list']}`
+        SET
+            `cid` = " . Claroline::getDatabase()->quote( $courseId ) . ",
+            `title` = " . Claroline::getDatabase()->quote( $title ) . ",
+            `description` = " . Claroline::getDatabase()->quote( $description ) . ",
+            `date_created` = " . Claroline::getDatabase()->quote( date( 'Y-m-d' ) )
+    );
+    
+    $surveyId = mysql_insert_id();
+    
+    /*
+    $values = array();
+    
+    foreach ( $data as $line )
+    {
+        $values[] = "("
+            . Claroline::getDatabase()->escape ( $this->pollId ) . ","
+            . Claroline::getDatabase()->escape ( $option_id ) . ","
+            . Claroline::getDatabase()->escape ( $this->userId ) . ","
+            . Claroline::getDatabase()->quote ( $checked )
+            .")";
+    }
+        
+    return Claroline::getDatabase()->exec(
+        "INSERT INTO
+            `{$tbl['survey_question_list]}`(title, description, type, option)
+        VALUES" . "\n" . implode(",\n", $values ) );*/
+    
+    $rank = 1;
+    
+    foreach ( $data as $line )
+    {
+        if ( count( $line ) != 4 ) return false; // wrong number of columns
+        
+        Claroline::getDatabase()->exec( "
+            INSERT INTO
+                `{$tbl['survey_question_list']}`
+            SET
+                `title` = " . Claroline::getDatabase()->quote( $line[ 0 ] ) . ",
+                `description` = " . Claroline::getDatabase()->quote( $line[ 1 ] ) . ",
+                `type` = " . Claroline::getDatabase()->quote( $line[ 2 ] ) . ",
+                `option` = " . Claroline::getDatabase()->quote( $line[ 3 ] ) . ",
+                `cid` = " . Claroline::getDatabase()->quote( $courseId )
+        );
+        
+        $questionId = mysql_insert_id();
+        $rank++;
+        
+        Claroline::getDatabase()->exec( "
+            INSERT INTO
+                `{$tbl['survey_question']}`
+            SET
+                `id_survey` = " . Claroline::getDatabase()->escape( $surveyId ) . ",
+                `id_question` = " . Claroline::getDatabase()->escape( $questionId ) . ",
+                `rank` = " . Claroline::getDatabase()->escape( $rank )
+        );
+    }
+    
+    return true;
+}

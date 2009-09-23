@@ -24,7 +24,7 @@ $gidReset  = true;
  *  CLAROLINE MAIN SETTINGS
  */
 
-require '../../claroline/inc/claro_init_global.inc.php';
+require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 $context = array( CLARO_CONTEXT_COURSE=> claro_get_current_course_id());
 
@@ -35,7 +35,7 @@ if ( ! get_init('in_course_context') || ! get_init('is_courseAllowed') || !get_i
 claro_set_display_mode_available(TRUE);
 
 // local librairies
-include_once('./lib/survey.lib.php');
+From::Module( 'CLSURVEY' )->uses( 'survey.lib' );
 
 //set flag following init settings
 $is_allowedToEdit = claro_is_allowed_to_edit();
@@ -85,8 +85,8 @@ if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
         {
             // TODO : use a function
             $sql = "UPDATE `" . $tbl['survey_list'] . "`
-					SET visibility = 'SHOW'
-					WHERE id_survey= " . (int) $idSurvey;
+                    SET visibility = 'SHOW'
+                    WHERE id_survey= " . (int) $idSurvey;
             $return = claro_sql_query($sql);
             $eventNotifier->notifyCourseEvent('survey_visible', get_init('_cid'), get_init('_tid'), $idSurvey, get_init('_gid'), '0');
         }
@@ -94,8 +94,8 @@ if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
         {
             // TODO : use a function
             $sql = "UPDATE `" . $tbl['survey_list'] . "`
-      				SET visibility = 'HIDE'
-        			WHERE id_survey = " . (int) $idSurvey;
+                    SET visibility = 'HIDE'
+                    WHERE id_survey = " . (int) $idSurvey;
             $return = claro_sql_query($sql);
             $eventNotifier->notifyCourseEvent('survey_invisible',  get_init('_cid'), get_init('_tid'), $idSurvey, get_init('_gid'), '0');
         }
@@ -121,6 +121,14 @@ if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
         }
         $displayList = TRUE;
     }
+    
+    /**
+     * Export a surver into cvs format
+    */
+    if ($cmd == 'exExport' )
+    {
+        exportSurvey( $idSurvey );
+    }
 }
 else
 {
@@ -134,7 +142,6 @@ else
 
 $surveyList = get_survey_list($context) ;
 
-$surveyGrid = array();
 $surveyGrid = array();
 $surveyVotedGrid = array();
 // find the recent documents with the notification system
@@ -169,7 +176,11 @@ foreach ( $surveyList as $thisSurvey)
 
         if ($is_allowedToEdit)
         {
-
+            $thisRow['export'] =
+                claro_html_cmd_link( htmlspecialchars('survey_list.php?cmd=exExport&surveyId=') . $thisSurvey['id_survey']
+                                   , '<img src="' . get_icon_url( 'export_list' ) . '" '
+                                   . 'alt="' . get_lang('Export') . '" />' );
+                
             $thisRow['stats'] =
                 claro_html_cmd_link( 'survey_result.php?surveyId=' . $thisSurvey['id_survey']
                                    , '<img src="' . get_icon_url( 'statistics' ) . '" '
@@ -178,7 +189,7 @@ foreach ( $surveyList as $thisSurvey)
             // EDIT Request LINK
             $thisRow['edit'] =
                 claro_html_cmd_link( 'survey.php?switchMode=rqEdit&amp;surveyId=' . $thisSurvey['id_survey']
-                                   , '<img src="' . get_icon_url( 'edit' ) . ' alt="' . get_lang('Modify') . '" />');
+                                   , '<img src="' . get_icon_url( 'edit' ) . '" alt="' . get_lang('Modify') . '" />');
 
             // DELETE  Request LINK
             $scriptToChangeSurvey =  $_SERVER['PHP_SELF'] . '?surveyId=' . $thisSurvey['id_survey'] . '&amp;cmd=';
@@ -235,12 +246,16 @@ if ( $is_allowedToEdit )
 {
     $cmdMenu[] = claro_html_cmd_link( 'edit_survey.php?cmd=rqCreate'
                                     ,  get_lang('Add survey'));
+    
+    $cmdMenu[] = claro_html_cmd_link( 'import_survey.php'
+                                    ,  get_lang('Import survey'));
 }
 
 
 $titleList[] = get_lang('Title');
 if ($is_allowedToEdit)
 {
+    $titleList[] = get_lang('Export');
     $titleList[] = get_lang('Results');
     $titleList[] = get_lang('Modify');
     $titleList[] = get_lang('Delete');
@@ -252,7 +267,8 @@ $dgSurvey = new claro_datagrid($surveyGrid);
 $dgSurvey->set_colTitleList($titleList);
 
 $cmdColAttr = array( 'align' => 'center' , 'width' => '5%');
-$cmdColAttrList =  array( 'stats' =>$cmdColAttr
+$cmdColAttrList =  array( 'export' => $cmdColAttr
+                        , 'stats' =>$cmdColAttr
                         , 'edit' =>$cmdColAttr
                         , 'delete' => $cmdColAttr
                         , 'move' => $cmdColAttr
