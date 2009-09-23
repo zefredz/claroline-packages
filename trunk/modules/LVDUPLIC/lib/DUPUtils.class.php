@@ -3,7 +3,7 @@ class DUPUtils
 {
 /**
      * Intelligently join different path.
-     * The end result will always be a path with no slashes at the beginning or end and no double slashes within.
+     * The end result will always be a path with no slashes at end and no double slashes within.
      * 
      * You can pass as many path snippets as you want, either as array or separate arguments:
      *  joinPaths(array('my/path', 'is', '/an/array'));
@@ -22,7 +22,7 @@ class DUPUtils
         {
             $path = trim( $path, '/');
         }
-        return join( '/', $paths );
+        return ('/' == $paths[0][0] ? '/' : '') .  join( '/', $paths );
     }
     
     /**
