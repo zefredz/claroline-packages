@@ -10,16 +10,19 @@ class DUPUtils
      *  joinPaths('my/paths/', '/are/', 'a/r/g/u/m/e/n/t/s/');
      */
     
-    public static function joinPaths() {
+    public static function joinPaths()
+    {
         $args = func_get_args();
         $paths = array();
-        foreach ($args as $arg) {
-            $paths = array_merge($paths, (array)$arg);
+        foreach ( $args as $arg )
+        {
+            $paths = array_merge( $paths, (array) $arg );
         }
-        foreach ($paths as &$path) {
-            $path = trim($path, '/');
+        foreach ($paths as &$path)
+        {
+            $path = trim( $path, '/');
         }
-        return join('/', $paths);
+        return join( '/', $paths );
     }
     
     /**
@@ -32,35 +35,40 @@ class DUPUtils
      * @param       string   $dest      Destination path
      * @return      bool     Returns TRUE on success, FALSE on failure
      */
-    public static function copyr($source, $dest)
+    public static function copyr( $source, $dest )
     {
         // Simple copy for a file
-        if (is_file($source)) {
-            return copy($source, $dest);
+        if (is_file($source))
+        {
+            return copy( $source, $dest );
         }
     
         // Make destination directory
-        if (!is_dir($dest)) {
+        if ( ! is_dir( $dest ) )
+        {
             mkdir($dest);
         }
     
         // If the source is a symlink
-        if (is_link($source)) {
-            $link_dest = readlink($source);
-            return symlink($link_dest, $dest);
+        if ( is_link( $source ) )
+        {
+            $link_dest = readlink( $source );
+            return symlink( $link_dest, $dest );
         }
     
         // Loop through the folder
-        $dir = dir($source);
-        while (false !== $entry = $dir->read()) {
+        $dir = dir( $source );
+        while (false !== $entry = $dir->read() )
+        {
             // Skip pointers
-            if ($entry == '.' || $entry == '..') {
+            if ( $entry == '.' || $entry == '..' )
+            {
                 continue;
             }
     
             // Deep copy directories
-            if ($dest !== "$source/$entry") {
-                DUPUtils::copyr("$source/$entry", "$dest/$entry");
+            if ( $dest !== $source . '/' . $entry ) {
+                DUPUtils::copyr( $source . '/' . $entry, $dest . '/' . $entry );
             }
         }
     

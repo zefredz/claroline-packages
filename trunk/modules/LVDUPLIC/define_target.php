@@ -6,70 +6,68 @@
  *
  * Once done it redirects to next step of duplication (choose tools)
  *
- * 
- *
  */
 
 //=================================
 // Include section
 //=================================
 
-require_once '../../claroline/inc/claro_init_global.inc.php';
-require_once 'lib/LVDUPLIC.lib.php';
+require_once dirname(__FILE__).'/../../claroline/inc/claro_init_global.inc.php';
+require_once dirname(__FILE__).'/lib/LVDUPLIC.lib.php';
 
 //=================================
 // Security check
 //=================================
 
-// If you want to duplicate a course you need to be able to manage the source course and create a new one.
-if ( ! claro_is_user_authenticated() )       claro_disp_auth_form();
-if ( ! claro_is_allowed_to_create_course() ) claro_die(get_lang('Not allowed'));
-// Actually you even need to be admin
-if ( ! claro_is_platform_admin() ) claro_die(get_lang('Not allowed'));
+// If you want to duplicate a course you need to be able to be an administrator
+if ( ! claro_is_user_authenticated() )       	claro_disp_auth_form();
+if ( ! claro_is_platform_admin() ) 				claro_die( get_lang('Not allowed') );
+
+
+//=================================
+// Init section
+//=================================
+
+// Deal with interbredcrumps
+$interbredcrump[]= array ('url' => get_module_entry_url('LVDUPLIC') , 'name' => get_lang('Duplication'));
+$nameTools = get_lang('Define Target');
+
+$cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : null;
+
+//source course
+$sourceCourseData = DUPSessionMgr::getSourceCourseData();
+if(!isset($sourceCourseData))
+{
+	claro_die("Source course not set");
+}
+
+//default values
+$dialogBox = '' ;
+$backUrl = get_module_entry_url('LVDUPLIC');
+$targetCourseData = DUPSessionMgr::getTargetCourseData();
+$targetCourse = new ClaroCourse();
 
 //=================================
 // Main section
 //=================================
 
-
-define('DISP_COURSE_CREATION_FORM'     ,__LINE__);
-define('DISP_COURSE_CREATION_SUCCEED'  ,__LINE__);
-define('DISP_COURSE_CREATION_FAILED'   ,__LINE__);
-define('DISP_COURSE_CREATION_PROGRESS' ,__LINE__);
-
-
-
-$cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : null;
-
-//source course
-$source_course_data = DUPSessionMgr::getSourceCourseData();
-if(!isset($source_course_data))
-{
-	claro_die("Source course not set");
-}
-
-
-//default values
-$display = DISP_COURSE_CREATION_FORM; 
-$dialogBox = '' ;
-$backUrl = get_module_entry_url('LVDUPLIC');
-$target_course_data = DUPSessionMgr::getTargetCourseData();
-$target_course = new ClaroCourse();
-
 //define target
-if( !isset($cmd)  || '' == $cmd){
-	if(! isset($target_course_data))
+if( ! isset($cmd)  || '' == $cmd)
+{
+	if( ! isset( $targetCourseData ) )
 	{		
 		// New course object		
-		$target_course = DUPSessionMgr::arrayToCourse($source_course_data);
-		$target_course->courseId = '';
-		$target_course->title = '';
-		$target_course->officialCode = '';
+		$targetCourse = DUPSessionMgr::arrayToCourse($sourceCourseData);
+		$targetCourse->courseId = '';
+		$targetCourse->title = '';
+		$targetCourse->officialCode = '';
 				
-	} else {
+	} 
+	else 
+	{
 		// Target already defined		
-		$target_course = DUPSessionMgr::arrayToCourse($target_course_data);
-		$target_course->courseId = '';		
+		$targetCourse = DUPSessionMgr::arrayToCourse( $targetCourseData );
+		$targetCourse->courseId = '';		
 	}
 }
 
@@ -77,24 +75,22 @@ if( !isset($cmd)  || '' == $cmd){
 // waiting screen
 elseif( $cmd == 'rqProgress' )
 {
-    $target_course->handleForm();
+    $targetCourse->handleForm();
 
-    if( $target_course->validate() )
+    if( $targetCourse->validate() )
     {
         // Trig a waiting screen as course creation may take a while ...
 
-        $target_course_data = DUPSessionMgr::courseToArray($target_course);
-        DUPSessionMgr::setTargetCourseData($target_course_data);
+        $targetCourseData = DUPSessionMgr::courseToArray($targetCourse);
+        DUPSessionMgr::setTargetCourseData($targetCourseData);
         
-        $backUrl .= "?cmd=".DUPConstants::$DUP_STEP_CHOOSE_TOOLS;
-        claro_redirect($backUrl);
+        claro_redirect( $backUrl . "?cmd=".DUPConstants::$DUP_STEP_CHOOSE_TOOLS );
         die();
 
     }
     else
     {
-        $dialogBox .= $target_course->backlog->output();
-        $display = DISP_COURSE_CREATION_FAILED;
+        $dialogBox .= $targetCourse->backlog->output();
     }
 }
 
@@ -110,7 +106,7 @@ echo claro_html_tool_title(get_lang('Create a Duplicata'));
 
 if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
 
-echo $target_course->displayForm($backUrl);
+echo $targetCourse->displayForm($backUrl);
 
 include get_path('incRepositorySys') . '/claro_init_footer.inc.php';
 ?>

@@ -20,30 +20,36 @@
 
 //According to add_course.lib.inc.php line 1043, the group forum category is always 1
 $groupCategoryId = 1;
-$prefix_source = $__SOURCE_COURSE_DATA__['dbNameGlu'];
-$prefix_target = $__TARGET_COURSE_DATA__['dbNameGlu'];
-$source_tbl_list = claro_sql_get_course_tbl($prefix_source);
-$target_tbl_list = claro_sql_get_course_tbl($prefix_target);
+$prefixSource = $__SOURCE_COURSE_DATA__['dbNameGlu'];
+$prefixTarget = $__TARGET_COURSE_DATA__['dbNameGlu'];
+$sourceTableList = claro_sql_get_course_tbl($prefixSource);
+$targetTableList = claro_sql_get_course_tbl($prefixTarget);
 
 //TODO handdle transactions
 $sqlDropCat = "
-			DROP TABLE IF EXISTS `" . $target_tbl_list['bb_categories'] . "`; ";
+			DROP TABLE IF EXISTS `" . $targetTableList['bb_categories'] . "`; ";
 $sqlCreateCat = "
-            CREATE TABLE `" . $target_tbl_list['bb_categories'] . "` LIKE `" . $source_tbl_list['bb_categories'] . "` ; ";
+            CREATE TABLE `" . $targetTableList['bb_categories'] . "` 
+                    LIKE `" . $sourceTableList['bb_categories'] . "` ; ";
+// WARNING : EXCEPTIONAL SELECT *
 $sqlInsertCat = "
-            INSERT INTO `" . $target_tbl_list['bb_categories']  . "` 
-            SELECT * FROM `" .$source_tbl_list['bb_categories'] . "` 
-            WHERE `cat_id` != ".$groupCategoryId." ; ";
+            INSERT INTO `" . $targetTableList['bb_categories']  . "` 
+                 SELECT *
+                   FROM `" .$sourceTableList['bb_categories'] . "` 
+                  WHERE `cat_id` != ".$groupCategoryId." ; ";
 
 
 $sqlDropForum = "
-			DROP TABLE IF EXISTS `" . $target_tbl_list['bb_forums'] . "; ";
+			DROP TABLE IF EXISTS `" . $targetTableList['bb_forums'] . "; ";
 $sqlCreateForum = "
-            CREATE TABLE `" . $target_tbl_list['bb_forums'] . "` LIKE `" . $source_tbl_list['bb_forums'] . "` ; ";
+            CREATE TABLE `" . $targetTableList['bb_forums'] . "` 
+                    LIKE `" . $sourceTableList['bb_forums'] . "` ; ";
+// WARNING : EXCEPTIONAL SELECT *
 $sqlInsertForum = "
-            INSERT INTO `" . $target_tbl_list['bb_forums']  . "` 
-            SELECT * FROM `" .$source_tbl_list['bb_forums'] . "` 
-            WHERE `cat_id` != ".$groupCategoryId." ; ";
+            INSERT INTO `" . $targetTableList['bb_forums']  . "` 
+                 SELECT * 
+                   FROM `" .$sourceTableList['bb_forums'] . "` 
+                  WHERE `cat_id` != ".$groupCategoryId." ; ";
 
 
        
@@ -54,6 +60,5 @@ claro_sql_query($sqlInsertCat);
 claro_sql_query($sqlDropForum);            
 claro_sql_query($sqlCreateForum);            
 claro_sql_query($sqlInsertForum);
-
 
 ?>

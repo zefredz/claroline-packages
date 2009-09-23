@@ -20,15 +20,15 @@ require_once get_path ( 'incRepositorySys' ) . '/lib/add_course.lib.inc.php';
 require_once get_path ( 'incRepositorySys' ) . '/lib/sendmail.lib.php';
 require_once get_path('incRepositorySys') . '/lib/claroCourse.class.php';
 
-require_once 'DUPUtils.class.php';
-require_once 'DUPToolManager.class.php';
-require_once 'DUPSessionMgr.class.php';
+require_once dirname(__FILE__).'/DUPUtils.class.php';
+require_once dirname(__FILE__).'/DUPToolManager.class.php';
+require_once dirname(__FILE__).'/DUPSessionMgr.class.php';
 
 class DUPConstants{
-	public static $DUP_STEP_CHOOSE_SOURCE = __LINE__;
-	public static $DUP_STEP_DEFINE_TARGET = __LINE__;
-	public static $DUP_STEP_CHOOSE_TOOLS = __LINE__;
-	public static $DUP_STEP_COPY_CONTENTS = __LINE__;
+	public static $DUP_STEP_CHOOSE_SOURCE 	= __LINE__;
+	public static $DUP_STEP_DEFINE_TARGET 	= __LINE__;
+	public static $DUP_STEP_CHOOSE_TOOLS 	= __LINE__;
+	public static $DUP_STEP_COPY_CONTENTS 	= __LINE__;
 }
 
 //FUNCTIONS
@@ -36,47 +36,61 @@ class DUPConstants{
 /** delete all the course managers from target course then copy the ones from the source course 
  *  as managers of the target course
  */
-function copy_course_managers($source_course_data, $target_course_data)
+function copy_course_managers( $sourceCourseData, $targetCourseData )
 {
-	$claro_main_tables = claro_sql_get_main_tbl();
-	$rel_cours_user = $claro_main_tables['rel_course_user'];
+	$claroMainTableList = claro_sql_get_main_tbl();
+	$relCoursUserTable = $claroMainTableList['rel_course_user'];
 	
 	//TODO manage transaction / use REPLACE keyword (not standard)
 	$sqlDelete = 	"
-						DELETE FROM `" . $rel_cours_user . "`  
-						WHERE 	`code_cours` LIKE '" . $target_course_data['sysCode'] . "' 
-						AND 	isCourseManager = 1;";
+						DELETE FROM `" . $relCoursUserTable . "`  
+						      WHERE `code_cours` LIKE '" . $targetCourseData['sysCode'] . "' 
+						        AND `isCourseManager` = 1; ";
 	$sqlInsert = 	"
-						INSERT INTO `" . $rel_cours_user . "` 
-						( `code_cours` , `user_id` , `profile_id` , `isCourseManager` , `role` , 
-						  `team` , `tutor` , `count_user_enrol` , `count_class_enrol` )
-						SELECT 	'". $target_course_data['sysCode'] ."' , `user_id` , `profile_id` , `isCourseManager` , `role` , 
-						  		`team` , `tutor` , `count_user_enrol` , `count_class_enrol` 
-						FROM  `" . $rel_cours_user . "` 
-						WHERE 	`code_cours` LIKE '" . $source_course_data['sysCode'] . "' 
-						AND 	isCourseManager = 1;";
+						INSERT INTO `" . $relCoursUserTable . "` ( 
+									`code_cours`, 
+									`user_id`, 
+									`profile_id`, 
+									`isCourseManager`, 
+									`role`, 
+						  			`team`, 
+						  			`tutor`, 
+						  			`count_user_enrol`, 
+						  			`count_class_enrol` )
+						     SELECT '". $targetCourseData['sysCode'] ."', 
+						     		`user_id`, 
+						     		`profile_id`, 
+						     		`isCourseManager`, 
+						     		`role`, 
+						  			`team`, 
+						  			`tutor`, 
+						  			`count_user_enrol`, 
+						  			`count_class_enrol` 
+							   FROM `" . $relCoursUserTable . "` 
+							  WHERE	`code_cours` LIKE '" . $sourceCourseData['sysCode'] . "' 
+						        AND	`isCourseManager` = 1;";
 						  
 	claro_sql_query($sqlDelete);
 	claro_sql_query($sqlInsert);
 }
 
-function copy_tool($tool_label, $sourceCID, $targetCID)
+function copy_tool( $tool_label, $sourceCID, $targetCID )
 {
-	$scriptFile = "script/".$tool_label.".php";
-	$configFile = "conf/".$tool_label.".xml";
-	if(is_file($scriptFile))
+	$scriptFile = dirname(__FILE__)."/../script/".$tool_label.".php";
+	$configFile = dirname(__FILE__)."/../conf/".$tool_label.".xml";
+	
+	if(is_file( $scriptFile ) )
 	{
-		$__TOOL_LABEL__ = $tool_label;
-		$__SOURCE_COURSE_DATA__  = claro_get_course_data($sourceCID);
-		$__TARGET_COURSE_DATA__ = claro_get_course_data($targetCID);
-		
+		$__TOOL_LABEL__ 		= $tool_label;
+		$__SOURCE_COURSE_DATA__ = claro_get_course_data($sourceCID);
+		$__TARGET_COURSE_DATA__ = claro_get_course_data($targetCID);		
 				
 		include($scriptFile);
 	} 
-	elseif(is_file($configFile)) 
+	elseif( is_file( $configFile ) ) 
 	{
-		$tool_manager = new DUPToolManager($tool_label, $configFile);
-   		$tool_manager->copyTool($sourceCID,$targetCID );
+		$tool_manager = new DUPToolManager( $tool_label, $configFile );
+   		$tool_manager->copyTool( $sourceCID,$targetCID );
 	}
 }
 
