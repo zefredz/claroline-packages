@@ -1,5 +1,5 @@
 <?php
-require_once("DUPUtils.class.php");
+require_once dirname(__FILE__).'/DUPUtils.class.php' ;
 
 class DUPToolManager{
     /** 
@@ -37,28 +37,30 @@ class DUPToolManager{
     //============================ CONSTRUCTOR SECTION ===========================================
     
     /**
-     * @param $toolLabel : string the label of the tool we which we want to load the config
+     * @param $toolLabel : string the label of the tool we want to duplicate
+     * @param $xmlFile : string path to the file containing the config for duplicating this tool ( usually conf/<TOOL_LABEL>.xml )
      */
-    public function __construct($toolLabel, $xmlFile)
+    public function __construct( $toolLabel, $xmlFile )
     {
     	//label
         $this->toolLabel = $toolLabel;
         //id
         //TODO check difference between $tbl['tool'] & $tbl['module']
         $tbl = claro_sql_get_main_tbl();
-        $sql = "SELECT id      		AS 		toolId
-                FROM `" . $tbl['tool'] . "` 
-                WHERE `claro_label` LIKE '" . $this->toolLabel . "' ";
+        $sql = "
+        	SELECT id      		AS 		toolId
+              FROM `" . $tbl['tool'] . "` 
+             WHERE `claro_label` LIKE '" . $this->toolLabel . "'; ";
         $this->toolId = claro_sql_query_get_single_value($sql);
         
         
         
         //xml        
-        if(!is_file($xmlFile))
+        if( ! is_file( $xmlFile ) )
         {
             $this->xml = new SimpleXMLElement();
         }
-        $this->xml = simplexml_load_file($xmlFile);
+        $this->xml = simplexml_load_file( $xmlFile );
         //parse xml
         $this->fileList = $this->getFilesToBeCopied();
         $this->tableList = $this->getTablesToBeCopied();
@@ -66,7 +68,7 @@ class DUPToolManager{
     
     /**
      * return a list of files (or directories) which must be copied from the source course to the target course in order for
-     * a specific tool to be duplicated.These files must be specified in conf/<TOOL_LABEL>.xml
+     * a specific tool to be duplicated.These files must be specified in the xml file
      *
      * the files are relative to /courses/[MyCourse]/
      *
@@ -75,10 +77,10 @@ class DUPToolManager{
     private function getFilesToBeCopied()
     {        
         $res = array();
-        foreach($this->xml->xpath('/duplication/files/path') as $path)
+        foreach( $this->xml->xpath('/duplication/files/path') as $path )
         {
-            $cleanedPath = trim((string)$path);
-            if( '' != trim($cleanedPath))
+            $cleanedPath = trim( (string) $path );
+            if( '' != trim( $cleanedPath ) )
             {
               $res[] = $cleanedPath;
             }
@@ -97,10 +99,10 @@ class DUPToolManager{
     private function getTablesToBeCopied()
     {        
         $res = array();
-        foreach($this->xml->xpath('/duplication/tables/table') as $table)
+        foreach( $this->xml->xpath('/duplication/tables/table') as $table )
         {
-            $tableName = trim((string)$table);
-            if( '' != trim($tableName))
+            $tableName = trim( (string) $table );
+            if( '' != trim( $tableName ) )
             {
               $res[] = $tableName;
             }
@@ -110,7 +112,7 @@ class DUPToolManager{
     
     //=========================== PRIVATE SECTION ============================================
     
-    private function replaceKeyWords($str, $courseData)
+    private function replaceKeyWords( $str, $courseData )
     {
         $search = array(
                             '%courseSysCode%'
@@ -118,32 +120,32 @@ class DUPToolManager{
         $replace = array(
                            $courseData['sysCode']
                         );
-        return str_replace($search, $replace, $str);
+        return str_replace( $search, $replace, $str );
     }    
     
-    private function copyFiles($sourceCourseData, $targetCourseData)
+    private function copyFiles( $sourceCourseData, $targetCourseData )
     {
-        $courseRepo = get_path('coursesRepositorySys');
+        $courseRepo = get_path( 'coursesRepositorySys' );
         $sourcePath = $sourceCourseData['path'];
         $targetPath = $targetCourseData['path'];
-        foreach($this->fileList as $file)
+        foreach( $this->fileList as $file )
         {
-            $sourceFile = DUPUtils::joinPaths($courseRepo, $sourcePath,$this->replaceKeyWords($file,$sourceCourseData));
-            $targetFile = DUPUtils::joinPaths($courseRepo, $targetPath,$this->replaceKeyWords($file,$targetCourseData));
-            DUPUtils::copyr($sourceFile,$targetFile);
+            $sourceFile = DUPUtils::joinPaths( $courseRepo, $sourcePath, $this->replaceKeyWords( $file, $sourceCourseData ) );
+            $targetFile = DUPUtils::joinPaths( $courseRepo, $targetPath, $this->replaceKeyWords( $file,$targetCourseData) );
+            DUPUtils::copyr( $sourceFile, $targetFile);
             // I do not use claro_copy_file because it has problem when targetPath is a filename
         }
     }
     
-    private function copy_db_tables($sourceCourseData, $targetCourseData)
+    private function copy_db_tables( $sourceCourseData, $targetCourseData )
     {
         $prefixSource = $sourceCourseData['dbNameGlu'];
         $prefixTarget = $targetCourseData['dbNameGlu'];
-        foreach($this->tableList as $tableName)
+        foreach( $this->tableList as $tableName )
         {
             
-            $sourceTable = $prefixSource . $this->replaceKeyWords($tableName,$sourceCourseData);
-            $targetTable = $prefixTarget . $this->replaceKeyWords($tableName,$targetCourseData);
+            $sourceTable = $prefixSource . $this->replaceKeyWords( $tableName, $sourceCourseData );
+            $targetTable = $prefixTarget . $this->replaceKeyWords( $tableName, $targetCourseData );
             
             
             //TODO handdle transactions
@@ -163,37 +165,54 @@ class DUPToolManager{
         }
     }
     
-    private function copy_course_tool_relation($sourceCourseData, $targetCourseData)
+    private function copy_course_tool_relation( $sourceCourseData, $targetCourseData )
     {
-    	$prefix_source = $sourceCourseData['dbNameGlu'];
-    	$prefix_target = $targetCourseData['dbNameGlu'];
-    	$source_tbl_list = claro_sql_get_course_tbl($prefix_source);
-    	$target_tbl_list = claro_sql_get_course_tbl($prefix_target);
+    	$prefixSource = $sourceCourseData['dbNameGlu'];
+    	$prefixTarget = $targetCourseData['dbNameGlu'];
+    	$sourceTableList = claro_sql_get_course_tbl( $prefixSource );
+    	$targetTableList = claro_sql_get_course_tbl( $prefixTarget );
     	$sqlDelete = "
-    					DELETE FROM `".$target_tbl_list['tool']."` 
-    					WHERE `tool_id` = ".$this->toolId.";  ";
+    						  DELETE 
+    					  	    FROM `".$targetTableList['tool']."` 
+    					       WHERE `tool_id` = ".$this->toolId.";  ";
     	$sqlInsert = "
-    					INSERT INTO `".$target_tbl_list['tool']."` 
-    					( `tool_id` , `rank` , `visibility` , `script_url` , `script_name` , `addedTool` ) 
-    					SELECT  `tool_id` , `rank` , `visibility` , `script_url` , `script_name` , `addedTool` 
-    					FROM `".$source_tbl_list['tool']."` 
-    					WHERE `tool_id` = ".$this->toolId.";  ";
+    					INSERT INTO `".$targetTableList['tool']."` ( 
+    								`tool_id`, 
+    								`rank`, 
+    								`visibility`, 
+    								`script_url`, 
+    								`script_name`, 
+    								`addedTool` ) 
+    					    SELECT  `tool_id`, 
+    					    		`rank`, 
+    					    		`visibility`, 
+    					    		`script_url`, 
+    					    		`script_name`, 
+    					    		`addedTool` 
+    						   FROM `".$sourceTableList['tool']."` 
+    					      WHERE `tool_id` = ".$this->toolId.";  ";
     	//TODO handle transaction
     	claro_sql_query($sqlDelete);
     	claro_sql_query($sqlInsert);
     }
     
-	private function copy_course_tool_rights($sourceCourseData, $targetCourseData)
+	private function copy_course_tool_rights( $sourceCourseData, $targetCourseData )
     {
-    	$main_table_list = claro_sql_get_main_tbl();
-    	$table = $main_table_list['right_rel_profile_action'];
+    	$mainTableList = claro_sql_get_main_tbl();
+    	$table = $mainTableList['right_rel_profile_action'];
     	
     	$sql = "
-    					INSERT INTO `".$table."` 
-    					( `profile_id` , `action_id` , `courseId` , `value` ) 
-    					SELECT  `profile_id` , `action_id` , '".$targetCourseData['sysCode']."' , `value`  
-    					FROM `".$table."` 
-    					WHERE `courseId` LIKE '".$sourceCourseData['sysCode']."';  ";
+    				INSERT INTO `".$table."` ( 
+    							`profile_id`, 
+    							`action_id`, 
+    							`courseId`, 
+    							`value` ) 
+    					 SELECT `profile_id`, 
+    					        `action_id`, 
+    					        '".$targetCourseData['sysCode']."', 
+    					        `value`  
+    					   FROM `".$table."` 
+    					   WHERE `courseId` LIKE '".$sourceCourseData['sysCode']."';  ";
     	   	
     	claro_sql_query($sql);
     }
@@ -207,14 +226,15 @@ class DUPToolManager{
      * @param targetCourseId : int : the id of the target course in DB
      * 
      */
-    public function copyTool($sourceCourseId, $targetCourseId){
-        $sourceCourseData = claro_get_course_data($sourceCourseId);
-        $targetCourseData = claro_get_course_data($targetCourseId);
+    public function copyTool( $sourceCourseId, $targetCourseId )
+    {
+        $sourceCourseData = claro_get_course_data( $sourceCourseId );
+        $targetCourseData = claro_get_course_data( $targetCourseId );
         
-        $this->copyFiles($sourceCourseData, $targetCourseData);
-        $this->copy_db_tables($sourceCourseData, $targetCourseData);
-        $this->copy_course_tool_relation($sourceCourseData, $targetCourseData);
-        $this->copy_course_tool_rights($sourceCourseData, $targetCourseData);
+        $this->copyFiles( $sourceCourseData, $targetCourseData );
+        $this->copy_db_tables( $sourceCourseData, $targetCourseData );
+        $this->copy_course_tool_relation( $sourceCourseData, $targetCourseData );
+        $this->copy_course_tool_rights( $sourceCourseData, $targetCourseData );
     }
     
 }

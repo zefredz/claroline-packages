@@ -1,4 +1,4 @@
-<?php // $Id$
+<?php 
 /**
  * CLAROLINE
  *
@@ -28,36 +28,37 @@
 // Include section
 //=================================
 
-require_once '../../claroline/inc/claro_init_global.inc.php';
-require_once 'lib/LVDUPLIC.lib.php';
+require_once dirname(__FILE__).'/../../claroline/inc/claro_init_global.inc.php';
+require_once dirname(__FILE__).'/lib/LVDUPLIC.lib.php';
 
 //=================================
 // Security check
 //=================================
 
-// If you want to duplicate a course you need to be able to manage the source course and create a new one.
-if ( ! claro_is_user_authenticated() )       claro_disp_auth_form();
-if ( ! claro_is_allowed_to_create_course() ) claro_die(get_lang('Not allowed'));
-// Actually you even need to be admin
-if ( ! claro_is_platform_admin() ) claro_die(get_lang('Not allowed'));
+// If you want to duplicate a course you need to be able to be an administrator
+if ( ! claro_is_user_authenticated() )       	claro_disp_auth_form();
+if ( ! claro_is_platform_admin() ) 				claro_die( get_lang('Not allowed') );
 
 
 //=================================
 // Init
 //=================================
 
-
-
-$source_course_data = DUPSessionMgr::getSourceCourseData();
-if(! isset($source_course_data))
+$sourceCourseData = DUPSessionMgr::getSourceCourseData();
+if(! isset($sourceCourseData))
 {
     claro_redirect('index.php');
 }
-$target_course_data = DUPSessionMgr::getTargetCourseData();
-if(! isset($target_course_data))
+$targetCourseData = DUPSessionMgr::getTargetCourseData();
+if(! isset($targetCourseData))
 {
     claro_redirect('create_target.php');
 }
+$backUrl = get_module_entry_url('LVDUPLIC');
+
+// Deal with interbredcrumps
+$interbredcrump[]= array ('url' => get_module_entry_url('LVDUPLIC') , 'name' => get_lang('Duplication'));
+$nameTools = get_lang('Choose Tools');
 
 //=================================
 // Main section
@@ -67,7 +68,7 @@ if(! isset($target_course_data))
     $cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : null;
     $out = "";
     //list of all the available  tools
-    $toolList = claro_get_course_tool_list($source_course_data['sysCode'],true,true);
+    $toolList = claro_get_course_tool_list( $sourceCourseData['sysCode'], true, true );
     
     //display form
     //TODO use templates
@@ -75,9 +76,9 @@ if(! isset($target_course_data))
     {
 		$out .= claro_html_tool_title(get_lang('Select tools'));
 	    $out .= '<H3>'.get_lang('Source').'</H3>';
-	    $out .= '<p>'. $source_course_data['name'].'</p>'."\n";
+	    $out .= '<p>'. $sourceCourseData['name'].'</p>'."\n";
 	    $out .= '<H3>'.get_lang('Target').'</H3>';
-	    $out .= '<p>'. $target_course_data['name'] .'</p>'."\n";
+	    $out .= '<p>'. $targetCourseData['name'] .'</p>'."\n";
     
 	    $out .= '<H3>'.get_lang('Select the tools that you want to copy').'</H3>';
 	    $out .= '<p><ul>';
@@ -89,9 +90,10 @@ if(! isset($target_course_data))
     
     
         //form 
-	    $out .= '<p><form method="POST" name="tool_selection_form" ><input type="hidden" name="cmd" value="process_selection" /> '."\n";
-	    foreach ($toolList as $toolItem) {
-	    	 $label = $toolItem['label'];
+	    $out .= '<p><form method="POST" name="tool_selection_form" >' . "\n";
+	    $out .= '<input type="hidden" name="cmd" value="process_selection" /> '."\n";
+	    foreach ($toolList as $toolItem) {	    	
+	    	$label = $toolItem['label'];
 	        
 	        $out .= '<input type="checkbox"  id="check'.$toolItem['label'].'" value="'.$toolItem['label'].'" name="toolItem[]" checked="true" >';
 	               
@@ -110,14 +112,12 @@ if(! isset($target_course_data))
     	{
     		$labelList[] = $toolItem['label'];
     	}
-    	$selected_tools =  array_intersect($labelList,$_REQUEST['toolItem']);
-    	DUPSessionMgr::setToolList($selected_tools);
+    	$selectedTools =  array_intersect($labelList,$_REQUEST['toolItem']);
+    	DUPSessionMgr::setToolList($selectedTools);
     	
-    	claro_redirect('index.php?cmd='.DUPConstants::$DUP_STEP_COPY_CONTENTS);
+    	claro_redirect($backUrl . '?cmd='.DUPConstants::$DUP_STEP_COPY_CONTENTS);
     	die;    	
     }
-    
-
 
 
 //=================================
@@ -125,9 +125,8 @@ if(! isset($target_course_data))
 //=================================
 
 
-    // Display header
+// Display header
 include get_path('includePath') . '/claro_init_header.inc.php' ;
-//if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
 
 echo $out;
 

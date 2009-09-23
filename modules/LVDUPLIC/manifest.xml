@@ -4,7 +4,7 @@
   <version>1.0.0</version>
   <state>beta</state>
   <license>GPL</license>
-  <type>tool</type>
+  <type>admin</type>
   <entry>index.php</entry>
   <icon>duplicate.png</icon>
 
