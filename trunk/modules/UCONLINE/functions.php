@@ -15,6 +15,8 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 include_once claro_get_conf_repository().'UCONLINE.conf.php';
 include_once dirname(__FILE__) . '/lib/login.listener.class.php';
 
+JavascriptLoader::getInstance()->load( 'datetime' );
+
 ClaroHeader::getInstance()->addHtmlHeader( '
     <script type="text/javascript">
         function userTime(){
