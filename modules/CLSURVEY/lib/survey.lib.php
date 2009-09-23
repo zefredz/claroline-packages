@@ -715,7 +715,7 @@ function exportSurvey( $surveyId )
         FROM
             `{$tbl[ 'survey_list' ]}`
         WHERE
-            cid = " . Claroline::getDatabase()->escape( $surveyId )
+            id_survey = " . Claroline::getDatabase()->escape( $surveyId )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
     
     $csvFileName = $result[ 'title' ] . '_survey';
