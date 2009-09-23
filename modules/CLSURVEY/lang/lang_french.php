@@ -49,4 +49,7 @@ $_lang['Position modified'] = "Position modifiée";
 $_lang['No answer']="Pas de réponse";
 $_lang['View this survey']="Voir ce sondage";
 $_lang['Vote for this survey']="Voter";
+$_lang['Export']="Exporter";
+$_lang['Import survey']="Importer un sondage";
+$_lang['Select a file to import']="Selectionnez le fichier à importer";
 ?>

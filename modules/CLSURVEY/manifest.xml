@@ -1,7 +1,7 @@
 <module>
   <label>CLSURVEY</label>
   <name>Survey</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <state>beta</state>
   <license>GPL</license>
   <type>tool</type>
@@ -20,6 +20,11 @@
   <credit>
      <name>Christophe Gesche</name>
      <email>moosh@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </credit>
+  <credit>
+     <name>Frederic Fervaille</name>
+     <email>frederic.fervaille@uclouvain.be</email>
      <web>http://www.claroline.net</web>
   </credit>
 
