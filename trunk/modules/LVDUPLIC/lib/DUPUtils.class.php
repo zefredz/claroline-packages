@@ -18,11 +18,12 @@ class DUPUtils
         {
             $paths = array_merge( $paths, (array) $arg );
         }
+        $prefix = ('/' == $paths[0][0] ? '/' : '');
         foreach ($paths as &$path)
         {
             $path = trim( $path, '/');
         }
-        return ('/' == $paths[0][0] ? '/' : '') .  join( '/', $paths );
+        return  $prefix .  join( '/', $paths );
     }
     
     /**
