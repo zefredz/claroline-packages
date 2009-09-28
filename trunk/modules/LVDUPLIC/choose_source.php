@@ -178,9 +178,6 @@ $courseDataGrid->set_noRowMessage( get_lang('There is no course matching such cr
  ************************************************************************************/
 
 /** DISPLAY : Common Header */
-
-echo $path . "<br/>";
-
 include get_path('incRepositorySys') . '/claro_init_header.inc.php';
 echo claro_html_tool_title($nameTools);
 if ( !empty($dialogBox) ) echo claro_html_message_box($dialogBox);
