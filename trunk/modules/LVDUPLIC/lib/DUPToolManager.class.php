@@ -132,8 +132,15 @@ class DUPToolManager{
         {
             $sourceFile = DUPUtils::joinPaths( $courseRepo, $sourcePath, $this->replaceKeyWords( $file, $sourceCourseData ) );
             $targetFile = DUPUtils::joinPaths( $courseRepo, $targetPath, $this->replaceKeyWords( $file,$targetCourseData) );
-            DUPUtils::copyr( $sourceFile, $targetFile);
-            // I do not use claro_copy_file because it has problem when targetPath is a filename
+            if(file_exists($sourceFile))
+            {
+            	
+            	DUPLogger::log_copy_file($this->toolLabel,$sourceCourseData['sysCode'],
+            	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+            	$sourceFile,$targetFile);
+            	DUPUtils::copyr( $sourceFile, $targetFile);
+            	// I do not use claro_copy_file because it has problem when targetPath is a filename
+            }
         }
     }
     
@@ -156,6 +163,11 @@ class DUPToolManager{
                 CREATE TABLE `" . $targetTable . "` LIKE `" . $sourceTable . "`; ";
             $sqlInsert = "
             	INSERT INTO `" . $targetTable . "` SELECT * FROM `" . $sourceTable . "`; ";
+            
+            DUPLogger::log_copy_table($this->toolLabel,$sourceCourseData['sysCode'],
+            	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+            	$sourceTable,$targetTable);
+            
             
             //CREATE TABLE ... LIKE ... (INLCUDING DEFAULTS )
             claro_sql_query($sqlDrop);
@@ -191,7 +203,13 @@ class DUPToolManager{
     					    		`addedTool` 
     						   FROM `".$sourceTableList['tool']."` 
     					      WHERE `tool_id` = ".$this->toolId.";  ";
-    	//TODO handle transaction
+    	
+    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],
+            	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+            	$sourceTableList['tool'],$targetTableList['tool']);
+            	
+            	
+    	//TODO handle transaction    	
     	claro_sql_query($sqlDelete);
     	claro_sql_query($sqlInsert);
     }
@@ -213,7 +231,10 @@ class DUPToolManager{
     					        `value`  
     					   FROM `".$table."` 
     					   WHERE `courseId` LIKE '".$sourceCourseData['sysCode']."';  ";
-    	   	
+    	
+    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],
+            	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+            	$table,$table);   	
     	claro_sql_query($sql);
     }
     

@@ -111,17 +111,29 @@ if( DUPConstants::$DUP_STEP_COPY_CONTENTS == $cmd )
     	$dialogBox .= $targetCourse->backlog->output();
     	$success = false;
    	}
-   	
-   	//copy course managers
-   	copy_course_managers($sourceCourseData, $targetCourseData);
-	
-	//copy contents
-   	$sourceCID = $sourceCourseData['sysCode'];    	
-    $targetCID = $targetCourseData['sysCode'];
-   	foreach( $selectedTools as $toolLabel )
+   	if($success)
    	{
-   		copy_tool( $toolLabel, $sourceCID, $targetCID );	
-   	}              
+	   	//copy course managers
+	   	copy_course_managers($sourceCourseData, $targetCourseData);
+		
+		//copy contents
+	   	$sourceCID = $sourceCourseData['sysCode'];    	
+	    $targetCID = $targetCourseData['sysCode'];
+	   	foreach( $selectedTools as $toolLabel )
+	   	{
+	   		try
+	   		{
+	   			copy_tool( $toolLabel, $sourceCID, $targetCID );	
+	   		}
+	   		catch (Exception $exception)
+	   		{
+	   			$success = false;
+	   			DUPLogger::log_error($toolLabel,$sourceCID, $exception->getMessage());
+	   			$dialogBox .= $exception->getMessage();
+	   			break;
+	   		}
+	   	}      
+   	}        
     
     //PREPARE DISPLAY
     if( $success )
