@@ -32,51 +32,52 @@ class DUPUtils
      * @author      Aidan Lister <aidan@php.net>
      * @version     1.0.1
      * @link        http://aidanlister.com/repos/v/function.copyr.php
-     * @param       string   $source    Source path
-     * @param       string   $dest      Destination path
-     * @return      bool     Returns TRUE on success, FALSE on failure
+     * @param       string   		$source    Source path
+     * @param       string   		$dest      Destination path
+     * @param(opt)  string/octal   	$mode      Mode of the created dirs/files (can be octal like 0755 or a string like "g+r"
+     * @return      bool     		Returns TRUE on success, FALSE on failure
      */
-    public static function copyr( $source, $dest )
+    public static function copyr( $source, $dest, $mode = 0755 )
     {
-        // Simple copy for a file
-        if (is_file($source))
+        if( ! file_exists($source))
         {
-            return copy( $source, $dest );
+        	throw new Exception($source . " cannot be copied because it doesn't exists");
         }
-    
-        // Make destination directory
-        if ( ! is_dir( $dest ) )
-        {
-            mkdir($dest);
-        }
-    
-        // If the source is a symlink
-        if ( is_link( $source ) )
-        {
-            $link_dest = readlink( $source );
-            return symlink( $link_dest, $dest );
-        }
-    
-        // Loop through the folder
-        $dir = dir( $source );
-        while (false !== $entry = $dir->read() )
-        {
-            // Skip pointers
-            if ( $entry == '.' || $entry == '..' )
-            {
-                continue;
-            }
-    
-            // Deep copy directories
-            if ( $dest !== $source . '/' . $entry ) {
-                DUPUtils::copyr( $source . '/' . $entry, $dest . '/' . $entry );
-            }
-        }
-    
-        // Clean up
-        $dir->close();
-        return true;
-    }
+    	
+		// Simple copy for a file
+		if (is_file($source)) 
+		{
+			$c = copy($source, $dest);
+			chmod($dest, $mode);
+			return $c;
+		}
+		// Make destination directory
+		if (!is_dir($dest)) 
+		{
+			$oldumask = umask();
+			mkdir($dest, $mode,true);
+			umask($oldumask);
+		}
+		// Loop through the folder
+		$dir = dir($source);
+		while (false !== $entry = $dir->read()) 
+		{
+			// Skip pointers
+			if ($entry == "." || $entry == "..") 
+			{
+				continue;
+			}
+			// Deep copy directories
+			if ( $dest !== $source . '/' . $entry ) 
+			{
+				DUPUtils::copyr($source . '/' . $entry, $dest . '/' . $entry , $mode);
+			}
+		}
+		// Clean up
+		$dir->close();
+		return true;
+        
+    }     
 }
 
 ?>

@@ -21,6 +21,7 @@ require_once get_path ( 'incRepositorySys' ) . '/lib/sendmail.lib.php';
 require_once get_path('incRepositorySys') . '/lib/claroCourse.class.php';
 
 require_once dirname(__FILE__).'/DUPUtils.class.php';
+require_once dirname(__FILE__).'/DUPLogger.class.php';
 require_once dirname(__FILE__).'/DUPToolManager.class.php';
 require_once dirname(__FILE__).'/DUPSessionMgr.class.php';
 
@@ -70,8 +71,14 @@ function copy_course_managers( $sourceCourseData, $targetCourseData )
 							  WHERE	`code_cours` LIKE '" . $sourceCourseData['sysCode'] . "' 
 						        AND	`isCourseManager` = 1;";
 						  
-	claro_sql_query($sqlDelete);
-	claro_sql_query($sqlInsert);
+	
+	DUPLogger::log_copy_row("COURSE",$sourceCourseData['sysCode'],
+            	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+            	$relCoursUserTable,$relCoursUserTable);
+	
+	claro_sql_query($sqlDelete);	
+	claro_sql_query($sqlInsert);	
+	
 }
 
 function copy_tool( $tool_label, $sourceCID, $targetCID )
