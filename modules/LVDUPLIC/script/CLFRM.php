@@ -12,7 +12,7 @@
  *  
  *  We can acces those data in this file : 
  *  
- *  global $__TOOL_LABEL__, $__SOURCE_COURSE_DATA__, $__TARGET_COURSE_DATA__;
+ *  $__TOOL_LABEL__, $__SOURCE_COURSE_DATA__, $__TARGET_COURSE_DATA__;
  *  
  *  the courses data are the same as the data returned by the function claro_get_course_data() in claro_main.lib.php
  *  
