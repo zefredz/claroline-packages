@@ -90,7 +90,8 @@ function copy_tool( $tool_label, $sourceCID, $targetCID )
 	{
 		$__TOOL_LABEL__ 		= $tool_label;
 		$__SOURCE_COURSE_DATA__ = claro_get_course_data($sourceCID);
-		$__TARGET_COURSE_DATA__ = claro_get_course_data($targetCID);		
+		$__TARGET_COURSE_DATA__ = claro_get_course_data($targetCID);
+		$__TARGET_COURSE        = $targetCID;		
 				
 		include($scriptFile);
 	} 
