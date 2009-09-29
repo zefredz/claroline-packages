@@ -10,12 +10,13 @@ class DUPLogger{
 	public static $should_log_error = true;
 	
 	//add a new entry in the copy log, call this when you duplicate a file
-	public function log_copy_file($toolName, $courseName, $userLogin, $source, $dest)
+	public function log_copy_file($toolName, $sourceCourseName, $targetCourseName, $userLogin, $source, $dest)
 	{
 		if( !  DUPLogger::$should_log_copy) return;
 		
 		$message = "" 		.	date(DATE_RFC850);
-		$message .= "\t"	.	$courseName;
+		$message .= "\t"	.	$sourceCourseName;
+		$message .= "\t"	.	$targetCourseName;
 		$message .= "\t"	.	$toolName;
 		$message .= "\t"	.	$userLogin;
 		$message .= "\t"	.	"COPIING FILE `" . $source . "`\t TO \t`" . $dest ."`";
@@ -24,12 +25,13 @@ class DUPLogger{
 	}
 	
 	//add a new entry in the copy log, call this when you duplicate a table
-	public function log_copy_table($toolName, $courseName, $userLogin, $sourceTable, $destTable)
+	public function log_copy_table($toolName, $sourceCourseName, $targetCourseName, $userLogin, $sourceTable, $destTable)
 	{
 		if( !  DUPLogger::$should_log_copy) return;
 		
 		$message = "" 		.	date(DATE_RFC850);
-		$message .= "\t"	.	$courseName;
+		$message .= "\t"	.	$sourceCourseName;
+		$message .= "\t"	.	$targetCourseName;
 		$message .= "\t"	.	$toolName;
 		$message .= "\t"	.	$userLogin;
 		$message .= "\t"	.	"DUPLICATING TABLE `" . $sourceTable . "`\t TO \t`" . $destTable ."`";
@@ -44,12 +46,13 @@ class DUPLogger{
 	 * @param $userLogin login of the admin who has done the duplication
 	 * @param $sql string sql command executed
 	 */
-	public function log_copy_row($toolName, $courseName, $userLogin, $sourceTable, $targetTable)
+	public function log_copy_row($toolName, $sourceCourseName, $targetCourseName, $userLogin, $sourceTable, $targetTable)
 	{
 		if( !  DUPLogger::$should_log_copy) return;
 		
 		$message = "" 		.	date(DATE_RFC850);
-		$message .= "\t"	.	$courseName;
+		$message .= "\t"	.	$sourceCourseName;
+		$message .= "\t"	.	$targetCourseName;
 		$message .= "\t"	.	$toolName;
 		$message .= "\t"	.	$userLogin;
 		$message .= "\t"	.	"COPIING A ROW FROM `" . $sourceTable . "`\t TO \t`" . $targetTable ."`";
@@ -57,12 +60,13 @@ class DUPLogger{
 		error_log($message, 3, DUPLogger::$__COPY_LOG_FILE__);
 	}
 	
-	public function log_error($toolName, $courseName, $errorMessage)
+	public function log_error($toolName, $sourceCourseName, $targetCourseName, $errorMessage)
 	{
 		if( !  DUPLogger::$should_log_error) return;
 		
 		$message = "" 		.	date(DATE_RFC850);
-		$message .= "\t"	.	$courseName;
+		$message .= "\t"	.	$sourceCourseName;
+		$message .= "\t"	.	$targetCourseName;
 		$message .= "\t"	.	$toolName;
 		$message .= "\t"	.	$errorMessage;
 		$message .= "\n";

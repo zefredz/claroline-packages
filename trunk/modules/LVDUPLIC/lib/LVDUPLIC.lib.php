@@ -72,7 +72,7 @@ function copy_course_managers( $sourceCourseData, $targetCourseData )
 						        AND	`isCourseManager` = 1;";
 						  
 	
-	DUPLogger::log_copy_row("COURSE",$sourceCourseData['sysCode'],
+	DUPLogger::log_copy_row("COURSE",$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$relCoursUserTable,$relCoursUserTable);
 	

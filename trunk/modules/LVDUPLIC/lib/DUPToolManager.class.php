@@ -135,7 +135,7 @@ class DUPToolManager{
             if(file_exists($sourceFile))
             {
             	
-            	DUPLogger::log_copy_file($this->toolLabel,$sourceCourseData['sysCode'],
+            	DUPLogger::log_copy_file($this->toolLabel,$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$sourceFile,$targetFile);
             	DUPUtils::copyr( $sourceFile, $targetFile);
@@ -164,7 +164,7 @@ class DUPToolManager{
             $sqlInsert = "
             	INSERT INTO `" . $targetTable . "` SELECT * FROM `" . $sourceTable . "`; ";
             
-            DUPLogger::log_copy_table($this->toolLabel,$sourceCourseData['sysCode'],
+            DUPLogger::log_copy_table($this->toolLabel,$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$sourceTable,$targetTable);
             
@@ -204,7 +204,7 @@ class DUPToolManager{
     						   FROM `".$sourceTableList['tool']."` 
     					      WHERE `tool_id` = ".$this->toolId.";  ";
     	
-    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],
+    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$sourceTableList['tool'],$targetTableList['tool']);
             	
@@ -232,7 +232,7 @@ class DUPToolManager{
     					   FROM `".$table."` 
     					   WHERE `courseId` LIKE '".$sourceCourseData['sysCode']."';  ";
     	
-    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],
+    	DUPLogger::log_copy_row($this->toolLabel,$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$table,$table);   	
     	claro_sql_query($sql);
