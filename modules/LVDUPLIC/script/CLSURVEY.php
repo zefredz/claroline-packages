@@ -22,7 +22,8 @@
 
 //According to add_course.lib.inc.php line 1043, the group forum category is always 1
 $groupCategoryId = 1;
-$targetCourse = $__TARGET_COURSE;
+$targetCourse = $__TARGET_COURSE_DATA__['sysCode'];
+$sourceCourse = $__SOURCE_COURSE_DATA__['sysCode'];
 
 $tbl = claro_sql_get_tbl(array( 'survey_question'
                                   , 'survey_question_list'
@@ -32,47 +33,51 @@ $tbl = claro_sql_get_tbl(array( 'survey_question'
 // WARNING : EXCEPTIONAL SELECT *
 $sql = " SELECT *
                    FROM `" . $tbl['survey_list'] . "` 
-                   WHERE `cid` = '". $_SESSION['DUPsource_course']['sysCode'] ."' ; ";
+                   WHERE `cid` = '". $sourceCourse ."' ; ";
 
 $listSurvey  = claro_sql_query_fetch_all($sql);
 
-foreach($listSurvey as $item)
+foreach($listSurvey as $survey)
 {
         $sql = "INSERT INTO `" . $tbl['survey_list'] . "`
-	           SET `title`        = '" . $item['title'] . "',
-                   `description`  = '" . $item['description'] . "',
+	           SET `title`        = '" . $survey['title'] . "',
+                   `description`  = '" . $survey['description'] . "',
                    `cid`          = '" . $targetCourse . "',
                    `date_created` = '" . date('Y-m-d') . "'";
         $surveyId = claro_sql_query_insert_id($sql);
+
+        DUPLogger::log_copy_table('CLSURVEY',$sourceCourse,$targetCourse,
+    	    claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+    	    $tbl['survey_list'],$tbl['survey_list']);
         
         
         // Copy questions of this course
         $sql =" SELECT *
                    FROM `" . $tbl['survey_question_list'] . "` 
-                   WHERE `cid` = '". $_SESSION['DUPsource_course']['sysCode'] ."' ; ";
+                   WHERE `cid` = '". $sourceCourse ."' ; ";
         
         $listQuestion  = claro_sql_query_fetch_all($sql);
         
-        foreach($listQuestion as $item)
+        foreach($listQuestion as $question)
          {
         
             $sql = "INSERT INTO `" . $tbl['survey_question_list'] . "`
-	        SET `title`       = '" . $item['title'] . "'
-	        ,   `description` = '" . $item['description'] . "'
-	        ,   `option`      = '" . $item['option'] . "'
-	        ,   `type`        = '" . $item['type'] . "'
+	        SET `title`       = '" . $question['title'] . "'
+	        ,   `description` = '" . $question['description'] . "'
+	        ,   `option`      = '" . $question['option'] . "'
+	        ,   `type`        = '" . $question['type'] . "'
 	        ,   `cid`         = '" . $targetCourse . "'";
             
             $questionId=claro_sql_query_insert_id($sql);
             
-            DUPLogger::log_copy_table('CLSURVEY',$_SESSION['DUPsource_course']['sysCode'],
+            DUPLogger::log_copy_table('CLSURVEY',$sourceCourse,$targetCourse,
             	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
             	$tbl['survey_question_list'],$tbl['survey_question_list']);
             
              // copy relation between survey and question 
              $sql = " SELECT *
-                       FROM `" . $tbl['survey_list'] . "` 
-                       WHERE `cid` = '". $_SESSION['DUPsource_course']['sysCode'] ."' ; ";
+                       FROM `" . $tbl['survey_question'] . "` 
+                       WHERE `id_question` = '". $question['id_question'] ."' ; ";
     
              $surveyQuestion  = claro_sql_query_fetch_all($sql);
              
@@ -82,7 +87,11 @@ foreach($listSurvey as $item)
             		        SET `id_question` = " . (int) $questionId . "
             		        ,   `id_survey`   = " . (int) $surveyId;
                      
-                     claro_sql_query_insert_id($sql);          
+                     claro_sql_query_insert_id($sql);      
+
+                    DUPLogger::log_copy_table('CLSURVEY',$sourceCourse,$targetCourse,
+                	    claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+                	    $tbl['survey_question'],$tbl['survey_question']);
              }
          }
 
