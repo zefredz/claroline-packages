@@ -6,13 +6,12 @@
   <license>GPL</license>
   <type>admin</type>
   <entry>index.php</entry>
-  <icon>duplicate.png</icon>
 
   <description></description>
 
   <author>
      <name>Philippe Van Eerdenbrugghe</name>
-     <email>philippe@claroline.net</email>
+     <email>philippe.vaneerdenbrugghe@vinci.be</email>
      <web>http://www.claroline.net</web>
   </author>
 
