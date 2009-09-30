@@ -12,6 +12,7 @@
  *
  */
 
+require_once dirname(__FILE__).'/../../../claroline/inc/claro_init_global.inc.php';
 require_once get_path ( 'incRepositorySys' ) . '/lib/admin.lib.inc.php';
 require_once get_path ( 'incRepositorySys' ) . '/lib/course.lib.inc.php';
 require_once get_path ( 'incRepositorySys' ) . '/lib/form.lib.php';
@@ -33,6 +34,41 @@ class DUPConstants{
 }
 
 //FUNCTIONS
+
+//copy the table containing 
+function copy_intro($sourceCourseData, $targetCourseData)
+{
+	$prefixSource = $sourceCourseData['dbNameGlu'];
+    $prefixTarget = $targetCourseData['dbNameGlu'];
+    
+    $sourceTableList = claro_sql_get_course_tbl($prefixSource);
+    $targetTableList = claro_sql_get_course_tbl($prefixTarget);
+    
+    $sourceTableName = $sourceTableList['tool_intro'];
+    $targetTableName = $targetTableList['tool_intro'];
+            
+    //TODO handdle transactions
+    $sqlDrop = "
+    	DROP TABLE IF EXISTS `" . $targetTableName . "; ";
+    //create like = copy structure with constraints (except fk)
+    $sqlCreate = "
+        CREATE TABLE `" . $targetTableName . "` LIKE `" . $sourceTableName . "`; ";
+    $sqlInsert = "
+    	INSERT INTO `" . $targetTableName . "` SELECT * FROM `" . $sourceTableName . "`; ";
+    
+    DUPLogger::log_copy_table('course',$sourceCourseData['sysCode'],$targetCourseData['sysCode'],
+    	claro_get_current_user_data("firstName") . " " . claro_get_current_user_data("lastName") ,
+    	$sourceTableName,$targetTableName);
+    	
+    //CREATE TABLE ... LIKE ... (INLCUDING DEFAULTS )
+    claro_sql_query($sqlDrop);
+    claro_sql_query($sqlCreate);
+    claro_sql_query($sqlInsert);
+            
+        
+	
+	
+}
 
 /** delete all the course managers from target course then copy the ones from the source course 
  *  as managers of the target course

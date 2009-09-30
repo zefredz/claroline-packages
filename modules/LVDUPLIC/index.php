@@ -102,9 +102,10 @@ if( DUPConstants::$DUP_STEP_COPY_CONTENTS == $cmd )
 	
 	if($success && $targetCourse->save() )
    	{ 
+   		$thisUser = claro_get_current_user_data();
     	$targetCourse->mailAdministratorOnCourseCreation($thisUser['firstName'], $thisUser['lastName'], $thisUser['mail']);
     	//save id
-    	$targetCourseData['sysCode'] = $targetCourse->courseId;
+    	$targetCourseData = claro_get_course_data( $targetCourse->courseId);
     } 
     else	
     {
@@ -115,6 +116,8 @@ if( DUPConstants::$DUP_STEP_COPY_CONTENTS == $cmd )
    	{
 	   	//copy course managers
 	   	copy_course_managers($sourceCourseData, $targetCourseData);
+	   	//copy course & tools intro
+	   	copy_intro($sourceCourseData, $targetCourseData);
 		
 		//copy contents
 	   	$sourceCID = $sourceCourseData['sysCode'];    	

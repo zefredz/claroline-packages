@@ -16,7 +16,7 @@ class DUPSessionMgr{
 	 */
 	public static function getSourceCourseData()
 	{
-	    return $_SESSION[DUPSessionMgr::$DUP_SESSION_SOURCE_COURSE];
+	    return isset($_SESSION[DUPSessionMgr::$DUP_SESSION_SOURCE_COURSE]) ? $_SESSION[DUPSessionMgr::$DUP_SESSION_SOURCE_COURSE] : NULL ;
 	}
 	/**
 	 * set the target course Data
@@ -30,7 +30,7 @@ class DUPSessionMgr{
 	 */
 	public static function getTargetCourseData()
 	{
-	    return $_SESSION[DUPSessionMgr::$DUP_SESSION_TARGET_COURSE];
+	    return isset($_SESSION[DUPSessionMgr::$DUP_SESSION_TARGET_COURSE]) ? $_SESSION[DUPSessionMgr::$DUP_SESSION_TARGET_COURSE] : NULL ;
 	}
 	
 	/**
@@ -46,7 +46,7 @@ class DUPSessionMgr{
 	 */
 	public static function getToolList()
 	{
-	    return $_SESSION[DUPSessionMgr::$DUP_SESSION_TOOL_LIST];
+	    return isset($_SESSION[DUPSessionMgr::$DUP_SESSION_TOOL_LIST]) ? $_SESSION[DUPSessionMgr::$DUP_SESSION_TOOL_LIST] : NULL ;
 	}
 	
 	/**
@@ -63,6 +63,9 @@ class DUPSessionMgr{
 	 */
 	public function arrayToCourse( $array )
 	{
+		include get_path('rootSys') . '/platform/currentVersion.inc.php';		
+		
+		
 		$res = new ClaroCourse();
 		$res->courseId 			= $array['sysCode'];
         $res->title 			= $array['name'];
@@ -70,12 +73,29 @@ class DUPSessionMgr{
 		$res->titular 			= $array['titular'];
 		$res->email 			= $array['email'];
 		$res->category 			= $array['categoryCode'];
-		$res->departmentName 	= $array['extLinkName'];
-		$res->departmentUrl 	= $array['extLinkUrl'];
+		$res->departmentName 	= $array['extLinkName'];		
 		$res->language 			= $array['language'];
-		$res->access 			= $array['visibility'];
-		$res->enrolment 		= $array['registrationAllowed'];
-		$res->enrolmentKey 		= $array['enrollmentKey'];	
+		
+		if ("1.8" == substr($clarolineVersion,0,3))
+		{
+			$res->enrolment 		= $array['registrationAllowed'];
+			$res->enrolmentKey 		= $array['enrollmentKey'];
+			$res->departmentUrl 	= $array['extLinkUrl'];
+			$res->access 			= $array['visibility'];
+		}
+		else //1.9
+		{
+			$res->registration       = $array['registrationAllowed'];
+			$res->registrationKey    = $array['registrationKey'];			
+			$res->extLinkUrl         = $array['extLinkUrl'];
+			$res->access             = $array['access'];
+			$res->visibility         = $array['visibility'];
+			$res->publicationDate    = $array['publicationDate'];
+            $res->expirationDate     = $array['expirationDate'];
+            $res->status             = $array['status'];
+            $res->useExpirationDate  = ('NULL' != $array['expirationDate']);
+		}		
+			
 		return $res;
 	}
 	/**
@@ -83,6 +103,8 @@ class DUPSessionMgr{
 	 */
 	public function courseToArray( $course )
 	{
+		include get_path('rootSys') . '/platform/currentVersion.inc.php';
+		
 		$res = array();
 		$res['sysCode'] 			= $course->courseId;
 		$res['name'] 				= $course->title;
@@ -90,12 +112,28 @@ class DUPSessionMgr{
 		$res['titular'] 			= $course->titular;
 		$res['email'] 				= $course->email;
 		$res['categoryCode'] 		= $course->category;
-		$res['extLinkName'] 		= $course->departmentName;
-		$res['extLinkUrl'] 			= $course->departmentUrl;
+		$res['extLinkName'] 		= $course->departmentName;	
 		$res['language'] 			= $course->language;
-		$res['visibility'] 			= $course->access;
-		$res['registrationAllowed'] = $course->enrolment;
-		$res['enrollmentKey'] 		= $course->enrolmentKey;
+		
+		if ("1.8" == substr($clarolineVersion,0,3))
+		{
+			$res['registrationAllowed'] 	= $course->enrolment;
+			$res['enrollmentKey']			= $course->enrolmentKey;
+			$res['extLinkUrl'] 				= $course->departmentUrl;
+			$res['visibility'] 				= $course->access;
+		}
+		else //1.9
+		{
+			$res['registrationAllowed']  	= $course->registration;
+			$res['registrationKey']  		= $course->registration;			
+			$res['extLinkUrl']  			= $course->extLinkUrl;
+			$res['access']  				= $course->access;
+			$res['visibility']  			= $course->visibility;
+			$res['publicationDate']  		= $course->publicationDate;
+            $res['expirationDate']  		= isset($course->expirationDate) ? $course->expirationDate : 'NULL' ;
+            $res['status']  				= $course->status;
+		}	
+		
 		
 		return $res;	
 	}

@@ -98,7 +98,6 @@ $myPager->set_pager_call_param_name('offsetCourse');
 $courseList = $myPager->get_result_list();
 
 
-
 /**
  * Prepare display of search/Filter panel
  */
@@ -113,14 +112,8 @@ $courseDataList=array();
 //extra column : duplicate course
 $moduleData 	= get_module_data('LVDUPLIC');
 $url 			= get_module_url('LVDUPLIC');
-$path 			= get_module_path('LVDUPLIC');
-   	    	
-//find icon
-$icon = '<small>' . get_lang('Duplicate') . '</small>';	
-if ( array_key_exists( 'icon', $moduleData ) && file_exists( $path . '/' . $moduleData['icon'] ) )
-{
-	$icon = '<img src="' . $url . '/' . $moduleData['icon'] . '" alt="' . get_lang('Duplicate') . '" />';
-}
+$path 			= get_module_path('LVDUPLIC');   	    	
+$icon = '<img src="' . $url . '/duplicate.png" alt="' . get_lang('Duplicate') . '" />';
 
 
 foreach( $courseList as $numLine => $courseLine )
@@ -239,10 +232,22 @@ function prepare_get_filtred_course_list($filter = array())
                                                              )";    
 
     $sqlFilter = sizeof($sqlFilter) ? "WHERE " . implode(" AND ",$sqlFilter)  : "";
+    
+    
 
 
     // Build the complete SQL
-    $sql = "SELECT  C.`fake_code` AS `officialCode`,
+    //1.8 fake_code 
+    //1.9 administrativeNumber
+    
+    $administrativeCodeColumnName = "administrativeNumber";
+    include get_path('rootSys') . '/platform/currentVersion.inc.php';
+    if ("1.8" == substr($clarolineVersion,0,3))
+	{
+		$administrativeCodeColumnName = "fake_code";
+	}
+    
+    $sql = "SELECT  C.`" . $administrativeCodeColumnName . "` AS `officialCode`,
                     C.intitule    AS `intitule`,
                     C.faculte     AS `faculte`,
                     C.`code`      AS `sysCode`,
