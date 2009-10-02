@@ -9,7 +9,8 @@
     </p>
     <p>
         <small><?php echo get_lang( 'Do not forget to allow your status to be shown from your Skype client.' ); ?></small><br />
-        <img src="<?php echo get_module_url( 'UCONLINE' ) . '/img/privacy_shot.jpg'; ?>" alt="<?php echo get_lang( 'Skype options, Privacy panel.' ); ?>" />
+        <img src="<?php echo get_module_url( 'UCONLINE' ) . '/img/privacy_shot.jpg'; ?>" alt="<?php echo get_lang( 'Skype options, Windows.' ); ?>" />
+        <img src="<?php echo get_module_url( 'UCONLINE' ) . '/img/skype_mac.png'; ?>" alt="<?php echo get_lang( 'Skype options, MacOSX.' ); ?>" />
     </p>
     <input type="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( 'user_connected.php' ) ) , get_lang("Cancel") ); ?>

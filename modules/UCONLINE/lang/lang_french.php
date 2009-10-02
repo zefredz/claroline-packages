@@ -18,4 +18,4 @@ $_lang['Skype status notifier'] = 'Notification de statut Skype';
 $_lang['User(s) online'] = 'Utilisateurs connectés';
 $_lang['user picture'] = 'photo utilisateur';
 $_lang['user\'s Skype status'] = 'Status Skype de l\'utilisateur';
-$_lang['Warning : you can only see the users registered in YOUR courses!'] = 'Attention! Vous ne pouvez voir que les étudiants inscrits dans les mêmes cours que vous!';
+$_lang['Warning : the list below is currently restricted for security purposes'] = 'Attention! La liste ci-dessous est filtrée pour des raisons de confidentialité!';

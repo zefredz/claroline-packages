@@ -3,7 +3,7 @@
 /**
  * Who is onlin@?
  *
- * @version     UCONLINE 0.9 $Revision$ - Claroline 1.9
+ * @version     UCONLINE 1.2.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCONLINE
@@ -26,7 +26,7 @@ $toolName = get_lang( 'User(s) online' );
 
 $userPerPage = get_conf( 'usersPerPage' );
 
-$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'cours_user' ), array( 'course' => null ) );
+$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'cours_user' , 'cours' ), array( 'course' => null ) );
 
 $sql = "SELECT DISTINCT
             U.`nom`                 AS `lastname`,
@@ -45,32 +45,29 @@ $sql = "SELECT DISTINCT
                 S.`userId` = U.`user_id`
             AND
                 S.`propertyId` = 'skypeName'
-        LEFT JOIN
+        INNER JOIN
             `{$tbl[ 'user_online' ]}` AS O
             ON
                 O.`user_id` = U.`user_id`";
 
-if ( claro_is_platform_admin() || get_conf( 'allUsersAllowed' ) )
-{
-    $sql .= "WHERE
-                O.`user_id` = U.`user_id`";
-}
-else
+if ( ! claro_is_platform_admin() && ! get_conf( 'allUsersAllowed' ) )
 {
     $sql .= "LEFT JOIN
                 `{$tbl[ 'cours_user' ]}` AS C
-                ON
-                    C.`user_id` = U.`user_id`
+            ON
+                C.`user_id` = U.`user_id`
             WHERE
-                    O.`user_id` = U.`user_id`
-            AND
                     C.`code_cours` IN (
                     SELECT
-                        code_cours
+                        CU.`code_cours`
                     FROM
-                        `{$tbl[ 'cours_user' ]}`
+                        `{$tbl[ 'cours_user' ]}` AS CU
+                    INNER JOIN
+                        `{$tbl[ 'cours' ]}` AS CL
+                    ON
+                        CL.`registration` = 'close'
                     WHERE
-                        user_id = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
+                        CU.`user_id` = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
 }
 
 $myPager = new claro_sql_pager( $sql, $offset, $userPerPage );
