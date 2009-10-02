@@ -3,7 +3,7 @@
 <p><?php echo get_lang( 'List of active users for the last %time minutes :' , array( '%time' => $this->refreshTime ) ); ?></p>
 <?php if( ! get_conf( 'allUsersAllowed' ) ) : ?>
 <p>
-    <strong><?php echo get_lang( 'Warning : you can only see the users registered in YOUR courses!' ) ?></strong>
+    <strong><?php echo get_lang( 'Warning : the list below is currently restricted for security purposes' ) ?></strong>
 </p>
 <?php endif; ?>
 
@@ -110,7 +110,7 @@
             </td>
         <?php endif; ?>
         <?php if( get_conf( 'showLocalTime' ) ) : ?>
-            <td class="userTime" >
+            <td>
             <?php echo date( "H:i" , time() + $user[ 'time_offset' ] ); ?>
             </td>
         <?php endif; ?>
