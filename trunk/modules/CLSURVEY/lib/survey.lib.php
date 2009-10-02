@@ -827,7 +827,7 @@ function createSurvey( $title , $description , $data )
             `{$tbl['survey_question_list]}`(title, description, type, option)
         VALUES" . "\n" . implode(",\n", $values ) );*/
     
-    $rank = 1;
+    $rank = 0;
     
     foreach ( $data as $line )
     {
