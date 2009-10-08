@@ -321,134 +321,138 @@ class ScormImporter
       }
 
       // go through all item ..['item'][0] ['item'][1] ...
-      foreach( $itemList as $item )
-      {
-          $itemAttributes = $item->attributes();
-          $insertedItem = new item();
-          $insertedItem->setTitle( "{$item->title}" );
-          $insertedItem->setIdentifier( "{$itemAttributes->identifier}" );
-          $insertedItem->setPathId( $this->path->getId() );
-          $insertedItem->setType( 'SCORM' );
-          // parent
-          if( $parentId > -1 )
-          {
-              $insertedItem->setParentId( $parentId );
-          }
-
-          // visibility
-          if( !empty( $itemAttributes->isvisible ) && "{$itemAttributes->isvisible}" == 'true' )
-          {
-              $insertedItem->setVisible();
-          }
-          else
-          {
-              $insertedItem->setInvisible(); // IMS consider that the default value of 'isvisible' is true
-          }
-          
-          // set sys path
-          if( !empty( $itemAttributes->identifierref ) )
-          {
-            $resourceRef = $this->getResourceByRef( $itemAttributes->identifierref );
-            // resource xml base
-            $resourceRefAttributes = $resourceRef->attributes();
-            if( !empty( $resourceRefAttributes['xml:base']) )
-            {
-                $resourceXmlBase = $resourceRefAttributes['xml:base'];
-            }
-            else
-            {
-                $resourceXmlBase = '';
-            }
-            
-            if( !empty($resourceRef->attributes()->href) )
-            {
-              // full path is the sum of all xml:base
-                $itemPath = $this->manifestXmlBase . $resourcesXmlBase . $resourceXmlBase . $resourceRef->attributes()->href;
-                // parameters
-                if( !empty( $itemAttributes->parameters ) )
-                {
-                    if( substr( "{$itemAttributes->parameters}", 0, 1) == '#' || substr( "{$itemAttributes->parameters}", 0, 1) == '?' )
-                    {
-                        // anchor or url parameters
-                        $itemPath .= "{$itemAttributes->parameters}";
-                    }
-                    else
-                    {
-                        // url parameters but ? is missing
-                        $itemPath .= '?' . "{$itemAttributes->parameters}";
-                    }
-                }
-
-                $insertedItem->setSysPath( $itemPath );
-            }
-            else
-            {
-                $this->backlog->failure(get_lang('An item has an reference to a resource but that ressource cannot be find.'));
-                return false;
-            }
-          }
-          else
-          {
-            $insertedItem->setSysPath('');
-            // no associated ressource
-          }
-
-          // time limit action
-          if( !empty( $itemAttributes['adlcp:timeLimitAction']) )
-          {
-              $insertedItem->setTimeLimitAction( "{$itemAttributes['adlcp:timeLimitAction']}" );
-          }
-
-          // launch data
-          if( !empty( $itemAttributes['adlcp:dataFromLms']) )
-          {
-              $insertedItem->setLaunchData( "{$itemAttributes['adlcp:dataFromLms']}" );
-          }
-
-          // completionThreshold
-          if( !empty( $itemAttributes['adlcp:completionThreshold']) )
-          {
-              $insertedItem->setCompletionThreshold( "{$itemAttributes['adlcp:completionThreshold']}" );
-          }
-
-          // chapter or module
-          $items = $item->item;
-          
-          if( !empty( $items ) )
-          {
-              $insertedItem->setType('CONTAINER');
-          }
-          // try to save new item
-          if( $insertedItem->validate() )
-          {
-              if( $insertedItem->save() )
-              {
-                  $this->backlog->success(get_lang('Item created : %pathTitle', array('%pathTitle' => $insertedItem->getTitle())));
-
-                  // add object to pile
-                  $this->itemList[] = $insertedItem;
-              }
-              else
-              {
-                  $this->backlog->failure(get_lang('Fatal error : cannot save item'));
-                  return false;
-              }
-          }
-          else
-          {
-              $this->backlog->failure(get_lang('Cannot save item : informations missing.'));
-              return false;
-          }
-
-          // get 'children' of this item  if any
-          if( !empty( $items ) )
-          {
-              $this->addItems( $items, $insertedItem->getId());
-          }
-
-      }
+      
+        foreach( $itemList as $item )
+        {
+            $this->addItem( $item, $resourcesXmlBase, $parentId );
+        }
     }
 
+    
+    function addItem( &$item, $resourcesXmlBase, $parentId )
+    {
+        $itemAttributes = $item->attributes();
+        $insertedItem = new item();
+        $insertedItem->setTitle( "{$item->title}" );
+        $insertedItem->setIdentifier( "{$itemAttributes->identifier}" );
+        $insertedItem->setPathId( $this->path->getId() );
+        $insertedItem->setType( 'SCORM' );
+        // parent
+        if( $parentId > -1 )
+        {
+            $insertedItem->setParentId( $parentId );
+        }
+
+        // visibility
+        if( !empty( $itemAttributes->isvisible ) && "{$itemAttributes->isvisible}" == 'true' )
+        {
+            $insertedItem->setVisible();
+        }
+        else
+        {
+            $insertedItem->setInvisible(); // IMS consider that the default value of 'isvisible' is true
+        }
+        
+        // set sys path
+        if( !empty( $itemAttributes->identifierref ) )
+        {
+          $resourceRef = $this->getResourceByRef( $itemAttributes->identifierref );
+          // resource xml base
+          $resourceRefAttributes = $resourceRef->attributes();
+          if( !empty( $resourceRefAttributes['xml:base']) )
+          {
+              $resourceXmlBase = $resourceRefAttributes['xml:base'];
+          }
+          else
+          {
+              $resourceXmlBase = '';
+          }
+          
+          if( !empty($resourceRef->attributes()->href) )
+          {
+            // full path is the sum of all xml:base
+              $itemPath = $this->manifestXmlBase . $resourcesXmlBase . $resourceXmlBase . $resourceRef->attributes()->href;
+              // parameters
+              if( !empty( $itemAttributes->parameters ) )
+              {
+                  if( substr( "{$itemAttributes->parameters}", 0, 1) == '#' || substr( "{$itemAttributes->parameters}", 0, 1) == '?' )
+                  {
+                      // anchor or url parameters
+                      $itemPath .= "{$itemAttributes->parameters}";
+                  }
+                  else
+                  {
+                      // url parameters but ? is missing
+                      $itemPath .= '?' . "{$itemAttributes->parameters}";
+                  }
+              }
+
+              $insertedItem->setSysPath( $itemPath );
+          }
+          else
+          {
+              $this->backlog->failure(get_lang('An item has an reference to a resource but that ressource cannot be find.'));
+              return false;
+          }
+        }
+        else
+        {
+          $insertedItem->setSysPath('');
+          // no associated ressource
+        }
+
+        // time limit action
+        if( !empty( $itemAttributes['adlcp:timeLimitAction']) )
+        {
+            $insertedItem->setTimeLimitAction( "{$itemAttributes['adlcp:timeLimitAction']}" );
+        }
+
+        // launch data
+        if( !empty( $itemAttributes['adlcp:dataFromLms']) )
+        {
+            $insertedItem->setLaunchData( "{$itemAttributes['adlcp:dataFromLms']}" );
+        }
+
+        // completionThreshold
+        if( !empty( $itemAttributes['adlcp:completionThreshold']) )
+        {
+            $insertedItem->setCompletionThreshold( "{$itemAttributes['adlcp:completionThreshold']}" );
+        }
+
+        // chapter or module
+        $items = $item->item;
+        
+        if( !empty( $items ) )
+        {
+            $insertedItem->setType('CONTAINER');
+        }
+        // try to save new item
+        if( $insertedItem->validate() )
+        {
+            if( $insertedItem->save() )
+            {
+                $this->backlog->success(get_lang('Item created : %pathTitle', array('%pathTitle' => claro_utf8_decode( $insertedItem->getTitle(), get_conf( 'charset' ) ) )));
+
+                // add object to pile
+                $this->itemList[] = $insertedItem;
+            }
+            else
+            {
+                $this->backlog->failure(get_lang('Fatal error : cannot save item'));
+                return false;
+            }
+        }
+        else
+        {
+            $this->backlog->failure(get_lang('Cannot save item : informations missing.'));
+            return false;
+        }
+        // get 'children' of this item  if any
+        if( !empty( $items ) )
+        {
+            $this->addItems( $items, $insertedItem->getId());
+        }
+    }
     function getResourceByRef($identifierref)
     {
         $resourceList = $this->manifestContent->resources;
