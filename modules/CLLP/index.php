@@ -72,8 +72,8 @@ if( $is_allowedToEdit )
 {
     if( $cmd == 'exImport')
     {
-    	// include import lib
-				require_once dirname( __FILE__ ) . '/lib/xmlize.php';
+        // include import lib
+        require_once dirname( __FILE__ ) . '/lib/xmlize.php';
         require_once dirname( __FILE__ ) . '/lib/scorm.import.lib.php';
         // path class is already included
         require_once dirname( __FILE__ ) . '/lib/item.class.php';
@@ -212,20 +212,20 @@ if( $is_allowedToEdit )
     if( $cmd == 'exExport' )
     {
         $thisPath = $path;
-				FromKernel::uses( 'core/linker.lib' );
-				require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
-		    require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
-				include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
+        FromKernel::uses( 'core/linker.lib' );
+        require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
+        require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
+        include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
 
-				$pathExport = new PathScormExport( $thisPath );
-				if( ! $pathExport->export() )
-				{
-						$dialogBox->error(
-															get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
-														.	'<br />' . "\n"
-														.	$pathExport->getError()
-														);
-				}
+        $pathExport = new PathScormExport( $thisPath );
+        if( ! $pathExport->export() )
+        {
+            $dialogBox->error(
+                                get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
+                                .   '<br />' . "\n"
+                                .   $pathExport->getError()
+                            );
+        }
     }
 }
 

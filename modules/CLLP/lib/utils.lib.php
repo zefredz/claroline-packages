@@ -59,7 +59,7 @@ function unixToScormTime($unixTime)
 
 function scormToUnixTime( $scormTime )
 {
-    $_dh = split ('T', $scormTime);
+    $_dh = explode ('T', $scormTime);
     $days = isset( $_dh[0] ) ? $_dh[0] : 0;
     $hours = isset( $_dh[1] ) ? $_dh[1] : 0;
     
