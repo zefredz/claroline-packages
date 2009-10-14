@@ -562,19 +562,41 @@ class Question {
 	{
 	    
         $sql = "
-        	SELECT 		CH.`id` as id, 
-        				CH.`text` as answer, 
+        	SELECT 		CHOICE.`id` as id, 
+        				CHOICE.`text` as answer, 
         				COUNT(ANSWER.`userId`) as qty 
-        	FROM 		`".SurveyConstants::$CHOICE_TBL."` as CH 
+        	FROM 		`".SurveyConstants::$CHOICE_TBL."` as CHOICE 
         	INNER JOIN `".SurveyConstants::$ANSWER_CHOICE_TBL."` as ANSWER
-        	ON 			ANSWER.`answer` = CH.`id`
+        	ON 			ANSWER.`answer` = CHOICE.`id` 
         	WHERE 		ANSWER.`surveyId`='".(int)$survey->getId()."' 
         	AND			ANSWER.`questionId`='".(int)$this->id."' 
-        	GROUP BY 	CH.`id` 
-        	ORDER BY qty DESC";	        
+        	GROUP BY 	id,
+        				answer
+        	ORDER BY 	qty DESC; ";	        
 	    
 	    
 	    $this->results = claro_sql_query_fetch_all($sql);
+	}
+	
+	//load list of users who have answered a certain choice to a question
+	private function getDetailedAnswers($choiceId,$surveyId)
+	{
+		$mainTableList = claro_sql_get_main_tbl();
+		$userTable = $mainTableList['user'];
+	    
+        $sql = "
+        	SELECT 		USER.`nom`,
+        				USER.`prenom`  
+        	FROM 		`".SurveyConstants::$CHOICE_TBL."` as CHOICE 
+        	INNER JOIN `".SurveyConstants::$ANSWER_CHOICE_TBL."` as ANSWER
+        	ON 			CHOICE.`id` = ANSWER.`answer`
+        	INNER JOIN  `".$userTable."` as USER 
+        	ON 			ANSWER.`userId` = USER.`user_id` 
+        	WHERE 		ANSWER.`surveyId`='".(int)$surveyId."' 
+        	AND			ANSWER.`questionId`='".(int)$this->id."' 
+        	AND	        CHOICE.`id` = ".(int)$choiceId." ; ";	    
+	    
+	    return claro_sql_query_fetch_all($sql);
 	}
 	
     /*
@@ -910,9 +932,10 @@ class Question {
     	if(empty($this->results)) $this->loadResults($survey);
     	
     	JavascriptLoader::getInstance()->load('jquery');
+    	JavascriptLoader::getInstance()->load('excanvas.min');
     	JavascriptLoader::getInstance()->load('jquery.flot');
     	JavascriptLoader::getInstance()->load('jquery.flot.pie');
-        JavascriptLoader::getInstance()->load('surveyPieResult');
+        JavascriptLoader::getInstance()->load('surveyResult');
     	
         $out = '';
         $out .= '<div class="LVSURVEYQuestion">';
@@ -951,6 +974,25 @@ class Question {
         	    		. htmlspecialchars('% )')
         	    	. '</td>'
         	    . '</tr>';
+        	if('NO' == $survey->getAnonymous())
+        	{
+        		$userList = $this->getDetailedAnswers($aresult['id'],$survey->getId());
+        	   	$out.=
+        	     '<tr>'
+        	    . 	'<td>'
+          	    .		 '<a href="#" class="deployDetailedList">'
+          	    .		 get_lang("See Details")
+          	    .		 '</a>'
+          	    .		 '<ul class="detailedList" >';
+          	    foreach($userList as $user)
+          	    {
+          	    	$out .= '<li>'.$user['prenom'].' '.$user['nom'].'</li>';
+          	    }
+          	    $out .=
+          	    		'</ul> '
+          	    . 	'</td>'
+        	    . '</tr>';
+        	}
         }
         $out .= '</table>';
         $out .= '</div>';//class=answer
