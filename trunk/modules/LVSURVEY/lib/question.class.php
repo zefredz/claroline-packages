@@ -9,6 +9,7 @@
      * @package     LVSURVEY
      */
 
+require_once __DIR__ . '/SurveyConstants.php';
 require_once "choices.class.php";
 
 class Question {
@@ -38,22 +39,7 @@ class Question {
     protected $answer;
     
     //results of the questions
-    protected $results;
-    
-    //table which contains surveys
-    protected $tblQuestion;
-    
-    //table containing choices
-    protected $tblChoice;
-    
-    //table for multiple choice answers 
-    protected $tblAnswerChoice;
-    
-    //table for text answers 
-    protected $tblAnswerText;
-    
-    //table which contains relation between questions and surveys
-    protected $tblRelSurvQuest;
+    protected $results;    
     
     //if user is allowed to edit survey
     protected $editMode;
@@ -67,20 +53,7 @@ class Question {
         $this->surveyId = -1;
         $this->title = '';
         $this->type = 'TEXT';
-        $this->courseId = mysql_real_escape_string($courseId);
-        $tbl = claro_sql_get_tbl(
-             array('survey2_question', 
-                   'survey2_choice', 
-                   'survey2_rel_survey_question', 
-                   'survey2_answer_choice', 
-                   'survey2_answer_text'
-                 )
-             );
-        $this->tblQuestion = $tbl['survey2_question']; //TODO : not hard coded
-        $this->tblChoice = $tbl['survey2_choice']; //TODO : nothardcoded
-        $this->tblRelSurvQuest = $tbl['survey2_rel_survey_question'];
-        $this->tblAnswerChoice = $tbl['survey2_answer_choice'];
-        $this->tblAnswerText = $tbl['survey2_answer_text'];
+        $this->courseId = mysql_real_escape_string($courseId);        
         $this->choices = new Choices($courseId);
         $this->choiceAlignment = 'VERTI';
         $this->answer = '';
@@ -99,7 +72,7 @@ class Question {
                     `title`,
                     `type`,
                     `alignment`
-            FROM `".$this->tblQuestion."`
+            FROM `".SurveyConstants::$QUESTION_TBL."`
             WHERE `id` = ".(int) $id." AND `courseId`='".$this->courseId."'";
         
         $data = claro_sql_query_get_single_row($sql);
@@ -112,14 +85,12 @@ class Question {
             $this->title = $data['title'];
             $this->type = $data['type'];
             
+            $this->choices->setQuestionId($this->id);
+            $this->choices->load();
             if($this->type != 'TEXT')
             {
-                $this->choiceAlignment = $data['alignment'];
-                $this->choices->setQuestionId($this->id);
-                $this->choices->load();
+                $this->choiceAlignment = $data['alignment'];                
             }
-            else
-                $this->choiceAlignment = null;
             
             return true;
         }
@@ -138,14 +109,15 @@ class Question {
             $this->id = (int) $data['id'];
             $this->title = $data['title'];
             $this->type = $data['type'];
+            $this->choices->setQuestionId($this->id);
+            $this->choices->load();
+                
             if($this->type != 'TEXT')
             {
                 $this->choiceAlignment = $data['alignment'];
-                $this->choices->setQuestionId($this->id);
-                $this->choices->load();
+                
             }
-            else
-                $this->choiceAlignment = null;
+            
             
             return true;
         }
@@ -245,42 +217,24 @@ class Question {
     //load answers from db
     public function loadAnswer($userId)
     {
-        if($this->type == 'TEXT')
+        
+        $sql = "
+        		SELECT 	C.`id`, 
+        				C.`text`  
+        		FROM 	`".SurveyConstants::$ANSWER_CHOICE_TBL."` A
+        		INNER JOIN `".SurveyConstants::$CHOICE_TBL."` AS C
+        		ON 		A.`answer` = C.`id` 	
+				WHERE 	A.`userId` = '".(int)$userId."' 
+                AND 	A.`surveyId` = '".(int)$this->surveyId."'
+                AND 	A.`questionId` = '".(int)$this->id."'; " ;
+        
+        $choiceAnswer = claro_sql_query_fetch_all($sql);
+        $this->answer = array();
+        foreach ($choiceAnswer as $answer)
         {
-            $sql = 'SELECT `questionId`, `answer`  FROM `'.$this->tblAnswerText.'`
-					WHERE `userId` = '.(int)$userId.' AND `surveyId` = '.(int)$this->surveyId.' LIMIT 1';
-    	    $textAnswer = claro_sql_query_get_single_row($sql);
-    	    $this->answer = $textAnswer['answer'];
+            $this->answer[]= $answer['id'];
         }
-        else
-        {
-    	    if($this->type == 'MCSA')
-    	    {
-    	        $sql = "SELECT `questionId`, `answer`  FROM `".$this->tblAnswerChoice."`
-					WHERE `userId` = '".(int)$userId."' 
-                    AND `surveyId` = '".(int)$this->surveyId."' 
-                    AND `questionId` = '".(int)$this->id."'
-                    LIMIT 1";
-    	        $choiceAnswer = claro_sql_query_get_single_row($sql);
-    	        $this->answer = array();
-    	        $this->answer []= $choiceAnswer['answer'];
-    	        $this->choices->setSelection($this->answer);
-    	    }
-    	    else
-    	    {
-    	        $sql = "SELECT `questionId`, `answer`  FROM `".$this->tblAnswerChoice."`
-					WHERE `userId` = '".(int)$userId."' 
-                    AND `surveyId` = '".(int)$this->surveyId."'
-                    AND `questionId` = '".(int)$this->id."'" ;
-    	        $choiceAnswer = claro_sql_query_fetch_all($sql);
-    	        $this->answer = array();
-    	        foreach ($choiceAnswer as $answer)
-    	        {
-    	            $this->answer []= $answer['answer'];
-    	        }
-    	        $this->choices->setSelection($this->answer);
-    	    }
-        }
+        $this->choices->setSelection($this->answer);    	    
     }
     
     //remove answers to this question for one survey
@@ -288,13 +242,13 @@ class Question {
     {
         if($this->type=='TEXT')
         {        
-            $sql = "DELETE FROM `".$this->tblAnswerText."`
+            $sql = "DELETE FROM `".SurveyConstants::$ANSWER_TEXT_TBL."`
         		WHERE `surveyId` = '".(int) $surveyId."'
         		AND `questionId` = '".(int) $this->id."'";
         }
         else
         {
-            $sql = "DELETE FROM `".$this->tblAnswerChoice."`
+            $sql = "DELETE FROM `".SurveyConstants::$ANSWER_CHOICE_TBL."`
         		WHERE `surveyId` = '".(int) $surveyId."'
         		AND `questionId` = '".(int) $this->id."'";
         }
@@ -306,80 +260,91 @@ class Question {
     {
         if($this->type=='TEXT')
         {        
-            $sql = "DELETE FROM `".$this->tblAnswerText."`
+            $sql = "DELETE FROM `".SurveyConstants::$ANSWER_TEXT_TBL."`
         		WHERE `questionId` = '".(int) $this->id."'";
         }
         else
         {
-            $sql = "DELETE FROM `".$this->tblAnswerChoice."`
+            $sql = "DELETE FROM `".SurveyConstants::$ANSWER_CHOICE_TBL."`
         		WHERE `questionId` = '".(int) $this->id."'";
         }
         claro_sql_query($sql);
     }
     
-    //save answers
-	public function saveAnswers($userId)
+    //save answer of the user
+	public function saveAnswers($userId = NULL)
 	{
+		if($userId == NULL)
+			$userId = claro_get_current_user_id();
+		
+		//STEP 1 : let's see if the user has already made an answer, if so delete the previous one			
 		if($this->type == 'TEXT')
 		{
-		    if(!is_null($userId))
-		    {
-    			$sql = "DELETE FROM `".$this->tblAnswerText."`
-    					WHERE `userId` = ".(int)$userId." 
-    					AND `surveyId` = ".(int)$this->surveyId." 
-    					AND `questionId` = ".(int)$this->id;
-    			claro_sql_query($sql);
-    			$sql = "INSERT INTO `".$this->tblAnswerText."` (
-					`userId`,
-					`questionId`,
-					`surveyId`,
-					`answer` )
-					VALUES ( '".(int)$userId."',
-					'".(int)$this->id."', 
-					'".(int)$this->surveyId."', 
-					'".addslashes($this->answer)."');";
-		    }
-		    else
-		    {
-		        $sql = "INSERT INTO `".$this->tblAnswerText."` (
-					`userId`,
-					`questionId`,
-					`surveyId`,
-					`answer` )
-					VALUES ( NULL,
-					'".(int)$this->id."', 
-					'".(int)$this->surveyId."', 
-					'".addslashes($this->answer)."');";
-		    }
+			// if type = text we must also delete the record in choice table
+			$sqlDeletePreviousText = "
+					DELETE FROM `".SurveyConstants::$CHOICE_TBL."`
+    				WHERE EXISTS 	
+    						(
+    						SELECT `id` 
+    						FROM `" . SurveyConstants::$ANSWER_CHOICE_TBL . "`
+    						WHERE `userId` = ".(int)$userId." 
+    						AND `surveyId` = ".(int)$this->surveyId." 
+    					    AND `questionId` = ".(int)$this->id."
+    					    AND `" . SurveyConstants::$ANSWER_CHOICE_TBL . "`.`answer` = `".SurveyConstants::$CHOICE_TBL."`.`id` 			
+    						)";
+    		claro_sql_query($sqlDeletePreviousText);			
+		}
+		$sqlDeletePreviousChoice = "DELETE FROM `".SurveyConstants::$ANSWER_CHOICE_TBL."`
+				WHERE `userId` = ".(int)$userId." 
+				AND `surveyId` = ".(int)$this->surveyId." 
+				AND `questionId` = ".(int)$this->id;
+		claro_sql_query($sqlDeletePreviousChoice);
+		
+		
 
-			claro_sql_query($sql);
-		}
-		else
+		//STEP 2 : let's save the new answer
+
+		$selectedChoicesId = array();
+		
+		if($this->type == 'TEXT')
 		{
-			$sql = "DELETE FROM `".$this->tblAnswerChoice."`
-					WHERE `userId` = ".(int)$userId." 
-					AND `surveyId` = ".(int)$this->surveyId." 
-					AND `questionId` = ".(int)$this->id;
-			claro_sql_query($sql);
-			
-			$list = $this->choices->getChoices();
-            foreach( $list as $aChoice )
-            {
-				if($this->choices->isSelected($aChoice['id']))
-				{
-					$sql = "INSERT INTO `".$this->tblAnswerChoice."` (
-							`userId`,
-							`questionId`,
-							`surveyId`,
-							`answer` )
-							VALUES ( '".(int)$userId."',
-							'".(int)$this->id."', 
-							'".(int)$this->surveyId."', 
-							'".(int)$aChoice['id']."');";
-					claro_sql_query($sql);
-				}
-            }
+			//if type = text we must first save the answer as a possible answer for this question
+		    $sqlInsertNewText = "
+		    	INSERT INTO `".SurveyConstants::$CHOICE_TBL."` (
+					`questionId`,
+					`text` )
+				VALUES ( 
+					'".(int)$this->id."',  
+					'".addslashes($this->answer)."'); ";
+		    $idInsertedText = claro_sql_query_insert_id($sqlInsertNewText);
+		    $selectedChoicesId[] = $idInsertedText;
 		}
+		
+		if('MCSA' == $this->type || 'MCMA' == $this->type )
+		{			
+			$selectedChoicesId = array();
+			foreach($this->choices->getSelectedChoices() as $choice)
+			{
+				$selectedChoicesId[] = $choice['id'];
+			}			
+		}
+		
+		foreach($selectedChoicesId as $chosenId)
+		{
+			$sql = "
+				INSERT INTO `".SurveyConstants::$ANSWER_CHOICE_TBL."` (
+								`userId`,
+								`questionId`,
+								`surveyId`,
+								`answer` )
+				VALUES ( 		'".(int)$userId."',
+								'".(int)$this->id."', 
+								'".(int)$this->surveyId."', 
+								'".(int)$chosenId."'); ";
+			claro_sql_query($sql);
+		}	
+	
+
 	}
 	
     //save a new question or edited question
@@ -399,7 +364,7 @@ class Question {
         if($this->id == -1)
         {
             //Insert new question in DB
-            $sql = "INSERT INTO `".$this->tblQuestion."`
+            $sql = "INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
                     SET `courseId` = '".$this->courseId."',
                     	`title` = '".addslashes($this->title)."',
                         `type` = '".addslashes($this->type)."'"
@@ -437,7 +402,7 @@ class Question {
         else
         {
             //update current survey in DB
-            $sql = "UPDATE `".$this->tblQuestion."`
+            $sql = "UPDATE `".SurveyConstants::$QUESTION_TBL."`
                 	SET `title` = '".addslashes($this->title)."'"
                     .(is_null($this->choiceAlignment)?"":",`alignment` = '".addslashes($this->choiceAlignment)."' ")
                 	."WHERE `id` = ".$this->id;
@@ -472,7 +437,7 @@ class Question {
             $this->choices->removeChoices();
         }
         
-        $sql = "DELETE FROM `".$this->tblQuestion."`
+        $sql = "DELETE FROM `".SurveyConstants::$QUESTION_TBL."`
         	WHERE `id` = ".(int)$this->id;
         claro_sql_query($sql);
     }
@@ -488,7 +453,7 @@ class Question {
             return false;
         
         //add a relation survey-question
-        $sql = "INSERT INTO `".$this->tblRelSurvQuest."`
+        $sql = "INSERT INTO `".SurveyConstants::$REL_SURV_QUEST_TBL."`
                     SET `surveyId` = ".(int) $surveyId.",
                     	`questionId` = ".(int) $this->id.",
                         `rank` = 0
@@ -497,7 +462,7 @@ class Question {
         $insertedId = claro_sql_query_insert_id($sql);
            
         //don't forget rank
-        $sql = "UPDATE `".$this->tblRelSurvQuest."`
+        $sql = "UPDATE `".SurveyConstants::$REL_SURV_QUEST_TBL."`
             	SET `rank` = ".(int) $insertedId."
         		WHERE `id` = ".(int) $insertedId;
         claro_sql_query($sql);
@@ -514,7 +479,7 @@ class Question {
             $this->removeAnswers($surveyId);
             
             //remove the question from the survey
-            $sql = "DELETE FROM `".$this->tblRelSurvQuest."`
+            $sql = "DELETE FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
             		WHERE `surveyId` = ".(int) $surveyId."
             		AND `questionId` = ".(int) $this->id;
             claro_sql_query($sql);
@@ -528,7 +493,7 @@ class Question {
     {
         $this->removeAllAnswers();
         
-        $sql = "DELETE FROM `".$this->tblRelSurvQuest."`
+        $sql = "DELETE FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
         		WHERE `questionId` = ".(int) $this->id;
         claro_sql_query($sql);
         //TODO : remove answers about this question and this survey
@@ -561,17 +526,11 @@ class Question {
     //check if the question has been answered
 	public function isAnswered()
 	{
-	    if($this->type == 'TEXT')
-	    {
-	        $sql = "SELECT COUNT(`questionId`) 
-    	    		FROM `".$this->tblAnswerText."` 
-    	    		WHERE `questionId`='".$this->id."'";
-	    }
-	    else{
-    	    $sql = "SELECT COUNT(`questionId`) 
-    	    		FROM `".$this->tblAnswerChoice."` 
-    	    		WHERE `questionId`='".$this->id."'";
-	    }
+	    
+        $sql = "SELECT COUNT(`questionId`) 
+        		FROM `".SurveyConstants::$ANSWER_CHOICE_TBL."` 
+        		WHERE `questionId`='".$this->id."'";
+	    
 	    
 	    if($this->surveyId > 0)
 	        $sql .= " AND `surveyId`='".(int)$this->surveyId."'";
@@ -588,7 +547,7 @@ class Question {
 	public function isUsedInSurvey()
 	{
 	    $sql = "SELECT COUNT(`questionId`) 
-    	    		FROM `".$this->tblRelSurvQuest."` 
+    	    		FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."` 
     	    		WHERE `questionId`='".$this->id."'";
     	$val = (int)claro_sql_query_fetch_single_value($sql);
 	    
@@ -599,28 +558,21 @@ class Question {
 	}
 	
     //load results of the question
-	public function loadResults()
+	private function loadResults($survey)
 	{
-	    if($this->type == 'TEXT')
-	    {
-	        $sql = "SELECT `userId`, `answer` 
-	        	FROM `".$this->tblAnswerText."` 
-	        	WHERE `surveyId`='".(int)$this->surveyId."' 
-	        	AND	`questionId`='".(int)$this->id."'";
-	        
-	    }
-	    else
-	    {
-	        $sql = "SELECT an.`userId`, COUNT(an.`answer`) as qty, an.`answer`, ch.`text` 
-	        	FROM `".$this->tblAnswerChoice."` as an 
-	        	INNER JOIN `".$this->tblChoice."` as ch
-	        	ON an.`answer` = ch.`id`
-	        	WHERE an.`surveyId`='".(int)$this->surveyId."' 
-	        	AND	an.`questionId`='".(int)$this->id."' 
-	        	GROUP BY an.`answer` 
-	        	ORDER BY qty DESC";
-	        
-	    }
+	    
+        $sql = "
+        	SELECT 		CH.`id` as id, 
+        				CH.`text` as answer, 
+        				COUNT(ANSWER.`userId`) as qty 
+        	FROM 		`".SurveyConstants::$CHOICE_TBL."` as CH 
+        	INNER JOIN `".SurveyConstants::$ANSWER_CHOICE_TBL."` as ANSWER
+        	ON 			ANSWER.`answer` = CH.`id`
+        	WHERE 		ANSWER.`surveyId`='".(int)$survey->getId()."' 
+        	AND			ANSWER.`questionId`='".(int)$this->id."' 
+        	GROUP BY 	CH.`id` 
+        	ORDER BY qty DESC";	        
+	    
 	    
 	    $this->results = claro_sql_query_fetch_all($sql);
 	}
@@ -629,18 +581,20 @@ class Question {
            * RENDERING FUNCTIONS
            */
     //render the question for filling
-    public function renderFillForm($arrowup = false, $arrowdown= false)
+    public function renderFillForm($arrowup = false, $arrowdown= false, $userId = NULL)
     {
+    	if (empty($userId)) $userId = claro_get_current_user_id();
+    	if (empty($this->answer)) $this->loadAnswer($userId);
         $out = '<div class="LVSURVEYQuestion">';
         //show title
         $out .= '<div class="LVSURVEYQuestionTitle">';
-        if($this->editMode == true)
+        if($this->editMode)
 		{
-            if($arrowup == true)
+            if($arrowup)
                 $out .= '<a href="show_survey.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'&amp;cmd=questionMoveUp">'
                     .     '<img src="' .get_icon_url('move_up').'" border="0" alt="'.get_lang('Move up').'" />'
                     .     '</a>';
-            if($arrowdown == true)
+            if($arrowdown)
                 $out .= '<a href="show_survey.php?surveyId='.$this->surveyId.'&amp;questionId='.$this->id.'&amp;cmd=questionMoveDown">'
                     .     '<img src="' .get_icon_url('move_down').'" border="0" alt="'.get_lang('Move down').'" />'
                     .     '</a>';
@@ -658,8 +612,10 @@ class Question {
         //show question
         $out .= '<div class="LVSURVEYQuestionContent">'."\n";
         if($this->type == 'TEXT'){
+        	$chosenAnswers = $this->choices->getSelectedChoices();
+        	$answerText = empty($chosenAnswers) ? '' : $chosenAnswers[0]['text'];
             $out .= '<textarea name="question'.$this->id.'" id="question'.$this->id.'" rows="3" cols="40">'
-            		.htmlspecialchars($this->answer)
+            		.htmlspecialchars($answerText)
                     .'</textarea>'."\n";
         }
         else
@@ -901,7 +857,6 @@ class Question {
         		.    '<a href="#" id="addChoice">'.get_lang('Add a choice').'</a> - ' . "\n"
         		.    '<a href="#" id="removeChoice">'.get_lang('Remove a choice').'</a>' . "\n"
         		.    '</div>' . "\n"
-        		.    '<div id="questionNoJavascript">Javascript isn\'t working!</div>' . "\n"
         		.    '</td>' . "\n"
         		.    '</tr>';
     		
@@ -949,74 +904,59 @@ class Question {
     }
     
     //render results page for the survey
-    public function renderResults()
+    public function renderResults($survey)
     {
+    	$participantCount = count($survey->getParticipantList());
+    	if(empty($this->results)) $this->loadResults($survey);
+    	
+    	JavascriptLoader::getInstance()->load('jquery');
+    	JavascriptLoader::getInstance()->load('jquery.flot');
+    	JavascriptLoader::getInstance()->load('jquery.flot.pie');
+        JavascriptLoader::getInstance()->load('surveyPieResult');
+    	
         $out = '';
-        $out = '<div class="LVSURVEYQuestion">';
-        $out .= '<div class="LVSURVEYQuestionTitle">'.htmlspecialchars($this->title).'</div>';
-        //test if no results
+        $out .= '<div class="LVSURVEYQuestion">';
+        $out .= '<input type="hidden" name="questionType" value="'. $this->type . '" />';
+        $out .= '<div class="LVSURVEYQuestionTitle">'.htmlspecialchars($this->title).'</div>';        
         $out .= '<div class="LVSURVEYQuestionContent">';
+        $out .= '<div class="LVSURVEYQuestionResultChart"></div>';
+        
+       
+        
+        //test if no results
         if(count($this->results)==0)
         {
             $out.='<div class="answer">'.get_lang('No result').'</div>';
+            $out .= '</div></div>';
+            return $out;
         }
-        else
+        
+             
+        $out.='<div class="answer"><table>';
+         	
+        foreach($this->results as $aresult)
         {
-            //results layout depend on the type of question
-            if($this->type == 'TEXT')
-            {
-                foreach($this->results as $aresult)
-                {
-                    $out.='<div class="answer">'.htmlspecialchars($aresult['answer']).'</div>';
-                }
-            }
-            else if($this->type == 'MCSA')
-            {
-                $out.='<div class="answer">';
-                $total = 0;
-                foreach($this->results as $aresult)
-                {
-                    $total += (int)$aresult['qty'];
-                }
-                $out.='<table>';
-
-                foreach($this->results as $aresult)
-                {
-                    $out.='<tr>'
-                	    . '<td>'
-                	    . $aresult['text']
-                	    . '</td>'
-                	    . '<td>'
-                	    . (int)$aresult['qty']*100/$total . htmlspecialchars('%')
-                	    . '</td>'
-                	    . '</tr>';
-                }
-                
-                $out .= '</table>';
-                $out .= '</div>';
-            }
-            else if($this->type == 'MCMA')
-            {
-                $out.='<div class="answer">';
-                $out.='<table>';
-                foreach($this->results as $aresult)
-                {
-                    $out.='<tr>'
-                	    . '<td>'
-                	    . $aresult['text']
-                	    . '</td>'
-                	    . '<td>'
-                	    . $aresult['qty']
-                	    . '</td>'
-                	    . '</tr>';
-                }
-                $out .= '</table>';
-                $out .= '</div>';
-            }
-
+            $out.='<tr class="answerTR">'
+        	    	. '<td>'
+          	    .		 '<span class="answerLabel" >' . $aresult['answer'] . '</span> : '
+          	    	. '</td>'
+          	    	. '<td>'
+          	    		. $aresult['qty']
+        	    	. '</td>'
+        	    	. '<td>'
+        	    		. htmlspecialchars('(') 
+        	    		. '<span class="answerPercentage" >'
+        	    			. (int)$aresult['qty']*100/$participantCount
+        	    		. '</span>'
+        	    		. htmlspecialchars('% )')
+        	    	. '</td>'
+        	    . '</tr>';
         }
-        $out .= '</div>';
-        $out .= '</div>';
+        $out .= '</table>';
+        $out .= '</div>';//class=answer
+            
+        $out .= '</div>';//class=LVSURVEYQuestionContent
+        $out .= '</div>';//class = LVSURVEYQuestion
         return $out;
     }
     

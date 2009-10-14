@@ -7,7 +7,7 @@
 	margin : 10px 0px;
 	border: 1px #cccccc solid;
 	padding : 0px;
-	
+	overflow : auto;
 }
 	
 .LVSURVEYQuestionTitle {
@@ -25,10 +25,19 @@
 
 .LVSURVEYQuestionContent {
 	padding : 5px;
+	clear : both;
 }
 
 .LVSURVEYQuestionContent ul{
 	list-style:none;
 	padding : 0px;
 	margin : 0px;
+}
+
+.LVSURVEYQuestionResultChart
+{
+	width : 500px;
+	height: 150px;
+	border: 1px dashed gainsboro;
+	float : right;
 }

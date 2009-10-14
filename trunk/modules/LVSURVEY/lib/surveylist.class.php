@@ -9,6 +9,8 @@
      * @package     LVSURVEY
      */
      
+require_once __DIR__ . '/SurveyConstants.php';
+
 //class to manage list of surveys
 class SurveyList {
     
@@ -18,9 +20,6 @@ class SurveyList {
     //if user is allowed to edit survey
     protected $editMode;
     
-    //table which contains surveys
-    protected $tblSurvey;
-    
     //list of surveys
     protected $surveyList;
     
@@ -28,8 +27,6 @@ class SurveyList {
     {
         $this->editMode = $editMode;
         $this->courseId = mysql_real_escape_string($courseId);
-        $tbl = claro_sql_get_tbl(array('survey2_survey'));
-        $this->tblSurvey = $tbl['survey2_survey'];
     }
     
     //load the survey list
@@ -48,7 +45,7 @@ class SurveyList {
                         `resultsVisibility`,
                         UNIX_TIMESTAMP(`startDate`) AS `unix_start_date`,
                         UNIX_TIMESTAMP(`endDate`) AS `unix_end_date`
-                FROM `".$this->tblSurvey."`
+                FROM `".SurveyConstants::$SURVEY_TBL."`
                 WHERE `courseId` = '".$this->courseId."'
                 ORDER BY `rank` DESC";
         }
@@ -60,7 +57,7 @@ class SurveyList {
                         `resultsVisibility`,
                         UNIX_TIMESTAMP(`startDate`) AS `unix_start_date`,
                         UNIX_TIMESTAMP(`endDate`) AS `unix_end_date`
-                FROM `".$this->tblSurvey."`
+                FROM `".SurveyConstants::$SURVEY_TBL."`
                 WHERE `courseId` = '".$this->courseId."' AND `visibility` = 'VISIBLE'
                 ORDER BY `rank` DESC";
         }
@@ -76,7 +73,7 @@ class SurveyList {
                 	`id`,
                 	`courseId`,
 					`rank`
-        		FROM `".$this->tblSurvey."`
+        		FROM `".SurveyConstants::$SURVEY_TBL."`
         		WHERE `id` = ".(int) $surveyId;
         $firstSurvey = claro_sql_query_get_single_row($sql);
         
@@ -84,7 +81,7 @@ class SurveyList {
                 	`id`,
                 	`courseId`,
                 	`rank`
-                FROM `".$this->tblSurvey."`
+                FROM `".SurveyConstants::$SURVEY_TBL."`
                 WHERE `courseId` = '".$firstSurvey['courseId']."'
                 AND `rank` > ".(int) $firstSurvey['rank']
                 ." ORDER BY `rank` ASC LIMIT 1";
@@ -98,11 +95,11 @@ class SurveyList {
             return false; //survey already first
             
         //exchange ranks
-        $sql = "UPDATE `".$this->tblSurvey."`
+        $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `rank` = ".(int) $nextSurvey['rank']."
                 	WHERE `id` = ".(int) $firstSurvey['id'];
         claro_sql_query($sql);
-        $sql = "UPDATE `".$this->tblSurvey."`
+        $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `rank` = ".(int) $firstSurvey['rank']."
                 	WHERE `id` = ".(int) $nextSurvey['id'];
         
@@ -124,7 +121,7 @@ class SurveyList {
                 	`id`,
                 	`courseId`,
 					`rank`
-        		FROM `".$this->tblSurvey."`
+        		FROM `".SurveyConstants::$SURVEY_TBL."`
         		WHERE `id` = ".(int) $surveyId;
         $firstSurvey = claro_sql_query_get_single_row($sql);
         
@@ -132,7 +129,7 @@ class SurveyList {
                 	`id`,
                 	`courseId`,
                 	`rank`
-                FROM `".$this->tblSurvey."`
+                FROM `".SurveyConstants::$SURVEY_TBL."`
                 WHERE `courseId` = '".$firstSurvey['courseId']."' 
                 AND `rank` < ".(int) $firstSurvey['rank']
                 ." ORDER BY `rank` DESC LIMIT 1";
@@ -146,12 +143,12 @@ class SurveyList {
             return false; //survey already last
             
         //exchange ranks
-        $sql = "UPDATE `".$this->tblSurvey."`
+        $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `rank` = ".(int) $nextSurvey['rank']."
                 	WHERE `id` = ".(int) $firstSurvey['id'];
         claro_sql_query($sql) ;
         
-        $sql = "UPDATE `".$this->tblSurvey."`
+        $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `rank` = ".(int) $firstSurvey['rank']."
                 	WHERE `id` = ".(int) $nextSurvey['id'];
         
