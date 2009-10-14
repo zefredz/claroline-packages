@@ -4,15 +4,16 @@
      * @copyright (c) Haute Ecole Léonard de Vinci
      * @version     0.1 $Revision$
      * @author      BAUDET Gregory <gregory.baudet@gmail.com>
+     * @author      Van Eerdenbrugghe Philippe <philippe.vaneerdenbrugghe@vinci.be>
      * @license     http://www.gnu.org/copyleft/gpl.html
      *              GNU GENERAL PUBLIC LICENSE version 2 or later
      * @package     LVSURVEY
      * 
      * TODO 
-     *  display Charts
      *  allow users to comment their answers
      *  for not anonymous survey : display who has replied what
      *  prevent people to change their answer after a survey is closed
+     *  extract templates
      *  
      */
 header('Location:./survey_list.php');

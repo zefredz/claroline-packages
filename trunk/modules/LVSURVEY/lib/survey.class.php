@@ -140,7 +140,7 @@ class Survey {
         
         if(!empty($_REQUEST['surveyStartDate']))
         {
-        	if(!preg_match ("/^([0-9]{2})/([0-9]{2})/([0-9]{2})$/", $_REQUEST['surveyStartDate'],$regs))
+        	if(!preg_match ("/^([0-9]{2})\/([0-9]{2})\/([0-9]{2})$/", $_REQUEST['surveyStartDate'],$regs))
         	{
             	$this->setStartDate(0);
             	$this->validationErrors .= get_lang('Date format must be DD/MM/YY').'<br />';
@@ -164,7 +164,7 @@ class Survey {
         
         if(!empty($_REQUEST['surveyEndDate']))
         {
-        	if(!preg_match ("/^([0-9]{2})/([0-9]{2})/([0-9]{2})$/", $_REQUEST['surveyEndDate'],$regs))
+        	if(!preg_match ("/^([0-9]{2})\/([0-9]{2})\/([0-9]{2})$/", $_REQUEST['surveyEndDate'],$regs))
         	{
             	$this->setEndDate(0);
             	$this->validationErrors .= get_lang('Date format must be DD/MM/YY').'<br />';
