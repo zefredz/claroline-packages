@@ -8,18 +8,14 @@
      *              GNU GENERAL PUBLIC LICENSE version 2 or later
      * @package     LVSURVEY
      */
+
+require_once __DIR__ . '/SurveyConstants.php';
      
 //class to manage list of questions
 class QuestionList {
     
     //unique id of the course
     protected $courseId;
-    
-    //table which contains surveys
-    protected $tblQuestion;
-    
-    //table which contains relation between questions and surveys
-    protected $tblRelSurvQuest;
     
     //list of surveys
     protected $questionList;
@@ -33,15 +29,7 @@ class QuestionList {
     //constructor
     public function __construct($courseId)
     {
-        $this->courseId = mysql_real_escape_string($courseId);
-        $tbl = claro_sql_get_tbl(
-             array('survey2_question', 
-                   'survey2_rel_survey_question'
-                 )
-             );
-        
-        $this->tblQuestion = $tbl['survey2_question']; //TODO : not hard coded
-        $this->tblRelSurvQuest = $tbl['survey2_rel_survey_question'];
+        $this->courseId = mysql_real_escape_string($courseId);        
         //default values
         $this->orderby = 'title';
         $this->reverseOrder = false;
@@ -76,8 +64,8 @@ class QuestionList {
                      * get rows of table
                      */
          $sql = "SELECT q.`id`, q.`title`, q.`type`, COUNT(rel.`surveyId`) AS used
-                    FROM `".$this->tblQuestion."` AS q 
-                    LEFT JOIN `".$this->tblRelSurvQuest."` AS rel
+                    FROM `".SurveyConstants::$QUESTION_TBL."` AS q 
+                    LEFT JOIN `".SurveyConstants::$REL_SURV_QUEST_TBL."` AS rel
                     ON q.`id`= rel.`questionId` 
                     WHERE q.`courseId` = '".$this->courseId."'
                     GROUP BY q.`id`
@@ -194,7 +182,7 @@ class QuestionList {
         $counter = 0;
         if( !empty($this->questionList) )
         {
-            $sql = "SELECT `questionId` FROM `".$this->tblRelSurvQuest."`
+            $sql = "SELECT `questionId` FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
                     WHERE `surveyId`='".(int)$surveyId."'";
                     
             $questOfSurv = claro_sql_query_fetch_all($sql);

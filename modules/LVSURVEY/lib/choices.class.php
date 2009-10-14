@@ -8,7 +8,9 @@
      *              GNU GENERAL PUBLIC LICENSE version 2 or later
      * @package     LVSURVEY
      */
-     
+
+require_once __DIR__ . '/SurveyConstants.php';
+
 class Choices
 {
     //unique id of the course
@@ -18,10 +20,8 @@ class Choices
     protected $choiceList;
     
     //questionId
-    protected $questionId;
-    
-    //table containing choices
-    protected $tblChoice;
+    protected $questionId;    
+
     
     //selected choices
     protected $selectedList;
@@ -33,9 +33,7 @@ class Choices
     public function __construct($courseId)
     {
         $this->questionId = -1;
-        $this->courseId = mysql_real_escape_string($courseId);
-        $tbl = claro_sql_get_tbl(array('survey2_choice'));
-        $this->tblChoice = $tbl['survey2_choice']; //TODO : nothardcoded
+        $this->courseId = mysql_real_escape_string($courseId);        
         $this->selectedList = array();
         $this->duplicate = false;
         $this->choiceList = array();
@@ -54,8 +52,8 @@ class Choices
             return false;
         $sql = "SELECT
                 `id`,
-                `text`
-        FROM `".$this->tblChoice."`
+                `text` 
+        FROM `".SurveyConstants::$CHOICE_TBL."`
         WHERE `questionId` = '".$this->questionId."'
         ORDER BY `id` ASC";
         
@@ -73,14 +71,14 @@ class Choices
         {
             if(($aChoice['id']=='-1')||($this->duplicate == true))
             {
-                $sql = "INSERT INTO `".$this->tblChoice."`
+                $sql = "INSERT INTO `".SurveyConstants::$CHOICE_TBL."`
                         SET `questionId` = '".$this->questionId    ."',
                         	`text` = '".addslashes($aChoice['text'])."'";
                 $insertedId = claro_sql_query_insert_id($sql);
             }
             else
             {
-                $sql = "UPDATE `".$this->tblChoice."`
+                $sql = "UPDATE `".SurveyConstants::$CHOICE_TBL."`
                 	SET `text` = '".addslashes($aChoice['text'])."'
                 	WHERE `id` = ".$aChoice['id'];
                 claro_sql_query($sql);
@@ -91,7 +89,7 @@ class Choices
     //remove choices of the question
     public function removeChoices()
     {
-        $sql = "DELETE FROM `".$this->tblChoice."`
+        $sql = "DELETE FROM `".SurveyConstants::$CHOICE_TBL."`
                 	WHERE `questionId` = ".(int)$this->questionId;
         claro_sql_query($sql);
     }
@@ -128,13 +126,26 @@ class Choices
     public function GetChoices()
     {
         return $this->choiceList;
-    }
+    }    	
     
     //set choices wich are selected
     public function setSelection($list)
     {
         if(is_array($list))
             $this->selectedList = $list;
+    }
+	//set choices wich are selected
+    public function getSelectedChoices()
+    {
+    	$res = array();
+    	foreach($this->choiceList as $choice)
+    	{
+    		if(in_array($choice['id'],$this->selectedList))
+    		{
+    			$res[] = $choice;
+    		}
+    	}
+        return $res;
     }
     
     //ask if a choice is selected

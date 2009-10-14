@@ -1,49 +1,46 @@
 var nbchoice;
 
+function showMultipleChoices(nbChoice)
+{
+	$("div[id^='divquestionCh']").hide();
+	$("div[id^='divquestionCh']:lt("+(nbchoice+1)+")").show();
+	$("#menuaddrem").show();
+    $("#divquestionAlign").show();
+}
+
+function hideMultipleChoice()
+{
+	$("div[id^='divquestionCh']").hide();
+	$("#menuaddrem").hide();
+	$("#divquestionAlign").hide();
+}
+
 $(document).ready(function(){
-	$("#questionNoJavascript").hide();
-	
-	if($("#questionType[@checked]").val()!="TEXT")
+		
+	$("input[name='questionType']").click(	function()
 	{
-		nbchoice = parseInt($("#questionNbCh").val());
-		$("#questionNoJavascript").text(nbchoice);
-		$("div[@id^='divquestionCh']").hide();
-		$("div[@id^='divquestionCh']:lt("+(nbchoice+1)+")").show();
-		$("#menuaddrem").show();
-        $("#divquestionAlign").show();
-	}
-	else
-	{
-		nbchoice = 2;
-		$("#questionNbCh").val(nbchoice);
-		$("div[@id^='divquestionCh']").hide();
-		$("#menuaddrem").hide();
-        $("#divquestionAlign").hide();
-	}
-	
-	$("#questionNbCh").val(nbchoice);
-	
-	$(":radio[@id='questionType']").click(function () {
-		if($("#questionType[@checked]").val()!="TEXT")
+		if ($("input[name='questionType']:checked").val() == "TEXT" )
 		{
-			$("div[@id^='divquestionCh']:lt("+(nbchoice+1)+")").show();
-			$("#menuaddrem").show();
-            $("#divquestionAlign").show();
+			hideMultipleChoice();
 		}
 		else
 		{
-			$("div[@id^='divquestionCh']").hide();
-			$("#menuaddrem").hide();
-            $("#divquestionAlign").hide();
+			nbChoice = $("#questionNbCh").val();
+			showMultipleChoices(nbChoice);
 		}
-	});
+	});	
+	
+	nbchoice = 2;
+	$("#questionNbCh").val(nbchoice);
+	$("#questionType[value='MCSA']").click();
+	showMultipleChoices();	
 		
 	$("#addChoice").click(function () {
 		if(nbchoice<10)
 		{
 			nbchoice = nbchoice + 1;
 			$("#questionNbCh").val(nbchoice);
-			$("div[@id^='divquestionCh']:hidden:first").show();
+			$("div[id^='divquestionCh']:hidden:first").show();
 		}
 	});
 	
@@ -52,7 +49,7 @@ $(document).ready(function(){
 		{
 			nbchoice = nbchoice -1;
 			$("#questionNbCh").val(nbchoice);
-			$("div[@id^='divquestionCh']:visible:last").hide();
+			$("div[id^='divquestionCh']:visible:last").hide();
 		}
 	});
 	

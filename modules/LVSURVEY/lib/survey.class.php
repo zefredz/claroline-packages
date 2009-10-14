@@ -8,11 +8,11 @@
      *              GNU GENERAL PUBLIC LICENSE version 2 or later
      * @package     LVSURVEY
      */
-
-require_once 'question.class.php';
+require_once __DIR__ . '/SurveyConstants.php';
+require_once __DIR__ . '/question.class.php';
 //Contains Survey class
 class Survey {
-    
+	
     //unique id of the course
     protected $courseId;
     
@@ -38,25 +38,7 @@ class Survey {
     protected $startDate;
     
     //endDate of the survey
-    protected $endDate;
-
-    //table which contains surveys
-    protected $tblSurvey;
-    
-    //table which contains surveys
-    protected $tblQuestion;
-    
-    //table which contains relation between questions and surveys
-    protected $tblRelSurvQuest;
-    
-    //table for multiple choice answers 
-    protected $tblAnswerChoice;
-    
-    //table for text answers 
-    protected $tblAnswerText;
-	
-    //table which contains relation between users and surveys
-	protected $tblRelSurvUser;
+    protected $endDate;    
     
     //errors when validating datas
     protected $validationErrors;
@@ -66,9 +48,9 @@ class Survey {
 	
 	//if user is allowed to edit survey
     protected $editMode;
-    
-    //if user already filled the survey
-    protected $alreadyFilled;
+        
+    //list of users (id) who have already completed this survey
+    protected $participantList;
 
     public function __construct($courseId, $editMode)
     {
@@ -80,26 +62,11 @@ class Survey {
         $this->endDate = null; //null means endDate is not used
         $this->visibility = 'INVISIBLE';
         $this->resultsVisibility = 'INVISIBLE';
-        $this->courseId = mysql_real_escape_string($courseId);
+        $this->courseId = mysql_real_escape_string($courseId);        
+        $this->editMode = $editMode;
         
-        $tbl = claro_sql_get_tbl(
-             array('survey2_survey', 
-                   'survey2_question', 
-                   'survey2_rel_survey_question', 
-                   'survey2_answer_choice', 
-                   'survey2_answer_text', 
-                   'survey2_rel_survey_user'
-                 )
-             );
-        $this->tblSurvey = $tbl['survey2_survey']; //TODO : not hard coded
-        $this->tblQuestion = $tbl['survey2_question']; //TODO : not hard coded
-        $this->tblRelSurvQuest = $tbl['survey2_rel_survey_question'];
-        $this->tblAnswerChoice = $tbl['survey2_answer_choice'];
-        $this->tblAnswerText = $tbl['survey2_answer_text'];
-		$this->tblRelSurvUser = $tbl['survey2_rel_survey_user'];
-        $this->questions = array();
-		$this->editMode = $editMode;
-		$this->alreadyFilled = false;
+        $this->questions = NULL;		
+		$this->participantList = NULL;
     }
     
     //load survey from the db
@@ -117,8 +84,8 @@ class Survey {
                     `resultsVisibility`,
                     UNIX_TIMESTAMP(`startDate`) AS `unix_start_date`,
                     UNIX_TIMESTAMP(`endDate`) AS `unix_end_date`
-            FROM `".$this->tblSurvey."`
-            WHERE `id` = ".(int) $id." AND `courseId`=".(int)$this->courseId;
+            FROM `".SurveyConstants::$SURVEY_TBL."`
+            WHERE `id` = ".(int) $id; //." AND `courseId`=".(int)$this->courseId;
 
         $data = claro_sql_query_get_single_row($sql);
 
@@ -146,6 +113,9 @@ class Survey {
         	//$loadError = true;
             return false;
         }
+        
+        
+        
     }
     
     //load properties of the survey from editing form
@@ -170,7 +140,7 @@ class Survey {
         
         if(!empty($_REQUEST['surveyStartDate']))
         {
-        	if(!ereg ("^([0-9]{2})/([0-9]{2})/([0-9]{2})$", $_REQUEST['surveyStartDate'],$regs))
+        	if(!preg_match ("/^([0-9]{2})/([0-9]{2})/([0-9]{2})$/", $_REQUEST['surveyStartDate'],$regs))
         	{
             	$this->setStartDate(0);
             	$this->validationErrors .= get_lang('Date format must be DD/MM/YY').'<br />';
@@ -194,7 +164,7 @@ class Survey {
         
         if(!empty($_REQUEST['surveyEndDate']))
         {
-        	if(!ereg ("^([0-9]{2})/([0-9]{2})/([0-9]{2})$", $_REQUEST['surveyEndDate'],$regs))
+        	if(!preg_match ("/^([0-9]{2})/([0-9]{2})/([0-9]{2})$/", $_REQUEST['surveyEndDate'],$regs))
         	{
             	$this->setEndDate(0);
             	$this->validationErrors .= get_lang('Date format must be DD/MM/YY').'<br />';
@@ -225,10 +195,9 @@ class Survey {
     //load answers to the survey from form
     public function loadFromFillForm()
     {
-        $i = 0;
-        foreach($this->questions as $quest)
+    	$questionList = $this->getQuestionList();
+        foreach($questionList as $quest)
         {
-            $i++;
             $quest->loadFromFillForm();
         }
     }
@@ -241,7 +210,7 @@ class Survey {
         if($this->id == -1)
         {
             //Insert new survey in DB
-            $sql = "INSERT INTO `".$this->tblSurvey."`
+            $sql = "INSERT INTO `".SurveyConstants::$SURVEY_TBL."`
                     SET `courseId` = '".$this->courseId."',
                     	`title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
@@ -254,7 +223,7 @@ class Survey {
             // execute the creation query and get id of inserted assignment
             $insertedId = claro_sql_query_insert_id($sql);
 
-            $sql = "UPDATE `".$this->tblSurvey."`
+            $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `rank` = ".(int) $insertedId."
             		WHERE `id` = ".(int) $insertedId;
             claro_sql_query($sql);
@@ -274,7 +243,7 @@ class Survey {
         else
         {
             //update current survey in DB
-            $sql = "UPDATE `".$this->tblSurvey."`
+            $sql = "UPDATE `".SurveyConstants::$SURVEY_TBL."`
                 	SET `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `anonymous` = '".addslashes($this->anonymous)."',
@@ -300,26 +269,26 @@ class Survey {
     public function delete()
     {
         //clear answers of the survey
-        $sql = "DELETE FROM `".$this->tblAnswerChoice."`
+        $sql = "DELETE FROM `".SurveyConstants::$ANSWER_CHOICE_TBL."`
         	WHERE `surveyId` = ".(int)$this->id;
         claro_sql_query($sql);
         
-        $sql = "DELETE FROM `".$this->tblAnswerText."`
+        $sql = "DELETE FROM `".SurveyConstants::$ANSWER_TEXT_TBL."`
         	WHERE `surveyId` = ".(int)$this->id;
         claro_sql_query($sql);
         
-        $sql = "DELETE FROM `".$this->tblRelSurvUser."`
+        $sql = "DELETE FROM `".SurveyConstants::$REL_SURV_USER_TBL."`
         	WHERE `surveyId` = ".(int)$this->id;
         claro_sql_query($sql);
         
         //delete links between survey and questions
-        $sql = "DELETE FROM `".$this->tblRelSurvQuest."`
+        $sql = "DELETE FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
         	WHERE `surveyId` = ".(int)$this->id;
         claro_sql_query($sql);
         
         //delete the survey
         
-        $sql = "DELETE FROM `".$this->tblSurvey."`
+        $sql = "DELETE FROM `".SurveyConstants::$SURVEY_TBL."`
         	WHERE `id` = ".(int)$this->id;
         claro_sql_query($sql);
     }
@@ -329,14 +298,11 @@ class Survey {
     {
     	
     	if(empty($this->title))
-    		$this->validationErrors .= get_lang('%name is required', array('%name'=>get_lang('Title'))).'<br />';
+    		$this->validationErrors .= get_lang('Title is required') . '<br />';
     	
-
-    	if(empty($this->validationErrors))
-    		return true;
-    	else
-    		return false;
+    	$questionList = $this->getQuestionList();
     	
+    	return empty($this->validationErrors);    	
     }
     
     //get error while reading content of a form
@@ -348,117 +314,93 @@ class Survey {
     //move question up in the survey
     public function moveQuestionUp($id)
     {
-        $i = 0;
-        foreach( $this->questions as $quest )
-		{
-            $i++;
-            if($i>1){
-                if($quest->getId() == (int)$id)
-                {
-                    //exchange rank with 
-                    $sql = "SELECT
-                            	`id`,
-            					`rank`
-                    		FROM `".$this->tblRelSurvQuest."`
-                    		WHERE `surveyId` = '".(int) $this->id."'
-                            AND  `questionId` = '".(int) $id."'";
-                    $firstQuestion = claro_sql_query_get_single_row($sql);
-                    
-                    $sql = "SELECT
-                            	`id`,
-                            	`rank`
-                            FROM `".$this->tblRelSurvQuest."`
-                            WHERE `surveyId` = '".$this->id."'
-                            AND `rank` < ".(int) $firstQuestion['rank']
-                            ." ORDER BY `rank` DESC LIMIT 1";
-                    $result = claro_sql_query($sql);//TODO change it and use claroline function
-                    if(mysql_num_rows($result)==1)
-                    {
-                        $nextQuestion = mysql_fetch_array($result, MYSQL_ASSOC);
-                        mysql_free_result($result);
-                    }
-                    else
-                        return false; //survey already first
-                
-                
-                    //exchange ranks
-                    $sql = "UPDATE `".$this->tblRelSurvQuest."`
-                            	SET `rank` = ".(int) $nextQuestion['rank']."
-                            	WHERE `id` = ".(int) $firstQuestion['id'];
-                    claro_sql_query($sql);
-                    $sql = "UPDATE `".$this->tblRelSurvQuest."`
-                            	SET `rank` = ".(int) $firstQuestion['rank']."
-                            	WHERE `id` = ".(int) $nextQuestion['id'];
-                    
-                    if( claro_sql_query($sql) )
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-		}
+        $questionList = $this->getQuestionList();
+        $questionCount = count($questionList);
+
+        //exchange rank with 
+        $sqlFirstQuestion = "
+        		SELECT
+        	         	`id`,
+            			`rank`
+                FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+                WHERE 	`surveyId` 		= '".(int) $this->id."'
+                AND  	`questionId` 	= '".(int) $id."'";
+         
+        $firstQuestion = claro_sql_query_fetch_single_row($sql);
+        if ( empty($firstQuestion))
+        	throw new Exception ("This question do not exist in this survey");
+        	
+        $sqlSecondQuestion = "
+        		SELECT
+                  			`id`,
+                  			`rank`
+                FROM 		`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+                WHERE 		`surveyId` = '".$this->id."'
+                AND 		`rank` < ".(int) $firstQuestion['rank']."
+                ORDER BY	`rank` DESC LIMIT 1";
+         $secondQuestion = claro_sql_query_fetch_single_row($sql);
+         if ( empty($firstQuestion))
+        	throw new Exception ("This question is already the last");
+        	
+    	//exchange ranks
+    	//TODO transaction
+        $sqlUpdateQ1 = "
+        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL."`
+                    SET `rank` = " . (int) $nextQuestion['rank'] . "
+                    WHERE `id` = " . (int) $firstQuestion['id'] . " ; ";
+        $update1_ok = claro_sql_query($sqlUpdateQ1);
+        $sqlUpdateQ2 = "
+        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL . "` 
+                    SET `rank` = " . (int) $firstQuestion['rank'] . " 
+                    WHERE `id` = " . (int) $nextQuestion['id'] . " ; ";
+        $update2_ok = claro_sql_query($sql);            
+        return $update1_ok && $update2_ok;
     }
     
     //move question down in the survey
     public function moveQuestionDown($id)
     {
-        $i = 0;
-        foreach( $this->questions as $quest )
-		{
-            $i++;
-            if($i<count($this->questions)){
-                if((int)$quest->getId() == (int)$id)
-                {
-                    //exchange rank with 
-                    $sql = "SELECT
-                            	`id`,
-            					`rank`
-                    		FROM `".$this->tblRelSurvQuest."`
-                    		WHERE `surveyId` = '".(int) $this->id."'
-                            AND  `questionId` = '".(int) $id."'";
-                    $firstQuestion = claro_sql_query_get_single_row($sql);
-                    
-                    $sql = "SELECT
-                            	`id`,
-                            	`rank`
-                            FROM `".$this->tblRelSurvQuest."`
-                            WHERE `surveyId` = '".$this->id."'
-                            AND `rank` > ".(int) $firstQuestion['rank']
-                            ." ORDER BY `rank` ASC LIMIT 1";
-                    $result = claro_sql_query($sql);//TODO change it and use claroline function
-                    if(mysql_num_rows($result)==1)
-                    {
-                        $nextQuestion = mysql_fetch_array($result, MYSQL_ASSOC);
-                        mysql_free_result($result);
-                    }
-                    else
-                        return false; //survey already first
-                
-                
-                    //exchange ranks
-                    $sql = "UPDATE `".$this->tblRelSurvQuest."`
-                            	SET `rank` = ".(int) $nextQuestion['rank']."
-                            	WHERE `id` = ".(int) $firstQuestion['id'];
-                    claro_sql_query($sql);
-                    $sql = "UPDATE `".$this->tblRelSurvQuest."`
-                            	SET `rank` = ".(int) $firstQuestion['rank']."
-                            	WHERE `id` = ".(int) $nextQuestion['id'];
-                    
-                    if( claro_sql_query($sql) )
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-            }
-		}
+        $questionList = $this->getQuestionList();
+        $questionCount = count($questionList);
+
+        //exchange rank with 
+        $sqlFirstQuestion = "
+        		SELECT
+        	         	`id`,
+            			`rank`
+                FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+                WHERE 	`surveyId` 		= '".(int) $this->id."'
+                AND  	`questionId` 	= '".(int) $id."'";
+         
+        $firstQuestion = claro_sql_query_fetch_single_row($sql);
+        if ( empty($firstQuestion))
+        	throw new Exception ("This question do not exist in this survey");
+        	
+        $sqlSecondQuestion = "
+        		SELECT
+                  			`id`,
+                  			`rank`
+                FROM 		`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+                WHERE 		`surveyId` = '".$this->id."'
+                AND 		`rank` > ".(int) $firstQuestion['rank']."
+                ORDER BY	`rank` ASC LIMIT 1";
+         $secondQuestion = claro_sql_query_fetch_single_row($sql);
+         if ( empty($firstQuestion))
+        	throw new Exception ("This question is already the last");
+        	
+    	//exchange ranks
+    	//TODO transaction
+        $sqlUpdateQ1 = "
+        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL."`
+                    SET `rank` = " . (int) $nextQuestion['rank'] . "
+                    WHERE `id` = " . (int) $firstQuestion['id'] . " ; ";
+        $update1_ok = claro_sql_query($sqlUpdateQ1);
+        $sqlUpdateQ2 = "
+        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL . "` 
+                    SET `rank` = " . (int) $firstQuestion['rank'] . " 
+                    WHERE `id` = " . (int) $nextQuestion['id'] . " ; ";
+        $update2_ok = claro_sql_query($sql);            
+        return $update1_ok && $update2_ok;
     }
     
     //remove all answers of the survey
@@ -469,18 +411,18 @@ class Survey {
             $quest->removeAnswers($this->id);
         } 
          
-        $sql = "DELETE FROM `".$this->tblRelSurvUser."`
+        $sql = "DELETE FROM `".SurveyConstants::$REL_SURV_USER_TBL."`
     		WHERE `surveyId` = '".(int) $this->id."'";
 
         claro_sql_query($sql);
     }
     
-    //load questions of the survey from db
-    public function loadQuestions()
+	//load questions of the survey from db
+    private function loadQuestions()
     {
         $sql = 'SELECT q.`id`, q.`title`, q.`type`, q.`alignment`
-                FROM `'.$this->tblRelSurvQuest.'` as rel
-                INNER JOIN `'.$this->tblQuestion.'` as q
+                FROM `'.SurveyConstants::$REL_SURV_QUEST_TBL.'` as rel
+                INNER JOIN `'.SurveyConstants::$QUESTION_TBL.'` as q
                 ON rel.`questionId` = q.`id`
                 WHERE rel.`surveyId` = '.$this->id.'
                 ORDER BY rel.`rank` ASC';
@@ -496,28 +438,34 @@ class Survey {
 	    }
     }
     
+	//load list of users who have already filled this form from db
+    private function loadParticipants()
+    {
+        $sql = '
+        		SELECT 	RSU.`userId` 
+                FROM 	`'.SurveyConstants::$REL_SURV_USER_TBL.'` as RSU
+                WHERE 	RSU.`surveyId` = '.$this->id.'; ';
+
+	    $list = claro_sql_query_fetch_all_rows($sql);
+	    $this->participantList = array();
+	    foreach( $list as $row )
+	    {
+            $this->participantList[] = $row['userId'];
+	    }
+    }
+    
     //load answers of the user from db
     public function loadAnswers($userId)
     {
-        $sql = 'SELECT COUNT(`surveyId`)
-                FROM `'.$this->tblRelSurvUser.'`
-                WHERE `surveyId` = '.$this->id.' 
-                AND `userId` = '.$userId;
-
-	    $val = claro_sql_query_fetch_single_value($sql);
-		if((int)$val == 0)
-            $this->alreadyFilled = false;
-        else
-            $this->alreadyFilled = true;
+        $questionList = $this->getQuestionList();
             
         if($this->anonymous == 'NO')
         {
     	    
-            foreach( $this->questions as $quest )
+            foreach( $questionList as $quest )
     	    {
     	        $quest->setSurveyId($this->id);
                 $quest->loadAnswer($userId);
-                //lire les reponses
     	    }
         }
     }
@@ -525,21 +473,16 @@ class Survey {
     //save answers of the users
 	public function saveAnswers($userId)
 	{
-		foreach( $this->questions as $quest )
+		$questionList = $this->getQuestionList();
+		foreach( $questionList as $quest )
 		{
-			$quest->setSurveyId($this->id);
-			if($this->anonymous == 'YES')
-			    $quest->saveAnswers(null);
-			else
+			//WARNING 
+			//even anonymous answers are saved with the user id
+			//this will allow the user to change his answers but it won't be displayed
 			    $quest->saveAnswers($userId);
-			//lire les reponses
 		}
-		
-		$sql = "DELETE FROM `".$this->tblRelSurvUser."`
-				WHERE `userId` = ".(int)$userId." 
-				AND `surveyId` = ".(int)$this->id;
-		claro_sql_query($sql);
-		$sql = "INSERT INTO `".$this->tblRelSurvUser."` (
+		//save the user as a participant		
+		$sql = "INSERT IGNORE INTO `".SurveyConstants::$REL_SURV_USER_TBL."` (
 				`userId`,
 				`surveyId`)
 				VALUES ( '".(int)$userId."',
@@ -550,24 +493,18 @@ class Survey {
     //check if someone has answered survey
 	public function isAnswered()
 	{
-	    $sql = 'SELECT COUNT(`surveyId`)
-                FROM `'.$this->tblRelSurvUser.'`
-                WHERE `surveyId` = '.$this->id;
-	    $val = (int)claro_sql_query_fetch_single_value($sql);
-
-	    if((int)$val>0)
-	        return true;
-	    else
-	        return false;
+	    $participantList = $this->getParticipantList();
+	    return count($participantList) > 0;
 	}
     
     //load results of the survey
-    public function loadResults()
+    private function loadResults()
     {
-	    foreach( $this->questions as $data )
+    	$questionList = $this->getQuestionList();
+	    foreach( $questionList as $quest )
 	    {
-	        $data->setSurveyId($this->id);
-	        $data->loadResults();
+	        $quest->setSurveyId($this->id);
+	        $quest->loadResults();
 	    }
     }
 
@@ -575,53 +512,58 @@ class Survey {
            * RENDERING FUNCTIONS
            */
     //render form to fill survey
-    public function renderFillForm()
+    public function renderFillForm($userId = NULL)
     {
+    	if(empty($userId)) $userId = claro_get_current_user_id();
         $dialogBox = new DialogBox();
         CssLoader::getInstance()->load('LVSURVEY');
         $out = '';
+        $participantList = $this->getParticipantList();
+        $alreadyFilled = in_array($userId, $participantList);  
+        $questionList = $this->getQuestionList();
+        $questionCount = count($questionList);
+        
+    	if(count($questionList)<1)
+        {
+            $dialogBox->error( get_lang('No question in this survey'));
+            return $dialogBox->render();
+        }       
+        
         if($this->editMode==false)
         {
             
             if($this->visibility == 'INVISIBLE')
             {
                 $dialogBox->error( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
             else if(is_null($this->startDate) || ($this->startDate > time()))
             {
                 $dialogBox->error( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
             else if(!is_null($this->endDate) && ($this->endDate < time()))
             {
                 $dialogBox->info( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
 
-        }
-        
-        $out = '';
+        }       
         
         
         if($this->anonymous == 'YES')
         {
-            $dialogBox->info( get_lang('This survey is anonymous. We only save your answer not your identification.'));
+            $dialogBox->info( get_lang('This survey is anonymous. We won\'t display your identification .'));
         }
         else
         {
-            $dialogBox->info( get_lang('This survey is not anonymous. Your identification will be saved.'));
+            $dialogBox->info( get_lang('This survey is not anonymous. Your identification will be displayed.'));
         }
         
-        if($this->alreadyFilled == true)
+              
+        if($alreadyFilled)
         {
-            if( $this->anonymous == 'YES')
-                $dialogBox->info( get_lang('You already filled this survey.'));
-            else
-                $dialogBox->info( get_lang('You already filled this survey. You may change your answers.'));
+           	$dialogBox->info( get_lang('You already filled this survey. You may change your answers.'));
         }
         
         
@@ -629,13 +571,7 @@ class Survey {
         $out .= $dialogBox->render();
         $out .= '<div>'.$this->description.'</div>';
         
-        if(count($this->questions)<1)
-        {
-            $dialogBox2 = new DialogBox();
-            $dialogBox2->error( get_lang('No question in this survey'));
-            $out .= $dialogBox2->render();
-            return $out;
-        }
+        
         
         
         $out .= '<form method="post" action="show_survey.php">'."\n"
@@ -644,24 +580,19 @@ class Survey {
             .'<input type="hidden" name="surveyId" value="'.$this->id.'" />' . "\n";
         $out .= '<div class="LVSURVEYQuestionList">';
         
-        $i = 0;
-        foreach( $this->questions as $quest )
-        {
-            $i++; 
-            $up = false;
-            $down = false;
-            if($i!=1) //up and down
-                $up = true;
-            if($i<count($this->questions))
-                $down = true;
-            $out .= $quest->renderFillForm($up, $down);
-        }
         
+        for($i = 0; $i < $questionCount; ++$i)
+        {
+        	$quest = $questionList[$i];
+        	$upArrow = $i > 0;
+        	$downArrow = $i < ($questionCount-1);
+        	$out .= $quest->renderFillForm($upArrow, $downArrow, $userId);
+        }    
+                
         $out .= '</div>';
         
-        if(($this->alreadyFilled == false) || ($this->anonymous == 'NO'))
-            $out .= '<input type="submit" value="'.get_lang('Submit').'" />';
         
+        $out .= '<input type="submit" value="'.get_lang('Submit').'" />';
         $out .=  '</form>';
         
 
@@ -669,82 +600,74 @@ class Survey {
     }
 
     //render confirmation form when filling
-    public function renderConfForm()
+    public function renderConfForm($userId)
     {
+    	if(empty($userId))
+    		$userId = claro_get_current_user_id();
+    	$participantList = $this->getParticipantList();
+    	$questionList = $this->getQuestionList();
+    	
         CssLoader::getInstance()->load('LVSURVEY');
-        $out = '';
         if($this->editMode==false)
         {
             if($this->visibility == 'INVISIBLE')
             {
                 $dialogBox = new DialogBox();
                 $dialogBox->error( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
             else if(is_null($this->startDate) || ($this->startDate > time()))
             {
                 $dialogBox = new DialogBox();
                 $dialogBox->error( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
             else if(!is_null($this->endDate) && ($this->endDate < time()))
             {
                 $dialogBox = new DialogBox();
                 $dialogBox->info( get_lang('This survey is not accessible'));
-                $out .= $dialogBox->render();
-                return $out;
+                return $dialogBox->render();
             }
-        }
+        }      
         
-        if (($this->alreadyFilled == true) && ($this->anonymous == 'YES'))
-        {
-            $dialogBox = new DialogBox();
-            $dialogBox->info( get_lang('You can\'t fill this survey again'));
-            $out .= $dialogBox->render();
-            return $out;
-        }
         
+        $dialogBox = new DialogBox();
         $out = '';
-        if(count($this->questions)>0)
+        if($this->anonymous == 'YES')
         {
-            $dialogBox = new DialogBox();
-            if($this->anonymous == 'YES')
-            {
-                $dialogBox->info( get_lang('This survey is anonymous. We only save your answer not your identification.'));
-            }
-            else
-            {
-                $dialogBox->info( get_lang('This survey is not anonymous. Your identification will be saved.'));
-            }
-            
-            $out .= $dialogBox->render();
-            $out .= $this->description;
-            $hiddenform = '<form method="post" action="show_survey.php">'."\n"
-                .'<input type="hidden" name="claroFormId" value="'.uniqid('').'">' . "\n"
-                .'<input type="hidden" name="surveyId" value="'.$this->id.'">' . "\n";
-
-            $out .= '<div class="LVSURVEYQuestionList">';
-            
-        	foreach( $this->questions as $quest )
-    	    {
-				$hiddenform .= $quest->renderConfFormHidden();
-                $out .= $quest->renderConfForm();
-    	    }
-    	    
-    	    $out .= '</div>';
-
-			$hiddenform2 = $hiddenform;
-			$hiddenform .= '<input type="hidden" name="surveyGoToSubmit" value="'.uniqid('').'">' . "\n"
-				.'<input type="submit" value="'.get_lang('Confirm').'" />' . "\n"
-				.'</form>' . "\n";
-			$hiddenform2 .= '<input type="hidden" name="surveyGoToFill" value="'.uniqid('').'">' . "\n"
-				.'<input type="submit" value="'.get_lang('Change my answers').'" />' . "\n"
-				.'</form>' . "\n";
-				
-			$out .= '<table><tr><td>'. $hiddenform2 .'</td><td>'.  $hiddenform.'</td></tr></table>';
+            $dialogBox->info( get_lang('This survey is anonymous. We won\'t display your identification .'));
         }
+        else
+        {
+            $dialogBox->info( get_lang('This survey is not anonymous. Your identification will be displayed.'));
+        }
+        
+        $out .= $dialogBox->render();
+        $out .= $this->description;
+        $hiddenform = 	'<form method="post" action="show_survey.php">'."\n"
+            			.'<input type="hidden" name="claroFormId" value="'.uniqid('').'">' . "\n"
+                		.'<input type="hidden" name="surveyId" value="'.$this->id.'">' . "\n";
+
+        $out .= '<div class="LVSURVEYQuestionList">';
+            
+        foreach( $this->questions as $quest )
+    	{
+			$hiddenform .= $quest->renderConfFormHidden();
+            $out .= $quest->renderConfForm();
+    	}
+    	    
+    	$out .= '</div>';
+
+		$hiddenform2 = $hiddenform;
+		$hiddenform .= 	'<input type="hidden" name="surveyGoToSubmit" value="'.uniqid('').'">' . "\n"
+						.'<input type="submit" value="'.get_lang('Confirm').'" />' . "\n"
+						.'</form>' . "\n";
+		$hiddenform2 .= '<input type="hidden" name="surveyGoToFill" value="'.uniqid('').'">' . "\n"
+						.'<input type="submit" value="'.get_lang('Change my answers').'" />' . "\n"
+					.'</form>' . "\n";
+				
+		$out .= '<table><tr><td>'. $hiddenform2 .'</td><td>'.  $hiddenform.'</td></tr></table>';
+        
 
         return $out;
     }
@@ -930,16 +853,19 @@ class Survey {
         }
         
         $out = '';
-        if(count($this->questions)>0)
+        
+        $questionList = $this->getQuestionList();
+        
+        if(count($questionList)>0)
         {
             $out .= '<div>'.$this->description.'</div>';
             
             $out .= '<div class="LVSURVEYQuestionList">';
             
             //show each question
-        	foreach( $this->questions as $quest )
+        	foreach( $questionList as $quest )
     	    {
-                $out .= $quest->renderResults();
+                $out .= $quest->renderResults($this);
     	    }
     	    
     	    $out .= '</div>';
@@ -1054,11 +980,27 @@ class Survey {
         	$this->endDate = $value;
     }
     
-    public function getNbrQuestion()
+    public function getQuestionList()
     {
-        return count($this->questions);
+        if( ! isset($this->questions))
+        {
+        	$this->loadQuestions();
+        }
+    	return $this->questions;
     }
     
+	public function getParticipantList()
+    {
+        if( ! isset($this->participantList))
+        {
+        	$this->loadParticipants();
+        }
+    	return $this->participantList;
+    }
+    
+    
+    
 }
+
 
 ?>

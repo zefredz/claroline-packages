@@ -31,32 +31,26 @@
     //require_once 'lib/questionlist.class.php';
     require_once 'lib/survey.class.php';
     
-    
+    $loaded = false;
     if(isset($_REQUEST['surveyId']))
     {
         $surveyId = (int) $_REQUEST['surveyId'];
         $survey = new Survey(claro_get_current_course_id(), $is_allowedToEdit);
-        if($survey->load($surveyId) == true)
-        {
-            $pageTitle = htmlspecialchars($survey->getTitle());
-        }
-        else
-        {
-            header('Location: survey_list.php');
-            exit();
-        }
+        $loaded =$survey->load($surveyId);
     }
-    else
+    if( ! $loaded)
     {
-        header('Location: survey_list.php');
-        exit();
+        claro_redirect('survey_list.php');
+        exit();            
     }
+        
     
     if(isset($_REQUEST['questionId']))
         $questionId = (int)$_REQUEST['questionId']; 
     else
         $questionId = -1;
     
+    $pageTitle = htmlspecialchars($survey->getTitle());
     
     if(($is_allowedToEdit == true) && (isset($_REQUEST['cmd'])))
     {
@@ -68,13 +62,12 @@
             {   
             	$tmpsurvey = new Survey(claro_get_current_course_id(), $is_allowedToEdit);
                 $tmpsurvey->load($surveyId);
-                $tmpsurvey->loadQuestions();
             	if($_REQUEST['cmd']=='questionMoveUp')
                     $tmpsurvey->moveQuestionUp($questionId);
             	else
             		$tmpsurvey->moveQuestionDown($questionId);
             }
-        	header("Location: show_survey.php?surveyId=".$surveyId);
+        	claro_redirect("show_survey.php?surveyId=".$surveyId);
         	exit();
         }
         else if($_REQUEST['cmd']=='questionRemove')
@@ -122,7 +115,6 @@
     {
         //nothing to do, just show the survey
         $contenttoshow = '';
-        $survey->loadQuestions();
 
         if($is_allowedToEdit)
         {
@@ -139,8 +131,7 @@
         if(!isset($_REQUEST['claroFormId']))
         {
             //nothing to do, just show the survey
-            $survey->loadAnswers(claro_get_current_user_id());
-            $contenttoshow .= $survey->renderFillForm();
+            $contenttoshow .= $survey->renderFillForm(claro_get_current_user_id());
         }
         else
         {
@@ -149,11 +140,11 @@
             if(isset($_REQUEST['surveyGoToConf']))
             {
                 //show the confirmation page
-                $contenttoshow .= $survey->renderConfForm();
+                $contenttoshow .= $survey->renderConfForm(claro_get_current_user_id());
             }
             else if(isset($_REQUEST['surveyGoToSubmit']))
             {
-                //he just confirmed
+                //he just confirmed                
                 $survey->saveAnswers(claro_get_current_user_id());
                 $dialogBox = new DialogBox();
                 $dialogBox->success( get_lang('Your answers have been saved.'));
@@ -162,7 +153,7 @@
             else if(isset($_REQUEST['surveyGoToFill']))
             {
                 //he wants to change his answers
-                $contenttoshow .= $survey->renderFillForm();
+                $contenttoshow .= $survey->renderFillForm(claro_get_current_user_id());
             }
         }
     }

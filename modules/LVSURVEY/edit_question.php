@@ -52,8 +52,9 @@
     	{
     		//we are trying to submit new
     		if($question->loadFromEditForm())
-    		{
-    			$question->save();
+    		{    	
+
+    			$question->save();    			
     		    if($surveyId!= -1)
                 {
                     //the script was initiated from a survey
@@ -70,8 +71,8 @@
     			    $dialogBox->success( get_lang("Question has been saved")."!".$boxcontent);
     			    $contenttoshow = "";
                 }
-                else{
-                    header("Location: question_pool.php");
+                else{                    
+                	header("Location: question_pool.php");
                     exit();
                 }
     		}

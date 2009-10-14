@@ -94,8 +94,6 @@
     {
         //show results
         $contenttoshow = '';
-        $survey->loadQuestions();
-        $survey->loadResults();
         $contenttoshow .= $survey->renderResults();
         
         if($is_allowedToEdit)

@@ -14,8 +14,6 @@
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey2_answer_choice`;
 
-DROP TABLE IF EXISTS `__CL_MAIN__survey2_answer_text`;
-
 DROP TABLE IF EXISTS `__CL_MAIN__survey2_choice`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey2_question`;
