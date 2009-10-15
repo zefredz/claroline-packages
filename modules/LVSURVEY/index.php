@@ -15,7 +15,7 @@
      *  prevent people to change their answer after a survey is closed
      *  extract templates
      *  remove useless screens
-     *  make comment length a paramter of the survey (0 = disabled)
+     *  make comment length a paramter of the survey (0 = disabled) and check it
      *  
      */
 header('Location:./survey_list.php');

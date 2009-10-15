@@ -38,6 +38,9 @@ class Question {
     //answer of the question (may be an array for MCMA)
     protected $answer;
     
+    //comment made by the user on this question
+    protected $comment;
+    
     //results of the questions
     protected $results;    
     
@@ -57,6 +60,7 @@ class Question {
         $this->choices = new Choices($courseId);
         $this->choiceAlignment = 'VERTI';
         $this->answer = '';
+        $this->comment = NULL;
         $this->editMode = $editMode;
         $this->duplicate = false;
     }
@@ -132,8 +136,15 @@ class Question {
     {
         if($this->type == 'TEXT')
         {
+        	
+        	$chosenAnswers = $this->choices->getSelectedChoices();
+        	$answerText = empty($chosenAnswers) ? '' : $chosenAnswers[0]['text'];
+        	
             if(isset($_REQUEST['question'.$this->id]))
-                $this->answer = $_REQUEST['question'.$this->id];
+                $this->answer = -1;
+            	$this->choices->addChoice($_REQUEST['question'.$this->id],-1);
+            	$this->choices->setSelection(array(-1));    
+                
         }
         else if($this->type == 'MCSA')
         {
@@ -156,6 +167,10 @@ class Question {
                 $this->choices->setSelection($this->answer);
             }
         }
+        //comment
+        //TODO check size
+        if( ! empty ($_REQUEST['answerComment'.$this->id]))
+        	$this->comment = $_REQUEST['answerComment'.$this->id];
     }
     
     //load data from edit form
@@ -220,7 +235,8 @@ class Question {
         
         $sql = "
         		SELECT 	C.`id`, 
-        				C.`text`  
+        				C.`text`,
+        				A.`comment`   
         		FROM 	`".SurveyConstants::$ANSWER_CHOICE_TBL."` A
         		INNER JOIN `".SurveyConstants::$CHOICE_TBL."` AS C
         		ON 		A.`answer` = C.`id` 	
@@ -233,8 +249,12 @@ class Question {
         foreach ($choiceAnswer as $answer)
         {
             $this->answer[]= $answer['id'];
+            //TODO change this !!
+            if(!empty($answer['comment']))
+            	$this->comment = $answer['comment'];
         }
-        $this->choices->setSelection($this->answer);    	    
+        $this->choices->setSelection($this->answer);
+
     }
     
     //remove answers to this question for one survey
@@ -302,20 +322,22 @@ class Question {
 		
 		
 
-		//STEP 2 : let's save the new answer
+		//STEP 2 : let's make a new choice if needed
 
 		$selectedChoicesId = array();
 		
 		if($this->type == 'TEXT')
 		{
 			//if type = text we must first save the answer as a possible answer for this question
+			$choiceList = $this->choices->getSelectedChoices();
+			$answertext = $choiceList[0]['text'];
 		    $sqlInsertNewText = "
 		    	INSERT INTO `".SurveyConstants::$CHOICE_TBL."` (
 					`questionId`,
 					`text` )
 				VALUES ( 
 					'".(int)$this->id."',  
-					'".addslashes($this->answer)."'); ";
+					'".addslashes($answertext)."'); ";
 		    $idInsertedText = claro_sql_query_insert_id($sqlInsertNewText);
 		    $selectedChoicesId[] = $idInsertedText;
 		}
@@ -328,7 +350,7 @@ class Question {
 				$selectedChoicesId[] = $choice['id'];
 			}			
 		}
-		
+		//STEP 3 let's save the chosen choice and comment
 		foreach($selectedChoicesId as $chosenId)
 		{
 			$sql = "
@@ -336,11 +358,13 @@ class Question {
 								`userId`,
 								`questionId`,
 								`surveyId`,
-								`answer` )
+								`answer`,
+								`comment` )
 				VALUES ( 		'".(int)$userId."',
 								'".(int)$this->id."', 
 								'".(int)$this->surveyId."', 
-								'".(int)$chosenId."'); ";
+								'".(int)$chosenId."',
+								'".addslashes($this->comment)."'); " ;
 			claro_sql_query($sql);
 		}	
 	
@@ -682,9 +706,12 @@ class Question {
             	$out .='</ul>'."\n";
         }
         //comment field
+        $comment = empty($this->comment)?'':htmlspecialchars($this->comment);
+        
         $out .= 	'<div class="answerCommentBlock" id="answerCommentBlock'.$this->id.'">';
-        $out .= 		get_lang('Comment').' : <input maxlength="200" type="text" size="70" name="answerComment'.$this->id.'" />';
-        $out .= 		' <span id="commentCharLeft'.$this->id.'" class="commentCharLeft">200</span> '.get_lang('char(s) left');
+        $out .= 		get_lang('Comment').' : ';
+        $out .= 	'		<input maxlength="200" type="text" size="70" name="answerComment'.$this->id.'" value="'.$comment.'" />';
+        $out .= 		' <span id="commentCharLeft'.$this->id.'" class="commentCharLeft"></span> '.get_lang('char(s) left');
         $out .= 	'</div>';
         
         $out .= '</div>'."\n";
@@ -700,30 +727,25 @@ class Question {
         $out .= '<div class="LVSURVEYQuestionTitle">'.htmlspecialchars($this->title).'</div>';
         //show question
         $out.='<div class="LVSURVEYQuestionContent">';
-        if($this->type == 'TEXT'){
-            $out .= '<div>'.htmlspecialchars($this->answer)
-                .'</div>'."\n";
-        }
-        else
-        {
+        
             
-            $list = $this->choices->getChoices();
-
-            $out .= '<ul>'."\n";
-            foreach( $list as $aChoice )
+        $list = $this->choices->getChoices();
+        $out .= '<ul>'."\n";
+        foreach( $list as $aChoice )
+        {
+            if($this->choices->isSelected($aChoice['id']))
             {
-                if($this->choices->isSelected($aChoice['id']))
-                {
-                $out.= '<li>'
-                	. htmlspecialchars($aChoice['text']).'</li>'
-                    . "\n";
-                }
+            	$out.= '<li>'
+            	. htmlspecialchars($aChoice['text']).'</li>'
+                . "\n";
+            }
                 
-            }	
-            $out .='</ul>'."\n";
-        }
-        $out.='</div>';
-        $out.= '</div>'."\n";
+        }	
+        $out .='</ul>'."\n";
+        
+        $out 	.= '<div class="questionComment">'.get_lang('Comment').' : '.(empty($this->comment)?'':htmlspecialchars($this->comment)).'</div>';
+        $out	.='</div>';
+        $out	.= '</div>'."\n";
         return $out;
     }
     
@@ -733,22 +755,24 @@ class Question {
 		$out = '';
         //show question
         if($this->type == 'TEXT'){
-            $out .= '<input type="hidden" name="question'.$this->id.'" id="question'.$this->id.'" value="'.htmlspecialchars($this->answer).'">'."\n";
+        	$list = $this->choices->getSelectedChoices();
+        	
+            $out .= '<input type="hidden" name="question'.$this->id.'" id="question'.$this->id.'" value="'.htmlspecialchars($list[0]['text']).'">'."\n";
         }
         else
         {
-            $list = $this->choices->getChoices();
+            $list = $this->choices->getSelectedChoices();
             foreach( $list as $aChoice )
             {
-                if($this->choices->isSelected($aChoice['id']))
-                {
                 $out.= '<input type="hidden" name="question'.$this->id.($this->type == 'MCMA'?'[]':'').'" '
                     .'id="question'.$this->id.'" '
                     .'value="'.$aChoice['id'].'" '
                     .' />'. "\n";
-                }
             }	
         }
+        $comment = empty($this->comment)?'':htmlspecialchars($this->comment);
+        $out .=  '<input type="hidden"  name="answerComment'.$this->id.'" value="'.$comment.'" />';
+        
         return $out;
     }
 	
@@ -989,7 +1013,7 @@ class Question {
           	    .		 get_lang("See Details")
           	    .		 '</a>'
           	    .		 '<ul class="detailedList" >';
-          	    foreach($userList as $answer)
+          	    foreach($answerList as $answer)
           	    {
           	    	$out .= '<li>';
           	    	$out .=		$answer['prenom'].' '.$answer['nom'] .' : ' ;

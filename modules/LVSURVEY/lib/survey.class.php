@@ -13,6 +13,9 @@ require_once dirname(__FILE__) . '/question.class.php';
 //Contains Survey class
 class Survey {
 	
+	//max size of comments
+	protected $commentsMaxSize;
+	
     //unique id of the course
     protected $courseId;
     
@@ -64,6 +67,7 @@ class Survey {
         $this->resultsVisibility = 'INVISIBLE';
         $this->courseId = mysql_real_escape_string($courseId);        
         $this->editMode = $editMode;
+        $this->commentsMaxSize = 200;
         
         $this->questions = NULL;		
 		$this->participantList = NULL;
@@ -970,6 +974,20 @@ class Survey {
     public function getEndDate()
     {
         return $this->endDate;
+    }
+    
+	public function getCommentMaxSize()
+    {
+        return $this->commentsMaxSize;
+    }
+    
+	public function setCommentMaxSize($size)
+    {
+       	if($size<=0)
+       		$size = 0;
+       	if($size > 200)
+       		$size = 200;
+      	$this->commentsMaxSize = $size;
     }
     
     public function setEndDate($value)
