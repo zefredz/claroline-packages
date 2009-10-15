@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_choice` (
   `questionId` int(11) NOT NULL,
   `userId` int(11) default NULL,
   `answer` int(11) NOT NULL,
+  `comment` VARCHAR(200) NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 

@@ -8,8 +8,8 @@
      *              GNU GENERAL PUBLIC LICENSE version 2 or later
      * @package     LVSURVEY
      */
-require_once __DIR__ . '/SurveyConstants.php';
-require_once __DIR__ . '/question.class.php';
+require_once dirname(__FILE__) . '/SurveyConstants.php';
+require_once dirname(__FILE__) . '/question.class.php';
 //Contains Survey class
 class Survey {
 	

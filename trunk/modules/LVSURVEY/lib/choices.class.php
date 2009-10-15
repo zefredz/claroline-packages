@@ -9,7 +9,7 @@
      * @package     LVSURVEY
      */
 
-require_once __DIR__ . '/SurveyConstants.php';
+require_once dirname(__FILE__) . '/SurveyConstants.php';
 
 class Choices
 {

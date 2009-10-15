@@ -14,6 +14,8 @@
      *  for not anonymous survey : display who has replied what
      *  prevent people to change their answer after a survey is closed
      *  extract templates
+     *  remove useless screens
+     *  make comment length a paramter of the survey (0 = disabled)
      *  
      */
 header('Location:./survey_list.php');

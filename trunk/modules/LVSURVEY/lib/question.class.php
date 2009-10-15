@@ -9,7 +9,7 @@
      * @package     LVSURVEY
      */
 
-require_once __DIR__ . '/SurveyConstants.php';
+require_once dirname(__FILE__) . '/SurveyConstants.php';
 require_once "choices.class.php";
 
 class Question {
@@ -585,8 +585,9 @@ class Question {
 		$userTable = $mainTableList['user'];
 	    
         $sql = "
-        	SELECT 		USER.`nom`,
-        				USER.`prenom`  
+        	SELECT 		USER.`nom` 			as nom,
+        				USER.`prenom` 		as prenom,
+        				ANSWER.`comment` 	as comment 
         	FROM 		`".SurveyConstants::$CHOICE_TBL."` as CHOICE 
         	INNER JOIN `".SurveyConstants::$ANSWER_CHOICE_TBL."` as ANSWER
         	ON 			CHOICE.`id` = ANSWER.`answer`
@@ -607,6 +608,11 @@ class Question {
     {
     	if (empty($userId)) $userId = claro_get_current_user_id();
     	if (empty($this->answer)) $this->loadAnswer($userId);
+    	
+    	JavascriptLoader::getInstance()->load('jquery');
+    	JavascriptLoader::getInstance()->load('jquery.limit-1.2');
+    	JavascriptLoader::getInstance()->load('fillSurvey');
+    	
         $out = '<div class="LVSURVEYQuestion">';
         //show title
         $out .= '<div class="LVSURVEYQuestionTitle">';
@@ -647,12 +653,18 @@ class Question {
                 $typechoice = 'radio';
                 
             $list = $this->choices->getChoices();
-            if($this->choiceAlignment == 'HORIZ')
-            {
-                $out .= '<div id="horizChoices">';
+            $horiz = $this->choiceAlignment == 'HORIZ';
+            if($horiz)
+            	$out .= '<div id="horizChoices">';
+            else
+            	$out .= '<ul>'."\n";
+            	
+            
                 foreach( $list as $aChoice )
                 {
-                    $out.= '<input name="question'.$this->id.($this->type == 'MCMA'?'[]':'').'" '
+                    if($horiz)
+                    	$out .= '<li>';
+                	$out.= '<input name="question'.$this->id.($this->type == 'MCMA'?'[]':'').'" '
                         //.'id="question'.$this->id.'" '
                         .'type="'.$typechoice.'" '
                         .'value="'.$aChoice['id'].'" '
@@ -660,28 +672,21 @@ class Question {
                         .' />' 
                     	. htmlspecialchars($aChoice['text'])
                         . "\n";
+                    if($horiz)
+                    	$out .= '</li>';
                     
                 }
+            if($horiz)
                 $out .= '</div>';
-            }
             else
-            {
-                $out .= '<ul>'."\n";
-                foreach( $list as $aChoice )
-                {
-                    $out.= '<li><input name="question'.$this->id.($this->type == 'MCMA'?'[]':'').'" '
-                        //.'id="question'.$this->id.'" '
-                        .'type="'.$typechoice.'" '
-                        .'value="'.$aChoice['id'].'" '
-                        .($this->choices->isSelected($aChoice['id'])?'checked="checked"':'')
-                        .' />' 
-                    	. htmlspecialchars($aChoice['text']).'</li>'
-                        . "\n";
-                    
-                }
-                $out .='</ul>'."\n";
-            }
+            	$out .='</ul>'."\n";
         }
+        //comment field
+        $out .= 	'<div class="answerCommentBlock" id="answerCommentBlock'.$this->id.'">';
+        $out .= 		get_lang('Comment').' : <input maxlength="200" type="text" size="70" name="answerComment'.$this->id.'" />';
+        $out .= 		' <span id="commentCharLeft'.$this->id.'" class="commentCharLeft">200</span> '.get_lang('char(s) left');
+        $out .= 	'</div>';
+        
         $out .= '</div>'."\n";
         $out.= '</div>'."\n";
         return $out;
@@ -976,7 +981,7 @@ class Question {
         	    . '</tr>';
         	if('NO' == $survey->getAnonymous())
         	{
-        		$userList = $this->getDetailedAnswers($aresult['id'],$survey->getId());
+        		$answerList = $this->getDetailedAnswers($aresult['id'],$survey->getId());
         	   	$out.=
         	     '<tr>'
         	    . 	'<td>'
@@ -984,9 +989,12 @@ class Question {
           	    .		 get_lang("See Details")
           	    .		 '</a>'
           	    .		 '<ul class="detailedList" >';
-          	    foreach($userList as $user)
+          	    foreach($userList as $answer)
           	    {
-          	    	$out .= '<li>'.$user['prenom'].' '.$user['nom'].'</li>';
+          	    	$out .= '<li>';
+          	    	$out .=		$answer['prenom'].' '.$answer['nom'] .' : ' ;
+          	    	$out .=		empty($answer['comment'])?'':$answer['comment'];
+          	    	$out .= '</li>';
           	    }
           	    $out .=
           	    		'</ul> '
