@@ -74,8 +74,8 @@ class DUPLogger{
 	}
 }
 
-DUPLogger::$__COPY_LOG_FILE__ = ( __DIR__ . "/../logs/copy.log" );
-DUPLogger::$__ERROR_LOG_FILE__ = ( __DIR__ . "/../logs/error.log" ) ;
+DUPLogger::$__COPY_LOG_FILE__ = ( dirname(__FILE__) . "/../logs/copy.log" );
+DUPLogger::$__ERROR_LOG_FILE__ = ( dirname(__FILE__) . "/../logs/error.log" ) ;
 
 
 ?>
