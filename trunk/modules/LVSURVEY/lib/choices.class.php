@@ -126,7 +126,12 @@ class Choices
     public function GetChoices()
     {
         return $this->choiceList;
-    }    	
+    }   
+
+    public function addChoice($text, $id = -1)
+    {
+    	 $this->choiceList[] = array('id' => $id, 'text' => $text);
+    }
     
     //set choices wich are selected
     public function setSelection($list)
