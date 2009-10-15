@@ -56,3 +56,9 @@ ul.detailedList{
 	font-size : smaller;
 }
 
+.answerCommentBlock
+{
+	padding-top : 5px;
+	padding-bottom : 5px;
+}
+
