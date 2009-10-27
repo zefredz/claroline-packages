@@ -54,47 +54,50 @@ $tbl_incompatibility = $tbl_incompatibility['CLFDsuscriptionIncompat'];
 $is_allowedToEdit  = claro_is_allowed_to_edit();
 
 //  CHECK DATA INPUT
-
+    $infos_session = array();
+    
     if ( isset($_REQUEST['session_id']) ) $session_id = $_REQUEST['session_id'];
     else                           $session_id = null;
     
-    $infos_session = CLFDinfoSession($session_id);
-	
-	if (isset($_REQUEST['allow_modification']))
-	$allow_users_modification = $_REQUEST['allow_modification'];
-	else
-	$allow_users_modification = $infos_session['allow_modification'];
-	
-	//Create timestamp from $_REQUEST
-	if (isset($_REQUEST['startDay']))
-	$startDate = mktime($_REQUEST['startHour'], $_REQUEST['startMinute'], 0,$_REQUEST['startMonth'], $_REQUEST['startDay'], $_REQUEST['startYear']);
-	else
-	$startDate = $infos_session['startDate'];
-
-	if (isset($_REQUEST['endDay']))
-	$endDate = mktime($_REQUEST['endHour'], $_REQUEST['endMinute'], 0,$_REQUEST['endMonth'], $_REQUEST['endDay'], $_REQUEST['endYear']);
-	else
-	$endDate = $infos_session['endDate'];
-	
-	if (isset($_REQUEST['title']))
-	$title = $_REQUEST['title'];
-	else
-	$title = $infos_session['title'];
-	
-	if (isset($_REQUEST['intro_text']))
-	$intro_text = $_REQUEST['intro_text'];
-	else
-	$intro_text = $infos_session['intro_text'];
-	
-	if (isset($_REQUEST['max_users']))
-	$max_users = $_REQUEST['max_users'];
-	else
-	$max_users = $infos_session['max_users'];
-	
-    if ( isset($_REQUEST['incompatibilities']) ) 
-    $incompatibilities = $_REQUEST['incompatibilities'];
-    else    $incompatibilities = null;
-
+    if (isset($session_id))
+    {
+        $infos_session = CLFDinfoSession($session_id);
+    	
+    	if (isset($_REQUEST['allow_modification']))
+    	$allow_users_modification = $_REQUEST['allow_modification'];
+    	else
+    	$allow_users_modification = $infos_session['allow_modification'];
+    	
+    	//Create timestamp from $_REQUEST
+    	if (isset($_REQUEST['startDay']))
+    	$startDate = mktime($_REQUEST['startHour'], $_REQUEST['startMinute'], 0,$_REQUEST['startMonth'], $_REQUEST['startDay'], $_REQUEST['startYear']);
+    	else
+    	$startDate = $infos_session['startDate'];
+    
+    	if (isset($_REQUEST['endDay']))
+    	$endDate = mktime($_REQUEST['endHour'], $_REQUEST['endMinute'], 0,$_REQUEST['endMonth'], $_REQUEST['endDay'], $_REQUEST['endYear']);
+    	else
+    	$endDate = $infos_session['endDate'];
+    	
+    	if (isset($_REQUEST['title']))
+    	$title = $_REQUEST['title'];
+    	else
+    	$title = $infos_session['title'];
+    	
+    	if (isset($_REQUEST['intro_text']))
+    	$intro_text = $_REQUEST['intro_text'];
+    	else
+    	$intro_text = $infos_session['intro_text'];
+    	
+    	if (isset($_REQUEST['max_users']))
+    	$max_users = $_REQUEST['max_users'];
+    	else
+    	$max_users = $infos_session['max_users'];
+    	
+        if ( isset($_REQUEST['incompatibilities']) ) 
+        $incompatibilities = $_REQUEST['incompatibilities'];
+        else    $incompatibilities = null;
+    }
 /*
  *	exCreate
  *	Create a new subscription session
