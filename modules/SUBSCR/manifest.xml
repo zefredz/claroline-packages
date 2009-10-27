@@ -5,7 +5,7 @@
   <version>1.1</version> 
   <license>GPL</license>
   <type>tool</type>
-  <entry>entry.php</entry>
+  <entry>index.php</entry>
   <icon>icon.gif</icon>
 
   <description>
