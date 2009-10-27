@@ -30,22 +30,23 @@ array ( 'label'       => 'Allow users to modify their initial choice - default v
       , 'type'        => 'boolean'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'TRUE', 'FALSE' => 'FALSE')
       );
       
 $conf_def_property_list['export_csv_fields'] =
 array ( 'label'        => 'Fields for the CSV export'
-      , 'description'  => ''
+      , 'description'  => 'Which fields in the export file ?'
 		,'default'   	  => array('officialCode','username','name','firstname','subscription_date','email','phoneNumber')
       ,'type'      	  => 'multi'
       ,'display'       => TRUE
       ,'readonly'      => FALSE
-      ,'acceptedValue' => array ( 'officialCode'=> get_lang('officialCode'),
-                                  'username' => get_lang('username'),
-                                  'name' => get_lang('name'),
-                                  'firstname' => get_lang('firstname'),
-                                  'subscription_date' => get_lang('subscription date'),
-				  'email' => get_lang('email'),
-				  'phoneNumber' => get_lang('phoneNumber')
+      ,'acceptedValue' => array ( 'officialCode'=> 'officialCode',
+                                  'username' => 'username',
+                                  'name' => 'name',
+                                  'firstname' => 'firstname',
+                                  'subscription_date' => 'subscription date',
+				  				  'email' => 'email',
+				  				  'phoneNumber' => 'phoneNumber'
                                 )
       );
       
@@ -56,5 +57,6 @@ array ( 'label'       => 'Session incompatibility'
       , 'type'        => 'boolean'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
+      ,'acceptedValue' => array('TRUE' => 'TRUE', 'FALSE' => 'FALSE')
       );
 ?>
