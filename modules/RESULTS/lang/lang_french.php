@@ -1,5 +1,6 @@
 <?php
 //Ajouts à enlever.
+$_lang['Average'] = 'Moyenne';
 $_lang['Results'] = 'Résultats';
 $_lang['Max result'] = 'Note maximale';
 $_lang['Enter results'] = 'Entrer les résultats';
