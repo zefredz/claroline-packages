@@ -1,0 +1,45 @@
+body {
+    text-align: center;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+div#navigation {
+    text-align: center;
+    font-size: small;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2em;
+    width: 100%;
+    border-top: 1px solid #999;
+    background: #fff;
+}
+
+div#progress {
+    text-align: center;
+    padding: 3px;
+}
+
+div#table_of_content {
+    padding: 3em 3px 2px 3px;
+    overflow: vertical;
+    width: 96%;
+    font-size: small;
+    text-align: left;    
+}
+
+div#table_of_content_inner {
+
+}
+
+.active a,
+.active a:link,
+.active a:visited,
+.active a:hover,
+.active a:active {
+    font-weight: bold;
+}
