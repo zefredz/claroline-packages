@@ -18,7 +18,7 @@ $conf_def['config_name'] = 'Who is online';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'UCONLINE_refreshTime' );
+$conf_def['section']['main']['properties'] = array ( 'UCONLINE_refreshTime' ,'UCONLINE_displayRefreshTime' );
 
 $conf_def['section']['display']['label']      = 'Display';
 $conf_def['section']['display']['description']= '';
@@ -36,11 +36,21 @@ $conf_def['section']['display']['properties'] = array ( 'showUserId'
 $conf_def_property_list[ 'UCONLINE_refreshTime' ] = 
  array ( 'label'       => 'Refresh time'
        , 'description' => '5 is a good value for this. (Minimum 1 minute; Maximum 60 minutes)'
-       , 'default'     => '5' 	 
-       , 'unit'        => 'minutes' 	 
-       , 'type'        => 'integer' 	 
+       , 'default'     => '5'
+       , 'unit'        => 'minutes'
+       , 'type'        => 'integer'
         ,'acceptedValue' => array ( 'min'=> 1
-                                  , 'max'=> 60)       
+                                  , 'max'=> 60)
+       );
+
+$conf_def_property_list[ 'UCONLINE_displayRefreshTime' ] = 
+ array ( 'label'       => 'Display refresh time'
+       , 'description' => 'The refresh time for displaying the amount of online users'
+       , 'default'     => '60'
+       , 'unit'        => 'seconds'
+       , 'type'        => 'integer'
+        ,'acceptedValue' => array ( 'min'=> 10
+                                  , 'max'=> 3600 )
        );
 
 // DISPLAY

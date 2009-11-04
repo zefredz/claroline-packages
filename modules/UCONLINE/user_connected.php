@@ -107,5 +107,8 @@ $listView->assign( 'sortUrlList' , $sortUrlList );
 $listView->assign( 'refreshTime' , $refreshTime );
 $listView->assign( 'toolName' , $toolName );
 
+//reloads the page within a 30 seconds period
+ClaroHeader::getInstance()->addHtmlHeader( '<meta http-equiv="Refresh" content="30;URL=user_connected.php" />' );
+
 Claroline::getInstance()->display->body->appendContent( $listView->render() );
 echo  Claroline::getInstance()->display->render();
