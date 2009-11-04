@@ -13,18 +13,28 @@
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
 include_once claro_get_conf_repository().'UCONLINE.conf.php';
-include_once dirname(__FILE__) . '/lib/login.listener.class.php';
+include_once dirname( __FILE__ ) . '/lib/login.listener.class.php';
 
 JavascriptLoader::getInstance()->load( 'datetime' );
 
 ClaroHeader::getInstance()->addHtmlHeader( '
     <script type="text/javascript">
+        function userOnline(){
+            $.ajax( {
+                url: "' . get_module_url( 'UCONLINE' ) . '/user_online.php",
+                success: function( data ){
+                    $( "#userOnline" ).html( data );
+                }
+            } );
+            setTimeout( userOnline , ' . get_conf( 'UCONLINE_displayRefreshTime' ) * 1000 . ' );
+        }
         function userTime(){
             var userDate = new Date();
             var serverDate = Date.fromDatetime( "'. date( "Y-m-d H:i:s" ) .'");
             var timeOffset = Math.round( ( userDate.getTime() - serverDate.getTime() ) / 1000 );
             document.cookie = "time_offset = " + timeOffset + ";path = /"
         }
+        $( function(){ userOnline(); } );
         $( function(){ userTime(); } );
     </script>' );
 
