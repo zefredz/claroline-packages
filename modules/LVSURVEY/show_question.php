@@ -57,7 +57,11 @@ function displayQuestion($question)
 	        
     $previewQuestionTpl = new PhpTemplate(dirname(__FILE__).'/templates/preview_question.tpl.php');
     $previewQuestionTpl->assign('question', $question);
-    $previewQuestionTpl->assign('editMode', claro_is_allowed_to_edit());   
+    $previewQuestionTpl->assign('editMode', claro_is_allowed_to_edit()); 
+	if(isset($_REQUEST['surveyId']))
+	{
+		$previewQuestionTpl->assign('surveyId', (int)$_REQUEST['surveyId']);
+	}  
     
     displayContents($previewQuestionTpl->render(), $pageTitle);	
 }

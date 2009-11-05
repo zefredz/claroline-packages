@@ -57,7 +57,7 @@ class Survey {
         $this->is_anonymous = true;
         $this->is_visible = false;
         $this->resultsVisibility = 'INVISIBLE';
-        $this->startDate = 0;
+        $this->startDate = time();
         $this->endDate = PHP_INT_MAX;
         $this->maxCommentSize = self::DEFAULT_MAX_COMMENT_SIZE;
         $this->rank = -1;
@@ -372,7 +372,7 @@ class Survey {
             
         
         $questionList = $this->getQuestionList();
-        if(in_array($question->id, array_keys($questionList))) throw new Exception("This Question is already in the Survey");
+        if(in_array($question->id, array_keys($questionList))) throw new Exception("This question is already in the survey");
         
         $dbCnx = ClaroLine::getDatabase();
         //add a relation survey-question

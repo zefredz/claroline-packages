@@ -78,7 +78,7 @@ function renderSucess($survey)
 	$dialogBox = new DialogBox();
 	$dialogBox->success( get_lang("Survey has been saved")."!".$boxcontent);
 	
-	renderContents($dialogBox->render(),get_lang('Success'));
+	renderContents($dialogBox->render(),$survey,get_lang('Success'));
 }	
     
     
@@ -104,10 +104,10 @@ function renderEditSurvey($survey, $dialogBox = NULL)
     }
     $contenttoshow .= $editSurveyTpl->render();    
     
-    renderContents($contenttoshow, $pageTitle);	
+    renderContents($contenttoshow,$survey, $pageTitle);	
 }
 
-function renderContents($contents, $pageTitle)
+function renderContents($contents, $survey, $pageTitle)
 {
 	$out = '';
     $out .= claro_html_tool_title($pageTitle);  
@@ -118,6 +118,7 @@ function renderContents($contents, $pageTitle)
 	//create breadcrumbs
 	$claroline = Claroline::getInstance();
     $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
+    $claroline->display->banner->breadcrumbs->append($survey->title, 'show_survey.php?surveyId='.$survey->id);
     $claroline->display->banner->breadcrumbs->append($pageTitle);
     // append output
     $claroline->display->body->appendContent($out);

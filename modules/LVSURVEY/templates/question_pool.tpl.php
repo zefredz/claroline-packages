@@ -1,18 +1,17 @@
 <?php 
-	echo claro_html_tool_title(get_lang('List of questions'));
-?>
-<?php 
-	$cmd_menu = array();
-	$cmd_menu[] = '<a class="claroCmd" href="edit_question.php">'.get_lang('New question').'</a>';
-    echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>';
-
-?>
-<?php 
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
 	$deleteIcon		= claro_html_icon('delete');
 	$selectIcon		= claro_html_icon('select',		get_lang('Select'), 		get_lang('Select'));
 	
 	$surveySuffix = isset($this->surveyId)?'&amp;surveyId='.$this->surveyId:'';
+
+
+	echo claro_html_tool_title(get_lang('List of questions'));
+
+	$cmd_menu = array();
+	$cmd_menu[] = '<a class="claroCmd" href="edit_question.php?'.$surveySuffix.'">'.get_lang('New question').'</a>';
+    echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>';
+
 ?>
 
 <table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">
@@ -57,7 +56,7 @@
     	<?php foreach($this->questionList as $question) :?>
     		<tr>
             	<td>
-                	<a href="show_question.php?questionId=<?php echo $question->id; ?>" class="item">
+                	<a href="show_question.php?questionId=<?php echo $question->id . $surveySuffix; ?>" class="item">
 						<?php  echo $question->text; ?>
                 	</a>                	 
            		</td>

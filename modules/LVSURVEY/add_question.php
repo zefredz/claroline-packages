@@ -25,14 +25,10 @@ if(!claro_is_allowed_to_edit())
 //=================================
 
 From::module('LVSURVEY')->uses('Question.class', 'Survey.class');
-//FromKernel::uses('utils/input.lib', 'utils/validator.lib');
     
-// Tool label (must be in database)
+
 $tlabelReq = 'LVSURVEY';
 add_module_lang_array($tlabelReq);
-
-    
-//prepare survey Object
 try
 {
 	$surveyId = (int)$_REQUEST['surveyId'];
@@ -41,7 +37,7 @@ try
 catch(Exception $e)
 {
 	$dialogBox = new DialogBox();
-	$dialogBox->error( $e->getMessage());
+	$dialogBox->error( get_lang($e->getMessage()));
    	displayContents($dialogBox->render(),get_lang("Error"));
 }
 
@@ -59,6 +55,10 @@ if((isset($_REQUEST['fromPool'])) && ((int)$_REQUEST['fromPool']==1))
 
 displayAddingMethods($survey);
 
+//=================================
+// Controller Functions
+//=================================
+
 
 function addQuestionToSurvey($questionId, $survey)
 {
@@ -67,13 +67,13 @@ function addQuestionToSurvey($questionId, $survey)
 		$question = Question::load($questionId);
         $survey->addQuestion($question);
         $dialogBox = new DialogBox();
-        $dialogBox->success("Question successfully added to survey");
+        $dialogBox->success(get_lang("Question successfully added to survey"));
         displaySuccess($survey, $dialogBox);
 	}
 	catch(Exception $e)
 	{
 		$dialogBox = new DialogBox();
-		$dialogBox->error($e->getMessage());
+		$dialogBox->error(get_lang($e->getMessage()));
 		displayAddingMethods($survey, $dialogBox);
 	}	
 }
@@ -82,6 +82,10 @@ function addQuestionFromPoolToSurvey($survey)
 {
 	claro_redirect("question_pool.php?surveyId=".$survey->id);
 }
+
+//=================================
+// Display section
+//=================================
 
 
 function displaySuccess($survey, $dialogBox)
@@ -102,13 +106,11 @@ function displayAddingMethods($survey, $dialogBox = NULL)
     
 function renderContents($contents,$survey, $pageTitle, $dialogBox = NULL)
 {
-	//create breadcrumbs
 	$claroline = Claroline::getInstance();
     $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
     $claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id);
     $claroline->display->banner->breadcrumbs->append($pageTitle);
     
-    // append output
     $out = claro_html_tool_title($pageTitle);
     if(!is_null($dialogBox))
     {
@@ -117,7 +119,6 @@ function renderContents($contents,$survey, $pageTitle, $dialogBox = NULL)
     $out .= $contents;
     $claroline->display->body->appendContent($out);
    
-    // render output
     echo $claroline->display->render();
 }
 ?>
