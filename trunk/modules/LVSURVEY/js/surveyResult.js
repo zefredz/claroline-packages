@@ -7,7 +7,6 @@ $(document).ready(function (){
 		e.preventDefault();
 	});
 	
-	
 	// paint charts
 	$(".LVSURVEYQuestion").each(function(){
 			var questionType = $(this).find("input[name='questionType']").val();

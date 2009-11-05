@@ -4,7 +4,5 @@ $(document).ready(function (){
 		var infoSpanId = $(this).children('span.commentCharLeft').attr('id');
 		$(this).children("input").limit('200', '#' + infoSpanId);
 	});
-	
-
 });
 

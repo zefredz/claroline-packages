@@ -1,105 +1,113 @@
--- phpMyAdmin SQL Dump
--- version 2.11.5
--- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: May 16, 2008 at 10:19 PM
--- Server version: 5.0.51
--- PHP Version: 5.2.5
-
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
---
--- Database: `claroline`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_answer_choice`
---
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_choice` (
-  `id` int(11) NOT NULL auto_increment,
-  `surveyId` int(11) NOT NULL,
-  `questionId` int(11) NOT NULL,
-  `userId` int(11) default NULL,
-  `answer` int(11) NOT NULL,
-  `comment` VARCHAR(200) NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_choice`
---
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
-  `id` int(11) NOT NULL auto_increment,
-  `questionId` int(11) NOT NULL,
-  `text` varchar(255) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_question`
---
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_question` (
-  `id` int(11) NOT NULL auto_increment,
-  `courseId` varchar(12) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `type` enum('TEXT','MCSA','MCMA') NOT NULL default 'TEXT',
-  `alignment` enum('VERTI','HORIZ') default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_rel_survey_question`
---
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_rel_survey_question` (
-  `id` int(11) NOT NULL auto_increment,
-  `surveyId` int(11) NOT NULL,
-  `questionId` int(11) NOT NULL,
-  `rank` int(11) NOT NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_rel_survey_user`
---
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_rel_survey_user` (
-  `surveyId` int(11) NOT NULL,
-  `userId` int(11) NOT NULL,
-  PRIMARY KEY  (`surveyId`,`userId`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `cl_survey2_survey`
+-- Table structure for survey table
 --
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey` (
-  `id` int(10) NOT NULL auto_increment,
-  `courseId` varchar(40) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `anonymous` enum('YES','NO') NOT NULL default 'NO',
-  `visibility` enum('VISIBLE','INVISIBLE') NOT NULL default 'INVISIBLE',
-  `resultsVisibility` enum('VISIBLE','INVISIBLE','VISIBLE_AT_END') NOT NULL default 'INVISIBLE',
-  `startDate` datetime default NULL,
-  `endDate` datetime default NULL,
-  `rank` int(11) NOT NULL,
+  `id` 					INTEGER 										NOT NULL 	auto_increment,
+  `courseId` 			VARCHAR(40) 									NOT NULL,
+  `title` 				VARCHAR(255) 									NOT NULL,
+  `description` 		TEXT 											NOT NULL,
+  `is_anonymous`		TINYINT(1) 										NOT NULL 	DEFAULT 0,
+  `is_visible` 		TINYINT(1) 										NOT NULL 	DEFAULT 0,
+  `resultsVisibility` 	ENUM('VISIBLE','INVISIBLE','VISIBLE_AT_END') 	NOT NULL 	DEFAULT 'INVISIBLE',
+  `startDate` 			DATETIME 										NULL,
+  `endDate` 			DATETIME										NULL,
+  `rank` 				INTEGER 										NULL,
+  `maxCommentSize` 		INTEGER 										NOT NULL 	DEFAULT 200,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Table for surveys' AUTO_INCREMENT=7 ;
+) ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for question table
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_question` (
+  `id` 					INTEGER 										NOT NULL 	auto_increment,
+  `text` 				VARCHAR(255) 									NOT NULL,
+  `type` 				ENUM('OPEN','MCSA','MCMA') 						NOT NULL 	DEFAULT 'MCSA',
+  `alignment` 			ENUM('VERTI','HORIZ') 							NULL,
+  PRIMARY KEY  (`id`)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for the relation between survey and questions. N to M relationship (
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_rel_survey_question` (
+  `id` 					INTEGER 										NOT NULL auto_increment,
+  `surveyId` 			INTEGER 										NOT NULL,
+  `questionId` 			INTEGER 										NOT NULL,
+  `rank` 				INTEGER 										NULL,
+  PRIMARY KEY  (`id`),
+  UNIQUE(`surveyId`, `questionId`)
+);
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for the choices of a question. A choice belongs to a question.
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
+  `id` 					INTEGER 										NOT NULL auto_increment,
+  `questionId` 			INTEGER 										NOT NULL,
+  `text` 				VARCHAR(255) 									NOT NULL,
+  PRIMARY KEY  (`id`)
+) ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cl_survey2_answer`
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
+  `id` 					INTEGER 										NOT NULL auto_increment,
+  `questionId` 			INTEGER 										NOT NULL,
+  `participationId`		INTEGER 										NOT NULL,
+  `comment` 			VARCHAR(200)									NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`surveyId`, `questionId`, `userId`)
+);
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cl_survey2_answer_item`
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
+  `id` 					INTEGER 										NOT NULL auto_increment,
+  `answerId` 			INTEGER 										NOT NULL,
+  `choiceId` 			INTEGER 										NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE (`answerId`, `choiceId`)
+);
+
+
+-- --------------------------------------------------------
+
+
+
+--
+-- Table structure for table `cl_survey2_participation`
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_participation` (
+	`id` 				INTEGER 										NOT NULL auto_increment,
+  	`surveyId` 			INTEGER 										NOT NULL,
+  	`userId` 			INTEGER 										NOT NULL,
+  	PRIMARY KEY (`id`),
+  	UNIQUE  (`surveyId`,`userId`)
+);
+
+

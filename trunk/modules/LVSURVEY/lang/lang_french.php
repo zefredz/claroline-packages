@@ -96,14 +96,12 @@ $_lang['This survey is not anonymous. Your identification will be displayed.'] =
 $_lang['You already filled this survey.'] = "Vous avez déjà complété ce sondage.";
 $_lang['You already filled this survey. You may change your answers.'] = "Vous avez déjà complété ce sondage. Vous pouvez changer vos réponses.";
 $_lang['No question in this survey'] = "Pas de question dans ce sondage";
-$_lang['You can\'t fill this survey again'] = "Vous ne pouvez pas compléter ce sondage une deuxième fois";
 $_lang['Change my answers'] = "Changer mes réponses";
 $_lang['Start date'] = "Date de début";
 $_lang['End date'] = "Date de fin";
 $_lang['You are not allowed to see these results.'] = "Vous n'avez pas le droit de voir ces résultats.";
 $_lang['Results will be visible only at the end of the survey on %date.'] = "Les résultats seront visible seulement à la fin du sondage le %date.";
 $_lang['Results will be visible only at the end of the survey.'] = "Les résultats seront visible seulement à la fin du sondage.";
-//$_lang['Access'] = "Accès";
 $_lang['Closed'] = "Fermé";
 $_lang['Start now'] = "Ouvrir maintenant";
 $_lang['Close now'] = "Fermer maintenant";
@@ -127,4 +125,8 @@ $_lang['Closed'] = "Fermé";
 $_lang['Delete survey'] = "Supprimer le sondage";
 $_lang['Title is required'] = "Il est nécessaire de définir le titre";
 $_lang['You need at least one question in the Survey'] = "Un sondage doit contenir au moins une question";
+$_lang['This survey has ended. You cannot change your answers anymore.'] = "Ce sondage est fini. Vous ne pouvez plus changer vos réponses";
+$_lang['Question successfully added to survey'] = "La question a été ajoutée au sondage avec succès";
+$_lang['This question is used in some surveys. You can\'t delete it'] = "Cette question fait partie de certains sondages, Vous ne pouvez donc pas la supprimer";
+
 ?>
