@@ -1,9 +1,7 @@
-var nbchoice;
-
 function showMultipleChoices(nbChoice)
 {
 	$("div[id^='divquestionCh']").hide();
-	$("div[id^='divquestionCh']:lt("+(nbchoice+1)+")").show();
+	$("div[id^='divquestionCh']:lt("+(nbChoice+1)+")").show();
 	$("#menuaddrem").show();
     $("#divquestionAlign").show();
 }
@@ -16,41 +14,42 @@ function hideMultipleChoice()
 }
 
 $(document).ready(function(){
-		
+	
+	
 	$("input[name='questionType']").click(	function()
 	{
-		if ($("input[name='questionType']:checked").val() == "TEXT" )
+		if ($("input[name='questionType']:checked").val() == "OPEN" )
 		{
 			hideMultipleChoice();
 		}
 		else
 		{
-			nbChoice = $("#questionNbCh").val();
+			nbChoice = parseInt($("#questionNbCh").val());
 			showMultipleChoices(nbChoice);
 		}
 	});	
 	
-	nbchoice = 2;
-	$("#questionNbCh").val(nbchoice);
-	$("#questionType[value='MCSA']").click();
-	showMultipleChoices();	
+	
+	$("input[name='questionType']:checked").click();
+	
+	$(":input[id^='questionCh']").focus( function()
+	{
+		divIndex = $("div").index($(this).parent("div:first"));
+		$("div:eq(" + (divIndex ) + ")").show();
+	});
+	
+	
 		
 	$("#addChoice").click(function () {
-		if(nbchoice<10)
-		{
-			nbchoice = nbchoice + 1;
-			$("#questionNbCh").val(nbchoice);
-			$("div[id^='divquestionCh']:hidden:first").show();
-		}
+		nbChoice = parseInt($("#questionNbCh").val()) +1;
+		$("#questionNbCh").val(nbChoice);
+		showMultipleChoices(nbChoice);
 	});
 	
 	$("#removeChoice").click(function () {
-		if(nbchoice>2)
-		{
-			nbchoice = nbchoice -1;
-			$("#questionNbCh").val(nbchoice);
-			$("div[id^='divquestionCh']:visible:last").hide();
-		}
+		nbChoice = parseInt($("#questionNbCh").val()) -1;
+		$("#questionNbCh").val(nbChoice);
+		showMultipleChoices(nbChoice);
 	});
 	
 });

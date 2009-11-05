@@ -1,133 +1,142 @@
  <?php 
-  /**
-     * This is a tool to create surveys. It's the new version better than older CLSURVEY
-     * @copyright (c) Haute Ecole Léonard de Vinci
-     * @version     0.1 $Revision$
-     * @author      BAUDET Gregory <gregory.baudet@gmail.com>
-     * @license     http://www.gnu.org/copyleft/gpl.html
-     *              GNU GENERAL PUBLIC LICENSE version 2 or later
-     * @package     LVSURVEY
-     */
-    // This script is used to show results of a survey
-   
-    // Tool label (must be in database)
-    $tlabelReq = 'LVSURVEY';
-    // Name of the tool (displayed in title)
-    //$nameTools = 'CLSurvey';
-   
-    // load Claroline kernel
-    require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-    
-    if ( !claro_is_in_a_course() || !claro_is_course_allowed() || !claro_is_user_authenticated() ) claro_disp_auth_form(true);
-    
-    add_module_lang_array($tlabelReq);
-    
-    $pageTitle = get_lang('Survey');
-    
-    claro_set_display_mode_available(true);
-    
-    $is_allowedToEdit = claro_is_allowed_to_edit();
-    
-    require_once 'lib/survey.class.php';
-    
-    if(isset($_REQUEST['surveyId']))
-    {
-        //load the survey
-        $surveyId = (int) $_REQUEST['surveyId'];
-        $survey = new Survey(claro_get_current_course_id(), $is_allowedToEdit);
-        if($survey->load($surveyId) == true)
-        {
-            $pageTitle = htmlspecialchars( $survey->getTitle());
-        }
-        else
-        {
-            header('Location: survey_list.php');
-            exit();
-        }
-    }
-    else
-    {
-        header('Location: survey_list.php');
-        exit();
-    }
-    
-    
-    if(($is_allowedToEdit == true) && (isset($_REQUEST['cmd'])))
-    {
-        //something special to do
-        if($_REQUEST['cmd']=='resultsDel')
-        {
-            //clear results
-            if(isset($_REQUEST['claroFormId']))
-            {
-                $contenttoshow = '';
-                $survey->loadQuestions();
-                $survey->removeAnswers();
-                
-                $dialogBox = new DialogBox();
-                $dialogBox->success(get_lang('Results have been deleted'));
-                $contenttoshow .= $dialogBox->render();
-                $contenttoshow .= $survey->renderResults();
-            }
-            else //ask confirmation
-            {
-                $form = '<table><tr>'
-                       .'<td><form method="post" action="show_results.php?surveyId='.$surveyId.'">'
-                       .'<input type="submit" name="submit" value="'.get_lang('Cancel').'" />'
-                       .'</form>'
-                       .'</td><td><form method="post" action="show_results.php?surveyId='.$surveyId.'">'
-                       .'<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'
-                       .'<input type="hidden" name="cmd" value="resultsDel" />'
-                       .'<input type="submit" name="submit" value="'.get_lang('Confirm').'" />'
-                       .'</form></td></tr></table>';
-                $dialogBox = new DialogBox();
-                
-                $dialogBox->question( get_lang('Are you sure you want to delete results of this survey?')
-                            . '<br />' .get_lang('Title of the survey') . ' : '. htmlspecialchars($survey->getTitle()) . $form);
-                $contenttoshow = $dialogBox->render();
-            }
-            $breadapp = get_lang('Delete all results');
-            $pageTitle = get_lang('Delete all results');
-        }
-    }
-    else
-    {
-        //show results
-        $contenttoshow = '';
-        $contenttoshow .= $survey->renderResults();
-        
-        if($is_allowedToEdit)
-        {
-            $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$surveyId.'&amp;cmd=resultsDel">'.get_lang('Delete all results').'</a>';
-        }
-    }
-        
+ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+//=================================
+// Security check
+//=================================
 
-    //generate output
-    $out = '';
-    $out .= claro_html_tool_title($pageTitle);
-    if(!empty($cmd_menu))
-        $out .= '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>' . "\n";
-    $out .= $contenttoshow;
+if ( 	!claro_is_in_a_course() 
+		|| !claro_is_course_allowed() 
+		|| !claro_is_user_authenticated() )
+{
+	claro_disp_auth_form(true);
+}
     
-	//breadcrumb
-	$claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-	$claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->getTitle()), 'show_survey.php?surveyId='.$surveyId); 
-	
-	
-    //breadcrumb
-	if(isset($breadapp))
+//=================================
+// Init section
+//=================================
+From::module('LVSURVEY')->uses('Survey.class', 'Result.class');
+    
+// Tool label (must be in database)
+$tlabelReq = 'LVSURVEY';
+add_module_lang_array($tlabelReq);
+claro_set_display_mode_available(true);
+    
+//prepare survey Object
+try
+{
+	$surveyId = (int)$_REQUEST['surveyId'];
+	$survey = Survey::load($surveyId);	
+}
+catch(Exception $e)
+{
+	$dialogBox = new DialogBox();
+	$dialogBox->error( $e->getMessage());
+   	displayContents($dialogBox->render(),new Survey(claro_get_current_course_id()),get_lang("Error"));
+   	exit;
+}   
+ 
+//=================================
+// Choose Action
+//=================================
+
+if(claro_is_allowed_to_edit() && (isset($_REQUEST['cmd'])))
+{
+	switch($_REQUEST['cmd'])
 	{
-	    $claroline->display->banner->breadcrumbs->append(get_lang('Results'), 'show_results.php?surveyId='.$surveyId); 
-	    $claroline->display->banner->breadcrumbs->append($breadapp); 
+		case 'reset':
+			resetResults($survey);
+			break;		
+	}
+}
+else
+{
+	displayResults($survey);
+}
+ 
+    
+//=================================
+// Action functions
+//=================================
+
+function resetResults($survey)
+{
+	if(isset($_REQUEST['claroFormId']))
+    {
+        $survey->reset();
+                
+        $dialogBox = new DialogBox();
+        $dialogBox->success(get_lang('Results have been deleted'));
+        displayResults($survey);
+    }
+    else 
+    {
+        displayResetConf($survey);
+    }
+}
+    
+    
+//=================================
+// Display section
+//=================================
+
+function displayResetConf($survey)
+{
+	$confirmationTpl = new PhpTemplate(dirname(__FILE__).'/templates/reset_survey_conf.tpl.php');
+	$confirmationTpl->assign('survey', $survey);
+    $pageTitle = get_lang('Delete all results');
+    displayContents($confirmationTpl->render(),$survey, $pageTitle);
+}
+
+function displayResults($survey, $dialogBox = NULL)
+{
+	$contents = '';
+	if(!is_null($dialogBox))
+	{
+		$contents .= $dialogBox->render();
+	}
+	if(!claro_is_allowed_to_edit() && !$survey->areResultsVisibleNow())
+	{
+		$dialogBox = new DialogBox();
+		$dialogBox->error(get_lang('You are not allowed to see these results.'));
+		if($survey->resultsVisibility == 'VISIBLE_AT_END')
+        {        	
+        	if(is_null($survey->endDate))
+        	{
+        		$dialogBox->info(get_lang('Results will be visible only at the end of the survey.'));
+        	}
+        	else
+        	{
+        		$dialogBox->info(get_lang('Results will be visible only at the end of the survey on %date.', 
+                        array('%date'=>claro_html_localised_date(get_locale('dateFormatLong'), $survey->endDate))));
+        	}
+        }
+		$contents = $dialogBox->render();
 	}
 	else
-	    $claroline->display->banner->breadcrumbs->append(get_lang('Results')); 
-    
-    // append output
-    $claroline->display->body->appendContent($out);
+	{
+		$showResultsTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_results.tpl.php');
+		$showResultsTpl->assign('survey', $survey);
+		$showResultsTpl->assign('editMode', claro_is_allowed_to_edit());
+		$contents = $showResultsTpl->render();
+	}	
+    $pageTitle = get_lang('Results');    
+    displayContents($contents,$survey, $pageTitle);
+}
+
+
+function displayContents($contents,$survey, $pageTitle)
+{
+	$claroline = Claroline::getInstance();
+	
+    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
+	$claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id); 
+	$claroline->display->banner->breadcrumbs->append(get_lang('Results'));
+	
+    $claroline->display->body->appendContent($contents);
    
     // render output
     echo $claroline->display->render();
+	
+}   
     
 ?>

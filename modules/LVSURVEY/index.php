@@ -16,6 +16,7 @@
      *  extract templates
      *  remove useless screens
      *  make comment length a paramter of the survey (0 = disabled) and check it
+     *  prevent users from deleteing used questions or questions belonging to someone else
      *  
      */
 header('Location:./survey_list.php');
