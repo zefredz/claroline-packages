@@ -47,7 +47,7 @@ catch(Exception $e)
 		try
 		{
 			saveParticipation();
-			if(claro_is_allowed_to_edit() || $survey->isAccessible())
+			if($survey->areResultsVisibleNow())
 			{
 				claro_redirect('show_results.php?surveyId='.$survey->id);
 				exit;

@@ -128,5 +128,9 @@ $_lang['You need at least one question in the Survey'] = "Un sondage doit conten
 $_lang['This survey has ended. You cannot change your answers anymore.'] = "Ce sondage est fini. Vous ne pouvez plus changer vos réponses";
 $_lang['Question successfully added to survey'] = "La question a été ajoutée au sondage avec succès";
 $_lang['This question is used in some surveys. You can\'t delete it'] = "Cette question fait partie de certains sondages, Vous ne pouvez donc pas la supprimer";
-
+$_lang['Results are not visible by the participants of this Survey.'] = "Les résultats de ce sondages ne sont pas visibles pour les participants";
+$_lang['Go back to Question Pool'] = 'Revenir à la liste des questions';
+$_lang['Add this question to survey'] = 'Ajouter cette question au sondage';
+$_lang['or'] = 'ou';
+$_lang['This question is already in the survey'] = 'Cette question fait déjà partie du sondage';
 ?>

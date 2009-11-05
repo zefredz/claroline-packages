@@ -40,10 +40,15 @@
 		$infoBox->info( get_lang('This survey has ended. You cannot change your answers anymore.'));
 	}
 	if('VISIBLE_AT_END' == $this->survey->resultsVisibility && !$this->survey->hasEnded())
-        {
-        	$infoBox->info(get_lang('Results will be visible only at the end of the survey on %date.', 
-                 array('%date'=>claro_html_localised_date(get_locale('dateFormatLong'), $this->survey->endDate))));
-        }
+    {
+    	$infoBox->info(get_lang('Results will be visible only at the end of the survey on %date.', 
+             array('%date'=>claro_html_localised_date(get_locale('dateFormatLong'), $this->survey->endDate))));
+    }
+    if('INVISIBLE' == $this->survey->resultsVisibility )
+    {
+    	$infoBox->info(get_lang('Results are not visible by the participants of this Survey.'));
+    }
+    
 	echo $infoBox->render();
 
 ?>
@@ -51,7 +56,7 @@
 <div><?php echo $this->survey->description; ?></div>
 
 <?php  if(!$this->survey->hasEnded()) : ?>
-	<form method="post" action="show_survey.php">
+	<form method="post" action="show_survey.php?surveyId=<?php echo $this->survey->id; ?>">
 	<input type="hidden" name="claroFormId" value="<?php echo uniqid(''); ?>" />
     <input type="hidden" name="surveyGoToConf" value="" />
     <input type="hidden" name="surveyId" value="<?php echo $this->survey->id; ?>" />

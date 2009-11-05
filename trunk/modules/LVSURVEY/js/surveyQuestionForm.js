@@ -34,7 +34,7 @@ $(document).ready(function(){
 	
 	$(":input[id^='questionCh']").focus( function()
 	{
-		divIndex = $("div").index($(this).parent("div:first"));
+		var divIndex = $("div").index($(this).parent("div:first"));
 		$("div:eq(" + (divIndex ) + ")").show();
 	});
 	

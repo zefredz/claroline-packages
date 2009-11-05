@@ -47,5 +47,17 @@
         <input maxlength="200" type="text" size="70" name="answerComment<?php echo $question->id; ?>" />
         <span id="commentCharLeft<?php echo $question->id; ?>" class="commentCharLeft"></span>
         <?php echo get_lang('char(s) left'); ?>
-        </div>
+    </div>
+    <div>
+    	<a href="question_pool.php?<?php echo isset($this->surveyId)?'surveyId='.$this->surveyId:''; ?>">
+    		<?php echo get_lang('Go back to Question Pool')?>
+    	</a>
+    
+    <?php  if(isset($this->surveyId)) :?>
+    	 <?php echo get_lang('or')?> 
+    	 <a href="add_question.php?questionId=<?php echo $question->id; ?>&amp;surveyId=<?php echo $this->surveyId; ?>">
+    	 	<?php echo get_lang('Add this question to survey')?>
+    	 </a>
+    <?php endif;?>
+    </div>
 </div>
