@@ -65,8 +65,10 @@ if ( ! claro_is_platform_admin() && ! get_conf( 'allUsersAllowed' ) )
                     INNER JOIN
                         `{$tbl[ 'cours' ]}` AS CL
                     ON
-                        CL.`registration` = 'close'
+                        CL.`code` = CU.`code_cours`
                     WHERE
+                        CL.`registration` = 'close'
+                    AND
                         CU.`user_id` = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
 }
 
