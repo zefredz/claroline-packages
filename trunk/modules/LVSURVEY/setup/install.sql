@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
   `participationId`		INTEGER 										NOT NULL,
   `comment` 			VARCHAR(200)									NULL,
   PRIMARY KEY (`id`),
-  UNIQUE (`surveyId`, `questionId`, `userId`)
+  UNIQUE (`questionId`, `participationId`)
 );
 
 
@@ -95,6 +95,8 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
 
 
 -- --------------------------------------------------------
+
+
 
 
 
