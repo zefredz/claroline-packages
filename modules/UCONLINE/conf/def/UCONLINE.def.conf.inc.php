@@ -3,7 +3,7 @@
 /**
  * Who is onlin@?
  *
- * @version     UCONLINE 1.2.6 $Revision$ - Claroline 1.9
+ * @version     UCONLINE 1.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCONLINE
@@ -29,7 +29,7 @@ $conf_def['section']['display']['properties'] = array ( 'showUserId'
                                                       , 'showSkypeStatus'
                                                       , 'showUserPicture'
                                                       , 'showLocalTime'
-                                                      , 'allUsersAllowed'
+                                                      , 'privacy'
                                                       , 'usersPerPage' );
 
 // MAIN
@@ -124,14 +124,16 @@ array ( 'label'       => 'Show the local time of each user'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'allUsersAllowed' ] =
-array ( 'label'       => 'users can see ALL the other users!'
-      , 'description' => ''
-      , 'default'     => FALSE
-      , 'type'        => 'boolean'
+$conf_def_property_list[ 'privacy' ] =
+array ( 'label'       => 'privacy/security level'
+      , 'description' => 'The users can see...'
+      , 'default'     => '0'
+      , 'type'        => 'enum'
       , 'display'     => TRUE
       , 'readonly'    => FALSE
-      ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      ,'acceptedValue' => array( '0' => 'all the other online users - security level : none'
+                               , '1' => 'only the users registered in their own courses - security level : medium'
+                               , '2' => '... except the courses with open registration - security level : high' )
       );
 
 $conf_def_property_list[ 'usersPerPage' ] =

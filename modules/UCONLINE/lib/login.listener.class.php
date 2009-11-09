@@ -3,7 +3,7 @@
 /**
  * Who is onlin@?
  *
- * @version     UCONLINE 1.2.6 $Revision$ - Claroline 1.9
+ * @version     UCONLINE 1.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCONLINE

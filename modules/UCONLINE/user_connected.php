@@ -3,7 +3,7 @@
 /**
  * Who is onlin@?
  *
- * @version     UCONLINE 1.2.6 $Revision$ - Claroline 1.9
+ * @version     UCONLINE 1.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCONLINE
@@ -28,6 +28,15 @@ $userPerPage = get_conf( 'usersPerPage' );
 
 $tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'cours_user' , 'cours' ), array( 'course' => null ) );
 
+$additionalRestriction = get_conf( 'privacy' ) == 2 ?
+    "INNER JOIN
+        `{$tbl[ 'cours' ]}` AS CL
+    ON
+        CL.`code` = CU.`code_cours`
+    WHERE
+        CL.`registration` = 'close'
+    AND" : "WHERE";
+
 $sql = "SELECT DISTINCT
             U.`nom`                 AS `lastname`,
             U.`prenom`              AS `firstname`,
@@ -50,7 +59,7 @@ $sql = "SELECT DISTINCT
             ON
                 O.`user_id` = U.`user_id`";
 
-if ( ! claro_is_platform_admin() && ! get_conf( 'allUsersAllowed' ) )
+if ( ! claro_is_platform_admin() && get_conf( 'privacy' ) )
 {
     $sql .= "LEFT JOIN
                 `{$tbl[ 'cours_user' ]}` AS C
@@ -61,15 +70,9 @@ if ( ! claro_is_platform_admin() && ! get_conf( 'allUsersAllowed' ) )
                     SELECT
                         CU.`code_cours`
                     FROM
-                        `{$tbl[ 'cours_user' ]}` AS CU
-                    INNER JOIN
-                        `{$tbl[ 'cours' ]}` AS CL
-                    ON
-                        CL.`code` = CU.`code_cours`
-                    WHERE
-                        CL.`registration` = 'close'
-                    AND
-                        CU.`user_id` = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
+                        `{$tbl[ 'cours_user' ]}` AS CU"
+            . "\n" . $additionalRestriction . "\n" .
+                        "CU.`user_id` = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
 }
 
 $myPager = new claro_sql_pager( $sql, $offset, $userPerPage );
