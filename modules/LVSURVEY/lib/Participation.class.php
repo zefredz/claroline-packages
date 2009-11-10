@@ -1,6 +1,5 @@
 <?php
 From::module('LVSURVEY')->uses('SurveyConstants.class', 'Question.class', 'Answer.class');
-FromKernel::uses(/*'claroCourse.class', 'utils/input.lib', 'utils/validator.lib'*/);
 
 class Participation
 {
