@@ -1,7 +1,6 @@
 <?php 
 	JavascriptLoader::getInstance()->load('jquery');
     JavascriptLoader::getInstance()->load('jquery.limit-1.2');
-    JavascriptLoader::getInstance()->load('fillSurvey');
 	CssLoader::getInstance()->load('LVSURVEY');
 	
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
@@ -11,14 +10,14 @@
 	
 	$currentUserId = claro_get_current_user_id();
 	$participation = $this->participation;
-	$questionList = $this->survey->getQuestionList();
+	$surveyLineList = $this->survey->getSurveyLineList();
 	
 	echo claro_html_tool_title($this->survey->title);
 	$cmd_menu = array();
 	if($this->editMode)
 	{		
 		$cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$this->survey->id.'">'.$editIcon.' '.get_lang('Edit survey properties').'</a>';
-    	$cmd_menu[] = '<a class="claroCmd" href="add_question.php?surveyId='.$this->survey->id.'">'.get_lang('Add question').'</a>';
+    	$cmd_menu[] = '<a class="claroCmd" href="question_pool.php?surveyId='.$this->survey->id.'">'.get_lang('Add question').'</a>';
 	}
 	if($this->editMode || $this->survey->areResultsVisibleNow())
 	{
@@ -65,11 +64,12 @@
 
     
     <div class="LVSURVEYQuestionList">
-	<?php  if(empty($questionList)) :?>
+	<?php  if(empty($surveyLineList)) :?>
 		<?php echo get_lang('No question in this survey'); ?>
 	<?php else :?>
-		<?php foreach($questionList as $question) :?>
+		<?php foreach($surveyLineList as $surveyLine) :?>
 			<?php
+				$question = $surveyLine->question;
 				$answer = $participation->getAnswerForQuestion($question->id);
 				$selectedChoiceList = $answer->getSelectedChoiceList();
 			?>
@@ -89,7 +89,7 @@
                 			$urlRemove = 'show_survey.php?surveyId='.$this->survey->id.'&amp;questionId='.$question->id.'&amp;cmd=questionRemove';
 							echo claro_html_link($urlRemove, $deleteIcon);
 						}
-						echo htmlspecialchars($question->text);
+						echo htmlspecialchars($question->text). ' ';
                 	?>
                 </div>
 				<div class="LVSURVEYQuestionContent">
@@ -125,15 +125,36 @@
 							<?php endforeach;?>
                     	</ul>
 					<?php endif; ?>
-				</div>
+				</div>				
 				<div class="answerCommentBlock" id="answerCommentBlock<?php echo $question->id; ?>">
+				<?php  if ( $this->editMode) : ?>
+					<?php if ($surveyLine->maxCommentSize == 0) : ?>
+						<a href="show_survey.php?surveyId=<?php echo $this->survey->id; ?>&amp;questionId=<?php echo $question->id; ?>&amp;cmd=setCommentSize&amp;commentSize=200">
+							 <?php echo get_lang('Enable comments')?> 
+						</a>
+					<?php else : ?>
+						<a href="show_survey.php?surveyId=<?php echo $this->survey->id; ?>&amp;questionId=<?php echo $question->id; ?>&amp;cmd=setCommentSize&amp;commentSize=0">
+							 <?php echo get_lang('Disable comments')?>  
+						</a>
+					<?php  endif; ?>
+				<?php endif; ?>				
         			<?php echo get_lang('Comment'); ?> : 
-        			<input maxlength="200" type="text" size="70" name="answerComment<?php echo $question->id; ?>" 
-        				value="<?php echo $answer->comment; ?>" />
-        			<span id="commentCharLeft<?php echo $question->id; ?>" class="commentCharLeft"></span>
-        			<?php echo get_lang('char(s) left'); ?>
+        			<?php if ($surveyLine->maxCommentSize == 0) : ?>
+        				<?php echo get_lang('No Comments'); ?>
+        				<input type="hidden"name="answerComment<?php echo $question->id; ?>" 
+        					value="<?php echo $answer->comment; ?>" />
+        			<?php else : ?>
+        				<input maxlength="<?php echo $surveyLine->maxCommentSize; ?>" type="text" size="70" name="answerComment<?php echo $question->id; ?>" id="answerComment<?php echo $question->id; ?>"
+        					value="<?php echo $answer->comment; ?>" />
+        				<span id="commentCharLeft<?php echo $question->id; ?>" class="commentCharLeft"></span>
+        				<?php echo get_lang('char(s) left'); ?>
+        			<?php endif;?>        			
         		</div>
 			</div>
+				
+			<script type="text/javascript">
+			$('#answerComment<?php echo $question->id; ?>').limit(<?php echo $surveyLine->maxCommentSize; ?>, '#commentCharLeft<?php echo $question->id; ?>');
+			</script>
 		<?php endforeach;?>
 	<?php endif; ?>
 	</div>
@@ -141,5 +162,6 @@
 		<input type="submit" value="<?php echo get_lang('Submit'); ?>" />
 		</form>
 	<?php endif; ?>
+
 
 	

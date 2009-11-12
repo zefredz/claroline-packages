@@ -1,5 +1,6 @@
 <?php
 	$participantCount = count($this->survey->getParticipationList());
+	$surveyLineList = $this->survey->getSurveyLineList();
 	 
 	if($this->editMode)
     {
@@ -18,19 +19,20 @@
 
 <div><?php  echo $this->survey->description; ?></div>
 <div class="LVSURVEYQuestionList">
-	<?php foreach ($this->survey->getQuestionList() as $question) : ?>
-		<?php 
+	<?php foreach ($surveyLineList as $surveyLine) : ?>
+		<?php 			
+			$question = $surveyLine->question;
 			$choiceList = $question->getChoiceList();
 		?>
 		<div class="LVSURVEYQuestion">
         	<input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
         	<div class="LVSURVEYQuestionTitle"><?php  echo htmlspecialchars($question->text); ?></div>        
         	<div class="LVSURVEYQuestionContent">
-       			<div class="LVSURVEYQuestionResultChart"></div>
+        	<div class="LVSURVEYQuestionResultChart"></div>
        			<?php if (empty($choiceList)) :?>
        				<div class="answer">
-       					<?php echo get_lang('No result'); ?>
-       				</div>
+       					<?php echo get_lang('No Choices'); ?>
+       				</div>       			
        			<?php  else :?>
        				<div class="answer">
        					<table>
@@ -45,19 +47,23 @@
        									<?php echo $choice->text; ?> :
 									</span>
 								</td>
-								<td>
-									<?php echo $resultCount; ?>
-								</td>
-								<td>
-									
-        	    					 &#040; <!--  left parenthese -->
-        	    					 <span class="answerPercentage" >
-        	    					 	<?php  echo ($resultCount*100/$participantCount)?>
-        	    					 </span>  &#37; <!--  percentage  -->
-        	    					 &#041; <!--  right parenthese  -->
-        	    				</td>								
-       						</tr>
-       						<?php  if($resultCount > 0) :?>       						
+								<?php  if (0 == $resultCount) :?>
+       								<td colspan="2" >
+										<?php echo get_lang('No Results'); ?>
+									</td>
+       							<?php else :?>
+									<td>
+										<?php echo $resultCount; ?>
+									</td>
+									<td>
+										
+        	    						 &#040; <!--  left parenthese -->
+        	    						 <span class="answerPercentage" >
+        	    						 	<?php  echo ($resultCount*100/$participantCount)?>
+        	    						 </span>  &#37; <!--  percentage  -->
+        	    						 &#041; <!--  right parenthese  -->
+        	    					</td>        	    												
+       							</tr>   						
 	       						<tr>
 	        	    				<td>
 	          	    					<a href="#" class="deployDetailedList">

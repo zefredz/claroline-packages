@@ -110,7 +110,26 @@ if($this->survey->isAnswered()){
                  <?php echo ($this->survey->resultsVisibility == 'INVISIBLE'?'checked ':''); ?>
              /><?php echo get_lang('Never visible'); ?>
          </td>
-     </tr>  
+     </tr>
+     <!--  COMMENT SIZE  --> 
+     <tr>
+         <td valign="top">
+             <label for="maxCommentSize"><?php echo get_lang('Comment size'); ?>&nbsp;
+                 <span class="required">*</span>&nbsp;:
+             </label>
+         </td>
+         <td>
+             <input type="radio" name="maxCommentSize" value="0" 
+                 <?php echo ($this->survey->maxCommentSize == 0?'checked ':''); ?>
+             /><?php echo get_lang('No Comments'); ?>
+             <input type="radio" name="maxCommentSize" value="50" 
+                 <?php echo ($this->survey->maxCommentSize == 50?'checked ':''); ?>
+             /><?php echo get_lang('Small Comments'); ?>
+             <input type="radio" name="maxCommentSize" value="200" 
+                 <?php echo ($this->survey->maxCommentSize == 200?'checked ':''); ?>
+             /><?php echo get_lang('Normal Comments'); ?>
+         </td>
+     </tr>    
      
      <!--  SUBMIT -->
      <tr>

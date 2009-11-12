@@ -71,7 +71,12 @@ function displayContents($contents, $pageTitle)
 	$claroline = Claroline::getInstance();
 	
     $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-    $claroline->display->banner->breadcrumbs->append(get_lang('Question pool'), 'question_pool.php');
+    $questionPoolURL = 'question_pool.php';
+	if(isset($_REQUEST['surveyId']))
+	{
+		$questionPoolURL .= '?surveyId='.(int)$_REQUEST['surveyId'];
+	}
+    $claroline->display->banner->breadcrumbs->append(get_lang('Question pool'), $questionPoolURL);
 	$claroline->display->banner->breadcrumbs->append($pageTitle);
 	
     $claroline->display->body->appendContent($contents);

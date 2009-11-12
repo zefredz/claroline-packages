@@ -93,6 +93,7 @@ class Answer
 		}	
 		
 		$answer->comment = $userInput->get('answerComment'.$questionId, '');
+		$answer->comment = substr(trim($answer->comment),0,$question->maxCommentSize);
 		
 		$answer->selectedChoiceList = Choice::loadSelectedChoicesFromForm($question);
 		
