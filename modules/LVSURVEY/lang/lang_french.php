@@ -133,4 +133,6 @@ $_lang['Go back to Question Pool'] = 'Revenir à la liste des questions';
 $_lang['Add this question to survey'] = 'Ajouter cette question au sondage';
 $_lang['or'] = 'ou';
 $_lang['This question is already in the survey'] = 'Cette question fait déjà partie du sondage';
+$_lang['Enable comments'] = 'Autoriser les commentaires';
+$_lang['Disable comments'] = 'Désactiver les commentaires';
 ?>

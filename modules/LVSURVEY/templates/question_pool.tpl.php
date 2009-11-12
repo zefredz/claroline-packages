@@ -32,17 +32,19 @@
         			<?php  echo get_lang('Number of surveys using the question'); ?> 
 				</a>
 			</th>
+			<?php  if (isset($this->surveyId)) : ?>
+        		<th>
+        		<?php  echo get_lang('Add'); ?>
+        		</th>
+        	<?php endif; ?>
+        	<?php if (!isset($this->surveyId)) : ?>  
         	<th>
         		<?php echo get_lang('Modify');  ?>
         	</th>
         	<th>
         		<?php  echo get_lang('Delete'); ?>
-        	</th>
-        	<?php  if (isset($this->surveyId)) : ?>
-        		<th>
-        		<?php  echo get_lang('Choose'); ?>
-        		</th>
-        	<?php endif; ?>
+        	</th>        
+        	<?php endif; ?>	
         </tr>
 	</thead>
     <tbody>
@@ -66,18 +68,6 @@
                 <td>
                 	<?php  echo $question->getUsed(); ?>
                 </td>
-                <td align="center">
-                	<?php 
-                		$urlEdit = 'edit_question.php?questionId='.$question->id;    		 
-                		echo claro_html_link($urlEdit, $editIcon);
-                	?>
-                </td>
-                <td>
-                	<?php                 		
-                		$urlDelete = 'question_pool.php?questionId='.$question->id.'&amp;cmd=questionDel';     		 
-                		echo claro_html_link($urlDelete, $deleteIcon);
-                	?>
-                </td>
                 <?php  if (isset($this->surveyId)) : ?>
         			<td>
         				<?php 
@@ -85,7 +75,21 @@
                 			echo claro_html_link($urlChoose, $selectIcon);
         				?>
         			</td>
-        	<?php endif; ?>
+        		<?php endif; ?>
+        		<?php if (!isset($this->surveyId)) : ?>  
+                <td align="center">
+                	<?php 
+                		$urlEdit = 'edit_question.php?questionId='.$question->id;    		 
+                		echo claro_html_link($urlEdit, $editIcon);
+                	?>
+                </td>                
+                <td>
+                	<?php                 		
+                		$urlDelete = 'question_pool.php?questionId='.$question->id.'&amp;cmd=questionDel';     		 
+                		echo claro_html_link($urlDelete, $deleteIcon);
+                	?>
+                </td>
+                <?php endif; ?>                
 			</tr>
     	<?php endforeach;?>
     <?php endif; ?>    

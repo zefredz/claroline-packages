@@ -79,6 +79,9 @@ catch(Exception $e)
 	    		break;
 	    	case 'questionRemove' :
 	    		removeQuestion($survey, $questionId);
+	    		break;
+	    	case 'setCommentSize' :
+	    		setCommentSize($survey,$questionId);
 	    		break;	    			    		
 	    }    	
     } 
@@ -125,6 +128,18 @@ catch(Exception $e)
     {    	
         $participation = Participation::loadFromForm();
         $participation->save(); 
+    }
+    
+    function setCommentSize($survey,$questionId)
+    {
+    	$newCommentSize = (int)$_REQUEST['commentSize'];
+    	if($newCommentSize < 0)
+    		$newCommentSize = 0;
+    	if($newCommentSize > 200)
+    		$newCommentSize = 200;
+    	$surveyLineList = $survey->getSurveyLineList();
+    	$surveyLineList[$questionId]->maxCommentSize = $newCommentSize;
+    	$surveyLineList[$questionId]->save();
     }
 
 //=================================

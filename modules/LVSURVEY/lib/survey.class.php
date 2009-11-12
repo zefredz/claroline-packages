@@ -1,6 +1,6 @@
 <?php
 
-From::module('LVSURVEY')->uses('SurveyConstants.class', 'DateValidator.class', 'Participation.class', 'Question.class');
+From::module('LVSURVEY')->uses('SurveyConstants.class', 'DateValidator.class', 'Participation.class', 'Question.class', 'SurveyLine.class');
 FromKernel::uses('claroCourse.class', 'utils/input.lib', 'utils/validator.lib');
 
 class Survey {
@@ -41,7 +41,8 @@ class Survey {
 	//rank of survey
 	public $rank;
 
-    
+    protected $surveyLineList;
+	
     //questions of the survey
     protected $questionList;	
         
@@ -58,7 +59,8 @@ class Survey {
         $this->is_visible = false;
         $this->resultsVisibility = 'INVISIBLE';
         $this->startDate = time();
-        $this->endDate = PHP_INT_MAX;
+        $nextMonth = strtotime( "+1 month" );
+        $this->endDate = $nextMonth;//PHP_INT_MAX;
         $this->maxCommentSize = self::DEFAULT_MAX_COMMENT_SIZE;
         $this->rank = -1;
         
@@ -66,6 +68,7 @@ class Survey {
         $this->course = NULL;
         $this->questionList = array();		
 		$this->participationList = array();
+		$this->surveyLineList = array();
 		$validationErrors = '';
     }
     
@@ -126,6 +129,9 @@ class Survey {
     	$userInput->setValidator('surveyStartDate',DateValidator::getInstance());
     	$userInput->setValidator('surveyEndDate',DateValidator::getInstance());
     	
+    	$commentValidator = new Claro_Validator_Pcre('/^0*([0-9]{1,2}|1[0-9]{2}|200)$/');
+    	$userInput->setValidator('maxCommentSize',$commentValidator);
+    	
     	try
     	{
 	    	$formId = (string)$userInput->getMandatory('surveyId');   //(int)$_REQUEST['surveyId'];
@@ -133,6 +139,7 @@ class Survey {
 	    	$formIsAnonymous = $userInput->getMandatory('surveyAnonymous');
 	    	$formDescription = (string)$userInput->getMandatory('surveyDescription');
 	    	$formResultsVisibility = (string)$userInput->getMandatory('surveyResultsVisibility');
+	    	$formMaxCommentSize = (int)$userInput->getMandatory('maxCommentSize');
     	}
     	catch(Claro_Validator_Exception $e)
     	{
@@ -168,6 +175,7 @@ class Survey {
 		$survey->resultsVisibility = $formResultsVisibility;
 		$survey->startDate = DateValidator::getInstance()->getTimeStamp($formStartDate);
 		$survey->endDate = DateValidator::getInstance()->getTimeStamp($formEndDate);
+		$survey->maxCommentSize = $formMaxCommentSize;
 		
 		return $survey;
             
@@ -231,21 +239,25 @@ class Survey {
     	$this->course = NULL;
     }
     
-    public function getQuestionList()
+	public function getSurveyLineList()
     {
-    	if(empty($this->questionList))
+    	if(empty($this->surveyLineList))
     	{
-    		$this->loadQuestionList();
+    		$this->loadSurveyLineList();
     	}
-    	return $this->questionList;
+    	return $this->surveyLineList;
     }
-    private function loadQuestionList()
+    
+    private function loadSurveyLineList()
     {
     	$dbCnx = Claroline::getDatabase();
-    	$sql = "SELECT 	Q.`id`			as id, 
-    					Q.`text`		as text, 
-    					Q.`type`		as type, 
-    					Q.`alignment`	as choiceAlignment
+    	$sql = "SELECT 	Q.`id`					as questionId, 
+    					Q.`text`				as text, 
+    					Q.`type`				as type, 
+    					Q.`alignment`			as choiceAlignment,
+    					SQ.`rank`				as rank,
+    					SQ.`maxCommentSize` 	as maxCommentSize, 
+    					SQ.`id` 				as surveyLineId  
                 FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."` as SQ
                 INNER JOIN `".SurveyConstants::$QUESTION_TBL."` as Q
                 ON 		SQ.`questionId` = Q.`id`
@@ -253,12 +265,24 @@ class Survey {
                 ORDER BY SQ.`rank` ASC; ";
     	        
     	$resultSet = $dbCnx->query($sql);
-        $this->questionList = array();	    
+        $this->surveyLineList = array();	    
 	    foreach( $resultSet as $row )
 	    {
-	    	$question = Question::__set_state($row);
-            $this->questionList[$row['id']] = $question;
-	    }    	
+	    	$questionData = array(	'id' 		=> $row['questionId'], 
+	    							'text' 		=> $row['text'], 
+	    							'type' 		=> $row['type'], 
+	    							'alignment' => $row['choiceAlignment']);
+	    	
+	    	$question = Question::__set_state($questionData);
+	    	
+	    	$surveyLineData = array(	'id' 				=> $row['surveyLineId'], 
+	    								'survey' 			=> $this, 
+	    								'question' 			=> $question, 
+	    								'rank'				=> $row['rank'], 
+	    								'maxCommentSize' 	=> $row['maxCommentSize']);
+
+            $this->surveyLineList[$row['questionId']] = SurveyLine::__set_state($surveyLineData);
+	    } 
     }
     
     public function getParticipationList()
@@ -365,130 +389,34 @@ class Survey {
     }
     public function addQuestion($question)
     {
-    	if($question->id == -1)
-            throw new Exception("Cannot add unsaved question to survey");
-        if($this->id == -1)
-            throw new Exception("Cannot add question to unsaved survey");
-            
+    	
+        $surveyLineList = $this->getSurveyLineList();
+        $questionIdList = array();
+        foreach($surveyLineList as $surveyLine)
+        {
+        	$questionIdList[] = $surveyLine->question->id;
+        }
+        if(in_array($question->id,$questionIdList)) throw new Exception("This question is already in the survey");
         
-        $questionList = $this->getQuestionList();
-        if(in_array($question->id, array_keys($questionList))) throw new Exception("This question is already in the survey");
+        $surveyLine = new SurveyLine($this,$question);        
+        $surveyLine->save();
         
-        $dbCnx = ClaroLine::getDatabase();
-        //add a relation survey-question
-        $sqlInsertRel = "
-        	INSERT INTO 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            SET 			`surveyId` 		= ".(int) $this->id.",
-                    		`questionId` 	= ".(int) $question->id."; ";
-        // execute the creation query and get id of inserted assignment
-        $dbCnx->exec($sqlInsertRel);
-        
-    	$insertedId = $dbCnx->insertId();
-        //don't forget rank
-        $sqlUpdateRank = "
-        	UPDATE 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            SET 	`rank` 	= ".(int) $insertedId."
-        	WHERE 	`id` 	= ".(int) $insertedId;
-        
-    	$dbCnx->exec($sqlUpdateRank);
-  		
-  		
-  		$questionList[$question->id] = $question;    
+        $this->surveyLineList[$surveyLine->question->id] = $surveyLine;   
+           
         
     }
     function removeQuestion($questionId)
     {
-    	if($questionId == -1)
-            throw new Exception("Cannot remove unsaved question ");
-        if($this->id == -1)
-            throw new Exception("Cannot remove question from unsaved survey");
-            
-        $dbCnx = ClaroLine::getDatabase();
-        
-        $answerIdList = array();        
-        $sqlSelectAnswerIds = "
-        	SELECT  	`id` 
-        	FROM 		`".SurveyConstants::$ANSWER_TBL."`
-            WHERE 		`questionId` 	= ".(int) $questionId." 
-            AND        	`participationId` in 	(
-            				SELECT 	`id` 
-            				FROM 	`".SurveyConstants::$PARTICIPATION_TBL."` 
-            				WHERE	`surveyId` = ".(int)$this->id." 
-            									 	); ";
-        $answerIdResultSet = $dbCnx->query($sqlRemoveAnswers);
-        foreach($answerIdResultSet as $row)
-        {
-        	$answerIdList[] = $row['id'];
-        }
-        
-        $sqlRemoveAnswerItem = "
-        	DELETE FROM `".SurveyConstants::$ANSWER_ITEM_TBL."` 
-        	WHERE `answerId` IN (".implode(', ',$answerIdList)."); ";
-        $dbCnx->exec($sqlRemoveAnswerItem);
-        
-        $sqlRemoveAnswer = "
-        	DELETE FROM `".SurveyConstants::$ANSWER_TBL."` 
-        	WHERE `id` IN (".implode(', ',$answerIdList)."); ";
-        $dbCnx->exec($sqlRemoveAnswer);        
-        
-        $sqlRemoveRel = "
-        	DELETE FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            WHERE 			`surveyId` 		= ".(int) $this->id." 
-            AND        		`questionId` 	= ".(int) $questionId."; ";
-        $dbCnx->exec($sqlRemoveRel);
-        
-        $questionList = $this->getQuestionList();
-        unset($questionList[$questionId]);
-        
-        foreach($this->getParticipationList() as$participation)
-        {
-        	$participation->removeAnswerForQuestion($questionId);
-        }
-    	
+        $surveyLineList = $this->getSurveyLineList();
+        $surveyLineList[$questionId]->delete();
+        unset($surveyLineList[$questionId]);
     }
     
 	//move question up in the survey
     public function moveQuestion($questionId, $up)
     {
-        $dbCnx = Claroline::getDatabase();
-
-        //exchange rank with 
-        $sqlSubSelect= "
-        		SELECT	`rank`
-                FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-                WHERE 	`surveyId` 		= ".(int) $this->id."
-                AND  	`questionId` 	= ".(int) $questionId." ";
-        $sqlSelect = "
-        		SELECT
-                  			`id`,
-                  			`rank`
-                FROM 		`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-                WHERE 		`surveyId` = '".$this->id."'
-                AND 		`rank` ".($up?"<=":">=")." (".$sqlSubSelect.")
-                ORDER BY	`rank` ".($up?"DESC":"ASC")." LIMIT 2";       
-         
-        
-        $resultSet = $dbCnx->query($sqlSelect);
-        if ( $resultSet->count() < 2)
-        	throw new Exception ("Cannot move this question in this survey");
-        $ranks = array();
-        foreach($resultSet as $row)
-        {
-        	$ranks[] = $row;
-        }    
-        	
-    	//exchange ranks
-    	//TODO transaction
-        $sqlUpdateQ1 = "
-        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL."`
-                    SET `rank` = " . (int) $ranks[1]['rank'] . "
-                    WHERE `id` = " . (int) $ranks[0]['id'] . " ; ";
-        $dbCnx->exec($sqlUpdateQ1);
-        $sqlUpdateQ2 = "
-        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL . "` 
-                    SET `rank` = " . (int) $ranks[0]['rank'] . " 
-                    WHERE `id` = " . (int) $ranks[1]['id'] . " ; ";
-    	$dbCnx->exec($sqlUpdateQ2);
+        $surveyLineList = $this->getSurveyLineList();
+        $surveyLineList[$questionId]->move($up);
     }
 	//check if someone has answered survey
 	public function isAnswered()
@@ -651,10 +579,4 @@ class Survey {
     	if(0 == $this->startDate) return false;
     	return $this->startDate < time();    	
     }
-    
-    
-    
-    
-    
-    
 }

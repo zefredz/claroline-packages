@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_rel_survey_question` (
   `surveyId` 			INTEGER 										NOT NULL,
   `questionId` 			INTEGER 										NOT NULL,
   `rank` 				INTEGER 										NULL,
+  `maxCommentSize`		INTEGER 										NOT NULL	DEFAULT 200,
   PRIMARY KEY  (`id`),
   UNIQUE(`surveyId`, `questionId`)
 );

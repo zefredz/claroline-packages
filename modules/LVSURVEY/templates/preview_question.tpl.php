@@ -50,13 +50,13 @@
     </div>
     <div>
     	<a href="question_pool.php?<?php echo isset($this->surveyId)?'surveyId='.$this->surveyId:''; ?>">
-    		<?php echo get_lang('Go back to Question Pool')?>
+    		&gt;&gt; <?php echo get_lang('Go back to Question Pool')?>
     	</a>
     
     <?php  if(isset($this->surveyId)) :?>
     	 <?php echo get_lang('or')?> 
     	 <a href="add_question.php?questionId=<?php echo $question->id; ?>&amp;surveyId=<?php echo $this->surveyId; ?>">
-    	 	<?php echo get_lang('Add this question to survey')?>
+    	 	&gt;&gt; <?php echo get_lang('Add this question to survey')?>
     	 </a>
     <?php endif;?>
     </div>

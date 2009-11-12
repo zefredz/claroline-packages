@@ -212,7 +212,7 @@ class Participation
                 WHERE 	A.`participationId` = ".(int)$this->id."; ";
         
     	$resultSet = $dbCnx->query($sql);
-        $questionList = $this->getSurvey()->getQuestionList();
+        $surveyLineList = $this->getSurvey()->getSurveyLineList();
     	
     	
     	$this->answerList = array();
@@ -220,7 +220,7 @@ class Participation
 	    {
 	    	$answer = Answer::__set_state($row);
 	    	$answer->setParticipation($this);
-	    	$answer->setQuestion($questionList[$answer->getQuestionId()]);
+	    	$answer->setQuestion($surveyLineList[$answer->getQuestionId()]->question);
             $this->answerList[$row['id']] = $answer;
 	    }    	
     }
