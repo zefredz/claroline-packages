@@ -23,7 +23,7 @@ if(!claro_is_allowed_to_edit())
 // Init section
 //=================================
 
-From::module('LVSURVEY')->uses('Survey.class');
+From::module('LVSURVEY')->uses('survey.class');
 FromKernel::uses('utils/input.lib', 'utils/validator.lib');
     
 // Tool label (must be in database)

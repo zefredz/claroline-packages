@@ -23,7 +23,7 @@ if(!claro_is_allowed_to_edit())
 //=================================
 // Init section
 //=================================
-From::module('LVSURVEY')->uses('Question.class');
+From::module('LVSURVEY')->uses('question.class');
     
 
 $tlabelReq = 'LVSURVEY';

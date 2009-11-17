@@ -25,7 +25,7 @@
 //=================================
 // Init section
 //=================================
-    From::module('LVSURVEY')->uses('Question.class');
+    From::module('LVSURVEY')->uses('question.class');
     
      // Tool label (must be in database)
     $tlabelReq = 'LVSURVEY';

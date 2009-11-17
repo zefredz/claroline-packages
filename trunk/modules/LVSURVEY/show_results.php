@@ -14,7 +14,7 @@ if ( 	!claro_is_in_a_course()
 //=================================
 // Init section
 //=================================
-From::module('LVSURVEY')->uses('Survey.class', 'Result.class');
+From::module('LVSURVEY')->uses('survey.class', 'result.class');
     
 // Tool label (must be in database)
 $tlabelReq = 'LVSURVEY';
