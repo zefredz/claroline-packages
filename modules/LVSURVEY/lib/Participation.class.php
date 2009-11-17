@@ -113,9 +113,10 @@ class Participation
 		
 		$participation->answerList = array();
 		$survey = $participation->getSurvey();
-		$questionList = $survey->getQuestionList();
-		foreach($questionList as $question)
+		$surveyLineList = $survey->getSurveyLineList();
+		foreach($surveyLineList as $surveyLine)
 		{
+			$question = $surveyLine->$question;
 			$answer = Answer::loadAnswerOfQuestionFromForm($question);
 			$answer->setParticipation($participation);
 			$participation->answerList[] = $answer;
