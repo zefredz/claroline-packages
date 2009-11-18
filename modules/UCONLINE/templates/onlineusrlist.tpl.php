@@ -1,7 +1,7 @@
 <h3 class="claroToolTitle"><?php echo $this->toolName; ?></h3>
 
 <p><?php echo get_lang( 'List of active users for the last %time minutes :' , array( '%time' => $this->refreshTime ) ); ?></p>
-<?php if( ! get_conf( 'allUsersAllowed' ) ) : ?>
+<?php if( get_conf( 'privacy' ) ) : ?>
 <p>
     <strong><?php echo get_lang( 'Warning : the list below is currently restricted for security purposes' ) ?></strong>
 </p>
