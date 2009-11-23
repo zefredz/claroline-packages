@@ -1,5 +1,5 @@
 <?php
-From::module('LVSURVEY')->uses('SurveyConstants.class', 'question.class', 'Answer.class');
+From::module('LVSURVEY')->uses('surveyConstants.class', 'question.class', 'answer.class');
 
 class Participation
 {
