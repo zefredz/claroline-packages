@@ -1,5 +1,5 @@
 <?php
-From::module('LVSURVEY')->uses('SurveyConstants.class', 'Choice.class');
+From::module('LVSURVEY')->uses('surveyConstants.class', 'choice.class');
 FromKernel::uses('utils/input.lib', 'utils/validator.lib');
 
 class Question
