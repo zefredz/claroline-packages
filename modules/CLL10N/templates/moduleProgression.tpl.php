@@ -4,7 +4,7 @@
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
   <thead>
     <tr class="headerX" align="center" valign="top">
-      <th scope="col" id="c0" ><?php echo get_lang('Lnaguage'); ?></th>
+      <th scope="col" id="c0" ><?php echo get_lang('Language'); ?></th>
       <th scope="col" id="c1" colspan="2" ><?php echo get_lang('Progression'); ?></th>
     </tr>
   </thead>
@@ -28,8 +28,8 @@ foreach( $this->progression as $lang => $progress) :
 endforeach;
 else:
 ?>
-    <tr colspan="2">
-      <td><?php echo get_lang('Nothing translated yet.'); ?></td>
+    <tr>
+      <td colspan="3" style="text-align: center;"><?php echo get_lang('Nothing translated yet.'); ?></td>
     </tr>
 <?php
 endif;

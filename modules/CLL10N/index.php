@@ -35,7 +35,8 @@ try {
   $moduleList = $manage->moduleList();
   
   if( isset($_REQUEST['module']) && isset( $moduleList[$_REQUEST['module']] ) )   $moduleLabel = $_REQUEST['module'];
-  else                                                                           $moduleLabel = null;
+  elseif ( isset( $_REQUEST['module'] ) && $_REQUEST['module'] == 'PLATFORM' )    $moduleLabel = $_REQUEST['module'];
+  else                                                                            $moduleLabel = null;
 
   $userInput = Claro_UserInput::getInstance();
   
@@ -69,11 +70,25 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[$moduleLabel]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+        }
+        else
+        {
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[$moduleLabel]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        }
         
         // get existing $_lang for existing language files
-        $path = get_module_path( $moduleLabel ) . '/lang';
-        $return = $manage->createLangFiles( $_SESSION['CLL10N']['langs'], $path);
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          $path = get_path( 'clarolineRepositorySys' ) . '/lang';
+        }
+        else
+        {
+          $path = get_module_path( $moduleLabel ) . '/lang';
+        }
+        $return = $manage->createLangFiles( $_SESSION['CLL10N']['langs'], $path, ($moduleLabel == 'PLATFORM' ? true : false ) );
         
         if( $return )
         {
@@ -85,6 +100,15 @@ try {
         }
         
         unset( $_SESSION['CLL10N']['langs'] );
+        
+        // Manage install.lang.php for Platform
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          $_SESSION['CLL10N']['langs'] = $manage->extractLangFromScripts( $_REQUEST['module'], 'install' );
+          $return = $manage->createInstallLangFiles( $_SESSION['CLL10N']['langs'], $path );
+          
+          unset( $_SESSION['CLL10N']['langs'] );
+        }
         
         $out .= $dialogBox->render();
       }
@@ -98,7 +122,14 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+        }
+        else
+        {
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
+        }
         
         $_SESSION['CLL10N']['langs'] = array();
         
@@ -130,7 +161,14 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+        }
+        else
+        {
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        }
         
         $progression = $manage->getModuleProgression( $moduleLabel );
         
@@ -157,7 +195,14 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+        }
+        else
+        {
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        }
         
         $outdatedLangs = $manage->compareLang( $moduleLabel, $lang );
         
@@ -174,7 +219,14 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        if( $moduleLabel == 'PLATFORM' )
+        {
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+        }
+        else
+        {
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        }
         
         $availableLanguages = $manage->availableLanguages( $moduleLabel );
         
