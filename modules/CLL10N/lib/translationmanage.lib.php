@@ -467,7 +467,24 @@ class TranslationManage{
     if( is_file( $file ) )
     {
       include( $file );
-      $tmp_langs = array();
+      
+      if( !empty( $langs) && is_array( $langs ) && !empty( $_lang ) && is_array( $_lang ) )
+      {
+        foreach( $langs as $key => $value)
+        {
+          if( array_key_exists( $value, $_lang ) )
+          {
+            unset( $langs[ $key ] );
+          }
+          elseif( $value == '' || is_numeric( $value ) )
+          {
+            unset( $langs[ $key ] );
+          }
+        }
+      }
+      
+      unset( $_lang );
+      /*$tmp_langs = array();
       if( !empty( $_lang ) && is_array( $_lang ) )
       {
        $langs = array_flip( $langs );
@@ -486,10 +503,11 @@ class TranslationManage{
             $tmp_langs[] = $id;
           }
        }
+       var_dump( $tmp_langs );
        $langs = $tmp_langs;
        unset( $tmp_langs );
        unset($_lang);
-      }
+      }*/
     }
     else
     {
@@ -711,10 +729,24 @@ class TranslationManage{
     $files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $module_path ), RecursiveIteratorIterator::SELF_FIRST );
     
     $languageVarList = array();
-    
     foreach( $files as $file )
     {
-      if( $file->isFile() && substr($file->getFilename(), -4) == '.php' )
+      $fileIsOk = true;
+      if( $moduleId == 'PLATFORM' && $restrictedDirectory != 'install' )
+      {
+        if( !( strpos( $file->getPathname(), 'install\\' ) === false ) )
+        {
+          $fileIsOk = false;
+          continue; 
+        }
+        elseif( ! ( strpos( $file->getPathname(), 'install/' ) === false ) )
+        {
+          $fileIsOk = false;
+          continue;
+        }
+      }
+      
+      if( $fileIsOk && $file->isFile() && substr($file->getFilename(), -4) == '.php' )
       {
         if( strpos( $file->getFilename(), '.def.conf.inc.php' ) === false )
         {
@@ -725,8 +757,6 @@ class TranslationManage{
           //extract from def.conf.inc file
           $languageVarList = array_merge( $languageVarList, array_flip( $this->extractLangFromDefConfFile( $file->getPathName() ) ));
         }
-        
-        
       }
     }
     
@@ -765,6 +795,19 @@ class TranslationManage{
     }
     
     return self::$instance;
+  }
+}
+
+class InstallFilter extends FilterIterator
+{
+  public function accept()
+  {
+    if( strpos( parent::current(), 'install/' ) === false )
+    {
+      return true;
+    }
+    
+    return false;
   }
 }
 
