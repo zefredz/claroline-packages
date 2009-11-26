@@ -60,16 +60,16 @@ if ($cmd == "exSubscribe")
 	if ($infos_subscription)
 	{
 		if (CLFDunsubscribeUser($_uid,$session_id))
-		header('Location:entry.php?dialogBox='.get_lang('Unsubscription successful'));
+		header('Location:index.php?dialogBox='.get_lang('Unsubscription successful'));
 		else
-		header('Location:entry.php?dialogBox='.get_lang('Unsubscription failed'));
+		header('Location:index.php?dialogBox='.get_lang('Unsubscription failed'));
 	}
 	else
 	{
 		if (CLFDsubscribeUser($_uid,$session_id))
-		header('Location:entry.php?dialogBox='.get_lang('Subscription successful'));
+		header('Location:index.php?dialogBox='.get_lang('Subscription successful'));
 		else
-		header('Location:entry.php?dialogBox='.get_lang('Subscription failed'));
+		header('Location:index.php?dialogBox='.get_lang('Subscription failed'));
 	}
 }
 
