@@ -1,5 +1,5 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class', 'question.class', 'answer.class');
+From::module('LVSURVEY')->uses('surveyConstants.class', 'question.class', 'answer.class', 'surveyLine.class');
 
 class Participation
 {
@@ -116,7 +116,7 @@ class Participation
 		$surveyLineList = $survey->getSurveyLineList();
 		foreach($surveyLineList as $surveyLine)
 		{
-			$question = $surveyLine->$question;
+			$question = $surveyLine->question;
 			$answer = Answer::loadAnswerOfQuestionFromForm($question);
 			$answer->setParticipation($participation);
 			$participation->answerList[] = $answer;
