@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `__CL_COURSE__courses_stats` (
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__courses_stats` (
   `code_course` varchar(255) NOT NULL,
   `code_display` varchar(255) NOT NULL,
   `dbName` varchar(255) NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__courses_stats` (
   `status` enum('pending','done') NOT NULL DEFAULT 'pending'
 ) ENGINE=MyISAM;
 
-CREATE TABLE IF NOT EXISTS `__CL_COURSE__stats` (
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats` (
   `code_course` varchar(255) NOT NULL,
   `toolLabel` varchar(255) NOT NULL,
   `itemName` varchar(255) NOT NULL,
