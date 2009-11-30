@@ -35,7 +35,7 @@ try
     $userInput = Claro_UserInput::getInstance();
   
     $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-        'view', 'rqStats', 'exStats'
+        'view', 'rqStats', 'exStats', 'rqNewReport'
     ) ) );
     
     $cmd = $userInput->get( 'cmd','view' );
@@ -49,6 +49,7 @@ try
     
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=view', get_lang( 'Home' ) );
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats', get_lang( 'Generate stats' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqNewReport', get_lang( 'Generate a report' ) );
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
     
@@ -87,9 +88,34 @@ try
             }
         }
         break;
+        case 'rqNewReport' :
+        {
+            //TODO check if last report == last stats (don't regenerate a report where anything change)
+            $report = new Stats_Report();
+            $reportContent[ 'content' ] = $report->loadFreshContent();
+            
+            $result = $report->save( $reportContent );
+            
+            $out .= ClaroStatsRenderer::generateReport( $result );
+        }
+        break;
         case 'view' :
         {
-            $out .= ClaroStatsRenderer::view();
+            $reports = Stats_ReportList::countReports();
+            
+            //Load last report
+            $lastReport = $reports->fetch();
+            if( isset( $lastReport['date'] ) && $lastReport['date'] > 0 )
+            {
+                $report = new Stats_Report();
+                $thisReport = $report->load( $lastReport['date'] );
+            }
+            else
+            {
+                $thisReport = null;
+            }
+            
+            $out .= ClaroStatsRenderer::view( $reports, $thisReport, $lastReport['date'] );
         }
         break;
     }

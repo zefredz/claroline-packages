@@ -12,9 +12,22 @@
 
 class ClaroStatsRenderer{
     
-    public static function view()
+    public static function view( $reports, $report = null, $reportDate = null )
     {
         $tpl = new PhpTemplate( dirname(__FILE__) . '/../templates/index.tpl.php' );
+        
+        $tpl->assign( 'reports' , $reports );
+        $tpl->assign( 'report' , $report );
+        $tpl->assign( 'reportDate', $reportDate );
+        
+        return $tpl->render();
+    }
+    
+    public static function generateReport( $saveResult )
+    {
+        $tpl = new PhpTemplate( dirname( __FILE__ ) . '/../templates/generateReport.tpl.php' );
+        
+        $tpl->assign( 'saveResult' , $saveResult );
         
         return $tpl->render();
     }
