@@ -1,0 +1,2 @@
+DROP TABLE IF EXISTS `__CL_COURSE__courses_stats`;
+DROP TABLE IF EXISTS `__CL_COURSE__stats`;
