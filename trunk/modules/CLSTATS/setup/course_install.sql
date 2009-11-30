@@ -13,3 +13,16 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats` (
   `itemValue` int(11) NOT NULL,
   `dateCreation` int(11) NOT NULL
 ) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `date` int(11) NOT NULL,
+  `toolLabel` varchar(255) NOT NULL,
+  `itemName` varchar(255) NOT NULL,
+  `max` int(11) NOT NULL DEFAULT '0',
+  `average` int(11) NOT NULL DEFAULT '0',
+  `lessFive` int(11) NOT NULL DEFAULT '0',
+  `moreFive` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `date` (`date`)
+) ENGINE=MyISAM 
