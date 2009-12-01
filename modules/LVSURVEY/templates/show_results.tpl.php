@@ -1,13 +1,17 @@
 <?php
 	$participantCount = count($this->survey->getParticipationList());
 	$surveyLineList = $this->survey->getSurveyLineList();
-	 
+	
+	$surveyResults = SurveyResults::loadResults($this->survey->id);
+	$cmd_menu = array();
 	if($this->editMode)
-    {
-    	$cmd_menu = array();
-        $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;cmd=resultsDel">'.get_lang('Delete all results').'</a>';
-    	 echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>'; 
+    {	
+        $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;cmd=reset">'.get_lang('Delete all results').'</a>';
     }
+    $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=SyntheticCSV">'.get_lang('Export Synthetic results').'</a>';
+    $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=RawCSV">'.get_lang('Export Raw results').'</a>';
+	echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>'; 
+    
 	claro_html_tool_title(get_lang('Results'));
 	CssLoader::getInstance()->load('LVSURVEY');
     JavascriptLoader::getInstance()->load('jquery');
@@ -23,6 +27,11 @@
 		<?php 			
 			$question = $surveyLine->question;
 			$choiceList = $question->getChoiceList();
+			$lineResultList = new LineResults();
+       		if( isset($surveyResults->lineResultList[$question->id]))
+       		{
+       			$lineResultList = $surveyResults->lineResultList[$question->id];
+       		}			
 		?>
 		<div class="LVSURVEYQuestion">
         	<input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
@@ -38,7 +47,13 @@
        					<table>
        					<?php foreach($choiceList as $choice) : ?>
        						<?php 
-       							$resultList = Result::loadResults($this->survey->id, $question->id, $choice->id);
+       							//$resultList = Result::loadResults($this->survey->id, $question->id, $choice->id);
+       							$choiceResultList = new ChoiceResults();
+       							if( isset($lineResultList->choiceResultList[$choice->id]))
+       							{
+       								$choiceResultList = $lineResultList->choiceResultList[$choice->id];
+       							}
+       							$resultList = $choiceResultList->resultList;
        							$resultCount = count($resultList);
        						?>
        						<tr class="answerTR">

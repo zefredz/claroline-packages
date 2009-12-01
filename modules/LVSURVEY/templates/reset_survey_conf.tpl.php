@@ -15,7 +15,7 @@
         <td>
         	<form method="post" action="show_results.php?surveyId=<?php echo $this->survey->id; ?>">
             	<input type="hidden" name="claroFormId" value="<?php  echo uniqid(''); ?>" />
-                <input type="hidden" name="cmd" value="resultsDel" />
+                <input type="hidden" name="cmd" value="reset" />
                 <input type="submit" name="submit" value="<?php  echo get_lang('Confirm'); ?>" />
             </form>
         </td>

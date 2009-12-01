@@ -106,7 +106,7 @@ class SurveyLine
         if(!empty($answerIdList))
         {
         	$this->deleteLinkedAnswerItems($answerIdList,$dbCnx);
-        	deleteLinkedAnswerItems($answerIdList, $dbCnx);
+        	$this->deleteLinkedAnswers($answerIdList,$dbCnx);
         }        
         
         $sqlRemoveRel = "

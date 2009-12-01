@@ -14,7 +14,7 @@ if ( 	!claro_is_in_a_course()
 //=================================
 // Init section
 //=================================
-From::module('LVSURVEY')->uses('survey.class', 'result.class');
+From::module('LVSURVEY')->uses('survey.class', 'result.class', 'csvResults.class');
     
 // Tool label (must be in database)
 $tlabelReq = 'LVSURVEY';
@@ -50,7 +50,24 @@ if(claro_is_allowed_to_edit() && (isset($_REQUEST['cmd'])))
 }
 else
 {
-	displayResults($survey);
+	$format = 'HTML';
+	if (isset($_REQUEST['format']))
+	{
+		$format = $_REQUEST['format'];
+	} 
+	switch($format)
+	{
+		case 'SyntheticCSV' :
+			sendSyntheticCSVResults($survey);
+			break;
+		case 'RawCSV' :
+			sendRawCSVResults($survey);
+			break;
+		default:
+		case 'HTML' :
+			displayResults($survey);	
+	}
+	
 }
  
     
@@ -72,8 +89,7 @@ function resetResults($survey)
     {
         displayResetConf($survey);
     }
-}
-    
+}    
     
 //=================================
 // Display section
@@ -85,6 +101,31 @@ function displayResetConf($survey)
 	$confirmationTpl->assign('survey', $survey);
     $pageTitle = get_lang('Delete all results');
     displayContents($confirmationTpl->render(),$survey, $pageTitle);
+}
+
+function sendSyntheticCSVResults($survey)
+{
+	sendCSV('surveyResults'.$survey->id.'.csv', new SyntheticResults($survey));
+}
+
+function sendRawCSVResults($survey)
+{
+	if($survey->is_anonymous)
+	{
+		sendCSV('surveyResults'.$survey->id.'.csv', new AnonymousCSVResults($survey));
+	}
+	else
+	{
+		sendCSV('surveyResults'.$survey->id.'.csv',new NamedCSVResults($survey));
+	}	
+}
+
+function sendCSV($filename, $csvResults)
+{
+	$csvResults->buildRecords();
+	header("Content-type: application/csv");
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+   	echo $csvResults->export();
 }
 
 function displayResults($survey, $dialogBox = NULL)

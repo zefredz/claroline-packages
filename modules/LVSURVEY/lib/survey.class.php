@@ -579,4 +579,6 @@ class Survey {
     	if(0 == $this->startDate) return false;
     	return $this->startDate < time();    	
     }
+
+    
 }

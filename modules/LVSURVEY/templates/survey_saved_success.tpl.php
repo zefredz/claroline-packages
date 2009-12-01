@@ -1,6 +1,6 @@
 <ul>
 	<li>
-		<a href="add_question.php?surveyId=<?php echo $this->surveyId ?>">
+		<a href="add_question.php?fromPool=1&surveyId=<?php echo $this->surveyId; ?>">
         	<?php echo get_lang("Add a question to the survey"); ?>
         </a>
     </li>

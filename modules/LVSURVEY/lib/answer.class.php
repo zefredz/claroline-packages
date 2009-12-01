@@ -92,8 +92,7 @@ class Answer
 			$answer = self::load($formAnswerId);	
 		}	
 		
-		$answer->comment = $userInput->get('answerComment'.$questionId, '');
-		$answer->comment = substr(trim($answer->comment),0,$question->maxCommentSize);
+		$answer->comment = $userInput->get('answerComment'.$questionId, '');		
 		
 		$answer->selectedChoiceList = Choice::loadSelectedChoicesFromForm($question);
 		
@@ -102,6 +101,11 @@ class Answer
     }
 	public function save()
     {
+    	
+    	$surveyLineList = $this->getParticipation()->getSurvey()->getSurveyLineList();
+		$maxCommentSize = $surveyLineList[$this->questionId]->maxCommentSize;
+		$this->comment = substr(trim($this->comment),0,$maxCommentSize);
+    	
     	if(-1 == $this->id)
     	{
     		$this->insertInDB();
@@ -187,7 +191,7 @@ class Answer
     {
     	if(empty($this->participation))
     	{
-    		$this->loadParticipation;
+    		$this->loadParticipation();
     	}
     	return $this->participation;
     }

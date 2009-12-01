@@ -93,7 +93,10 @@
     {
     	$survey->startDate = time();
        	if($survey->endDate < time())
-        	$survey->endDate = 0;
+       	{
+       		$nextMonth = strtotime( "+1 month" );
+        	$survey->endDate = $nextMonth;
+       	}
         saveAndDisplayList($survey);
         	        
     }
