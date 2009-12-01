@@ -13,6 +13,7 @@
      *  prevent people to change their answer after a survey is closed
      *  prevent users from deleteing used questions or questions belonging to someone else
      *  Export results
+     *  regroup questions in chapters (on page per chapter)
      *  
      */
 header('Location:./survey_list.php');

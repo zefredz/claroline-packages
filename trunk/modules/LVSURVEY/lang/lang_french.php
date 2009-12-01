@@ -1,21 +1,4 @@
-<?php // $Id$
-/**
- * CLSURVEY
- *
- * @version 1.0.0
- *
- * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
- * @package CLSURVEY
- * @subpackage LANG-FR
- *
- * @author Christophe Gesché <moosh@claroline.net>
- * @author Philippe Dekimpe <dkp@ecam.be>
- * @author Baudet Gregory <gregory.baudet@gmail.com>
- * @author Claro Team <cvs@claroline.net>
- *
- */
+<?php 
 
 $_lang['Survey'] = "Sondage";
 $_lang['Surveys'] = "Sondages";
@@ -135,4 +118,7 @@ $_lang['or'] = 'ou';
 $_lang['This question is already in the survey'] = 'Cette question fait déjà partie du sondage';
 $_lang['Enable comments'] = 'Autoriser les commentaires';
 $_lang['Disable comments'] = 'Désactiver les commentaires';
+$_lang['Export Raw results'] = 'Exporter les résultats bruts';
+$_lang['Export Synthetic results'] = 'Exporter la synthèse';
+
 ?>

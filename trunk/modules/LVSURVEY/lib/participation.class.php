@@ -82,8 +82,8 @@ class Participation
          
         $resultSet = $dbCnx->query($sql);
         $data = $resultSet->fetch();
-        $res =  self::__set_state($data);
-        $res->loadAnswerList();
+        $res =  self::__set_state($data); 
+        $res->loadAnswerList();       
         return $res;
     }
     
@@ -103,7 +103,7 @@ class Participation
     	}    	
     	
 		if($formId == -1 )
-		{			
+		{		
 			$participation = new Participation($formSurveyId, $userId);			
 		}
 		else 
@@ -200,6 +200,10 @@ class Participation
     
     public function getAnswerList()
     {
+    	if(empty($this->answerList))
+    	{
+    		$this->loadAnswerList();
+    	}
     	return $this->answerList;
     }
 	private function loadAnswerList()

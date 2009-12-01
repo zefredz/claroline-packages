@@ -14,6 +14,7 @@
 	
 	echo claro_html_tool_title($this->survey->title);
 	$cmd_menu = array();
+	
 	if($this->editMode)
 	{		
 		$cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$this->survey->id.'">'.$editIcon.' '.get_lang('Edit survey properties').'</a>';
@@ -23,6 +24,7 @@
 	{
 		$cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'">'.get_lang('View results of this survey').'</a>';
 	}
+	
 	echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>';
 	
 	$infoBox = new DialogBox();
