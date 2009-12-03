@@ -5,7 +5,7 @@
 <script type="text/javascript">
     $(document).ready( function() {
         $.getJSON(
-            "<?php echo htmlentities(Url::Contextualize( get_module_url( 'CLSTATS' ) . '/backends/backend.php?cmd=generateStats&reset=' . $this->reset ) ); ?>",
+            "<?php echo Url::Contextualize( get_module_url( 'CLSTATS' ) . '/backends/backend.php?cmd=generateStats&bunchCourses=' . $this->bunchCourses . '&reset=' . $this->reset ); ?>",
             function( response )
             {
                 if( response.success )

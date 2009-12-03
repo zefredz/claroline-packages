@@ -24,4 +24,35 @@ class CLQWZ_Stats extends ClaroStats_CourseTask
             'clqwz_count_exercises' => $clqwz_count_exercises['value']
         );
     }
+    
+    public function getReportData( &$report, $itemStats, $nbCourses = 0 )
+    {
+        foreach( $itemStats as $itemName => $item )
+        {
+            parent::initReportData( $report, $itemName, $item );
+            parent::setReportData( $report, $itemName, $item );
+            parent::setReportMax( $report, $itemName, $item );
+            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+        }
+        
+        return $itemStats[ 'clqwz_count_exercises' ]['value'];
+    }
+    
+    public function getSummarizedReport( $items )
+    {
+        if(isset( $items['clqwz_count_exercises' ] ) )
+        {
+            $items['clqwz_count_exercises']['lessFive'] = $items['clqwz_count_exercises']['zero']
+                                                            + $items['clqwz_count_exercises']['one']
+                                                            + $items['clqwz_count_exercises']['two']
+                                                            + $items['clqwz_count_exercises']['three']
+                                                            + $items['clqwz_count_exercises']['four'];
+            $items['clqwz_count_exercises']['moreFive'] += $items['clqwz_count_exercises']['five'];
+            return $items['clqwz_count_exercises' ];
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

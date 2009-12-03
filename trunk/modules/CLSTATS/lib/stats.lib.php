@@ -38,6 +38,107 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
     
     abstract public function getLabel();
     
+    abstract public function getReportData( &$report, $itemStats, $nbCourses = 0 );
+    
+    abstract public function getSummarizedReport( $item );
+    
+    public function initReportData( &$report, $itemName, $item )
+    {
+        if( ! isset( $report[ $itemName ][ 'zero' ] ) )
+        {
+            $report[ $itemName ][ 'zero' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'one'] ) )
+        {
+            $report[ $itemName ][ 'one' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'two'] ) )
+        {
+            $report[ $itemName ][ 'two' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'three'] ) )
+        {
+            $report[ $itemName ][ 'three' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'four'] ) )
+        {
+            $report[ $itemName ][ 'four' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'five'] ) )
+        {
+            $report[ $itemName ][ 'five' ] = 0;
+        }
+        if( ! isset( $report[ $itemName ][ 'moreFive'] ) )
+        {
+            $report[ $itemName ][ 'moreFive' ] = 0;
+        }
+    }
+    
+    public function setReportData( &$report, $itemName, $item )
+    {
+        if( $item[ 'value' ] == 0 )
+        {
+            $report[ $itemName ][ 'zero' ]++;
+        }
+        elseif( $item[ 'value' ] == 1 )
+        {
+            $report[ $itemName ][ 'one' ]++;
+        }
+        elseif( $item[ 'value' ] == 2 )
+        {
+            $report[ $itemName ][ 'two' ]++;
+        }
+        elseif( $item[ 'value' ] == 3 )
+        {
+            $report[ $itemName ][ 'three' ]++;
+        }
+        elseif( $item[ 'value' ] == 4 )
+        {
+            $report[ $itemName ][ 'four' ]++;
+        }
+        elseif( $item[ 'value' ] == 5 )
+        {
+            $report[ $itemName ][ 'five' ]++;
+            
+        }
+        else
+        {
+           $report[ $itemName ][ 'moreFive' ]++;
+        }
+        
+        if( isset( $report[ $itemName ]['value'] ) )
+        {
+            $report[ $itemName ]['value'] += $item[ 'value' ];            
+        }
+        else
+        {
+            $report[ $itemName ]['value'] = $item[ 'value' ];
+        }
+    }
+    
+    public function setReportMax( &$report, $itemName, $item )
+    {
+        if( isset( $report[ $itemName ][ 'max' ] ) )
+        {
+            if( $report[ $itemName ][ 'max' ] < $item[ 'value' ] )
+            {
+                $report[ $itemName ][ 'max' ] = $item[ 'value' ];
+            }
+        }
+        else
+        {
+            $report[ $itemName ][ 'max' ] = $item[ 'value' ];
+        }
+    }
+    
+    public function setReportAverage( &$report, $itemName, $item, $nbCourses )
+    {
+        if( isset( $report[ $itemName ][ 'max' ] ) )
+        {
+            $report[ $itemName ][ 'average' ] = round( $report[ $itemName ][ 'max' ] / $nbCourses );
+        }
+    }
+    
     public function run( $course )
     {
         return array(
@@ -153,43 +254,60 @@ class ClaroStats
         return $result;
     }
     
-    public function execute( $reset = true )
+    private function executeBunchOfCourse( $bunchOfCourses, $plugins, &$data, &$courseList )
+    {
+        foreach( $bunchOfCourses as $course )            
+        {
+            foreach( $plugins as $toolLabel => $plugin )
+            {
+                require_once( $plugin );
+                
+                $class = $toolLabel . '_Stats';
+                $toolStats = new $class;
+                
+                $data[ $course['code_course'] ][ $toolLabel ] = $toolStats->getData( $course['code_course'] );                    
+            }
+            
+            $courseList->updateCourseStatus( $course['code_course'], 'done' );
+        }
+    }
+    
+    public function execute( $reset = true, $bunchCourses )
     {
         //$dbCoursesPath = dirname( __FILE__ ) . '/../databases/courses_stats.sqlite';
         //$dbCourses = new SQLite3( $dbCoursesPath );
         
+        //get course list
+        if( is_null( $bunchCourses ) )
+        {
+            $limit = 50;
+        }
+        else
+        {
+            $limit = (int) $bunchCourses;
+        }
         //populate sqlite database
         Stats_CourseList::init( $reset );
         
-        //get course list
-        $limit = 4;
         $courseList = new CourseList_Iterator( $limit );
         
-        $nbCourses = $courseList->countCourses();
-        
-        $iterations = $courseList->countIterations();
-        
-        $plugins = $this->getPlugins();
+        $plugins = self::getPlugins();
         
         $data = array();
-        foreach( $courseList as $nextBunchofCourses )
+        
+        if( is_null( $bunchCourses ) )
         {
-            
-            foreach( $nextBunchofCourses as $course )            
+        
+            foreach( $courseList as $nextBunchofCourses )
             {
-                foreach( $plugins as $toolLabel => $plugin )
-                {
-                    require_once( $plugin );
-                    
-                    $class = $toolLabel . '_Stats';
-                    $toolStats = new $class;
-                    
-                    $data[ $course['code_course'] ][ $toolLabel ] = $toolStats->getData( $course['code_course'] );                    
-                }
-                
-                $courseList->updateCourseStatus( $course['code_course'], 'done' );
+                $this->executeBunchOfCourse( $nextBunchofCourses, $plugins, $data, $courseList );
             }
         }
+        else
+        {
+            $this->executeBunchOfCourse( $courseList->getNextBunchOfCourses(), $plugins, $data, $courseList );
+        }
+        
         $addedData = $this->add( $data );
         
         
@@ -198,7 +316,7 @@ class ClaroStats
         return $addedData;
     }
     
-    private function getPlugins()
+    public static function getPlugins()
     {
         $dir = dirname( __FILE__ ) . '/../plugins/';
         
@@ -278,11 +396,100 @@ class Stats_Report
     
     public function __construct()
     {
-        $this->table = get_module_main_tbl( array( 'stats_reports' ) );
+        $this->table = get_module_main_tbl( array( 'stats_reports', 'stats_usage' ) );
     }
     
     public function loadFreshContent()
     {
+        $plugins = ClaroStats::getPlugins();
+        
+        $result = Claroline::getDatabase()->query(
+            "SELECT max(`date`) as `lastReportDate` FROM `{$this->table['stats_reports']}` WHERE 1;"
+            );
+        $lastReportDate = (int) $result->fetch(Database_ResultSet::FETCH_VALUE);
+        
+        $stats = ClaroStats::load($lastReportDate, time());
+        
+        $cleanStats = array();
+        
+        foreach( $stats as $stat )
+        {
+            if( !(isset( $report[ $stat[ 'code_course'] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] )
+               && $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] > $stat[ 'dateCreation' ]  )
+               )
+            {
+                $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] = $stat[ 'dateCreation' ];
+                $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'value' ] = (int) $stat[ 'itemValue' ];                
+            }
+        }
+        
+        $nbCourses = count( $cleanStats );
+        $report = array();
+        $usageReport = array( 'moreFive' => array(), 'lessFive' => array());
+        
+        foreach( $cleanStats as $codeCourse => $tools )
+        {
+            foreach( $tools as $toolLabel => $items )
+            {
+        
+                if( isset( $plugins[ $toolLabel ] ) )
+                {
+                    require_once( $plugins[ $toolLabel ] );
+                    
+                    $class = $toolLabel . '_Stats';
+                    $toolStats = new $class;
+                    
+                    if( method_exists( $toolStats, 'getReportData' ) )
+                    {
+                        if( !isset( $report [ $toolLabel ] ) )
+                        {
+                            $report[ $toolLabel ] = array();
+                        }
+                        $usageItems = $toolStats->getReportData( $report[ $toolLabel ], $items, $nbCourses );
+                        if( $usageItems >= 5 )
+                        {
+                            if( !isset( $usageReport['moreFive'][$codeCourse][$toolLabel] ) )
+                            {
+                                $usageReport['moreFive'][$codeCourse][$toolLabel] = 0;
+                            }
+                            $usageReport['moreFive'][$codeCourse][$toolLabel] += $usageItems;
+                        }
+                        else
+                        {
+                            if( !isset( $usageReport['lessFive'][$codeCourse][$toolLabel] ) )
+                            {
+                                $usageReport['lessFive'][$codeCourse][$toolLabel] = 0;
+                            }
+                            $usageReport['lessFive'][$codeCourse][$toolLabel] += $usageItems;
+                        }
+                    }                    
+                    
+                }
+            }
+        }
+        
+        foreach( $usageReport['moreFive'] as $codeCourse => $labels )
+        {
+            //High usage
+            if( count( $labels) < 5 )
+            {
+                $usageReport['lessFive'][$codeCourse] = array_merge( $usageReport['lessFive'][$codeCourse], $usageReport['moreFive'][$codeCourse]);
+                unset($usageReport['moreFive'][$codeCourse]);
+            }
+            elseif(isset( $usageReport['lessFive'][$codeCourse] ) )
+            {
+                unset( $usageReport['lessFive'][$codeCourse] );
+            }
+        }
+        
+        unset( $stats );
+        unset( $cleanStats );
+        
+        return array( 'report' => $report, 'usageReport' => $usageReport);
+        
+        exit();
+        /*
+        
         $result = Claroline::getDatabase()->query(
             "SELECT max(`date`) as `lastReportDate` FROM `{$this->table['stats_reports']}` WHERE 1;"
             );
@@ -367,7 +574,7 @@ class Stats_Report
         unset( $stats );
         unset( $cleanStats );
         
-        return $report;
+        return $report;*/
     }
     
     public function load( $date )
@@ -383,7 +590,20 @@ class Stats_Report
         return $result;
     }
     
-    public function save( $content )
+    public function loadUsage( $date )
+    {
+        $date = (int) $date;
+        
+        $result = Claroline::getDatabase()->query(
+            "SELECT *
+            FROM `{$this->table['stats_usage']}`
+            WHERE `date` = " . $date . ";"
+        );
+        
+        return $result;
+    }
+    
+    public function save( $content, $date = 0 )
     {
         if( is_array( $content['content'] ) && count( $content['content']) )
         {
@@ -394,8 +614,6 @@ class Stats_Report
             else
             {
                 //Insert
-                $date = time();
-                
                 $sql = "";
                 
                 foreach( $content['content'] as $toolLabel => $items )
@@ -412,13 +630,29 @@ class Stats_Report
                                 '" . Claroline::getDatabase()->escape( $itemName ) . "',
                                 " . (int) Claroline::getDatabase()->escape( $item['max'] ) . ",
                                 " . (int) Claroline::getDatabase()->escape( $item['average'] ) . ",
-                                " . (int) Claroline::getDatabase()->escape( $item['lessFive'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['zero'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['one'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['two'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['three'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['four'] ) . ",
+                                " . (int) Claroline::getDatabase()->escape( $item['five'] ) . ",
                                 " . (int) Claroline::getDatabase()->escape( $item['moreFive'] ) . ")";
                     }
                 }
                 
                 $sql = "INSERT INTO `{$this->table['stats_reports']}`
-                ( `date`, `toolLabel`, `itemName`, `max`, `average`, `lessFive`, `moreFive` )            
+                ( `date`,
+                `toolLabel`,
+                `itemName`,
+                `max`,
+                `average`,
+                `zero`,
+                `one`,
+                `two`,
+                `three`,
+                `four`,
+                `five`,
+                `moreFive` )            
                 VALUES " . $sql;
                 
                 return Claroline::getDatabase()->exec( $sql );
@@ -428,6 +662,29 @@ class Stats_Report
         {
             return false;
         }
+    }
+    
+    public function saveUsage( $usageReport, $date = 0 )
+    {
+        $sql = '';
+        
+        foreach( $usageReport as $label => $value )
+        {
+            if( $sql )
+            {
+                $sql .= ',';
+            }
+            
+            $sql .= "(" . (int) Claroline::getDatabase()->escape( $date ) . ",
+                    '" . Claroline::getDatabase()->escape( $label ) . "',
+                    " . (int) Claroline::getDatabase()->escape( count( $value ) ) . ")";                    
+        }
+        
+        $sql = "INSERT INTO `{$this->table['stats_usage']}`
+                ( `date`, `label`, `value` )
+                VALUES " . $sql;
+        
+        return Claroline::getDatabase()->exec( $sql );
     }
 }
 

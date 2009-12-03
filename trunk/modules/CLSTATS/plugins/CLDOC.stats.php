@@ -72,4 +72,36 @@ class CLDOC_Stats extends ClaroStats_CourseTask
             'cldoc_count_comments' => $cldoc_count_comments['value']
         );
     }
+    
+    public function getReportData( &$report, $itemStats, $nbCourses = 0 )
+    {
+        foreach( $itemStats as $itemName => $item )
+        {
+            parent::initReportData( $report, $itemName, $item );
+            parent::setReportData( $report, $itemName, $item );
+            parent::setReportMax( $report, $itemName, $item );
+            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+        }
+        
+        //Check if we need to substract invisible files or not
+        return $itemStats[ 'cldoc_count_files' ]['value'];
+    }
+    
+    public function getSummarizedReport( $items )
+    {
+        if(isset( $items['cldoc_count_files' ] ) )
+        {
+            $items['cldoc_count_files']['lessFive'] = $items['cldoc_count_files']['zero']
+                                                            + $items['cldoc_count_files']['one']
+                                                            + $items['cldoc_count_files']['two']
+                                                            + $items['cldoc_count_files']['three']
+                                                            + $items['cldoc_count_files']['four'];
+            $items['cldoc_count_files']['moreFive'] += $items['cldoc_count_files']['five'];            
+            return $items['cldoc_count_files' ];
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

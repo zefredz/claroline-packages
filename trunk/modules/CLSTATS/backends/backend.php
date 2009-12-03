@@ -23,9 +23,9 @@ switch( $cmd )
     case 'generateStats' :
     {
         $reset = (bool) $userInput->get( 'reset', true );
-        
+        $bunchCourses = $userInput->get( 'bunchCourses', null );
         $claroStats = new ClaroStats;
-        if( $claroStats->execute( $reset ) )
+        if( $claroStats->execute( $reset, $bunchCourses ) )
         {
             $json['response'] = get_lang( 'Statistics generated successfully.' );
             $json['success'] = 1;
