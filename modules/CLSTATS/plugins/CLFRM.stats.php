@@ -29,4 +29,35 @@ class CLFRM_Stats extends ClaroStats_CourseTask
             'clfrm_count_posts' =>$clfrm_count_posts['value']
         );
     }
+    
+    public function getReportData( &$report, $itemStats, $nbCourses = 0 )
+    {
+        foreach( $itemStats as $itemName => $item )
+        {
+            parent::initReportData( $report, $itemName, $item );
+            parent::setReportData( $report, $itemName, $item );
+            parent::setReportMax( $report, $itemName, $item );
+            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+        }
+        
+        return round( $itemStats[ 'clfrm_count_posts' ]['value'] / $itemStats[ 'clfrm_count_topics' ]['value'] );
+    }
+    
+    public function getSummarizedReport( $items )
+    {
+        if(isset( $items['clfrm_count_posts' ] ) )
+        {
+            $items['clfrm_count_posts']['lessFive'] = $items['clfrm_count_posts']['zero']
+                                                            + $items['clfrm_count_posts']['one']
+                                                            + $items['clfrm_count_posts']['two']
+                                                            + $items['clfrm_count_posts']['three']
+                                                            + $items['clfrm_count_posts']['four'];
+            $items['clfrm_count_posts']['moreFive'] += $items['clfrm_count_posts']['five'];
+            return $items['clfrm_count_posts' ];
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

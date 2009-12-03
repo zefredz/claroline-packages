@@ -40,6 +40,7 @@ try
     
     $cmd = $userInput->get( 'cmd','view' );
     $action = $userInput->get( 'action' );
+    $bunchCourses = $userInput->get( 'bunchCourses', null );
     
     $out = '';
     
@@ -48,7 +49,8 @@ try
     $cmdMenu = array();
     
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=view', get_lang( 'Home' ) );
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats', get_lang( 'Generate stats' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats', get_lang( 'Generate all stats' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats&action=bunch', get_lang( 'Generate stats for a bunch of courses' ) );
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqNewReport', get_lang( 'Generate a report' ) );
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
@@ -57,15 +59,23 @@ try
     {
         case 'rqStats' :
         {
-            //Check if pending courses exist in DB
-            if( $pendingCourses = Stats_CourseList::countPendingCourses() )
+            if( $action == 'bunch' )
             {
-                $out .=  ClaroStatsRenderer::pendingCourses( $pendingCourses ); 
+                $out .= ClaroStatsRenderer::bunchCourses( Stats_CourseList::countPendingCourses() );
+                break;
             }
             else
             {
-                $action = 'reset';
-            }            
+                //Check if pending courses exist in DB
+                if( $pendingCourses = Stats_CourseList::countPendingCourses() )
+                {
+                    $out .=  ClaroStatsRenderer::pendingCourses( $pendingCourses ); 
+                }
+                else
+                {
+                    $action = 'reset';
+                }
+            }
         }        
         case 'exStats' :
         {
@@ -78,13 +88,25 @@ try
                         $reset = false;
                     }
                     break;
+                    case 'bunchCourses' :
+                    {
+                        if( ! is_null( $bunchCourses ) && Stats_CourseList::countPendingCourses() == 0 )
+                        {
+                            $reset = true;
+                        }
+                        else
+                        {
+                            $reset = false;
+                        }
+                    }
+                    break;
                     default :
                     {
                         $reset = true;
                     }
                 }
                 
-                $out .= ClaroStatsRenderer::generateStats( $reset );
+                $out .= ClaroStatsRenderer::generateStats( $reset, $bunchCourses );
             }
         }
         break;
@@ -92,30 +114,66 @@ try
         {
             //TODO check if last report == last stats (don't regenerate a report where anything change)
             $report = new Stats_Report();
-            $reportContent[ 'content' ] = $report->loadFreshContent();
+            $reports = $report->loadFreshContent();
+            $reportContent[ 'content' ] = $reports['report'];
             
-            $result = $report->save( $reportContent );
+             $date = time();
             
-            $out .= ClaroStatsRenderer::generateReport( $result );
+            $result_usage = $report->saveUsage( $reports['usageReport'], $date );
+            $result = $report->save( $reportContent, $date );
+            
+            
+            $out .= ClaroStatsRenderer::generateReport( ($result_usage && $result) ? true : false );
         }
         break;
         case 'view' :
         {
-            $reports = Stats_ReportList::countReports();
-            
-            //Load last report
-            $lastReport = $reports->fetch();
-            if( isset( $lastReport['date'] ) && $lastReport['date'] > 0 )
+            if( isset( $_GET['report'] ) )
             {
-                $report = new Stats_Report();
-                $thisReport = $report->load( $lastReport['date'] );
+                $reportId = (int) $_GET['report'];
+            }
+            elseif( isset( $_POST['report'] ) )
+            {
+                $reportId = (int) $_POST['report'];
             }
             else
             {
-                $thisReport = null;
+                $reportId = null;
             }
             
-            $out .= ClaroStatsRenderer::view( $reports, $thisReport, $lastReport['date'] );
+            $userInput->setValidator('display', new Claro_Validator_AllowedList( array(
+                'details', 'summary'
+            ) ) );
+            
+            $display = $userInput->get( 'display','summary' );
+            
+            
+            
+            $display = $userInput->get( 'display','summary' );
+            
+            $reports = Stats_ReportList::countReports();
+            
+            $thisReport = null;
+            $report = new Stats_Report();
+            if( !is_null( $reportId ) && $reportId )
+            {
+                $thisReport = $report->load( $reportId );
+                $usageReport = $report->loadUsage( $reportId );
+                $reportDate = $reportId;
+            }
+            else
+            {
+                //Load last report
+                $lastReport = $reports->fetch();
+                if( isset( $lastReport['date'] ) && $lastReport['date'] > 0 )
+                {                    
+                    $thisReport = $report->load( $lastReport['date'] );
+                    $usageReport = $report->loadUsage( $lastReport['date'] );
+                }
+                $reportDate = $lastReport['date'];
+            }
+            
+            $out .= ClaroStatsRenderer::view( $reports, $display, $thisReport, $reportDate, $usageReport );
         }
         break;
     }
