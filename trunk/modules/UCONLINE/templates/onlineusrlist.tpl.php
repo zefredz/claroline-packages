@@ -116,7 +116,9 @@
         <?php endif; ?>
         <?php if( get_conf( 'showStatus' ) ) : ?>
             <td>
-            <?php if ( $user[ 'isCourseCreator' ] ) : ?>
+            <?php if ( $user[ 'isPlatformAdmin' ] ) : ?>
+                <?php echo get_lang( 'Platform administrator' ); ?>
+            <?php elseif ( $user[ 'isCourseCreator' ] ) : ?>
                 <?php echo get_lang( 'Course creator' ); ?>
             <?php else: ?>
                 <?php echo get_lang( 'User' ); ?>
