@@ -43,6 +43,7 @@ $sql = "SELECT DISTINCT
             U.`email`               AS `email`,
             U.`user_id`             AS `id`,
             U.`isCourseCreator`     AS `isCourseCreator`,
+            U.`isPlatformAdmin`     AS `isPlatformAdmin`,
             O.`last_action`         AS `last_action`,
             O.`time_offset`         AS `time_offset`,
             S.`propertyValue`       AS `skype_name`
