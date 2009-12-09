@@ -210,14 +210,14 @@ if( $cmd == 'doCommit' )
         if( $itemAttempt->save() )
         {
             //GEB QuizCompletion
-            $grapple_idAssignedEvent = empty( $_SESSION[ $tlabelReq ][ 'previousGEBId' ] ) ? 0 : (int) $_SESSION[ $tlabelReq ][ 'previousGEBId' ];
-            $startTime = empty( $_SESSION[ $tlabelReq ][ 'startTime' ] ) ? time() : (int) $_SESSION[ $tlabelReq ][ 'startTime' ];
+            $grapple_idAssignedEvent = empty( $_SESSION[ 'grapple' ][ 'previousGEBId' ] ) ? 0 : (int) $_SESSION[ 'grapple' ][ 'previousGEBId' ];
+            $startTime = empty( $_SESSION[ 'grapple' ][ 'startTime' ] ) ? time() : (int) $_SESSION[ 'grapple' ][ 'startTime' ];
             $stopTime = time();
             $grapple = new grapple();
             if( $data = $grapple->quizCompletion( claro_get_current_user_id(), claro_get_current_course_id(), $grapple_idAssignedEvent, $pathId, $itemAttempt->getItemId(), $itemAttempt->getAttemptId(), $startTime, $stopTime ) )
             {
                 $grapple_idAssignedEvent = $data->idAssignedEvent;
-                $_SESSION[ $tlabelReq ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+                $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
             }
             lpDebug('Item attempt saved');
             // get new item attempt list
@@ -279,7 +279,7 @@ if( $cmd == 'doCommit' )
  */
 if( $cmd == 'rqContentUrl' )
 {
-    $_SESSION[ $tlabelReq ]['startTime'] = time();
+    $_SESSION[ 'grapple' ]['startTime'] = time();
     return rqContentUrl( $item, $pathId, $itemId );    
 }
 

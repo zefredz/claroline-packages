@@ -43,6 +43,8 @@ require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 require_once dirname( __FILE__ ) . '/../lib/linker.lib.php';
 require_once dirname( __FILE__ ) . '/../lib/blockingcondition.class.php';
 
+require_once dirname( __FILE__ ) . '/../lib/grapple.class.php';
+
 
 /*
  * init request vars
@@ -138,11 +140,28 @@ if( $cmd == 'exEdit' )
             {
                 $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
+                
+                // Contact GEB for the learningActivityAddition
+                $grapple = new grapple;
+                if( isset( $_SESSION[ 'grapple' ][ 'previousGEBId' ] ) )
+                {
+                    $grapple_idAssignedEvent = (int) $_SESSION[ 'grapple' ][ 'previousGEBId' ];
+                }
+                else
+                {
+                    $grapple_idAssignedEvent = 0;
+                }
+                
+                if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $pathId,  $grapple_idAssignedEvent ) )
+                {
+                  $grapple_idAssignedEvent = $data->idAssignedEvent;
+                  $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+                }
             }
             else
             {
                 $dialogBox->success( get_lang('Learning path successfully modified') );
-            }
+            }            
         }
         else
         {
@@ -179,7 +198,7 @@ if( $cmd == 'rqEdit' )
 
     $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
-    .     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
+    //.     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
     .     '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
 
     // title
