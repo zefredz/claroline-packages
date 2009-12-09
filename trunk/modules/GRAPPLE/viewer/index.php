@@ -111,7 +111,7 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
     if( $data = $grapple->courseAccess( claro_get_current_user_id(), claro_get_current_course_id() ) )
     {
       $grapple_idAssignedEvent = $data->idAssignedEvent;
-      $_SESSION[ $tlabelReq ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+      $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
     }
     else
     {
