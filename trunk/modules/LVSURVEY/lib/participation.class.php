@@ -78,8 +78,8 @@ class Participation
             	       `userId`							AS userId
            	FROM 		`".SurveyConstants::$PARTICIPATION_TBL."` 
            	WHERE 		`id` = ".(int) $id."; "; 
-         
-         
+
+        
         $resultSet = $dbCnx->query($sql);
         $data = $resultSet->fetch();
         $res =  self::__set_state($data); 
@@ -116,9 +116,8 @@ class Participation
 		$surveyLineList = $survey->getSurveyLineList();
 		foreach($surveyLineList as $surveyLine)
 		{
-			$question = $surveyLine->question;
-			$answer = Answer::loadAnswerOfQuestionFromForm($question);
-			$answer->setParticipation($participation);
+			if(!is_a($surveyLine, 'QuestionLine'))continue;
+			$answer = Answer::loadAnswerOfQuestionFromForm($participation, $surveyLine);
 			$participation->answerList[] = $answer;
 		}		
 		return $participation;		
@@ -211,9 +210,9 @@ class Participation
     	$dbCnx = Claroline::getDatabase();
     	$sql = "SELECT 	A.`id`					as id, 
     					A.`participationId`		as participationId, 
-    					A.`questionId`			as questionId, 
+    					A.`surveyLineId`		as surveyLineId, 
     					A.`comment`				as comment
-                FROM 	`".SurveyConstants::$ANSWER_TBL."` as A
+                FROM 	`".SurveyConstants::$ANSWER_TBL."` as A                
                 WHERE 	A.`participationId` = ".(int)$this->id."; ";
         
     	$resultSet = $dbCnx->query($sql);
@@ -225,19 +224,22 @@ class Participation
 	    {
 	    	$answer = Answer::__set_state($row);
 	    	$answer->setParticipation($this);
-	    	$answer->setQuestion($surveyLineList[$answer->getQuestionId()]->question);
-            $this->answerList[$row['id']] = $answer;
+	    	$answer->setQuestionLine($surveyLineList[$row['surveyLineId']]);
+	    	$this->answerList[$row['id']] = $answer;
 	    }    	
     }
     
-    public function getAnswerForQuestion($questionId)
+    public function getAnswerForSurveyLine($surveyLine)
     {
     	$answerList = $this->getAnswerList();
     	foreach($answerList as $answer)
     	{
-    		if($answer->getQuestionId() == $questionId) return $answer;
+    		if($answer->getSurveyLineId() == $surveyLine->id) return $answer;
     	}
-    	return new Answer($this->id, $questionId);
+    	$res = new Answer($this->id, $surveyLine->id);
+    	$res->setParticipation($this);    	
+    	$res->setQuestionLine($surveyLine);   
+    	return $res;
     }
     public function delete()
     {

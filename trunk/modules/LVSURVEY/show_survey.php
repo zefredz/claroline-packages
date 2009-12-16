@@ -22,7 +22,7 @@ From::module('LVSURVEY')->uses('survey.class');
 $tlabelReq = 'LVSURVEY';
 add_module_lang_array($tlabelReq);
 claro_set_display_mode_available(true);
-    
+
 //prepare survey Object
 try
 {
@@ -35,7 +35,8 @@ catch(Exception $e)
 	$dialogBox->error( $e->getMessage());
    	displayContents($dialogBox->render(),get_lang("Error"));
    	exit;
-}   
+} 
+ 
     
     
 //=================================
@@ -66,22 +67,22 @@ catch(Exception $e)
 		
 	}
     
-    if(isset($_REQUEST['cmd']) && isset($_REQUEST['questionId']) )
+    if(isset($_REQUEST['cmd']) && isset($_REQUEST['surveyLineId']) )
     {
-    	$questionId = (int)$_REQUEST['questionId'];	    
+    	$surveyLineId = (int)$_REQUEST['surveyLineId'];	    
 	    switch($_REQUEST['cmd'])
 	    {
-	    	case 'questionMoveUp' :
-	    		moveQuestion($survey,$questionId, true );
+	    	case 'lineMoveUp' :
+	    		moveLine($survey, $surveyLineId, true );
 	    		break;
-	    	case 'questionMoveDown' :
-	    		moveQuestion($survey, $questionId,false);
+	    	case 'lineMoveDown' :
+	    		moveLine($survey, $surveyLineId,false);
 	    		break;
-	    	case 'questionRemove' :
-	    		removeQuestion($survey, $questionId);
+	    	case 'lineRemove' :
+	    		removeLine($survey, $surveyLineId);
 	    		break;
 	    	case 'setCommentSize' :
-	    		setCommentSize($survey,$questionId);
+	    		setCommentSize($survey, $surveyLineId);
 	    		break;	    			    		
 	    }    	
     } 
@@ -93,11 +94,11 @@ catch(Exception $e)
 //=================================
  
     
-    function removeQuestion($survey, $questionId)
+    function removeLine($survey, $surveyLineId)
     {
     	try
     	{
-    		$survey->removeQuestion($questionId);
+    		$survey->removeLine($surveyLineId);
     		$dialogBox = new DialogBox();
     		$dialogBox->success("Question removed from Survey");
     		displaySurvey($survey, $dialogBox);
@@ -110,10 +111,11 @@ catch(Exception $e)
     	}
     	exit;
     }
-    function moveQuestion($survey,$questionId, $up )
+    function moveLine($survey,$surveyLineId, $up )
     {
+    	$dialogBox = NULL;
     	try{
-            $survey->moveQuestion($questionId, $up);
+            $survey->moveLine($surveyLineId, $up);
         }
         catch (Exception $e)
         {
@@ -121,6 +123,7 @@ catch(Exception $e)
         	$dialogBox->error($e->getMessage());
         }
         displaySurvey($survey, $dialogBox);
+        exit;
     }
    
     
@@ -130,7 +133,7 @@ catch(Exception $e)
         $participation->save(); 
     }
     
-    function setCommentSize($survey,$questionId)
+    function setCommentSize($survey, $surveyLineId)
     {
     	$newCommentSize = (int)$_REQUEST['commentSize'];
     	if($newCommentSize < 0)
@@ -138,8 +141,8 @@ catch(Exception $e)
     	if($newCommentSize > 200)
     		$newCommentSize = 200;
     	$surveyLineList = $survey->getSurveyLineList();
-    	$surveyLineList[$questionId]->maxCommentSize = $newCommentSize;
-    	$surveyLineList[$questionId]->save();
+    	$surveyLineList[$surveyLineId]->maxCommentSize = $newCommentSize;
+    	$surveyLineList[$surveyLineId]->save();
     }
 
 //=================================

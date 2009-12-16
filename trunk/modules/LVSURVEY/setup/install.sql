@@ -35,18 +35,42 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_question` (
 -- --------------------------------------------------------
 
 --
--- Table structure for the relation between survey and questions. N to M relationship (
+-- Table structure for a survey line (chapter or question)
 --
 
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_rel_survey_question` (
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
   `id` 					INTEGER 										NOT NULL auto_increment,
   `surveyId` 			INTEGER 										NOT NULL,
-  `questionId` 			INTEGER 										NOT NULL,
   `rank` 				INTEGER 										NULL,
-  `maxCommentSize`		INTEGER 										NOT NULL	DEFAULT 200,
-  PRIMARY KEY  (`id`),
-  UNIQUE(`surveyId`, `questionId`)
+  PRIMARY KEY  (`id`)
+  -- , UNIQUE(`surveyId`, `rank`) -- removes for allowing swapping lines
 );
+
+-- --------------------------------------------------------
+--
+-- Table structure for a chapter separator
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_separator` (
+  `id` 					INTEGER 										NOT NULL,
+  `title`				VARCHAR(255)									NOT NULL,
+  `description`				TEXT											NOT NULL DEFAULT '',
+  PRIMARY KEY  (`id`)
+);
+
+
+-- --------------------------------------------------------
+--
+-- Table structure for a question in a survey
+--
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
+  `id` 					INTEGER 										NOT NULL,
+  `questionId` 			INTEGER 										NOT NULL,
+  `maxCommentSize`		INTEGER 										NOT NULL	DEFAULT 200,
+  PRIMARY KEY  (`id`)
+);
+
 
 -- --------------------------------------------------------
 
@@ -72,7 +96,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
   `id` 					INTEGER 										NOT NULL auto_increment,
-  `questionId` 			INTEGER 										NOT NULL,
+  `surveyLineId`		INTEGER 										NOT NULL,
   `participationId`		INTEGER 										NOT NULL,
   `comment` 			VARCHAR(200)									NULL,
   PRIMARY KEY (`id`),

@@ -32,19 +32,18 @@ add_module_lang_array($tlabelReq);
     
 $processForm = isset($_REQUEST['claroFormId']);
 $question = new Question();
+$questionId = isset($_REQUEST['questionId'])?(int)$_REQUEST['questionId']:-1;
+$is_updating = ($questionId != -1);    
+if($is_updating)
+{
+    $question = Question::load($questionId);
+}
 
 //=================================
 // SHOW FORM
 //=================================
 if(!$processForm)
-{
-	//prepare survey Object
-	$questionId = isset($_REQUEST['questionId'])?(int)$_REQUEST['questionId']:-1;
-	$is_updating = ($questionId != -1);    
-    if($is_updating)
-    {
-        $question = Question::load($questionId);
-    }
+{	
     renderEditQuestion($question);
     exit();
 }
@@ -56,13 +55,24 @@ if(!$processForm)
 try
 {
 	$question = Question::loadFromForm();
+	$shoulAddToSurvey = $question->id == -1;
 	$question->save();
+	if(!isset($_REQUEST['surveyId']))
+	{
+		claro_redirect('question_pool.php');
+		exit;
+	}
 	if(isset($_REQUEST['surveyId']))
 	{
 		$survey = Survey::load((int)$_REQUEST['surveyId']);
-		$survey->addQuestion($question);
+		if($shoulAddToSurvey)
+		{
+			addQuestionToSurvey($question->id, $survey);
+		}
+		displaySuccess($survey, get_lang("Question was successfully saved"));
 	}
-	renderSucess($question);
+	
+	
 }
 catch(Exception $e)
 {
@@ -71,26 +81,31 @@ catch(Exception $e)
    	renderEditQuestion($question, $dialogBox);
 }
 
+function addQuestionToSurvey($questionId, $survey)
+{
+
+		$question = Question::load($questionId);
+		$surveyLine = SurveyLineFactory::createQuestionLine($survey,$question);        
+        $surveyLine->save();		
+        $survey->addSurveyLine($surveyLine);        
+
+}
+
 //=================================
 // DISPLAY FUNCTIONS
 //=================================
-function renderSucess($question)
+
+function displaySuccess($survey, $successMessage)
 {
+	
 	$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
+	$surveySavedBoxTpl->assign('surveyId', $survey->id);    
 	
-	if(!isset($_REQUEST['surveyId']))
-	{
-		claro_redirect('question_pool.php');
-		exit();
-	}
-	$surveySavedBoxTpl->assign('surveyId', $_REQUEST['surveyId']);        
-	$boxcontent = $surveySavedBoxTpl->render();
-	$dialogBox = new DialogBox();
-	$dialogBox->success( get_lang("Question has been saved")."!");
-	$dialogBox->form($boxcontent);
+    $dialogBox = new DialogBox();
+    $dialogBox->success($successMessage);    
 	
-	renderContents($dialogBox->render(),get_lang('Success'));
-}	
+	renderContents($surveySavedBoxTpl->render(), $survey,get_lang('Success'), $dialogBox);
+}
     
     
 function renderEditQuestion($question, $dialogBox = NULL)
@@ -119,28 +134,28 @@ function renderEditQuestion($question, $dialogBox = NULL)
     }
     $contenttoshow .= $editQuestionTpl->render();    
     
-    renderContents($contenttoshow, $pageTitle);
+    renderContents($contenttoshow,NULL, $pageTitle);
     
 
 	
 }
 
-function renderContents($contents, $pageTitle)
+function renderContents($contents,$survey , $pageTitle, $dialogBox = NULL)
 {
-	$out = '';
-    $out .= claro_html_tool_title($pageTitle);  
-    
-    
-
-    $out .= $contents;
-	//create breadcrumbs
 	$claroline = Claroline::getInstance();
     $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
+    if (!is_null($survey))
+    	$claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id);
     $claroline->display->banner->breadcrumbs->append($pageTitle);
-    // append output
+    
+    $out = claro_html_tool_title($pageTitle);
+    if(!is_null($dialogBox))
+    {
+    	$out .= $dialogBox->render();
+    }
+    $out .= $contents;
     $claroline->display->body->appendContent($out);
    
-    // render output
     echo $claroline->display->render();
 }
  

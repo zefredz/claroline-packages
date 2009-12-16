@@ -1,49 +1,36 @@
 <?php
-class SurveyLine
+From::module('LVSURVEY')->uses('surveyConstants.class','questionLine.class', 'separatorLine.class');
+abstract class SurveyLine
 {
-	public $id;
-	
-	public $survey;
-	
-	public $question;
-	
-	public $rank;
-	
-	public $maxCommentSize;
-	
-	public function __construct($survey, $question)
+	public static function cmp_surveyLines($a, $b)
 	{
-		$this->id = -1;
-		$this->survey = $survey;
-		$this->question = $question;
-		
-		$this->rank = -1;
-		$this->maxCommentSize = $survey->maxCommentSize;	
+		return $a->rank - $b->rank;
 	}
 	
-	static function __set_state($array)
-    {
-    	if(empty($array)) return false;
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new SurveyLine(new Survey(''),NULL,0)));
-    	}    	
-    	$res = new SurveyLine($array['survey'], $array['question']);
-        foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
-            {
-            	$res -> {$akey} = $aval;
-            }
-        }
-        return $res;
-    }
+	
+	
+	public $id;
+	
+	public $survey;	
+	
+	public $rank;	
+	
+	public function __construct($survey)
+	{
+		$this->id = -1;
+		$this->survey = $survey;		
+		$this->rank = -1;	
+	}
+	
+
+	public function checkConsistency()
+	{
+		if($this->survey->id == -1)
+            throw new Exception("Survey line not consistent : unsaved survey");
+	}
 	public function save()
     {
-    	if($this->question->id == -1)
-            throw new Exception("Cannot add unsaved question to survey");
-        if($this->survey->id == -1)
-            throw new Exception("Cannot add question to unsaved survey");
+    	$this->checkConsistency();
             
     	if($this->id == -1){
     		$this->insertInDB();
@@ -55,13 +42,16 @@ class SurveyLine
     
     private function insertInDB()
     {
+    	$this->insertAbstractLine();
+    	$this->insertConcreteLine();
+    }
+    private function insertAbstractLine()
+    {
     	$dbCnx = ClaroLine::getDatabase();
         //add a relation survey-question
         $sqlInsertRel = "
-        	INSERT INTO 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            SET 			`surveyId` 		= ".(int) $this->survey->id.",
-                    		`questionId` 	= ".(int) $this->question->id.",
-                    		`maxCommentSize` = ".(int) $this->maxCommentSize." ; ";
+        	INSERT INTO 	`".SurveyConstants::$SURVEY_LINE_TBL."`
+            SET 			`surveyId` 		= ".(int) $this->survey->id." ; ";
         // execute the creation query and get id of inserted assignment
         $dbCnx->exec($sqlInsertRel);
         
@@ -71,85 +61,56 @@ class SurveyLine
     	
     	//don't forget rank
         $sqlUpdateRank = "
-        	UPDATE 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+        	UPDATE 	`".SurveyConstants::$SURVEY_LINE_TBL."`
             SET 	`rank` 	= ".(int) $insertedId."
         	WHERE 	`id` 	= ".(int) $insertedId;
         
     	$dbCnx->exec($sqlUpdateRank);
     }
+    protected abstract function insertConcreteLine();
+    
+    
     private function updateInDB()
+    {
+    	$this->updateAbstractLine();
+    	$this->updateConcreteLine();
+    }
+    
+    private function updateAbstractLine()
     {
     	$dbCnx = ClaroLine::getDatabase();
         //add a relation survey-question
         $sqlUpdate = "
-        	UPDATE 			`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            SET 			`surveyId` 			= ".(int) $this->survey->id.",
-                    		`questionId` 		= ".(int) $this->question->id.",
-                    		`maxCommentSize` 	= ".(int) $this->maxCommentSize.", 
+        	UPDATE 			`".SurveyConstants::$SURVEY_LINE_TBL."`
+            SET 			`surveyId` 			= ".(int) $this->survey->id.",  
                     		`rank`				= ".(int) $this->rank." 
             WHERE 			`id`                = ".(int) $this->id." ; ";
         // execute the creation query and get id of inserted assignment
         $dbCnx->exec($sqlUpdate);
     }
+    
+    abstract protected function updateConcreteLine();
 
     
     public function delete()
     {
-    	if($this->question->id == -1)
-            throw new Exception("Cannot remove unsaved question ");
-        if($this->survey->id == -1)
-            throw new Exception("Cannot remove question from unsaved survey");
-            
-        $dbCnx = ClaroLine::getDatabase();
-        $answerIdList = $this->getLinkedAnswerIdList($dbCnx);
-        
-        if(!empty($answerIdList))
-        {
-        	$this->deleteLinkedAnswerItems($answerIdList,$dbCnx);
-        	$this->deleteLinkedAnswers($answerIdList,$dbCnx);
-        }        
+    	$this->checkConsistency();
+    	
+    	$this->deleteConcreteLine();
+    	$this->deleteAbstractLine();
+    }
+    private function deleteAbstractLine()
+    {    	
+        $dbCnx = ClaroLine::getDatabase();      
         
         $sqlRemoveRel = "
-        	DELETE FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-            WHERE 			`surveyId` 		= ".(int) $this->survey->id." 
-            AND        		`questionId` 	= ".(int) $this->question->id."; ";
+        	DELETE FROM 	`".SurveyConstants::$SURVEY_LINE_TBL."`
+            WHERE 			`id` 		= ".(int) $this->id." ; ";
         $dbCnx->exec($sqlRemoveRel);
         
     }
+    abstract protected function deleteConcreteLine();    
     
-    private function getLinkedAnswerIdList($dbCnx)
-    {
-    	$sqlLinkedAnswers = "
-    		SELECT 	DISTINCT	A.`id`			AS answerId
-    		FROM				`".SurveyConstants::$ANSWER_TBL."` A 
-    		INNER JOIN 			`".SurveyConstants::$PARTICIPATION_TBL."` P 
-    		ON					A.`participationId` = P.`id` 
-    		WHERE 				P.`surveyId` = ".(int)$this->survey->id." 
-    		AND 				A.`questionId` = ".(int)$this->question->id."  ; ";
-    	
-    	$answerIdRS = $dbCnx->query($sqlLinkedAnswers);
-    	$answerIdList = array();
-    	foreach($answerIdRS as $row)
-    	{
-    		$answerIdList[] = $row['answerId'];	
-    	}
-    	return $answerIdList;
-    }
-    
-	private function deleteLinkedAnswerItems($answerIdList, $dbCnx)
-	{
-		$sql = "
-	        		DELETE FROM `".SurveyConstants::$ANSWER_ITEM_TBL."`
-	        		WHERE 		`answerId` IN (".implode(', ',$answerIdList)."); ";
-	    $dbCnx->exec($sql);
-	}
-	private function deleteLinkedAnswers($answerIdList, $dbCnx)
-	{
-		$sql = "
-	        		DELETE FROM `".SurveyConstants::$ANSWER_TBL."`
-	        		WHERE 		`id` IN (".implode(', ',$answerIdList)."); ";
-	    $dbCnx->exec($sql);        		
-	}
     
 	public function move($up)
     {
@@ -157,15 +118,13 @@ class SurveyLine
 
         //exchange rank with 
         $sqlSubSelect= "
-        		SELECT	`rank`
-                FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."`
-                WHERE 	`surveyId` 		= ".(int) $this->survey->id."
-                AND  	`questionId` 	= ".(int) $this->question->id." ";
+        		SELECT	`rank` 
+                FROM 	`".SurveyConstants::$SURVEY_LINE_TBL."`
+                WHERE 	`id` 		= ".(int) $this->id." ";
         $sqlSelect = "
-        		SELECT
-                  			`id`,
-                  			`rank`
-                FROM 		`".SurveyConstants::$REL_SURV_QUEST_TBL."`
+        		SELECT		`id`, 
+        					`rank` 
+                FROM 		`".SurveyConstants::$SURVEY_LINE_TBL."`
                 WHERE 		`surveyId` = '".$this->survey->id."'
                 AND 		`rank` ".($up?"<=":">=")." (".$sqlSubSelect.")
                 ORDER BY	`rank` ".($up?"DESC":"ASC")." LIMIT 2";       
@@ -178,18 +137,163 @@ class SurveyLine
         foreach($resultSet as $row)
         {
         	$ranks[] = $row;
-        }    
+        } 
+
+        //attention c'est parti pour le show
+        // l'idée est de créer une vue temporaire en faisant une
+        // jointure sur soi-meme.
+        // si on essaie de swapper le row [id = 5, rank = 4] avec
+        // le row [id = 12, rank = 5]
+        // il faut d'abord créer un resultset qui ressemble à 
+        //   id1    |     rank1      | id2    | rank2
+        //--------------------------------------------
+        //   5              4           12         5
+        //
+        // et ensuite de pratiquer un update sur ce resultset 
+        //   rank1 = rank2 
+        //   rank2 = rank1
+        
+        
+        $sqlUpdate = "
+        			UPDATE		`" . SurveyConstants::$SURVEY_LINE_TBL."` AS SL1
+        			JOIN 		`" . SurveyConstants::$SURVEY_LINE_TBL."` AS SL2 	
+        			SET			SL1.`rank` = SL2.`rank`, 
+        						SL2.`rank` = SL1.`rank` 
+        			WHERE		SL1.`id` = " . (int) $ranks[0]['id'] . "  
+        			AND			SL2.`id` = " . (int) $ranks[1]['id'] . " ; ";
+        $dbCnx->exec($sqlUpdate);
+        
+        $surveyLineList = $this->survey->getSurveyLineList();
+    	foreach($surveyLineList as $surveyLine)
+        {
+        	if($surveyLine->id == $ranks[0]['id'])
+        		$surveyLine->rank = $ranks[1]['rank'];
+        	if($surveyLine->id == $ranks[1]['id'])
+        		$surveyLine->rank = $ranks[0]['rank'];
         	
-        $sqlUpdateQ1 = "
-        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL."`
-                    SET `rank` = " . (int) $ranks[1]['rank'] . "
-                    WHERE `id` = " . (int) $ranks[0]['id'] . " ; ";
-        $dbCnx->exec($sqlUpdateQ1);
-        $sqlUpdateQ2 = "
-        			UPDATE `" . SurveyConstants::$REL_SURV_QUEST_TBL . "` 
-                    SET `rank` = " . (int) $ranks[0]['rank'] . " 
-                    WHERE `id` = " . (int) $ranks[1]['id'] . " ; ";
-    	$dbCnx->exec($sqlUpdateQ2);
+        }
+        
+        			
+
+    
     }
+    
+    abstract public function render($editMode, $participation);
+    
+    
    
+}
+
+class SurveyLineFactory{
+	public static function linesOfSurvey($survey)
+	{
+		return SurveyLineFactory::selectLinesWhere("SL.`surveyId` = ".(int)$survey->id, $survey);
+	}
+	public static function loadSingleLine($lineId, $survey)
+	{
+		$list =  SurveyLineFactory::selectLinesWhere("SL.`id` = ".(int)$lineId, $survey);
+		return $list[0];
+	}
+	
+	
+	public static function selectLinesWhere($where, $survey)
+	{
+		$dbCnx = Claroline::getDatabase();
+    	$sql = "
+    			SELECT  SL.`id` 				as surveyLineId, 
+    					SL.`rank`				as rank, 
+    					SLQ.`maxCommentSize` 	as maxCommentSize, 
+    					SLQ.`questionId`		as questionId, 
+    					Q.`text`				as questionText, 
+    					Q.`type`				as questionType, 
+    					Q.`alignment`			as choiceAlignment,
+    					SLS.`title`				as separatorTitle,
+    					SLS.`description`		as separatorDescription, 
+    					IFNULL(SLS.`id`,'TRUE')	as isQuestionLine     					  
+                FROM 	`".SurveyConstants::$SURVEY_LINE_TBL."` as SL
+                LEFT JOIN `".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` as SLQ
+                ON 		SL.`id` = SLQ.`id` 
+                LEFT JOIN `".SurveyConstants::$SURVEY_LINE_SEPARATOR_TBL."` as SLS
+                ON 		SL.`id` = SLS.`id` 
+                INNER JOIN `".SurveyConstants::$QUESTION_TBL."` as Q
+                ON 		SLQ.`questionId` = Q.`id`                
+                WHERE 	".$where."
+                ORDER BY SL.`rank` ASC; ";
+    	        
+    	$resultSet = $dbCnx->query($sql);
+        $surveyLineList = array();	    
+	    foreach( $resultSet as $row )
+	    {
+	    	if('TRUE' == $row['isQuestionLine'])
+	    		$surveyLineList[$row['surveyLineId']] = self::buildQuestionLine($row,$survey);
+	    	else
+	    		$surveyLineList[$row['surveyLineId']] = self::buildSeparatorLine($row,$survey);	    	
+	    }
+	    return $surveyLineList;
+	}
+	
+	private static function buildQuestionLine($row,$survey)
+	{
+			$questionData = array(	'id' 		=> $row['questionId'], 
+	    							'text' 		=> $row['questionText'], 
+	    							'type' 		=> $row['questionType'], 
+	    							'alignment' => $row['choiceAlignment']);
+	    	
+	    	$question = Question::__set_state($questionData);
+	    	
+	    	$questionLineData = array(	'id' 				=> $row['surveyLineId'], 
+	    								'survey' 			=> $survey, 
+	    								'rank'				=> $row['rank'],
+	    								'question' 			=> $question, 	    								 
+	    								'maxCommentSize' 	=> $row['maxCommentSize']);
+
+            return QuestionLine::__set_state($questionLineData);
+	}
+	private static function buildSeparatorLine($row,$survey)
+	{
+				    	
+	    	$separatorLineData = array(	'id' 				=> $row['surveyLineId'], 
+	    								'survey' 			=> $survey, 
+	    								'rank'				=> $row['rank'],
+	    								'title' 			=> $row['separatorTitle'], 	    								 
+	    								'description' 		=> $row['separatorDescription']);
+
+            return QuestionLine::__set_state($questionLineData);
+	}
+
+
+	public static function createQuestionLine($survey,$question)
+	{
+		return new QuestionLine($survey,$question);
+	}
+	public static function createSeparatorLine($survey,$title)
+	{
+		return new SeparatorLine($survey,$title);
+	}
+	
+	
+	public static function createSeparatorFromForm($survey)
+	{
+		$userInput = Claro_UserInput::getInstance();
+		try
+    	{
+	    	$formId = (string)$userInput->getMandatory('separatorId');   
+	    	$formTitle = (string)$userInput->getMandatory('separatorTitle');
+    	}
+    	catch(Claro_Validator_Exception $e)
+    	{
+    		throw new Claro_Validator_Exception(get_lang('You have forgotten to fill a mandatory field'));
+    	}
+    	if($formId == -1)
+    	{
+    		$separator = new SeparatorLine($survey, $formTitle);
+    	}
+    	else
+    	{
+    		$separator = SurveyLineFactory::loadSingleLine($formId);
+    	}
+    	$separator->setDescription($userInput->get('separatorDescription', ''));	
+		
+		return $separator;
+	}
 }
