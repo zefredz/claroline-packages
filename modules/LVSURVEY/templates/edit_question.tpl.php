@@ -41,7 +41,7 @@
     <!--  QUESTION TEXT -->
     <tr>
    		<td valign="top">
-        	<label for="questionTitle">
+        	<label for="questionText">
         		<?php echo get_lang('Title'); ?>&nbsp;
         		<span class="required">*</span>&nbsp;:
        		</label>

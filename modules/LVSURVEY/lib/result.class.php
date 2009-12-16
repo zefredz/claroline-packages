@@ -4,7 +4,7 @@ class Result
 	
 	public $surveyId;
 	
-	public $questionId;
+	public $surveyLineId;
 	
 	public $choiceId;
 	
@@ -47,14 +47,14 @@ class SurveyResults
 	public $lineResultList = array();
 	
 /* return an array like $result[$questionId][$choiceId][$userId] = aResult */
-	static function loadResults($surveyId, $questionId = NULL, $choiceId = NULL)
+	static function loadResults($surveyId, $surveyLineId = NULL, $choiceId = NULL)
     {
     	$mainTableList = claro_sql_get_main_tbl();
 		$userTable = $mainTableList['user'];
 		
     	$sql = "
         	SELECT 		P.`surveyId`		as surveyId, 
-        				A.`questionId`		as questionId, 
+        				A.`surveyLineId`	as surveyLineId, 
         				AI.`choiceId`		as choiceId, 
         				U.`user_id`			as userId, 
         				U.`nom` 			as firstName,
@@ -71,9 +71,9 @@ class SurveyResults
         	ON 			P.`userId` 			= U.`user_id`        	 
         	WHERE 		P.`surveyId`		= ".(int)$surveyId."
      		";
-    		if ($questionId != NULL)
+    		if ($surveyLineId != NULL)
     		{
-    			$sql .= "AND			A.`questionId` 		= ".(int)$questionId."
+    			$sql .= "AND			A.`surveyLineId` 	= ".(int)$surveyLineId."
     			";
     		}
     		if ($choiceId != NULL)
@@ -90,12 +90,11 @@ class SurveyResults
     	{
     		
     		$result = Result::__set_state($row);
-    		
-    		if( !isset($res->lineResultList[$result->questionId]))
+    		if( !isset($res->lineResultList[$result->surveyLineId]))
     		{
-    			$res->lineResultList[$result->questionId] = new LineResults();
+    			$res->lineResultList[$result->surveyLineId] = new LineResults();
     		}
-    		$questionResultList = $res->lineResultList[$result->questionId];
+    		$questionResultList = $res->lineResultList[$result->surveyLineId];
     		
     		
     		if( !isset($questionResultList->choiceResultList[$result->choiceId]))

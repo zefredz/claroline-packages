@@ -134,7 +134,7 @@ class Survey {
     	
     	try
     	{
-	    	$formId = (string)$userInput->getMandatory('surveyId');   //(int)$_REQUEST['surveyId'];
+	    	$formId = (string)$userInput->getMandatory('surveyId');  
 	    	$formTitle = (string)$userInput->getMandatory('surveyTitle');
 	    	$formIsAnonymous = $userInput->getMandatory('surveyAnonymous');
 	    	$formDescription = (string)$userInput->getMandatory('surveyDescription');
@@ -250,39 +250,7 @@ class Survey {
     
     private function loadSurveyLineList()
     {
-    	$dbCnx = Claroline::getDatabase();
-    	$sql = "SELECT 	Q.`id`					as questionId, 
-    					Q.`text`				as text, 
-    					Q.`type`				as type, 
-    					Q.`alignment`			as choiceAlignment,
-    					SQ.`rank`				as rank,
-    					SQ.`maxCommentSize` 	as maxCommentSize, 
-    					SQ.`id` 				as surveyLineId  
-                FROM 	`".SurveyConstants::$REL_SURV_QUEST_TBL."` as SQ
-                INNER JOIN `".SurveyConstants::$QUESTION_TBL."` as Q
-                ON 		SQ.`questionId` = Q.`id`
-                WHERE 	SQ.`surveyId` = ".(int)$this->id."
-                ORDER BY SQ.`rank` ASC; ";
-    	        
-    	$resultSet = $dbCnx->query($sql);
-        $this->surveyLineList = array();	    
-	    foreach( $resultSet as $row )
-	    {
-	    	$questionData = array(	'id' 		=> $row['questionId'], 
-	    							'text' 		=> $row['text'], 
-	    							'type' 		=> $row['type'], 
-	    							'alignment' => $row['choiceAlignment']);
-	    	
-	    	$question = Question::__set_state($questionData);
-	    	
-	    	$surveyLineData = array(	'id' 				=> $row['surveyLineId'], 
-	    								'survey' 			=> $this, 
-	    								'question' 			=> $question, 
-	    								'rank'				=> $row['rank'], 
-	    								'maxCommentSize' 	=> $row['maxCommentSize']);
-
-            $this->surveyLineList[$row['questionId']] = SurveyLine::__set_state($surveyLineData);
-	    } 
+    	$this->surveyLineList = SurveyLineFactory::linesOfSurvey($this); 
     }
     
     public function getParticipationList()
@@ -387,36 +355,24 @@ class Survey {
             
             $dbCnx->exec($sql);
     }
-    public function addQuestion($question)
-    {
-    	
+    public function addSurveyLine($surveyLine)
+    {       
         $surveyLineList = $this->getSurveyLineList();
-        $questionIdList = array();
-        foreach($surveyLineList as $surveyLine)
-        {
-        	$questionIdList[] = $surveyLine->question->id;
-        }
-        if(in_array($question->id,$questionIdList)) throw new Exception("This question is already in the survey");
-        
-        $surveyLine = new SurveyLine($this,$question);        
-        $surveyLine->save();
-        
-        $this->surveyLineList[$surveyLine->question->id] = $surveyLine;   
+        $this->surveyLineList[$surveyLine->id] = $surveyLine;   
            
         
     }
-    function removeQuestion($questionId)
+    function removeLine($surveyLineId)
     {
-        $surveyLineList = $this->getSurveyLineList();
-        $surveyLineList[$questionId]->delete();
-        unset($surveyLineList[$questionId]);
+    	$surveyLineList = $this->getSurveyLineList();
+        $surveyLineList[$surveyLineId]->delete();
+        unset($this->surveyLineList[$surveyLineId]);
     }
     
-	//move question up in the survey
-    public function moveQuestion($questionId, $up)
+    public function moveLine($surveyLineId, $up)
     {
         $surveyLineList = $this->getSurveyLineList();
-        $surveyLineList[$questionId]->move($up);
+        $surveyLineList[$surveyLineId]->move($up);
     }
 	//check if someone has answered survey
 	public function isAnswered()
@@ -491,7 +447,7 @@ class Survey {
 	private function deleteRelationsToQuestions($dbCnx)
 	{
 		$sql = "
-	        		DELETE FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
+	        		DELETE FROM `".SurveyConstants::$SURVEY_LINE_TBL."`
 	        		WHERE 		`surveyId` = ".(int)$this->id;
 	    $dbCnx->exec($sql); 
 	}

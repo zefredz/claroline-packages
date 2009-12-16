@@ -2,6 +2,7 @@
 	$participantCount = count($this->survey->getParticipationList());
 	$surveyLineList = $this->survey->getSurveyLineList();
 	
+
 	$surveyResults = SurveyResults::loadResults($this->survey->id);
 	$cmd_menu = array();
 	if($this->editMode)
@@ -28,9 +29,9 @@
 			$question = $surveyLine->question;
 			$choiceList = $question->getChoiceList();
 			$lineResultList = new LineResults();
-       		if( isset($surveyResults->lineResultList[$question->id]))
+       		if( isset($surveyResults->lineResultList[$surveyLine->id]))
        		{
-       			$lineResultList = $surveyResults->lineResultList[$question->id];
+       			$lineResultList = $surveyResults->lineResultList[$surveyLine->id];
        		}			
 		?>
 		<div class="LVSURVEYQuestion">
@@ -47,14 +48,13 @@
        					<table>
        					<?php foreach($choiceList as $choice) : ?>
        						<?php 
-       							//$resultList = Result::loadResults($this->survey->id, $question->id, $choice->id);
        							$choiceResultList = new ChoiceResults();
        							if( isset($lineResultList->choiceResultList[$choice->id]))
        							{
        								$choiceResultList = $lineResultList->choiceResultList[$choice->id];
        							}
        							$resultList = $choiceResultList->resultList;
-       							$resultCount = count($resultList);
+       							$resultCount = count($resultList);       							
        						?>
        						<tr class="answerTR">
        							<td>

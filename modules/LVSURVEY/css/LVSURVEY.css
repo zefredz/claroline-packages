@@ -3,14 +3,14 @@
 	padding : 0;
 }
 
-.LVSURVEYQuestion {
+.LVSURVEYLine, .LVSURVEYQuestion {
 	margin : 10px 0px;
 	border: 1px #cccccc solid;
 	padding : 0px;
 	overflow : auto;
 }
 	
-.LVSURVEYQuestionTitle {
+.LVSURVEYLineTitle, .LVSURVEYQuestionTitle {
 
 	list-style-type : decimal;
 	list-style-position: inside;

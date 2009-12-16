@@ -4,13 +4,13 @@
 	CssLoader::getInstance()->load('LVSURVEY');
 	
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
-	$arrowUpIcon 	= claro_html_icon('move_up', 	get_lang('Move Up'), 		get_lang('Move Up'));
-	$arrowDownIcon 	= claro_html_icon('move_down', 	get_lang('Move Down'), 		get_lang('Move Down'));
-	$deleteIcon		= claro_html_icon('delete');
 	
+
 	$currentUserId = claro_get_current_user_id();
 	$participation = $this->participation;
 	$surveyLineList = $this->survey->getSurveyLineList();
+	
+	usort($surveyLineList, array('SurveyLine', 'cmp_surveyLines'));
 	
 	echo claro_html_tool_title($this->survey->title);
 	$cmd_menu = array();
@@ -19,6 +19,7 @@
 	{		
 		$cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$this->survey->id.'">'.$editIcon.' '.get_lang('Edit survey properties').'</a>';
     	$cmd_menu[] = '<a class="claroCmd" href="question_pool.php?surveyId='.$this->survey->id.'">'.get_lang('Add question').'</a>';
+    	$cmd_menu[] = '<a class="claroCmd" href="add_separator.php?surveyId='.$this->survey->id.'">'.get_lang('Add separator').'</a>';
 	}
 	if($this->editMode || $this->survey->areResultsVisibleNow())
 	{
@@ -70,93 +71,7 @@
 		<?php echo get_lang('No question in this survey'); ?>
 	<?php else :?>
 		<?php foreach($surveyLineList as $surveyLine) :?>
-			<?php
-				$question = $surveyLine->question;
-				$answer = $participation->getAnswerForQuestion($question->id);
-				$selectedChoiceList = $answer->getSelectedChoiceList();
-			?>
-			<div class="LVSURVEYQuestion">
-				<input type="hidden" name="questionId<?php echo $question->id; ?>" value="<?php echo $question->id; ?>" />
-				<input type="hidden" name="answerId<?php echo $question->id; ?>" value="<?php echo $answer->id; ?>" />
-				<div class="LVSURVEYQuestionTitle">
-					<?php
-						if($this->editMode)
-						{ 
-							$urlMoveUp = 'show_survey.php?surveyId='.$this->survey->id.'&amp;questionId='.$question->id.'&amp;cmd=questionMoveUp';     		 
-                			echo claro_html_link($urlMoveUp, $arrowUpIcon);
-                			$urlMoveDown = 'show_survey.php?surveyId='.$this->survey->id.'&amp;questionId='.$question->id.'&amp;cmd=questionMoveDown';     		 
-                			echo claro_html_link($urlMoveDown, $arrowDownIcon);
-                			$urlEdit = 'edit_question.php?surveyId='.$this->survey->id.'&amp;questionId='.$question->id;
-                			echo claro_html_link($urlEdit, $editIcon);
-                			$urlRemove = 'show_survey.php?surveyId='.$this->survey->id.'&amp;questionId='.$question->id.'&amp;cmd=questionRemove';
-							echo claro_html_link($urlRemove, $deleteIcon);
-						}
-						echo htmlspecialchars($question->text). ' ';
-                	?>
-                </div>
-				<div class="LVSURVEYQuestionContent">
-					<?php if ('OPEN' == $question->type) : ?>
-						<textarea name="choiceText<?php  echo $question->id; ?>" id="choiceText<?php  echo $question->id; ?>" rows="3" cols="40"><?php 
-            					$answerText = empty($selectedChoiceList)?'':reset($selectedChoiceList)->text;
-            					echo htmlspecialchars($answerText); 
-            				?></textarea>
-					<?php endif; ?>
-					<?php if ('MCSA' == $question->type) : ?>
-						<ul <?php echo ($question->choiceAlignment == 'HORIZ')?'class="horizChoiceList"':''; ?>>
-							<?php foreach($question->getChoiceList() as $choice) : ?>
-								<li>
-									<input name="choiceId<?php  echo $question->id; ?>" type="radio" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $question->id; ?>_<?php  echo $choice->id; ?>"
-										<?php echo in_array($choice->id, array_keys($selectedChoiceList))?'checked="checked"':''; ?> />
-                        			<label for="choiceId<?php  echo $question->id; ?>_<?php  echo $choice->id; ?>">
-                        				<?php echo htmlspecialchars($choice->text); ?>
-                        			</label>
-								</li>
-							<?php endforeach;?>
-                    	</ul>
-					<?php endif; ?>
-					<?php if ('MCMA' == $question->type) : ?>
-						<ul <?php echo ($question->choiceAlignment == 'HORIZ')?'class="horizChoiceList"':''; ?>>
-							<?php foreach($question->getChoiceList() as $choice) : ?>
-								<li>
-									<input name="choiceId<?php  echo $question->id; ?>[]" type="checkbox" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $question->id; ?>[]_<?php  echo $choice->id; ?>"
-										<?php echo in_array($choice->id, array_keys($selectedChoiceList))?'checked="checked"':''; ?> />
-                        			<label for="choiceId<?php  echo $question->id; ?>[]_<?php  echo $choice->id; ?>">
-                        				<?php echo htmlspecialchars($choice->text); ?>
-                        			</label>
-								</li>
-							<?php endforeach;?>
-                    	</ul>
-					<?php endif; ?>
-				</div>				
-				<div class="answerCommentBlock" id="answerCommentBlock<?php echo $question->id; ?>">
-				<?php  if ( $this->editMode) : ?>
-					<?php if ($surveyLine->maxCommentSize == 0) : ?>
-						<a href="show_survey.php?surveyId=<?php echo $this->survey->id; ?>&amp;questionId=<?php echo $question->id; ?>&amp;cmd=setCommentSize&amp;commentSize=200">
-							 <?php echo get_lang('Enable comments')?> 
-						</a>
-					<?php else : ?>
-						<a href="show_survey.php?surveyId=<?php echo $this->survey->id; ?>&amp;questionId=<?php echo $question->id; ?>&amp;cmd=setCommentSize&amp;commentSize=0">
-							 <?php echo get_lang('Disable comments')?>  
-						</a>
-					<?php  endif; ?>
-				<?php endif; ?>				
-        			<?php echo get_lang('Comment'); ?> : 
-        			<?php if ($surveyLine->maxCommentSize == 0) : ?>
-        				<?php echo get_lang('No Comments'); ?>
-        				<input type="hidden"name="answerComment<?php echo $question->id; ?>" 
-        					value="<?php echo $answer->comment; ?>" />
-        			<?php else : ?>
-        				<input maxlength="<?php echo $surveyLine->maxCommentSize; ?>" type="text" size="70" name="answerComment<?php echo $question->id; ?>" id="answerComment<?php echo $question->id; ?>"
-        					value="<?php echo $answer->comment; ?>" />
-        				<span id="commentCharLeft<?php echo $question->id; ?>" class="commentCharLeft"></span>
-        				<?php echo get_lang('char(s) left'); ?>
-        			<?php endif;?>        			
-        		</div>
-			</div>
-				
-			<script type="text/javascript">
-			$('#answerComment<?php echo $question->id; ?>').limit(<?php echo $surveyLine->maxCommentSize; ?>, '#commentCharLeft<?php echo $question->id; ?>');
-			</script>
+			<?php echo $surveyLine->render($this->editMode, $participation); ?>
 		<?php endforeach;?>
 	<?php endif; ?>
 	</div>

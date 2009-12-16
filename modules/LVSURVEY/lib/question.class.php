@@ -61,10 +61,10 @@ class Question
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(QR.`surveyId`) 			AS used
+            	       COUNT(SLQ.`id`)		 			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
-           	LEFT JOIN 	`".SurveyConstants::$REL_SURV_QUEST_TBL."` AS QR
-            ON 			Q.`id`= QR.`questionId`              
+           	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
+            ON 			Q.`id`= SLQ.`questionId`              
            	WHERE 		Q.`id`  = ".(int) $id."
            	GROUP BY	Q.`id` ; "; 
          
@@ -91,10 +91,10 @@ class Question
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(QR.`surveyId`) 			AS used
+            	       COUNT(SLQ.`id`)		 			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
-           	LEFT JOIN 	`".SurveyConstants::$REL_SURV_QUEST_TBL."` AS QR
-            ON 			Q.`id`= QR.`questionId`
+           	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
+            ON 			Q.`id`= SLQ.`questionId`
             GROUP BY	Q.`id` 
            	ORDER BY 	".$orderBy." ".$ascDesc." ; ";
         
@@ -237,7 +237,9 @@ class Question
     	else
     	{
     		$this->updateInDB();
-    	}  	
+    	} 
+
+    	$this->deleteObsoleteChoices();
     	
     	if('MCMA' == $this->type || 'MCSA' == $this->type)
 		{
@@ -288,13 +290,31 @@ class Question
             
             $dbCnx->exec($sql);
     }
+    
+    private function deleteObsoleteChoices()
+    {
+    	$getChoiceIdFunc = create_function('$choice', 'return $choice->id; ');
+    	$validChoiceIdList = array_map($getChoiceIdFunc,$this->getChoiceList());
+    	
+    	$sql = "
+    			DELETE FROM 	`".SurveyConstants::$CHOICE_TBL."`  
+        		WHERE			`questionId` = ".(int)$this->id." "; 
+    	if(!empty($validChoiceIdList))  			
+        		$sql .= " 
+        		AND 			`id` NOT IN (".implode(', ',$validChoiceIdList).") ;";
+    	$dbCnx = Claroline::getDatabase();
+    	$dbCnx->exec($sql); 
+    }
+    
 	public function isAnswered()
 	{
 	    $dbCnx = ClaroLine::getDatabase();
         $sql = "
-        	SELECT 		COUNT(`questionId`) AS answers
-        	FROM 		`".SurveyConstants::$ANSWER_TBL."` 
-        	WHERE 		`questionId` = ".(int)$this->id." ; ";
+        	SELECT 		COUNT(*) AS answers
+        	FROM 		`".SurveyConstants::$ANSWER_TBL."` A
+        	INNER JOIN  `".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` SLQ 
+        	ON			 A.`surveyLineId` = SLQ.`id`
+        	WHERE 		 SLQ.`questionId` = ".(int)$this->id." ; ";
         
         $resultSet = $dbCnx->query($sql);
         $row = $resultSet->fetch();
@@ -307,51 +327,21 @@ class Question
 		if($this->id == -1)
 			return;
 		$dbCnx = Claroline::getDatabase();
-		$answerIdList = getLinkedAnswerIdList($dbCnx);
-		if(!empty($answerIdList))
-		{
-			deleteLinkedAnswerItems($answerIdList, $dbCnx);
-			deleteLinkedAnswers($answerIdList, $dbCnx);
-		}
-		deleteRelationsToSurvey($dbCnx);
-		deleteLinkedChoices($dbCnx);		
-		deleteQuestion($dbCnx);
+		$this->deleteSurveyLines($dbCnx);
+		$this->deleteLinkedChoices($dbCnx);		
+		$this->deleteQuestion($dbCnx);
 	}
-	private function getLinkedAnswerIdList($dbCnx)
-	{
-		$sqlLinkedAnswers = "
-    		SELECT 			A.`id`			AS answerId
-    		FROM			`".SurveyConstants::$ANSWER_TBL."` A
-    		WHERE 			A.`questionId` = ".(int)$this->id." ; ";
-    	
-    	$answerIdRS = $dbCnx->query($sqlLinkedAnswers);
-    	$answerIdList = array();
-    	foreach($answerIdRS as $row)
-    	{
-    		$answerIdList[] = $row['answerId'];	
-    	}
-    	return $answerIdList;
-	}
-	private function deleteLinkedAnswerItems($answerIdList, $dbCnx)
+	private function deleteSurveyLines($dbCnx)
 	{
 		$sql = "
-	        		DELETE FROM `".SurveyConstants::$ANSWER_ITEM_TBL."`
-	        		WHERE 		`answerId` IN (".implode(', ',$answerIdList)."); ";
-	    $dbCnx->exec($sql);
-	}
-	private function deleteLinkedAnswers($answerIdList, $dbCnx)
-	{
-		$sql = "
-	        		DELETE FROM `".SurveyConstants::$ANSWER_TBL."`
-	        		WHERE 		`id` IN (".implode(', ',$answerIdList)."); ";
+	        		DELETE 		SLQ, A, AI 
+	        		FROM 		`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ 
+	        		INNER JOIN 	`".SurveyConstants::$ANSWER_TBL."` AS A 
+	        		ON 			SLQ.`id` = A.`surveyLineId` 
+	        		INNER JOIN 	`".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI  
+	        		ON 			A.`id` = AI.`answerId` 
+	        		WHERE 		SLQ.`questionId` = ".(int) $this->id." ; ";
 	    $dbCnx->exec($sql);        		
-	}
-	private function deleteRelationsToSurvey($dbCnx)
-	{
-		$sql = "
-	        		DELETE FROM `".SurveyConstants::$REL_SURV_QUEST_TBL."`
-	        		WHERE 		`questionId` = ".(int)$this->id;
-	    $dbCnx->exec($sql); 
 	}
 	private function deleteLinkedChoices($dbCnx)
 	{

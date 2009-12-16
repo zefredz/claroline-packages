@@ -47,6 +47,7 @@ $(document).ready(function(){
 	});
 	
 	$("#removeChoice").click(function () {
+		$("#questionCh"+nbChoice).val("");
 		nbChoice = parseInt($("#questionNbCh").val()) -1;
 		$("#questionNbCh").val(nbChoice);
 		showMultipleChoices(nbChoice);

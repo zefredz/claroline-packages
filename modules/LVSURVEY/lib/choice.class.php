@@ -59,28 +59,28 @@ class Choice
         return self::__set_state($data);
     }
     
-    static function loadSelectedChoicesFromForm($question)
-    {
-    	
+    static function loadSelectedChoicesFromForm($questionLine)
+    { 
+    	$question = $questionLine->question;
     	if('OPEN' == $question->type)
     	{
-    		$choiceText = $_REQUEST['choiceText'.$question->id];
-    		$choice = new Choice($question->id);
+    		$choiceText = $_REQUEST['choiceText'.$questionLine->id];
+    		$choice = new Choice($questionLine->question->id);
     		$choice->text = $choiceText;
     		return array($choice);
     	}
     	if('MCSA' == $question->type)
     	{
-    		$choiceId = $_REQUEST['choiceId'.$question->id];
-    		$choice = new Choice($question->id);
+    		$choiceId = $_REQUEST['choiceId'.$questionLine->id];
+    		$choice = new Choice($questionLine->question->id);
     		$choice->id = $choiceId;
     		return array($choice);
     	}
-    	$choices = $_REQUEST['choiceId'.$question->id];
+    	$choices = $_REQUEST['choiceId'.$questionLine->id];
     	$res = array();
     	foreach($choices as $choiceId)
     	{
-    		$choice = new Choice($question->id);
+    		$choice = new Choice($questionLine->question->id);
     		$choice->id = $choiceId;
     		$res[] = $choice;
     	}

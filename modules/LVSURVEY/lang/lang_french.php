@@ -109,7 +109,8 @@ $_lang['Delete survey'] = "Supprimer le sondage";
 $_lang['Title is required'] = "Il est nécessaire de définir le titre";
 $_lang['You need at least one question in the Survey'] = "Un sondage doit contenir au moins une question";
 $_lang['This survey has ended. You cannot change your answers anymore.'] = "Ce sondage est fini. Vous ne pouvez plus changer vos réponses";
-$_lang['Question successfully added to survey'] = "La question a été ajoutée au sondage avec succès";
+$_lang['Question was successfully saved'] = "La question a bien été enregistrée";
+$_lang['Separator successfully added to survey'] = "Le séparateur a été ajouté au sondage avec succès";
 $_lang['This question is used in some surveys. You can\'t delete it'] = "Cette question fait partie de certains sondages, Vous ne pouvez donc pas la supprimer";
 $_lang['Results are not visible by the participants of this Survey.'] = "Les résultats de ce sondages ne sont pas visibles pour les participants";
 $_lang['Go back to Question Pool'] = 'Revenir à la liste des questions';
@@ -120,5 +121,10 @@ $_lang['Enable comments'] = 'Autoriser les commentaires';
 $_lang['Disable comments'] = 'Désactiver les commentaires';
 $_lang['Export Raw results'] = 'Exporter les résultats bruts';
 $_lang['Export Synthetic results'] = 'Exporter la synthèse';
+$_lang['Comment size'] = 'Taille des commentaires';
+$_lang['No Comments'] = 'pas de commentaires';
+$_lang['Small Comments'] = 'commentaires courts';
+$_lang['Normal Comments'] = 'commentaires normaux';
+$_lang['Add separator'] = 'Ajouter un séparateur';
 
 ?>
