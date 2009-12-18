@@ -1,6 +1,8 @@
 <?php
 	$participantCount = count($this->survey->getParticipationList());
 	$surveyLineList = $this->survey->getSurveyLineList();
+
+        $questionLineList = array_filter($surveyLineList, create_function('$surveyLine', 'return is_a($surveyLine, "QuestionLine");'));
 	
 
 	$surveyResults = SurveyResults::loadResults($this->survey->id);
@@ -24,7 +26,7 @@
 
 <div><?php  echo $this->survey->description; ?></div>
 <div class="LVSURVEYQuestionList">
-	<?php foreach ($surveyLineList as $surveyLine) : ?>
+	<?php foreach ($questionLineList as $surveyLine) : ?>
 		<?php 			
 			$question = $surveyLine->question;
 			$choiceList = $question->getChoiceList();

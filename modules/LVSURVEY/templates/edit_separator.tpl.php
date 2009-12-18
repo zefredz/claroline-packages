@@ -1,4 +1,4 @@
-<form method="post" action="./add_separator.php" >
+<form method="post" action="./edit_separator.php" >
 	<input type="hidden" name="separatorId" value="<?php  echo $this->separator->id; ?>" />
 	<?php if (isset($this->surveyId)):?>
 		<input type="hidden" name="surveyId" value="<?php echo $this->surveyId; ?>" />
