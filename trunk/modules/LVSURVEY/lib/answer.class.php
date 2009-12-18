@@ -148,8 +148,6 @@ class Answer
         		";
         }
         $sqlDelete .= "WHERE AI.`answerId` = ". (int) $this->id." ";     
-
-        echo $sqlDelete;
         		
         $dbCnx->exec($sqlDelete);
     }
