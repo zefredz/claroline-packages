@@ -296,6 +296,7 @@ class SurveyLineFactory
         {
             $separator = SurveyLineFactory::loadSingleLine($formId,$survey);
         }
+        $separator->setTitle($formTitle);
         $separator->setDescription($userInput->get('separatorDescription', ''));
 
         return $separator;
