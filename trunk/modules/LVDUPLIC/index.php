@@ -8,7 +8,7 @@
  * DUPLICATION SCRIPT
  * 
  * this script allow the platform admin to duplicate a course with all its tools and data
- * The duplication of a specifi tool can be configured :
+ * The duplication of a specific tool can be configured :
  * 	- in a config file which must be named like conf/[TOOL_LABEL].xml
  *  - a an php script which must be named like script/[TOOL_LABEL].php
  *  
@@ -18,7 +18,7 @@
  * 
  * @version 1.0.0 
  *
- * @copyright (c) 2001-2009 Haute Ecole L�onard de Vinci
+ * @copyright (c) 2001-2009 Haute Ecole Leonard de Vinci
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  *
  * @package LVDUPLIC 
