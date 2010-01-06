@@ -51,6 +51,25 @@ $sqlInsertForum = "
                    FROM `" .$sourceTableList['bb_forums'] . "` 
                   WHERE `cat_id` != ".$groupCategoryId." ; ";
 
+$sqlUpdatePostsData = "	UPDATE `" . $targetTableList['bb_forums'] . "` AS F	
+							SET F.forum_posts = (	
+									SELECT COUNT(*) 
+						  			FROM 		`" . $targetTableList['bb_posts'] . "` AS P1
+						  			WHERE  P1.`forum_id` = F.`forum_id`
+						  						), 
+						  	 F.forum_topics = (	
+									SELECT COUNT(*) 
+						  			FROM 		`" . $targetTableList['bb_topics'] . "` AS T2
+						  			WHERE  T2.`forum_id` = F.`forum_id`
+						  						), 						  	
+						  	 F.forum_last_post_id = (
+						  			SELECT IFNULL(`post_id`,0)  
+						  			FROM `".$targetTableList['bb_posts']."` AS P3 
+						  			WHERE P3.`forum_id` = F.`forum_id` 
+						  			ORDER BY P3.`post_time`  DESC 
+						  			LIMIT 0 , 1 
+						  								)
+						  	; ";
 
        
 claro_sql_query($sqlDropCat);            
@@ -60,5 +79,6 @@ claro_sql_query($sqlInsertCat);
 claro_sql_query($sqlDropForum);            
 claro_sql_query($sqlCreateForum);            
 claro_sql_query($sqlInsertForum);
+claro_sql_query($sqlUpdatePostsData);
 
 ?>
