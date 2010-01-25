@@ -4,7 +4,6 @@
 	$answer = $this->participation->getAnswerForSurveyLine($surveyLine);	
 	$selectedChoiceList = $answer->getSelectedChoiceList();
 	
-	
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
 	$arrowUpIcon 	= claro_html_icon('move_up', 	get_lang('Move Up'), 		get_lang('Move Up'));
 	$arrowDownIcon 	= claro_html_icon('move_down', 	get_lang('Move Down'), 		get_lang('Move Down'));

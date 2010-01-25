@@ -256,7 +256,7 @@ class Answer
     	$choiceList = $this->getQuestionLine()->question->getChoiceList();
     	
 
-        $this->selectedChoiceList = array();
+        $this->selectedChoiceList = array();        
 	    foreach( $resultSet as $row )
 	    {
             $this->selectedChoiceList[$row['choiceId']] = $choiceList[$row['choiceId']];

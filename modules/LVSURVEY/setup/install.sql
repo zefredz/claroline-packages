@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
   `id` 					INTEGER 										NOT NULL auto_increment,
   `questionId` 			INTEGER 										NOT NULL,
-  `text` 				VARCHAR(255) 									NOT NULL,
+  `text` 				TEXT		 									NOT NULL,
   PRIMARY KEY  (`id`)
 ) ;
 
