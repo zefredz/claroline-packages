@@ -69,6 +69,7 @@ class Choice
     		$choice->text = $choiceText;
     		return array($choice);
     	}
+    	if(!isset($_REQUEST['choiceId'.$questionLine->id])) return array();
     	if('MCSA' == $question->type)
     	{
     		$choiceId = $_REQUEST['choiceId'.$questionLine->id];
