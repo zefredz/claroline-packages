@@ -384,6 +384,8 @@ file.
 				
 				function drawSlice(angle, color, fill)
 				{	
+					if(isNaN(angle))
+						return;
 					if (angle<=0)
 						return;
 				

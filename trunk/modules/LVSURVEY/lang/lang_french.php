@@ -126,5 +126,8 @@ $_lang['No Comments'] = 'pas de commentaires';
 $_lang['Small Comments'] = 'commentaires courts';
 $_lang['Normal Comments'] = 'commentaires normaux';
 $_lang['Add separator'] = 'Ajouter un séparateur';
+$_lang['Display Details'] = 'Afficher les détails';
+$_lang['Hide Details'] = 'Cacher les détails';
+$_lang['Question successfully added to survey'] = 'La question a bien été ajoutée au sondage';
 
 ?>

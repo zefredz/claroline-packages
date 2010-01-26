@@ -1,11 +1,20 @@
 $(document).ready(function (){
 	//hide detailed list
 	$(".detailedList").hide();
+	$(".hideDetailedList").hide();
 	$(".deployDetailedList").click(function(e){
 		$(this).hide("slow");
-		$(this).parents("td").children("ul.detailedList").slideDown("normal");	
+		$(this).parents("td").children("ul.detailedList").slideDown("normal");
+		$(this).parents("td").children("a.hideDetailedList").show("slow");
 		e.preventDefault();
 	});
+	$(".hideDetailedList").click(function(e){
+		$(this).hide("slow");
+		$(this).parents("td").children("ul.detailedList").slideUp("normal");
+		$(this).parents("td").children("a.deployDetailedList").show("slow");
+		e.preventDefault();
+	});
+
 	
 	// paint charts
 	$(".LVSURVEYQuestion").each(function(){
