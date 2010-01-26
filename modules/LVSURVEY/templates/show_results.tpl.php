@@ -40,7 +40,9 @@
         	<input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
         	<div class="LVSURVEYQuestionTitle"><?php  echo htmlspecialchars($question->text); ?></div>        
         	<div class="LVSURVEYQuestionContent">
-        	<div class="LVSURVEYQuestionResultChart"></div>
+        	<?php if($question->type != 'OPEN' ): ?>
+        		<div class="LVSURVEYQuestionResultChart"></div>
+        	<?php endif;?>        	
        			<?php if (empty($choiceList)) :?>
        				<div class="answer">
        					<?php echo get_lang('No Choices'); ?>
@@ -68,6 +70,13 @@
        								<td colspan="2" >
 										<?php echo get_lang('No Results'); ?>
 									</td>
+									<td>										
+        	    						 &#040; <!--  left parenthese -->
+        	    						 <span class="answerPercentage" >
+        	    						 	0
+        	    						 </span>  &#37; <!--  percentage  -->
+        	    						 &#041; <!--  right parenthese  -->
+        	    					</td>
        							<?php else :?>
 									<td>
 										<?php echo $resultCount; ?>
@@ -84,18 +93,29 @@
 	       						<tr>
 	        	    				<td>
 	          	    					<a href="#" class="deployDetailedList">
-	          	    						<?php  echo get_lang("See Details"); ?>
+	          	    						<?php  echo get_lang("Display Details"); ?>
 	          	   						</a>
 	          	    					<ul class="detailedList" >
 	          	    					<?php  foreach($resultList as $result) : ?>
-	          	    						<li>
-	          	    							<?php if (!$this->survey->is_anonymous) : ?>
-	          	    								<?php echo $result->firstName.' '.$result->lastName; ?> :
+	          	    						<?php if (!$this->survey->is_anonymous) : ?>
+	          	    							<li>
+	          	    								<?php echo $result->firstName.' '.$result->lastName; ?> 
+	          	    								<?php if(!empty($result->comment)) : ?>
+	          	    									: <?php echo $result->comment; ?>
+	          	    								<?php endif; ?> 
+	          	    							</li>
+	          	    						<?php else : ?>
+	          	    							<?php if(!empty($result->comment)) : ?>
+	          	    								<li>
+	          	    									<?php echo $result->comment; ?>
+	          	    								</li>
 	          	    							<?php endif;?>
-	          	    								<?php echo $result->comment; ?>
-	          	    						</li>
+	          	    						<?php endif; ?>
 	          	    					<?php  endforeach; ?>
 	          	    					</ul>
+	          	    					<a href="#" class="hideDetailedList">
+	          	    						<?php  echo get_lang("Hide Details"); ?>
+	          	   						</a>
 	          	    				</td>
 	          	    			</tr>
 	          	    		<?php endif;?>

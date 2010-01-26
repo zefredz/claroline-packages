@@ -403,6 +403,14 @@ class Survey {
         	$this->deleteSurvey($dbCnx);
 		}
     }
+    
+    private function deleteLinkedParticipation($participationIdList, $dbCnx)
+    {
+    	$sql = "
+    		DELETE FROM `".SurveyConstants::$PARTICIPATION_TBL."`
+    		WHERE 		`id` IN (".implode(', ',$participationIdList).") ; ";
+    	$dbCnx->exec($sql);
+    }
 	
 	private function getParticipationIdList()
 	{

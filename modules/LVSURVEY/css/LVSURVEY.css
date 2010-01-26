@@ -51,10 +51,11 @@ ul.detailedList{
 	padding-left: 2.5em;
 }
 
-.deployDetailedList
+.deployDetailedList, .hideDetailedList
 {
 	font-size : smaller;
 }
+
 
 .answerCommentBlock
 {
