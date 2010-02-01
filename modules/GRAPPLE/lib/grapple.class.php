@@ -49,12 +49,11 @@ class grapple{
   
   private function sendData( $xml, $previousId )
   {
-    $xml = '<statement>
-
-            <origin>' . $xml . '</origin>
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>
+            <statement>
+              <origin>' . $xml . '</origin>
             </statement>';
             
-    
     $params = array(  'eventListenerID' => $previousId,
                       'method'=>'setUMData',
                       'body'=> $xml
@@ -102,8 +101,7 @@ class grapple{
     $userData = user_get_properties( $userId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -186,8 +184,7 @@ class grapple{
     $path->load( $pathId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -224,8 +221,7 @@ class grapple{
   public function learningActivityChange( $userId )
   {
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -316,8 +312,7 @@ class grapple{
     $path->load( $pathId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -435,8 +430,7 @@ class grapple{
     $userData = user_get_properties( $userId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -501,8 +495,7 @@ class grapple{
     $userData = user_get_properties( $userId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -522,20 +515,10 @@ class grapple{
             </sourcedid>
           </referential>
         </contentype>
-      </activity>
-      <activity>
-        <contentype>
-          <referential>
-            <sourcedid>
-              <source>LMS-CLIX-ID</source>
-              <id>117359</id>
-            </sourcedid>
-          </referential>
-        </contentype>
-      </activity>
+      </activity>      
       <identification>
         <comment xml:lang="en">IPADRESS</comment>
-        <ext_identification>192.168.1.133</ext_identification>
+        <ext_identification>' . claro_utf8_encode( $_SERVER[ 'REMOTE_ADDR' ] ) . '</ext_identification>
       </identification>
     </learnerinformation>';
     
@@ -576,8 +559,7 @@ class grapple{
     $userData = user_get_properties( $userId );
     
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -661,8 +643,7 @@ class grapple{
   public function userRoleChange( $userId )
   {
     $xml =
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
       <securitykey>
         <keyfields>
           <fieldlabel>
