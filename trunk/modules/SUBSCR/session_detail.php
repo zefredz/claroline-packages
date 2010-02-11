@@ -286,7 +286,7 @@ if( $is_allowedToEdit )
           ."<img src=\"".get_icon_url('user')."\" border=\"0\" alt=\"".get_lang('Modify')."\">".get_lang('New subscription')."</a> "
           ."| <a href=\"".$_SERVER['PHP_SELF']."?cmd=exportCSV&session_id=".$infos_session['id']."\" class='claroCmd'>"
           ."<img src=\"".get_icon_url('export')."\" border=\"0\" alt=\"".get_lang('Modify')."\">".get_lang('Export')."</a> "
-          ."| <a href=\"entry.php\" class='claroCmd'>".get_lang('Back to list')."</a>";
+          ."| <a href=\"index.php\" class='claroCmd'>".get_lang('Back to list')."</a>";
 
 
 
