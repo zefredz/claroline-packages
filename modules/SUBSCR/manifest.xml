@@ -24,22 +24,8 @@
      <email>philippe@claroline.net</email>
      <web>http://www.claroline.net</web>
   </contributor> 
-  <context>
- <course database="kernel"
-         enabling="automatic"
-         default_access="all"
-         access_manager="platform_admin" >
-<!--
-   <link target="commonToolList"
-         path="../../announcements/announcements.php" />
-   <link target="toolSelectBox"
-         path="../../announcements/announcements.php" />
--->
- </course>
-<!--
-   <group  db="emule" file="share" enabling="automatic"   default_access="group_member" access_manager="course_admin" />
--->
-  </context>
+  
+  <context>course</context>
    
   <requirements>
    
