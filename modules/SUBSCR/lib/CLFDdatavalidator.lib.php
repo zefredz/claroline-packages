@@ -12,7 +12,7 @@
  
 class CLFDdataValidator extends DataValidator
 {
-	/**
+    /**
      * Check if date is correct
      * @param array $startDate
      * @return boolean
@@ -24,7 +24,7 @@ class CLFDdataValidator extends DataValidator
     }
 
 
-	/**
+    /**
      * Check if the second date is prior to the other
      * @param array $dates ($startDate,$endDate)
      * @return boolean
@@ -33,13 +33,13 @@ class CLFDdataValidator extends DataValidator
     function rl_checkDateRange($dates)
     {
 
- 			$startDate = mktime($dates[0][0],$dates[0][1],$dates[0][2],$dates[0][3],$dates[0][4],$dates[0][5]);
-			$endDate   = mktime($dates[1][0],$dates[1][1],$dates[1][2],$dates[1][3],$dates[1][4],$dates[1][5]);
+             $startDate = mktime($dates[0][0],$dates[0][1],$dates[0][2],$dates[0][3],$dates[0][4],$dates[0][5]);
+            $endDate   = mktime($dates[1][0],$dates[1][1],$dates[1][2],$dates[1][3],$dates[1][4],$dates[1][5]);
 
-			if ($startDate < $endDate)
-			return true;
-			else 
-			return false;
+            if ($startDate < $endDate)
+            return true;
+            else 
+            return false;
     }
     
     
@@ -80,43 +80,43 @@ class CLFDdataValidator extends DataValidator
         {
             $dataKey   = $this->ruleRelDataKeyList[$ruleKey];
 
-				if (is_array($dataKey))
-				{
-					unset($dataValue);
-					foreach ($dataKey as $key)
-					{
-						if ( ! array_key_exists($key, $this->dataList) )
-            		{
-                		$this->wrongDataList[]    = $key;
-                		$this->errorMessageList[] = 'UNDEFINED INDEX';
-                		continue;
-            		}
+                if (is_array($dataKey))
+                {
+                    unset($dataValue);
+                    foreach ($dataKey as $key)
+                    {
+                        if ( ! array_key_exists($key, $this->dataList) )
+                    {
+                        $this->wrongDataList[]    = $key;
+                        $this->errorMessageList[] = 'UNDEFINED INDEX';
+                        continue;
+                    }
 
-            		if (    ! $strict
-               			&& ! in_array($key, $this->requiredDataList )
-               	  		&& ! $this->rl_required($this->dataList[$dataKey[$key]]) )
-            			{
-                			// when strict mode is not activated, if element is empty and
-                			// not required we shouldn't validate it with other rules
-	                		continue;
-	                	}
-	       	
-						 $dataValue[] = $this->dataList[$key];	                	
-					}
-				}
-				else
-				{
-            	if ( ! array_key_exists($dataKey, $this->dataList) )
-            	{
-                	$this->wrongDataList[]    = $dataKey;
-                	$this->errorMessageList[] = 'UNDEFINED INDEX';
-                	continue;
-            	}
+                    if (    ! $strict
+                           && ! in_array($key, $this->requiredDataList )
+                             && ! $this->rl_required($this->dataList[$dataKey[$key]]) )
+                        {
+                            // when strict mode is not activated, if element is empty and
+                            // not required we shouldn't validate it with other rules
+                            continue;
+                        }
+               
+                         $dataValue[] = $this->dataList[$key];                        
+                    }
+                }
+                else
+                {
+                if ( ! array_key_exists($dataKey, $this->dataList) )
+                {
+                    $this->wrongDataList[]    = $dataKey;
+                    $this->errorMessageList[] = 'UNDEFINED INDEX';
+                    continue;
+                }
 
-            	if (    ! $strict
-               	  && ! in_array($dataKey, $this->requiredDataList )
-               	  && ! $this->rl_required($this->dataList[$dataKey]) )
-            	{
+                if (    ! $strict
+                     && ! in_array($dataKey, $this->requiredDataList )
+                     && ! $this->rl_required($this->dataList[$dataKey]) )
+                {
                 // when strict mode is not activated, if element is empty and
                 // not required we shouldn't validate it with other rules
 

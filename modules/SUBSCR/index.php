@@ -61,110 +61,110 @@ $is_allowedToEdit  = claro_is_allowed_to_edit();
     
     if (isset($session_id))
         $infos_session = CLFDinfoSession($session_id);
-    	
-	if (isset($_REQUEST['allow_modification']))
-	$allow_users_modification = $_REQUEST['allow_modification'];
-	elseif  (isset($session_id))
-	$allow_users_modification = $infos_session['allow_modification'];
-	else $allow_users_modification = '';
-	
-	//Create timestamp from $_REQUEST
-	if (isset($_REQUEST['startDay']))
-	$startDate = mktime($_REQUEST['startHour'], $_REQUEST['startMinute'], 0,$_REQUEST['startMonth'], $_REQUEST['startDay'], $_REQUEST['startYear']);
-	elseif  (isset($session_id))
-	$startDate = $infos_session['startDate'];
-	else $startDate = '';
+        
+    if (isset($_REQUEST['allow_modification']))
+    $allow_users_modification = $_REQUEST['allow_modification'];
+    elseif  (isset($session_id))
+    $allow_users_modification = $infos_session['allow_modification'];
+    else $allow_users_modification = '';
+    
+    //Create timestamp from $_REQUEST
+    if (isset($_REQUEST['startDay']))
+    $startDate = mktime($_REQUEST['startHour'], $_REQUEST['startMinute'], 0,$_REQUEST['startMonth'], $_REQUEST['startDay'], $_REQUEST['startYear']);
+    elseif  (isset($session_id))
+    $startDate = $infos_session['startDate'];
+    else $startDate = '';
 
-	if (isset($_REQUEST['endDay']))
-	$endDate = mktime($_REQUEST['endHour'], $_REQUEST['endMinute'], 0,$_REQUEST['endMonth'], $_REQUEST['endDay'], $_REQUEST['endYear']);
-	elseif  (isset($session_id))
-	$endDate = $infos_session['endDate'];
-	else $endDate = '';
-	
-	if (isset($_REQUEST['title']))
-	$title = $_REQUEST['title'];
-	elseif  (isset($session_id))
-	$title = $infos_session['title'];
-	else $title = '';
-	
-	if (isset($_REQUEST['intro_text']))
-	$intro_text = $_REQUEST['intro_text'];
-	elseif  (isset($session_id))
-	$intro_text = $infos_session['intro_text'];
-	else $intro_text ='';
-	
-	if (isset($_REQUEST['max_users']))
-	$max_users = $_REQUEST['max_users'];
-	elseif  (isset($session_id))
-	$max_users = $infos_session['max_users'];
-	else $max_users = '';
-	
+    if (isset($_REQUEST['endDay']))
+    $endDate = mktime($_REQUEST['endHour'], $_REQUEST['endMinute'], 0,$_REQUEST['endMonth'], $_REQUEST['endDay'], $_REQUEST['endYear']);
+    elseif  (isset($session_id))
+    $endDate = $infos_session['endDate'];
+    else $endDate = '';
+    
+    if (isset($_REQUEST['title']))
+    $title = $_REQUEST['title'];
+    elseif  (isset($session_id))
+    $title = $infos_session['title'];
+    else $title = '';
+    
+    if (isset($_REQUEST['intro_text']))
+    $intro_text = $_REQUEST['intro_text'];
+    elseif  (isset($session_id))
+    $intro_text = $infos_session['intro_text'];
+    else $intro_text ='';
+    
+    if (isset($_REQUEST['max_users']))
+    $max_users = $_REQUEST['max_users'];
+    elseif  (isset($session_id))
+    $max_users = $infos_session['max_users'];
+    else $max_users = '';
+    
     if ( isset($_REQUEST['incompatibilities']) ) 
     $incompatibilities = $_REQUEST['incompatibilities'];
     else    $incompatibilities = null;
 
 /*
- *	exCreate
- *	Create a new subscription session
+ *    exCreate
+ *    Create a new subscription session
 */
 if ($cmd == 'exCreate')
 {
-		$validator = new CLFDdataValidator();
+        $validator = new CLFDdataValidator();
         $dataList = array('title'  => $title,
                         'max_users' => $max_users,
                         'startDate' => array($_REQUEST['startHour'], $_REQUEST['startMinute'],0,$_REQUEST['startMonth'],$_REQUEST['startDay'],$_REQUEST['startYear']),
                         'endDate' => array($_REQUEST['endHour'], $_REQUEST['endMinute'],0,$_REQUEST['endMonth'],$_REQUEST['endDay'],$_REQUEST['endYear']));
 
- 		$validator->setDataList($dataList);
+         $validator->setDataList($dataList);
 
-		$validator->addRule('title' , get_lang('Title is missing'), 'required'  );
-		$validator->addRule('max_users', get_lang('The number of places must be numeric')   , 'numeric');
-		$validator->addRule('startDate'    , get_lang('%date not valid',array('%date'=>get_lang('Start date'))), 'checkdate'      );
-		$validator->addRule('endDate'    , get_lang('%date not valid',array('%date'=>get_lang('End date'))), 'checkdate'      );
-		$validator->addRule(array('startDate','endDate')    , get_lang('Incorrect date range'), 'checkDateRange'      );
+        $validator->addRule('title' , get_lang('Title is missing'), 'required'  );
+        $validator->addRule('max_users', get_lang('The number of places must be numeric')   , 'numeric');
+        $validator->addRule('startDate'    , get_lang('%date not valid',array('%date'=>get_lang('Start date'))), 'checkdate'      );
+        $validator->addRule('endDate'    , get_lang('%date not valid',array('%date'=>get_lang('End date'))), 'checkdate'      );
+        $validator->addRule(array('startDate','endDate')    , get_lang('Incorrect date range'), 'checkDateRange'      );
 
-		if ( $validator->validate(DATAVALIDATOR_STRICT_MODE) )
-	   {
-	   	$dataList['allow_modification'] = $allow_users_modification;
-	   	$dataList['intro_text'] = $intro_text;
-	   	
-			$new_session_id = CLFDcreateEditSession($dataList,$session_id);
+        if ( $validator->validate(DATAVALIDATOR_STRICT_MODE) )
+       {
+           $dataList['allow_modification'] = $allow_users_modification;
+           $dataList['intro_text'] = $intro_text;
+           
+            $new_session_id = CLFDcreateEditSession($dataList,$session_id);
 
-	   	
-			if (isset($new_session_id))
-			{
-				if (CLFDaddIncompatibilities($_cid,$new_session_id,$incompatibilities))
-				{
-					if ($session_id)
-					$dialogBox->success(get_lang('Session updated'));
-					else				
-					$dialogBox->success(get_lang('Session created'));
-				}			
-			}
-		}
-		else
-		{
-			foreach ($validator->getErrorList() as $erreur)
-			{
-				$dialogBox->error($erreur.'<br />');
-			}
-			
-			if (isset($session_id))
-			$cmd = "rqEdit";
-			else
-			$cmd = "rqCreate";
-		}
+           
+            if (isset($new_session_id))
+            {
+                if (CLFDaddIncompatibilities($_cid,$new_session_id,$incompatibilities))
+                {
+                    if ($session_id)
+                    $dialogBox->success(get_lang('Session updated'));
+                    else                
+                    $dialogBox->success(get_lang('Session created'));
+                }            
+            }
+        }
+        else
+        {
+            foreach ($validator->getErrorList() as $erreur)
+            {
+                $dialogBox->error($erreur.'<br />');
+            }
+            
+            if (isset($session_id))
+            $cmd = "rqEdit";
+            else
+            $cmd = "rqCreate";
+        }
 }
 
 
 /*
- *	RqCreate
- *	Create a new subscription session
+ *    RqCreate
+ *    Create a new subscription session
 */
 if ($cmd == 'rqCreate')
 {
 
-	$strToBox = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
+    $strToBox = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
     .    '<label for="comment">'.get_lang('Title').'</label><br />' . "\n"
     .    '<input type="text" name="title" value="'.$title.'" />' . "\n"
@@ -181,75 +181,75 @@ if ($cmd == 'rqCreate')
     .    '&nbsp;<small>' . get_lang('(d/m/y hh:mm)') . '</small><br /><br />' . "\n"
     .    '<label for="places">'. get_lang('Places') .' : </Label><br />' . "\n"
     .    '<input type="text" name="max_users" value="'.$max_users.'" maxlength="6" />' . "\n";
-		      	 
-	
-	if (get_conf('allow_users_to_modify'))
-	{
-		$strToBox .= '<br /><br />' . "\n"
-		.    '<label for="allow_users_to_modify">'. get_lang('Allow users to modify their choice') .' : </Label><br />' . "\n"
+                   
+    
+    if (get_conf('allow_users_to_modify'))
+    {
+        $strToBox .= '<br /><br />' . "\n"
+        .    '<label for="allow_users_to_modify">'. get_lang('Allow users to modify their choice') .' : </Label><br />' . "\n"
         .    '<input type="radio" name="allow_modification" value="1"';
-		      	 
-		if (isset($allow_users_to_modify) && $allow_users_modification==1)
-		$strToBox .= ' checked="checked"';
-					 
-		$strToBox .= ' />'.get_lang('Yes')
-			        . '<input type="radio" name="allow_modification" value="0"';
-		        
-		if (!isset($allow_users_to_modify) && $allow_users_modification==0)
-		$strToBox .= ' checked="checked"';
+                   
+        if (isset($allow_users_to_modify) && $allow_users_modification==1)
+        $strToBox .= ' checked="checked"';
+                     
+        $strToBox .= ' />'.get_lang('Yes')
+                    . '<input type="radio" name="allow_modification" value="0"';
+                
+        if (!isset($allow_users_to_modify) && $allow_users_modification==0)
+        $strToBox .= ' checked="checked"';
 
-		$strToBox .= ' />'.get_lang('No')
-			      	 .'<br />';
-	}
-	else
-	$strToBox .= '<br /><input type="hidden" name="allow_modification" value="0" />';
-	
-	// Session incompatibility
-	if (get_conf('session_incompatibility'))
-	{
-		$session_array = CLFDdisplayList($_cid,$is_allowedToEdit);
-		
-		$session_list = array();
+        $strToBox .= ' />'.get_lang('No')
+                       .'<br />';
+    }
+    else
+    $strToBox .= '<br /><input type="hidden" name="allow_modification" value="0" />';
+    
+    // Session incompatibility
+    if (get_conf('session_incompatibility'))
+    {
+        $session_array = CLFDdisplayList($_cid,$is_allowedToEdit);
+        
+        $session_list = array();
 
-		if (isset($session_array))		
-		{
-			foreach ($session_array as $session_info => $value)
-			{
-				$session_list[$value['id']] = $value['title'];
-			}
-	
-			$strToBox .= '<br /><br />' . "\n"
-		   	.    '<label for="incompatibilities">'. get_lang('Session subscription incompatible with') .' : </label><br />' . "\n"
-		    .    ''.claro_html_form_select('incompatibilities[]',$session_list,'',array('size'=>'8', 'multiple'=>'multiple'),true);	
-		}	
-	}
-	
-		$strToBox .='<p><input type="submit" value="'. get_lang('Create') .'" />'.claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel'))  .'</p>'
-						 ."</form>";
-	$dialogBox->question($strToBox);
+        if (isset($session_array))        
+        {
+            foreach ($session_array as $session_info => $value)
+            {
+                $session_list[$value['id']] = $value['title'];
+            }
+    
+            $strToBox .= '<br /><br />' . "\n"
+               .    '<label for="incompatibilities">'. get_lang('Session subscription incompatible with') .' : </label><br />' . "\n"
+            .    ''.claro_html_form_select('incompatibilities[]',$session_list,'',array('size'=>'8', 'multiple'=>'multiple'),true);    
+        }    
+    }
+    
+        $strToBox .='<p><input type="submit" value="'. get_lang('Create') .'" />'.claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel'))  .'</p>'
+                         ."</form>";
+    $dialogBox->question($strToBox);
 }
 
 
 /*
- *	exRm
- *	Create a new subscription session
+ *    exRm
+ *    Create a new subscription session
 */
 if ($cmd == 'exRm')
 {
-	if (CLFDremoveSession($session_id,$_cid))
-	$dialogBox->success(get_lang('Session deleted'));
-	else
-	$dialogBox->error(get_lang('Error deleting session'));
+    if (CLFDremoveSession($session_id,$_cid))
+    $dialogBox->success(get_lang('Session deleted'));
+    else
+    $dialogBox->error(get_lang('Error deleting session'));
 }
 
 
 /*
- *	rqEdit
- *	Edit a subscription session
+ *    rqEdit
+ *    Edit a subscription session
 */
 if ($cmd == 'rqEdit')
 {
-	$strToBox = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
+    $strToBox = '<form action="'.$_SERVER['PHP_SELF'].'" method="post">' . "\n"
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
     .    '<label for="comment">'.get_lang('Title').'</label><br />' . "\n"
     .    '<input type="text" name="title" value="'.$title.'" />' . "\n"
@@ -268,64 +268,64 @@ if ($cmd == 'rqEdit')
     .    '<label for="places">'. get_lang('Places') .' : </Label><br />' . "\n"
     .    '<input type="text" name="max_users" value="'.$max_users.'" maxlength="6" />' . "\n";
    
-	
-	if (get_conf('allow_users_to_modify'))
-	{
-		$strToBox .= '<br /><br /><label for="allow_users_to_modify">'. get_lang('Allow users to modify their choice') .' : </Label>' . "\n"
-			      	 .'<br /><input type="radio" name="allow_modification" value="1"';
-		      	 
-		if (isset($allow_users_modification) && $allow_users_modification==1)
-		$strToBox .= " checked";
-					 
-		$strToBox .= '>'.get_lang('Yes')
-			        . '<input type="radio" name="allow_modification" value="0"';
-		        
-		if (isset($allow_users_modification) && $allow_users_modification==0)
-		$strToBox .= " checked";
+    
+    if (get_conf('allow_users_to_modify'))
+    {
+        $strToBox .= '<br /><br /><label for="allow_users_to_modify">'. get_lang('Allow users to modify their choice') .' : </Label>' . "\n"
+                       .'<br /><input type="radio" name="allow_modification" value="1"';
+                   
+        if (isset($allow_users_modification) && $allow_users_modification==1)
+        $strToBox .= " checked";
+                     
+        $strToBox .= '>'.get_lang('Yes')
+                    . '<input type="radio" name="allow_modification" value="0"';
+                
+        if (isset($allow_users_modification) && $allow_users_modification==0)
+        $strToBox .= " checked";
 
-		$strToBox .= '>'.get_lang('No')
-			      	 .'<br />';
-	}
-	else
-	$strToBox .= '<input type="hidden" name="allow_modification" value=0>';
-	
-	$dialogBox->question($strToBox);
-	
-	// Session incompatibility
-	$selected_list = '';
-	if (get_conf('session_incompatibility'))
-	{
-		$session_array = CLFDdisplayList($_cid,$is_allowedToEdit);
+        $strToBox .= '>'.get_lang('No')
+                       .'<br />';
+    }
+    else
+    $strToBox .= '<input type="hidden" name="allow_modification" value=0>';
+    
+    $dialogBox->question($strToBox);
+    
+    // Session incompatibility
+    $selected_list = '';
+    if (get_conf('session_incompatibility'))
+    {
+        $session_array = CLFDdisplayList($_cid,$is_allowedToEdit);
 
-		$incompat_list = CLFDcheckIncompatibilities($_cid,$session_id);		
-		
-		if( is_array($session_array) )		
-		{
-		    $session_list = array();
-			foreach ($session_array as $session_info => $value)
-			{
-				if ($value['id'] == $session_id)
-				continue;
-				
-				if (is_array($incompat_list))
-				{
-					if (in_array($value['id'],$incompat_list))
-					    $selected_list = $value['id'];
-					else 
-					    $selected_list = '';
-				}
-				
-				$session_list[$value['id']] = $value['title'];
-			}
-	        
-			$dialogBox->question('<br />'
-		   	   	 	  .'<br /><label for="incompatibilities">'. get_lang('Session subscription incompatible with') .' : </Label>' . "\n"
-		      		 	  .'<br />'.CLFDclaro_html_form_select('incompatibilities[]',$session_list,$selected_list,array('size'=>'8', 'multiple'=>'multiple'),true));	
-		}	
-	}	
-	
-	$dialogBox->question('<p><input type="submit" value="'. get_lang('Modify') .'" />'.claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')) .'</p>'
-					 ."</form>");
+        $incompat_list = CLFDcheckIncompatibilities($_cid,$session_id);        
+        
+        if( is_array($session_array) )        
+        {
+            $session_list = array();
+            foreach ($session_array as $session_info => $value)
+            {
+                if ($value['id'] == $session_id)
+                continue;
+                
+                if (is_array($incompat_list))
+                {
+                    if (in_array($value['id'],$incompat_list))
+                        $selected_list = $value['id'];
+                    else 
+                        $selected_list = '';
+                }
+                
+                $session_list[$value['id']] = $value['title'];
+            }
+            
+            $dialogBox->question('<br />'
+                             .'<br /><label for="incompatibilities">'. get_lang('Session subscription incompatible with') .' : </Label>' . "\n"
+                             .'<br />'.CLFDclaro_html_form_select('incompatibilities[]',$session_list,$selected_list,array('size'=>'8', 'multiple'=>'multiple'),true));    
+        }    
+    }    
+    
+    $dialogBox->question('<p><input type="submit" value="'. get_lang('Modify') .'" />'.claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')) .'</p>'
+                     ."</form>");
 }
 
 $nameTools = get_lang("Subscription");
@@ -366,111 +366,111 @@ echo '<p>' . "\n";
 
 if( $is_allowedToEdit )
 {
-		echo '<a class="claroCmd" href="'.$_SERVER['PHP_SELF'].'?cmd=rqCreate">'
+        echo '<a class="claroCmd" href="'.$_SERVER['PHP_SELF'].'?cmd=rqCreate">'
         .    '<img src="'.get_icon_url('subscription').'" alt="">'
         .    get_lang('New subscription session')
-	    .   '</a>' . "\n";
-}	
+        .   '</a>' . "\n";
+}    
 
     echo '</p>' . "\n";
 
-	// Ascending / descending
-	if (isset($_REQUEST['asc']) && $_REQUEST['asc'] == 'DESC')
-	$asc = 'ASC';
-	else
-	$asc = 'DESC';
+    // Ascending / descending
+    if (isset($_REQUEST['asc']) && $_REQUEST['asc'] == 'DESC')
+    $asc = 'ASC';
+    else
+    $asc = 'DESC';
 
-	echo '<table class="claroTable emphaseLine" width="100%">' . "\n"
-	.    '<tr class="headerX" align="center" valign="top">' . "\n"
+    echo '<table class="claroTable emphaseLine" width="100%">' . "\n"
+    .    '<tr class="headerX" align="center" valign="top">' . "\n"
     .    '<th><a href="'.$_SERVER['PHP_SELF'].'?order=title&asc='.$asc.'">'.get_lang('Name').'</a></th>' . "\n"
     .    '<th><a href="'.$_SERVER['PHP_SELF'].'?order=startDate&asc='.$asc.'">'.get_lang('Start date').'</a></th>' . "\n"
     .    '<th><a href="'.$_SERVER['PHP_SELF'].'?order=endDate&asc='.$asc.'">'.get_lang('End date').'</a></th>' . "\n"
     .    '<th>'.get_lang('Remaining places').'</th>' . "\n";
-				
-	if( $is_allowedToEdit ) 			
-	{
-		echo '<th>'.get_lang('Delete').'</th>' . "\n"
-		.    '<th>'.get_lang('Edit').'</th>' . "\n"
-		.    '<th>'.get_lang('Details').'</th>' . "\n";
-	}
-	else
-		echo '<th>'.get_lang('Subscription state').'</th>' . "\n";
+                
+    if( $is_allowedToEdit )             
+    {
+        echo '<th>'.get_lang('Delete').'</th>' . "\n"
+        .    '<th>'.get_lang('Edit').'</th>' . "\n"
+        .    '<th>'.get_lang('Details').'</th>' . "\n";
+    }
+    else
+        echo '<th>'.get_lang('Subscription state').'</th>' . "\n";
 
-	echo '</tr>' . "\n" 
-	.    '<tbody>';
+    echo '</tr>' . "\n" 
+    .    '<tbody>';
 
     if (isset($_REQUEST['order'])) $order = $_REQUEST['order']; else $order ='';
-	
-	$liste_sessions = CLFDdisplayList($_cid,$is_allowedToEdit,$order,$asc);
-	
-	foreach ($liste_sessions as $session)
-	{
-	
-		// Use the invisible class for the documents not in the date range
-		unset ($style);
-	
-		if ($session['startDate'] > mktime() || $session['endDate'] < mktime())
-		    $style=' class="invisible"';	
-		else
-		    $style = ''; 
-	
-		echo '<tr '.$style.' align="center" valign="top">' . "\n"
-			 .'<td align="left">'.$session['title'].'</td>' . "\n"
-			 .'<td>'.claro_disp_localised_date($dateTimeFormatShort,$session['startDate']).'</td>' . "\n"
-			 .'<td>'.claro_disp_localised_date($dateTimeFormatShort,$session['endDate']).'</td>' . "\n"
-			 .'<td>'.CLFDgetRemainingPlaces($session['id']).'</td>' . "\n";
-		
-		if( $is_allowedToEdit )			
-		{
-			/* DELETE COMMAND */
-	
-					echo '<td>'
-					.    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exRm&session_id='.$session['id'].'" '
-					.    'onClick="return confirmation(\''.clean_str_for_javascript($session['title']).'\');">'
-				    .    '<img src="'.get_icon_url('delete').'" border="0" alt="'.get_lang('Delete').'" />'
-					.    '</a>'
-					.    '</td>' . "\n";
-					
+    
+    $liste_sessions = CLFDdisplayList($_cid,$is_allowedToEdit,$order,$asc);
+    
+    foreach ($liste_sessions as $session)
+    {
+    
+        // Use the invisible class for the documents not in the date range
+        unset ($style);
+    
+        if ($session['startDate'] > mktime() || $session['endDate'] < mktime())
+            $style=' class="invisible"';    
+        else
+            $style = ''; 
+    
+        echo '<tr '.$style.' align="center" valign="top">' . "\n"
+             .'<td align="left">'.$session['title'].'</td>' . "\n"
+             .'<td>'.claro_disp_localised_date($dateTimeFormatShort,$session['startDate']).'</td>' . "\n"
+             .'<td>'.claro_disp_localised_date($dateTimeFormatShort,$session['endDate']).'</td>' . "\n"
+             .'<td>'.CLFDgetRemainingPlaces($session['id']).'</td>' . "\n";
+        
+        if( $is_allowedToEdit )            
+        {
+            /* DELETE COMMAND */
+    
+                    echo '<td>'
+                    .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exRm&session_id='.$session['id'].'" '
+                    .    'onClick="return confirmation(\''.clean_str_for_javascript($session['title']).'\');">'
+                    .    '<img src="'.get_icon_url('delete').'" border="0" alt="'.get_lang('Delete').'" />'
+                    .    '</a>'
+                    .    '</td>' . "\n";
+                    
 
-					/* EDIT COMMAND */
+                    /* EDIT COMMAND */
 
-					echo "<td>"
-						."<a href=\"".$_SERVER['PHP_SELF']."?cmd=rqEdit&session_id=".$session['id']."\">"
-						."<img src=\"".get_icon_url('edit')."\" border=\"0\" alt=\"".get_lang('Modify')."\">"
-						."</a>"
-						."</td>\n";
-						
-				// export
-				echo '<td align="center">'
-				.	 '<a href="session_detail.php?session_id='.$session['id'].'">'
-				.	 '<img src="'.get_icon_url('group').'" border="0" alt="'.get_lang('Details').'" />'
-				.	 '</a>'
-				.	 '</td>' . "\n";
-					
-		}	 
-		else
-		{
-			echo "<td>";
-	
-			$infos = CLFDuserSubscription($_uid,$session['id']);
-			if (isset($infos))
-			echo get_lang('Subscribed on %date',array('%date'=>claro_disp_localised_date($dateTimeFormatShort,$infos)))."<br />";	
-			
-			if (CLFDisAllowedToSubscribe($_uid,$session['id'],$session['allow_modification']))
-			{
-				if (!isset($infos))
-				echo '<a href="session_detail.php?session_id='.$session['id'].'">'.get_lang('Subscribe').'</a>';
-			
-				else
-				echo '<a href="session_detail.php?session_id='.$session['id'].'">'.get_lang('Modify subscription').'</a>';
-			}
-			else
-			echo '<i>'.get_lang('Subscription impossible')."</i>";			
-			
-			echo "</td>";
-		}
-		echo "</tr>";
-	}
+                    echo "<td>"
+                        ."<a href=\"".$_SERVER['PHP_SELF']."?cmd=rqEdit&session_id=".$session['id']."\">"
+                        ."<img src=\"".get_icon_url('edit')."\" border=\"0\" alt=\"".get_lang('Modify')."\">"
+                        ."</a>"
+                        ."</td>\n";
+                        
+                // export
+                echo '<td align="center">'
+                .     '<a href="session_detail.php?session_id='.$session['id'].'">'
+                .     '<img src="'.get_icon_url('group').'" border="0" alt="'.get_lang('Details').'" />'
+                .     '</a>'
+                .     '</td>' . "\n";
+                    
+        }     
+        else
+        {
+            echo "<td>";
+    
+            $infos = CLFDuserSubscription($_uid,$session['id']);
+            if (isset($infos))
+            echo get_lang('Subscribed on %date',array('%date'=>claro_disp_localised_date($dateTimeFormatShort,$infos)))."<br />";    
+            
+            if (CLFDisAllowedToSubscribe($_uid,$session['id'],$session['allow_modification']))
+            {
+                if (!isset($infos))
+                echo '<a href="session_detail.php?session_id='.$session['id'].'">'.get_lang('Subscribe').'</a>';
+            
+                else
+                echo '<a href="session_detail.php?session_id='.$session['id'].'">'.get_lang('Modify subscription').'</a>';
+            }
+            else
+            echo '<i>'.get_lang('Subscription impossible')."</i>";            
+            
+            echo "</td>";
+        }
+        echo "</tr>";
+    }
 
 echo '</tbody>' . "\n"
 .    '</table>' . "\n";
