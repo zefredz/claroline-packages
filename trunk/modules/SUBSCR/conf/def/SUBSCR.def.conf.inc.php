@@ -36,8 +36,8 @@ array ( 'label'       => 'Allow users to modify their initial choice - default v
 $conf_def_property_list['export_csv_fields'] =
 array ( 'label'        => 'Fields for the CSV export'
       , 'description'  => 'Which fields in the export file ?'
-		,'default'   	  => array('officialCode','username','name','firstname','subscription_date','email','phoneNumber')
-      ,'type'      	  => 'multi'
+        ,'default'         => array('officialCode','username','name','firstname','subscription_date','email','phoneNumber')
+      ,'type'            => 'multi'
       ,'display'       => TRUE
       ,'readonly'      => FALSE
       ,'acceptedValue' => array ( 'officialCode'=> 'officialCode',
@@ -45,8 +45,8 @@ array ( 'label'        => 'Fields for the CSV export'
                                   'name' => 'name',
                                   'firstname' => 'firstname',
                                   'subscription_date' => 'subscription date',
-				  				  'email' => 'email',
-				  				  'phoneNumber' => 'phoneNumber'
+                                    'email' => 'email',
+                                    'phoneNumber' => 'phoneNumber'
                                 )
       );
       

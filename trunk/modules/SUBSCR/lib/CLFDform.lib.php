@@ -57,8 +57,8 @@ function CLFDclaro_html_form_select($select_name,$list_option,$preselect=null,$a
  */
 function CLFDclaro_html_option_list($list_option, $preselect, $reverted = false)
 {
-	if (!$preselect)
-	$preselect = array();
+    if (!$preselect)
+    $preselect = array();
 
     $html_option_list = '';
     if(is_array($list_option))
