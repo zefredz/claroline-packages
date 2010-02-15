@@ -1,4 +1,19 @@
-<?php
+<?php // $Id$
+
+// vim: expandtab sw=4 ts=4 sts=4:
+
+/**
+ * Description
+ *
+ * @version     1.1 $Revision$
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @author      Claroline Team <info@claroline.net>
+ * @author      Frederic Minne <zefredz@claroline.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html
+ *              GNU GENERAL PUBLIC LICENSE version 2 or later
+ * @package     ICMAIL
+ */
+
 try
 {
     
@@ -24,6 +39,7 @@ try
         // 'all',
         'creators',
         'managers',
+        'publicmanagers',
         // 'nocourse',
         'admin' );
     
@@ -56,6 +72,8 @@ try
     catch ( Exception $e )
     {
         $dialogBox->error('Invalid addressee');
+        $addressee = $defaultAddressee;
+        $cmd = 'compose';
     }
     
     if ( $cmd == 'send' )
@@ -102,6 +120,7 @@ try
         // $optionList['nocourse'] = get_lang('Users with no course');
         $optionList['admin'] = get_lang('Administrators');
         $optionList['managers'] = get_lang('Course managers');
+        $optionList['publicmanagers'] = get_lang('Course managers of public courses');
         // $optionList['todelete'] = get_lang('Users marked to delete');
         $optionList['creators'] = get_lang('Course creators');
         // $optionList['all'] = get_lang('All users');
