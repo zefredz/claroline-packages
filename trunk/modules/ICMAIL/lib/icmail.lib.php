@@ -5,13 +5,13 @@
 /**
  * Description
  *
- * @version     1.9 $Revision$
- * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+ * @version     1.1 $Revision$
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @author      Claroline Team <info@claroline.net>
  * @author      Frederic Minne <zefredz@claroline.net>
  * @license     http://www.gnu.org/copyleft/gpl.html
  *              GNU GENERAL PUBLIC LICENSE version 2 or later
- * @package     PACKAGE_NAME
+ * @package     ICMAIL
  */
 
 if ( count( get_included_files() ) == 1 )
@@ -23,9 +23,10 @@ class ICMAIL
 {
     public static function getUserList( $type )
     {
-        $tbl_cdb_names   = claro_sql_get_main_tbl();
-        $tbl_course_user = $tbl_cdb_names['rel_course_user'];
-        $tbl_user        = $tbl_cdb_names['user'];
+        $tbl_cdb_names      = claro_sql_get_main_tbl();
+        $tbl_course_user    = $tbl_cdb_names['rel_course_user'];
+        $tbl_course         = $tbl_cdb_names['course'];
+        $tbl_user           = $tbl_cdb_names['user'];
         
         switch($type)
         {
@@ -55,6 +56,17 @@ class ICMAIL
                         INNER JOIN `'.$tbl_course_user.'` AS cu
                         ON  u.user_id = cu.user_id
                         AND `isCourseManager` = 1';
+            break;
+            // course managers with public courses
+            case 'publicmanagers':
+                $sql = 'SELECT DISTINCT u.user_id AS id
+                        FROM `'.$tbl_user.'` AS u 
+                        INNER JOIN `'.$tbl_course_user.'` AS cu
+                        ON  u.user_id = cu.user_id
+                        INNER JOIN `'.$tbl_course.'` AS c
+                        ON c.`code` = cu.`code_cours`
+                        WHERE cu.`isCourseManager` = 1
+                        AND c.`access` = "public"';
             break;
             // admins
             case 'admin':
