@@ -1,0 +1,272 @@
+/* forms */
+
+#choiceList li
+{
+    list-style: none;
+    margin-bottom: 4px;
+}
+
+#choiceList li input
+{
+    margin-right: 4px;
+}
+
+#addChoice, #newChoice
+{
+    margin-left: 40px;
+}
+
+.properties
+{
+    background-color: #FFDDDD;
+}
+
+.choice
+{
+    background-color: #DDFFDD;
+}
+
+.config
+{
+    background-color: #FFFFDD;
+}
+
+.edit form
+{
+    border: 1px solid #555555;
+    width: 400px;
+    padding: 5px;
+    margin: 5px;
+}
+
+label
+{
+    font-weight: bold;
+}
+
+.edit form .entry
+{
+    margin: 5px;
+    width: 340px;
+}
+
+.edit .properties .entry, textarea
+{
+    margin: 5px;
+    width: 385px;
+}
+
+textarea
+{
+    font-family: sans-serif;
+    font-size: 10pt;
+}
+
+/* tables */
+
+#poll
+{
+    width: inherit;
+}
+
+#poll h2, #poll h3, #poll h4
+{
+    text-align: center;
+}
+
+#poll h4
+{
+    color: #aa2222;
+}
+
+#poll table
+{
+    margin: auto;
+}
+
+#poll td , #poll th
+{
+    padding: 5px;
+    text-align: center;
+    width: 120px;
+}
+
+#poll thead tr th
+{
+    text-align: center;
+}
+
+#poll .invisible
+{
+    background-color: transparent;
+    text-align: right;
+    width: 150px;
+    border: 1px solid #888888;
+}
+
+#poll .option
+{
+    border: 1px;
+    background-color: #557799;
+    color: white;
+}
+
+#poll tr th
+{
+    text-align: right;
+}
+
+#poll tr th .vote
+{
+    float: left;
+    margin-left: 15%;
+}
+
+#poll .name
+{
+    background-color: #305040;
+    text-align: right;
+    color: #ffffbb;
+    width: 150px;
+}
+
+#poll .notchecked
+{
+    background-color: #ff5555;
+}
+
+#poll .checked
+{
+    background-color: #55ff55;
+}
+
+#poll #current th
+{
+    color: #305040;
+    background-color: #ffffaa;
+    text-align: right;
+    border: solid 1px #888888;
+}
+
+#poll #current .notchecked
+{
+    background-color: #ffaaaa;
+}
+
+#poll #current .checked
+{
+    background-color: #aaffaa;
+}
+
+#poll .stats td , #poll .stats th
+{
+    background-color: #eeeeee;
+    color: #555555;
+    font-weight: bold;
+}
+
+#poll .userline
+{
+    outline: solid 1px #888888;
+}
+
+#poll .userline td , #poll .userline th
+{
+    background-color: transparent;
+    color: #555555;
+}
+
+#poll #footer th
+{
+    background-color: transparent;
+    outline: none;
+    padding: 0px;
+}
+
+#poll .submit
+{
+    float: right;
+    margin-top: 5px;
+}
+
+#poll .novote
+{
+    background-color: #D0D0D0;
+    color: #2F2F2F;
+    font-style: italic;
+    text-align: center;
+}
+
+#poll form
+{
+    margin-bottom: 0px;
+}
+
+
+/* histograms */
+
+.stat
+{
+    background-color: #FFFFEE;
+    border: 1px solid #888888;
+    height: 340px;
+    width: auto;
+    padding: 0px 30px 30px 0px;
+}
+
+.stat h3
+{
+    text-align: center;
+    font-style: italic;
+    font-size: medium;
+    margin-bottom: 10px;
+}
+
+.stat h4
+{
+    text-align: center;
+    font-size: small;
+    color: #A02020;
+    margin: 0px;
+}
+
+.stat span
+{
+    margin: 0px 20px 0px 20px;
+}
+
+.stat li
+{
+    list-style: none;
+    width: 120px;
+    float: left;
+    margin: 20px;
+    text-align: center;
+}
+
+.stat li .percent
+{
+    color: #888888;
+    font-size: 14px;
+    padding-bottom: 10px;
+}
+
+.stat .label
+{
+    margin-top: 5px;
+}
+
+.histobar
+{
+    color: #FFFFEE;
+    font-size: xx-large;
+    margin: 0px;
+    width: 120px;
+    vertical-align: bottom;
+    padding-top: 5px;
+}
+
+.genChart img
+{
+    border: 1px solid #888888;
+}

@@ -1,0 +1,21 @@
+<module>
+    <label>CLQPOLL</label>
+    <name>Quick poll</name>
+    <description><![CDATA[ Allows to create small and quick polls ]]></description>
+    <version>0.9.4</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>tool</type>
+    <context>course</context>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@claroline.net</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
