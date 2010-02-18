@@ -11,7 +11,6 @@
 
 <?php echo $this->dialogBox->render(); ?>
 
-<?php if ( $this->pollList->numRows() ) : ?>
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
@@ -38,8 +37,9 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach ( $this->pollList as $poll ) : ?>
-            <?php if ( $poll['visibility'] == Poll::VISIBLE || claro_is_allowed_to_edit() == true ) : ?>
+<?php if ( $this->pollList->numRows() ) : ?>
+    <?php foreach ( $this->pollList as $poll ) : ?>
+        <?php if ( $poll['visibility'] == Poll::VISIBLE || claro_is_allowed_to_edit() == true ) : ?>
         <tr>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pollId='. $poll['id'] ) );?>">
@@ -86,10 +86,12 @@
                 </a>
             </td>
         </tr>
-            <?php endif; ?>
-        <?php endforeach; ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
+<?php else: ?>
+        <tr>
+            <td class="empty" colspan="<?php echo claro_is_allowed_to_edit() ? 6 : 2; ?>"><?php echo get_lang( 'No poll for this course yet' ); ?></td>
+        </tr>
+<?php endif; ?>
     </tbody>
 </table>
-<?php else: ?>
-<h3><?php echo get_lang( 'No poll for this course yet' ); ?></h3>
-<?php endif; ?>
