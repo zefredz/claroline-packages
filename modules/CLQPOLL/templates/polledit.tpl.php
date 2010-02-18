@@ -98,7 +98,7 @@
         <legend><?php echo get_lang( 'Options' ); ?></legend>
         <table>
         <?php foreach( $this->poll->getOptionList() as $item => $value ) : ?>
-        <?php if ( ! $this->poll->getAllVoteList() || claro_is_platform_admin() || $item != '_privacy' ) : ?>
+        <?php if ( $this->change_allowed[ $item ] ) : ?>
             <tr valign="top">
                 <td align="right">
                     <label>
@@ -122,7 +122,6 @@
         </table>
     </fieldset>
     
-    <?php if ( $this->poll->getId() ) : ?>
     <fieldset id="pollChoices">
         <legend><?php echo get_lang( 'Poll choices' ); ?></legend>
         <?php if ( $this->poll->getChoiceList() ) : ?>
@@ -145,7 +144,6 @@
         </a>
         <?php endif; ?>
     </fieldset>
-    <?php endif; ?>
     
     <input id="submitPollProperties" type="submit" name="submitPoll" value="<?php echo get_lang( 'OK' ); ?>" />
     <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>

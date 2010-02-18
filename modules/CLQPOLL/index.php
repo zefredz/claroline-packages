@@ -12,7 +12,7 @@
 
 $tlabelReq = 'CLQPOLL';
 
-$nameTools = 'Claroline Quick Poll Tool';
+$nameTools = 'Quick Poll';
 
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
@@ -25,7 +25,7 @@ claro_set_display_mode_available( true );
 
 CssLoader::getInstance()->load( 'poll' , 'screen' );
 $dialogBox = new DialogBox();
-$pageTitle = array( 'mainTitle' => get_lang( 'Poll' ) );
+$pageTitle = array( 'mainTitle' => get_lang( 'Quick poll tool' ) );
 
 try
 {
@@ -115,6 +115,15 @@ try
         $userRights[ 'see_names' ] = true;
     }
     
+    // determines which option can be changed
+    $change_allowed = array( '_type' => true , '_privacy' => true , '_stat_access' => true );
+    
+    if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
+    {
+        $change_allowed[ '_type' ] = false;
+        if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
+    }
+    
     // to handle in-betweens deletion
     if ( $poll->getId() || $cmd == 'rqShowList' || $cmd == 'rqCreatePoll' || $cmd == 'exCreatePoll' )
     {
@@ -180,16 +189,13 @@ try
                 
                 $poll->setTitle( $title );
                 $poll->setQuestion( $question );
-                if ( $label && ! $poll->getAllVoteList() ) $poll->addChoice( $label );
-                
-                $privacy = $poll->getAllVoteList() && $poll->getOption( '_privacy' ) == '_anonymous' ? true : false;
                 
                 foreach( array_keys( $poll->getOptionList() ) as $option)
                 {
                     $value = $userInput->get( $option );
                     
                     // Cannot change privacy if the poll is anonymous
-                    if ( ! $privacy || $option != '_privacy' || $value != '_anonymous' )
+                    if ( $change_allowed[ $option ] )
                     {
                         $poll->setOption( $option , $value );
                     }
@@ -198,6 +204,13 @@ try
                         $poll_changed = false;
                     }
                 }
+                
+                if ( ! isset( $poll_changed ) )
+                {
+                    $poll_changed = $poll->save();
+                }
+                
+                if ( $label && ! $poll->getAllVoteList() ) $poll->addChoice( $label );
                 
                 foreach( array_keys( $poll->getChoiceList() ) as $choiceId )
                 {
@@ -208,10 +221,6 @@ try
                     }
                 }
                 
-                if ( ! isset( $poll_changed ) )
-                {
-                    $poll_changed = $poll->save();
-                }
                 break;
             }
             
@@ -609,13 +618,14 @@ if ( isset ( $template ) )
                         $(document).ready(function(){';
             
             $scriptContent .=  '$("#addChoice").click(function(){
-                                    $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" />");
+                                    $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" /><br/>");
                                 });
                             });
                 -->
                 </script>';
                 
             ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
+            $pollView->assign( 'change_allowed' , $change_allowed );
             break;
         
         case 'pollstat':
