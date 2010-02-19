@@ -1,9 +1,15 @@
-/* Poll list */
+/* general */
 
 .empty
 {
     color: #888888;
     text-align: center;
+    font-style: italic;
+}
+
+.disabled
+{
+    color: #888888;
     font-style: italic;
 }
 

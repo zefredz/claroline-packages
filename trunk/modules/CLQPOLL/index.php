@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.4 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.5 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -183,31 +183,25 @@ try
             case 'exCreatePoll':
             case 'exEditPoll':
             {
-                $title    = $userInput->get( 'title' );
-                $question = $userInput->get( 'question' );
-                $label    = $userInput->get( 'label' );
+                $title     = $userInput->get( 'title' );
+                $question  = $userInput->get( 'question' );
+                $label     = $userInput->get( 'label' );
+                $visibility = $userInput->get( 'visibility' );
+                $status    = $userInput->get( 'status' );
                 
                 $poll->setTitle( $title );
                 $poll->setQuestion( $question );
+                $poll->setVisibility( $visibility );
+                $poll->setStatus( $status );
                 
                 foreach( array_keys( $poll->getOptionList() ) as $option)
                 {
                     $value = $userInput->get( $option );
                     
-                    // Cannot change privacy if the poll is anonymous
                     if ( $change_allowed[ $option ] )
                     {
                         $poll->setOption( $option , $value );
                     }
-                    else
-                    {
-                        $poll_changed = false;
-                    }
-                }
-                
-                if ( ! isset( $poll_changed ) )
-                {
-                    $poll_changed = $poll->save();
                 }
                 
                 if ( $label && ! $poll->getAllVoteList() ) $poll->addChoice( $label );
@@ -221,6 +215,7 @@ try
                     }
                 }
                 
+                $poll_changed = $poll->save();
                 break;
             }
             
@@ -619,6 +614,7 @@ if ( isset ( $template ) )
             
             $scriptContent .=  '$("#addChoice").click(function(){
                                     $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" /><br/>");
+                                    $("#addChoice").hide();
                                 });
                             });
                 -->

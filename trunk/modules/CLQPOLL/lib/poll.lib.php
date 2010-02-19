@@ -58,8 +58,8 @@ class Poll
             foreach( self::$optionValueList as $option => $valueList )
             {
                 $this->optionList[ $option ] = $valueList[ 0 ];
-                $this->visibility = Poll::INVISIBLE;
-                $this->status = Poll::CLOSED_VOTE;
+                $this->visibility = Poll::VISIBLE;
+                $this->status = Poll::OPEN_VOTE;
             }
         }
     }
