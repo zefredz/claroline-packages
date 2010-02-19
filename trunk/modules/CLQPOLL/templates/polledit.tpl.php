@@ -117,6 +117,7 @@
                 </td>
             <?php if ( $this->change_allowed[ $item ] ) : ?>
                 <td>
+                        <?php if ( $this->poll->getOptionValueList( $item ) ) : ?>
                         <?php foreach( $this->poll->getOptionValueList( $item ) as $option ) : ?>
                         <input type="radio" name="<?php echo $item; ?>"
                                             value="<?php echo $option; ?>"
@@ -124,6 +125,11 @@
                         <?php echo get_lang( $option ); ?>
                         <br />
                         <?php endforeach; ?>
+                        <?php else : ?>
+                        <input type="text" name="<?php echo $item; ?>" value="<?php echo $this->poll->getOption( $item ); ?>" size="2"/>
+                        <?php echo get_lang( 'Maximum amount of votes for each choice ( set to 0 for no limit )' ); ?>
+                        <br />
+                        <?php endif; ?>
                 </td>
             <?php else : ?>
                 <td>

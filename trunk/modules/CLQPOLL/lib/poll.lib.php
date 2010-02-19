@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.4 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.5 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -22,22 +22,26 @@ class Poll
     const INVISIBLE = 'invisible';
     const OPEN_VOTE = 'open';
     const CLOSED_VOTE = 'closed';
+    const UNLOCKED = 'unlocked';
+    const LOCKED = 'locked';
     
     protected static $optionValueList = array(
         '_type'      => array( '_multi' , '_single' ), // the first value is default
         '_privacy'   => array( '_public' , '_private' , '_anonymous' ),
-        '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' )
+        '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' ),
+        '_max_vote' => array()
         //...
     );
     
     protected $id;
     protected $title;
     protected $question;
-    protected $choiceList = array();
-    protected $allVoteList = array();
     protected $optionList;
     protected $status;
     protected $visibility;
+    protected $choiceList = array();
+    protected $isLocked = array();
+    protected $allVoteList = array();
     
     /**
      * Constructor
@@ -57,10 +61,18 @@ class Poll
         {
             foreach( self::$optionValueList as $option => $valueList )
             {
-                $this->optionList[ $option ] = $valueList[ 0 ];
-                $this->visibility = Poll::VISIBLE;
-                $this->status = Poll::OPEN_VOTE;
+                if ( empty( $valueList ) )
+                {
+                    $this->optionList[ $option ] = 0;
+                }
+                else
+                {
+                    $this->optionList[ $option ] = $valueList[ 0 ];
+                }
             }
+            
+            $this->visibility = Poll::INVISIBLE;
+            $this->status = Poll::OPEN_VOTE;
         }
     }
     
@@ -128,7 +140,7 @@ class Poll
         {
             foreach ( Claroline::getDatabase()->query( "
                 SELECT
-                    id, label
+                    id, label, is_locked
                 FROM
                     `{$this->tbl['poll_choices']}`
                 WHERE
@@ -138,6 +150,7 @@ class Poll
                 ) as $choice )
             {
                 $this->choiceList[ $choice[ 'id' ] ] = $choice[ 'label' ];
+                $this->isLocked[ $choice[ 'id' ] ] = $choice[ 'is_locked' ];
             }
         }
         
@@ -304,12 +317,23 @@ class Poll
      */
     public function setOption( $option , $value )
     {
-        if ( ! in_array( $value , self::$optionValueList[ $option ] ) )
+        if ( ! isset( self::$optionValueList[ $option ] ) )
         {
-            throw new Exception( 'Invalid argument' );
+            throw new Exception( 'Invalid option' );
         }
         
-        $this->optionList[ $option ] = $value;
+        if ( empty( self::$optionValueList[ $option ] ) )
+        {
+            $this->optionList[ $option ] = abs( (int)$value );
+        }
+        elseif ( in_array( $value , self::$optionValueList[ $option ] ) )
+        {
+            $this->optionList[ $option ] = $value;
+        }
+        else
+        {
+            throw new Exception( 'Invalid value' );
+        }
     }
     
     /**
@@ -394,6 +418,35 @@ class Poll
         }
     }
     
+    public function is_Locked( $choiceId )
+    {
+        return $this->isLocked[ $choiceId ] == self::LOCKED;
+    }
+    
+    public function lock( $choiceId )
+    {
+        return Claroline::getDatabase()->exec( "
+            UPDATE
+                `{$this->tbl['poll_choices']}`
+            SET
+                is_locked = " . Claroline::getDatabase()->quote( self::LOCKED ) . "
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $choiceId )
+        );
+    }
+    
+    public function unlock( $choiceId )
+    {
+        return Claroline::getDatabase()->exec( "
+            UPDATE
+                `{$this->tbl['poll_choices']}`
+            SET
+                is_locked = " . Claroline::getDatabase()->quote( self::UNLOCKED ) . "
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $choiceId )
+        );
+    }
+    
     /**
      * Deletes all votes for this poll
      * @return boolean true
@@ -448,7 +501,7 @@ class Poll
      */
     public function getAllVoteList( $force = false )
     {
-        if ( $force)
+        if ( $force )
         {
             $this->allVoteList = array();
         }
