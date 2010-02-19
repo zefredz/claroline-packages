@@ -63,42 +63,51 @@
                     <input id="question" type="text" name="question" value="<?php echo $question; ?>" size="60" />
                 </td>
             </tr>
+            <tr valign="top">
+                <td align="right">
+                    <label>
+                        <?php echo get_lang( 'Status' ); ?>
+                        &nbsp;:&nbsp;
+                    </label>
+                </td>
+                <td>
+                    <input type="radio" name="status"
+                                        value="open"
+                                        <?php if ( $this->poll->isOpen() ) : ?>checked="checked"<?php endif; ?>/>
+                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
+                    <?php echo get_lang( 'The votes are open' ); ?><br />
+                    <input type="radio" name="status"
+                                        value="closed"
+                                        <?php if ( ! $this->poll->isOpen() ) : ?>checked="checked"<?php endif; ?>/>
+                    <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
+                    <?php echo get_lang( 'The votes are closed' ); ?>
+                </td>
+            </tr>
+            <tr valign="top">
+                <td align="right">
+                    <label>
+                        <?php echo get_lang( 'Visibility' ); ?>
+                        &nbsp;:&nbsp;
+                    </label>
+                </td>
+                <td>
+                    <input type="radio" name="visibility"
+                                        value="visible"
+                                        <?php if ( $this->poll->isVisible() ) : ?>checked="checked"<?php endif; ?>/>
+                    <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
+                    <input type="radio" name="visibility"
+                                        value="invisible"
+                                        <?php if ( ! $this->poll->isVisible() ) : ?>checked="checked"<?php endif; ?>/>
+                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                </td>
+            </tr>
         </table>
-        <?php if ( $this->poll->getId() ) : ?>
-        <div id="pollStatus">
-            <?php if ( $this->poll->getStatus() == Poll::OPEN_VOTE ) : ?>
-            <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exClose&tpl=polledit&pollId=' . $this->poll->getId() ) );?>">
-                <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
-                <?php echo get_lang( 'Close poll' ); ?>
-            </a>
-            <?php else: ?>
-            <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exOpen&tpl=polledit&pollId=' . $this->poll->getId() ) );?>">
-                <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
-                <?php echo get_lang( 'Open poll' ); ?>
-            </a>
-            <?php endif; ?>
-        </div>
-        <div id="changeVisibility">
-            <?php if ( $this->poll->isVisible() ) : ?>
-            <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&tpl=polledit&pollId=' . $this->poll->getId() ) );?>">
-                <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
-                <?php echo get_lang( 'Make invisible' ); ?>
-            </a>
-            <?php else : ?>
-            <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&tpl=polledit&pollId=' . $this->poll->getId() ) );?>">
-                <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
-                <?php echo get_lang( 'Make visible' ); ?>
-            </a>
-            <?php endif; ?>
-        </div>
-        <?php endif; ?>
     </fieldset>
     
     <fieldset id="pollOptions">
         <legend><?php echo get_lang( 'Options' ); ?></legend>
         <table>
         <?php foreach( $this->poll->getOptionList() as $item => $value ) : ?>
-        <?php if ( $this->change_allowed[ $item ] ) : ?>
             <tr valign="top">
                 <td align="right">
                     <label>
@@ -106,6 +115,7 @@
                         &nbsp;:&nbsp;
                     </label>
                 </td>
+            <?php if ( $this->change_allowed[ $item ] ) : ?>
                 <td>
                         <?php foreach( $this->poll->getOptionValueList( $item ) as $option ) : ?>
                         <input type="radio" name="<?php echo $item; ?>"
@@ -115,8 +125,12 @@
                         <br />
                         <?php endforeach; ?>
                 </td>
+            <?php else : ?>
+                <td>
+                    <span class="disabled"><?php echo get_lang( $this->poll->getOption( $item ) ) . get_lang( '#locked' ); ?></span>
+                </td>
+            <?php endif; ?>
             </tr>
-        <?php endif; ?>
         <?php endforeach; ?>
         
         </table>
