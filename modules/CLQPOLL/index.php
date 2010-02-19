@@ -82,7 +82,7 @@ try
     $poll = new Poll( $pollId );
     
     // creates a PollStat objet ( if relevant )
-    $pollStat = $poll ? new PollStat( $poll ) : false;
+    $pollStat = $pollId ? new PollStat( $poll ) : false;
     
     // creates a UserVote object ( if relevant )
     $userVote = ( $userId && $pollId ) ? new UserVote( $poll , $userId ) : false;
@@ -610,13 +610,12 @@ if ( isset ( $template ) )
             
             $scriptContent = '<script type="text/javascript">
                         <!--
-                        $(document).ready(function(){';
-            
-            $scriptContent .=  '$("#addChoice").click(function(){
-                                    $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" /><br/>");
-                                    $("#addChoice").hide();
-                                });
+                        $(document).ready(function(){
+                            $("#addChoice").click(function(){
+                                $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" /><br/>");
+                                $("#addChoice").hide();
                             });
+                        });
                 -->
                 </script>';
                 

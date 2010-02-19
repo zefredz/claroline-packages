@@ -170,7 +170,7 @@
             <?php endif; ?>
             <!-- END Displays the statistics -->
             <!-- BEGIN Displays the poll votes -->
-            <?php if ( $this->poll->getAllVoteList() ) : ?>
+            <?php if ( $this->poll->getAllVoteList( true ) ) : ?>
                 <?php if ( $this->userRights[ 'see_names' ] ) : ?>
                     <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $userId => $vote ) : ?>
             <tr>

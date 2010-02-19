@@ -450,7 +450,7 @@ class Poll
     {
         if ( $force)
         {
-            unset( $this->allVoteList );
+            $this->allVoteList = array();
         }
         
         if ( $this->id && empty( $this->allVoteList ) )
