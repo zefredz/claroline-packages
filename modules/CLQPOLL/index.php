@@ -116,7 +116,7 @@ try
     }
     
     // determines which option can be changed
-    $change_allowed = array( '_type' => true , '_privacy' => true , '_stat_access' => true );
+    $change_allowed = array( '_type' => true , '_privacy' => true , '_stat_access' => true, '_max_vote' => true );
     
     if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
     {
