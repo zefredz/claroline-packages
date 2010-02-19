@@ -580,6 +580,12 @@ catch ( Exception $e ) // exceptions handling
     }
 }
 
+if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
+{
+    $change_allowed[ '_type' ] = false;
+    if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
+}
+
 // if $msg is defined, displays a question box containing a simple [OK]/[Cancel] form
 if ( isset( $msg ) )
 {

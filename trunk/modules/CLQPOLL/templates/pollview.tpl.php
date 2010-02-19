@@ -2,7 +2,7 @@
 
 <!-- BEGIN ToolBar -->
 <?php if ( $this->userRights[ 'edit' ]) : ?>
-<?php if ( ! $this->poll->getAllVoteList() ) : ?>
+<?php if ( ! $this->poll->getAllVoteList( true ) ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddChoice&pollId='.$this->poll->getId() ) ); ?>">
         <img src="<?php echo get_icon_url( 'poll_new' ); ?>" alt="<?php echo get_lang( 'Add a new choice'); ?>"/>
@@ -170,7 +170,7 @@
             <?php endif; ?>
             <!-- END Displays the statistics -->
             <!-- BEGIN Displays the poll votes -->
-            <?php if ( $this->poll->getAllVoteList( true ) ) : ?>
+            <?php if ( $this->poll->getAllVoteList() ) : ?>
                 <?php if ( $this->userRights[ 'see_names' ] ) : ?>
                     <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $userId => $vote ) : ?>
             <tr>
