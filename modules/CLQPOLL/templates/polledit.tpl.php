@@ -117,7 +117,7 @@
                 </td>
             <?php if ( $this->change_allowed[ $item ] ) : ?>
                 <td>
-                        <?php if ( $this->poll->getOptionValueList( $item ) ) : ?>
+                        <?php if ( is_array( $this->poll->getOptionValueList( $item ) ) ) : ?>
                         <?php foreach( $this->poll->getOptionValueList( $item ) as $option ) : ?>
                         <input type="radio" name="<?php echo $item; ?>"
                                             value="<?php echo $option; ?>"

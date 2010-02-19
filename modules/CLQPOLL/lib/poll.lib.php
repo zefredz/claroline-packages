@@ -29,7 +29,7 @@ class Poll
         '_type'      => array( '_multi' , '_single' ), // the first value is default
         '_privacy'   => array( '_public' , '_private' , '_anonymous' ),
         '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' ),
-        '_max_vote' => array()
+        '_max_vote' => 0
         //...
     );
     
@@ -61,9 +61,9 @@ class Poll
         {
             foreach( self::$optionValueList as $option => $valueList )
             {
-                if ( empty( $valueList ) )
+                if ( ! is_array( $valueList ) )
                 {
-                    $this->optionList[ $option ] = 0;
+                    $this->optionList[ $option ] = $valueList;
                 }
                 else
                 {
@@ -322,7 +322,7 @@ class Poll
             throw new Exception( 'Invalid option' );
         }
         
-        if ( empty( self::$optionValueList[ $option ] ) )
+        if ( ! is_array( self::$optionValueList[ $option ] ) )
         {
             $this->optionList[ $option ] = abs( (int)$value );
         }
