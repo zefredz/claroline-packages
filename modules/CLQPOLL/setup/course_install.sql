@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_choices`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     poll_id INT(11) NOT NULL,
     label  VARCHAR(127),
-    is_locked ENUM( unlocked , locked ) NOT NULL DEFAULT 'unlocked',
     PRIMARY KEY( id )
 );
 

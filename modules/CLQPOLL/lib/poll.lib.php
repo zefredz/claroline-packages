@@ -15,6 +15,7 @@
  * @property  int $id  the poll id
  * @property  string $title  the poll title (i.e. the subject)
  * @property  string $question  the complete description of the asked question
+ * @property array $choiceList
  */
 class Poll
 {
@@ -29,7 +30,7 @@ class Poll
         '_type'      => array( '_multi' , '_single' ), // the first value is default
         '_privacy'   => array( '_public' , '_private' , '_anonymous' ),
         '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' ),
-        '_max_vote' => 0
+        '_max_vote' => array( 0 )
         //...
     );
     
@@ -40,7 +41,6 @@ class Poll
     protected $status;
     protected $visibility;
     protected $choiceList = array();
-    protected $isLocked = array();
     protected $allVoteList = array();
     
     /**
@@ -61,14 +61,7 @@ class Poll
         {
             foreach( self::$optionValueList as $option => $valueList )
             {
-                if ( ! is_array( $valueList ) )
-                {
-                    $this->optionList[ $option ] = $valueList;
-                }
-                else
-                {
-                    $this->optionList[ $option ] = $valueList[ 0 ];
-                }
+                $this->optionList[ $option ] = $valueList[ 0 ];
             }
             
             $this->visibility = Poll::INVISIBLE;
@@ -140,7 +133,7 @@ class Poll
         {
             foreach ( Claroline::getDatabase()->query( "
                 SELECT
-                    id, label, is_locked
+                    id, label
                 FROM
                     `{$this->tbl['poll_choices']}`
                 WHERE
@@ -150,7 +143,6 @@ class Poll
                 ) as $choice )
             {
                 $this->choiceList[ $choice[ 'id' ] ] = $choice[ 'label' ];
-                $this->isLocked[ $choice[ 'id' ] ] = $choice[ 'is_locked' ];
             }
         }
         
@@ -322,18 +314,16 @@ class Poll
             throw new Exception( 'Invalid option' );
         }
         
-        if ( ! is_array( self::$optionValueList[ $option ] ) )
+        if ( is_int( self::$optionValueList[ $option ][ 0 ] ) )
         {
-            $this->optionList[ $option ] = abs( (int)$value );
+            $value  = abs( (int)$value );
         }
-        elseif ( in_array( $value , self::$optionValueList[ $option ] ) )
-        {
-            $this->optionList[ $option ] = $value;
-        }
-        else
+        elseif( ! in_array( $value , self::$optionValueList[ $option ] ) )
         {
             throw new Exception( 'Invalid value' );
         }
+        
+        $this->optionList[ $option ] = $value;
     }
     
     /**
@@ -416,35 +406,6 @@ class Poll
         {
             throw new Exception( 'Cannot update option' );
         }
-    }
-    
-    public function is_Locked( $choiceId )
-    {
-        return $this->isLocked[ $choiceId ] == self::LOCKED;
-    }
-    
-    public function lock( $choiceId )
-    {
-        return Claroline::getDatabase()->exec( "
-            UPDATE
-                `{$this->tbl['poll_choices']}`
-            SET
-                is_locked = " . Claroline::getDatabase()->quote( self::LOCKED ) . "
-            WHERE
-                id = " . Claroline::getDatabase()->escape( $choiceId )
-        );
-    }
-    
-    public function unlock( $choiceId )
-    {
-        return Claroline::getDatabase()->exec( "
-            UPDATE
-                `{$this->tbl['poll_choices']}`
-            SET
-                is_locked = " . Claroline::getDatabase()->quote( self::UNLOCKED ) . "
-            WHERE
-                id = " . Claroline::getDatabase()->escape( $choiceId )
-        );
     }
     
     /**

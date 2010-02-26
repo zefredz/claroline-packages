@@ -3,10 +3,10 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.7.4 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- * @package     CLPOLL2
+ * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
@@ -265,5 +265,33 @@ class UserVote
                 AND
                     poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() )
         );
+    }
+    
+    /**
+     * Controls is the specified choice is open
+     * @param int $choiceId
+     * @return boolean true if open
+     */
+    public function isChoiceOpen( $choiceId )
+    {
+        if ( ! array_key_exists( $choiceId , $this->poll->getChoiceList() ) )
+        {
+            throw new Exception ( 'This choice does not exist!' );
+        }
+        
+        return ! $this->poll->getOption( '_max_vote' )
+               ||
+               Claroline::getDatabase()->query( "
+                SELECT
+                    user_id
+                FROM
+                    `{$this->tbl['poll_votes']}`
+                WHERE
+                    poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
+                AND
+                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
+                AND
+                    vote = " . Claroline::getDatabase()->quote( self::CHECKED )
+                )->numRows() < $this->poll->getOption( '_max_vote' );
     }
 }
