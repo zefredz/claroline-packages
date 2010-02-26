@@ -193,7 +193,7 @@
             <!-- END Displays the poll votes -->
         </tbody>
     </table>
-    <?php if ( $this->voteList->getPageCount() > 1 && $this->userRights[ 'see_names'] ) : ?><!--
+    <?php if ( $this->voteList->getPageCount() > 1 && $this->userRights[ 'see_names'] ) : ?>
     <div id="pagerNav" class="claroPager">
         <span class="pagerBefore">
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
@@ -224,8 +224,8 @@
                 <img alt="go to first page" src="<?php echo get_icon_url( 'pager_last.png' ); ?>" />
             </a>
         </span>
-    </div> -->
-    
+    </div>
+    <!--
     <div id="pagerNav" class="pager">
         <?php if ( $this->pageNb > 0 ) : ?>
         <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
@@ -260,7 +260,7 @@
             <span class="pagerButton">&gt;</span>
             <span class="pagerButton">&gt;&gt;</span>
         <?php endif; ?>
-    </div>
+    </div>-->
     <?php endif; ?>
     
 <!-- END Container for the poll datas display -->

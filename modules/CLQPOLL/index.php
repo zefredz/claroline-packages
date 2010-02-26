@@ -99,7 +99,9 @@ try
     if ( claro_is_course_member() )
     {
         if ( $poll->isOpen() ) $userRights[ 'vote' ] = true;
-        if ( $pollStat && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) ) $userRights[ 'vote' ] = false;
+        if ( $pollStat
+             && $poll->getChoiceList()
+             && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) ) $userRights[ 'vote' ] = false;
     }
     
     if ( claro_is_allowed_to_edit() )
@@ -294,7 +296,7 @@ try
             
             case 'rqViewPoll':
             {
-                if ( min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
+                if ( $poll->getChoiceList() && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
                 {
                     $dialogBox->info( '<strong>' . get_lang( 'You cannot vote anymore: all the choices are locked' ) . '</strong>' );
                 }
