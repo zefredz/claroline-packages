@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.1 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -42,7 +42,7 @@ class PollStat
     }
     
     /**
-     *
+     * Loads the main object's members
      */
     public function load()
     {
@@ -75,11 +75,15 @@ class PollStat
     
     /**
      * Gets general result
+     * @param boolean $force to force DB reading
+     * @param int $choiceId to gets the result for the specified choice only
+     * @return array $this->result the result of the poll with this format : choice id => number of votes
      */
-    public function getResult( $force = false )
+    public function getResult( $force = false , $choiceId = false )
     {
         if ( empty( $this->result ) || $force )
         {
+            /* WHAT IS THE MOST OPTIMIZED ????
             foreach ( $this->poll->getChoiceList() as $choiceId => $label )
             {
                 $this->result[ $choiceId ] = 0;
@@ -95,9 +99,36 @@ class PollStat
                         if ( $check == UserVote::CHECKED ) $this->result[ $choiceId ]++;
                     }
                 }
+            }*/
+            
+            $this->tbl = get_module_course_tbl ( array ( 'poll_votes' ) );
+            
+            foreach ( $this->poll->getChoiceList() as $id => $label )
+            {
+                $this->labels[ $id ] = $label;
+                $this->result[ $id ] = Claroline::getDatabase()->query( "
+                    SELECT
+                        user_id
+                    FROM
+                        `{$this->tbl['poll_votes']}`
+                    WHERE
+                        poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
+                    AND
+                        choice_id = " . Claroline::getDatabase()->escape( $id ) . "
+                    AND
+                        vote = " . Claroline::getDatabase()->quote( UserVote::CHECKED )
+                )->numRows();
             }
         }
-        return $this->result;
+        
+        if ( $choiceId )
+        {
+            return $this->result[ $choiceId ];
+        }
+        else
+        {
+            return $this->result;
+        }
     }
     
     /**
@@ -113,7 +144,7 @@ class PollStat
     }
     
     /**
-     * Gets the 'winning' option
+     * Gets the 'winning' choice
      */
     public function getWinner()
     {

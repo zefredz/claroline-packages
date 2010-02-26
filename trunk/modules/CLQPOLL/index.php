@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.5 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -35,7 +35,7 @@ try
     {
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
             'rqShowList', 'rqViewPoll',
-            'rqSubmitVote', 'rqDeleteVote',
+            'rqViewStats', 'rqDeleteVote',
             'rqCreatePoll', 'rqEditPoll',
             'rqAddChoice', 'rqDeleteChoice',
             'rqDeletePoll', 'rqPurgePoll',
@@ -44,17 +44,16 @@ try
             'exDeletePoll', 'exPurgePoll',
             'exSubmitVote', 'exDeleteVote',
             'exMkVisible', 'exMkInvisible',
-            'exOpen', 'exClose',
-            'rqViewStats'
+            'exOpen', 'exClose'
         ) ) );
     }
     elseif ( claro_is_course_member() )
     {
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
             'rqShowList', 'rqViewPoll',
-            'rqSubmitVote', 'rqDeleteVote',
-            'exSubmitVote', 'exDeleteVote',
-            'rqViewStats'
+            'rqViewStats', 'rqDeleteVote',
+            'exSubmitVote', 'exDeleteVote'
+
         ) ) );
     }
     else
@@ -100,11 +99,12 @@ try
     if ( claro_is_course_member() )
     {
         if ( $poll->isOpen() ) $userRights[ 'vote' ] = true;
+        if ( $pollStat && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) ) $userRights[ 'vote' ] = false;
     }
     
     if ( claro_is_allowed_to_edit() )
     {
-        $userRights[ 'vote' ]        = true; // for test purposes only, this must be deleted
+        $userRights[ 'vote' ]        = true;
         $userRights[ 'edit' ]        = true;
         $userRights[ 'see_stats' ]   = true;
         if ( $poll->getOption( '_privacy' ) != '_anonymous' ) $userRights[ 'see_names' ] = true;
@@ -121,7 +121,15 @@ try
     if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
     {
         $change_allowed[ '_type' ] = false;
-        if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
+        //if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
+        $change_allowed[ '_privacy' ] = false;
+        /*
+        if ( $poll->getOption( '_max_vote' )
+            &&
+            $poll->getOption( '_max_vote' ) <= max( $pollStat->getResult() ) )
+        {
+            $change_allowed[ '_max_vote' ] = false;
+        }*/
     }
     
     // to handle in-betweens deletion
@@ -139,7 +147,6 @@ try
             case 'rqEditChoice':
             case 'rqDeleteChoice':
             case 'rqPurgePoll':
-            case 'rqSubmitVote':
             case 'rqDeleteVote':
             case 'rqDeletePoll':
             case 'rqViewStats':
@@ -151,7 +158,10 @@ try
             {
                 if ( isset( $choiceId ) )// this means it's a single vote poll
                 {
-                    $userVote->setVote( $choiceId , UserVote::CHECKED );
+                    if ( $userVote->isChoiceOpen( $choiceId ) )
+                    {
+                        $userVote->setVote( $choiceId , UserVote::CHECKED );
+                    }
                 }
                 else
                 {
@@ -166,7 +176,10 @@ try
                             $checked = UserVote::NOTCHECKED;
                         }
                         
-                        $userVote->setVote( $choiceId , $checked );
+                        if ( $userVote->isChoiceOpen( $choiceId ) )
+                        {
+                            $userVote->setVote( $choiceId , $checked );
+                        }
                     }
                 }
                 
@@ -183,11 +196,11 @@ try
             case 'exCreatePoll':
             case 'exEditPoll':
             {
-                $title     = $userInput->get( 'title' );
-                $question  = $userInput->get( 'question' );
-                $label     = $userInput->get( 'label' );
+                $title      = $userInput->get( 'title' );
+                $question   = $userInput->get( 'question' );
+                $label      = $userInput->get( 'label' );
                 $visibility = $userInput->get( 'visibility' );
-                $status    = $userInput->get( 'status' );
+                $status     = $userInput->get( 'status' );
                 
                 $poll->setTitle( $title );
                 $poll->setQuestion( $question );
@@ -209,6 +222,7 @@ try
                 foreach( array_keys( $poll->getChoiceList() ) as $choiceId )
                 {
                     $label = $userInput->get( 'choice' . $choiceId );
+                    
                     if ( $label )
                     {
                         $poll->updateChoice( $choiceId , $label );
@@ -272,6 +286,33 @@ try
         
         switch ( $cmd )
         {
+            case 'rqShowList':
+            {
+                $template = 'polllist';
+                break;
+            }
+            
+            case 'rqViewPoll':
+            {
+                if ( min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
+                {
+                    $dialogBox->info( '<strong>' . get_lang( 'You cannot vote anymore: all the choices are locked' ) . '</strong>' );
+                }
+                elseif ( ! $poll->isOpen() )
+                {
+                    $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
+                }
+                elseif ( ! $userRights[ 'vote' ] )
+                {
+                    $dialogBox->info( get_lang( 'Vote only granted to course registered users!' ) );
+                }
+                
+                $crumb = get_lang( 'Poll' );
+                $template = 'pollview';
+                
+                break;
+            }
+            
             case 'rqEditPoll':
             {
                 if ( $poll->getAllVoteList() )
@@ -301,29 +342,6 @@ try
                 
                 $crumb = get_lang( 'Delete poll choice' );
                 $template = 'polledit';
-                break;
-            }
-            
-            case 'rqShowList':
-            {
-                $template = 'polllist';
-                break;
-            }
-            
-            case 'rqViewPoll':
-            {
-                if ( ! $poll->isOpen() )
-                {
-                    $dialogBox->info( get_lang( 'The votes for this poll are closed' ) );
-                }
-                elseif ( ! $userRights[ 'vote' ] )
-                {
-                    $dialogBox->info( get_lang( 'Vote only granted to course registered users!' ) );
-                }
-                
-                $crumb = get_lang( 'Poll' );
-                $template = 'pollview';
-                
                 break;
             }
             
@@ -366,20 +384,6 @@ try
                 $urlAction = 'exDeletePoll';
                 $urlCancel = 'rqShowList';
                 $template = 'polledit';
-                break;
-            }
-            
-            case 'rqSubmitVote':
-            {
-                if ( $userRights[ 'vote' ] )
-                {
-                    $crumb = get_lang( 'Vote' );
-                    $template = 'pollview';
-                }
-                else
-                {
-                    claro_disp_auth_form( true );
-                }
                 break;
             }
             
@@ -580,12 +584,6 @@ catch ( Exception $e ) // exceptions handling
     }
 }
 
-if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
-{
-    $change_allowed[ '_type' ] = false;
-    if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
-}
-
 // if $msg is defined, displays a question box containing a simple [OK]/[Cancel] form
 if ( isset( $msg ) )
 {
@@ -635,7 +633,7 @@ if ( isset ( $template ) )
         
         case 'pollview':
             if ( ! isset( $pageNb ) ) $pageNb = 0;
-            $pollPager = new Pager( $poll->getAllVoteList() , get_conf( 'pagerLineNb' ) );
+            $pollPager = new Pager( $poll->getAllVoteList( true ) , get_conf( 'pagerLineNb' ) );
             if ( $pageNb >= $pollPager->getPageCount() ) $pageNb = $pollPager->getPageCount() - 1;
             $pollView->assign( 'voteList' , $pollPager );
             $pollView->assign( 'pageNb' , $pageNb );
