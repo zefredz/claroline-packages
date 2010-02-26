@@ -121,7 +121,7 @@ function rqContentUrl( &$item, $pathId, $itemId)
                 // we have to open a frame that will discuss with API and open the document instead 
                 // of directly opening it
                 lpDebug($itemUrl);
-                $itemUrl = str_replace( get_conf('clarolineRepositoryAppend') . 'claroline/backends/download.php', get_module_url( $moduleLabel ) . '/connector/cllp.frames.cnr.php',$itemUrl);
+                $itemUrl = str_replace( get_conf('urlAppend') . '/claroline/backends/download.php', '/' . get_module_url( $moduleLabel ) . '/connector/cllp.frames.cnr.php',$itemUrl);
                 $itemUrl = str_replace('//','/', $itemUrl);
                 lpDebug($itemUrl);
             }
