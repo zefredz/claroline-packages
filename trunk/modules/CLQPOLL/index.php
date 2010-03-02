@@ -209,6 +209,8 @@ try
                 $poll->setVisibility( $visibility );
                 $poll->setStatus( $status );
                 
+                $poll_changed = $poll->save();
+                
                 foreach( array_keys( $poll->getOptionList() ) as $option)
                 {
                     $value = $userInput->get( $option );
@@ -219,7 +221,7 @@ try
                     }
                 }
                 
-                if ( $label && ! $poll->getAllVoteList() ) $poll->addChoice( $label );
+                if ( $label && ! $poll->getAllVoteList() ) $poll_changed = $poll->addChoice( $label );
                 
                 foreach( array_keys( $poll->getChoiceList() ) as $choiceId )
                 {
@@ -227,11 +229,10 @@ try
                     
                     if ( $label )
                     {
-                        $poll->updateChoice( $choiceId , $label );
+                        $poll_changed = $poll->updateChoice( $choiceId , $label );
                     }
                 }
                 
-                $poll_changed = $poll->save();
                 break;
             }
             
