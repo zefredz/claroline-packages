@@ -297,7 +297,7 @@ try
             
             case 'rqViewPoll':
             {
-                if ( $poll->getChoiceList() && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
+                if ( $poll->getChoiceList() && $poll->getOption( '_max_vote' ) && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
                 {
                     $dialogBox->info( '<strong>' . get_lang( 'You cannot vote anymore: all the choices are locked' ) . '</strong>' );
                 }
