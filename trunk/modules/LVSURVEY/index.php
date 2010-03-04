@@ -10,6 +10,7 @@
     * @package     LVSURVEY
     * 
     * TODO 
+    *  OPEN QUESTION : do not show choices made by users of other  surveys ! (change hack in show_survey.tpl)
     *  prevent people to change their answer after a survey is closed
     *  prevent users from deleteing used questions or questions belonging to someone else
     *  Export results
