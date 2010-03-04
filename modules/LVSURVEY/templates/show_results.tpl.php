@@ -34,7 +34,7 @@
        		if( isset($surveyResults->lineResultList[$surveyLine->id]))
        		{
        			$lineResultList = $surveyResults->lineResultList[$surveyLine->id];
-       		}			
+       		}       					
 		?>
 		<div class="LVSURVEYQuestion">
         	<input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
@@ -58,7 +58,9 @@
        								$choiceResultList = $lineResultList->choiceResultList[$choice->id];
        							}
        							$resultList = $choiceResultList->resultList;
-       							$resultCount = count($resultList);       							
+       							$resultCount = count($resultList); 
+       							//bad hack but we do not not want to show choices made in other surveys for open questions
+       							if($question->type == 'OPEN' && $resultCount == 0 ) continue;      							
        						?>
        						<tr class="answerTR">
        							<td>
