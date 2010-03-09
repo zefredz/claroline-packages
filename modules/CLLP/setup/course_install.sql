@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
   PRIMARY KEY(`id`)
 ) TYPE=MyISAM;
 
-CREATE TABLE `__CL_COURSE__lp_item_blockcondition` (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL DEFAULT '0',
   `cond_item_id` int(11) NOT NULL DEFAULT '0',
