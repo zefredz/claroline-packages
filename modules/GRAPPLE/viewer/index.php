@@ -107,7 +107,7 @@ claro_set_display_mode_available(false);
 if( $path->isVisible() || claro_is_allowed_to_edit() )
 {
     // Contact GEB for the courseAccess
-    $grapple = new grapple;
+    /*$grapple = new grapple;
     if( $data = $grapple->courseAccess( claro_get_current_user_id(), claro_get_current_course_id() ) )
     {
       $grapple_idAssignedEvent = $data->idAssignedEvent;
@@ -116,7 +116,7 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
     else
     {
       //Unable to send courseAccess
-    }
+    }*/
     
     $claroline->setDisplayType( CL_FRAMESET );
 

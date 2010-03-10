@@ -55,7 +55,8 @@ $acceptedCmdList = array(   'rqEdit', 'exEdit',
                             'rqDelete', 'exDelete',
                             'rqPrereq', 'exPrereq', 'rqDeletePrereq', 'exDeletePrereq',
                             'exVisible', 'exInvisible',
-                            'rqMove', 'exMove', 'exMoveUp','exMoveDown'
+                            'rqMove', 'exMove', 'exMoveUp','exMoveDown',
+                            'rqGrappleCoursesList'
                     );
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
@@ -661,7 +662,36 @@ if( $cmd == 'exInvisible' )
     $item->save();
 }
 
-
+if( $cmd == 'rqGrappleCoursesList' )
+{
+    $grapple = new grapple();
+    
+    $coursesList = $grapple->requestCoursesList();
+    
+    if( isset( $_SESSION['grapple']['coursesList'] ) )
+    {
+        unset( $_SESSION['grapple']['coursesList'] );
+    }
+    
+    $_SESSION['grapple']['coursesList'] = $coursesList;
+    
+    if( ! $coursesList['success'] )
+    {
+        $dialogBox->error( $coursesList['error'] );
+    }
+    else
+    {
+        //Display courses list
+        $htmlForm = '<form name="exGrappleCoursesList" action="' . $_SERVER['PHP_SELF'].'?cmd=exGrappleCoursesList&amp&pathId=' . $pathId . claro_url_relay_context( '&amp;' ) . '" method="post" >';
+        foreach( $coursesList as $course )
+        {
+            $htmlForm .= '<input type="checkbox" name="course[' . $course['gid'] . ']" /> ' . htmlspecialchars( $course['name'] ) . '<br />';
+        }
+        $htmlForm .= '</form>';
+        
+        $dialogBox->form( $htmlForm );
+    }
+}
 
 
 
@@ -696,6 +726,7 @@ if( $is_allowedToEdit && !is_null($pathId) )
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqEdit&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('edit') . '" border="0" alt="" />' . get_lang('Edit path settings'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddContainer&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('chapter_add') . '" border="0" alt="" />' . get_lang('Add chapter'));
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('item_add') . '" border="0" alt="" />' . get_lang('Add item(s)'));
+    $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqGrappleCoursesList&amp&pathId=' . $pathId . claro_url_relay_context( '&amp;' ), get_lang( 'Import a Grapple course' ) );
 }
 
 $out .= '<p><small>' . htmlspecialchars($path->getDescription()). '</small></p>' . "\n";

@@ -8,10 +8,20 @@ class grapple{
   
   private $identifier;
   
+  private $tblGrappleResources;
+  
   public function __construct()
   {
     load_module_config('GRAPPLE');
     $this->identifier = get_conf( 'platformId' );
+    
+    $tblNameList = array(
+        'lp_grapple_resources'
+    );
+
+    // convert to Claroline course table names
+    $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+    $this->tblGrappleReources = $tbl_lp_names['lp_grapple_resources'];
   }
   
   /**
@@ -26,7 +36,7 @@ class grapple{
     $wsdl = get_conf('geb_wsdl');
     $option = array("trace" => 1, "exceptions" => 1);
     $soapClient = new SoapClient( $wsdl, $option );
-    
+    //$soapClient = '';
     if( $soapClient )
     {
       $this->soapClient = $soapClient;
@@ -48,7 +58,7 @@ class grapple{
    * @return object Soap object
    */
   
-  private function sendData( $xml, $previousId )
+  private function sendData( $xml, $previousId, $calledFunction )
   {
     $xml = '<?xml version="1.0" encoding="UTF-8"?>
             <statement>
@@ -61,9 +71,22 @@ class grapple{
                     );
     
     $result = $this->soapClient->__soapCall( 'eventGEBListenerOperation', array($params) );
-    pushClaroMessage( "Sending data to Grapple", 'debug' );
     
+    $this->log(date('Y-M-D H:i') . "\t" . $previousId . "\t" . $calledFunction . "\t" . $result->idAssignedEvent . "\n" );    
+
     return $result;
+  }
+  
+  /**
+   * Log informations
+   *
+   * @param text
+   */
+  private function log( $msg )
+  {
+    $file = get_module_path( 'GRAPPLE' ) . '/log.txt';
+    var_dump( $msg );
+    file_put_contents( $file, $msg, FILE_APPEND );
   }
   
   /**
@@ -76,12 +99,12 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return object Soap object
    */
-  public function courseAccess( $userId, $courseId, $previousId = 0 )
+  public function courseAccess( $userId, $courseId, $itemId, $previousId = 0 )
   {
     if( $this->connect() )
-    {
-      $xml = $this->generateXMLCourseAccess( $userId, $courseId );
-      return $this->sendData( $xml, $previousId );
+    {      
+      $xml = $this->generateXMLCourseAccess( $userId, $courseId, $itemId );
+      return $this->sendData( $xml, $previousId, 'courseAccess' );
     }
     else
     {
@@ -89,7 +112,7 @@ class grapple{
     }
   }
   /**
-   * Generate XML for an access to a course
+   * Generate XML for an access to a course (Grapple Module)
    *
    * @param int $userId Id of the user
    * @param int $courseId Id of course
@@ -97,7 +120,7 @@ class grapple{
    * @author Dimitri Rambout <dim@clarolinet.net>
    * @return string XML content
    */
-  private function generateXMLCourseAccess( $userId, $courseId)
+  private function generateXMLCourseAccess( $userId, $courseId, $itemId )
   {
     $courseData = claro_get_course_data( $courseId );
     $userData = user_get_properties( $userId );
@@ -119,7 +142,7 @@ class grapple{
           <referential>
             <sourcedid>
               <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier . '</id>
+              <id>' . $courseId . '_' . $itemId . '</id>
             </sourcedid>
           </referential>
         </contentype>
@@ -161,7 +184,7 @@ class grapple{
     if( $this->connect() )
     {
       $xml = $this->generateLearningActivityAddition( $userId, $pathId );
-      return $this->sendData( $xml, $previousId );
+      return $this->sendData( $xml, $previousId, 'learningActivityAddition' );
     }
     else
     {
@@ -202,7 +225,7 @@ class grapple{
           <referential>
             <sourcedid>
               <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier .'</id>
+              <id>' . $courseId . '_' . $pathId .'</id>
             </sourcedid>
           </referential>
         </contentype>
@@ -274,7 +297,7 @@ class grapple{
     if( $this->connect() )
     {
       $xml = $this->generateQuizCompletion( $userId, $courseId, $pathId, $itemId, $attemptId, $startTime, $stopTime );
-      return $this->sendData( $xml, $previousId );
+      return $this->sendData( $xml, $previousId, 'quizCompletion' );
     }
     else
     {
@@ -330,7 +353,7 @@ class grapple{
           <referential>
             <sourcedid>
               <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier . '</id>
+              <id>' . $courseId . '_' . $itemId . '</id>
             </sourcedid>
           </referential>
         </contentype>
@@ -470,7 +493,7 @@ class grapple{
     if( $this->connect() )
     {
       $xml = $this->generateStudentEnrollment( $userId );
-      return $this->sendData( $xml, $previousId );
+      return $this->sendData( $xml, $previousId, 'studentEnrollment' );
     }
     else
     {
@@ -535,7 +558,7 @@ class grapple{
     if( $this->connect() )
     {
       $xml = $this->generateUserLogin( $userId );
-      return $this->sendData( $xml, $previousId );
+      return $this->sendData( $xml, $previousId, 'userLogin' );
     }
     else
     {
@@ -599,7 +622,7 @@ class grapple{
     if( $this->connect() )
     {
       $xml = $this->generateUserRegistration( $userId );
-      return $this->sendData( $xml, $previousId );
+      return $this->sendData( $xml, $previousId, 'userRegistration' );
     }
     else
     {
@@ -720,6 +743,69 @@ class grapple{
     </learnerinformation>';
     
     return $xml;
+  }
+  
+  public function requestCoursesList()
+  {
+    
+    //Need to set the time limit to 0 to be sure to get result (will be change when Ajax will be used)
+    set_time_limit( 0 );
+    
+    $courseWsdl = get_conf( 'courses_wsdl' );
+    $options=array("trace" => 1, "exceptions" => 1);
+    
+    $client = new SoapClient( $courseWsdl, $options );
+    
+    $coursesList = array();
+    $coursesList['success'] = false;
+    
+    try {
+      $res = $client->__soapCall(
+              'sendmessage',
+              array(
+                  array(  'request_method' => 'getCourses',
+                          'body' => '',
+                          'answer_method' => 'getCoursesResponse ',
+                          'blocking' => true,
+                          'timeout' => 30,
+                          'waittimeout' => false
+                      )
+                  )
+              );
+    }catch (SoapFault $exception) {
+            
+      $coursesList['error'] = $client->__getLastResponse();
+      //print_r( $exception );
+    }
+    
+    if( ! is_soap_fault( $res ) )
+    {
+        if( ! empty( $res ) )
+        {
+            $xml=simplexml_load_string( (string) $res[0] );
+              
+            $coursesList['success'] = true;
+            $coursesList['courses'] = array();
+            
+            foreach($xml->activity as $activity){
+              $gid = $xml->activity->contentype->temporal->temporalfield->fielddata;
+              $coursesList['courses'][ $gid ]['uri'] = $activity->contentype->referential->sourcedid->source;
+              $coursesList['courses'][ $gid ]['name']  = $activity->contentype->referential->sourcedid->id;
+              $coursesList['courses'][ $gid ]['gid']  = $gid;
+              $coursesList['courses'][ $gid ]['path']  = substr( $coursesList['courses']['uri'] , 0, strpos( $coursesList['courses']['uri'] , "://", 10 ) );
+            }
+        }
+        else
+        {
+          $coursesList['error'] = get_lang( 'Unable to get response from GEB' );
+        }
+    }
+    else
+    {
+      $coursesList['error'] = get_lang( "SOAP Fault: (faultcode: %faultcode, faultstring: %faultstring)", array( '%faultcode' => $res->faultcode, '%faultstring' => $res->faultstring ) );
+    }
+    
+    return $coursesList;
   }
 
 }

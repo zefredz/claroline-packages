@@ -132,6 +132,10 @@ function rqContentUrl( &$item, $pathId, $itemId)
     
                 $itemUrl = $scormBaseUrl . $item->getSysPath();
             }
+            elseif( $item->getType() == 'GRAPPLE' )
+            {
+                $itemUrl = $item->getSysPath();
+            }
             else
             {
                 return false;
@@ -327,19 +331,19 @@ if( $cmd == 'rqToc' )
 
         // title
         $html .= '<div style="padding-left:'.($anItem['deepness']*10).'px;" class="item" id="item_'.$anItem['id'].'">';
-
-        if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' )
+        
+        if( $anItem['type'] == 'CONTAINER' )
+        {
+            $html .= '<img src="'.get_module_url('GRAPPLE').'/img/chapter.png" alt="" />'
+            .     '&nbsp;' . $anItem['title'];
+        }
+        else
         {
             $html .= '<img src="'.get_module_url('GRAPPLE').'/img/item.png" alt="" />'
             .     '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>'
             //.    '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url($completionIcon).'" />';
             .    ( $completionIcon ? '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url( 'completed' ).'" />' : '')
             ;
-        }
-        else
-        {
-            $html .= '<img src="'.get_module_url('GRAPPLE').'/img/chapter.png" alt="" />'
-            .     '&nbsp;' . $anItem['title'];
         }
 
         $html .= '</div>' . "\n";
@@ -548,10 +552,15 @@ if( $cmd == 'getNewWindow' )
 }
 if( $cmd == 'doGrapple' )
 {
-    $item = new item();
-    $item->load( $itemId );
+    /*$item = new item();
+    $item->load( $itemId );*/
     
-    $ims_lip = grapple::courseAccess( claro_get_current_user_id(), claro_get_current_course_id(), $item);
+    $previousGEBId = isset($_SESSION['grapple']['previousGEBId']) ? (int) $_SESSION['grapple']['previousGEBId'] : 0;
+    
+    $grapple = new grapple();
+    $newGEBId = $grapple->courseAccess( claro_get_current_user_id(), claro_get_current_course_id(), $itemId, $previousGEBId);
+    
+    $_SESSION['grapple']['previousGEBId'] = $newGEBId->idAssignedEvent;
 }
 function lpDebug($var)
 {
