@@ -10,7 +10,8 @@ class grapple{
   
   public function __construct()
   {
-    echo $this->identifier = get_conf( 'platformId' );
+    load_module_config('GRAPPLE');
+    $this->identifier = get_conf( 'platformId' );
   }
   
   /**
@@ -21,9 +22,9 @@ class grapple{
    */
   private function connect()
   {
-    $wsdl = 'http://dyn070.win.tue.nl:8080/GrappleEventBus/eventGEBListenerService?wsdl';
-    $option = array("trace" => 1, "exceptions" => 1);
     
+    $wsdl = get_conf('geb_wsdl');
+    $option = array("trace" => 1, "exceptions" => 1);
     $soapClient = new SoapClient( $wsdl, $option );
     
     if( $soapClient )
@@ -53,13 +54,14 @@ class grapple{
             <statement>
               <origin>' . $xml . '</origin>
             </statement>';
-            
+    
     $params = array(  'eventListenerID' => $previousId,
                       'method'=>'setUMData',
                       'body'=> $xml
                     );
     
     $result = $this->soapClient->__soapCall( 'eventGEBListenerOperation', array($params) );
+    pushClaroMessage( "Sending data to Grapple", 'debug' );
     
     return $result;
   }
@@ -332,7 +334,11 @@ class grapple{
             </sourcedid>
           </referential>
         </contentype>
-        <evaluation>
+        <evaluation>'
+        ;
+        if( get_conf('grapple_privacy_quiz_starttime') === true )
+        {
+          $xml .= '
           <date>
             <typename>
               <tysource sourcetype="list">AccessDate,CreationDate,StartDate,StopDate,BirthDate</tysource>
@@ -340,6 +346,11 @@ class grapple{
             </typename>
             <datetime>' . date( 'c', $startTime ) . '</datetime>
           </date>
+          ';
+        }
+        if( get_conf('grapple_privacy_quiz_stoptime') === true )
+        {
+          $xml .= '
           <date>
             <typename>
               <tysource sourcetype="list">AccessDate,CreationDate,StartDate,StopDate,BirthDate</tysource>
@@ -347,8 +358,20 @@ class grapple{
             </typename>
             <datetime>' . date( 'c', $stopTime ) . '</datetime>
           </date>
+          ';
+        }
+        if( get_conf('grapple_privacy_quiz_attemptnb') === true )
+        {
+          $xml .= '
           <noofattempts>' . (int) $attempt->getAttemptNumber() . '</noofattempts>
+          ';
+        }
+        $xml .= '
           <result>
+          ';
+        if( get_conf('grapple_privacy_quiz_score_total') === true )
+        {
+            $xml .= '
             <score>
               <fieldlabel>
                 <typename>
@@ -357,6 +380,11 @@ class grapple{
               </fieldlabel>
               <fielddata>' . (float) $itemAttempt->getScoreRaw() . '</fielddata>
             </score>
+            ';
+        }
+        if( get_conf('grapple_privacy_quiz_score_min') === true )
+        {
+            $xml .'
             <interpretscore>
               <fieldlabel>
                 <typename>
@@ -365,6 +393,11 @@ class grapple{
               </fieldlabel>
               <fielddata>' . (float) $itemAttempt->getScoreMin() . '</fielddata>
             </interpretscore>
+            ';
+        }
+        if( get_conf('grapple_privacy_quiz_score_max') === true )
+        {
+            $xml .= '
             <interpretscore>
               <fieldlabel>
                 <typename>
@@ -373,6 +406,11 @@ class grapple{
               </fieldlabel>
               <fielddata>' . (float) $itemAttempt->getScoreMax() . '</fielddata>
             </interpretscore>
+            ';
+        }
+        if( get_conf('grapple_privacy_quiz_score_treshold') === true )
+        {
+            $xml .= '
             <interpretscore>
               <fieldlabel>
                 <typename>
@@ -381,14 +419,36 @@ class grapple{
               </fieldlabel>
               <fielddata>' . (float) $item->getCompletionThreshold() . '%</fielddata>
             </interpretscore>
+            ';
+        }
+          $xml .= '
           </result>
+          ';
+        if( get_conf('grapple_privacy_quiz_title') === true )
+        {
+          $xml .= '
           <description>
             <short xml:lang="en">' . claro_utf8_encode( $item->getTitle(), get_conf( 'charset' ) ) . '</short>
           </description>
+          ';
+        }
+        $xml .= '
         </evaluation>
         <description>
+        ';
+        if( get_conf('grapple_privacy_quiz_title') === true )
+        {
+          $xml .= '
           <short xml:lang="en">' . claro_utf8_encode( $path->getTitle(), get_conf( 'charset' ) ) . '</short>
+          ';
+        }
+        if( get_conf('grapple_privacy_quiz_description') === true )
+        {
+          $xml .= '
           <long xml:lang="en">' . claro_utf8_encode( $path->getDescription(), get_conf( 'charset' ) ) . '</long>
+          ';
+        }
+        $xml .='
         </description>
       </activity>
     </learnerinformation>';

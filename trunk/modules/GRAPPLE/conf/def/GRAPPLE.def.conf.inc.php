@@ -42,5 +42,148 @@ array ( 'label'       => 'SCORM API debug mode'
                                )
       );
 
+$conf_def['section']['webservices']['label'] = 'Web Services';
+$conf_def['section']['webservices']['properties'] =
+array ( 'geb_wsdl', 'courses_wsdl' );
+
+$conf_def_property_list['geb_wsdl'] =
+array (  'label'        => 'GEB Webservice'
+       , 'description'  => 'URL of the GEB Webservice'
+       , 'default'      => ''
+       ,  'type'        => 'string'
+       ,  'display'     => true
+       ,  'readonly'    => false
+       );
+
+$conf_def_property_list['courses_wsdl'] =
+array (  'label'        => 'GEB Webservice (coursse)'
+       , 'description'  => 'URL of the GEB Webservice (courses)'
+       , 'default'      => ''
+       ,  'type'        => 'string'
+       ,  'display'     => true
+       ,  'readonly'    => false
+       );
+
+
+$conf_def['section']['privacy']['label'] = 'Quiz privacy';
+$conf_def['section']['privacy']['description'] = 'Specify which event you want to send on the Grapple Event Bus';
+$conf_def['section']['privacy']['properties'] =
+array( 'grapple_privacy_quiz_starttime'
+      , 'grapple_privacy_quiz_stoptime'
+      , 'grapple_privacy_quiz_attemptnb'
+      , 'grapple_privacy_quiz_score_total'
+      , 'grapple_privacy_quiz_score_min'
+      , 'grapple_privacy_quiz_score_max'
+      , 'grapple_privacy_quiz_treshold'
+      , 'grapple_privacy_quiz_title'
+      , 'grapple_privacy_quiz_description');
+
+$conf_def_property_list['grapple_privacy_quiz_starttime'] =
+array ( 'description' => 'Enable to send the start time of a Quiz'
+      , 'label'       => 'Quiz start time'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_stoptime'] =
+array ( 'description' => 'Enable to send the stop time of a Quiz'
+      , 'label'       => 'Quiz stop time'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_attemptnb'] =
+array ( 'description' => 'Enable to send the number of attempts of a Quiz'
+      , 'label'       => 'Number of Quiz attempts'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_score_total'] =
+array ( 'description' => 'Enable to send the result of a Quiz'
+      , 'label'       => 'Result of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_score_min'] =
+array ( 'description' => 'Enable to send the minimum score of a Quiz'
+      , 'label'       => 'Minimum score of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_score_max'] =
+array ( 'description' => 'Enable to send the maximum score of a Quiz'
+      , 'label'       => 'Maximum score of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_treshold'] =
+array ( 'description' => 'Enable to send completion treshold of a Quiz'
+      , 'label'       => 'Completion threshold of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_title'] =
+array ( 'description' => 'Enable to send title of a Quiz'
+      , 'label'       => 'Title of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
+
+$conf_def_property_list['grapple_privacy_quiz_description'] =
+array ( 'description' => 'Enable to send description of a Quiz'
+      , 'label'       => 'Description of the Quiz'
+      , 'default'     => true
+      , 'type'        => 'boolean'
+      , 'acceptedValue' => array ('TRUE'=>'Yes'
+                               ,'FALSE'=>'No'
+                               )
+      , 'display'     => true
+      , 'readonly'    => false
+      );
 
 ?>
