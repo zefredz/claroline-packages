@@ -214,7 +214,9 @@ if( $cmd == 'doCommit' )
             $startTime = empty( $_SESSION[ 'grapple' ][ 'startTime' ] ) ? time() : (int) $_SESSION[ 'grapple' ][ 'startTime' ];
             $stopTime = time();
             $grapple = new grapple();
-            if( $data = $grapple->quizCompletion( claro_get_current_user_id(), claro_get_current_course_id(), $grapple_idAssignedEvent, $pathId, $itemAttempt->getItemId(), $itemAttempt->getAttemptId(), $startTime, $stopTime ) )
+            $data = $grapple->quizCompletion( claro_get_current_user_id(), claro_get_current_course_id(), $grapple_idAssignedEvent, $pathId, $itemAttempt->getItemId(), $itemAttempt->getAttemptId(), $startTime, $stopTime );
+            //var_dump( $data->idAssignedEvent );
+            if( $data )
             {
                 $grapple_idAssignedEvent = $data->idAssignedEvent;
                 $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;

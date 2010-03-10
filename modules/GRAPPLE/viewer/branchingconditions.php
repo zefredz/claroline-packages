@@ -62,7 +62,7 @@ else
   $jsloader->load('jquery');
   $jsloader->load('jquery.json');
       
-  $jsloader->load('CLLP');
+  $jsloader->load('GRAPPLE');
   $jsloader->load('scormtime');
   $jsloader->load('claroline');
   

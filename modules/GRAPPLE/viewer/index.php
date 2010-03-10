@@ -124,7 +124,7 @@ if( $path->isVisible() || claro_is_allowed_to_edit() )
     $jsloader->load('jquery');
     $jsloader->load('jquery.json');
     
-    $jsloader->load('CLLP');
+    $jsloader->load('GRAPPLE');
     $jsloader->load('scormtime');
     $jsloader->load('claroline');
     $jsloader->load($scormAPI->getApiFileName());
