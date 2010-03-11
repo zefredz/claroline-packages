@@ -782,16 +782,24 @@ class grapple{
         if( ! empty( $res ) )
         {
             $xml=simplexml_load_string( (string) $res[0] );
-              
+            
             $coursesList['success'] = true;
             $coursesList['courses'] = array();
             
+            $i = 0;
+            
             foreach($xml->activity as $activity){
-              $gid = $xml->activity->contentype->temporal->temporalfield->fielddata;
-              $coursesList['courses'][ $gid ]['uri'] = $activity->contentype->referential->sourcedid->source;
-              $coursesList['courses'][ $gid ]['name']  = $activity->contentype->referential->sourcedid->id;
+              $gid = $activity->contentype->temporal->temporalfield->fielddata;
+              $uri = $activity->contentype->referential->sourcedid->source;
+              $name = $activity->contentype->referential->sourcedid->id;
+              $gid = (string) $gid[0];
+              
+              $coursesList['courses'][ $gid ]['uri'] = (string) $uri[0];
+              $coursesList['courses'][ $gid ]['name']  = (string) $name[0];
               $coursesList['courses'][ $gid ]['gid']  = $gid;
-              $coursesList['courses'][ $gid ]['path']  = substr( $coursesList['courses']['uri'] , 0, strpos( $coursesList['courses']['uri'] , "://", 10 ) );
+              $coursesList['courses'][ $gid ]['path']  = substr( $coursesList['courses'][ $gid ]['uri'] , 0, strpos( $coursesList['courses'][ $gid ]['uri'] , "://", 10 ) );
+              
+              $i++;
             }
         }
         else
@@ -850,7 +858,7 @@ class grappleResource
       $resourceData = $resource->fetch();
       
       $this->id = $resourceData[ 'grappleId' ];
-      $this->uri = $resourceData[ 'uri'];
+      $this->uri = $resourceData[ 'uri' ];
       $this->name = $resourceData[ 'name' ];
       $this->path = $resourceData[ 'path' ];
       
@@ -860,9 +868,75 @@ class grappleResource
     return false;
   }
   
+  public function save()
+  {
+    //check if need to insert a new resource or update an existing one.
+    $result = Claroline::getDatabase()->query("
+      SELECT
+        `grappleId`
+      FROM
+        `" . $this->tblGrappleResources['lp_grapple_resources'] . "`
+      WHERE
+        `grappleId` = '" . Claroline::getDatabase()->escape( $this->id ) . "'
+    ");
+    
+    if( $result->numRows() )
+    {
+      //Update
+      $result = Claroline::getDatabase()->exec("
+        UPDATE
+          `" . $this->tblGrappleResources['lp_grapple_resources'] . "`
+        SET
+          `uri` = '" . Claroline::getDatabase()->escape( $this->uri ) . "',
+          `name` = '" . Claroline::getDatabase()->escape( $this->name ) . "',
+          `path` = '" . Claroline::getDatabase()->escape( $this->path ) . "'
+        WHERE
+          `grappleId` = '" . Claroline::getDatabase()->escape( $this->id ) . "'
+      ");
+      
+      if( $result )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+    else
+    {
+      //Insert
+      $result = Claroline::getDatabase()->exec("
+        INSERT
+          INTO `" . $this->tblGrappleResources['lp_grapple_resources'] . "`
+        SET
+          `grappleId` = '" . Claroline::getDatabase()->escape( $this->id ) . "',
+          `uri` = '" . Claroline::getDatabase()->escape( $this->uri ) . "',
+          `name` = '" . Claroline::getDatabase()->escape( $this->name ) . "',
+          `path` = '" . Claroline::getDatabase()->escape( $this->path ) . "'
+      ");
+      
+      if( $result )
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }      
+    }
+  }
+  
   public function getId()
   {
     return $this->id;
+  }
+  
+  public function setId( $id )
+  {
+    $this->id = $id;
+    
+    return $this;
   }
   
   public function getUri()
@@ -870,14 +944,35 @@ class grappleResource
     return $this->uri;
   }
   
+  public function setUri( $uri )
+  {
+    $this->uri = $uri;
+    
+    return $this;
+  }
+  
   public function getName()
   {
     return $this->name;
   }
   
+  public function setName( $name )
+  {
+    $this->name = $name;
+    
+    return $this;
+  }
+  
   public function getPath()
   {
     return $this->path;
+  }
+  
+  public function setPath( $path )
+  {
+    $this->path = $path;
+    
+    return $this;
   }
 }
 
