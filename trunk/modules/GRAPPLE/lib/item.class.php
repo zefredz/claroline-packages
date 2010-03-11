@@ -426,7 +426,7 @@ class item
      */
     public function setType($value)
     {
-        $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM');
+        $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM', 'GRAPPLE' );
 
         if( in_array($value, $acceptedValues) )
         {

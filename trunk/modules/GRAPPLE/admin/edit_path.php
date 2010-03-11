@@ -56,7 +56,7 @@ $acceptedCmdList = array(   'rqEdit', 'exEdit',
                             'rqPrereq', 'exPrereq', 'rqDeletePrereq', 'exDeletePrereq',
                             'exVisible', 'exInvisible',
                             'rqMove', 'exMove', 'exMoveUp','exMoveDown',
-                            'rqGrappleCoursesList'
+                            'rqGrappleCoursesList', 'exGrappleCoursesList'
                     );
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
@@ -682,14 +682,68 @@ if( $cmd == 'rqGrappleCoursesList' )
     else
     {
         //Display courses list
-        $htmlForm = '<form name="exGrappleCoursesList" action="' . $_SERVER['PHP_SELF'].'?cmd=exGrappleCoursesList&amp&pathId=' . $pathId . claro_url_relay_context( '&amp;' ) . '" method="post" >';
-        foreach( $coursesList as $course )
+        $htmlForm = '<form name="exGrappleCoursesList" action="' . $_SERVER['PHP_SELF'].'?cmd=exGrappleCoursesList&amp;pathId=' . $pathId . claro_url_relay_context( '&amp;' ) . '" method="post" >';
+        
+        foreach( $coursesList['courses'] as $gid => $course )
         {
-            $htmlForm .= '<input type="checkbox" name="course[' . $course['gid'] . ']" /> ' . htmlspecialchars( $course['name'] ) . '<br />';
+            $htmlForm .= '<input type="checkbox" name="courses[' . $course['gid'] . ']" value="' . $course['gid'] . '" /> ' . htmlspecialchars( $course['name'] ) . ' ( <a href="' . $course['uri'] . '">' . $course['uri'] . '</a>)<br />';
         }
-        $htmlForm .= '</form>';
+        $htmlForm .= '<input type="submit" value="'.get_lang( 'Import' ).'" />' . "\n"
+        .   '</form>';
         
         $dialogBox->form( $htmlForm );
+    }
+}
+
+if( $cmd == 'exGrappleCoursesList' )
+{
+    if( isset( $_POST['courses'] ) && count( $_POST['courses'] ) )
+    {
+        //check the coursesList if in session, if not, load it
+        if( ! ( isset( $_SESSION['grapple']['coursesList'] ) && count( $_SESSION['grapple']['coursesList'] ) ) )
+        {
+            $_SESSION['grapple']['coursesList'] = $grapple->requestCoursesList();
+        }
+        
+        foreach( $_POST['courses'] as $course )
+        {
+            
+            if(isset( $_SESSION['grapple']['coursesList']['courses'][ $course ] ) )
+            {
+                $grappleResource = new grappleResource;
+                
+                $grappleResource->setId( $_SESSION['grapple']['coursesList']['courses'][ $course ]['gid'] )
+                ->setName( $_SESSION['grapple']['coursesList']['courses'][ $course ]['name'] )
+                ->setUri( $_SESSION['grapple']['coursesList']['courses'][ $course ]['uri'] )
+                ->setPath( $_SESSION['grapple']['coursesList']['courses'][ $course ]['path'] )
+                ;
+                
+                if( $grappleResource->save() )
+                {
+                    $dialogBox->success( get_lang( 'Course %courseName saved in database', array( '%courseName' => $grappleResource->getName() ) ) );
+                    
+                    $item = new item();
+                    
+                    $item->setPathId( $pathId );
+                    $item->setTitle( $grappleResource->getName() );
+                    $item->setSysPath( $grappleResource->getId() );
+                    $item->setType( 'GRAPPLE' );
+                    
+                    if( $item->save() )
+                    {
+                        $dialogBox->success( get_lang( 'Grapple course %courseName linked in the learning path.', array( '%courseName' => $item->getTitle() ) ) );
+                    }
+                }
+                else
+                {
+                    $dialogBox->error( get_lang( 'Unable to save courses in database.' ) );
+                }
+            }
+        }
+    }
+    else
+    {
+        $dialogBox->error( get_lang( 'Nothing to import' ) );
     }
 }
 
