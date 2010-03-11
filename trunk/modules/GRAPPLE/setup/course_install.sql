@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
   PRIMARY KEY(`id`)
 ) TYPE=MyISAM;
 
-CREATE TABLE `__CL_COURSE__lp_item_blockcondition` (
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL DEFAULT '0',
   `cond_item_id` int(11) NOT NULL DEFAULT '0',
@@ -75,4 +75,12 @@ CREATE TABLE `__CL_COURSE__lp_item_blockcondition` (
   `condition` enum('-1','AND','OR') NOT NULL,
   `raw_to_pass` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
+) TYPE=MyISAM
+
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_grapple_resources` (
+  `grappleId` varchar(255) NOT NULL,
+  `uri` text,
+  `name` text,
+  `path` text,
+  PRIMARY KEY (`grappleId`)
 ) TYPE=MyISAM

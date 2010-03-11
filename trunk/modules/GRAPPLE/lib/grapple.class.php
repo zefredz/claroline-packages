@@ -72,7 +72,7 @@ class grapple{
     
     $result = $this->soapClient->__soapCall( 'eventGEBListenerOperation', array($params) );
     
-    $this->log(date('Y-M-D H:i') . "\t" . $previousId . "\t" . $calledFunction . "\t" . $result->idAssignedEvent . "\n" );    
+    $this->log(date('Y-m-d H:i') . "\t" . $previousId . "\t" . $calledFunction . "\t" . $result->idAssignedEvent . "\n" );    
 
     return $result;
   }
@@ -85,7 +85,6 @@ class grapple{
   private function log( $msg )
   {
     $file = get_module_path( 'GRAPPLE' ) . '/log.txt';
-    var_dump( $msg );
     file_put_contents( $file, $msg, FILE_APPEND );
   }
   
@@ -808,6 +807,78 @@ class grapple{
     return $coursesList;
   }
 
+}
+
+class grappleResource
+{
+  private $tblGrappleResources;
+  
+  private $id;
+  private $uri;
+  private $name;
+  private $path;
+  
+  public function __construct()
+  {
+    $tblNameList = array(
+        'lp_grapple_resources'
+    );
+
+    // convert to Claroline course table names
+    $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+    $this->tblGrappleResources = $tbl_lp_names;
+    
+    $this->id = null;
+    $this->uri = null;
+    $this->name = null;
+    $this->path = null;
+  }
+  
+  public function load( $id )
+  {
+    $resource = Claroline::getDatabase()->query("
+      SELECT
+        *
+      FROM
+        `" . $this->tblGrappleResources['lp_grapple_resources'] . "`
+      WHERE
+        `grappleId` = '" . Claroline::getDatabase()->escape( $id ) . "'
+      ");
+    
+    if( $resource->numRows() )
+    {
+      $resourceData = $resource->fetch();
+      
+      $this->id = $resourceData[ 'grappleId' ];
+      $this->uri = $resourceData[ 'uri'];
+      $this->name = $resourceData[ 'name' ];
+      $this->path = $resourceData[ 'path' ];
+      
+      return true;
+    }
+    
+    return false;
+  }
+  
+  public function getId()
+  {
+    return $this->id;
+  }
+  
+  public function getUri()
+  {
+    return $this->uri;
+  }
+  
+  public function getName()
+  {
+    return $this->name;
+  }
+  
+  public function getPath()
+  {
+    return $this->path;
+  }
 }
 
 ?>

@@ -134,7 +134,11 @@ function rqContentUrl( &$item, $pathId, $itemId)
             }
             elseif( $item->getType() == 'GRAPPLE' )
             {
-                $itemUrl = $item->getSysPath();
+                $grappleResource = new grappleResource();
+                if( $grappleResource->load( $item->getSysPath() ) )
+                {
+                    $itemUrl = $grappleResource->getUri();
+                }
             }
             else
             {
@@ -552,15 +556,29 @@ if( $cmd == 'getNewWindow' )
 }
 if( $cmd == 'doGrapple' )
 {
-    /*$item = new item();
-    $item->load( $itemId );*/
-    
     $previousGEBId = isset($_SESSION['grapple']['previousGEBId']) ? (int) $_SESSION['grapple']['previousGEBId'] : 0;
     
     $grapple = new grapple();
     $newGEBId = $grapple->courseAccess( claro_get_current_user_id(), claro_get_current_course_id(), $itemId, $previousGEBId);
     
     $_SESSION['grapple']['previousGEBId'] = $newGEBId->idAssignedEvent;
+    
+    $item = new item();
+    $item->load( $itemId );
+    
+    if( $item->getType() == 'GRAPPLE' )
+    {
+        $grappleResource = new grappleResource();
+        
+        if( $grappleResource->load( $item->getSysPath() ) )
+        {
+            $gvis_url = 'http://grapple.usilu.net/GVIS/?GID=' . $grappleResource->getId() . '&CID=' . urlencode( $grappleResource->getUri() ) . '&LID=' . claro_get_current_course_id() . '_' . $itemId;
+            
+            $iFrame = '<iframe src ="' . $gvis_url .'" width="250" height="120" scrolling="no" frameborder="0" style="padding: 0; margin: 0;"></iframe>';
+            
+            echo $iFrame;
+        }
+    }
 }
 function lpDebug($var)
 {

@@ -111,6 +111,8 @@ $html .= "\n" . '<div id="table_of_content">' . "\n" . '</div>' . "\n";
 
 $html .= "\n" .'<hr />' . "\n";
 
+$html .= "\n" . '<div id="gvis" style="text-align: left;">' . "\n" . '</div>' . "\n";
+
 $html .= '<div style="padding: 10px 5px;" class="claroCmd">' . "\n"
 // links - back to list
 .    '<div style="text-align: left;">' . "\n"
