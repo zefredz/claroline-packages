@@ -1,0 +1,14 @@
+<module>
+	<label>CLPRES</label>
+	<name>Presence</name>
+	<icon>attendance.png</icon>
+	<type>tool</type>
+	<entry>index.php</entry>
+	<description>a tool used to take attendance of your student</description>
+	<version>1.0</version>
+	<author>
+		<name>Lambert Jerome</name>
+		<email>lambertjer@gmail.com</email>
+		<web>http://www.lambertjerome.be</web>
+	</author>
+</module>
