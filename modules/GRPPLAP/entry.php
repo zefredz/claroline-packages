@@ -13,14 +13,18 @@
  */
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
+require_once( get_module_path('GRPPLAP' ) . '/functions.php' );
 // TODO : on install, check if GRAPPLE module exist.
-require_once( get_module_path( 'GRAPPLE' ) . '/lib/grapple.class.php' );
+/*require_once( get_module_path( 'GRAPPLE' ) . '/lib/grapple.class.php' );
+require_once( get_module_path( 'GRPPLAP' ) . '/lib/grapple.listener.class.php' );*/
+
+
 
 //Login
 // Check if user is authenticated to send data
-// See grappleListener::userLogin();
+//$grappleListener->userLogin();
 
 //Student enrollment
-// See grappleListener::studentEnrollment();
+//$grappleListener->studentEnrollment();
 
 ?>

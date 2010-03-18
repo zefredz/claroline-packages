@@ -141,23 +141,6 @@ if( $cmd == 'exEdit' )
             {
                 $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
-                
-                // Contact GEB for the learningActivityAddition
-                $grapple = new grapple;
-                if( isset( $_SESSION[ 'grapple' ][ 'previousGEBId' ] ) )
-                {
-                    $grapple_idAssignedEvent = (int) $_SESSION[ 'grapple' ][ 'previousGEBId' ];
-                }
-                else
-                {
-                    $grapple_idAssignedEvent = 0;
-                }
-                
-                if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $pathId,  $grapple_idAssignedEvent ) )
-                {
-                  $grapple_idAssignedEvent = $data->idAssignedEvent;
-                  $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
-                }
             }
             else
             {
@@ -273,6 +256,11 @@ if( $cmd == 'exAddItem' )
             {
                 if( $addedItem->save() )
                 {
+                    if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId();,  $grapple_idAssignedEvent ) )
+                    {
+                      $grapple_idAssignedEvent = $data->idAssignedEvent;
+                      $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+                    }
                     $dialogBox->success( get_lang('Item "%itemTitle" successfully added', array('%itemTitle' => $title) ) );
                 }
                 else
@@ -381,6 +369,12 @@ if( $cmd == 'exDelete' )
 {
     if( $item->delete() )
     {
+        if( $data = $grapple->learningActivityDeleted( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId();,  $grapple_idAssignedEvent ) )
+        {
+          $grapple_idAssignedEvent = $data->idAssignedEvent;
+          $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+        }
+        
         $dialogBox->success( get_lang('Item succesfully deleted') );
     }
     else
@@ -731,6 +725,11 @@ if( $cmd == 'exGrappleCoursesList' )
                     
                     if( $item->save() )
                     {
+                        if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $item->getId();,  $grapple_idAssignedEvent ) )
+                        {
+                          $grapple_idAssignedEvent = $data->idAssignedEvent;
+                          $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+                        }
                         $dialogBox->success( get_lang( 'Grapple course %courseName linked in the learning path.', array( '%courseName' => $item->getTitle() ) ) );
                     }
                 }
