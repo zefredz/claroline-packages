@@ -134,7 +134,12 @@ if( $cmd == 'exEdit' )
     {
 				if( $insertedId = $item->save() )
         {
-            $dialogBox->success( get_lang('Item successfully modified') );
+		if( $data = $grapple->learningActivityChange( claro_get_current_user_id(), claro_get_current_course_id(), $item->getId();,  $grapple_idAssignedEvent ) )
+		{
+		  $grapple_idAssignedEvent = $data->idAssignedEvent;
+		  $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
+		}
+	    $dialogBox->success( get_lang('Item successfully modified') );
         }
         else
         {

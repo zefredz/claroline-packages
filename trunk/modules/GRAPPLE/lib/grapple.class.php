@@ -64,7 +64,7 @@ class grapple{
             <statement>
               <origin>' . $xml . '</origin>
             </statement>';
-    
+    //$this->log( $xml );
     $params = array(  'eventListenerID' => $previousId,
                       'method'=>'setUMData',
                       'body'=> $xml
@@ -124,8 +124,20 @@ class grapple{
     $courseData = claro_get_course_data( $courseId );
     $userData = user_get_properties( $userId );
     
+    $item = new item();
+    $item->load( $itemId );
+    
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Access to a course</comment>
+      <contentype>
+        <referential>
+          <sourcedid>
+            <source>CLAROLINE</source>
+            <id>' . $courseId . '_' . $itemId . '</id>
+          </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -140,8 +152,8 @@ class grapple{
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
-              <id>' . $courseId . '_' . $itemId . '</id>
+              <source>GrappleDR_0</source>
+              <id>' . ( $item->getType() == 'GRAPPLE' ? $item->getSysPath() : '' ) . '</id>
             </sourcedid>
           </referential>
         </contentype>
@@ -160,7 +172,7 @@ class grapple{
           <datetime>' . date( 'c', $courseData[ 'publicationDate' ] ) . '</datetime>
         </date>
         <description>
-          <short xml:lang="en">' . claro_utf8_encode( $courseData[ 'name' ], get_conf( 'charset' ) ) . '</short>
+          <short xml:lang="en">' . claro_utf8_encode( $item->getTitle(), get_conf( 'charset' ) ) . '</short>
         </description>
       </activity>
     </learnerinformation>';
@@ -178,11 +190,11 @@ class grapple{
    * @author Dimtiri Rambout <dim@claroline.net>
    * @return object Soap object
    */
-  public function learningActivityAddition( $userId, $courseId, $pathId, $previousId = 0 )
+  public function learningActivityAddition( $userId, $courseId, $itemId, $previousId = 0 )
   {
     if( $this->connect() )
     {
-      $xml = $this->generateLearningActivityAddition( $userId, $pathId );
+      $xml = $this->generateLearningActivityAddition( $userId, $itemId );
       return $this->sendData( $xml, $previousId, 'learningActivityAddition' );
     }
     else
@@ -198,17 +210,26 @@ class grapple{
    * @param int $pathId Id of a learning path
    *
    * @author Dimitri Rambout <dim@claroline.net>
-   * @return object Soap object
+   * @return string XML content
    */
-  private function generateLearningActivityAddition( $userId, $pathId )
+  private function generateLearningActivityAddition( $userId, $itemId )
   {
     $userData = user_get_properties( $userId );
     
-    $path = new path();
-    $path->load( $pathId );
+    $item = new item();
+    $item->load( $itemId );
     
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Learning activity addition</comment>
+      <contentype>
+        <referential>
+            <sourcedid>
+                <source>CLAROLINE</source>
+                <id>' . $courseId . '_' . $itemId .'</id>
+            </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -223,15 +244,110 @@ class grapple{
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
-              <id>' . $courseId . '_' . $pathId .'</id>
+              <source>GrappleDR</source>
+              <id>' . ( $item->getType() == 'GRAPPLE' ? $item->getSysPath() : '' ) . '</id>
+            </sourcedid>            
+          </referential>
+        </contentype>
+        <status>
+          <typename>
+            <tysource sourcetype="list">Changed, Added, Removed</tysource> 
+            <tyvalue>Added</tyvalue>
+          </typename>
+        </status>
+        <activity>
+          <description>
+            <short xml:lang="en">' . claro_utf8_encode( $item->getTitle(), get_conf( 'charset' ) ) . '</short>
+            <long xml:lang="en">' . claro_utf8_encode( $item->getDescription(), get_conf( 'charset' ) ) . '</long>
+          </description>
+        </activity>
+      </activity>
+    </learnerinformation>';
+    
+    return $xml;
+  }
+  
+  /**
+   * Send data when an item of a learning path is change to GEB
+   *
+   * @param int $userId Id of a user
+   * @param int $courseId Id of a course
+   * @param int $itemId Id of an item in a learning path
+   * @param int $previousId Previous Grapple Event Id
+   *
+   * @author Dimtiri Rambout <dim@claroline.net>
+   * @return object Soap object
+   */
+  public function learningActivityChange( $userId, $courseId, $itemId, $previousId = 0 )
+  {
+    if( $this->connect() )
+    {
+      $xml = $this->generateLearningActivityChange( $userId, $itemId );
+      return $this->sendData( $xml, $previousId, 'learningActivityChange' );
+    }
+    else
+    {
+      return false;
+    }
+  }
+  
+  /**
+   * Generate XML for a learning path change
+   *
+   * @param int $userId Id of the user
+   * @param int $courseId Id of a course
+   * @param int $itemId Id of an item in a learning path
+   *
+   * @author Dimitri Rambout <dim@claroline.net>
+   * @return string XML content
+   */
+  public function generateLearningActivityChange( $userId, $itemId )
+  {
+    $userData = user_get_properties( $userId );
+    
+    $path = new path();
+    $path->load( $pathId );
+    
+    $xml =
+    '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Learning activity change</comment>
+      <contentype>
+        <referential>
+            <sourcedid>
+                <source>CLAROLINE</source>
+                <id>' . $courseId . '_' . $itemId .'</id>
+            </sourcedid>
+        </referential>
+      </contentype>
+      <securitykey>
+        <keyfields>
+          <fieldlabel>
+            <typename>
+              <tyvalue xml:lang="en">UserName</tyvalue>
+            </typename>
+          </fieldlabel>
+          <fielddata>' . claro_utf8_encode( $userData['username'], get_conf( 'charset' ) ) . '</fielddata>
+        </keyfields>
+      </securitykey>
+      <activity>
+        <contentype>
+          <referential>
+            <sourcedid>
+              <source>GrappleDR</source>
+              <id>' . ( $item->getType() == 'GRAPPLE' ?  $item->getSysPath() : '' ) .'</id>
             </sourcedid>
           </referential>
         </contentype>
+        <status>
+          <typename>
+            <tysource sourcetype="list">Changed, Added, Removed</tysource> 
+            <tyvalue>Changed</tyvalue>
+          </typename>
+        </status>
         <activity>
           <description>
-            <short xml:lang="en">' . claro_utf8_encode( $path->getTitle(), get_conf( 'charset' ) ) . '</short>
-            <long xml:lang="en">' . claro_utf8_encode( $path->getDescription(), get_conf( 'charset' ) ) . '</long>
+            <short xml:lang="en">' . claro_utf8_encode( $item->getTitle(), get_conf( 'charset' ) ) . '</short>
+            <long xml:lang="en">' . claro_utf8_encode( $item->getDescription(), get_conf( 'charset' ) ) . '</long>
           </description>
         </activity>
       </activity>
@@ -240,12 +356,57 @@ class grapple{
     return $xml;
   }
   /**
-   * Not yet supporter
+   * Send data when an item of a learning path is deleted to GEB
+   *
+   * @param int $userId Id of a user
+   * @param int $courseId Id of a course
+   * @param int $itemId Id of an item in a learning path
+   * @param int $previousId Previous Grapple Event Id
+   *
+   * @author Dimtiri Rambout <dim@claroline.net>
+   * @return object Soap object
    */
-  public function learningActivityChange( $userId )
+  public function learningActivityDeleted( $userId, $courseId, $itemId, $previousId = 0 )
   {
+    if( $this->connect() )
+    {
+      $xml = $this->generateLearningActivityDeleted( $userId, $itemId );
+      return $this->sendData( $xml, $previousId, 'learningActivityChange' );
+    }
+    else
+    {
+      return false;
+    }
+  }
+  
+  /**
+   * Generate XML for a item of a learning path deleted
+   *
+   * @param int $userId Id of the user
+   * @param int $courseId Id of a course
+   * @param int $itemId Id of a item in a learning path
+   *
+   * @author Dimitri Rambout <dim@claroline.net>
+   * @return string XML content
+   */
+  public function generateLearningActivityDeleted( $userId, $itemId )
+  {
+    $userData = user_get_properties( $userId );
+    
+    $item = new item();
+    $item->load( $itemId );
+    
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Learning activity change</comment>
+      <contentype>
+        <referential>
+            <sourcedid>
+                <source>CLAROLINE</source>
+                <id>' . $courseId . '_' . $itemId .'</id>
+            </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -253,22 +414,28 @@ class grapple{
               <tyvalue xml:lang="en">UserName</tyvalue>
             </typename>
           </fieldlabel>
-          <fielddata>imc_super</fielddata>
+          <fielddata>' . claro_utf8_encode( $userData['username'], get_conf( 'charset' ) ) . '</fielddata>
         </keyfields>
       </securitykey>
       <activity>
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier . '</id>
+              <source>GrappleDR</source>
+              <id>' . ( $item->getType() == 'GRAPPLE' ?  $item->getSysPath() : '' ) .'</id>
             </sourcedid>
           </referential>
         </contentype>
+        <status>
+          <typename>
+            <tysource sourcetype="list">Changed, Added, Removed</tysource> 
+            <tyvalue>Removed</tyvalue>
+          </typename>
+        </status>
         <activity>
           <description>
-            <short xml:lang="en">KursbuchungInCLIX</short>
-            <long xml:lang="en">standard course booking</long>
+            <short xml:lang="en">' . claro_utf8_encode( $item->getTitle(), get_conf( 'charset' ) ) . '</short>
+            <long xml:lang="en">' . claro_utf8_encode( $item->getDescription(), get_conf( 'charset' ) ) . '</long>
           </description>
         </activity>
       </activity>
@@ -337,6 +504,7 @@ class grapple{
     
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Tests/quizzes</comment>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -351,7 +519,7 @@ class grapple{
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
+              <source>CLAROLINE</source>
               <id>' . $courseId . '_' . $itemId . '</id>
             </sourcedid>
           </referential>
@@ -461,7 +629,7 @@ class grapple{
         if( get_conf('grapple_privacy_quiz_title') === true )
         {
           $xml .= '
-          <short xml:lang="en">' . claro_utf8_encode( $path->getTitle(), get_conf( 'charset' ) ) . '</short>
+          <short xml:lang="en">' . claro_utf8_encode( strtolower( $item->getTitle() ), get_conf( 'charset' ) ) . '.quizScore</short>
           ';
         }
         if( get_conf('grapple_privacy_quiz_description') === true )
@@ -487,11 +655,11 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return object Soap object
    */
-  public function studentEnrollment( $userId, $previousId = 0 )
+  public function studentEnrollment( $userId, $courseId, $userType, $previousId = 0 )
   {
     if( $this->connect() )
     {
-      $xml = $this->generateStudentEnrollment( $userId );
+      $xml = $this->generateStudentEnrollment( $userId, $courseId, $userType );
       return $this->sendData( $xml, $previousId, 'studentEnrollment' );
     }
     else
@@ -507,12 +675,20 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return string XML content
    */
-  private function generateStudentEnrollment( $userId )
+  private function generateStudentEnrollment( $userId, $courseId, $userType = 'LEARNER' )
   {
+    $userTypesAccepted = array( 'TEACHER', 'LEARNER', 'TUTOR', 'SYSTEM ADMINISTRATOR' );
+    
+    if( ! in_array( $userType, $userTypesAccepted ) )
+    {
+      $userType = 'LEARNER';
+    }
+    
     $userData = user_get_properties( $userId );
     
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Student enrollment</comment>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -527,14 +703,14 @@ class grapple{
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier . '</id>
+              <source>CLAROLINE</source>
+              <id>' . $courseId . '</id>
             </sourcedid>
           </referential>
         </contentype>
       </activity>
       <identification>
-        <ext_identification>LEARNER</ext_identification>
+        <ext_identification>'. claro_utf8_encode( $userType ) .'</ext_identification>
       </identification>
     </learnerinformation>';
     
@@ -578,6 +754,15 @@ class grapple{
     
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>User login</comment>
+      <contentype>
+        <referential>
+          <sourcedid>
+            <source>CLAROLINE</source>
+            <id>' . $this->identifier . '</id>
+          </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -592,8 +777,8 @@ class grapple{
         <contentype>
           <referential>
             <sourcedid>
-              <source>LMS-CLAROLINE-ID</source>
-              <id>' . $this->identifier . '</id>
+              <source>GrappleURL_0</source>
+              <id></id>
             </sourcedid>
           </referential>
         </contentype>
@@ -642,6 +827,15 @@ class grapple{
     
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Registration</comment>
+      <contentype>
+        <referential>
+          <sourcedid>
+            <source>CLAROLINE</source>
+            <id>' . $this->identifier . '</id>
+          </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -709,7 +903,7 @@ class grapple{
       </accessibility>
       <identification>
         <comment xml:lang="en">IPADRESS</comment>
-        <ext_identification></ext_identification>
+        <ext_identification>' . claro_utf8_encode( $_SERVER[ 'REMOTE_ADDR' ] ) . '</ext_identification>
       </identification>
       <identification>
         <ext_identification>Learner</ext_identification>
@@ -719,13 +913,41 @@ class grapple{
     return $xml;
   }
   
-  /**
-   * Not yet implemented
-   */
-  public function userRoleChange( $userId )
+  public function userRoleChange( $userId, $courseId, $userType, $previousId = 0 )
   {
+    if( $this->connect() )
+    {
+      $xml = $this->generateUserRoleChange( $userId, $courseId, $userType );
+      return $this->sendData( $xml, $previousId, 'userRoleChange' );
+    }
+    else
+    {
+      return false;
+    }
+  }
+  
+  private function generateUserRoleChange( $userId, $courseId, $userType )
+  {
+    $userData = user_get_properties( $userId );
+    
+    $userTypesAccepted = array( 'TEACHER', 'LEARNER', 'TUTOR', 'SYSTEM ADMINISTRATOR' );
+    
+    if( ! in_array( $userType, $userTypesAccepted ) )
+    {
+      $userType = 'LEARNER';
+    }
+    
     $xml =
     '<learnerinformation xml:lang="en" xmlns="http://www.imsglobal.org/xsd/imslip_v1p0">
+      <comment>Role change</comment>
+      <contentype>
+        <referential>
+          <sourcedid>
+            <source>CLAROLINE</source>
+            <id>' . $courseId . '</id>
+          </sourcedid>
+        </referential>
+      </contentype>
       <securitykey>
         <keyfields>
           <fieldlabel>
@@ -733,11 +955,11 @@ class grapple{
               <tyvalue xml:lang="en">UserName</tyvalue>
             </typename>
           </fieldlabel>
-          <fielddata>kclixlearn</fielddata>
+          <fielddata>' . claro_utf8_encode( $userData['username'], get_conf( 'charset' ) ) . '</fielddata>
         </keyfields>
-      </securitykey>
+      </securitykey>      
       <identification>
-        <ext_identification>Admin</ext_identification>
+        <ext_identification>'. claro_utf8_encode( $userType ) .'</ext_identification>
       </identification>
     </learnerinformation>';
     
