@@ -115,8 +115,10 @@ class Survey {
            WHERE `id` = ".(int) $id; 
          
          
-        $resultSet = $dbCnx->query($sql);
+        $resultSet = $dbCnx->query($sql);        
         $data = $resultSet->fetch();
+		if(empty($data))
+			throw new Exception("Invalid Survey Id");
         return self::__set_state($data);
     }
     
@@ -228,6 +230,7 @@ class Survey {
     {
     	$this->course = new ClaroCourse();
     	$this->course->load($this->courseId);
+    	
     }
     public function getCourseId()
     {

@@ -1,0 +1,145 @@
+<?php 
+
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+From::module('LVSURVEY')->uses('managerSurveyPage.class');
+FromKernel::uses('course_user.lib.php', 'sendmail.lib');
+
+
+class ShowParticipationPage extends ManagerSurveyPage{
+	
+	const SURVEY_PARTICIPANTS = __LINE__;
+	const IN_COURSE_PARTICIPANTS = __LINE__;
+	const OFF_COURSE_PARTICIPANTS = __LINE__;
+	const IN_COURSE_NOT_PARTICIPANTS = __LINE__;
+	
+	private $participationMap;
+	
+	public function __construct(){
+		parent::__construct();
+		$this->participationMap = $this->buildParticipationMap();
+	}
+	
+	public function performSendRecallMail(){
+		$userInput = Claro_UserInput::getInstance();
+		try{
+			$message = (string)$userInput->getMandatory('emailBody');
+			$recipients = $this->buildInCourseNotParticipantIdList();
+			$subject = get_lang('Survey Recall');
+			claro_mail_user($recipients, $message, $subject );
+			parent::success('Message successfully sent');
+		} catch (Exception $e){
+			parent::error($e->getMessage());
+		}
+				
+	}
+	
+	private function buildInCourseNotParticipantIdList(){
+		$inCourseNotParticipantList = $this->getInCourseNotParticipantsList();
+		$result = array();
+		foreach($inCourseNotParticipantList as $recipient){
+			$result[] = $recipient['id'];
+		}
+		return $result;
+	}
+	
+	protected function render(){
+		$survey = parent::getSurvey();
+		$participantsMap = $this->getParticipationMap();
+		$showParticipationTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_participation.tpl.php');
+		$showParticipationTpl->assign('survey', $survey);
+		$showParticipationTpl->assign('participantsMap', $participantsMap);
+		return $showParticipationTpl->render();
+	}
+	protected function addSpecificBreadCrumb(){
+		parent::appendBreadCrumbElement(get_lang('Participations'));
+	}
+	
+	private function buildParticipationMap(){	
+		
+		$surveyParticipantsList = $this->getSurveyParticipantList();
+		$courseParticipantList = $this->getCourseParticipantList();
+		$courseParticipantIdList = $this->getCourseParticipantIdList($courseParticipantList);
+		
+		
+		
+		$inCourseParticipantList = array();
+		$offCourseParticipantList = array();
+		$inCourseNotParticipantList = $courseParticipantList;
+		
+		foreach($surveyParticipantsList as $participant){
+			$participantId = $participant['id'];
+			if(in_array($participantId,$courseParticipantIdList)) $inCourseParticipantList[] = $participant;
+			else $offCourseParticipantList[] = $participant;
+			$key = array_search($participant,$inCourseNotParticipantList);
+			unset($inCourseNotParticipantList[$key]);
+		}
+		
+		return array(
+			self::SURVEY_PARTICIPANTS 			=> $surveyParticipantsList, 
+			self::IN_COURSE_PARTICIPANTS		=> $inCourseParticipantList, 
+			self::OFF_COURSE_PARTICIPANTS	 	=> $offCourseParticipantList, 
+			self::IN_COURSE_NOT_PARTICIPANTS 	=> $inCourseNotParticipantList 
+		
+		);
+		
+	}	
+	
+	private function getSurveyParticipantList(){
+		$survey = parent::getSurvey();
+		$participationList = $survey->getParticipationList();
+		$allParticipantsList = array();
+		foreach($participationList as $participation){
+			$user = $participation->getUser();
+			$rawData = $user->getRawData();
+			$id = $rawData['userId'];
+			$firstName = $rawData['firstName'];
+			$lastName = $rawData['lastName'];
+			
+			$participant = array(
+				'id' 		=> $id, 
+				'firstName' => $firstName, 
+				'lastName' 	=> $lastName
+			);
+			$allParticipantsList[] = $participant;
+		}
+		return $allParticipantsList;
+	}
+	
+	private function getCourseParticipantList(){
+		$survey = parent::getSurvey();
+		$courseUsersRowSet = claro_get_course_user_list($survey->getCourseId());
+		$courseUserList = array();
+		foreach($courseUsersRowSet as $courseUsersRow){
+			$id = $courseUsersRow['user_id'];
+			$firstName = $courseUsersRow['prenom'];
+			$lastName = $courseUsersRow['nom'];
+			$courseUser = array(
+				'id' 		=> $id, 
+				'firstName' => $firstName, 
+				'lastName' 	=> $lastName
+			);
+			$courseUserList[] = $courseUser;
+		}
+		return $courseUserList;
+	}
+	
+	private function getCourseParticipantIdList($courseParticipantList){
+		$courseParticipantIdList = array();
+		foreach($courseParticipantList as $courseParticipant){
+			$courseParticipantIdList[] = $courseParticipant['id'];
+		}
+		return $courseParticipantIdList;
+	}
+	
+	private function getParticipationMap(){
+		return $this->participationMap;
+	}
+	private function getInCourseNotParticipantsList(){
+		$map =  $this->getParticipationMap();
+		return $map[self::IN_COURSE_NOT_PARTICIPANTS];
+	}
+	
+}
+
+$page = new ShowParticipationPage();
+$page->execute();    

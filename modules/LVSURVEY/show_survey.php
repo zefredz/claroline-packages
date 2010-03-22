@@ -1,141 +1,103 @@
 <?php 
  
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-    
-//=================================
-// Security check
-//=================================
+From::module('LVSURVEY')->uses('surveyPage.class');
 
-if ( 	!claro_is_in_a_course() 
-		|| !claro_is_course_allowed() 
-		|| !claro_is_user_authenticated() )
-{
-	claro_disp_auth_form(true);
-}
-    
-//=================================
-// Init section
-//=================================
-From::module('LVSURVEY')->uses('survey.class');
-    
-// Tool label (must be in database)
-$tlabelReq = 'LVSURVEY';
-add_module_lang_array($tlabelReq);
-claro_set_display_mode_available(true);
 
-//prepare survey Object
-try
-{
-	$surveyId = (int)$_REQUEST['surveyId'];
-	$survey = Survey::load($surveyId);	
-}
-catch(Exception $e)
-{
-	$dialogBox = new DialogBox();
-	$dialogBox->error( $e->getMessage());
-   	displayContents($dialogBox->render(),get_lang("Error"));
-   	exit;
-} 
- 
-    
-    
-//=================================
-// Choose Action
-//=================================
-
-	if(isset($_REQUEST['claroFormId']))
-	{
-		try
-		{
-			saveParticipation();
-			if($survey->areResultsVisibleNow())
-			{
-				claro_redirect('show_results.php?surveyId='.$survey->id);
-				exit;
-			}
-			$dialogBox = new DialogBox();
-			$dialogBox->success(get_lang('Participation saved'));
-		}
-		catch(Exception $e)
-		{
-			$dialogBox = new DialogBox();
-			$dialogBox->error($e->getMessage());
-			
-		}
-		displaySurvey($survey,$dialogBox);
-		exit;
-		
+class ShowSurveyPage extends SurveyPage{
+	
+	
+	private function getMandatorySurveyLineId(){
+		$input = Claro_UserInput::getInstance();
+		return $input->getMandatory('surveyLineId');
 	}
-    
-    if(isset($_REQUEST['cmd']) && isset($_REQUEST['surveyLineId']) )
-    {
-    	$surveyLineId = (int)$_REQUEST['surveyLineId'];	    
-	    switch($_REQUEST['cmd'])
-	    {
-	    	case 'lineMoveUp' :
-	    		moveLine($survey, $surveyLineId, true );
-	    		break;
-	    	case 'lineMoveDown' :
-	    		moveLine($survey, $surveyLineId,false);
-	    		break;
-	    	case 'lineRemove' :
-	    		removeLine($survey, $surveyLineId);
-	    		break;
-	    	case 'setCommentSize' :
-	    		setCommentSize($survey, $surveyLineId);
-	    		break;	    			    		
-	    }    	
-    } 
-    
-    displaySurvey($survey);
+	
+	public function performLineMoveUp(){
+		$lineId = $this->getMandatorySurveyLineId();
+		$this->moveLine($lineId, true );
+	}
 
-//=================================
-// Action functions
-//=================================
- 
-    
-    function removeLine($survey, $surveyLineId)
+	public function performLineMoveDown(){
+		$lineId = $this->getMandatorySurveyLineId();
+		$this->moveLine($lineId, false );
+	}
+	public function performLineRemove(){
+		$lineId = $this->getMandatorySurveyLineId();
+		$this->removeLine($lineId );
+	}
+	public function performSetCommentSize(){
+		$lineId = $this->getMandatorySurveyLineId();
+		$input = Claro_UserInput::getInstance();
+		$newCommentSize =  $input->getMandatory('commentSize');
+		$this->setCommentSize($surveyLineId, $newCommentSize);
+	}
+	
+	public function performSaveParticipation(){
+		if(isset($_REQUEST['claroFormId']))
+		{
+			$this->processForm();			
+		}
+	}
+		
+
+	
+	protected function addSpecificBreadCrumb(){
+		parent::appendBreadCrumbElement(get_lang('Display survey'));
+	}
+	
+	private function processForm(){
+		try
+			{
+				$participation = Participation::loadFromForm();
+        		$participation->save(); 
+				$this->redirectToResultsIfPossible();
+        		parent::success('Participation saved');				
+			}
+			catch(Exception $e)
+			{
+				parent::error($e->getMessage());				
+			}
+			
+	}
+	
+	private function redirectToResultsIfPossible(){
+		$survey = parent::getSurvey();
+		if($survey->areResultsVisibleNow())
+		{
+			claro_redirect('show_results.php?surveyId='.$survey->id);
+			die();
+		}
+	}
+	
+	private function removeLine($surveyLineId)
     {
+    	$survey = parent::getSurvey();
     	try
     	{
     		$survey->removeLine($surveyLineId);
-    		$dialogBox = new DialogBox();
-    		$dialogBox->success("Question removed from Survey");
-    		displaySurvey($survey, $dialogBox);
+    		parent::success("Question removed from Survey");
     	}
     	catch(Exception $e)
     	{
-    		$dialogBox = new DialogBox();
-    		$dialogBox->error($e->getMessage());
-    		displaySurvey($survey, $dialogBox);
+    		parent::error($e->getMessage());
     	}
-    	exit;
     }
-    function moveLine($survey,$surveyLineId, $up )
+    private function moveLine($surveyLineId, $up )
     {
-    	$dialogBox = NULL;
+    	$survey = parent::getSurvey();
     	try{
             $survey->moveLine($surveyLineId, $up);
         }
         catch (Exception $e)
         {
-        	$dialogBox = new DialogBox();
-        	$dialogBox->error($e->getMessage());
+        	parent::error($e->getMessage());
         }
-        displaySurvey($survey, $dialogBox);
-        exit;
     }
    
     
-    function saveParticipation()
-    {    	
-        $participation = Participation::loadFromForm();
-        $participation->save(); 
-    }
-    
-    function setCommentSize($survey, $surveyLineId)
+    function setCommentSize($surveyLineId, $newCommentSize)
     {
-    	$newCommentSize = (int)$_REQUEST['commentSize'];
+    	$survey = parent::getSurvey();
     	if($newCommentSize < 0)
     		$newCommentSize = 0;
     	if($newCommentSize > 200)
@@ -144,53 +106,30 @@ catch(Exception $e)
     	$surveyLineList[$surveyLineId]->maxCommentSize = $newCommentSize;
     	$surveyLineList[$surveyLineId]->save();
     }
-
-//=================================
-// Display section
-//=================================
-
-function displaySurvey($survey, $dialogBox = NULL)
-{
-
-	$editMode = claro_is_allowed_to_edit();
-	$participation = Participation::loadParticipationOfUserForSurvey(claro_get_current_user_id(), $survey->id);
-	if(!$editMode && !$survey->isAccessible())
-    {
-    	$dialogBox = new DialogBox();
-        $dialogBox->error( get_lang('This survey is not accessible'));
-        displayContents($dialogBox->render(), $survey->title);
-        return;
-    }
+    
+    public function render(){
+		$survey = parent::getSurvey();
+		$editMode = claro_is_allowed_to_edit();
+		$participation = Participation::loadParticipationOfUserForSurvey(claro_get_current_user_id(), $survey->id);
+		
+		if(!$editMode && !$survey->isAccessible())
+    	{
+    		parent::error('This survey is not accessible');
+        	return '';
+    	}
 	 
         
-    $showSurveyTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_survey.tpl.php');
-    $showSurveyTpl->assign('survey', $survey);
-    $showSurveyTpl->assign('participation', $participation);
-    $showSurveyTpl->assign('editMode', claro_is_allowed_to_edit());
+    	$showSurveyTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_survey.tpl.php');
+	    $showSurveyTpl->assign('survey', $survey);
+    	$showSurveyTpl->assign('participation', $participation);
+	    $showSurveyTpl->assign('editMode', claro_is_allowed_to_edit());
 
-    $out = '';
-    if(!is_null($dialogBox))
-    {
-    	$out .= $dialogBox->render();
+	
+    	return $showSurveyTpl->render();
     }
-    $out .= $showSurveyTpl->render();
-    
-    displayContents($out, $survey->title);	
+
 }
 
-function displayContents($contents, $pageTitle)
-{
-	$claroline = Claroline::getInstance();
-	
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php'); 
-    $claroline->display->banner->breadcrumbs->append($pageTitle); 
-	
-    $claroline->display->body->appendContent($contents);
-   
-    // render output
-    echo $claroline->display->render();
-	
-}
-
-    
+$page = new ShowSurveyPage();
+$page->execute();  
 ?>
