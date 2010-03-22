@@ -10,7 +10,8 @@
 	if($this->editMode)
     {	
         $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;cmd=reset">'.get_lang('Delete all results').'</a>';
-    }
+	    $cmd_menu[] = '<a class="claroCmd" href="show_participation.php?surveyId='.$this->survey->id.'">'.get_lang('Show participations').'</a>';
+	}
     $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=SyntheticCSV">'.get_lang('Export Synthetic results').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=RawCSV">'.get_lang('Export Raw results').'</a>';
 	echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>'; 
@@ -25,6 +26,7 @@
 ?>
 
 <div><?php  echo $this->survey->description; ?></div>
+
 <div class="LVSURVEYQuestionList">
 	<?php foreach ($questionLineList as $surveyLine) : ?>
 		<?php 			

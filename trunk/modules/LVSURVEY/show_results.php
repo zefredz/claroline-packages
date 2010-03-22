@@ -1,185 +1,150 @@
 <?php 
 
+
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+From::module('LVSURVEY')->uses('survey.class', 'result.class', 'csvResults.class', 'surveyPage.class');
 
-//=================================
-// Security check
-//=================================
 
-if ( 	!claro_is_in_a_course() 
-		|| !claro_is_course_allowed() 
-		|| !claro_is_user_authenticated() )
-{
-	claro_disp_auth_form(true);
-}
-    
-//=================================
-// Init section
-//=================================
-From::module('LVSURVEY')->uses('survey.class', 'result.class', 'csvResults.class');
-    
-// Tool label (must be in database)
-$tlabelReq = 'LVSURVEY';
-add_module_lang_array($tlabelReq);
-claro_set_display_mode_available(true);
-    
-//prepare survey Object
-try
-{
-	$surveyId = (int)$_REQUEST['surveyId'];
-	$survey = Survey::load($surveyId);	
-}
-catch(Exception $e)
-{
-	$dialogBox = new DialogBox();
-	$dialogBox->error( $e->getMessage());
-   	displayContents($dialogBox->render(),new Survey(claro_get_current_course_id()),get_lang("Error"));
-   	exit;
-}   
- 
-//=================================
-// Choose Action
-//=================================
-
-if(claro_is_allowed_to_edit() && (isset($_REQUEST['cmd'])))
-{
-	switch($_REQUEST['cmd'])
-	{
-		case 'reset':
-			resetResults($survey);
-			break;		
+class ShowResultsPage extends SurveyPage{
+	
+	private static $AUTHORIZED_FORMATS = array('HTML', 'SyntheticCSV', 'RawCSV');
+	private $renderResetConf = false;
+	
+	public function performReset(){
+		if(isset($_REQUEST['claroFormId'])){
+		   	$this->doResetResults();
+		}else{
+		  	$this->renderResetConf = true;
+		}
 	}
-}
-else
-{
-	$format = 'HTML';
-	if (isset($_REQUEST['format']))
-	{
-		$format = $_REQUEST['format'];
-	} 
-	switch($format)
-	{
-		case 'SyntheticCSV' :
-			sendSyntheticCSVResults($survey);
-			break;
-		case 'RawCSV' :
-			sendRawCSVResults($survey);
-			break;
-		default:
-		case 'HTML' :
-			displayResults($survey);	
+		
+	protected function render(){
+		if($this->renderResetConf){
+			return $this->renderResetConfirm();
+		}
+
+	    $format = $this->getRequestedFormat();	    
+	    return $this->renderResults($format);
 	}
 	
-}
- 
-    
-//=================================
-// Action functions
-//=================================
-
-function resetResults($survey)
-{
-	if(isset($_REQUEST['claroFormId']))
-    {
-        $survey->reset();
-                
-        $dialogBox = new DialogBox();
-        $dialogBox->success(get_lang('Results have been deleted'));
-        displayResults($survey);
+	protected function addSpecificBreadCrumb(){
+		parent::appendBreadCrumbElement(get_lang('Results'));
+	}
+	
+	private function doResetResults(){
+		$survey = parent::getSurvey();
+		try
+	    {
+	        $survey->reset();	                
+	        parent::success('Results have been deleted');
+	    }catch(Exception $e){
+	    	parent::error($e->getMessage());
+	    }
     }
-    else 
-    {
-        displayResetConf($survey);
-    }
-}    
     
-//=================================
-// Display section
-//=================================
-
-function displayResetConf($survey)
-{
-	$confirmationTpl = new PhpTemplate(dirname(__FILE__).'/templates/reset_survey_conf.tpl.php');
-	$confirmationTpl->assign('survey', $survey);
-    $pageTitle = get_lang('Delete all results');
-    displayContents($confirmationTpl->render(),$survey, $pageTitle);
-}
-
-function sendSyntheticCSVResults($survey)
-{
-	sendCSV('surveyResults'.$survey->id.'.csv', new SyntheticResults($survey));
-}
-
-function sendRawCSVResults($survey)
-{
-	if($survey->is_anonymous)
-	{
-		sendCSV('surveyResults'.$survey->id.'.csv', new AnonymousCSVResults($survey));
+    private function renderResetConfirm(){
+    	$survey = parent::getSurvey();
+    	$confirmationTpl = new PhpTemplate(dirname(__FILE__).'/templates/reset_survey_conf.tpl.php');
+		$confirmationTpl->assign('survey', $survey);
+	    return $confirmationTpl->render();
+    }
+	
+	private function getRequestedFormat(){
+		$format = 'HTML';		
+		if (isset($_REQUEST['format']))
+		{
+			$requestedFormat = $_REQUEST['format'];
+			if (in_array($requestedFormat,self::$AUTHORIZED_FORMATS)) 
+				$format = $requestedFormat;
+		}
+		return $format;
 	}
-	else
-	{
-		sendCSV('surveyResults'.$survey->id.'.csv',new NamedCSVResults($survey));
-	}	
-}
-
-function sendCSV($filename, $csvResults)
-{
-	$csvResults->buildRecords();
-	header("Content-type: application/csv");
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
-   	echo $csvResults->export();
-}
-
-function displayResults($survey, $dialogBox = NULL)
-{
-	$contents = '';
-	if(!is_null($dialogBox))
-	{
-		$contents .= $dialogBox->render();
+	
+	private function renderResults($format){
+		switch($format)
+		{
+			case 'SyntheticCSV' :
+				$this->sendSyntheticCSVResultsAndDie();
+				break;
+			case 'RawCSV' :
+				$this->sendRawCSVResultsAndDie();
+				break;
+			default:
+			case 'HTML' :
+				return $this->renderHTMLResults();	
+		}
 	}
-	if(!claro_is_allowed_to_edit() && !$survey->areResultsVisibleNow())
-	{
-		$dialogBox = new DialogBox();
-		$dialogBox->error(get_lang('You are not allowed to see these results.'));
-		if($survey->resultsVisibility == 'VISIBLE_AT_END')
-        {        	
-        	if(is_null($survey->endDate))
-        	{
-        		$dialogBox->info(get_lang('Results will be visible only at the end of the survey.'));
-        	}
-        	else
-        	{
-        		$dialogBox->info(get_lang('Results will be visible only at the end of the survey on %date.', 
-                        array('%date'=>claro_html_localised_date(get_locale('dateFormatLong'), $survey->endDate))));
-        	}
-        }
-		$contents = $dialogBox->render();
+	
+	private function sendSyntheticCSVResultsAndDie(){
+		$survey = parent::getSurvey();
+		$csvData = new SyntheticResults($survey);
+		$this->sendCSVAndDie($csvData);
 	}
-	else
+	
+	private function sendRawCSVResultsAndDie(){
+		$survey = parent::getSurvey();
+		if($survey->is_anonymous)
+		{
+			$csvData= new AnonymousCSVResults($survey);
+		}
+		else
+		{
+			$csvData = new NamedCSVResults($survey);
+		}
+		$this->sendCSVAndDie($csvData);
+	}
+	private function sendCSVAndDie($csvResults)
 	{
+		$survey = parent::getSurvey();
+		$csvResults->buildRecords();
+		header("Content-type: application/csv");
+	    header('Content-Disposition: attachment; filename="surveyResults'.$survey->id.'.csv"');
+	   	echo $csvResults->export();
+	   	die();
+	}
+	
+	
+	private function renderHTMLResults(){
+		$survey = parent::getSurvey();
+		if(!claro_is_allowed_to_edit() && !$survey->areResultsVisibleNow())
+		{
+			$this->notAllowed();
+			return '';
+		}
+			
 		$showResultsTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_results.tpl.php');
 		$showResultsTpl->assign('survey', $survey);
 		$showResultsTpl->assign('editMode', claro_is_allowed_to_edit());
-		$contents = $showResultsTpl->render();
-	}	
-    $pageTitle = get_lang('Results');    
-    displayContents($contents,$survey, $pageTitle);
+		return $showResultsTpl->render();
+			
+			
+	}
+		
+	private function notAllowed(){
+		$survey = parent::getSurvey();
+		parent::error('You are not allowed to see these results.');
+		if($survey->resultsVisibility == 'VISIBLE_AT_END')
+	    {        	
+	       	if(is_null($survey->endDate))
+	       	{
+	       		parent::info('Results will be visible only at the end of the survey.');
+	       	}
+	       	else
+	       	{
+	       		$message = 'Results will be visible only at the end of the survey on %date.';
+       			$params =  array(
+	            	'%date' => claro_html_localised_date(
+	            		get_locale('dateFormatLong'), 
+	            		$survey->endDate
+	            	)
+	            );
+	       		parent::info($message,$params);
+	        }
+		}
+	}
 }
 
-
-function displayContents($contents,$survey, $pageTitle)
-{
-	$claroline = Claroline::getInstance();
-	
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-	$claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id); 
-	$claroline->display->banner->breadcrumbs->append(get_lang('Results'));
-	
-    $claroline->display->body->appendContent($contents);
-   
-    // render output
-    echo $claroline->display->render();
-	
-}   
+$page = new ShowResultsPage();
+$page->execute();  
     
 ?>

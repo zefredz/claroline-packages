@@ -33,7 +33,7 @@ $_lang['Position modified'] = "Position modifiée";
 $_lang['No answer']="Pas de réponse";
 $_lang['View this survey']="Voir ce sondage";
 $_lang['Vote for this survey']="Voter";
-
+$_lang['Acces denied']="Accès interdit";
 $_lang['Anonymous survey'] = "Sondage anonyme";
 $_lang['Accessible'] = "Accessible";
 $_lang['Accessible until %date'] = "Accessible jusqu'au %date";
@@ -129,5 +129,24 @@ $_lang['Add separator'] = 'Ajouter un séparateur';
 $_lang['Display Details'] = 'Afficher les détails';
 $_lang['Hide Details'] = 'Cacher les détails';
 $_lang['Question successfully added to survey'] = 'La question a bien été ajoutée au sondage';
-
+$_lang['Display survey'] = 'Afficher le sondage';
+$_lang['Show participations'] = 'Afficher les participations';
+$_lang['Participations'] = 'Participations';
+$_lang['Send message to course members who have not yet participated'] = 'Envoyer un message aux membres du cours n\'ayant pas encore participé';
+$_lang['Participants who are not members of the course'] = 'Non membre(s) du cours ayant participé';
+$_lang['Course members who haven\'t yet participated'] = 'Membre(s) du cours n\'ayant pas encore participé';
+$_lang['Course members who have participated'] = 'Membre(s) du cours ayant encore participé';
+$_lang['Send recall message'] = 'Envoyer message de rappel';
+$_lang['__RECALL_MESSAGE__'] = <<<EOS
+Bonjour, <br/>
+<br/>
+Vous êtes inscrit au cours %course_name dans lequel est actuellement organisé le sondage %survey_name.<br/>
+<br/>
+Votre participation à ce sondage est vivement souhaitée afin d'affiner les résultats.<br/>
+<br/>
+Vous pouvez facilement participer au sondage à l'adresse <a href="%survey_participation_address">%survey_participation_address</a>.<br/>
+<br/>
+Merci Beaucoup<br/>
+EOS;
+$_lang['Message successfully sent'] = 'Le message a bien été envoyé';
 ?>

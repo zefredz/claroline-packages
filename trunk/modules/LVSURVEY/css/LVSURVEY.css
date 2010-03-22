@@ -3,15 +3,14 @@
 	padding : 0;
 }
 
-.LVSURVEYLine, .LVSURVEYQuestion {
+.LVSURVEYLine, .LVSURVEYQuestion, .LVSURVEYParticipation, .LVSURVEYBloc {
 	margin : 10px 0px;
 	border: 1px #cccccc solid;
 	padding : 0px;
 	overflow : auto;
 }
 	
-.LVSURVEYLineTitle, .LVSURVEYQuestionTitle {
-
+.LVSURVEYLineTitle, .LVSURVEYQuestionTitle, .LVSURVEYParticipationTitle, .LVSURVEYBlocTitle {
 	list-style-type : decimal;
 	list-style-position: inside;
 	margin:0 0 0px 0;
@@ -20,8 +19,20 @@
     padding: 2px 5px 2px 5px;
     background-color: #EDF1E3;
     border: 0px #96BB7A solid;
-    /*border: 1px #96BB7A solid;*/
 }
+
+.LVSURVEYParticipationBloc{
+	border: 2px #EDF1E3 solid;
+	margin: 5px;
+	padding: 2px;
+	display: block;
+	float: left;
+}
+.LVSURVEYParticipationBlocTitle{
+	font-weight: bold;
+	text-decoration: underline;
+}
+
 
 .LVSURVEYQuestionContent {
 	padding : 5px;

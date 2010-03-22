@@ -20,6 +20,7 @@ if($this->editMode)
     $cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$this->survey->id.'">'.$editIcon.' '.get_lang('Edit survey properties').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="question_pool.php?surveyId='.$this->survey->id.'">'.get_lang('Add question').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="edit_separator.php?surveyId='.$this->survey->id.'">'.get_lang('Add separator').'</a>';
+    $cmd_menu[] = '<a class="claroCmd" href="show_participation.php?surveyId='.$this->survey->id.'">'.get_lang('Show participations').'</a>';
 }
 if($this->editMode || $this->survey->areResultsVisibleNow())
 {
@@ -60,6 +61,7 @@ echo $infoBox->render();
 <?php  if(!$this->survey->hasEnded()) : ?>
 <form method="post" action="show_survey.php?surveyId=<?php echo $this->survey->id; ?>">
     <input type="hidden" name="claroFormId" value="<?php echo uniqid(''); ?>" />
+    <input type="hidden" name="cmd" value="saveParticipation" />
     <input type="hidden" name="surveyGoToConf" value="" />
     <input type="hidden" name="surveyId" value="<?php echo $this->survey->id; ?>" />
     <input type="hidden" name="participationId" value="<?php echo $participation->id; ?>" />
