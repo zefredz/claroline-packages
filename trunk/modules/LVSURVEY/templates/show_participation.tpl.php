@@ -57,16 +57,7 @@ echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>';
     	<input type="hidden" name="claroFormId" value="<?php echo uniqid(''); ?>" />
     	<input type="hidden" name ="cmd" value="sendRecallMail" />
 		<div>
-			<?php
-				$recall_message_parameters = array(
-					'%course_name' 						=> $this->survey->getCourse()->title,
-					'%survey_name' 						=> $this->survey->title, 
-					'%survey_participation_address' 	=> get_path('rootWeb') . "module/LVSURVEY/show_survey.php?surveyId={$this->survey->id}",
-				); 
-				$message_contents = get_lang('__RECALL_MESSAGE__',$recall_message_parameters);
-				$message_contents == '__RECALL_MESSAGE__'? '':$message_contents;
-				echo claro_html_textarea_editor('emailBody',$message_contents); 
-				?>
+			<?php echo claro_html_textarea_editor('emailBody',$this->emailBody); ?>
 		</div>
 		<div>
 			<input type="submit" value="<?php echo get_lang('Send recall message'); ?>"/>

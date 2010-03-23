@@ -13,24 +13,46 @@ class ShowParticipationPage extends ManagerSurveyPage{
 	const IN_COURSE_NOT_PARTICIPANTS = __LINE__;
 	
 	private $participationMap;
+	private $emailBody;
 	
 	public function __construct(){
 		parent::__construct();
 		$this->participationMap = $this->buildParticipationMap();
+		$survey = parent::getSurvey();
+		$recall_message_parameters = array(
+			'%course_name' 						=> $survey->getCourse()->title,
+			'%survey_name' 						=> $survey->title, 
+			'%survey_participation_address' 	=> get_path('rootWeb') . "module/LVSURVEY/show_survey.php?surveyId={$survey->id}",
+		); 
+		$message_contents = get_lang('__RECALL_MESSAGE__',$recall_message_parameters);
+		$this->emailBody = $message_contents == '__RECALL_MESSAGE__'? '':$message_contents;
 	}
 	
 	public function performSendRecallMail(){
 		$userInput = Claro_UserInput::getInstance();
 		try{
-			$message = (string)$userInput->getMandatory('emailBody');
-			$recipients = $this->buildInCourseNotParticipantIdList();
+			$messageBody = (string)$userInput->getMandatory('emailBody');
+			$recipient = $this->buildRecallRecipient();
 			$subject = get_lang('Survey Recall');
-			claro_mail_user($recipients, $message, $subject );
+			
+			$message = new MessageToSend(claro_get_current_user_id(),$subject,$messageBody);
+            $message->setCourse(claro_get_current_course_id());
+            $message->setTools('LVSURVEY');             
+            $recipient->sendMessage($message);
+			
+			$this->emailBody = $messageBody;
 			parent::success('Message successfully sent');
 		} catch (Exception $e){
 			parent::error($e->getMessage());
 		}
 				
+	}
+	
+	private function buildRecallRecipient(){
+		$recipient = new UserListRecipient();
+		$recipientsIdList = $this->buildInCourseNotParticipantIdList();
+		$recipient->addUserIdList($recipientsIdList);
+		return $recipient;
 	}
 	
 	private function buildInCourseNotParticipantIdList(){
@@ -48,9 +70,11 @@ class ShowParticipationPage extends ManagerSurveyPage{
 		$showParticipationTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_participation.tpl.php');
 		$showParticipationTpl->assign('survey', $survey);
 		$showParticipationTpl->assign('participantsMap', $participantsMap);
+		$showParticipationTpl->assign('emailBody', $this->emailBody);
 		return $showParticipationTpl->render();
 	}
 	protected function addSpecificBreadCrumb(){
+		parent::appendBreadCrumbElement(get_lang('Results'), "show_results.php?surveyId={$this->getSurvey()->id}");
 		parent::appendBreadCrumbElement(get_lang('Participations'));
 	}
 	
