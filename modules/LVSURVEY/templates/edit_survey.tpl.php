@@ -27,7 +27,8 @@ if($this->survey->isAnswered()){
 <form method="post" action="edit_survey.php" >
 	<input type="hidden" name="surveyId" value="<?php echo $this->survey->id ?>" />
     <input type="hidden" name="claroFormId" value="<?php echo uniqid(''); ?>" />
-    <table border="0" cellpadding="5">
+    <input type="hidden" name="cmd" value="surveySave" />
+        <table border="0" cellpadding="5">
     <tbody>
 	<!--  ANONYMOUS  -->
     <tr>

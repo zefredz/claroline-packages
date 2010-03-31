@@ -85,7 +85,7 @@
                 </td>                
                 <td>
                 	<?php                 		
-                		$urlDelete = 'question_pool.php?questionId='.$question->id.'&amp;cmd=questionDel';     		 
+                		$urlDelete = 'question_pool.php?questionId='.$question->id.'&amp;cmd=questionDelete';     		 
                 		echo claro_html_link($urlDelete, $deleteIcon);
                 	?>
                 </td>

@@ -90,7 +90,7 @@ if($this->editMode)
         				<?php if ($this->editMode) : ?>
         					<?php 
         					$actionText = get_lang('Reopen now');
-        					$actionURL =  'survey_list.php?surveyId='.$aSurvey->id.'&amp;cmd=surveyRestart';
+        					$actionURL =  'survey_list.php?surveyId='.$aSurvey->id.'&amp;cmd=surveyStart';
         					echo link_to($actionText,$actionURL);
         					?>
         				<?php endif;?>
@@ -105,7 +105,7 @@ if($this->editMode)
                 </td>
                 <td align="center">
                 	<?php                 		
-                		$urlDelete = 'survey_list.php?surveyId='.$aSurvey->id.'&amp;cmd=surveyDel';     		 
+                		$urlDelete = 'survey_list.php?surveyId='.$aSurvey->id.'&amp;cmd=surveyDelete';     		 
                 		echo claro_html_link($urlDelete, $deleteIcon);
                 	?>
                 </td>

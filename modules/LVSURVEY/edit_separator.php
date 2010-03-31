@@ -1,119 +1,90 @@
 <?php 
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
+From::module('LVSURVEY')->uses('managerSurveyPage.class');
 
-//=================================
-// Security check
-//=================================
+class EditSeparatorPage extends ManagerSurveyPage {
+	
+	private $separator;
+	private $surveyLineId = 0;
+	private $showSuccess = false;
+	
+	
+	public function __construct()
+	{
+		parent::__construct();
+		$survey = parent::getSurvey();
+		$input = Claro_UserInput::getInstance();
+		$idValidator = new Claro_Validator_ValueType('intstr');
+		$this->surveyLineId = (int)$input->get('surveyLineId', '0');
+		if(empty($this->surveyLineId))
+		{
+			$this->separator =  SurveyLineFactory::createSeparatorLine($survey,'[Blank Separator]');
+		} 
+		else 
+		{
+			$this->separator = SurveyLineFactory::loadSingleLine($this->surveyLineId, $survey);
+		}		
+	}
+	
+	public function render(){
+		if($this->showSuccess){
+			return $this->renderSuccess();
+		}
+		return $this->renderEditSeparator();
+	}
+	
+	private function renderSuccess()
+	{
+		$survey = parent::getSurvey();
+		$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
+    	$surveySavedBoxTpl->assign('surveyId', $survey->id);
 
-if ( 	!claro_is_in_a_course() 
-        || !claro_is_course_allowed()
-        || !claro_is_user_authenticated()
-) 
-    claro_disp_auth_form(true);
-
-if(!claro_is_allowed_to_edit())
-{
-    //not allowed for normal user
-    claro_redirect('survey_list.php');
-    exit();
+    	return $surveySavedBoxTpl->render();
+	}
+	
+	private function renderEditSeparator()
+	{
+		$survey = parent::getSurvey();
+    	$separatorTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_separator.tpl.php');
+   		$separatorTpl->assign('surveyId', $survey->id);
+    	$separatorTpl->assign('separator', $this->separator);
+    	return $separatorTpl->render();
+	}
+	
+	public function defineBreadCrumb(){
+		parent::defineBreadCrumb();
+		$survey = parent::getSurvey();
+		$editSeparatorURL = 'edit_separator.php?surveyId='.$survey->id;
+		
+		
+		if($this->separator->id != -1)
+	    {
+	    	$editSeparatorURL .= '&surveyLineId='.$this->separator->id;
+	    	parent::appendBreadCrumbElement(get_lang('Edit separator'), $editSeparatorURL);
+	    }
+	    else
+	    {
+	    	parent::appendBreadCrumbElement('New separator', $editSeparatorURL);
+	    }
+	    
+	}
+	
+	public function performSeparatorSave()
+	{
+		try
+		{
+			$survey = parent::getSurvey();
+			$this->separator = SurveyLineFactory::createSeparatorFromForm($survey);
+	    	$this->separator->save();
+	    	parent::success(get_lang("Separator successfully added to survey"));
+	    	$this->showSuccess = true;
+		} catch (Exception $e){
+			parent::error($e->getMessage());
+		}
+	}
 }
 
-
-//=================================
-// Init section
-//=================================
-
-From::module('LVSURVEY')->uses('question.class', 'survey.class');
-
-
-$tlabelReq = 'LVSURVEY';
-add_module_lang_array($tlabelReq);
-try
-{
-    $surveyId = (int)$_REQUEST['surveyId'];
-    $survey = Survey::load($surveyId);
-    if(isset($_REQUEST['claroFormId']))
-    {
-        addSeparatorToSurvey($survey);
-    }
-    else
-    {
-        editSeparator($survey);
-    }
-}
-catch(Exception $e)
-{
-    displayError($e);
-}
-
-
-//=================================
-// Controller Functions
-//=================================
-
-
-function addSeparatorToSurvey($survey)
-{		
-    $surveyLine = SurveyLineFactory::createSeparatorFromForm($survey);
-    $surveyLine->save();
-    $survey->addSurveyLine($surveyLine);
-    displaySuccess($survey, get_lang("Separator successfully added to survey"));
-
-}
-
-//=================================
-// Display section
-//=================================
-
-function editSeparator($survey)
-{
-    $separator =  SurveyLineFactory::createSeparatorLine($survey,'');
-    if(isset($_REQUEST['surveyLineId']))
-    {
-        $surveyLineId = (int)$_REQUEST['surveyLineId'];
-        $separator = SurveyLineFactory::loadSingleLine($surveyLineId, $survey);
-    }
-    $separatorTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_separator.tpl.php');
-    $separatorTpl->assign('surveyId', $survey->id);
-    $separatorTpl->assign('separator', $separator);
-    renderContents($separatorTpl->render(), $survey,get_lang('Add Separator'));
-}
-
-function displaySuccess($survey, $successMessage)
-{
-    $surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
-    $surveySavedBoxTpl->assign('surveyId', $survey->id);
-
-    $dialogBox = new DialogBox();
-    $dialogBox->success($successMessage);
-
-    renderContents($surveySavedBoxTpl->render(), $survey,get_lang('Success'), $dialogBox);
-}
-
-function displayError($e)
-{
-    $dialogBox = new DialogBox();
-    $dialogBox->error( get_lang($e->getMessage()));
-    renderContents('',NULL,get_lang('Error'),$dialogBox);
-}
-
-function renderContents($contents,$survey , $pageTitle, $dialogBox = NULL)
-{
-    $claroline = Claroline::getInstance();
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-    if (!is_null($survey))
-        $claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id);
-    $claroline->display->banner->breadcrumbs->append($pageTitle);
-
-    $out = claro_html_tool_title($pageTitle);
-    if(!is_null($dialogBox))
-    {
-        $out .= $dialogBox->render();
-    }
-    $out .= $contents;
-    $claroline->display->body->appendContent($out);
-
-    echo $claroline->display->render();
-}
-?>
+$page = new EditSeparatorPage();
+$page->execute();
+die();

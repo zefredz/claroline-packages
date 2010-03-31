@@ -1,162 +1,128 @@
 <?php 
  
- require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
- 
-//=================================
-// Security check
-//=================================
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';  
+From::module('LVSURVEY')->uses('managerSurveyLessPage.class', 'question.class', 'survey.class');
 
- if ( 	!claro_is_in_a_course() 
- 		|| !claro_is_course_allowed() 
- 		|| !claro_is_user_authenticated() 
- 	) 
- 		claro_disp_auth_form(true);
+class EditQuestionPage extends ManagerSurveyLessPage {
 
-if(!claro_is_allowed_to_edit())
-{
-	//not allowed for normal user
-    claro_redirect('survey_list.php');
-    exit();
-}
- 
-//=================================
-// Init section
-//=================================
+	private $question = null;
+	private $questionId = 0;
 
-From::module('LVSURVEY')->uses('question.class', 'survey.class');
-FromKernel::uses('utils/input.lib', 'utils/validator.lib');
-    
-// Tool label (must be in database)
-$tlabelReq = 'LVSURVEY';
-add_module_lang_array($tlabelReq);
-    
-$processForm = isset($_REQUEST['claroFormId']);
-$question = new Question();
-$questionId = isset($_REQUEST['questionId'])?(int)$_REQUEST['questionId']:-1;
-$is_updating = ($questionId != -1);    
-if($is_updating)
-{
-    $question = Question::load($questionId);
-}
+	private $survey = null;
 
-//=================================
-// SHOW FORM
-//=================================
-if(!$processForm)
-{	
-    renderEditQuestion($question);
-    exit();
-}
-    
-
-//=================================
-// PARSE & PROCESS FORM
-//=================================
-try
-{
-	$question = Question::loadFromForm();
-	$shoulAddToSurvey = $question->id == -1;
-	$question->save();
-	if(!isset($_REQUEST['surveyId']))
+	private $showSuccess = false;
+	
+ 	public function __construct()
 	{
-		claro_redirect('question_pool.php');
-		exit;
-	}
-	if(isset($_REQUEST['surveyId']))
-	{
-		$survey = Survey::load((int)$_REQUEST['surveyId']);
-		if($shoulAddToSurvey)
+		parent::__construct();
+		$input = Claro_UserInput::getInstance();
+		$idValidator = new Claro_Validator_ValueType('intstr');
+		$input->setValidator('questionId', $idValidator);
+		$input->setValidator('surveyId', $idValidator);		
+		$surveyId = (int)$input->get('surveyId', '0');
+		$this->questionId = (int)$input->get('questionId', '0');
+		
+		if(!empty($this->questionId) && $this->questionId != -1)
 		{
-			addQuestionToSurvey($question->id, $survey);
+			$this->question = Question::load($this->questionId);
+		} 
+		else 
+		{
+			$this->question = new Question();
 		}
-		displaySuccess($survey, get_lang("Question was successfully saved"));
+		
+		if(!empty($surveyId))
+		{
+			$this->survey = Survey::load($surveyId);
+		}		
 	}
 	
 	
-}
-catch(Exception $e)
-{
-	$dialogBox = new DialogBox();
-	$dialogBox->error( $e->getMessage());
-   	renderEditQuestion($question, $dialogBox);
-}
-
-function addQuestionToSurvey($questionId, $survey)
-{
-
-		$question = Question::load($questionId);
-		$surveyLine = SurveyLineFactory::createQuestionLine($survey,$question);        
-        $surveyLine->save();		
-        $survey->addSurveyLine($surveyLine);        
-
-}
-
-//=================================
-// DISPLAY FUNCTIONS
-//=================================
-
-function displaySuccess($survey, $successMessage)
-{
+	public function render(){
+		if($this->showSuccess){
+			return $this->renderSuccess();
+		}
+		return $this->renderEditQuestion();
+	}
 	
-	$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
-	$surveySavedBoxTpl->assign('surveyId', $survey->id);    
+	private function renderSuccess()
+	{
+		if(empty($this->survey))
+		{
+			claro_redirect('question_pool.php');
+			die();
+		}
+		
+		$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
+		$surveySavedBoxTpl->assign('surveyId', $this->survey->id);
+		
+		return $surveySavedBoxTpl->render(); 
+	}
 	
-    $dialogBox = new DialogBox();
-    $dialogBox->success($successMessage);    
+	private function renderEditQuestion()
+	{
+
 	
-	renderContents($surveySavedBoxTpl->render(), $survey,get_lang('Success'), $dialogBox);
-}
+		$editQuestionTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_question.tpl.php');
+    	$editQuestionTpl->assign('question', $this->question);
+	    if(!empty($this->survey))
+	    {
+	    	$editQuestionTpl->assign('surveyId', $this->survey->id);
+	    }
+	
+    	return $editQuestionTpl->render();    
     
-    
-function renderEditQuestion($question, $dialogBox = NULL)
-{
+	}
 	
-	$is_updating = $question->id != -1;    
-    if($is_updating)
-    {
-    	$pageTitle = get_lang('Edit this question');
-    }
-    else
-    {
-    	$pageTitle = get_lang('New question');
-    }
+	public function defineBreadCrumb(){
+		parent::defineBreadCrumb();
+		$editQuestionURL = 'edit_question.php?';
+		
+		if(!empty($this->survey))
+	    {
+	    	$editQuestionURL .= '&surveyId='.$this->survey->id;
+	    	parent::appendBreadCrumbElement($this->survey->title, 'show_survey.php?surveyId=' . (int)$this->survey->id);
+	    }
+		
+		
+		if($this->question->id != -1)
+	    {
+	    	$editQuestionURL .= '&questionId='.$this->question->id;
+	    	parent::appendBreadCrumbElement(get_lang('Edit question'), $editQuestionURL);
+	    }
+	    else
+	    {
+	    	parent::appendBreadCrumbElement('New question', $editQuestionURL);
+	    }
+	    
+	}
 	
-	$editQuestionTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_question.tpl.php');
-    $editQuestionTpl->assign('question', $question);
-    if(isset($_REQUEST['surveyId']))
-    {
-    	$editQuestionTpl->assign('surveyId', $_REQUEST['surveyId']);
-    }
-	$contenttoshow = '';
-    if(!is_null($dialogBox))
-    {
-    	$contenttoshow .= $dialogBox->render();	
-    }
-    $contenttoshow .= $editQuestionTpl->render();    
-    
-    renderContents($contenttoshow,NULL, $pageTitle);
-    
-
-	
+	public function performQuestionSave()
+	{
+		
+		try
+		{
+			$this->question = Question::loadFromForm();
+			$this->question->save();
+			if(!empty($this->survey) && $this->question->id != $this->questionId)
+			{
+				$this->addQuestionToSurvey();
+			}
+			parent::success(get_lang("Question was successfully saved"));
+			$this->showSuccess = true;
+		}
+		catch (Exception $e)
+		{
+			parent::error($e->getMessage());
+		}
+	}
+	private function addQuestionToSurvey()
+	{
+			$surveyLine = SurveyLineFactory::createQuestionLine($this->survey,$this->question);        
+	        $surveyLine->save();		
+	        $this->survey->addSurveyLine($surveyLine);	
+	}
 }
 
-function renderContents($contents,$survey , $pageTitle, $dialogBox = NULL)
-{
-	$claroline = Claroline::getInstance();
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-    if (!is_null($survey))
-    	$claroline->display->banner->breadcrumbs->append(htmlspecialchars($survey->title), 'show_survey.php?surveyId='.$survey->id);
-    $claroline->display->banner->breadcrumbs->append($pageTitle);
-    
-    $out = claro_html_tool_title($pageTitle);
-    if(!is_null($dialogBox))
-    {
-    	$out .= $dialogBox->render();
-    }
-    $out .= $contents;
-    $claroline->display->body->appendContent($out);
-   
-    echo $claroline->display->render();
-}
- 
-?>
+$page = new EditQuestionPage();
+$page->execute();

@@ -29,7 +29,7 @@ class ShowSurveyPage extends SurveyPage{
 		$lineId = $this->getMandatorySurveyLineId();
 		$input = Claro_UserInput::getInstance();
 		$newCommentSize =  $input->getMandatory('commentSize');
-		$this->setCommentSize($surveyLineId, $newCommentSize);
+		$this->setCommentSize($lineId, $newCommentSize);
 	}
 	
 	public function performSaveParticipation(){
@@ -41,7 +41,8 @@ class ShowSurveyPage extends SurveyPage{
 		
 
 	
-	protected function addSpecificBreadCrumb(){
+	protected function defineBreadCrumb(){
+		parent::defineBreadCrumb();
 		parent::appendBreadCrumbElement(get_lang('Display survey'));
 	}
 	
@@ -95,7 +96,7 @@ class ShowSurveyPage extends SurveyPage{
     }
    
     
-    function setCommentSize($surveyLineId, $newCommentSize)
+    private function setCommentSize($surveyLineId, $newCommentSize)
     {
     	$survey = parent::getSurvey();
     	if($newCommentSize < 0)

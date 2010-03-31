@@ -1,154 +1,87 @@
 <?php 
-
-
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-    
-//=================================
-// Security check
-//=================================
+From::module('LVSURVEY')->uses('surveyLessPage.class', 'survey.class');
 
-    if ( 	!claro_is_in_a_course() 
-    		|| !claro_is_course_allowed() 
-    		|| !claro_is_user_authenticated() )
-    {
-    	claro_disp_auth_form(true);
-    }
-    
-//=================================
-// Init section
-//=================================
-    From::module('LVSURVEY')->uses('survey.class');
-    
-     // Tool label (must be in database)
-    $tlabelReq = 'LVSURVEY';
-    add_module_lang_array($tlabelReq);
-    claro_set_display_mode_available(true);
-    $is_allowedToEdit = claro_is_allowed_to_edit();
-    
-    
-//=================================
-// Choose Action
-//=================================
-    
-    if($is_allowedToEdit && (isset($_REQUEST['cmd'])) && (isset($_REQUEST['surveyId'])) )
-    {
-	    $surveyId = (int)$_REQUEST['surveyId'];
-		$survey = Survey::load($surveyId);
-	    switch($_REQUEST['cmd'])
-	    {
-	    	case 'toggleSurveyVisibility' :
-	    		toggleSurveyVisibility($survey);
-	    		break;
-	    	case 'surveyStart' :
-	    	case 'surveyRestart' :
-	    		startSurvey($survey);
-	    		break;
-	    	case 'surveyStop' :
-	    		stopSurvey($survey);
-	    		break;
-	    	case 'surveyMoveUp' :
-	    		moveSurvey($survey,true);
-	    		break;
-	    	case 'surveyMoveDown' :
-	    		moveSurvey($survey,false);
-	    		break;
-	    	case 'surveyDel' :
-	    		deleteSurvey($survey);
-	    		break;
-	    	default :
-	    		displaySurveyList();	    			    		
-	    }    	
-    } 
-    else
-    {
-    	displaySurveyList();
-    }
-
-//=================================
-// Action functions
-//=================================
-    
-    function moveSurvey($survey, $up)
-    {
-    	$dialogBox = NULL;
-        try{
-            $survey->moveSurvey($up);
-        }
-        catch (Exception $e)
-        {
-        	$dialogBox = new DialogBox();
-        	$dialogBox->error($e->getMessage());
-        }
-        displaySurveyList($dialogBox);
-    	
-    	
-    }
-    
-    function toggleSurveyVisibility($survey)
-    {
-    	$survey->is_visible = !$survey->is_visible;
-    	saveAndDisplayList($survey);
-    }
-    function startSurvey($survey)
-    {
-    	$survey->startDate = time();
+class SurveyListPage extends SurveyLessPage 
+{
+	private $editMode = false;
+	private $showConfirmDelete = false;
+	private $survey = null;
+	
+	public function __construct()
+	{
+		parent::__construct();
+		$this->editMode = claro_is_allowed_to_edit();
+	}
+	
+	private function getSurvey()
+	{
+		if($this->survey != null){
+			return $this->survey;
+		}
+		$surveyId = parent::getUserInt('surveyId');
+		$this->survey =  Survey::load($surveyId);
+		return $this->survey;	
+	}
+	
+	public function performToggleSurveyVisibility()
+	{
+		$survey = $this->getSurvey();
+		$survey->is_visible = !$survey->is_visible;
+		$survey->save();
+	}
+	
+	public function performSurveyStart()
+	{
+		$survey = $this->getSurvey();
+		$survey->startDate = time();
        	if($survey->endDate < time())
        	{
        		$nextMonth = strtotime( "+1 month" );
         	$survey->endDate = $nextMonth;
        	}
-        saveAndDisplayList($survey);
-        	        
-    }
-    function stopSurvey($survey)
-    { 
-    	$survey->endDate = time();
-        if($survey->startDate> time())
+       	$survey->save();
+	}
+	
+	public function performSurveyStop()
+	{
+		$survey = $this->getSurvey();
+		$survey->endDate = time();
+        if($survey->startDate> time()){
             $survey->startDate = 0;
-        saveAndDisplayList($survey);
-    }
-    
-    function saveAndDisplayList($survey)
-    {
-    	$dialogBox = NULL;
-        try{
-            $survey->save();
         }
-        catch (Exception $e)
-        {
-        	$dialogBox = new DialogBox();
-        	$dialogBox->error($e->getMessage());
-        }
-        displaySurveyList($dialogBox);
-    }
-    function deleteSurvey($survey)
-    {    	
-            if(!isset($_REQUEST['conf']) || ((int)$_REQUEST['conf']!=1))
-            {
-            	displayDeleteConfirmation($survey);
-            	exit();                
-                
-            }
-            
-            //delete the survey            
-            $dialogBox = new DialogBox();
-            try{
-            	$survey->delete();
-            	$dialogBox->success( get_lang('Survey has been deleted')."!");
-            }
-            catch (Exception $e)
-            {
-            	$dialogBox->error($e->getMessage());
-            }
-            displaySurveyList($dialogBox);
-    }
-    
-//=================================
-// Display section
-//=================================
-
-	function displayDeleteConfirmation($survey)
+        $survey->save();
+	}
+	public function performSurveyMoveUp()
+	{
+		$survey = $this->getSurvey();
+		$survey->moveSurvey(true);		
+	}
+	public function performSurveyMoveDown()
+	{
+		$survey = $this->getSurvey();
+		$survey->moveSurvey(false);
+	}
+	public function performSurveyDelete()
+	{
+		if( ! parent::isConfirmed()){
+			$this->showConfirmDelete = true;
+			return;
+		}
+		$survey = $this->getSurvey();
+		$survey->delete();		
+	}
+	
+	public function render(){
+		if($this->showConfirmDelete)
+			return $this->displayDeleteConfirmation();
+		
+		return $this->displaySurveyList();
+	}
+	
+	private function displayDeleteConfirmation()
 	{		
+		$survey = $this->getSurvey();
 		$delConfTpl = new PhpTemplate(dirname(__FILE__).'/templates/delete_survey_conf.tpl.php');
     	$delConfTpl->assign('survey', $survey);        
     	$form = $delConfTpl->render();
@@ -156,49 +89,36 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
     	$dialogBox = new DialogBox();	
 		if($survey->isAnswered())
 		{		
-			$dialogBox->warning(get_lang('Some users have already answered to this survey.').' '.get_lang('Results will be removed.'));
+			$dialogBox->warning(get_lang('Some users have already answered to this survey.'));
 		}
 		$dialogBox->question( get_lang('Are you sure you want to delete this survey?'));
     	$dialogBox->form($form);
-    	
-    	$pageTitle = get_lang('Delete survey');    	
-    	displayContents($dialogBox->render(), $pageTitle);
+    	  	
+    	return $dialogBox->render();
 	}  
     
     
-function displaySurveyList($dialogBox = NULL)
-{   
+	private function displaySurveyList()
+	{   
+		
+	    $surveyList = Survey::loadSurveyList(claro_get_current_course_id());
+	    $surveyListTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_list.tpl.php');
+	    $surveyListTpl->assign('surveyList', $surveyList);
+	    $surveyListTpl->assign('editMode', $this->editMode);   
+	    
+	    return $surveyListTpl->render();
+		
+	}
 	
-    $surveyList = Survey::loadSurveyList(claro_get_current_course_id());
-    $surveyListTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_list.tpl.php');
-    $surveyListTpl->assign('surveyList', $surveyList);
-    $surveyListTpl->assign('editMode', claro_is_allowed_to_edit());   
-    $contentsToShow = "";
-    if(!is_null($dialogBox))
-    {
-    	$contentsToShow .= $dialogBox->render();
-    }
-    $contentsToShow .= $surveyListTpl->render();
-
-    
-	displayContents($contentsToShow, get_lang('List of surveys'));
+	protected function defineBreadCrumb(){
+		parent::defineBreadCrumb();
+		if($this->showConfirmDelete){
+    		parent::appendBreadCrumbElement(get_lang('Delete survey')); 
+		}
+	}
 	
-}
-
-function displayContents($contents, $pageTitle)
-{
-	$claroline = Claroline::getInstance();
-	
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php'); 
-    $claroline->display->banner->breadcrumbs->append($pageTitle); 
-	
-    $claroline->display->body->appendContent($contents);
-   
-    // render output
-    echo $claroline->display->render();
 	
 }
 
-    
-
-?>
+$page = new SurveyListPage();
+$page->execute(); 

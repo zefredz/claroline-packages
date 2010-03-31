@@ -81,7 +81,21 @@ class QuestionLine extends SurveyLine{
 	        		INNER JOIN 	`".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI 
 	        		ON 			A.`id` = AI.`answerId`
 	        		WHERE 		A.`surveyLineId` = ".(int) $this->id." ; ";
-	    $dbCnx->exec($sql);        		
+	    
+
+	    if($this->question->type == 'OPEN')
+	    {
+	    	$sql = "
+	        		DELETE 		A, AI, C 
+	        		FROM 		`".SurveyConstants::$ANSWER_TBL."` AS A 
+	        		INNER JOIN 	`".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI 
+	        		ON 			A.`id` = AI.`answerId`
+	        		INNER JOIN 	`".SurveyConstants::$CHOICE_TBL."` AS C 
+	        		ON 			AI.`choiceId` = C.`id`
+	        		WHERE 		A.`surveyLineId` = ".(int) $this->id." ; ";
+	    }
+	    
+	    $dbCnx->exec($sql);
 	}
 	public function render($editMode, $participation)
 	{
