@@ -4,7 +4,8 @@
 		<input type="hidden" name="surveyId" value="<?php echo $this->surveyId; ?>" />
 	<?php endif;?>
 	<input type="hidden" name="claroFormId" value="<?php  echo uniqid(''); ?>">
-     
+    <input type="hidden" name="cmd" value="SeparatorSave">
+    
      <table border="0" cellpadding="5" id="formTable">
         
     <!--  SEPARATOR TITLE -->

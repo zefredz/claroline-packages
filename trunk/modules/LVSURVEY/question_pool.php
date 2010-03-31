@@ -1,6 +1,150 @@
 <?php 
  
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+From::module('LVSURVEY')->uses('question.class', 'managerSurveyLessPage.class');
+
+class QuestionPoolPage extends ManagerSurveyLessPage
+{
+	
+	const DEFAULT_ORDER_BY = 'text';
+	const DEFAULT_ASCDESC = 'ASC';
+	
+	private $questionId = 0;
+	private $question = null;
+	private $surveyId = 0;
+	private $showDeleteConfirm = false;
+	
+	private $orderby = self::DEFAULT_ORDER_BY;
+	private $ascDesc = self::DEFAULT_ASCDESC;
+	
+	
+	public function __construct()
+	{
+		parent::__construct();
+		$input = Claro_UserInput::getInstance();
+		$orderByOptionValidator = new Claro_Validator_AllowedList(array('text', 'type', 'used'));
+		$input->setValidator('orderby', $orderByOptionValidator);
+		$ascDescValidator = new Claro_Validator_AllowedList(array('ASC', 'DESC'));
+		$input->setValidator('ascDesc', $ascDescValidator);
+		
+		$this->orderby = $input->get('orderby', self::DEFAULT_ORDER_BY);
+		$this->ascDesc = $input->get('ascDesc', self::DEFAULT_ASCDESC);
+		
+		$idValidator = new Claro_Validator_ValueType('intstr');
+		$input->setValidator('questionId', $idValidator);
+		$input->setValidator('surveyId', $idValidator);
+		
+		$this->questionId = $input->get('questionId', 0);
+		$this->surveyId = $input->get('surveyId', 0);
+		
+		
+	}
+	
+	public function render()
+	{
+		if($this->showDeleteConfirm)
+		{
+			return $this->showDeleteConfirm();
+		}
+		return $this->showQuestionPool();
+	}
+	
+	private function showDeleteConfirm()
+	{
+		$question = $this->getQuestion();
+		
+		
+		if($question->getUsed() > 0 )
+		{
+			parent::error(get_lang("This question is used in some surveys . You can't delete it"));
+			return $this->showQuestionPool();
+		}
+		
+		
+		$delConfTpl = new PhpTemplate(dirname(__FILE__).'/templates/delete_question_conf.tpl.php');
+   		$delConfTpl->assign('question', $question);        
+   		$form = $delConfTpl->render();
+   	
+   		$dialogBox = new DialogBox();
+   		
+		$dialogBox->question( get_lang('Are you sure you want to delete this question?'));
+	   	$dialogBox->form($form);
+	   	  	
+	   	return $dialogBox->render();
+	}
+	
+	private function showQuestionPool()
+	{
+		try
+		{
+		    $questionList = Question::loadQuestionPool($this->orderby, $this->ascDesc);		    
+		}catch(Exception $e)
+		{
+			parent::error($e->getMessage());
+			return '';
+		}
+		
+		$questionListTpl = new PhpTemplate(dirname(__FILE__).'/templates/question_pool.tpl.php');
+	    $questionListTpl->assign('questionList', $questionList);
+	    $questionListTpl->assign('orderby', $this->orderby);
+	    $questionListTpl->assign('ascDesc', $this->ascDesc);
+		if(!empty($this->surveyId)){
+			$questionListTpl->assign('surveyId', $this->surveyId);
+		}
+	    return $questionListTpl->render();	
+	    
+	}
+	
+	public function defineBreadCrumb()
+	{
+		parent::defineBreadCrumb();		
+		$questionPoolUrl = 'question_pool.php?';
+		if(!empty($this->surveyId))
+		{
+			$questionPoolUrl .= "surveyId={$this->surveyId}";
+		}
+		$questionPoolUrl .= "&ascDesc={$this->ascDesc}&orderby={$this->orderby}";
+		parent::appendBreadCrumbElement(get_lang('Question pool'), $questionPoolUrl);
+		if($this->showDeleteConfirm)
+		{
+			parent::appendBreadCrumbElement(get_lang('Delete question'));
+		}
+	}
+	
+	private function getQuestion()
+	{
+		if($this->question != null){
+			return $this->question;
+		}
+		try{
+			$this->question = Question::load($this->questionId);
+			return $this->question;
+		} catch(Exception $e){
+			parent::errorAndDie($e->getMessage());
+		}
+	}
+	
+	public function performQuestionDelete()
+	{
+		if(! parent::isConfirmed())
+		{
+			$this->showDeleteConfirm = true;
+			return;
+		}
+		try{
+			$question = $this->getQuestion();
+			$question->delete();
+			parent::success( get_lang('Question has been deleted')."!");
+		}catch (Exception $e){
+			parent::error($e->getMessage());
+		}
+				
+	}
+}
+
+$page = new QuestionPoolPage();
+$page->execute();
+die();
     
 //=================================
 // Security check

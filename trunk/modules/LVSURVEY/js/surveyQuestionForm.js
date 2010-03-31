@@ -1,5 +1,6 @@
-function showMultipleChoices(nbChoice)
+function showMultipleChoices()
 {
+	nbChoice = parseInt($("#questionNbCh").val());
 	$("div[id^='divquestionCh']").hide();
 	$("div[id^='divquestionCh']:lt("+(nbChoice+1)+")").show();
 	$("#menuaddrem").show();
@@ -32,25 +33,30 @@ $(document).ready(function(){
 	
 	$("input[name='questionType']:checked").click();
 	
-	$(":input[id^='questionCh']").focus( function()
+	$("input[id^='questionCh']").focus( function()
 	{
-		var divIndex = $("div").index($(this).parent("div:first"));
-		$("div:eq(" + (divIndex ) + ")").show();
+		nbChoice = parseInt($("#questionNbCh").val())
+		var choiceIndex = parseInt($(this).attr('id').substr(10));
+		if(choiceIndex >= nbChoice)
+		{
+			$("#questionNbCh").val(nbChoice+1);
+			showMultipleChoices();
+		}
 	});
 	
 	
 		
 	$("#addChoice").click(function () {
-		nbChoice = parseInt($("#questionNbCh").val()) +1;
-		$("#questionNbCh").val(nbChoice);
-		showMultipleChoices(nbChoice);
+		nbChoice = parseInt($("#questionNbCh").val());
+		$("#questionNbCh").val(nbChoice+1);
+		showMultipleChoices();
 	});
 	
-	$("#removeChoice").click(function () {
-		$("#questionCh"+nbChoice).val("");
-		nbChoice = parseInt($("#questionNbCh").val()) -1;
-		$("#questionNbCh").val(nbChoice);
-		showMultipleChoices(nbChoice);
+	$("#removeChoice").click(function () {		
+		nbChoice = parseInt($("#questionNbCh").val());
+		$("#questionCh" + nbChoice).val("");
+		$("#questionNbCh").val(nbChoice-1);
+		showMultipleChoices();
 	});
 	
 });

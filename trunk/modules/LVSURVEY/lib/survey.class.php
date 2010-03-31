@@ -365,11 +365,22 @@ class Survey {
            
         
     }
-    function removeLine($surveyLineId)
+    public function removeLine($surveyLineId)
     {
     	$surveyLineList = $this->getSurveyLineList();
         $surveyLineList[$surveyLineId]->delete();
         unset($this->surveyLineList[$surveyLineId]);
+    }
+    /** remova all occurences of question with id = $questionId */
+	public function removeQuestion($questionId)
+    {
+    	$surveyLineList = $this->getSurveyLineList();
+    	foreach($surveyLineList as $surveyLine){
+    		if(isset($surveyLine->question) && $surveyLine->question->id == $questionId)
+    		{
+    			$surveyLine->delete();
+    		}
+    	}
     }
     
     public function moveLine($surveyLineId, $up)

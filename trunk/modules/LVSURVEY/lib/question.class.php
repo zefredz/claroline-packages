@@ -61,16 +61,22 @@ class Question
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(SLQ.`id`)		 			AS used
+            	       COUNT(DISTINCT S.`id`)		 			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
-            ON 			Q.`id`= SLQ.`questionId`              
+            ON 			Q.`id`= SLQ.`questionId`
+            LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_TBL."` AS SL
+            ON 			SLQ.`id`= SL.`id`
+            LEFT JOIN 	`".SurveyConstants::$SURVEY_TBL."` AS S
+            ON 			SL.`surveyId`= S.`id`              
            	WHERE 		Q.`id`  = ".(int) $id."
            	GROUP BY	Q.`id` ; "; 
          
          
         $resultSet = $dbCnx->query($sql);
         $data = $resultSet->fetch();
+        if(empty($data))
+			throw new Exception("Invalid Question Id");
         return self::__set_state($data);
     }
     
@@ -91,10 +97,14 @@ class Question
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(SLQ.`id`)		 			AS used
+            	       COUNT(DISTINCT S.`id`)		 			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
             ON 			Q.`id`= SLQ.`questionId`
+            LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_TBL."` AS SL
+            ON 			SLQ.`id`= SL.`id`
+            LEFT JOIN 	`".SurveyConstants::$SURVEY_TBL."` AS S
+            ON 			SL.`surveyId`= S.`id`
             GROUP BY	Q.`id` 
            	ORDER BY 	".$orderBy." ".$ascDesc." ; ";
         

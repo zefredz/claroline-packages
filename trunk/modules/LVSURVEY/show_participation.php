@@ -18,14 +18,19 @@ class ShowParticipationPage extends ManagerSurveyPage{
 	public function __construct(){
 		parent::__construct();
 		$this->participationMap = $this->buildParticipationMap();
-		$survey = parent::getSurvey();
+		$survey = parent::getSurvey();		
 		$recall_message_parameters = array(
 			'%course_name' 						=> $survey->getCourse()->title,
 			'%survey_name' 						=> $survey->title, 
-			'%survey_participation_address' 	=> get_path('rootWeb') . "module/LVSURVEY/show_survey.php?surveyId={$survey->id}",
+			'%survey_participation_address' 	=> dirname(ShowParticipationPage::absoluteUriToSelf()) . "/show_survey.php?surveyId={$survey->id}",
 		); 
 		$message_contents = get_lang('__RECALL_MESSAGE__',$recall_message_parameters);
 		$this->emailBody = $message_contents == '__RECALL_MESSAGE__'? '':$message_contents;
+	}
+	
+	private static function absoluteUriToSelf(){
+		$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+		return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'];
 	}
 	
 	public function performSendRecallMail(){
@@ -73,7 +78,8 @@ class ShowParticipationPage extends ManagerSurveyPage{
 		$showParticipationTpl->assign('emailBody', $this->emailBody);
 		return $showParticipationTpl->render();
 	}
-	protected function addSpecificBreadCrumb(){
+	protected function defineBreadCrumb(){
+		parent::defineBreadCrumb();
 		parent::appendBreadCrumbElement(get_lang('Results'), "show_results.php?surveyId={$this->getSurvey()->id}");
 		parent::appendBreadCrumbElement(get_lang('Participations'));
 	}

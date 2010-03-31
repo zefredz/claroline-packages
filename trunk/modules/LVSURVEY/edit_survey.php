@@ -1,130 +1,109 @@
 <?php 
  
-require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
- 
-//=================================
-// Security check
-//=================================
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+From::module('LVSURVEY')->uses('surveyPage.class');
 
- if ( 	!claro_is_in_a_course() 
- 		|| !claro_is_course_allowed() 
- 		|| !claro_is_user_authenticated() 
- 	) 
- 		claro_disp_auth_form(true);
 
-if(!claro_is_allowed_to_edit())
-{
-	//not allowed for normal user
-    claro_redirect('survey_list.php');
-    exit();
-}
- 
-//=================================
-// Init section
-//=================================
-
-From::module('LVSURVEY')->uses('survey.class');
-FromKernel::uses('utils/input.lib', 'utils/validator.lib');
-    
-// Tool label (must be in database)
-$tlabelReq = 'LVSURVEY';
-add_module_lang_array($tlabelReq);
-    
-$processForm = isset($_REQUEST['claroFormId']);
-$survey = new Survey(claro_get_current_course_id());
-
-//=================================
-// SHOW FORM
-//=================================
-if(!$processForm)
-{
-	//prepare survey Object
-	$surveyId = isset($_REQUEST['surveyId'])?(int)$_REQUEST['surveyId']:-1;
-	$is_updating = ($surveyId != -1);    
-    if($is_updating)
-    {
-        $survey = Survey::load($surveyId);
-    }
-    renderEditSurvey($survey);
-    exit();
-}
-    
-
-//=================================
-// PARSE & PROCESS FORM
-//=================================
-try
-{
-	$survey = Survey::loadFromForm(claro_get_current_course_id());
-	$survey->save();
-}
-catch(Exception $e)
-{
-	$dialogBox = new DialogBox();
-	$dialogBox->error( $e->getMessage());
-   	renderEditSurvey($survey, $dialogBox);
-   	exit();
-}
-renderSucess($survey);
-
-//=================================
-// DISPLAY FUNCTIONS
-//=================================
-function renderSucess($survey)
-{
-	$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
-	$surveySavedBoxTpl->assign('surveyId', $survey->id);        
-	$boxcontent = $surveySavedBoxTpl->render();
-	$dialogBox = new DialogBox();
-	$dialogBox->success( get_lang("Survey has been saved")."!".$boxcontent);
+class EditSurveyPage extends SurveyPage{
 	
-	renderContents($dialogBox->render(),$survey,get_lang('Success'));
-}	
-    
-    
-function renderEditSurvey($survey, $dialogBox = NULL)
-{
+	private $surveyId = 0;
+	private $showSuccessBox = false;
 	
-	$is_updating = $survey->id != -1;    
-    if($is_updating)
-    {
-    	$pageTitle = get_lang('Edit this survey');
-    }
-    else
-    {
-    	$pageTitle = get_lang('New survey');
-    }
+	public function __construct(){
+		parent::__construct();			
+	}
 	
-	$editSurveyTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_survey.tpl.php');
-    $editSurveyTpl->assign('survey', $survey);
-	$contenttoshow = '';
-    if(!is_null($dialogBox))
+	//override
+	protected function loadSurvey()
+	{
+		
+		$input = Claro_UserInput::getInstance();	
+		$this->surveyId = (int)$input->get('surveyId', '0');
+		if(!empty($this->surveyId))
+		{
+			parent::loadSurvey();
+			return;
+		}
+		$input = Claro_UserInput::getInstance();
+		$survey = new Survey(claro_get_current_course_id());
+		$survey->title = "[Blank Survey]";
+		parent::setSurvey($survey);		
+	}
+	
+	protected function defineBreadCrumb(){
+		parent::defineBreadCrumb();
+		
+		
+		$survey = parent::getSurvey();
+		$editSurveyURL = 'edit_survey.php';
+		
+		if($survey->id != -1)
+	    {
+	    	$editSurveyURL .= '?surveyId='.$this->survey->id;
+	    	parent::appendBreadCrumbElement(get_lang('Edit survey'), $editSurveyURL);
+	    }
+	    else
+	    {
+	    	parent::appendBreadCrumbElement('New survey', $editSurveyURL);
+	    }		
+		
+		
+		if($this->showSuccessBox)
+		{
+			parent::appendBreadCrumbElement(get_lang("Survey has been saved")."!");
+		}
+		
+		
+	}
+	
+	
+	public function performSurveySave(){
+		if(isset($_REQUEST['claroFormId']))
+		{
+			$this->processForm();			
+		}
+	}
+	
+	private function processForm(){
+		try
+		{
+			$survey = Survey::loadFromForm(claro_get_current_course_id());
+			$survey->save();
+        	parent::success('Survey saved');
+        	$this->showSuccessBox = true;				
+		}
+		catch(Exception $e)
+		{
+			parent::error($e->getMessage());				
+		}
+			
+	}
+	
+	public function render()
+	{
+		if($this->showSuccessBox)
+		{
+			return $this->renderSucessBox();
+		}
+		return $this->renderEditSurvey();
+	}
+    private function renderSucessBox()
     {
-    	$contenttoshow .= $dialogBox->render();	
+    	$survey = parent::getSurvey();
+    	$surveySavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/survey_saved_success.tpl.php');
+		$surveySavedBoxTpl->assign('surveyId', $survey->id);        
+		
+		return $surveySavedBoxTpl->render();
     }
-    $contenttoshow .= $editSurveyTpl->render();    
-    
-    renderContents($contenttoshow,$survey, $pageTitle);	
+    private function renderEditSurvey(){   
+	    
+		$survey = parent::getSurvey();
+		$editSurveyTpl = new PhpTemplate(dirname(__FILE__).'/templates/edit_survey.tpl.php');
+	    $editSurveyTpl->assign('survey', $survey);
+		return $editSurveyTpl->render();    
+    }
+
 }
 
-function renderContents($contents, $survey, $pageTitle)
-{
-	$out = '';
-    $out .= claro_html_tool_title($pageTitle);  
-    
-    
-
-    $out .= $contents;
-	//create breadcrumbs
-	$claroline = Claroline::getInstance();
-    $claroline->display->banner->breadcrumbs->append(get_lang('Surveys'), 'survey_list.php');
-    $claroline->display->banner->breadcrumbs->append($survey->title, 'show_survey.php?surveyId='.$survey->id);
-    $claroline->display->banner->breadcrumbs->append($pageTitle);
-    // append output
-    $claroline->display->body->appendContent($out);
-   
-    // render output
-    echo $claroline->display->render();
-}
-    
-?>
+$page = new EditSurveyPage();
+$page->execute();

@@ -27,7 +27,8 @@ class ShowResultsPage extends SurveyPage{
 	    return $this->renderResults($format);
 	}
 	
-	protected function addSpecificBreadCrumb(){
+	protected function defineBreadCrumb(){
+		parent::defineBreadCrumb();
 		parent::appendBreadCrumbElement(get_lang('Results'));
 	}
 	

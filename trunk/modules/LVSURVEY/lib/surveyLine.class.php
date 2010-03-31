@@ -203,15 +203,15 @@ class SurveyLineFactory
         $dbCnx = Claroline::getDatabase();
         $sql = "
     			SELECT          SL.`id` 				as surveyLineId,
-    					SL.`rank`				as rank, 
-    					SLQ.`maxCommentSize` 	as maxCommentSize, 
-    					SLQ.`questionId`		as questionId, 
-    					Q.`text`				as questionText, 
-    					Q.`type`				as questionType, 
-    					Q.`alignment`			as choiceAlignment,
-    					SLS.`title`				as separatorTitle,
-    					SLS.`description`		as separatorDescription, 
-    					IFNULL(SLS.`id`,'TRUE')	as isQuestionLine     					  
+		    					SL.`rank`				as rank, 
+		    					SLQ.`maxCommentSize` 	as maxCommentSize, 
+		    					SLQ.`questionId`		as questionId, 
+		    					Q.`text`				as questionText, 
+		    					Q.`type`				as questionType, 
+		    					Q.`alignment`			as choiceAlignment,
+		    					SLS.`title`				as separatorTitle,
+		    					SLS.`description`		as separatorDescription, 
+		    					IFNULL(SLS.`id`,'TRUE')	as isQuestionLine     					  
                 FROM 	`".SurveyConstants::$SURVEY_LINE_TBL."` as SL
                 LEFT JOIN `".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` as SLQ
                 ON 		SL.`id` = SLQ.`id` 
