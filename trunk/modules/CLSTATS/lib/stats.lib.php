@@ -278,7 +278,7 @@ class ClaroStats
         //$dbCourses = new SQLite3( $dbCoursesPath );
         
         //get course list
-        if( is_null( $bunchCourses ) )
+        if( is_null( $bunchCourses ) || $bunchCourses == 0 )
         {
             $limit = 50;
         }

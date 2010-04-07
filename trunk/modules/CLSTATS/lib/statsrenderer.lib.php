@@ -16,68 +16,71 @@ class ClaroStatsRenderer{
     {
         $tpl = new PhpTemplate( dirname(__FILE__) . '/../templates/index.tpl.php' );
         
-        $cmdSubMenu[] = claro_html_cmd_link( 'index.php?cmd=view&display=summary&report=' . $reportDate, get_lang( 'Display summary' ) );
-        $cmdSubMenu[] = claro_html_cmd_link( 'index.php?cmd=view&display=details&report=' . $reportDate, get_lang( 'Display details' ) );
-        
-        if( $display == 'summary' )
+        if( ! is_null( $report ) )
         {
-            $summaryReport = array();
-            $tmpReport = array();
+        
+            $cmdSubMenu[] = claro_html_cmd_link( 'index.php?cmd=view&display=summary&report=' . $reportDate, get_lang( 'Display summary' ) );
+            $cmdSubMenu[] = claro_html_cmd_link( 'index.php?cmd=view&display=details&report=' . $reportDate, get_lang( 'Display details' ) );
             
-            $plugins = ClaroStats::getPlugins();
-            
-            foreach( $report as $id => $itemReport )
+            if( $display == 'summary' )
             {
-               $summaryReport[$itemReport['toolLabel']][$itemReport['itemName']] = $itemReport; 
-            }
-            
-            foreach( $summaryReport as $toolLabel => $items )
-            {
-                require_once( $plugins[ $toolLabel ] );
-                        
-                $class = $toolLabel . '_Stats';
-                $toolStats = new $class;
-                unset( $summaryReport[ $toolLabel ] );
-                if( method_exists( $toolStats, 'getSummarizedReport' ) )
+                $summaryReport = array();
+                $tmpReport = array();
+                
+                $plugins = ClaroStats::getPlugins();
+                
+                foreach( $report as $id => $itemReport )
                 {
-                    $summaryReport[ $toolLabel ][ 'summary' ] = $toolStats->getSummarizedReport( $items );
+                   $summaryReport[$itemReport['toolLabel']][$itemReport['itemName']] = $itemReport; 
                 }
-                else
+                
+                foreach( $summaryReport as $toolLabel => $items )
                 {
-                    /*$summaryReport[ $itemReport[ 'toolLabel' ] ]['toolLabel'] = $itemReport[ 'toolLabel' ];
-                    $summaryReport[ $itemReport[ 'toolLabel' ] ]['lessFive'] = $itemReport['zero'] + $itemReport['one'] + $itemReport['two'] + $itemReport['three'] + $itemReport['four'];
-                    $summaryReport[ $itemReport[ 'toolLabel' ] ]['moreFive'] = $itemReport['moreFive'] + $itemReport['five'];
-                    if( ! isset( $summaryReport[ $itemReport[ 'toolLabel' ] ]['max'] ) )
+                    require_once( $plugins[ $toolLabel ] );
+                            
+                    $class = $toolLabel . '_Stats';
+                    $toolStats = new $class;
+                    unset( $summaryReport[ $toolLabel ] );
+                    if( method_exists( $toolStats, 'getSummarizedReport' ) )
                     {
-                        $summaryReport[ $itemReport[ 'toolLabel' ] ]['max'] = $itemReport['max'];
+                        $summaryReport[ $toolLabel ][ 'summary' ] = $toolStats->getSummarizedReport( $items );
                     }
                     else
                     {
-                        if( ($itemReport['max'] > $summaryReport[ $itemReport[ 'toolLabel' ] ]['max']) )
+                        /*$summaryReport[ $itemReport[ 'toolLabel' ] ]['toolLabel'] = $itemReport[ 'toolLabel' ];
+                        $summaryReport[ $itemReport[ 'toolLabel' ] ]['lessFive'] = $itemReport['zero'] + $itemReport['one'] + $itemReport['two'] + $itemReport['three'] + $itemReport['four'];
+                        $summaryReport[ $itemReport[ 'toolLabel' ] ]['moreFive'] = $itemReport['moreFive'] + $itemReport['five'];
+                        if( ! isset( $summaryReport[ $itemReport[ 'toolLabel' ] ]['max'] ) )
                         {
                             $summaryReport[ $itemReport[ 'toolLabel' ] ]['max'] = $itemReport['max'];
                         }
-                    }
-                    
-                    if( !isset( $summaryReport[ $itemReport[ 'toolLabel' ] ]['average'] ) )
-                    {
-                        $summaryReport[ $itemReport[ 'toolLabel' ] ]['average'] = $itemReport['average'];
+                        else
+                        {
+                            if( ($itemReport['max'] > $summaryReport[ $itemReport[ 'toolLabel' ] ]['max']) )
+                            {
+                                $summaryReport[ $itemReport[ 'toolLabel' ] ]['max'] = $itemReport['max'];
+                            }
+                        }
                         
-                    }
-                    else
-                    {
-                        if( ($itemReport['average'] > $summaryReport[ $itemReport[ 'toolLabel' ] ]['average']) )
+                        if( !isset( $summaryReport[ $itemReport[ 'toolLabel' ] ]['average'] ) )
                         {
                             $summaryReport[ $itemReport[ 'toolLabel' ] ]['average'] = $itemReport['average'];
+                            
                         }
-                    }*/
-                }                
+                        else
+                        {
+                            if( ($itemReport['average'] > $summaryReport[ $itemReport[ 'toolLabel' ] ]['average']) )
+                            {
+                                $summaryReport[ $itemReport[ 'toolLabel' ] ]['average'] = $itemReport['average'];
+                            }
+                        }*/
+                    }                
+                }
+                $report = $summaryReport;
             }
-            $report = $summaryReport;
+            
+            $tpl->assign( 'subMenu' , claro_html_menu_horizontal( $cmdSubMenu ) );
         }
-        
-        $tpl->assign( 'subMenu' , claro_html_menu_horizontal( $cmdSubMenu ) );
-        
         $tpl->assign( 'display', $display );
         $tpl->assign( 'reports' , $reports );
         $tpl->assign( 'report' , $report );
