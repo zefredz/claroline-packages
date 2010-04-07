@@ -154,7 +154,9 @@ try
             $reports = Stats_ReportList::countReports();
             
             $thisReport = null;
+            
             $report = new Stats_Report();
+            
             if( !is_null( $reportId ) && $reportId )
             {
                 $thisReport = $report->load( $reportId );
@@ -165,11 +167,17 @@ try
             {
                 //Load last report
                 $lastReport = $reports->fetch();
+                
                 if( isset( $lastReport['date'] ) && $lastReport['date'] > 0 )
                 {                    
                     $thisReport = $report->load( $lastReport['date'] );
                     $usageReport = $report->loadUsage( $lastReport['date'] );
                 }
+                else
+                {
+                    $usageReport = null;
+                }
+                
                 $reportDate = $lastReport['date'];
             }
             
