@@ -1,7 +1,6 @@
 <?php
 if( $this->reports->numRows() == 0 ) :
 ?>
-1
 <div class="claroDialogBox boxInfo"><?php echo get_lang( 'No reports still generated.'); ?></div>
 <?php
 else :

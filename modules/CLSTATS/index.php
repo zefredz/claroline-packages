@@ -128,6 +128,12 @@ try
         break;
         case 'view' :
         {
+            $reports = null;
+            $display = null;
+            $usageReport = null;
+            $thisReport = null;
+            $reportDate = null;
+            
             if( isset( $_GET['report'] ) )
             {
                 $reportId = (int) $_GET['report'];
@@ -153,8 +159,6 @@ try
             
             $reports = Stats_ReportList::countReports();
             
-            $thisReport = null;
-            
             $report = new Stats_Report();
             
             if( !is_null( $reportId ) && $reportId )
@@ -172,10 +176,6 @@ try
                 {                    
                     $thisReport = $report->load( $lastReport['date'] );
                     $usageReport = $report->loadUsage( $lastReport['date'] );
-                }
-                else
-                {
-                    $usageReport = null;
                 }
                 
                 $reportDate = $lastReport['date'];
