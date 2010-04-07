@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__courses_stats` (
   `dbName` varchar(255) NOT NULL,
   `folderName` varchar(255) NOT NULL,
   `status` enum('pending','done') NOT NULL DEFAULT 'pending'
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats` (
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats` (
   `itemName` varchar(255) NOT NULL,
   `itemValue` int(11) NOT NULL,
   `dateCreation` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__stats_reports` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
