@@ -13,7 +13,7 @@ From::Module('CLSTATS')->uses('stats.lib','courselistiterator.lib');
 $userInput = Claro_UserInput::getInstance();
   
 $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-    'generateStats'
+    'generateStats', 'resetCoursesStatus'
 ) ) );
 
 $cmd = $userInput->get( 'cmd' );
@@ -37,6 +37,16 @@ switch( $cmd )
         }
         
         echo json_encode( $json );
+        exit();
+    }
+    break;
+    case 'resetCoursesStatus' :
+    {
+        Stats_CourseList::init( true );
+        echo json_encode( array(   'response' => get_lang( 'Courses\' status reseted' ),
+                        'success' => 1
+                    )
+            );
         exit();
     }
     break;

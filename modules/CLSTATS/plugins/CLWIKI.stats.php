@@ -21,7 +21,8 @@ class CLWIKI_Stats extends ClaroStats_CourseTask
         
         return array(
             'clwiki_count_coursewiki' => $clwiki_count_coursewiki['value'],
-            'clwiki_count_groupwiki' => $clwiki_count_groupwiki['value']
+            'clwiki_count_groupwiki' => $clwiki_count_groupwiki['value'],
+            'clwiki_count_totalwiki' => $clwiki_count_coursewiki['value'] + $clwiki_count_groupwiki['value']
         );
     }
     
@@ -36,7 +37,7 @@ class CLWIKI_Stats extends ClaroStats_CourseTask
             parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
         }        
         
-        $report[ 'clwiki_count_totalwiki' ][ 'zero' ] = $report[ 'clwiki_count_coursewiki' ][ 'zero' ] + $report[ 'clwiki_count_groupwiki' ][ 'zero' ];
+        /*$report[ 'clwiki_count_totalwiki' ][ 'zero' ] = $report[ 'clwiki_count_coursewiki' ][ 'zero' ] + $report[ 'clwiki_count_groupwiki' ][ 'zero' ];
         $report[ 'clwiki_count_totalwiki' ][ 'one' ] = $report[ 'clwiki_count_coursewiki' ][ 'one' ] + $report[ 'clwiki_count_groupwiki' ][ 'one' ];
         $report[ 'clwiki_count_totalwiki' ][ 'two' ] = $report[ 'clwiki_count_coursewiki' ][ 'two' ] + $report[ 'clwiki_count_groupwiki' ][ 'two' ];
         $report[ 'clwiki_count_totalwiki' ][ 'three' ] = $report[ 'clwiki_count_coursewiki' ][ 'three' ] + $report[ 'clwiki_count_groupwiki' ][ 'three' ];
@@ -46,7 +47,7 @@ class CLWIKI_Stats extends ClaroStats_CourseTask
         $report[ 'clwiki_count_totalwiki' ][ 'value' ] = $report[ 'clwiki_count_coursewiki' ][ 'value' ] + $report[ 'clwiki_count_groupwiki' ][ 'value' ];
         
         parent::setReportMax( $report, 'clwiki_count_totalwiki', $report[ 'clwiki_count_totalwiki'] );
-        parent::setReportAverage( $report, 'clwiki_count_totalwiki', $report[ 'clwiki_count_totalwiki'], $nbCourses );
+        parent::setReportAverage( $report, 'clwiki_count_totalwiki', $report[ 'clwiki_count_totalwiki'], $nbCourses );*/
         
         return $report[ 'clwiki_count_totalwiki' ]['value'];
     }

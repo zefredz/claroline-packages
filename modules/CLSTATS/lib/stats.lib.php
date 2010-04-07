@@ -141,12 +141,19 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
     
     public function run( $course )
     {
-        return array(
-            'course' => $course['code'],
-            'label' => $this->getLabel(),
-            'data' => $this->getData($course),
-            'date' => date('Y-m-d H:i:s')
-        );
+        if( is_module_installed_in_course( $this->getLabel(), $course['code'] ) )
+        {        
+            return array(
+                'course' => $course['code'],
+                'label' => $this->getLabel(),
+                'data' => $this->getData($course),
+                'date' => date('Y-m-d H:i:s')
+            );
+        }
+        else
+        {
+            
+        }
     }
 }
 
@@ -262,10 +269,13 @@ class ClaroStats
             {
                 require_once( $plugin );
                 
-                $class = $toolLabel . '_Stats';
-                $toolStats = new $class;
-                
-                $data[ $course['code_course'] ][ $toolLabel ] = $toolStats->getData( $course['code_course'] );                    
+                if(  is_module_installed_in_course( $toolLabel, $course['code_course'] ) )
+                {
+                    $class = $toolLabel . '_Stats';
+                    $toolStats = new $class;
+                    
+                    $data[ $course['code_course'] ][ $toolLabel ] = $toolStats->getData( $course['code_course'] );
+                }
             }
             
             $courseList->updateCourseStatus( $course['code_course'], 'done' );
