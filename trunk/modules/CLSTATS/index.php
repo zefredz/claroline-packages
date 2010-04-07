@@ -35,7 +35,7 @@ try
     $userInput = Claro_UserInput::getInstance();
   
     $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-        'view', 'rqStats', 'exStats', 'rqNewReport'
+        'view', 'rqStats', 'exStats', 'rqNewReport', 'rqResetCoursesStatus'
     ) ) );
     
     $cmd = $userInput->get( 'cmd','view' );
@@ -52,6 +52,7 @@ try
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats', get_lang( 'Generate all stats' ) );
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqStats&action=bunch', get_lang( 'Generate stats for a bunch of courses' ) );
     $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqNewReport', get_lang( 'Generate a report' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqResetCoursesStatus', get_lang( 'Reset courses status' ) );
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
     
@@ -182,6 +183,11 @@ try
             }
             
             $out .= ClaroStatsRenderer::view( $reports, $display, $thisReport, $reportDate, $usageReport );
+        }
+        break;
+        case 'rqResetCoursesStatus' :
+        {
+            $out .= ClaroStatsRenderer::resetCoursesStatus();
         }
         break;
     }

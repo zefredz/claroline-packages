@@ -127,6 +127,13 @@ class ClaroStatsRenderer{
         
         return $tpl->render();
     }
+    
+    public static function resetCoursesStatus()
+    {
+        $tpl = new PhpTemplate( dirname( __FILE__ ) . '/../templates/resetCoursesStatus.tpl.php' );
+        
+        return $tpl->render();
+    }
 }
 
 ?>
