@@ -327,7 +327,7 @@ class ClaroStats
         {
             if( !( $file->isDot() && $file->isDir() ) )
             {
-                $toolLabel = substr( $file->getBasename(), 0, strpos( $file->getBasename(), '.' ) );
+                $toolLabel = substr( basename( $file->getPathname() ), 0, strpos( basename( $file->getPathname() ), '.' ) );
                 require_once( $file->getPathname() );
                 
                 if( class_exists( $toolLabel . '_Stats' ) )
