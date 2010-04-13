@@ -302,26 +302,33 @@ class ScormImporter
           return false;
         }
         $defaultOrganization = (array) $defaultOrganization;
-        $this->addItems( $defaultOrganization['item'] );
+        //Check if there is only one item in the manifest
+        if( ! is_array( $defaultOrganization['item'] ) )
+        {
+            $this->addItem( $defaultOrganization['item'] );
+        }
+        else
+        {
+            $this->addItems( $defaultOrganization['item'] );
+        }
         return true;
     }
 
     function addItems(&$itemList, $parentId = -1)
     {
-      $resources = $this->manifestContent->resources;
-      $resourcesAttributes = $resources->attributes();
-      // resources xml base
-      if( !empty( $resourcesAttributes['xml:base'] ) )
-      {
-        $resourcesXmlBase = $resourcesAttributes['xml:base'];
-      }
-      else
-      {
-          $resourcesXmlBase = '';
-      }
+        $resources = $this->manifestContent->resources;
+        $resourcesAttributes = $resources->attributes();
+        // resources xml base
+        if( !empty( $resourcesAttributes['xml:base'] ) )
+        {
+          $resourcesXmlBase = $resourcesAttributes['xml:base'];
+        }
+        else
+        {
+            $resourcesXmlBase = '';
+        }
 
-      // go through all item ..['item'][0] ['item'][1] ...
-      
+        // go through all item ..['item'][0] ['item'][1] ...
         foreach( $itemList as $item )
         {
             $this->addItem( $item, $resourcesXmlBase, $parentId );
@@ -329,11 +336,13 @@ class ScormImporter
     }
 
     
-    function addItem( &$item, $resourcesXmlBase, $parentId )
+    function addItem( &$item, $resourcesXmlBase = null, $parentId = -1 )
     {
-        $itemAttributes = $item->attributes();
         $insertedItem = new item();
+        //special case if there is only one item with multiple item attached to it (from old LP)
         $insertedItem->setTitle( "{$item->title}" );
+        
+        $itemAttributes = $item->attributes();
         $insertedItem->setIdentifier( "{$itemAttributes->identifier}" );
         $insertedItem->setPathId( $this->path->getId() );
         $insertedItem->setType( 'SCORM' );
@@ -427,6 +436,7 @@ class ScormImporter
             $insertedItem->setType('CONTAINER');
         }
         // try to save new item
+        
         if( $insertedItem->validate() )
         {
             if( $insertedItem->save() )
