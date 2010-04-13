@@ -204,7 +204,14 @@ class item
             $this->nextId = $data['next_id'];
             $this->launchData = $data['launch_data'];
             $this->timeLimitAction = $data['timeLimitAction'];
-            $this->completionThreshold = $data['completionThreshold'];
+            if( is_numeric( $this->completionThreshold ) )
+            {
+                $this->completionThreshold = $data['completionThreshold'];
+            }
+            else
+            {
+                $this->completionThreshold = 50;
+            }
             $this->redirectBranchConditions = $data['redirectBranchConditions'];
             $this->branchConditions = $data['branchConditions'];
             $this->newWindow = $data['newWindow'];
@@ -361,7 +368,6 @@ class item
     {
         // title is a mandatory element
         $title = strip_tags($this->title);
-
         if( empty($title) )
         {
             claro_failure::set_failure('item_no_title');
@@ -426,8 +432,8 @@ class item
      */
     public function setType($value)
     {
-        $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM');
-
+        $acceptedValues = array('CONTAINER', 'MODULE', 'SCORM' );
+        
         if( in_array($value, $acceptedValues) )
         {
             $this->type = $value;

@@ -322,7 +322,7 @@ if( $cmd == 'rqToc' )
             .    ( $completionIcon ? '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url( 'completed' ).'" />' : '')
             ;
         }
-        else
+        elseif( $anItem['type'] == 'CONTAINER' )
         {
             $html .= '<img src="'.get_module_url('CLLP').'/img/chapter.png" alt="" />'
             .     '&nbsp;' . $anItem['title'];
