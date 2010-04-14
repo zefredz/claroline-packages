@@ -100,7 +100,7 @@ try
     {
         if ( $poll->isOpen() ) $userRights[ 'vote' ] = true;
         if ( $pollStat
-             && $poll->getChoiceList()
+             && $poll->getOption( '_max_vote' )
              && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) ) $userRights[ 'vote' ] = false;
     }
     
@@ -200,16 +200,18 @@ try
             {
                 $title      = $userInput->get( 'title' );
                 $question   = $userInput->get( 'question' );
-                $label      = $userInput->get( 'label' );
+                
                 $visibility = $userInput->get( 'visibility' );
                 $status     = $userInput->get( 'status' );
+                
+                $toModify   = $userInput->get( 'mod' ) ? $userInput->get( 'mod' ) : array();
+                $toAdd      = $userInput->get( 'add' ) ? $userInput->get( 'add' ) : array();
+                $toDelete   = $userInput->get( 'del' ) ? $userInput->get( 'del' ) : array();
                 
                 $poll->setTitle( $title );
                 $poll->setQuestion( $question );
                 $poll->setVisibility( $visibility );
                 $poll->setStatus( $status );
-                
-                $poll_changed = $poll->save();
                 
                 foreach( array_keys( $poll->getOptionList() ) as $option)
                 {
@@ -221,16 +223,21 @@ try
                     }
                 }
                 
-                if ( $label && ! $poll->getAllVoteList() ) $poll_changed = $poll->addChoice( $label );
+                $poll_changed = $poll->save();
                 
-                foreach( array_keys( $poll->getChoiceList() ) as $choiceId )
+                foreach( $toAdd as $label )
                 {
-                    $label = $userInput->get( 'choice' . $choiceId );
-                    
-                    if ( $label )
-                    {
-                        $poll_changed = $poll->updateChoice( $choiceId , $label );
-                    }
+                    $poll->addChoice( $label );
+                }
+                
+                foreach( $toModify as $choiceId => $label )
+                {
+                    $poll->updateChoice( $choiceId , $label );
+                }
+                
+                foreach( array_keys( $toDelete ) as $choiceId )
+                {
+                    $poll->deleteChoice( $choiceId );
                 }
                 
                 break;
@@ -618,15 +625,34 @@ if ( isset ( $template ) )
             $scriptContent = '<script type="text/javascript">
                         <!--
                         $(document).ready(function(){
+                            var nbToAdd=0;
                             $("#addChoice").click(function(){
-                                $("#newChoice").append("<input type=\"text\" name=\"label\" value=\"' . get_lang( 'Put your choice here' ) . '\" size=\"40\" /><br/>");
-                                $("#addChoice").hide();
+                                nbToAdd++;
+                                $("#choiceList").append("<li>'
+                                                        . '<input id=\"choicex"+nbToAdd+"\" type=\"text\" name=\"add["+nbToAdd+"]\" value=\"'
+                                                        .    get_lang( 'Put your choice here' )
+                                                        .    '\" size=\"40\" \/>'
+                                                        . '<a id=\"delx"+nbToAdd+"\" class=\"delChoice claroCmd\" href=\"#delx"+nbToAdd+"\"> '
+                                                        .    get_lang( 'Delete' )
+                                                        . '<\/a>'
+                                                        . '<script>'
+                                                        .     '$(\"#delx"+nbToAdd+"\").click(function(){'
+                                                        .         '$(this).parent().remove();'
+                                                        .     '});'
+                                                        . '<\/script>'
+                                                    . '<\/li>");
+                            });
+                            
+                            $(".delChoice").click(function(){
+                                var choiceId = $(this).attr("id").substr(3);
+                                $("#choice"+choiceId).attr({name:"del["+choiceId+"]"});
+                                $("#choice"+choiceId).parent().hide();
                             });
                         });
                 -->
                 </script>';
                 
-            ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
+            if ( ! $poll->getAllVoteList() ) ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
             $pollView->assign( 'change_allowed' , $change_allowed );
             break;
         
