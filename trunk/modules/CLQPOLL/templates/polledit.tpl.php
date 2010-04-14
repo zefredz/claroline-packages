@@ -145,21 +145,24 @@
     
     <fieldset id="pollChoices">
         <legend><?php echo get_lang( 'Poll choices' ); ?></legend>
-        <?php if ( $this->poll->getChoiceList() ) : ?>
         <ul id="choiceList">
+        <?php if ( $this->poll->getChoiceList() ) : ?>
             <?php foreach( $this->poll->getChoiceList() as $choiceId => $label ) : ?>
             <li>
-                <input type="text" name="choice<?php echo $choiceId; ?>" value="<?php echo $label; ?>" size="40" />
-                <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteChoice&pollId=' . $this->poll->getId() .'&choiceId=' . $choiceId ) ); ?>">
+                <input id="choice<?php echo $choiceId; ?>" type="text" name="mod[<?php echo $choiceId; ?>]" value="<?php echo $label; ?>" size="40" />
+                <?php if ( ! $this->poll->getAllVoteList() ) : ?>
+                <a id="del<?php echo $choiceId; ?>" class="delChoice claroCmd" href="#choice<?php echo $choiceId; ?>">
                     <?php echo get_lang( 'Delete' ); ?>
                 </a>
+                <?php endif; ?>
             </li>
             <?php endforeach; ?>
-        </ul>
+        <?php else : ?>
+            <li></li>
         <?php endif; ?>
+        </ul>
         <?php if ( ! $this->poll->getAllVoteList() ) : ?>
-        <div id="newChoice"></div>
-        <a id="addChoice" href="#newChoice">
+        <a id="addChoice" href="#addChoice">
             <img src="<?php echo get_icon_url( 'quiz_new' ); ?>" alt="<?php echo get_lang( 'create a new choice' ); ?>"/>
             <span class="claroCmd"><?php echo get_lang( 'Add a new choice' ); ?></span>
         </a>
