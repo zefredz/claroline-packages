@@ -79,14 +79,4 @@ ul.detailedList{
  	font-size : small;
  	color:#4D5183;
  }
- 
- ul.horizChoiceList
- {
- }
- ul.horizChoiceList li
- {
-	display: inline;
-	list-style-type: none;
-	padding-right: 5px; 
- }
 

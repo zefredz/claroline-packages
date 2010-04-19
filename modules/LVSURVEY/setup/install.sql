@@ -1,6 +1,3 @@
---
--- Table structure for survey table
---
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey` (
   `id` 					INTEGER 										NOT NULL 	auto_increment,
@@ -17,26 +14,17 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey` (
   PRIMARY KEY  (`id`)
 ) ;
 
-
 -- --------------------------------------------------------
-
---
--- Table structure for question table
---
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_question` (
   `id` 					INTEGER 										NOT NULL 	auto_increment,
   `text` 				VARCHAR(255) 									NOT NULL,
-  `type` 				ENUM('OPEN','MCSA','MCMA') 						NOT NULL 	DEFAULT 'MCSA',
-  `alignment` 			ENUM('VERTI','HORIZ') 							NULL,
+  `type` 				ENUM('OPEN','MCSA','MCMA', 'ARRAY')				NOT NULL 	DEFAULT 'MCSA',
   PRIMARY KEY  (`id`)
 );
 
 -- --------------------------------------------------------
 
---
--- Table structure for a survey line (chapter or question)
---
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
   `id` 					INTEGER 										NOT NULL auto_increment,
@@ -47,9 +35,6 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
 );
 
 -- --------------------------------------------------------
---
--- Table structure for a chapter separator
---
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_separator` (
   `id` 					INTEGER 										NOT NULL,
@@ -60,9 +45,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_separator` (
 
 
 -- --------------------------------------------------------
---
--- Table structure for a question in a survey
---
+
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
   `id` 					INTEGER 										NOT NULL,
@@ -75,11 +58,6 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
 -- --------------------------------------------------------
 
 
-
---
--- Table structure for the choices of a question. A choice belongs to a question.
---
-
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
   `id` 					INTEGER 										NOT NULL auto_increment,
   `questionId` 			INTEGER 										NOT NULL,
@@ -90,9 +68,17 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `cl_survey2_answer`
---
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_option` (
+  `id` 					INTEGER 										NOT NULL auto_increment,
+  `choiceId` 			INTEGER 										NOT NULL,
+  `text` 				TEXT		 									NOT NULL,
+  PRIMARY KEY  (`id`)
+) ;
+
+
+-- --------------------------------------------------------
+
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
   `id` 					INTEGER 										NOT NULL auto_increment,
@@ -106,10 +92,6 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
 
 -- --------------------------------------------------------
 
---
--- Table structure for table `cl_survey2_answer_item`
---
-
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
   `id` 					INTEGER 										NOT NULL auto_increment,
   `answerId` 			INTEGER 										NOT NULL,
@@ -120,14 +102,6 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
 
 
 -- --------------------------------------------------------
-
-
-
-
-
---
--- Table structure for table `cl_survey2_participation`
---
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_participation` (
 	`id` 				INTEGER 										NOT NULL auto_increment,

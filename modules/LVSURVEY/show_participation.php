@@ -1,8 +1,10 @@
 <?php 
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-From::module('LVSURVEY')->uses('managerSurveyPage.class');
-FromKernel::uses('course_user.lib.php', 'sendmail.lib');
+FromKernel::uses(	'course_user.lib.php', 
+					'sendmail.lib');
+From::module('LVSURVEY')->uses('controller/managerSurveyPage.class');
+
 
 
 class ShowParticipationPage extends ManagerSurveyPage{

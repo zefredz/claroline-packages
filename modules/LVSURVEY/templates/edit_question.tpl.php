@@ -100,20 +100,12 @@
 		
 		</td>
 	</tr>
-	<!--  ALIGNMENT -->
+	<!--  ADD / REMOVE CHOICE -->
 	<tr>
 		<td>
 			&nbsp;
 		</td>
-		<td>
-			<div id="divquestionAlign">
-				<input type="radio" name="questionAlignment" id="questionAlignment" value="VERTI"
-					<?php echo $this->question->choiceAlignment=="VERTI"?"checked":""; ?> />
-				<?php  echo get_lang('Vertical alignment'); ?>
-				<input type="radio" name="questionAlignment" id="questionAlignment" value="HORIZ"
-					<?php echo $this->question->choiceAlignment=="HORIZ"?"checked":""; ?> />
-				<?php  echo get_lang('Horizontal alignment'); ?>
-			</div>
+		<td>			
 			<div id="menuaddrem">
 				<a href="#" id="addChoice">
 					<?php  echo get_lang('Add a choice'); ?>

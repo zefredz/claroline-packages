@@ -1,9 +1,18 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class', 'choice.class');
-FromKernel::uses('utils/input.lib', 'utils/validator.lib');
+FromKernel::uses(	'utils/input.lib', 
+					'utils/validator.lib');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/choice.class',
+								'util/functions.class');
+
 
 class Question
 {
+	
+	public static $VALID_QUESTION_TYPES = array(	'OPEN', 
+													'MCSA', 
+													'MCMA', 
+													'ARRAY'); 
 	
 	public $id;
 	
@@ -11,7 +20,6 @@ class Question
 	
 	public $type;
 	
-	public $choiceAlignment;
 	
 	protected $used;
 	
@@ -22,9 +30,7 @@ class Question
     {
         $this->id = -1;
         $this->text = '';
-        $this->type = 'MCSA';    
-        
-        $this->choiceAlignment = 'VERTI';
+        $this->type = 'MCSA'; 
         $this->choiceList = array();
         $this->used = 0;
     }
@@ -60,8 +66,7 @@ class Question
             	       Q.`id` 							AS id,
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
-            	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(DISTINCT S.`id`)		 			AS used
+            	       COUNT(DISTINCT S.`id`)			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
             ON 			Q.`id`= SLQ.`questionId`
@@ -96,8 +101,7 @@ class Question
             	       Q.`id` 							AS id,
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
-            	       Q.`alignment`					AS choiceAlignment,
-            	       COUNT(DISTINCT S.`id`)		 			AS used
+            	       COUNT(DISTINCT S.`id`)			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
             ON 			Q.`id`= SLQ.`questionId`
@@ -140,7 +144,6 @@ class Question
     	try
     	{
     		$formType = $userInput->getMandatory('questionType');
-	    	$formAlignment = (string)$userInput->getMandatory('questionAlignment');
     	} 
     	catch (Claro_Validator_Exception $e)
     	{
@@ -163,7 +166,6 @@ class Question
 		}
 		
 		$question->text = $formText;
-		$question->choiceAlignment = $formAlignment;
 		$question->type = $formType;
 		
 		//HANDLE CHOICE LIST
@@ -212,8 +214,21 @@ class Question
 	    foreach( $resultSet as $row )
 	    {
 	    	$choice = Choice::__set_state($row);
-            $this->choiceList[$row['id']] = $choice;
+            $this->choiceList[] = $choice;
 	    }    
+    }
+    
+    public function getChoice($choiceId)
+    {
+    	$choiceList = $this->getChoiceList();
+    	foreach($choiceList as $aChoice)
+    	{
+    		if($aChoice->id == $choiceId)
+    		{
+    			return $aChoice;
+    		}
+    	}
+    	return null;
     }
     public function getUsed()
     {
@@ -225,12 +240,8 @@ class Question
     	if(empty($this->text))
     		$this->validationErrors[] = 'Question body is required';
     	
-    	if(!in_array($this->type, array('OPEN','MCSA','MCMA')))
-    		$this->validationErrors[] = 'Unknown question type';
-    		
-    	if(!in_array($this->choiceAlignment, array('VERTI','HORIZ')))
-    		$this->validationErrors[] = 'Unknown alignment';
-    	
+    	if(!in_array($this->type, self::$VALID_QUESTION_TYPES))
+    		$this->validationErrors[] = 'Unknown question type';    	
     	
     	return $validationErrors;    	
     }
@@ -251,7 +262,7 @@ class Question
 
     	$this->deleteObsoleteChoices();
     	
-    	if('MCMA' == $this->type || 'MCSA' == $this->type)
+    	if('OPEN' != $this->type)
 		{
     		foreach($this->choiceList as $choice)
     		{
@@ -270,8 +281,7 @@ class Question
         $sql = "
         		INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
                 SET 		`text` 				= ".$dbCnx->quote($this->text).",
-                			`type` 				= ".$dbCnx->quote($this->type).",
-                    		`alignment`			= ".$dbCnx->quote($this->choiceAlignment)."; ";
+                			`type` 				= ".$dbCnx->quote($this->type)."; ";
                     
 			
         // execute the creation query and get id of inserted assignment
@@ -294,8 +304,7 @@ class Question
         $sql = "
         	UPDATE 		`".SurveyConstants::$QUESTION_TBL."`
             SET 		`text` 				= ".$dbCnx->quote($this->text).",
-                		`type` 				= ".$dbCnx->quote($this->type).",
-                    	`alignment`			= ".$dbCnx->quote($this->choiceAlignment)." 
+                		`type` 				= ".$dbCnx->quote($this->type)."  
             WHERE 		`id` = ".(int)$this->id ;
             
             $dbCnx->exec($sql);
@@ -303,8 +312,7 @@ class Question
     
     private function deleteObsoleteChoices()
     {
-    	$getChoiceIdFunc = create_function('$choice', 'return $choice->id; ');
-    	$validChoiceIdList = array_map($getChoiceIdFunc,$this->getChoiceList());
+    	$validChoiceIdList = array_map(array('Functions', 'idOf'),$this->getChoiceList());
     	
     	$sql = "
     			DELETE FROM 	`".SurveyConstants::$CHOICE_TBL."`  
@@ -356,8 +364,11 @@ class Question
 	private function deleteLinkedChoices($dbCnx)
 	{
 		$sql = "
-        	DELETE FROM `".SurveyConstants::$CHOICE_TBL."`
-        	WHERE 		`questionId` = ".(int)$this->id;
+        	DELETE 				C, O
+        	FROM 				`".SurveyConstants::$CHOICE_TBL."` AS C `
+        	INNER JOIN 			`".SurveyConstants::$OPTION_TBL."` AS O 
+	        ON 					C.`id` = O.`choiceId` 
+        	WHERE 				C.`questionId` = ".(int)$this->id;
         $dbCnx->exec($sql);
 	}
 	private function deleteQuestion($dbCnx)

@@ -1,5 +1,7 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class', 'question.class');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/question.class', 
+								'util/functions.class');
 
 
 class Choice
@@ -11,17 +13,19 @@ class Choice
 	protected $questionId;
 	protected $question;
 	
+	protected $optionList;
+	
 	public function __construct($questionId)
     {
         $this->id = -1;
         $this->text = '';      
         $this->questionId = $questionId;
         $this->question = NULL;
+        $this->optionList = array();
     }
 	
 	static function __set_state($array)
     {
-    	if(empty($array)) return false;
     	static $properties = array();
     	if(empty($properties))
     	{
@@ -105,6 +109,33 @@ class Choice
     	$this->question = $question;
     	$this->questionId = $question->id;
     }
+    
+	public function getOptionList()
+    {
+    	if(empty($this->optionList))
+    	{
+    		$this->loadOptionList();
+    	}
+    	return $this->optionList;
+    }
+    private function loadOptionList()
+    {
+    	$dbCnx = Claroline::getDatabase();
+    	$sql = "SELECT 	O.`id`				as id, 
+    					O.`choiceId`		as choiceId, 
+    					O.`text`			as text
+                FROM 	`".SurveyConstants::$OPTION_TBL."` as O
+                WHERE 	O.`choiceId` = ".(int)$this->id."; ";
+        
+    	$resultSet = $dbCnx->query($sql);
+        $this->questionList = array();	    
+	    foreach( $resultSet as $row )
+	    {
+	    	$option = Option::__set_state($row);
+            $this->optionList[] = $choice;
+	    }    
+    }
+    
 	private function validate()
     {
     	$validationErrors = array();
@@ -124,10 +155,16 @@ class Choice
     	
     	if($this->id == -1){
     		$this->insertInDB();
-    		return;
+    	} else {
+    		$this->updateInDB();
     	}
     	
-    	$this->updateInDB();
+   	 	foreach($this->optionList as $option)
+    	{
+    		$option->save();
+    	}
+    	
+    	$this->deleteObsoleteOptions();
     	
     }
     
@@ -145,10 +182,13 @@ class Choice
 			
         // execute the creation query and get id of inserted assignment
         $dbCnx->exec($sql);
-        $insertedId = $dbCnx->insertId($sql);
-                   		
-           
-        $this->id = (int) $insertedId;        
+        $insertedId = $dbCnx->insertId($sql);                   		
+        $this->id = (int) $insertedId;
+        
+    	foreach($this->optionList as $option)
+    	{
+    		$option->setChoice($this);
+    	}
         
     }
     private function updateInDB()
@@ -163,6 +203,21 @@ class Choice
             WHERE 		`id` = ".(int)$this->id ;
             
             $dbCnx->exec($sql);
+    }
+    
+	private function deleteObsoleteOptions()
+    {
+    	$validOptionIdList = array_map(array('Functions', 'idOf'),$this->getOptionList());
+    	
+    	$sql = "
+    			DELETE FROM 	`".SurveyConstants::$OPTION_TBL."`  
+        		WHERE			`choiceId` = ".(int)$this->id." "; 
+    	if(!empty($validChoiceIdList)){		
+        		$sql .= " 
+        		AND 			`id` NOT IN (".implode(', ',$validOptionIdList).") ;";
+    	}
+    	$dbCnx = Claroline::getDatabase();
+    	$dbCnx->exec($sql); 
     }
 	
 	

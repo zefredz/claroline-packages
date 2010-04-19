@@ -12,9 +12,7 @@
     *  OPEN QUESTION : do not show choices made by users of other  surveys ! (change hack in show_survey.tpl)
     *  prevent people to change their answer after a survey is closed
     *  prevent users from deleteing used questions or questions belonging to someone else
-    *  Export results
-    *  regroup questions in chapters (on page per chapter)
-    *  propose array question
+    *  propose array question : http://docs.limesurvey.org/tiki-index.php?page=Question+types&structure=English+Instructions+for+LimeSurvey#A_Array_5_Point_choice_
     *  
 */
 header('Location:./survey_list.php');

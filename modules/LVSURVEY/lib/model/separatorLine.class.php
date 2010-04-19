@@ -1,5 +1,6 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class', 'surveyLine.class');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/surveyLine.class');
 
 class SeparatorLine extends SurveyLine
 {
@@ -93,10 +94,10 @@ class SeparatorLine extends SurveyLine
 
     public function render($editMode, $participation)
     {
-        $questionLineTpl = new PhpTemplate(dirname(__FILE__).'/../templates/separatorLine.tpl.php');
-        $questionLineTpl->assign('surveyLine', $this);
-        $questionLineTpl->assign('editMode', $editMode);
-        return $questionLineTpl->render();
+        $separatorLineTpl = new PhpTemplate(get_module_path('LVSURVEY').'/templates/separatorLine.tpl.php');
+        $separatorLineTpl->assign('surveyLine', $this);
+        $separatorLineTpl->assign('editMode', $editMode);
+        return $separatorLineTpl->render();
     }
 
 }
