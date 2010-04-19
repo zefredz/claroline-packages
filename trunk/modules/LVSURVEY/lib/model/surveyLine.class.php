@@ -1,5 +1,7 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class','questionLine.class', 'separatorLine.class');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/questionLine.class', 
+								'model/separatorLine.class');
 abstract class SurveyLine
 {
     public static function cmp_surveyLines($a, $b)
@@ -207,8 +209,7 @@ class SurveyLineFactory
 		    					SLQ.`maxCommentSize` 	as maxCommentSize, 
 		    					SLQ.`questionId`		as questionId, 
 		    					Q.`text`				as questionText, 
-		    					Q.`type`				as questionType, 
-		    					Q.`alignment`			as choiceAlignment,
+		    					Q.`type`				as questionType,
 		    					SLS.`title`				as separatorTitle,
 		    					SLS.`description`		as separatorDescription, 
 		    					IFNULL(SLS.`id`,'TRUE')	as isQuestionLine     					  
@@ -240,8 +241,7 @@ class SurveyLineFactory
     {
         $questionData = array(	'id' 		=> $row['questionId'],
                 'text' 		=> $row['questionText'],
-                'type' 		=> $row['questionType'],
-                'alignment' => $row['choiceAlignment']);
+                'type' 		=> $row['questionType']);
 
         $question = Question::__set_state($questionData);
 

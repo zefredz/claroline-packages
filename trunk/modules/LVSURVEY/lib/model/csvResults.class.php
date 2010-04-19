@@ -1,6 +1,6 @@
 <?php 
-require_once get_path('incRepositorySys') . '/lib/csv.class.php';
-From::module('LVSURVEY')->uses('result.class');
+FromKernel::uses('csv.class');
+From::module('LVSURVEY')->uses('model/result.class');
 
 
 abstract class CSVResults extends csv

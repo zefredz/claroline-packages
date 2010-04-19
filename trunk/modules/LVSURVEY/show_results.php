@@ -2,7 +2,10 @@
 
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-From::module('LVSURVEY')->uses('survey.class', 'result.class', 'csvResults.class', 'surveyPage.class');
+From::module('LVSURVEY')->uses(	'model/survey.class', 
+								'model/result.class', 
+								'model/csvResults.class', 
+								'controller/surveyPage.class');
 
 
 class ShowResultsPage extends SurveyPage{

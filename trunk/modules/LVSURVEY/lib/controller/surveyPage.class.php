@@ -1,5 +1,5 @@
 <?php
-From::module('LVSURVEY')->uses('surveyLessPage.class', 'survey.class');
+From::module('LVSURVEY')->uses('controller/surveyLessPage.class', 'model/survey.class');
 
 abstract class SurveyPage extends SurveyLessPage{
 	

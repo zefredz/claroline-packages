@@ -21,14 +21,19 @@ class SurveyConstants{
     //table which contains data about separator survey lines
     public static $SURVEY_LINE_SEPARATOR_TBL;    
     
-    //table for multiple choice answers 
+    //table for answers from a user to a question 
     public static $ANSWER_TBL;
     
-    //table for comment 
+    //table for answer item : the selected choice(s) from a user to a question 
     public static $ANSWER_ITEM_TBL;
 	
     //table which contains relation between users and surveys
 	public static $PARTICIPATION_TBL;
+	
+	//table for different option of a choice, used for array questions
+	public static $OPTION_TBL;
+	
+	
 	
 	
 	static function __init()
@@ -42,7 +47,8 @@ class SurveyConstants{
 		                   'survey2_survey_line_separator', 
 		                   'survey2_answer_item', 
 		                   'survey2_answer', 
-		                   'survey2_participation'
+		                   'survey2_participation', 
+		             	   'survey2_option'
 		                 )
 		             );
 		SurveyConstants::$SURVEY_TBL = $tbl['survey2_survey']; 
@@ -54,6 +60,7 @@ class SurveyConstants{
 		SurveyConstants::$ANSWER_TBL = $tbl['survey2_answer'];
 		SurveyConstants::$ANSWER_ITEM_TBL = $tbl['survey2_answer_item'];
 		SurveyConstants::$PARTICIPATION_TBL = $tbl['survey2_participation'];
+		SurveyConstants::$OPTION_TBL = $tbl['survey2_option'];
 	}
 }
 

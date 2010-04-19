@@ -1,7 +1,7 @@
 <?php 
  
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-From::module('LVSURVEY')->uses('surveyPage.class');
+From::module('LVSURVEY')->uses(	'controller/surveyPage.class');
 
 
 class EditSurveyPage extends SurveyPage{
@@ -18,8 +18,8 @@ class EditSurveyPage extends SurveyPage{
 	{
 		
 		$input = Claro_UserInput::getInstance();	
-		$this->surveyId = (int)$input->get('surveyId', '0');
-		if(!empty($this->surveyId))
+		$this->surveyId = (int)$input->get('surveyId', '-1');
+		if($this->surveyId > 0)
 		{
 			parent::loadSurvey();
 			return;
@@ -67,8 +67,9 @@ class EditSurveyPage extends SurveyPage{
 	private function processForm(){
 		try
 		{
-			$survey = Survey::loadFromForm(claro_get_current_course_id());
+			$survey = Survey::loadFromForm(claro_get_current_course_id());			
 			$survey->save();
+			parent::setSurvey($survey);
         	parent::success('Survey saved');
         	$this->showSuccessBox = true;				
 		}

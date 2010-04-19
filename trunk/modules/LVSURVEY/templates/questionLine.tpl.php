@@ -1,7 +1,9 @@
 <?php
+	From::module('LVSURVEY')->uses(	'util/functions.class');
+
 	$surveyLine = $this->surveyLine;
 	$question = $surveyLine->question;
-	$answer = $this->participation->getAnswerForSurveyLine($surveyLine);	
+	$answer = $this->participation->getAnswerForSurveyLine($surveyLine);		
 	$selectedChoiceList = $answer->getSelectedChoiceList();
 	
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
@@ -37,30 +39,30 @@
             	?></textarea>
 		<?php endif; ?>
 		<?php if ('MCSA' == $question->type) : ?>
-			<ul <?php echo ($question->choiceAlignment == 'HORIZ')?'class="horizChoiceList"':''; ?>>
+			<ul>
 				<?php foreach($question->getChoiceList() as $choice) : ?>
 					<li>
 						<input name="choiceId<?php  echo $surveyLine->id; ?>" type="radio" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>"
-							<?php echo in_array($choice->id, array_keys($selectedChoiceList))?'checked="checked"':''; ?> />
+							<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> />
                         <label for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
 					</li>
 				<?php endforeach;?>
-                    </ul>
+             </ul>
 		<?php endif; ?>
 		<?php if ('MCMA' == $question->type) : ?>
-			<ul <?php echo ($question->choiceAlignment == 'HORIZ')?'class="horizChoiceList"':''; ?>>
+			<ul>
 				<?php foreach($question->getChoiceList() as $choice) : ?>
 					<li>
 						<input name="choiceId<?php  echo $surveyLine->id; ?>[]" type="checkbox" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>"
-							<?php echo in_array($choice->id, array_keys($selectedChoiceList))?'checked="checked"':''; ?> />
+							<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> />
                         <label for="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
 					</li>
 				<?php endforeach;?>
-                    </ul>
+            </ul>
 		<?php endif; ?>
 	</div>				
 	<div class="answerCommentBlock" id="answerCommentBlock<?php echo $surveyLine->id; ?>">

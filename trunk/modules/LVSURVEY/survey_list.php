@@ -1,6 +1,7 @@
 <?php 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-From::module('LVSURVEY')->uses('surveyLessPage.class', 'survey.class');
+From::module('LVSURVEY')->uses(	'controller/surveyLessPage.class', 
+								'model/survey.class');
 
 class SurveyListPage extends SurveyLessPage 
 {

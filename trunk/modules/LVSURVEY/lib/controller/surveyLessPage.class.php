@@ -20,8 +20,8 @@ abstract class SurveyLessPage{
 	}
 	
 	public function execute(){
-		
 		$this->performCommandIfNeeded();
+		
 		$this->defineBreadCrumb();
 		$contents = $this->render();
 		$this->display($contents);
@@ -35,6 +35,7 @@ abstract class SurveyLessPage{
 			$dialogBox = new DialogBox();
 			$dialogBox->error( $message);
 			$contents = $dialogBox->render();
+			$this->appendBreadCrumbElement(get_lang('Surveys'), 'survey_list.php');
 			$this->appendBreadCrumbElement(get_lang("Error"));
 			$this->display($contents);
 			die();
@@ -43,7 +44,6 @@ abstract class SurveyLessPage{
 	
 	protected function defineBreadCrumb(){
 		$this->appendBreadCrumbElement(get_lang('Surveys'), 'survey_list.php');	
-	
 	}
 	protected function appendBreadCrumbElement($name,$url = null, $icon = null){
 		$claroline = Claroline::getInstance();	

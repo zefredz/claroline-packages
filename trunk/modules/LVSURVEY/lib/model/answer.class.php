@@ -1,6 +1,8 @@
 <?php
 
-From::module('LVSURVEY')->uses('surveyConstants.class', 'question.class', 'choice.class');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/question.class', 
+								'model/choice.class');
 
 class Answer
 {
@@ -253,13 +255,13 @@ class Answer
     	
     	$resultSet = $dbCnx->query($sql);
     	
-    	$choiceList = $this->getQuestionLine()->question->getChoiceList();
+    	$question = $this->getQuestionLine()->question;
     	
 
         $this->selectedChoiceList = array();        
 	    foreach( $resultSet as $row )
 	    {
-            $this->selectedChoiceList[$row['choiceId']] = $choiceList[$row['choiceId']];
+            $this->selectedChoiceList[] = $question->getChoice($row['choiceId']);
 	    }
 	    
     }

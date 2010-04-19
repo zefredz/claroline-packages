@@ -1,7 +1,7 @@
 <?php 
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
-From::module('LVSURVEY')->uses('managerSurveyPage.class');
+From::module('LVSURVEY')->uses(	'controller/managerSurveyPage.class');
 
 class EditSeparatorPage extends ManagerSurveyPage {
 	

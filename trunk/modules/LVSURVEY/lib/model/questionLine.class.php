@@ -1,5 +1,6 @@
 <?php
-From::module('LVSURVEY')->uses('surveyConstants.class', 'surveyLine.class');
+From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
+								'model/surveyLine.class');
 
 class QuestionLine extends SurveyLine{
 	
@@ -99,7 +100,7 @@ class QuestionLine extends SurveyLine{
 	}
 	public function render($editMode, $participation)
 	{
-		$questionLineTpl = new PhpTemplate(dirname(__FILE__).'/../templates/questionLine.tpl.php');
+		$questionLineTpl = new PhpTemplate(get_module_path('LVSURVEY').'/templates/questionLine.tpl.php');
     	$questionLineTpl->assign('surveyLine', $this);
 		$questionLineTpl->assign('participation', $participation);
     	$questionLineTpl->assign('editMode', $editMode);
