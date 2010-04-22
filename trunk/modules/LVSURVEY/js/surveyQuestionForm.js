@@ -14,20 +14,37 @@ function hideMultipleChoice()
 	$("#divquestionAlign").hide();
 }
 
+function enableOptions()
+{
+	$("span[id^='optionBlocForChoice']").show();
+}
+function disableOptions()
+{
+	$("span[id^='optionBlocForChoice']").hide();
+}
+
 $(document).ready(function(){
 	
 	
 	$("input[name='questionType']").click(	function()
 	{
-		if ($("input[name='questionType']:checked").val() == "OPEN" )
-		{
-			hideMultipleChoice();
-		}
-		else
-		{
-			nbChoice = parseInt($("#questionNbCh").val());
-			showMultipleChoices(nbChoice);
-		}
+		nbChoice = parseInt($("#questionNbCh").val());
+		switch($("input[name='questionType']:checked").val())
+		{			
+			default : 
+			case 'MCMA' :
+			case 'MCSA' :
+				showMultipleChoices(nbChoice);
+				disableOptions();
+				break;
+			case 'ARRAY' : 
+				showMultipleChoices(nbChoice);
+				enableOptions();
+				break;
+			case 'OPEN' :
+				hideMultipleChoice();
+				break;
+		}				
 	});	
 	
 	

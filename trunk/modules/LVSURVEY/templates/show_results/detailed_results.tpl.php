@@ -1,0 +1,3 @@
+<?php 
+$resultList = $this->resultList;
+?>

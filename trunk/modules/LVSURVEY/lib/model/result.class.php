@@ -8,6 +8,8 @@ class Result
 	
 	public $choiceId;
 	
+	public $optionId;
+	
 	public $userId;
 	public $firstName;
 	public $lastName;
@@ -23,7 +25,7 @@ class Result
     		$properties = array_keys(get_object_vars(new Result()));
     	}
     	
-    	$res = new Question();
+    	$res = new Result();
         foreach ($array as $akey => $aval) {
             if(in_array($akey,$properties))
             {
@@ -34,13 +36,19 @@ class Result
     }
 }
 
-class ChoiceResults
+class OptionResults
 {
 	public $resultList = array();
 }
+class ChoiceResults
+{
+	public $resultList = array();
+	public $optionResultList = array();
+}
 class LineResults
 {
-	public $choiceResultList = array();
+	public $resultList = array();
+	public $choiceResultList = array();	
 }
 class SurveyResults
 {
@@ -55,7 +63,8 @@ class SurveyResults
     	$sql = "
         	SELECT 		P.`surveyId`		as surveyId, 
         				A.`surveyLineId`	as surveyLineId, 
-        				AI.`choiceId`		as choiceId, 
+        				AI.`choiceId`		as choiceId,
+        				AI.`optionId`		as optionId,  
         				U.`user_id`			as userId, 
         				U.`nom` 			as firstName,
         				U.`prenom` 			as lastName,
@@ -83,7 +92,6 @@ class SurveyResults
     		}
         	$sql .= " 	ORDER BY surveyId, questionId, choiceId, userId ;";
     	
-    	
     	$resultSet = Claroline::getDatabase()->query($sql);
     	$res = new SurveyResults();
     	foreach($resultSet as $row)
@@ -103,7 +111,21 @@ class SurveyResults
     		}
     		$choiceResultList = $questionResultList->choiceResultList[$result->choiceId];
     		
+    		
+    		
+    		if (!is_null($result->optionId))
+    		{
+	    		if( !isset($choiceResultList->optionResultList[$result->optionId]))
+	    		{
+	    			$choiceResultList->optionResultList[$result->optionId] = new OptionResults();
+	    		}
+	    		$optionResultList = $choiceResultList->optionResultList[$result->optionId];
+	    		$optionResultList->resultList[$result->userId] = $result;
+    		}
+    		
     		$choiceResultList->resultList[$result->userId] = $result;
+    		$questionResultList->resultList[$result->userId] = $result;
+    		
     		
     	}
 		

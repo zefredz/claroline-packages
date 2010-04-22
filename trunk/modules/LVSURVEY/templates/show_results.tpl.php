@@ -21,10 +21,10 @@
     JavascriptLoader::getInstance()->load('jquery');
     JavascriptLoader::getInstance()->load('excanvas.min');
     JavascriptLoader::getInstance()->load('jquery.flot');
+    JavascriptLoader::getInstance()->load('jquery.flot.stack');
     JavascriptLoader::getInstance()->load('jquery.flot.pie');
     JavascriptLoader::getInstance()->load('surveyResult');
 ?>
-
 <div><?php  echo $this->survey->description; ?></div>
 
 <div class="LVSURVEYQuestionList">
@@ -39,95 +39,80 @@
        		}       					
 		?>
 		<div class="LVSURVEYQuestion">
-        	<input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
-        	<div class="LVSURVEYQuestionTitle"><?php  echo htmlspecialchars($question->text); ?></div>        
-        	<div class="LVSURVEYQuestionContent">
-        	<?php if($question->type != 'OPEN' ): ?>
-        		<div class="LVSURVEYQuestionResultChart"></div>
-        	<?php endif;?>        	
-       			<?php if (empty($choiceList)) :?>
-       				<div class="answer">
-       					<?php echo get_lang('No Choices'); ?>
-       				</div>       			
-       			<?php  else :?>
-       				<div class="answer">
-       					<table>
-       					<?php foreach($choiceList as $choice) : ?>
-       						<?php 
-       							$choiceResultList = new ChoiceResults();
-       							if( isset($lineResultList->choiceResultList[$choice->id]))
-       							{
-       								$choiceResultList = $lineResultList->choiceResultList[$choice->id];
-       							}
-       							$resultList = $choiceResultList->resultList;
-       							$resultCount = count($resultList); 
-       							//bad hack but we do not not want to show choices made in other surveys for open questions
-       							if($question->type == 'OPEN' && $resultCount == 0 ) continue;      							
-       						?>
-       						<tr class="answerTR">
-       							<td>
-       								<span class="answerLabel" >
-       									<?php echo $choice->text; ?> :
-									</span>
-								</td>
-								<?php  if (0 == $resultCount) :?>
-       								<td colspan="2" >
-										<?php echo get_lang('No Results'); ?>
-									</td>
-									<td>										
-        	    						 &#040; <!--  left parenthese -->
-        	    						 <span class="answerPercentage" >
-        	    						 	0
-        	    						 </span>  &#37; <!--  percentage  -->
-        	    						 &#041; <!--  right parenthese  -->
-        	    					</td>
-       							<?php else :?>
-									<td>
-										<?php echo $resultCount; ?>
-									</td>
-									<td>
-										
-        	    						 &#040; <!--  left parenthese -->
-        	    						 <span class="answerPercentage" >
-        	    						 	<?php  echo ($resultCount*100/$participantCount)?>
-        	    						 </span>  &#37; <!--  percentage  -->
-        	    						 &#041; <!--  right parenthese  -->
-        	    					</td>        	    												
-       							</tr>   						
-	       						<tr>
-	        	    				<td>
-	          	    					<a href="#" class="deployDetailedList">
-	          	    						<?php  echo get_lang("Display Details"); ?>
-	          	   						</a>
-	          	    					<ul class="detailedList" >
-	          	    					<?php  foreach($resultList as $result) : ?>
-	          	    						<?php if (!$this->survey->is_anonymous) : ?>
-	          	    							<li>
-	          	    								<?php echo $result->firstName.' '.$result->lastName; ?> 
-	          	    								<?php if(!empty($result->comment)) : ?>
-	          	    									: <?php echo $result->comment; ?>
-	          	    								<?php endif; ?> 
-	          	    							</li>
-	          	    						<?php else : ?>
-	          	    							<?php if(!empty($result->comment)) : ?>
-	          	    								<li>
-	          	    									<?php echo $result->comment; ?>
-	          	    								</li>
-	          	    							<?php endif;?>
-	          	    						<?php endif; ?>
-	          	    					<?php  endforeach; ?>
-	          	    					</ul>
-	          	    					<a href="#" class="hideDetailedList">
-	          	    						<?php  echo get_lang("Hide Details"); ?>
-	          	   						</a>
-	          	    				</td>
-	          	    			</tr>
-	          	    		<?php endif;?>
-       					<?php endforeach;?>
-       					</table>
-       				</div>
-       			<?php  endif;?>
-       		</div>
-       	</div>
+		    <input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />		    
+		    <div class="LVSURVEYQuestionTitle">
+		    	<?php  echo htmlspecialchars($question->text); ?>
+		    </div>		          
+		    <div class="LVSURVEYQuestionContent"> 
+		    	<div class="LVSURVEYQuestionResultChart <?php echo $question->type;?>"></div>         	       	
+		    	<?php if (empty($choiceList)) :?>
+		        	<div class="answer">
+		       			<?php echo get_lang('No Choices'); ?>
+		       		</div>       			
+		       	<?php  else :?>
+		       		<div class="answer">
+		       			<table>
+		       				<?php foreach($choiceList as $choice) : ?>
+		       					<?php 
+		       						$choiceResultList = new ChoiceResults();
+		       						if( isset($lineResultList->choiceResultList[$choice->id]))
+		       						{
+		       							$choiceResultList = $lineResultList->choiceResultList[$choice->id];
+		       						}
+		       						$resultList = $choiceResultList->resultList;
+			       					$choiceCount = count($resultList);
+			       					//choices of an open question are might come from different surveys.
+			       					// let's skip choice from other surveys
+			       					if($choiceCount == 0 ) continue;
+		       					?>
+		       					
+		       					<!-- Result & Details Rows -->
+		       					<?php
+		       						if('ARRAY' == $question->type)
+		       						{
+		       							$resultRowTpl = new PhpTemplate(dirname(__FILE__).'/show_results/option_result.tpl.php');
+		       						}else{
+		       							$resultRowTpl = new PhpTemplate(dirname(__FILE__).'/show_results/choice_result.tpl.php');
+		       						}
+		       						$resultRowTpl->assign('participantCount', $participantCount);
+									$resultRowTpl->assign('choice', $choice);
+									$resultRowTpl->assign('choiceResults', $choiceResultList);
+									$resultRowTpl->assign('anonymous', $this->survey->is_anonymous);									
+									echo $resultRowTpl->render(); 
+		       					?>		  						
+			       				
+		       				<?php endforeach;?>
+		       			</table>
+		       		</div>
+		       	<?php  endif;?>
+		    </div>
+		    <div class="LVSURVEYQuestionDetails">
+				<a href="#" class="deployDetailedList">
+					<?php  echo get_lang("Display comments"); ?>
+				</a>
+				<ul class="detailedList" >
+					<?php  foreach($lineResultList->resultList as $result) : ?>
+						<?php if (!$this->survey->is_anonymous) : ?>
+		              		<li>
+		              			<?php echo $result->firstName.' '.$result->lastName; ?> 
+		              			<?php if(!empty($result->comment)) : ?>
+		              				&nbsp;:&nbsp;
+		              				<?php echo $result->comment; ?>
+		              			<?php endif; ?> 
+		              		</li>
+		              	<?php else : ?>
+		              		<?php if(!empty($result->comment)) : ?>
+		              			<li>
+		              				<?php echo $result->comment; ?>
+		              			</li>
+		              		<?php endif;?>
+		              	<?php endif; ?>
+		          	<?php  endforeach; ?>
+		        </ul>
+		        <a href="#" class="hideDetailedList">
+		        	<?php  echo get_lang("Hide comments"); ?>
+		        </a>
+		    </div>
+		</div>
 	<?php endforeach;?>
 </div>

@@ -1,6 +1,7 @@
 <?php
 From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
-								'model/question.class', 
+								'model/question.class',
+ 								'model/option.class',
 								'util/functions.class');
 
 
@@ -93,6 +94,47 @@ class Choice
     	
     }
     
+    static function loadFromForm($choiceNumber,$question,$duplicate = false)
+    {
+    	$choiceId = $duplicate?-1:(int)$_REQUEST['questionChId'.$choiceNumber];
+		$choiceText = $_REQUEST['questionCh'.$choiceNumber];
+		$choice = Choice::__set_state(array('id' => $choiceId, 'text' => $choiceText, 'questionId' => $question->id));
+		$choice->setQuestion($question);
+		
+		if('ARRAY' == $question->type)
+		{
+			$choice->optionList = self::loadOptionsFromForm($choiceNumber, $choice);
+		}
+		return $choice;
+    }
+    
+    static function loadOptionsFromForm($choiceNumber,$choice)
+    {    	
+    	$userInput = Claro_UserInput::getInstance();
+    	try
+    	{
+	    	$formOptions = (string)$userInput->getMandatory('optionsForChoice'.$choiceNumber);
+    	}
+    	catch(Claro_Validator_Exception $e)
+    	{
+    		throw new Claro_Validator_Exception(get_lang('You have forgotten to give options for choice '.$choiceNumber));
+    	}
+    	$optionsText = explode(';', $formOptions);
+    	$res = array();
+    	foreach($optionsText as $anOptionText)
+    	{
+    		$data = array(
+    			'choiceId'  => $choice->id, 
+    			'choice'	=> $choice, 
+    			'text'		=> $anOptionText);
+    		$option = Option::__set_state($data);
+    		$res[] = $option;
+    	}
+    	return $res;
+    }
+    
+    
+    
     public function getQuestion(){
     	if(empty($this->question))
     	{
@@ -125,15 +167,27 @@ class Choice
     					O.`choiceId`		as choiceId, 
     					O.`text`			as text
                 FROM 	`".SurveyConstants::$OPTION_TBL."` as O
-                WHERE 	O.`choiceId` = ".(int)$this->id."; ";
+                WHERE 	O.`choiceId` = ".(int)$this->id." 
+                ORDER BY id ASC; ";
         
     	$resultSet = $dbCnx->query($sql);
         $this->questionList = array();	    
 	    foreach( $resultSet as $row )
 	    {
 	    	$option = Option::__set_state($row);
-            $this->optionList[] = $choice;
+            $this->optionList[] = $option;
 	    }    
+    }
+    
+    public function getOption($optionId)
+    {
+    	$optionList = $this->getOptionList();
+    	foreach($optionList as $option)
+    	{
+    		if($option->getId() == $optionId)
+    			return $option;
+    	}
+    	return null;
     }
     
 	private function validate()
@@ -207,18 +261,24 @@ class Choice
     
 	private function deleteObsoleteOptions()
     {
-    	$validOptionIdList = array_map(array('Functions', 'idOf'),$this->getOptionList());
-    	
+    	$optionList = $this->getOptionList();
+    	$validOptionIdList = array_map(array('Functions', 'idOf'),$optionList);    	
     	$sql = "
     			DELETE FROM 	`".SurveyConstants::$OPTION_TBL."`  
         		WHERE			`choiceId` = ".(int)$this->id." "; 
-    	if(!empty($validChoiceIdList)){		
+    	if(!empty($validOptionIdList)){		
         		$sql .= " 
         		AND 			`id` NOT IN (".implode(', ',$validOptionIdList).") ;";
-    	}
+    	}    	
     	$dbCnx = Claroline::getDatabase();
     	$dbCnx->exec($sql); 
     }
+    
+    public function getText()
+    {
+    	return $this->text;
+    }
+    
 	
 	
 	
