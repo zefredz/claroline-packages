@@ -4,8 +4,6 @@ $_lang['Survey'] = "Sondage";
 $_lang['Surveys'] = "Sondages";
 $_lang['List of surveys'] = "Sondages";
 $_lang['Survey title'] = "Titre du sondage";
-$_lang['Multiple choice - horizontal answer'] = "Choix multiple - réponses alignées horizontalement";
-$_lang['Multiple choice - vertical answer'] = "Choix multiple - réponses alignées verticalement";
 $_lang['Textbox'] = "Texte";
 $_lang['Question has been updated'] = "La question a été mise à jour";
 $_lang['Question has been inserted'] = "La question a été insérée";
@@ -49,8 +47,9 @@ $_lang['Choice'] = "Choix";
 $_lang['Minimum 2 choices are required'] = "Il faut au moins deux choix";
 $_lang['Type of question'] = "Type de question";
 $_lang['Text'] = "Texte";
-$_lang['Multiple choice, single answer'] = "Choix multiple, réponse unique";
-$_lang['Multiple choice, multiple answers'] = "Choix multiple, plusieurs réponses";
+$_lang['Multiple choices, single answer'] = "Choix multiple, réponse unique";
+$_lang['Multiple choices, multiple answers'] = "Choix multiple, plusieurs réponses";
+$_lang['Array choices'] = "Choix en tableau";
 $_lang['Choices'] = "Choix";
 $_lang['Add a choice'] = "Ajouter un choix";
 $_lang['Remove a choice'] = "Supprimer un choix";
@@ -149,4 +148,7 @@ Vous pouvez facilement participer au sondage à l'adresse <a href="%survey_partic
 Merci Beaucoup<br/>
 EOS;
 $_lang['Message successfully sent'] = 'Le message a bien été envoyé';
+$_lang['Options'] = 'options';
+$_lang['Display comments'] = 'Afficher les commentaires';
+$_lang['Hide comments'] = 'Cacher les commentaires';
 ?>

@@ -59,12 +59,15 @@
 			<?php  echo get_lang('Type of question'); ?> : 
 		</td>
 		<td>
-    		<input type="radio" id="questionType" name="questionType" value="OPEN" <?php echo $this->question->type=="OPEN"?"checked":""; ?> />
-    		<?php echo get_lang('Text'); ?>
-    		<input type="radio" id="questionType" name="questionType" value="MCSA" <?php echo $this->question->type=="MCSA"?"checked":""; ?> />
-    		<?php  echo get_lang('Multiple choice, single answer'); ?>
-    		<input type="radio" id="questionType" name="questionType" value="MCMA" <?php echo $this->question->type=="MCMA"?"checked":""; ?> />
-    		<?php echo get_lang('Multiple choice, multiple answers'); ?>
+			
+    		<input type="radio" id="questionTypeOPEN" name="questionType" value="OPEN" <?php echo $this->question->type=="OPEN"?"checked":""; ?> />
+    		<label for="questionTypeOPEN"><?php echo get_lang('Text'); ?></label>
+    		<input type="radio" id="questionTypeMCSA" name="questionType" value="MCSA" <?php echo $this->question->type=="MCSA"?"checked":""; ?> />
+	   		<label for="questionTypeMCSA"><?php  echo get_lang('Multiple choices, single answer'); ?></label>
+    		<input type="radio" id="questionTypeMCMA" name="questionType" value="MCMA" <?php echo $this->question->type=="MCMA"?"checked":""; ?> />
+   			<label for="questionTypeMCMA"><?php echo get_lang('Multiple choices, multiple answers'); ?></label>
+    		<input type="radio" id="questionTypeARRAY" name="questionType" value="ARRAY" <?php echo $this->question->type=="ARRAY"?"checked":""; ?> />
+    		<label for="questionTypeARRAY"><?php echo get_lang('Array choices'); ?></label>
     	</td>
     </tr>
 	<tr>
@@ -78,26 +81,20 @@
 			</div>
 			<?php 
 			$choiceCount = 0;
-			foreach($this->question->getChoiceList() as $choice) : 
-				$choiceCount++
+			$editChoiceTpl = new PhpTemplate(dirname(__FILE__).'/edit_choice.tpl.php');
+			foreach($this->question->getChoiceList() as $choice) { 
+				$choiceCount++;				
+				$editChoiceTpl->assign('choiceNum', $choiceCount);
+				$editChoiceTpl->assign('choice', $choice); 
+				echo   $editChoiceTpl->render();
+			}	
+			for($i = 0 ; $i<=100; $i++) {
+				$choiceCount++;				
+				$editChoiceTpl->assign('choiceNum', $choiceCount);
+				$editChoiceTpl->assign('choice', new Choice($this->question->id));   
+				echo   $editChoiceTpl->render();
+			}
 			?>
-				<div id="divquestionCh<?php echo $choiceCount; ?>">
-					<?php echo $choiceCount; ?> : 
-					<input name="questionCh<?php echo $choiceCount; ?>" id="questionCh<?php echo $choiceCount; ?>" type="text" value="<?php echo htmlspecialchars($choice->text); ?>" />
-					<input name="questionChId<?php echo $choiceCount; ?>" id="questionChId<?php echo $choiceCount; ?>" type="hidden" value="<?php echo $choice->id; ?>" />
-				</div>
-			<?php endforeach; ?>
-			<?php for($i = 0 ; $i<=10; $i++) :
-					$choiceCount++;
-			?>
-				<div id="divquestionCh<?php echo $choiceCount; ?>">
-					<?php echo $choiceCount; ?> : 
-					<input name="questionCh<?php echo $choiceCount; ?>" id="questionCh<?php echo $choiceCount; ?>" type="text" value="" />
-					<input name="questionChId<?php echo $choiceCount; ?>" id="questionChId<?php echo $choiceCount; ?>" type="hidden" value="-1" />
-					
-				</div>
-			<?php endfor;?>                
-		
 		</td>
 	</tr>
 	<!--  ADD / REMOVE CHOICE -->

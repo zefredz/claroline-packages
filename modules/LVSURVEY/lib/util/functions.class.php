@@ -4,6 +4,17 @@ class Functions {
 	
 	static function idOf($modelObject)
 	{
-		return $modelObject->id;
+		if(method_exists($modelObject, 'getId'))
+			return $modelObject->getId();
+		else
+			return $modelObject->id;
+	}
+	
+	static function textOf($modelObject)
+	{
+		if(method_exists($modelObject, 'getText'))
+			return $modelObject->getText();
+		else
+			return $modelObject->text;
 	}
 }

@@ -6,8 +6,12 @@ From::module('LVSURVEY')->uses(	'controller/surveyPage.class');
 
 class EditSurveyPage extends SurveyPage{
 	
+	const DEFAULT_TITLE = '[Blank Survey]';
+	
 	private $surveyId = 0;
 	private $showSuccessBox = false;
+	
+	
 	
 	public function __construct(){
 		parent::__construct();			
@@ -26,7 +30,7 @@ class EditSurveyPage extends SurveyPage{
 		}
 		$input = Claro_UserInput::getInstance();
 		$survey = new Survey(claro_get_current_course_id());
-		$survey->title = "[Blank Survey]";
+		$survey->title = self::DEFAULT_TITLE;
 		parent::setSurvey($survey);		
 	}
 	

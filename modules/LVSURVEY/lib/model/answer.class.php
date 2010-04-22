@@ -17,6 +17,7 @@ class Answer
 	public $comment;
 	
 	protected $selectedChoiceList;
+	protected $selectedOptionList;
 	
 	public function __construct($participationId, $surveyLineId)
 	{
@@ -26,7 +27,8 @@ class Answer
 		$this->surveyLineId = $surveyLineId;
 		$this->questionLine = NULL;
 		$this->comment = '';
-		$this->selectedChoiceList = array();	
+		$this->selectedChoiceList = array();
+		$this->selectedOptionList = array();
 	}
 	
 	static function __set_state($array)
@@ -97,7 +99,7 @@ class Answer
 		$answer->comment = $userInput->get('answerComment'.$questionLine->id, '');		
 		
 		$answer->selectedChoiceList = Choice::loadSelectedChoicesFromForm($questionLine);
-		
+		$answer->selectedOptionList = Option::loadSelectedOptionFromForm($questionLine);
 		
 		return $answer;
     }
@@ -160,7 +162,23 @@ class Answer
     	if('OPEN' == $question->type)
         {
         	$this->selectedChoiceList[0]->save();
+        }        
+    	
+        if('ARRAY' == $question->type )
+        {
+        	foreach($this->selectedOptionList as $option)
+	        {
+	        	$sql = "
+	        		INSERT INTO `".SurveyConstants::$ANSWER_ITEM_TBL."` 
+	        		SET `answerId` = ".(int)$this->id.",  
+	        		 	`choiceId` = ".(int)$option->getChoiceId().", 
+	        		 	`optionId` = ".(int)$option->getId()."; ";
+	        	$dbCnx->exec($sql);
+	        }
+        	return;
         }
+        
+    	
         foreach($this->selectedChoiceList as $choice)
         {
         	$sql = "
@@ -169,6 +187,8 @@ class Answer
         		 	`choiceId` = ".(int)$choice->id."; ";
         	$dbCnx->exec($sql);
         }
+        	
+        
     }
     
 	private function insertInDB()
@@ -242,7 +262,7 @@ class Answer
     		$this->loadSelectedChoiceList();
     	}
     	return $this->selectedChoiceList;
-    }
+    }        
     private function loadSelectedChoiceList()
     {
     	$dbCnx = Claroline::getDatabase();
@@ -262,6 +282,39 @@ class Answer
 	    foreach( $resultSet as $row )
 	    {
             $this->selectedChoiceList[] = $question->getChoice($row['choiceId']);
+	    }
+	    
+    }
+    
+ 	public function getSelectedOptionList()
+    {
+    	if(empty($this->selectedOptionList))
+    	{
+    		$this->loadSelectedOptionList();
+    	}
+    	return $this->selectedOptionList;
+    }        
+    private function loadSelectedOptionList()
+    {
+    	$dbCnx = Claroline::getDatabase();
+    	$sql = "
+    		SELECT	AI.`id`			AS id, 
+    				AI.`choiceId`	AS choiceId, 
+    				AI.`answerId`	AS answerId, 
+    				AI.`optionId`  AS optionId 
+    		FROM	`".SurveyConstants::$ANSWER_ITEM_TBL."` AI 
+    		WHERE	AI.`answerId` = ".(int)$this->id."; ";
+    	
+    	$resultSet = $dbCnx->query($sql);
+    	
+    	$question = $this->getQuestionLine()->question;
+    	
+
+        $this->selectedChoiceList = array();        
+	    foreach( $resultSet as $row )
+	    {
+	    	$choice = $question->getChoice($row['choiceId']);
+            $this->selectedOptionList[] = $choice->getOption($row['optionId']);
 	    }
 	    
     }

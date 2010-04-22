@@ -1,5 +1,6 @@
 <?php 
-        JavascriptLoader::getInstance()->load('jquery');
+        JavascriptLoader::getInstance()->load('LVSURVEY');
+		JavascriptLoader::getInstance()->load('jquery');
         JavascriptLoader::getInstance()->load('ui.datepicker');
         CssLoader::getInstance()->load('ui.datepicker');
 
@@ -60,7 +61,14 @@ if($this->survey->isAnswered()){
             </label>
      	 </td>
          <td>
-            <input  type="text" name="surveyTitle" id="surveyTitle" size="60" maxlength="200" value="<?php echo htmlspecialchars( $this->survey->title); ?>" />
+            <input	type="text" 
+            		name="surveyTitle" 
+            		id="surveyTitle" 
+            		size="60" 
+            		maxlength="200" 
+            		value="<?php echo htmlspecialchars( $this->survey->title); ?>" 
+            		onFocus="clearText(this)" 
+            		onBlur="clearText(this)"/>
          </td>
 	 </tr>
      <!--  DESCRIPTION  --> 

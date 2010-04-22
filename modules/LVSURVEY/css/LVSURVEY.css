@@ -53,6 +53,11 @@
 	float : right;
 }
 
+.LVSURVEYQuestionResultChart.OPEN 
+{
+	visibility: hidden;
+}
+
 
 ul.detailedList{
 	list-style:disc;

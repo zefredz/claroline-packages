@@ -126,10 +126,8 @@ class Question
     {
     	//PARSE INPUT
     	$userInput = Claro_UserInput::getInstance();
-    	$questionTypeValidator = new Claro_Validator_AllowedList(array('OPEN','MCSA','MCMA'));
-    	$alignValidator = new Claro_Validator_AllowedList(array('VERTI','HORIZ'));
+    	$questionTypeValidator = new Claro_Validator_AllowedList(self::$VALID_QUESTION_TYPES);
     	$userInput->setValidator('questionType',$questionTypeValidator);
-    	$userInput->setValidator('questionAlignment',$alignValidator);
     	$formDuplicate = $userInput->get('questionDuplicate','0');
     	
     	try
@@ -154,7 +152,6 @@ class Question
     	
     	
     	//UPDATE QUESTION   	
-    	//if survey already exists we must first load its current state
 		if($formId == -1 || $duplicate)
 		{			
 			$question = new Question();
@@ -168,16 +165,13 @@ class Question
 		$question->text = $formText;
 		$question->type = $formType;
 		
-		//HANDLE CHOICE LIST
-		if('MCMA' == $question->type || 'MCSA' == $question->type)
+		//HANDLE CHOICE LIST if question type is not OPEN
+		if('OPEN' != $question->type)
 		{
 			$question->choiceList = array();
 			for($i = 1; isset($_REQUEST['questionCh'.$i]) && !empty($_REQUEST['questionCh'.$i]); ++$i)
 			{
-				$choiceId = $duplicate?-1:(int)$_REQUEST['questionChId'.$i];
-				$choiceText = $_REQUEST['questionCh'.$i];
-				$choice = Choice::__set_state(array('id' => $choiceId, 'text' => $choiceText, 'questionId' => $question->id));
-				$choice->setQuestion($question);
+				$choice = Choice::loadFromForm($i, $question, $duplicate);
 				$question->choiceList[] = $choice;	
 			}
 		}

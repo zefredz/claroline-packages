@@ -5,6 +5,7 @@
 	$question = $surveyLine->question;
 	$answer = $this->participation->getAnswerForSurveyLine($surveyLine);		
 	$selectedChoiceList = $answer->getSelectedChoiceList();
+	$selectedOptionList = $answer->getSelectedOptionList();
 	
 	$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
 	$arrowUpIcon 	= claro_html_icon('move_up', 	get_lang('Move Up'), 		get_lang('Move Up'));
@@ -35,16 +36,21 @@
 		<?php if ('OPEN' == $question->type) : ?>
 			<textarea name="choiceText<?php  echo $surveyLine->id; ?>" id="choiceText<?php  echo $surveyLine->id; ?>" rows="3" cols="40"><?php 
             		$answerText = empty($selectedChoiceList)?'':reset($selectedChoiceList)->text;
-            		echo htmlspecialchars($answerText); 
+            		//echo htmlspecialchars($answerText);
+            		echo var_dump($selectedChoiceList);
             	?></textarea>
 		<?php endif; ?>
 		<?php if ('MCSA' == $question->type) : ?>
 			<ul>
 				<?php foreach($question->getChoiceList() as $choice) : ?>
 					<li>
-						<input name="choiceId<?php  echo $surveyLine->id; ?>" type="radio" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>"
-							<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> />
-                        <label for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>">
+						<input 	name="choiceId<?php  echo $surveyLine->id; ?>" 
+								type="radio" 
+								value="<?php  echo $choice->id; ?>" 
+								id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>"
+								<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> 
+						/>
+                        <label 	for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
 					</li>
@@ -55,14 +61,42 @@
 			<ul>
 				<?php foreach($question->getChoiceList() as $choice) : ?>
 					<li>
-						<input name="choiceId<?php  echo $surveyLine->id; ?>[]" type="checkbox" value="<?php  echo $choice->id; ?>" id="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>"
-							<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> />
+						<input 	name="choiceId<?php  echo $surveyLine->id; ?>[]" 
+								type="checkbox" 
+								value="<?php  echo $choice->id; ?>" 
+								id="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>"
+								<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> 
+						/>
                         <label for="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
 					</li>
 				<?php endforeach;?>
             </ul>
+		<?php endif; ?>
+		<?php if ('ARRAY' == $question->type) : ?>
+			<table>
+				<?php foreach($question->getChoiceList() as $choice) : ?>
+					<tr>						
+                        <td><span>
+                        	<?php echo htmlspecialchars($choice->text); ?> : 
+                        </span></td>
+                        <?php foreach($choice->getOptionList() as $option) : ?>
+							<td><span>
+								<input 	name="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>" 
+										type="radio" 
+										value="<?php  echo $option->getId(); ?>" 
+										id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>_optionId<?php  echo $option->getId(); ?>"
+										<?php echo in_array($option->getId(), array_map(array('Functions', 'idOf'),$selectedOptionList))?'checked="checked"':''; ?> 
+								/>
+		                        <label 	for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>_optionId<?php  echo $option->getId(); ?>">
+		                        	<?php echo htmlspecialchars($option->getText()); ?>
+		                        </label>
+							</span></td>
+						<?php endforeach;?>                        
+					</tr>
+				<?php endforeach;?>
+            </table>
 		<?php endif; ?>
 	</div>				
 	<div class="answerCommentBlock" id="answerCommentBlock<?php echo $surveyLine->id; ?>">
