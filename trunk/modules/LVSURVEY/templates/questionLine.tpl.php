@@ -36,8 +36,7 @@
 		<?php if ('OPEN' == $question->type) : ?>
 			<textarea name="choiceText<?php  echo $surveyLine->id; ?>" id="choiceText<?php  echo $surveyLine->id; ?>" rows="3" cols="40"><?php 
             		$answerText = empty($selectedChoiceList)?'':reset($selectedChoiceList)->text;
-            		//echo htmlspecialchars($answerText);
-            		echo var_dump($selectedChoiceList);
+            		echo htmlspecialchars($answerText);
             	?></textarea>
 		<?php endif; ?>
 		<?php if ('MCSA' == $question->type) : ?>
