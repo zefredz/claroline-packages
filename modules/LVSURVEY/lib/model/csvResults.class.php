@@ -16,109 +16,199 @@ abstract class CSVResults extends csv
     	$this->surveyResults = SurveyResults::loadResults($survey->id);    	
     }
     
-    abstract public function buildRecords();
+    public function buildRecords(){
+    	$this->recordList[0] = $this->getTitleLine();
+    	$this->appendRecords();
+    }
+    
+    protected abstract function getTitleLine();
+    protected abstract function appendRecords();
 }
 
 class AnonymousCSVResults extends CSVResults
 {
-	function buildRecords()
+	protected function getTitleLine(){
+		return array (
+    		'surveyId', 
+    		'questionId', 
+    		'question', 
+    		'comment', 
+    		'choiceId', 
+    		'choice', 
+    		'optionId', 
+    		'option' );  
+	}
+	
+	function appendRecords()
     {
-        $surveyLineList = $this->survey->getSurveyLineList();     
     	
-    	
-    	$this->recordList[0] = array ('surveyId', 'questionId', 'question', 'choiceId', 'choice', 'comment');
-    	$i = 1;
-        
+    	    	
+        $surveyLineList = $this->survey->getSurveyLineList();      
     	foreach($this->surveyResults->lineResultList as $questionId => $lineResults)
         {        	
         	$question = $surveyLineList[$questionId]->question;
-        	$choiceList = $question->getChoiceList();
-        	foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
-        	{
-        		$choice = $choiceList[$choiceId];
-        		foreach($choiceResults->resultList as $userId => $result)
-        		{	
-        			$line = array (
-        						$this->survey->id,
-        						$questionId,
-        						$question->text,
-        						$choiceId,
-        						$choice->text,
-        						$result->comment, 
-        						);
-        			$this->recordList[$i] = $line;
-        			++$i;
-        						
-        		}
-        	}
-        }       
+        	$this->appendLineResults($lineResults, $question);
+        }
+    }
+    function appendLineResults($lineResults, $question){
+    	foreach($lineResults->choiceResultList as $choiceId => $choiceResults){
+    		$choice = $question->getChoice($choiceId);
+	    	if($question->type == "ARRAY"){
+	    		$optionResults = $choiceResults->optionResultList;
+	    		$this->appendOptionResults($optionResults,$question,$choice);
+	    	}else{
+	    		$choiceResultList = $choiceResults->resultList;
+	    		$this->appendChoiceResultList($choiceResultList, $question, $choice);
+	    	}
+    	}
+    }
+    
+    function appendOptionResults($optionResults,$question, $choice){
+    	foreach($optionResults as $optionId => $optionResults){
+    		$option = $choice->getOption($optionId);
+    		$optionResultList = $optionResults->resultList;
+    		$this->appendOptionResultList($optionResultList,$question, $choice, $option);
+    	}
+    }
+    function appendOptionResultList($optionResultList,$question, $choice, $option){
+    	foreach($optionResultList as $userId => $result)
+        {
+        	$optionLine = array (
+        		$this->survey->id,
+        		$question->id,
+        		$question->text,
+	        	$result->comment,
+        		$choice->id,
+        		$choice->text,
+        		$option->getId(),
+        		$option->getText(),			 
+        	);
+        	$this->recordList[] = $optionLine;
+        }
+    }        	
+    
+    function appendChoiceResultList($choiceResultList,$question, $choice){
+    	foreach($choiceResultList as $userId => $result)
+        {
+        	$choiceLine = array (
+        		$this->survey->id,
+        		$question->id,
+        		$question->text,
+	        	$result->comment,
+        		$choice->id,
+        		$choice->text,
+        		null,
+        		null,			 
+        	);
+        	$this->recordList[] = $choiceLine;
+        }
     }
 }
 
-class NamedCSVResults extends CSVResults
+class NamedCSVResults extends AnonymousCSVResults
 {
-	function buildRecords()
-    {
-        $surveyLineList = $this->survey->getSurveyLineList();     
-    	
-    	
-    	$this->recordList[0] = array ('surveyId', 'questionId', 'question', 'choiceId', 'choice', 'userId', 'userFirstName', 'userLastName', 'comment');
-    	$i = 1;
-        
-    	foreach($this->surveyResults->lineResultList as $questionId => $lineResults)
-        {        	
-        	$question = $surveyLineList[$questionId]->question;
-        	$choiceList = $question->getChoiceList();
-        	foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
-        	{
-        		$choice = $choiceList[$choiceId];
-        		foreach($choiceResults->resultList as $userId => $result)
-        		{	
-        			$line = array (
-        						$this->survey->id,
-        						$questionId,
-        						$question->text,
-        						$choiceId,
-        						$choice->text,
-        						$userId, 
-        						$result->firstName,
-        						$result->lastName, 
-        						$result->comment, 
-        						);
-        			$this->recordList[$i] = $line;
-        			++$i;
-        						
-        		}
-        	}
-        }       
-    }
+	protected function getTitleLine(){
+		return array (
+    		'surveyId', 
+    		'questionId', 
+    		'question', 
+			'userId', 
+			'userFirstName', 
+			'userLastName', 
+    		'comment', 
+    		'choiceId', 
+    		'choice', 
+    		'optionId', 
+    		'option' );  
+	}
+	
+	function appendOptionResultList($optionResultList,$question, $choice, $option){
+    	foreach($optionResultList as $userId => $result)
+        {
+        	$optionLine = array (
+        		$this->survey->id,
+        		$question->id,
+        		$question->text,
+        		$userId, 
+        		$result->firstName,
+        		$result->lastName,
+	        	$result->comment,
+        		$choice->id,
+        		$choice->text,
+        		$option->getId(),
+        		$option->getText(),			 
+        	);
+        	$this->recordList[] = $optionLine;
+        }
+    }        	
+    
+    function appendChoiceResultList($choiceResultList,$question, $choice){
+    	foreach($choiceResultList as $userId => $result)
+        {
+        	$choiceLine = array (
+        		$this->survey->id,
+        		$question->id,
+        		$question->text,
+        		$userId, 
+        		$result->firstName,
+        		$result->lastName,
+	        	$result->comment,
+        		$choice->id,
+        		$choice->text,
+        		null,
+        		null,			 
+        	);
+        	$this->recordList[] = $choiceLine;
+        }
+    }	
 }
 
 class SyntheticResults extends CSVResults
 {
-	function buildRecords()
+	
+	function getTitleLine(){
+		return array (
+			'question', 
+			'choice', 
+			'option', 
+			'count', 
+			'participationCount', 
+		);
+	}
+	function appendRecords()
     {
         $surveyLineList = $this->survey->getSurveyLineList();  
         $participationCount = count($this->survey->getParticipationList());   
     	
-    	
-    	$this->recordList[0] = array ('question', 'choice', 'count', 'participationCount');
-    	$i = 1;
         
     	foreach($this->surveyResults->lineResultList as $questionId => $lineResults)
         {        	
         	$question = $surveyLineList[$questionId]->question;
-        	$choiceList = $question->getChoiceList();
         	foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
         	{
-        		$choice = $choiceList[$choiceId];
-        		$line = array(	$question->text, 
-        						$choice->text, 
-        						count($choiceResults->resultList),
-        						$participationCount);
-        		
-        		$this->recordList[$i] = $line;
-        		++$i;
+        		$choice = $question->getChoice($choiceId);
+        		if($question->type != 'ARRAY'){
+	        		$line = array(	$question->text, 
+	        						$choice->text, 
+	        						null,
+	        						count($choiceResults->resultList),
+	        						$participationCount);
+	        		
+	        		$this->recordList[] = $line;
+        		}else{
+	        		foreach($choiceResults->optionResultList as $optionId => $optionResults){
+	        			$option = $choice->getOption($optionId);
+	        			$line = array(	
+	        						$question->text, 
+	        						$choice->text, 
+	        						$option->getText(), 
+	        						count($optionResults->resultList),
+	        						$participationCount,
+	        			);
+	        		
+	        			$this->recordList[] = $line;
+	        		}
+        		}
         	}
         }       
     }
