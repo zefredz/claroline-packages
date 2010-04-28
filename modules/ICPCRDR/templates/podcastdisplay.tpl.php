@@ -27,7 +27,7 @@
     id="player<?php echo "_{$videoId}"?>"> 
 </a>
 <script type="text/javascript">
-    flowplayer( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.3.swf", { 
+    flowplayer( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.1.5.swf", { 
         clip: { 
             // these two configuration variables does the trick 
             autoPlay: false,  
