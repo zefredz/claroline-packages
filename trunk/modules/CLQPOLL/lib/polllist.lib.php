@@ -41,7 +41,7 @@ class PollList
             
             $this->pollList = Claroline::getDatabase()->query( "
                 SELECT
-                    id, title, status, visibility
+                    id, title, question, status, visibility
                 FROM
                     `{$this->tbl[ 'poll_polls' ]}`" . $where
             );

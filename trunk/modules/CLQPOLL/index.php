@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.7 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -50,9 +50,8 @@ try
     elseif ( claro_is_course_member() )
     {
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
-            'rqShowList', 'rqViewPoll',
-            'rqViewStats', 'rqDeleteVote',
-            'exSubmitVote', 'exDeleteVote'
+            'rqShowList', 'rqViewPoll', 'rqViewStats',
+            'exSubmitVote'
 
         ) ) );
     }
@@ -70,7 +69,7 @@ try
     // retrieves the parameters
     $pollId   = $userInput->get( 'pollId' );
     $choiceId = $userInput->get( 'choiceId' );
-    $pageNb = $userInput->get( 'pageNb' );
+    $pageNb = (int)$userInput->get( 'pageNb' );
     
     $userId = claro_get_current_user_id();
     
@@ -99,9 +98,6 @@ try
     if ( claro_is_course_member() )
     {
         if ( $poll->isOpen() ) $userRights[ 'vote' ] = true;
-        if ( $pollStat
-             && $poll->getOption( '_max_vote' )
-             && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) ) $userRights[ 'vote' ] = false;
     }
     
     if ( claro_is_allowed_to_edit() )
@@ -118,20 +114,17 @@ try
     }
     
     // determines which option can be changed
-    $change_allowed = array( '_type' => true , '_privacy' => true , '_stat_access' => true, '_max_vote' => true );
+    $change_allowed = array( '_type' => true ,
+                             '_answer' => true,
+                             '_privacy' => true ,
+                             '_stat_access' => true);
     
     if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
     {
         $change_allowed[ '_type' ] = false;
+        $change_allowed[ '_answer' ] = false;
         //if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
         $change_allowed[ '_privacy' ] = false;
-        /*
-        if ( $poll->getOption( '_max_vote' )
-            &&
-            $poll->getOption( '_max_vote' ) <= max( $pollStat->getResult() ) )
-        {
-            $change_allowed[ '_max_vote' ] = false;
-        }*/
     }
     
     // to handle in-betweens deletion
@@ -160,10 +153,7 @@ try
             {
                 if ( isset( $choiceId ) )// this means it's a single vote poll
                 {
-                    if ( $userVote->isChoiceOpen( $choiceId ) )
-                    {
-                        $userVote->setVote( $choiceId , UserVote::CHECKED );
-                    }
+                    $userVote->setVote( $choiceId , UserVote::CHECKED );
                 }
                 else
                 {
@@ -178,10 +168,7 @@ try
                             $checked = UserVote::NOTCHECKED;
                         }
                         
-                        if ( $userVote->isChoiceOpen( $choiceId ) )
-                        {
-                            $userVote->setVote( $choiceId , $checked );
-                        }
+                        $userVote->setVote( $choiceId , $checked );
                     }
                 }
                 
@@ -191,13 +178,16 @@ try
             
             case 'exDeleteVote':
             {
-                $vote_deleted = $userVote->deleteVote();
+                $vote_deleted = claro_is_platform_admin() ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
+                                                          : false;
                 break;
             }
             
             case 'exCreatePoll':
             case 'exEditPoll':
             {
+                $poll_changed = false;
+                
                 $title      = $userInput->get( 'title' );
                 $question   = $userInput->get( 'question' );
                 
@@ -208,38 +198,40 @@ try
                 $toAdd      = $userInput->get( 'add' ) ? $userInput->get( 'add' ) : array();
                 $toDelete   = $userInput->get( 'del' ) ? $userInput->get( 'del' ) : array();
                 
-                $poll->setTitle( $title );
-                $poll->setQuestion( $question );
-                $poll->setVisibility( $visibility );
-                $poll->setStatus( $status );
-                
-                foreach( array_keys( $poll->getOptionList() ) as $option)
+                if ( $title && $question )
                 {
-                    $value = $userInput->get( $option );
+                    $poll->setTitle( $title );
+                    $poll->setQuestion( $question );
+                    $poll->setVisibility( $visibility );
+                    $poll->setStatus( $status );
                     
-                    if ( $change_allowed[ $option ] )
+                    foreach( array_keys( $poll->getOptionList() ) as $option)
                     {
-                        $poll->setOption( $option , $value );
+                        $value = $userInput->get( $option );
+                        
+                        if ( $change_allowed[ $option ] )
+                        {
+                            $poll->setOption( $option , $value );
+                        }
+                    }
+                    
+                    $poll_changed = $poll->save();
+                    
+                    foreach( $toAdd as $label )
+                    {
+                        if ( $label ) $poll->addChoice( $label );
+                    }
+                    
+                    foreach( $toModify as $choiceId => $label )
+                    {
+                        if ( $label ) $poll->updateChoice( $choiceId , $label );
+                    }
+                    
+                    foreach( array_keys( $toDelete ) as $choiceId )
+                    {
+                        $poll->deleteChoice( $choiceId );
                     }
                 }
-                
-                $poll_changed = $poll->save();
-                
-                foreach( $toAdd as $label )
-                {
-                    $poll->addChoice( $label );
-                }
-                
-                foreach( $toModify as $choiceId => $label )
-                {
-                    $poll->updateChoice( $choiceId , $label );
-                }
-                
-                foreach( array_keys( $toDelete ) as $choiceId )
-                {
-                    $poll->deleteChoice( $choiceId );
-                }
-                
                 break;
             }
             
@@ -304,11 +296,7 @@ try
             
             case 'rqViewPoll':
             {
-                if ( $poll->getChoiceList() && $poll->getOption( '_max_vote' ) && min( $pollStat->getResult() ) >= $poll->getOption( '_max_vote' ) )
-                {
-                    $dialogBox->info( '<strong>' . get_lang( 'You cannot vote anymore: all the choices are locked' ) . '</strong>' );
-                }
-                elseif ( ! $poll->isOpen() )
+                if ( ! $poll->isOpen() )
                 {
                     $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
                 }
@@ -402,14 +390,14 @@ try
                 if ( $poll )
                 {
                     $crumb = get_lang( 'Delete vote' );
-                    $msg = get_lang( 'Do you really want to delete your vote?' );
+                    $msg = get_lang( 'Do you really want to delete this vote?' );
                     $urlAction = 'exDeleteVote';
                     $urlCancel = 'rqViewPoll';
                     $template = 'pollview';
                 }
                 else
                 {
-                    $dialogBox->error( 'The poll has been deleted by course manager!' );
+                    $dialogBox->error( get_lang( 'The poll has been deleted by course manager!' ) );
                     $template = 'polllist';
                 }
                 break;
@@ -438,13 +426,12 @@ try
             {
                 if ( $vote_deleted )
                 {
-                    $dialogBox->success( get_lang( 'Your vote has been successfully deleted!' ) );
+                    $dialogBox->success( get_lang( 'The vote has been successfully deleted!' ) );
                 }
-                elseif ( $userId )
+                else
                 {
-                    $dialogBox->error( get_lang( 'The poll has been purged!' ) );
+                    $dialogBox->error( get_lang( 'Cannot delete the vote' ) );
                 }
-                else claro_disp_auth_form( true );
                 
                 $template = 'pollview';
                 break;
@@ -458,7 +445,7 @@ try
                 }
                 else
                 {
-                    $dialogBox->error( get_lang( 'Error' ) );
+                    $dialogBox->error( '<strong>' . get_lang( 'You have not correctly filled the form!' ) . '</strong>' );
                 }
                 
                 $template = 'polledit';
@@ -601,6 +588,7 @@ if ( isset( $msg ) )
     
     $form->assign( 'pollId' , $pollId );
     $form->assign( 'choiceId' , $choiceId );
+    $form->assign( 'userId' , $userInput->get( 'userId' ) );
     $form->assign( 'msg' , $msg );
     $form->assign( 'urlAction' , $urlAction );
     $form->assign( 'urlCancel' , $urlCancel );
@@ -629,9 +617,7 @@ if ( isset ( $template ) )
                             $("#addChoice").click(function(){
                                 nbToAdd++;
                                 $("#choiceList").append("<li>'
-                                                        . '<input id=\"choicex"+nbToAdd+"\" type=\"text\" name=\"add["+nbToAdd+"]\" value=\"'
-                                                        .    get_lang( 'Put your choice here' )
-                                                        .    '\" size=\"40\" \/>'
+                                                        . '<input id=\"choicex"+nbToAdd+"\" type=\"text\" name=\"add["+nbToAdd+"]\" value=\"\" size=\"40\" \/>'
                                                         . '<a id=\"delx"+nbToAdd+"\" class=\"delChoice claroCmd\" href=\"#delx"+nbToAdd+"\"> '
                                                         .    get_lang( 'Delete' )
                                                         . '<\/a>'
@@ -652,7 +638,11 @@ if ( isset ( $template ) )
                 -->
                 </script>';
                 
-            if ( ! $poll->getAllVoteList() ) ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
+            if ( ! $poll->getAllVoteList() || claro_is_platform_admin() )
+            {
+                ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
+            }
+            
             $pollView->assign( 'change_allowed' , $change_allowed );
             break;
         
@@ -661,7 +651,6 @@ if ( isset ( $template ) )
             break;
         
         case 'pollview':
-            if ( ! isset( $pageNb ) ) $pageNb = 0;
             $pollPager = new Pager( $poll->getAllVoteList( true ) , get_conf( 'pagerLineNb' ) );
             if ( $pageNb >= $pollPager->getPageCount() ) $pageNb = $pollPager->getPageCount() - 1;
             $pollView->assign( 'voteList' , $pollPager );
