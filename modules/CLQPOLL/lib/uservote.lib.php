@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.7 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -97,10 +97,11 @@ class UserVote
         
         if ( $voteList->numRows() )
         {
+            /*
             if( $voteList->numRows() != count( $this->poll->getChoiceList() ) )
             {
                 throw new Exception( 'Error while loading user vote' );
-            }
+            }*/
             
             foreach( $voteList as $vote )
             {
@@ -130,19 +131,13 @@ class UserVote
         $checkCount = array_count_values( $this->getVote() );
         $checkedCount = ( isset( $checkCount[ self::CHECKED ] ) ) ? $checkCount[ self::CHECKED ] : 0;
         
-        if ( $this->poll->getOption( '_type' ) == '_single'
+        return ! ( ( $this->poll->getOption( '_type' ) == '_single'
              &&
-             $checkedCount != 1 )
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-        
-        // alternative
-        //return $this->poll->getOption( '_type' ) == '_multi' || $checkedCount == 1;
+             $checkedCount == 1 )
+             ||
+             ( $this->poll->getOption( '_answer' ) == '_required'
+             &&
+             $checkedCount == 0 ) );
     }
     
     /**
@@ -268,30 +263,13 @@ class UserVote
     }
     
     /**
-     * Controls is the specified choice is open
-     * @param int $choiceId
-     * @return boolean true if open
+     * Deletes the vote for an specified user
+     * @param int $userId
+     * @return  boolean true if the operation proceeded successfully
      */
-    public function isChoiceOpen( $choiceId )
+    public static function deleteUserVote( $poll , $userId )
     {
-        if ( ! array_key_exists( $choiceId , $this->poll->getChoiceList() ) )
-        {
-            throw new Exception ( 'This choice does not exist!' );
-        }
-        
-        return ! $this->poll->getOption( '_max_vote' )
-               ||
-               Claroline::getDatabase()->query( "
-                SELECT
-                    user_id
-                FROM
-                    `{$this->tbl['poll_votes']}`
-                WHERE
-                    poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
-                AND
-                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
-                AND
-                    vote = " . Claroline::getDatabase()->quote( self::CHECKED )
-                )->numRows() < $this->poll->getOption( '_max_vote' );
+        $userVote = new self( $poll , $userId );
+        return $userVote->deleteVote();
     }
 }

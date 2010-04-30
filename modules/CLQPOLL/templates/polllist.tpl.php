@@ -45,6 +45,8 @@
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pollId='. $poll['id'] ) );?>">
                     <?php echo $poll[ 'title' ]; ?>
                 </a>
+                <br />
+                <small><?php echo $poll[ 'question' ]; ?></small>
             </td>
                 <?php if ( claro_is_allowed_to_edit() ) : ?>
             <td align="center">

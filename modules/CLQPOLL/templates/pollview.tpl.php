@@ -90,17 +90,13 @@
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
-                        <?php if ( $this->userVote->isChoiceOpen( $choiceId ) ) : ?>
                     <input id="option<?php echo $choiceId; ?>" type="checkbox" name="<?php echo 'choice' . $choiceId; ?>" />
-                        <?php else : ?>
-                    <span class="disabled"><?php echo get_lang( 'This choice is locked' ); ?></span>
-                        <?php endif; ?>
                 </td>
                     <?php endforeach; ?>
             </tr>
         </table>
     </form>
-        <?php elseif ( $this->poll->getOption( '_type' ) == '_single' ) : ?>
+        <?php else : ?>
         <!-- SINGLE VOTE -->
     <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
         <input id="pollId" type="hidden" value="<?php echo $this->poll->getId(); ?>" name="pollId" />
@@ -112,11 +108,7 @@
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
-                        <?php if ( $this->userVote->isChoiceOpen( $choiceId ) ) : ?>
                     <input id="choice<?php echo $choiceId; ?>" type="radio" name="choiceId" value="<?php echo $choiceId; ?>" />
-                        <?php else : ?>
-                    <span class="disabled"><?php echo get_lang( 'This choice is locked' ); ?></span>
-                        <?php endif; ?>
                 </td>
                     <?php endforeach; ?>
             </tr>
@@ -171,14 +163,22 @@
             <!-- BEGIN Displays the poll votes -->
             <?php if ( $this->poll->getAllVoteList() ) : ?>
                 <?php if ( $this->userRights[ 'see_names' ] ) : ?>
-                    <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $userId => $vote ) : ?>
+                    <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $vote ) : ?>
             <tr>
-                <th class="name"><?php echo $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ]; ?></th>
+                <th class="name">
+                    <?php echo $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ]; ?>
+                    <?php if ( claro_is_platform_admin() ) : ?>
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteVote&pollId='. $this->poll->getId() . '&userId=' . $vote[ 'user_id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete user\'s vote' ); ?>"/>
+                        </a>
+                    <?php endif; ?>
+                </th>
                         <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
-                            <?php if ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
+                            <?php if ( ! isset( $vote[ $choiceId ] ) ) : ?>
+                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
+                            <?php elseif ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
                 <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
-                            <?php endif; ?>
-                            <?php if ( $vote[ $choiceId ] == UserVote::NOTCHECKED ) : ?>
+                            <?php elseif ( $vote[ $choiceId ] == UserVote::NOTCHECKED ) : ?>
                 <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -225,42 +225,6 @@
             </a>
         </span>
     </div>
-    <!--
-    <div id="pagerNav" class="pager">
-        <?php if ( $this->pageNb > 0 ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
-            <span class="enabled">&lt;&lt;</span>
-        </a>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-            <span class="enabled">&lt;</span>
-        </a>
-        <?php else : ?>
-            <span class="pagerButton">&lt;&lt;</span>
-            <span class="pagerButton">&lt;</span>
-        <?php endif; ?>
-        <?php for ( $i = $this->pageNb - 3; $i <= $this->pageNb + 3; $i++ ) : ?>
-            <?php if ( $i >= 0 && $i < $this->voteList->getPageCount() ) : ?>
-                <?php if ( $this->pageNb != $i ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
-            <span class="enabled"><?php echo $i + 1; ?></span>
-        </a>
-            <?php else : ?>
-        <span class="pagerButton"><?php echo $i + 1; ?></span>
-                <?php endif; ?>
-            <?php endif; ?>
-        <?php endfor; ?>
-        <?php if ( $this->pageNb < $this->voteList->getPageCount() - 1 ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-            <span class="enabled">&gt;</span>
-        </a>
-        <a  class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->voteList->getPageCount() - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-            <span class="enabled">&gt;&gt;</span>
-        </a>
-        <?php else : ?>
-            <span class="pagerButton">&gt;</span>
-            <span class="pagerButton">&gt;&gt;</span>
-        <?php endif; ?>
-    </div>-->
     <?php endif; ?>
     
 <!-- END Container for the poll datas display -->

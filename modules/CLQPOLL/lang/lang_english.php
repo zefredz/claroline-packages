@@ -1,7 +1,10 @@
 <?php
-$_lang['_type'] = 'Single vote?';
-$_lang['_multi'] = 'No';
-$_lang['_single'] = 'Yes';
+$_lang['_type'] = 'Single or multi vote?';
+$_lang['_multi'] = 'Multi';
+$_lang['_single'] = 'Single';
+$_lang['_answer'] = 'Answer required?';
+$_lang['_required'] = 'required';
+$_lang['_optional'] = 'optional';
 $_lang['_is_anonymous'] = 'Anonymous poll?';
 $_lang['_privacy'] = 'Privacy';
 $_lang['_public'] = 'Public : everybody can see the names';

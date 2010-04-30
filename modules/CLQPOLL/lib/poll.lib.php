@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.5 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -27,10 +27,10 @@ class Poll
     const LOCKED = 'locked';
     
     protected static $optionValueList = array(
-        '_type'      => array( '_multi' , '_single' ), // the first value is default
-        '_privacy'   => array( '_public' , '_private' , '_anonymous' ),
-        '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' ),
-        '_max_vote' => array( 0 )
+        '_type'        => array( '_multi' , '_single' ), // the first value is default
+        '_answer'      => array( '_required' , '_optional' ),
+        '_privacy'     => array( '_public' , '_private' , '_anonymous' ),
+        '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' )
         //...
     );
     
@@ -314,11 +314,7 @@ class Poll
             throw new Exception( 'Invalid option' );
         }
         
-        if ( is_int( self::$optionValueList[ $option ][ 0 ] ) )
-        {
-            $value  = abs( (int)$value );
-        }
-        elseif( ! in_array( $value , self::$optionValueList[ $option ] ) )
+        if( ! in_array( $value , self::$optionValueList[ $option ] ) )
         {
             throw new Exception( 'Invalid value' );
         }
@@ -345,9 +341,7 @@ class Poll
                 poll_id = " . Claroline::getDatabase()->escape( $this->id )
         ) )
         {
-            $this->choiceList[ Claroline::getDatabase()->insertId() ] = $label;
-            
-            return $this;
+            return $this->choiceList[ Claroline::getDatabase()->insertId() ] = $label;
         }
         else
         {
@@ -371,7 +365,12 @@ class Poll
         {
             unset( $this->choiceList[ $choiceId ] );
             
-            return $this;
+            return Claroline::getDatabase()->exec( "
+                DELETE FROM
+                    `{$this->tbl['poll_votes']}`
+                WHERE
+                    choice_id = " . Claroline::getDatabase()->escape( $choiceId )
+            );
         }
         else
         {
@@ -486,6 +485,7 @@ class Poll
             
             foreach( $voteList as $vote )
             {
+                $this->allVoteList[ $vote[ 'user_id' ] ][ 'user_id' ] = $vote[ 'user_id' ];
                 $this->allVoteList[ $vote[ 'user_id' ] ][ 'lastName' ] = $vote[ 'nom' ];
                 $this->allVoteList[ $vote[ 'user_id' ] ][ 'firstName' ] = $vote[ 'prenom' ];
                 $this->allVoteList[ $vote[ 'user_id' ] ][ $vote[ 'choice_id' ] ] = $vote[ 'vote' ];
