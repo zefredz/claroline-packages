@@ -1,3 +1,4 @@
+<!-- $Id$ -->
 <h3><?php echo get_lang("Edit configuration in course %courseCode%", array('%courseCode%' => $this->courseId)); ?></h3>
 <form action="<?php echo $_SERVER['PHP_SELF'] . '?cmd=changeConf&amp;cid='.$this->courseId; ?>" method="post">
     <fieldset>
