@@ -33,7 +33,7 @@ try
     $dialogBox = new DialogBox();
     
     ClaroBreadCrumbs::getInstance()->prepend( get_lang('Administration'), get_path('rootAdminWeb') );
-    ClaroBreadCrumbs::getInstance()->append( get_lang('Course configuration editor') );
+    ClaroBreadCrumbs::getInstance()->append( get_lang('Course configuration editor'), $_SERVER['PHP_SELF'] );
     
     $action = $userInput->get('cmd','rqLoadCourse');
     
