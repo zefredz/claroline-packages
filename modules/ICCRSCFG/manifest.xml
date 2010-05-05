@@ -1,0 +1,23 @@
+<module>
+<label>ICCRSCFG</label>
+<name>Course configuration editor</name>
+<description><![CDATA[
+Change some tool configuration variables in a course, originally written for
+iCampus but that can be usefull on other Claroline installs.
+]]></description>
+<version>1.0</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>admin</type>
+<entry>index.php</entry>
+<author>
+<name>Frederic Minne</name>
+<email>zefredz@claroline.net</email>
+<web>http://www.icampus.ucl.ac.be/</web>
+</author>
+<requirements>
+<claroline>
+<version>1.9</version>
+</claroline>
+</requirements>
+</module>
