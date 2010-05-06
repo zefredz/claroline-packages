@@ -140,7 +140,7 @@ class UserVote
         
         return ! ( ( $this->poll->getOption( '_type' ) == '_single'
              &&
-             $checkedCount != 1 )
+             $checkedCount > 1 )
              ||
              ( $this->poll->getOption( '_answer' ) == '_required'
              &&
