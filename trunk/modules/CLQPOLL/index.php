@@ -65,9 +65,9 @@ try
     $cmd = $userInput->get( 'cmd', 'rqShowList' );
     
     // retrieves the parameters
-    $pollId   = $userInput->get( 'pollId' );
-    $choiceId = $userInput->get( 'choiceId' );
-    $pageNb = (int)$userInput->get( 'pageNb' );
+    $pollId   = (int)$userInput->get( 'pollId' );
+    $choiceId = (int)$userInput->get( 'choiceId' );
+    $pageNb   = (int)$userInput->get( 'pageNb' );
     
     $userId = claro_get_current_user_id();
     
@@ -154,25 +154,14 @@ try
             {
                 if ( $userRights[ 'vote' ] )
                 {
-                    if ( isset( $choiceId ) )// this means it's a single vote poll
+                    foreach ( array_keys( $poll->getChoiceList() ) as $pollChoiceId )
                     {
-                        $userVote->setVote( $choiceId , UserVote::CHECKED );
-                    }
-                    else
-                    {
-                        foreach ( array_keys( $poll->getChoiceList() ) as $choiceId ) // multi vote poll
-                        {
-                            if ( $userInput->get( 'choice' . $choiceId ) )
-                            {
-                                $checked = UserVote::CHECKED;
-                            }
-                            else
-                            {
-                                $checked = UserVote::NOTCHECKED;
-                            }
-                            
-                            $userVote->setVote( $choiceId , $checked );
-                        }
+                        $checked = ( $userInput->get( 'choice' . $choiceId )
+                                     ||
+                                     $pollChoiceId == $choiceId )
+                                    ? UserVote::CHECKED : UserVote::NOTCHECKED;
+                        
+                        $userVote->setVote( $pollChoiceId , $checked );
                     }
                     
                     $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
