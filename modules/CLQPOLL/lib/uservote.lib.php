@@ -22,11 +22,12 @@ class UserVote
 {
     const CHECKED = 'checked';
     const NOTCHECKED = 'notchecked';
+    const UNCHECKED = 'unchecked';
     
     protected $poll;
     protected $userId;
     protected $vote = array();
-    protected $has_voted = false;
+    protected $has_voted;
     
     /**
      * Constructor
@@ -38,13 +39,14 @@ class UserVote
         $this->tbl = get_module_course_tbl ( array ( 'poll_polls' , 'poll_choices' , 'poll_votes' ) );
         
         $this->userId = $userId;
-        
         $this->poll = $poll;
         
         foreach( array_keys( $this->poll->getChoiceList() ) as $choiceId )
         {
-            $this->vote[ $choiceId ] = self::NOTCHECKED;
+            $this->vote[ $choiceId ] = self::UNCHECKED;
         }
+        
+        $this->load();
     }
     
     /**
@@ -73,7 +75,7 @@ class UserVote
     {
         if ( empty( $this->vote ) || $force )
         {
-            $this->loadVote();
+            $this->load();
         }
         
         return $this->vote;
@@ -82,7 +84,7 @@ class UserVote
     /**
      * Loads the vote datas if exists
      */
-    protected function loadVote()
+    public function load()
     {
         $voteList = Claroline::getDatabase()->query( "
             SELECT
@@ -90,7 +92,7 @@ class UserVote
             FROM
                 `{$this->tbl['poll_votes']}`
             WHERE
-                poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
+                poll_id = " . Claroline::getDatabase()->escape( (int)$this->poll->getId() ) . "
             AND
                 user_id = " . Claroline::getDatabase()->escape( $this->userId )
         );
@@ -110,15 +112,20 @@ class UserVote
             
             $this->has_voted = true;
         }
+        else
+        {
+            $this->has_voted = false;
+        }
+        
+        return $this;
     }
     
     /**
-     * Controls idf vote exists
-     * @return boolean $this->has_voted
+     * Controls if the vote has been recorded
+     * @return boolean
      */
     public function voteExists()
     {
-        $this->loadVote();
         return $this->has_voted;
     }
     
@@ -252,14 +259,18 @@ class UserVote
      */
     public function deleteVote()
     {
-        return Claroline::getDatabase()->exec("
+        if ( $vote_deleted = Claroline::getDatabase()->exec("
                 DELETE FROM
                     `{$this->tbl['poll_votes']}`
                 WHERE
                     user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
                 AND
                     poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() )
-        );
+        ) )
+        {
+            $this->has_voted = false;
+            return $vote_deleted;
+        }
     }
     
     /**

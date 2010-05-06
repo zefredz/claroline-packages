@@ -43,7 +43,6 @@
         <?php echo get_lang( 'Purge this poll' ); ?>
     </a>
 </span>
-
 <?php endif; ?>
 
 <?php if ( $this->userRights[ 'see_stats' ] ) : ?>
@@ -78,7 +77,7 @@
     <?php endif; ?>
     
     <!-- BEGIN Display the voting form -->
-    <?php if ( $this->userVote && ! $this->userVote->voteExists() && $this->userRights[ 'vote' ] ) : ?>
+    <?php if ( $this->userRights[ 'vote' ] ) : ?>
         <?php if ( $this->poll->getOption( '_type' ) == '_multi' ) : ?>
         <!-- MULTIPLE VOTE -->
     <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
@@ -103,7 +102,6 @@
         <table>
             <tr class="userline">
                 <th class="name">
-                    <?php echo get_lang( 'Make your choice' ); ?>
                     <input class="submit" type="submit" value="<?php echo get_lang( 'Vote' ); ?>"/>
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
@@ -121,15 +119,16 @@
         <!-- BEGIN Displays the option list -->
         <thead>
             <!-- BEGIN Displays the current user vote -->
-            <?php if ( claro_get_current_user_id() && $this->userVote->voteExists() ) : ?>
+            <?php if ( claro_get_current_user_id() && $this->userVote->load()->voteExists() ) : ?>
             <tr id="current" >
                 <th><?php echo get_lang( 'Your vote' ); ?></th>
                 <?php foreach ( $this->userVote->getVote( true ) as $vote ) : ?>
                     <?php if ( $vote == UserVote::CHECKED ) : ?>
                 <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
-                    <?php endif; ?>
-                    <?php if ( $vote == UserVote::NOTCHECKED ) : ?>
+                    <?php elseif ( $vote == UserVote::NOTCHECKED ) : ?>
                 <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
+                    <?php else : ?>
+                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
                     <?php endif; ?>
                 <?php endforeach; ?>
             </tr>

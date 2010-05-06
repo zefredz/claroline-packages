@@ -30,7 +30,8 @@ class Poll
         '_type'        => array( '_multi' , '_single' ), // the first value is default
         '_answer'      => array( '_required' , '_optional' ),
         '_privacy'     => array( '_public' , '_private' , '_anonymous' ),
-        '_stat_access' => array( '_granted', '_when_closed' , '_forbidden' )
+        '_stat_access' => array( '_granted' , '_when_closed' , '_forbidden' ),
+        '_revote'      => array( '_allowed' , '_not_allowed' )
         //...
     );
     
@@ -59,13 +60,13 @@ class Poll
         }
         else
         {
-            foreach( self::$optionValueList as $option => $valueList )
-            {
-                $this->optionList[ $option ] = $valueList[ 0 ];
-            }
-            
             $this->visibility = Poll::INVISIBLE;
             $this->status = Poll::OPEN_VOTE;
+        }
+        
+        foreach( self::$optionValueList as $option => $valueList )
+        {
+            if ( ! isset( $this->optionList[ $option ] ) ) $this->optionList[ $option ] = $valueList[ 0 ];
         }
     }
     

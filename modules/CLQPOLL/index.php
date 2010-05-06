@@ -37,10 +37,8 @@ try
             'rqShowList', 'rqViewPoll',
             'rqViewStats', 'rqDeleteVote',
             'rqCreatePoll', 'rqEditPoll',
-            'rqAddChoice', 'rqDeleteChoice',
             'rqDeletePoll', 'rqPurgePoll',
             'exCreatePoll', 'exEditPoll',
-            'exAddChoice', 'exDeleteChoice',
             'exDeletePoll', 'exPurgePoll',
             'exSubmitVote', 'exDeleteVote',
             'exMkVisible', 'exMkInvisible',
@@ -97,7 +95,10 @@ try
     
     if ( claro_is_course_member() )
     {
-        if ( $poll->isOpen() ) $userRights[ 'vote' ] = true;
+        if ( $poll->isOpen()
+            && $userVote
+            && ( ! $userVote->voteExists()
+            || $poll->getOption( '_revote' ) == '_allowed' ) ) $userRights[ 'vote' ] = true;
     }
     
     if ( claro_is_allowed_to_edit() )
@@ -116,8 +117,9 @@ try
     // determines which option can be changed
     $change_allowed = array( '_type' => true ,
                              '_answer' => true,
-                             '_privacy' => true ,
-                             '_stat_access' => true);
+                             '_privacy' => true,
+                             '_stat_access' => true,
+                             '_revote' => true );
     
     if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
     {
@@ -125,6 +127,7 @@ try
         $change_allowed[ '_answer' ] = false;
         //if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
         $change_allowed[ '_privacy' ] = false;
+        $change_allowed[ '_revote' ] = false;
     }
     
     // to handle in-betweens deletion
@@ -138,8 +141,6 @@ try
             case 'rqViewPoll':
             case 'rqCreatePoll':
             case 'rqEditPoll':
-            case 'rqAddChoice':
-            case 'rqEditChoice':
             case 'rqDeleteChoice':
             case 'rqPurgePoll':
             case 'rqDeleteVote':
@@ -151,34 +152,42 @@ try
             
             case 'exSubmitVote':
             {
-                if ( isset( $choiceId ) )// this means it's a single vote poll
+                if ( $userRights[ 'vote' ] )
                 {
-                    $userVote->setVote( $choiceId , UserVote::CHECKED );
+                    if ( isset( $choiceId ) )// this means it's a single vote poll
+                    {
+                        $userVote->setVote( $choiceId , UserVote::CHECKED );
+                    }
+                    else
+                    {
+                        foreach ( array_keys( $poll->getChoiceList() ) as $choiceId ) // multi vote poll
+                        {
+                            if ( $userInput->get( 'choice' . $choiceId ) )
+                            {
+                                $checked = UserVote::CHECKED;
+                            }
+                            else
+                            {
+                                $checked = UserVote::NOTCHECKED;
+                            }
+                            
+                            $userVote->setVote( $choiceId , $checked );
+                        }
+                    }
+                    
+                    $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
+                    $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed' ? true : false;
                 }
                 else
                 {
-                    foreach ( array_keys( $poll->getChoiceList() ) as $choiceId ) // multi vote poll
-                    {
-                        if ( $userInput->get( 'choice' . $choiceId ) )
-                        {
-                            $checked = UserVote::CHECKED;
-                        }
-                        else
-                        {
-                            $checked = UserVote::NOTCHECKED;
-                        }
-                        
-                        $userVote->setVote( $choiceId , $checked );
-                    }
+                    $has_voted = false;
                 }
-                
-                $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
                 break;
             }
             
             case 'exDeleteVote':
             {
-                $vote_deleted = claro_is_platform_admin() ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
+                $vote_deleted = claro_is_allowed_to_edit() ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
                                                           : false;
                 break;
             }
@@ -232,13 +241,6 @@ try
                         $poll->deleteChoice( $choiceId );
                     }
                 }
-                break;
-            }
-            
-            case 'exDeleteChoice':
-            {
-                $choiceList = $poll->getChoiceList();
-                $choice_deleted = isset( $choiceList[ $choiceId ] ) ? $poll->deleteChoice( $choiceId ) : false;
                 break;
             }
             
@@ -296,13 +298,13 @@ try
             
             case 'rqViewPoll':
             {
-                if ( ! $poll->isOpen() )
-                {
-                    $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
-                }
-                elseif ( ! $userRights[ 'vote' ] )
+                if ( ! claro_is_course_member() )
                 {
                     $dialogBox->info( get_lang( 'Vote only granted to course registered users!' ) );
+                }
+                elseif ( ! $poll->isOpen() )
+                {
+                    $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
                 }
                 
                 $crumb = get_lang( 'Poll' );
@@ -315,30 +317,12 @@ try
             {
                 if ( $poll->getAllVoteList() )
                 {
-                    $dialogBox->warning( get_lang( 'Some users already voted, so be careful! You cannot add or remove choices ( unless you purge the poll ).' ) );
+                    $dialogBox->warning( '<strong>'
+                                        . get_lang( 'Warning: Some users already voted, so be careful!' )
+                                        . '</strong>' );
                 }
                 
                 $crumb = get_lang( 'Edit poll' );
-                $template = 'polledit';
-                break;
-            }
-            
-            case 'rqDeleteChoice':
-            {
-                if ( $poll->getAllVoteList() )
-                {
-                    $dialogBox->warning( get_lang( 'Some users already voted, so you cannot delete choices anymore! (Unless you purge this poll...)' ) );
-                }
-                else
-                {
-                    $labelList = $poll->getChoiceList();
-                    $label = $labelList[ $choiceId ];
-                    $msg = get_lang( 'Do you really want to delete this choice?' ) . ' : <strong>"' . $label . '"</strong>';
-                    $urlAction = 'exDeleteChoice';
-                    $urlCancel = 'rqEditPoll';
-                }
-                
-                $crumb = get_lang( 'Delete poll choice' );
                 $template = 'polledit';
                 break;
             }
@@ -409,13 +393,13 @@ try
                 {
                     $dialogBox->success( get_lang( 'Your vote has been successfully added!' ) );
                 }
-                elseif ( $userVote->getPoll()->isOpen() )
-                {
-                    $dialogBox->error( get_lang( 'You must validate one choice!' ) );
-                }
-                else
+                elseif ( ! $userVote->getPoll()->isOpen() )
                 {
                     $dialogBox->error( get_lang( 'The votes for this poll are closed' ) );
+                }
+                elseif ( ! $userVote->voteExists() )
+                {
+                    $dialogBox->error( get_lang( 'You must validate one choice!' ) );
                 }
                 
                 $template = 'pollview';
@@ -479,21 +463,6 @@ try
                 }
                 
                 $template  = 'polledit';
-                break;
-            }
-            
-            case 'exDeleteChoice':
-            {
-                if ( $choice_deleted )
-                {
-                    $dialogBox->success( get_lang( 'The choice has been successfully deleted!' ) );
-                }
-                else
-                {
-                    $dialogBox->error( '<strong>' . get_lang( 'Error' ) . '</strong>' );
-                }
-                
-                $template = 'polledit';
                 break;
             }
             
@@ -638,7 +607,7 @@ if ( isset ( $template ) )
                 -->
                 </script>';
                 
-            if ( ! $poll->getAllVoteList() || claro_is_platform_admin() )
+            if ( ! $poll->getAllVoteList() || claro_is_allowed_to_edit() )
             {
                 ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
             }
