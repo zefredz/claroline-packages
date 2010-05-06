@@ -295,6 +295,18 @@ try
                 {
                     $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
                 }
+                elseif ( $userRights[ 'vote' ] )
+                {
+                    if ( $poll->getOption( '_type' ) == '_single' )
+                    {
+                        $dialogBox->info( 'strong>' . get_lang( 'Only one vote' ) . '</strong>' );
+                    }
+                    
+                    if ( $poll->getOption( '_answer' ) == '_required' )
+                    {
+                        $dialogBox->info( '<strong>' . get_lang( 'Required vote' ) . '</strong>' );
+                    }
+                }
                 
                 $crumb = get_lang( 'Poll' );
                 $template = 'pollview';
