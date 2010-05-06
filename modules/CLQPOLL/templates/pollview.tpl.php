@@ -173,12 +173,12 @@
                     <?php endif; ?>
                 </th>
                         <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
-                            <?php if ( ! isset( $vote[ $choiceId ] ) ) : ?>
-                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
-                            <?php elseif ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
+                            <?php if ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
                 <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
                             <?php elseif ( $vote[ $choiceId ] == UserVote::NOTCHECKED ) : ?>
                 <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
+                            <?php else: ?>
+                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
             </tr>
