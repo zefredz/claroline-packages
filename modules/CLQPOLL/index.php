@@ -299,7 +299,7 @@ try
                 {
                     if ( $poll->getOption( '_type' ) == '_single' )
                     {
-                        $dialogBox->info( 'strong>' . get_lang( 'Only one vote' ) . '</strong>' );
+                        $dialogBox->info( '<strong>' . get_lang( 'Only one vote' ) . '</strong>' );
                     }
                     
                     if ( $poll->getOption( '_answer' ) == '_required' )
