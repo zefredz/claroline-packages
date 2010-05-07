@@ -90,7 +90,8 @@ try
     {
         if ( $poll->getOption( '_privacy' )     == '_public' )  $userRights[ 'see_names' ] = true;
         if ( $poll->getOption( '_stat_access' ) == '_granted' ) $userRights[ 'see_stats' ] = true;
-        if ( $poll->getOption( '_stat_access' ) == '_when_closed' && ! $poll->isOpen() ) $userRights[ 'see_stats' ] = true;
+        if ( $poll->getOption( '_stat_access' ) == '_when_closed'
+            && ! $poll->isOpen() ) $userRights[ 'see_stats' ] = true;
     }
     
     if ( claro_is_course_member() )
@@ -152,6 +153,8 @@ try
             
             case 'exSubmitVote':
             {
+                $has_voted = false;
+                
                 if ( $userRights[ 'vote' ] )
                 {
                     foreach ( array_keys( $poll->getChoiceList() ) as $pollChoiceId )
@@ -166,10 +169,6 @@ try
                     
                     $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
                     $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed' ? true : false;
-                }
-                else
-                {
-                    $has_voted = false;
                 }
                 break;
             }
@@ -299,12 +298,12 @@ try
                 {
                     if ( $poll->getOption( '_type' ) == '_single' )
                     {
-                        $dialogBox->info( '<strong>' . get_lang( 'Only one vote' ) . '</strong>' );
+                        $dialogBox->info( '<strong>' . get_lang( 'This poll allows only one choice' ) . '</strong>' );
                     }
                     
                     if ( $poll->getOption( '_answer' ) == '_required' )
                     {
-                        $dialogBox->info( '<strong>' . get_lang( 'Required vote' ) . '</strong>' );
+                        $dialogBox->info( '<strong>' . get_lang( 'This poll requires to validate a choice' ) . '</strong>' );
                     }
                 }
                 
