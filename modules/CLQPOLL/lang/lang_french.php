@@ -16,7 +16,6 @@ $_lang['_stat_access'] = 'Statistiques';
 $_lang['_granted'] = 'Visibles pour tous les utilisateurs';
 $_lang['_forbidden'] = 'Visibles seulement pour les gestionnaires de cours';
 $_lang['_when_closed'] = 'Seulement à la fin';
-$_lang['_max_vote'] = 'Nombre limite';
 $_lang['#locked'] = ' <strong>[ ne peut pas être changé ]</strong>';
 $_lang['Add a new choice'] = 'Ajouter un choix';
 $_lang['Anonymous poll?'] = 'Sondage anonyme?';

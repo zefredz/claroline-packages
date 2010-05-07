@@ -156,7 +156,7 @@ try
                 {
                     foreach ( array_keys( $poll->getChoiceList() ) as $pollChoiceId )
                     {
-                        $checked = ( $userInput->get( 'choice' . $choiceId )
+                        $checked = ( $userInput->get( 'choice' . $pollChoiceId )
                                      ||
                                      $pollChoiceId == $choiceId )
                                     ? UserVote::CHECKED : UserVote::NOTCHECKED;

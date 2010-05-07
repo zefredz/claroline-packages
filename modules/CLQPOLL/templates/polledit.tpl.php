@@ -131,18 +131,17 @@
     
     <fieldset>
         <legend><?php echo get_lang( 'Settings' ); ?></legend>
-        <?php foreach( $this->poll->getOptionList() as $item => $value ) : ?>
+        <?php foreach( $this->poll->getOptionList() as $option => $value ) : ?>
         <dl>
-            <dt><label><?php echo get_lang( $item ); ?></label>&nbsp;:</dt>
+            <dt><label><?php echo get_lang( $option ); ?></label>&nbsp;:</dt>
             <dd>
-            <?php $optionValueList = $this->poll->getOptionValueList( $item ); ?>
-            <?php if ( $this->change_allowed[ $item ] ) : ?>
-                <?php foreach( $this->poll->getOptionValueList( $item ) as $option ) : ?>
+            <?php if ( $this->change_allowed[ $option ] ) : ?>
+                <?php foreach( $this->poll->getOptionValueList( $option ) as $optionValue ) : ?>
                 <input  type="radio"
-                        name="<?php echo $item; ?>"
-                        value="<?php echo $option; ?>"
-                        <?php if ( $this->poll->getOption( $item ) == $option ) : ?>checked="checked"<?php endif; ?>/>
-                <?php echo get_lang( $option ); ?>
+                        name="<?php echo $option; ?>"
+                        value="<?php echo $optionValue; ?>"
+                        <?php if ( $value == $optionValue ) : ?>checked="checked"<?php endif; ?>/>
+                <?php echo get_lang( $optionValue ); ?>
                 <br />
                 <?php endforeach; ?>
             <?php else : ?>
