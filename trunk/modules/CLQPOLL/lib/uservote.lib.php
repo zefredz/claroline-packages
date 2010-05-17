@@ -73,7 +73,7 @@ class UserVote
      */
     public function getVote( $force = false )
     {
-        if ( empty( $this->vote ) || $force )
+        if ( $force )
         {
             $this->load();
         }

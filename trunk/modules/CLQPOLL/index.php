@@ -168,7 +168,10 @@ try
                     }
                     
                     $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
-                    $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed' ? true : false;
+                    $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed'
+                                            ||
+                                            claro_is_allowed_to_edit()
+                                            ? true : false;
                 }
                 break;
             }
@@ -397,7 +400,7 @@ try
                 {
                     $dialogBox->error( get_lang( 'The votes for this poll are closed' ) );
                 }
-                elseif ( ! $userVote->voteExists() )
+                else
                 {
                     $dialogBox->error( get_lang( 'You must validate one choice!' ) );
                 }
