@@ -167,7 +167,8 @@ try
                         $userVote->setVote( $pollChoiceId , $checked );
                     }
                     
-                    $has_voted = ( $userVote->isVoteValid() && $poll->isOpen() ) ? $userVote->saveVote() : false;
+                    $has_voted = $userVote->isVoteValid() ? $userVote->saveVote() : false;
+                                
                     $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed'
                                             ||
                                             claro_is_allowed_to_edit()
@@ -399,6 +400,10 @@ try
                 elseif ( ! $userVote->getPoll()->isOpen() )
                 {
                     $dialogBox->error( get_lang( 'The votes for this poll are closed' ) );
+                }
+                elseif ( $poll->getOption( '_revote' ) != '_allowed' )
+                {
+                    $dialogBox->error( get_lang( 'You have allready voted!' ) );
                 }
                 else
                 {

@@ -87,6 +87,7 @@ $_lang['Vote only granted to course registered users!'] = 'Seuls les utilisateur
 $_lang['You cannot see the statistics for this poll!'] = 'Les statistiques de ce sondage ne sont pas disponibles pour l\'instant.';
 $_lang['Voting mode'] = 'Modalités de vote';
 $_lang['You cannot vote anymore: all the choices are locked'] = 'Vous ne pouvez plus voter: tous les choix sont verrouillés!';
+$_lang['You have allready voted!'] = 'Vous avez déjà voté!';
 $_lang['You have not correctly filled the form!'] = 'Veuillez remplir les champs obligatoires!';
 $_lang['You must validate one choice!'] = 'Réponse obligatoire!';
 $_lang['Your new poll has been created!'] = 'Votre sondage à été créé avec succès!';
