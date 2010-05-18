@@ -175,11 +175,6 @@ class UserVote
      */
     public function saveVote()
     {
-        if ( ! $this->poll->isOpen() )
-        {
-            throw new Exception( 'Cannot submit vote : poll is closed' );
-        }
-        
         if ( $this->isVoteValid() )
         {
             if ( $this->voteExists() )
