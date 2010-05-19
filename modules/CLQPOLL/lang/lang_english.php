@@ -1,4 +1,15 @@
-<?php
+<?php // $Id$
+
+/**
+ * Claroline Poll Tool
+ *
+ * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLQPOLL
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
 $_lang['_type'] = 'Single or multi vote?';
 $_lang['_multi'] = 'Multi';
 $_lang['_single'] = 'Single';
