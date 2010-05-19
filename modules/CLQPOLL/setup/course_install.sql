@@ -1,3 +1,5 @@
+/* $Id$ */
+
 /**
  * Claroline Poll Tool
  *
