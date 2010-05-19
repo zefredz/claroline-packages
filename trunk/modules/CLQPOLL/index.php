@@ -296,7 +296,7 @@ try
                 }
                 elseif ( ! $poll->isOpen() )
                 {
-                    $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</stong>' );
+                    $dialogBox->info( '<strong>' . get_lang( 'The votes for this poll are closed' ) .'</strong>' );
                 }
                 elseif ( $userRights[ 'vote' ] )
                 {
