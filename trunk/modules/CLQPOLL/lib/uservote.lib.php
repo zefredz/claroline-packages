@@ -27,7 +27,7 @@ class UserVote
     protected $poll;
     protected $userId;
     protected $vote = array();
-    protected $has_voted;
+    protected $voteCount;
     
     /**
      * Constructor
@@ -97,7 +97,9 @@ class UserVote
                 user_id = " . Claroline::getDatabase()->escape( $this->userId )
         );
         
-        if ( $voteList->numRows() )
+        $this->voteCount = $voteList->numRows();
+        
+        if ( $this->voteCount )
         {
             /*
             if( $voteList->numRows() != count( $this->poll->getChoiceList() ) )
@@ -109,12 +111,6 @@ class UserVote
             {
                 $this->vote[ $vote[ 'choice_id' ] ] = $vote[ 'vote' ]; 
             }
-            
-            $this->has_voted = true;
-        }
-        else
-        {
-            $this->has_voted = false;
         }
         
         return $this;
@@ -126,7 +122,7 @@ class UserVote
      */
     public function voteExists()
     {
-        return $this->has_voted;
+        return $this->voteCount;
     }
     
     /**
@@ -177,16 +173,16 @@ class UserVote
     {
         if ( $this->isVoteValid() )
         {
-            if ( $this->voteExists() )
+            if ( $this->voteExists() && count( $this->poll->getChoiceList() ) == $this->voteCount )
             {
-                $this->has_voted = (boolean)$this->updateVoteList();
+                $this->voteCount = $this->updateVoteList();
             }
             else
             {
-                $this->has_voted = (boolean)$this->insertVoteList();
+                $this->voteCount = $this->insertVoteList();
             }
             
-            return $this->has_voted;
+            return $this->voteCount;
         }
         else
         {
@@ -213,7 +209,7 @@ class UserVote
         }
         
         return Claroline::getDatabase()->exec( "
-                INSERT INTO
+                INSERT IGNORE INTO
                     `{$this->tbl['poll_votes']}` ( poll_id , choice_id , user_id , vote )
                 VALUES" . "\n"
                 . implode( ",\n" , $values )
@@ -236,7 +232,7 @@ class UserVote
                 SET
                     vote = " . Claroline::getDatabase()->quote( $vote ) . "
                 WHERE
-                    choice_id = "  . Claroline::getDatabase()->escape( $choiceId ) . "
+                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
                 AND
                     user_id = " . Claroline::getDatabase()->escape( $this->userId )
             ) )
@@ -254,18 +250,14 @@ class UserVote
      */
     public function deleteVote()
     {
-        if ( $vote_deleted = Claroline::getDatabase()->exec("
+        return Claroline::getDatabase()->exec("
                 DELETE FROM
                     `{$this->tbl['poll_votes']}`
                 WHERE
                     user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
                 AND
                     poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() )
-        ) )
-        {
-            $this->has_voted = false;
-            return $vote_deleted;
-        }
+        );
     }
     
     /**
