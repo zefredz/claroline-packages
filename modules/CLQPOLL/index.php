@@ -397,6 +397,10 @@ try
                 {
                     $dialogBox->success( get_lang( 'Your vote has been successfully added!' ) );
                 }
+                elseif ( $poll->getOption( '_answer' ) == '_required' )
+                {
+                    $dialogBox->error( get_lang( 'You must validate a choice!' ) );
+                }
                 elseif ( ! $userVote->getPoll()->isOpen() )
                 {
                     $dialogBox->error( get_lang( 'The votes for this poll are closed' ) );
