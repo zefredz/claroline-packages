@@ -29,7 +29,7 @@
         <?php foreach ( $this->pollStat->getGraph() as $label => $data ) : ?>
         <li>
             <div class="percent"><?php echo $data[ 'percent' ]; ?></div>
-            <div class="histobar" style="<?php echo $data[ 'style' ]; ?>"><?php if ( $data[ 'count' ] ) echo $data[ 'count' ]; ?></div>
+            <div class="histobar" style="<?php echo $data[ 'style' ]; ?>"><?php if ( $data[ 'count' ] > 0 ) echo $data[ 'count' ]; ?></div>
             <div class="label"><?php echo $data[ 'label' ]; ?></div>
         </li>
         <?php endforeach; ?>
