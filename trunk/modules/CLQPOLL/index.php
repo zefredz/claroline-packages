@@ -399,7 +399,7 @@ try
                 }
                 elseif ( $poll->getOption( '_answer' ) == '_required' )
                 {
-                    $dialogBox->error( get_lang( 'You must validate a choice!' ) );
+                    $dialogBox->error( '<strong>' . get_lang( 'You must validate a choice!' ) . '</strong>' );
                 }
                 elseif ( ! $userVote->getPoll()->isOpen() )
                 {
@@ -411,7 +411,7 @@ try
                 }
                 else
                 {
-                    $dialogBox->error( get_lang( 'You must validate one choice!' ) );
+                    $dialogBox->error( '<strong>' . get_lang( 'You must validate only one choice!' ) . '</strong>' );
                 }
                 
                 $template = 'pollview';
