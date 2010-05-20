@@ -107,7 +107,7 @@ if( $is_allowedToEdit )
         include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
         include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
 
-        $maxFilledSpace = 100000000;
+        $maxFilledSpace = 1000000000;
 
         $courseDir   = claro_get_course_path() . '/scormPackages/';
         $baseWorkDir = get_path('coursesRepositorySys').$courseDir;

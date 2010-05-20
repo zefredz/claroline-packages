@@ -136,7 +136,7 @@ class ScormImporter
 
 
         if ( preg_match('/.zip$/i', $this->uploadedZipFile['name'])
-            && treat_uploaded_file($this->uploadedZipFile, $this->scormDir, $this->uploadPath, get_conf('maxFilledSpace' , 100000000), 'unzip', true))
+            && treat_uploaded_file($this->uploadedZipFile, $this->scormDir, $this->uploadPath, get_conf('maxFilledSpace' , 1000000000), 'unzip', true))
         {
             if (!function_exists('gzopen'))
             {

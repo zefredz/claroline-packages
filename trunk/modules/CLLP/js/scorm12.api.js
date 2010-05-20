@@ -56,7 +56,7 @@
 			this._lastDiagnostic = "";
 
 			this._datamodel =  {
-
+			    'cmi.completion_threshold' : {'value' : null, 'mod':'r'}
 			}
 		},
 
@@ -585,6 +585,7 @@
     APIError : function (num) {
             lpHandler.APILastError = num;
     }
+	}
 
     // ====================================================
     // handle time format
