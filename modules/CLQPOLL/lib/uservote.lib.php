@@ -173,7 +173,7 @@ class UserVote
     {
         if ( $this->isVoteValid() )
         {
-            if ( $this->voteExists() && count( $this->poll->getChoiceList() ) == $this->voteCount )
+            if ( $this->voteExists() )
             {
                 $this->voteCount = $this->updateVoteList();
             }
@@ -209,7 +209,7 @@ class UserVote
         }
         
         return Claroline::getDatabase()->exec( "
-                INSERT IGNORE INTO
+                INSERT INTO
                     `{$this->tbl['poll_votes']}` ( poll_id , choice_id , user_id , vote )
                 VALUES" . "\n"
                 . implode( ",\n" , $values )
@@ -234,8 +234,21 @@ class UserVote
                 WHERE
                     choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
                 AND
-                    user_id = " . Claroline::getDatabase()->escape( $this->userId )
-            ) )
+                    user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
+                AND
+                    poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() )
+                )
+                ||
+                 Claroline::getDatabase()->exec( "
+                INSERT INTO
+                    `{$this->tbl['poll_votes']}`
+                SET
+                    poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . ",
+                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . ",
+                    user_id = " . Claroline::getDatabase()->escape( $this->userId ) . ",
+                    vote = " . Claroline::getDatabase()->quote( $vote )
+                )
+            )
             {
                 $updatedRows++;
             }
