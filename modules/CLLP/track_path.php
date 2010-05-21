@@ -21,6 +21,7 @@ require_once dirname( __FILE__ ) . '/lib/path.class.php';
 require_once dirname( __FILE__ ) . '/lib/attempt.class.php';
 require_once get_path('incRepositorySys').'/lib/course_user.lib.php';
 
+
 if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = (int) $_REQUEST['pathId'];
 else                                                                  $pathId = null;
 
@@ -69,8 +70,15 @@ else
     .   '<tr class="headerX" align="center" valign="top">'
     .   '<th>'.get_lang('Student').'</th>'."\n"
     .   '<th colspan="2">'.get_lang('Progress').'</th>'."\n"
-    .   '</tr>'."\n\n"
-    .   '<tbody>'."\n\n";
+    ;
+    if( $is_allowedToEdit )
+    {
+        $out .= '<th style="width: 15%;">' . get_lang( 'Clear progression' ) . '</th>' . "\n"
+        ;
+    }
+    $out .=   '</tr>'."\n\n"
+    .   '<tbody>'."\n\n"
+    ;
     
     $usersList = claro_get_course_user_list();
     
@@ -108,7 +116,13 @@ else
         .   '</a>'
         .    '</small>' . "\n"
         .    '</td>' . "\n"
-        .   '</tr>' . "\n"
+        ;
+        if( $is_allowedToEdit )
+        {
+            $out .= '<td style="text-align: center;"><a href="track_path_details.php?cmd=rqClearProgression&pathId=' . $pathId . '&userId=' . $user['user_id'] . '"><img src="' . get_icon_url( 'delete' ) . '" alt="' . get_lang('Delete') . '" /></a></td>'
+            ;
+        }
+        $out .=   '</tr>' . "\n"
         ;
     }
     

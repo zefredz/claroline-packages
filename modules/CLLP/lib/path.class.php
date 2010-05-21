@@ -287,6 +287,66 @@ class path
 
         return true; // no errors, form is valide
     }
+    
+    /**
+     * Clear LearningPath progression (if both param are null, the entire progression for every users will be cleared)
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     *
+     * @param int $userId Id of the user (can be null)
+     * @param int $itemId Id of the item (can be null)
+     * 
+     * @return boolean
+     */
+    
+    public function clearProgression( $userId = null, $itemId = null )
+    {
+        if( $this->id == -1 )
+        {
+            return false;
+        }
+        // define module table names
+        $tblNameList = array(
+            'lp_attempt',
+            'lp_item_attempt'
+        );
+
+        // convert to Claroline course table names
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+        
+        $query = "SELECT `id` FROM `" . $tbl_lp_names['lp_attempt'] . "` WHERE `path_id` = '" . $this->id . "'";
+        if( ! is_null( $userId ) )
+        {
+            $query .= " AND `user_id` = " . (int) $userId;
+        }
+        
+        $result = Claroline::getDatabase()->query( $query );
+        
+        $attemptIds = array();
+        
+        while( $attemptId = $result->fetch() )
+        {
+            $attemptIds[] = $attemptId;
+        }
+        
+        foreach( $attemptIds as $attemptId )
+        {
+            if( is_null( $itemId ) )
+            {
+                $query = "DELETE FROM `" . $tbl_lp_names['lp_attempt'] . "` WHERE `id` = " . (int) $attemptId['id'];
+                Claroline::getDatabase()->exec( $query );
+            }
+            
+            $query = "DELETE FROM `" . $tbl_lp_names['lp_item_attempt'] . "` WHERE `attempt_id` = " . (int) $attemptId['id'];
+            if( ! is_null( $itemId ) )
+            {
+                $query .= " AND `item_id` = " . (int) $itemId;
+            }
+            Claroline::getDatabase()->exec( $query );
+        }
+        
+        return true;    
+    }
 
     //-- Getter & Setter
 
