@@ -701,6 +701,7 @@ $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspaci
 // Load refreshed list
 $itemList = new PathItemList($pathId);
 $itemListArray = $itemList->getFlatList();
+
 if( !empty($itemListArray) && is_array($itemListArray) )
 {
     $out .= '<tbody>' . "\n";
@@ -731,8 +732,14 @@ if( !empty($itemListArray) && is_array($itemListArray) )
 
         // prerequisites
         $out .= '<td>' . "\n"
-        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-        .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
+        .   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+        . (
+           ( $anItem['blockingConditions'] == true )
+           ?                
+                '<img src="' . get_icon_url('block_cond') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+            :
+                '<img src="' . get_icon_url('block_cond_empty') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+            )
         .    '</a>'
         .    '</td>' . "\n";
 
