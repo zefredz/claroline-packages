@@ -97,61 +97,66 @@ $dialogBox = new DialogBox();
 
 if( $cmd == 'exEdit' )
 {
-    $error = false;
-		if( !empty( $_REQUEST['title'] ) )
+	$error = false;
+		
+	if( !empty( $_REQUEST['title'] ) )
+	{
+		$item->setTitle( $_REQUEST['title'] );
+	}
+	else
+	{
+		$error = true;
+	}
+	if( !empty( $_REQUEST['description'] ) )
+	{
+		$item->setDescription( $_REQUEST['description'] );
+	}
+	else
+	{
+		$error = true;
+	}
+	if( !empty( $_REQUEST['completionThreshold'] ) )
+	{
+		$item->setCompletionThreshold( $_REQUEST['completionThreshold'] );
+	}
+	
+	$_REQUEST['redirectBranchConditions'] = ( !empty( $_REQUEST['redirectBranchConditions'] ) ? 1 : 0);
+	$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
+	
+	$_REQUEST['newWindow'] = ( !empty( $_REQUEST['newWindow'] ) ? 1 : 0);
+	$item->setNewWindow( $_REQUEST['newWindow'] );
+	
+	if( !empty( $_REQUEST['branchConditions'] ) )
+	{
+		$item->setBranchConditions( $_REQUEST['branchConditions'] );
+	}
+	else
+	{
+		$item->setBranchConditions();
+	}
+
+	if( $item->validate() && !$error )
+	{
+		if( $insertedId = $item->save() )
 		{
-			$item->setTitle( $_REQUEST['title'] );
+		    $dialogBox->success( get_lang('Item successfully modified') );
 		}
 		else
 		{
-			$error = true;
+		    $dialogBox->error( get_lang('Fatal error : unable to save item') );
 		}
-		if( !empty( $_REQUEST['description'] ) )
-		{
-			$item->setDescription( $_REQUEST['description'] );
-		}
-		else
-		{
-			$error = true;
-		}
-		if( !empty( $_REQUEST['completionThreshold'] ) )
-		{
-			$item->setCompletionThreshold( $_REQUEST['completionThreshold'] );
-		}
-		
-		$_REQUEST['redirectBranchConditions'] = ( !empty( $_REQUEST['redirectBranchConditions'] ) ? 1 : 0);
-		$item->setRedirectBranchConditions( $_REQUEST['redirectBranchConditions'] );
-		
-		$_REQUEST['newWindow'] = ( !empty( $_REQUEST['newWindow'] ) ? 1 : 0);
-		$item->setNewWindow( $_REQUEST['newWindow'] );
-		
-		if( !empty( $_REQUEST['branchConditions'] ) )
-		{
-			$item->setBranchConditions( $_REQUEST['branchConditions'] );
-		}
-    
-		if( $item->validate() && !$error )
-    {
-				if( $insertedId = $item->save() )
-        {
-            $dialogBox->success( get_lang('Item successfully modified') );
-        }
-        else
-        {
-            $dialogBox->error( get_lang('Fatal error : unable to save item') );
-        }
-    }
-    else
-    {
-        if( claro_failure::get_last_failure() == 'item_no_title' )
-        {
-            $dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
-        }
-        else
-        {
-            $dialogBox->error( get_lang('Fatal error : unable to save item') );
-        }
-    }
+	}
+	else
+	{
+	    if( claro_failure::get_last_failure() == 'item_no_title' )
+	    {
+		$dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
+	    }
+	    else
+	    {
+		$dialogBox->error( get_lang('Fatal error : unable to save item') );
+	    }
+	}
 }
 
 /*
@@ -250,14 +255,15 @@ if( $item->load( $itemId ) )
 			}
 			
 			
-			$htmlEditForm .=		'<div><input type="button"id="branch_condition_button" value="' . get_lang( 'Add a branching condition' ) . '" onclick="addBranchCondition(' . $pathId .');" /></div>' . "\n"
-			.		'</dd>' . "\n"		
-			.		'</dl>' . "\n"
-			.		'</fieldset>' . "\n"
-			.   '<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
-			.   '</form> <br />' . "\n"
-			;
+			$htmlEditForm .= '<div><input type="button"id="branch_condition_button" value="' . get_lang( 'Add a branching condition' ) . '" onclick="addBranchCondition(' . $pathId .');" /></div>' . "\n"			
+			;			
 		}
+		$htmlEditForm .= '</dd>' . "\n"		
+		.	'</dl>' . "\n"
+		.	'</fieldset>' . "\n"
+		.	'<input type="submit" value="' . get_lang( 'Save' ) . '" />' . "\n"
+		.   '</form> <br />' . "\n"
+		;
     
     $out .= $htmlEditForm; 
 }

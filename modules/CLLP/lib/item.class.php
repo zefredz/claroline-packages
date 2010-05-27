@@ -813,28 +813,37 @@ class item
         return $_branchConditions;
     }
     
-    public function setBranchConditions( $branchConditions )
+    public function setBranchConditions( $branchConditions = null )
     {
-        if( !( isset( $branchConditions['sign'] ) && isset( $branchConditions['item'] ) && isset( $branchConditions['value'] ) ) )
+        if( is_null( $branchConditions ) )
         {
-            return false;
+            $this->branchConditions = '';
+        }
+        else
+        {
+            if( !( isset( $branchConditions['sign'] ) && isset( $branchConditions['item'] ) && isset( $branchConditions['value'] ) ) )
+            {
+                return false;
+            }
+            
+            if( !( ( count( $branchConditions['sign'] ) == count( $branchConditions['item'] ) )
+                && ( count( $branchConditions['sign'] ) == count( $branchConditions['value'] ) ) ) )
+            {
+                return false;
+            }
+            
+            $_branchConditions = array();
+            
+            foreach( $branchConditions['sign'] as $key => $sign )
+            {
+                $_branchConditions[$key]['sign'] = $sign;
+                $_branchConditions[$key]['value'] = $branchConditions['value'][$key];
+                $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
+            }
+            $this->branchConditions = serialize( $_branchConditions );
         }
         
-        if( !( ( count( $branchConditions['sign'] ) == count( $branchConditions['item'] ) )
-            && ( count( $branchConditions['sign'] ) == count( $branchConditions['value'] ) ) ) )
-        {
-            return false;
-        }
-        
-        $_branchConditions = array();
-        
-        foreach( $branchConditions['sign'] as $key => $sign )
-        {
-            $_branchConditions[$key]['sign'] = $sign;
-            $_branchConditions[$key]['value'] = $branchConditions['value'][$key];
-            $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
-        }
-        $this->branchConditions = serialize( $_branchConditions );
+        return true;
     }
     
     public function getNewWindow()
@@ -986,6 +995,7 @@ class itemList
     protected $pathId;
     protected $tblPath;
     protected $tblItem;
+    protected $tblItemBlockCondition;
     protected $treeItemList;
 
 
@@ -995,13 +1005,15 @@ class itemList
         
         $tblNameList = array(
             'lp_path',
-            'lp_item'
+            'lp_item',
+            'lp_item_blockcondition'
         );
 
         // convert to Claroline course table names
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
         $this->tblItem = $tbl_lp_names['lp_item'];
+        $this->tblItemBlockCondition = $tbl_lp_names['lp_item_blockcondition'];
     }
 
     // load correct flat list of modules depending on parameters
@@ -1454,6 +1466,18 @@ class PathItemList extends ItemList
         }
         else
         {
+            foreach( $data as $k => $v )
+            {
+                $sql = "SELECT `cond_item_id` FROM `" . $this->tblItemBlockCondition . "` WHERE `item_id` = " . (int) $v['id'] . " LIMIT 1";
+                if( $tmp = claro_sql_query_fetch_single_value( $sql ) )
+                {
+                    $data[ $k ]['blockingConditions'] = true;
+                }
+                else
+                {
+                    $data[ $k ]['blockingConditions'] = false;
+                }
+            }
             return $data;
         }
     }
