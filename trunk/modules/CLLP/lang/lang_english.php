@@ -111,5 +111,8 @@ $_lang['Edit blocking conditions'] = 'Edit blocking conditions';
 $_lang['Open in a new window'] = 'Open in a new window';
 $_lang['Progression cleared successfully for this user.'] = 'Progression cleared successfully for this user.';
 $_lang['Unable to clear the progression for this user.'] = 'Unable to clear the progression for this user.';
+$_lang['Disable prerequisites'] = 'Disable prerequisites';
+$_lang['Enable prerequisites'] = 'Enable prerequisites';
+
 
 ?>
