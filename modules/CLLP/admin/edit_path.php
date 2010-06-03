@@ -53,7 +53,8 @@ $acceptedCmdList = array(   'rqEdit', 'exEdit',
                             'rqDelete', 'exDelete',
                             'rqPrereq', 'exPrereq', 'rqDeletePrereq', 'exDeletePrereq',
                             'exVisible', 'exInvisible',
-                            'rqMove', 'exMove', 'exMoveUp','exMoveDown'
+                            'rqMove', 'exMove', 'exMoveUp','exMoveDown',
+                            'exLock', 'exUnlock'
                     );
 
 if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
@@ -648,6 +649,19 @@ if( $cmd == 'exInvisible' )
 
 
 
+if( $cmd == 'exLock' )
+{
+    $path->lock();
+
+    $path->save();
+}
+
+if( $cmd == 'exUnlock' )
+{
+    $path->unlock();
+
+    $path->save();
+}
 /*
  * Output
  */
@@ -687,13 +701,29 @@ $out .= '<p>'
 .    '</p>'
 ;
 
+//sub menu
+if( $is_allowedToEdit && !is_null($pathId) )
+{
+    $cmdSubMenu = array();
+    if( $path->getLock() == 'CLOSE' )
+    {
+        $cmdSubMenu[] = claro_html_cmd_link( $_SERVER['PHP_SELF'] . '?cmd=exUnlock&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon( 'block' ) . '" alt="" />' . get_lang( 'Disable prerequisites') );
+    }
+    else
+    {
+        $cmdSubMenu[] = claro_html_cmd_link( $_SERVER['PHP_SELF'] . '?cmd=exLock&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon( 'unblock' ) . '" alt="" />' . get_lang( 'Enable prerequisites') );
+    }
+    
+    $out .= '<p>' . claro_html_menu_horizontal( $cmdSubMenu ) . '</p>';
+}
+
 $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
 .     '<th>' . get_lang('Item') . '</th>' . "\n"
 .     '<th>' . get_lang('Modify') . '</th>' . "\n"
 .     '<th>' . get_lang('Delete') . '</th>' . "\n"
-.     '<th>' . get_lang('Prerequisites') . '</th>' . "\n"
+.     ( $path->getLock() == 'CLOSE' ? '<th>' . get_lang('Prerequisites') . '</th>' . "\n" : '' )
 .     '<th>' . get_lang('Visibility') . '</th>' . "\n"
 .     '<th>' . get_lang('Move') . '</th>' . "\n"
 .     '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
@@ -733,17 +763,21 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         .    '</td>' . "\n";
 
         // prerequisites
-        $out .= '<td>' . "\n"
-        .   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-        . (
-           ( $anItem['blockingConditions'] == true )
-           ?                
-                '<img src="' . get_icon_url('block_cond') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
-            :
-                '<img src="' . get_icon_url('block_cond_empty') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
-            )
-        .    '</a>'
-        .    '</td>' . "\n";
+        if( $path->getLock() == 'CLOSE' )
+        {
+            $out .= '<td>' . "\n"
+            .   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+            . (
+               ( $anItem['blockingConditions'] == true )
+               ?                
+                    '<img src="' . get_icon_url('block_cond') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+                :
+                    '<img src="' . get_icon_url('block_cond_empty') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+                )
+            .    '</a>'
+            .    '</td>' . "\n"
+            ;
+        }
 
         // visible/invisible
         if( $anItem['visibility'] == 'VISIBLE' )

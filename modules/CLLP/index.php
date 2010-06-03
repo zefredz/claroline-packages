@@ -29,7 +29,7 @@ require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
  * init request vars
  */
 $acceptedCmdList = array(   'rqDelete', 'exDelete',
-                            'exLock', 'exUnlock',
+                            //'exLock', 'exUnlock',
                             'exVisible', 'exInvisible',
                             'exExport',
                             'rqImport', 'exImport',
@@ -153,7 +153,7 @@ if( $is_allowedToEdit )
         $dialogBox->question( $htmlConfirmDelete );
     }
 
-    if( $cmd == 'exLock' )
+    /*if( $cmd == 'exLock' )
     {
         $path->lock();
 
@@ -165,7 +165,7 @@ if( $is_allowedToEdit )
         $path->unlock();
 
         $path->save();
-    }
+    }*/
 
     if( $cmd == 'exVisible' )
     {
@@ -288,7 +288,7 @@ if( $is_allowedToEdit )
     $out .= '<th>' . get_lang('Learning path') . '</th>' . "\n"
     .    '<th>' . get_lang('Modify') . '</th>' . "\n"
     .    '<th>' . get_lang('Delete') . '</th>' . "\n"
-    .    '<th>' . get_lang('Block') . '</th>' . "\n"
+    //.    '<th>' . get_lang('Block') . '</th>' . "\n"
     .    '<th>' . get_lang('Visibility') . '</th>' . "\n"
     .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
     .    '<th>' . get_lang('Export').'</th>' . "\n"
@@ -333,7 +333,7 @@ if( $is_allowedToEdit )
             .    '</td>' . "\n";
 
             // block/unblock
-            if( $aPath['lock'] == 'OPEN' )
+            /*if( $aPath['lock'] == 'OPEN' )
             {
                 $out .= '<td>' . "\n"
                 .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
@@ -348,7 +348,7 @@ if( $is_allowedToEdit )
                 .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
-            }
+            }*/
             // visible/invisible
             if( $aPath['visibility'] == 'VISIBLE' )
             {
