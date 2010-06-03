@@ -612,16 +612,16 @@ if( $cmd == 'exDeletePrereq' )
     $blockcond = new blockingcondition( $itemId );
     if( $blockcond->delete() )
     {
-        $dialogBox->success( get_lang('Blocking conditions successfully deleted') );
+        $dialogBox->success( get_lang('Prerequisites successfully deleted') );
     }
     else
     {
-        $dialogBox->error( get_lang('Fatal error : cannot delete blocking conditions') );
+        $dialogBox->error( get_lang('Fatal error : cannot delete prerequisites') );
     }
 }
 if ( $cmd == 'rqDeletePrereq' )
 {
-    $htmlPrereqContainer = get_lang('Are you sure to delete blocking conditions for "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+    $htmlPrereqContainer = get_lang('Are you sure that you want to delete prerequisites for "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
     .     '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeletePrereq&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'

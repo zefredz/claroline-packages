@@ -113,6 +113,9 @@ $_lang['Progression cleared successfully for this user.'] = 'Progression cleared
 $_lang['Unable to clear the progression for this user.'] = 'Unable to clear the progression for this user.';
 $_lang['Disable prerequisites'] = 'Disable prerequisites';
 $_lang['Enable prerequisites'] = 'Enable prerequisites';
+$_lang['Are you sure that you want to delete prerequisites for "%itemTitle" ?'] = 'Are you sure that you want to delete prerequisites for "%itemTitle" ?';
+$_lang['Fatal error : cannot delete prerequisites'] = 'Fatal error : cannot delete prerequisites';
+$_lang['Prerequisites successfully deleted'] = 'Prerequisites successfully deleted';
 
 
 ?>
