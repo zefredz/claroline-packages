@@ -104,4 +104,12 @@ $_lang['delete'] = 'delete';
 $_lang['go to'] = 'go to';
 $_lang['incomplete'] = 'incomplete';
 
+$_lang['Are you sure that you want to clear all the progression of this user ?'] = 'Are you sure that you want to clear all the progression of this user ?';
+$_lang['Are you sure that you want to clear all this progression ?'] = 'Are you sure that you want to clear all this progression ?';
+$_lang['Clear progression'] = 'Clear progression';
+$_lang['Edit blocking conditions'] = 'Edit blocking conditions';
+$_lang['Open in a new window'] = 'Open in a new window';
+$_lang['Progression cleared successfully for this user.'] = 'Progression cleared successfully for this user.';
+$_lang['Unable to clear the progression for this user.'] = 'Unable to clear the progression for this user.';
+
 ?>

@@ -482,6 +482,8 @@ if( $cmd == 'rqPrereq' )
 {    
     if( !is_null( $itemId ) )
     {
+        Claroline::getInstance()->display->header->addInlineJavascript('var langRemove = "' . get_lang('Remove') .'"');
+        
         $blockcond = new blockingcondition( $itemId );
         
         $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
@@ -527,7 +529,7 @@ if( $cmd == 'rqPrereq' )
                              .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
                              //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
                              .   '</select>'
-                             .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" disabled="disabled" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
+                             .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" disabled="disabled" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />' .( $blockconds['status'][$key] == 'COMPLETED' ? '%' : '' ) . '</span>' . "\n"
                              .   '</div>' . "\n";
                         }
                         $htmlPrereqContainer .= '</div>' . "\n";
@@ -588,7 +590,7 @@ if( $cmd == 'rqPrereq' )
                 .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
                 //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
                 .   '</select>' . "\n"
-                .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
+                .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />' .( $blockconds['status'][$key] == 'COMPLETED' ? '%' : '' ) . '</span>' . "\n"
                 .   '</div>' . "\n";
             }
         }
