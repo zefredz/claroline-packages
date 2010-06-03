@@ -17,31 +17,31 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 
 class blockingcondition
 {
-		/**
-		* @var $blockconds contains the blocking conditions for an item
-		*/
-		private $blockconds;
-		
-		/**
-		 * @var $item_id contains the general item_id
-		 */
-		private $item_id;
-		/**
-		 * @var $tblBlockcond name of the blocking condition table
-		 */
-		private $tblBlockcond;
-		/*
-		 * @var $tblItem name of the item table
-		 */
-		private $tblItem;
-		
-		/**
-		 * Constructor
-		 *
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 */
-		public function __construct( $item_id )
-		{
+    /**
+    * @var $blockconds contains the blocking conditions for an item
+    */
+    private $blockconds;
+    
+    /**
+     * @var $item_id contains the general item_id
+     */
+    private $item_id;
+    /**
+     * @var $tblBlockcond name of the blocking condition table
+     */
+    private $tblBlockcond;
+    /*
+     * @var $tblItem name of the item table
+     */
+    private $tblItem;
+    
+    /**
+     * Constructor
+     *
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     */
+    public function __construct( $item_id )
+    {
         $this->item_id = (int) $item_id;
         
         $tblNameList = array(
@@ -52,21 +52,20 @@ class blockingcondition
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblBlockcond = $tbl_lp_names['lp_item_blockcondition'];
         $this->tblItem = $tbl_lp_names['lp_item'];
-		}
-		/**
-		 * Save the blocking conditions in the database
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @return boolean
-		 */
-		public function save()
-		{
+    }
+    /**
+     * Save the blocking conditions in the database
+     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @return boolean
+     */
+    public function save()
+    {
         if( !$this->checkBlockConds() )
         {
             return false;
         }
         else
         {
-            
             $this->delete();
             
             $sql = "";
@@ -86,7 +85,7 @@ class blockingcondition
             $sql = "INSERT INTO `".$this->tblBlockcond."`
                         ( `item_id`, `cond_item_id`, `completion_status`, `operator`, `condition`, `raw_to_pass`) VALUES " . $sql;
             $insertedId = claro_sql_query_insert_id($sql);
-             
+            
             if( $insertedId )
             {
                 return true;
@@ -115,7 +114,7 @@ class blockingcondition
             $sql = "SELECT * FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$this->item_id."' ORDER BY `id`";
             $data = claro_sql_query_fetch_all_rows( $sql );
             
-            if( is_null($data) || !count($data) )
+            if( is_null($data) || !count($data) || $data == false )
             {
                 return false;
             }

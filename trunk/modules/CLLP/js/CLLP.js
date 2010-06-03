@@ -451,7 +451,7 @@ function addBlockingCondition( pathId ) {
       $(div).append(sConditions);
       
       var bRemove = $("<button>")
-                    .append("Remove")
+                    .append(langRemove)
                     .click(function(){
                         $(div).remove();
                     });                    
