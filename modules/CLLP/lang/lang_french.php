@@ -18,7 +18,7 @@ $_lang['Are you sure to leave this learning path ?'] = 'Etes-vous sûr de vouloir
 $_lang['Blocking condition(s) successfully saved'] = 'Prérequis sauvée(s) avec succès';
 $_lang['Blocking conditions'] = 'Prérequis';
 $_lang['Blocking conditions dependencies'] = 'Dépendances des prérequis';
-$_lang['Blocking conditions successfully deleted'] = 'Conditions bloqantes supprimées avec succès';
+$_lang['Blocking conditions successfully deleted'] = 'Conditions bloquantes supprimées avec succès';
 $_lang['Branching conditions'] = 'Conditions de branchement';
 $_lang['Browsed'] = 'Parcouru';
 $_lang['Cannot create upload directory.'] = 'Impossible de créer le répertoire d\'upload.';
@@ -31,7 +31,7 @@ $_lang['Chapter successfully created'] = 'Chapitre créé avec succès';
 $_lang['Check bellow the conditions you need to have to take this module.'] = 'Vérifiez ci-dessous les conditions nécessaires pour avoir accès à cette ressource.';
 $_lang['Choose a file to upload.'] = 'Choisissez un fichier à charger.';
 $_lang['Clear progression'] = 'Supprimer la progression';
-$_lang['Click on the left to start a module.'] = 'Cliquez à gauche pour commencer le parcours.';
+$_lang['Click on the left to start a module.'] = 'Cliquez sur la ressource de votre choix dans le menu à gauche pour commencer le parcours.';
 $_lang['Complete'] = 'Complet';
 $_lang['Completion threshold'] = 'Seuil de réussite';
 $_lang['Default view mode'] = 'Mode de vue par défaut';
@@ -39,7 +39,7 @@ $_lang['Disable prerequisites'] = 'Désactivé les prérequis';
 $_lang['Edit blocking conditions'] = 'Editer les conditions bloquantes';
 $_lang['Edit item'] = 'Modifier la ressource';
 $_lang['Edit learning path settings'] = 'Modifier les options du parcours pédagogique';
-$_lang['Edit path settings'] = 'Modifier les options du chemin';
+$_lang['Edit path settings'] = 'Modifier les options du parcours pédagogique';
 $_lang['Embedded'] = 'Fenêtré';
 $_lang['Empty learning path successfully created'] = 'Parcours pédagogique vide créé avec succès';
 $_lang['Enable prerequisites'] = 'Activer les prérequis';
@@ -106,9 +106,14 @@ $_lang['Your score is lower or equal to :'] = 'Votre résultat est inférieur ou é
 $_lang['Your score is lower than :'] = 'Votre score est inférieur à :';
 $_lang['Your score is upper or equal to :'] = 'Votre score est supérieur ou égale à :';
 $_lang['Your score is upper than :'] = 'Votre score est supérieur à :';
-$_lang['completed'] = 'completé';
+$_lang['completed'] = 'complété';
 $_lang['delete'] = 'supprimer';
 $_lang['go to'] = 'allez à';
 $_lang['incomplete'] = 'incomplet';
+
+$_lang['Are you sure that you want to delete prerequisites for "%itemTitle" ?'] = 'Êtes-vous sûr de vouloir supprimer les prérequis pour "%itemTitle" ?';
+$_lang['Fatal error : cannot delete prerequisites'] = 'Erreur fatale : impossible de supprimer les prérequis';
+$_lang['Prerequisites successfully deleted'] = 'Prérequis supprimés avec succès';
+
 
 ?>
