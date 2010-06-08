@@ -30,7 +30,7 @@ array ( 'dimdim_server_url', 'dimdim_server_port' );
 $conf_def_property_list['dimdim_server_url'] =
 array ( 'label'       => 'Server url'
       , 'description' => ''
-      , 'default'       => 'http://www1.dimdim.com'
+      , 'default'       => 'http://webmeeting.dimdim.com '
       , 'type'          => 'string'
       , 'display'       => TRUE
       , 'readonly'      => FALSE
