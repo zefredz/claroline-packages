@@ -115,5 +115,7 @@ $_lang['Are you sure that you want to delete prerequisites for "%itemTitle" ?'] 
 $_lang['Fatal error : cannot delete prerequisites'] = 'Erreur fatale : impossible de supprimer les prérequis';
 $_lang['Prerequisites successfully deleted'] = 'Prérequis supprimés avec succès';
 
+$_lang['Adaptive learning path'] = 'Parcours pédagogique adaptatif';
+
 
 ?>
