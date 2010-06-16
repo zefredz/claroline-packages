@@ -157,7 +157,7 @@
                 <br />
                 <?php endforeach; ?>
             <?php else : ?>
-                <span class="disabled"><?php echo get_lang( $this->poll->getOption( $item ) ) . get_lang( '#locked' ); ?></span>
+                <span class="disabled"><?php echo get_lang( $this->poll->getOption( $option ) ) . get_lang( '#locked' ); ?></span>
             <?php endif; ?>
             </dd>
         </dl>
