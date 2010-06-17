@@ -39,6 +39,7 @@ class PollStat
     public function __construct( $poll )
     {
         $this->poll = $poll;
+        $this->labels = $poll->getChoiceList();
     }
     
     /**
@@ -83,41 +84,24 @@ class PollStat
     {
         if ( empty( $this->result ) || $force )
         {
-            /* WHAT IS THE MOST OPTIMIZED ????
-            foreach ( $this->poll->getChoiceList() as $choiceId => $label )
-            {
-                $this->result[ $choiceId ] = 0;
-                $this->labels[ $choiceId ] = $label;
-            }
-            
-            if ( $this->poll->getAllVoteList() )
-            {
-                foreach ( $this->poll->getAllVoteList() as $userId  => $vote )
-                {
-                    foreach ( $vote as $choiceId => $check )
-                    {
-                        if ( $check == UserVote::CHECKED ) $this->result[ $choiceId ]++;
-                    }
-                }
-            }*/
-            
             $this->tbl = get_module_course_tbl ( array ( 'poll_votes' ) );
             
-            foreach ( $this->poll->getChoiceList() as $id => $label )
+            $pollResult = Claroline::getDatabase()->query( "
+                SELECT
+                    choice_id, COUNT( user_id ) as vote_count
+                FROM
+                    `{$this->tbl['poll_votes']}`
+                WHERE
+                    poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
+                AND
+                    vote = " . Claroline::getDatabase()->quote( UserVote::CHECKED ) . "
+                GROUP BY
+                    choice_id"
+            );
+            
+            foreach( $pollResult as $choiceResult )
             {
-                $this->labels[ $id ] = $label;
-                $this->result[ $id ] = Claroline::getDatabase()->query( "
-                    SELECT
-                        user_id
-                    FROM
-                        `{$this->tbl['poll_votes']}`
-                    WHERE
-                        poll_id = " . Claroline::getDatabase()->escape( $this->poll->getId() ) . "
-                    AND
-                        choice_id = " . Claroline::getDatabase()->escape( $id ) . "
-                    AND
-                        vote = " . Claroline::getDatabase()->quote( UserVote::CHECKED )
-                )->numRows();
+                $this->result[ $choiceResult[ 'choice_id' ] ] = $choiceResult[ 'vote_count' ];
             }
         }
         
