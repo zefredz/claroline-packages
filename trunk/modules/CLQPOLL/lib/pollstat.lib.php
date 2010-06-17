@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.6 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -28,7 +28,7 @@ class PollStat
     protected $answerCount;
     protected $answerRate;
     
-    protected $labels = array();
+    protected $choiceList = array();
     protected $result = array();
     protected $voteHistory = array();
     
@@ -39,7 +39,7 @@ class PollStat
     public function __construct( $poll )
     {
         $this->poll = $poll;
-        $this->labels = $poll->getChoiceList();
+        $this->choiceList = $poll->getChoiceList();
     }
     
     /**
@@ -84,6 +84,14 @@ class PollStat
     {
         if ( empty( $this->result ) || $force )
         {
+            //$this->result = array_fill_keys( $this->choiceList , 0 ); // PHP >= 5.2
+            
+            // PHP < 5.2
+            foreach( array_keys( $this->choiceList ) as $id )
+            {
+                $this->result[ $id ] = 0;
+            }
+            
             $this->tbl = get_module_course_tbl ( array ( 'poll_votes' ) );
             
             $pollResult = Claroline::getDatabase()->query( "
@@ -181,7 +189,7 @@ class PollStat
                     . (int)(150 - ( 100 * $score ) )
                     . ', 0 );';
             
-            $graph[ $choiceId ] = array( 'label' => $this->labels[ $choiceId ] ,
+            $graph[ $choiceId ] = array( 'label' => $this->choiceList[ $choiceId ] ,
                                          'count' => $voteCount ,
                                          'rate' => $rate ,
                                          'percent' => $percent ,

@@ -2,7 +2,7 @@
     <label>CLQPOLL</label>
     <name>Quick poll</name>
     <description><![CDATA[ Allows to create small and quick polls ]]></description>
-    <version>0.9.9</version>
+    <version>1.0.0</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>tool</type>
