@@ -56,6 +56,8 @@
 
 #choiceListHelp
 {
+    color: silver;
+    font-style: italic;
     float:left;
     width: 600px;
 }

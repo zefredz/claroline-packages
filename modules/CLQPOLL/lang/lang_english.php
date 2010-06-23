@@ -27,7 +27,7 @@ $_lang['_anonymous'] = 'The voters\' identity is hidden, <strong>even</strong> f
 $_lang['_stat_access'] = 'Students can see the statistics?';
 $_lang['_granted'] = 'Yes';
 $_lang['_forbidden'] = 'No';
-$_lang['_when_closed'] = 'Only when the votes are closed';
+$_lang['_when_closed'] = 'Yes, only when the votes are closed';
 $_lang['#locked'] = '<strong>[ can\'t be modified ]</strong>';
 $_lang['#choiceListhelp'] = 'You can modify the content of each field.<br />
                              Clicking on <strong>"Add a choice"</strong> creates a new field.<br />

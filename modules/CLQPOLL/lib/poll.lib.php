@@ -60,7 +60,7 @@ class Poll
         }
         else
         {
-            $this->visibility = Poll::INVISIBLE;
+            $this->visibility = Poll::VISIBLE;
             $this->status = Poll::OPEN_VOTE;
         }
         
