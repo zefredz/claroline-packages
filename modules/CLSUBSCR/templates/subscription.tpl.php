@@ -1,7 +1,17 @@
 <?php
-//
 if( isset( $this->subscription ) ) :
+    if( ! claro_is_allowed_to_edit() && $this->subscription['visibility'] == 'invisible' ) :
+        claro_die( get_lang( 'Not allowed' ) );
+    endif;
+    
     $subscription = $this->subscription;
+    if( $this->subscription['lock'] == 'close' ) :
+?>
+<div class="claroDialogBox boxWarning">
+    <?php echo get_lang( 'This subscription is locked. You can\'t update your choice.' ); ?>    
+</div>
+<?php
+    endif;
 endif;
 ?>
 <div class="claroDialogBox">
@@ -15,6 +25,12 @@ endif;
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exLock&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['lock'] == 'close'? get_icon_url( 'locked' ) : get_icon_url( 'unlock'); ?>" alt="<?php echo $subscription['lock'] == 'close' ? get_lang( 'Locked' ) : get_lang('Unlock'); ?>" /></a>
     </div>
     <?php
+    elseif( $subscription['lock'] == 'close' ) :
+    ?>
+    <div style="float: right;">
+        <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Locked' ); ?>" />
+    </div>
+    <?php
     endif;
     ?>
     <span class="msgTitle"><?php echo $subscription['title']; ?></span>
@@ -23,7 +39,7 @@ endif;
         <?php echo $subscription['description']; ?>
     </div>
     <div>
-        Afficher info sur les plages restantes
+        <?php echo get_lang( 'Information about the session : %slotsAvailable slots are still available on %totalSlotsAvailable', array( '%slotsAvailable' => $subscription['slotsAvailable'], '%totalSlotsAvailable' => $subscription['totalSlotsAvailable'] ) ); ?>
     </div>
     <?php
     if( isset( $this->displayChoice ) && $this->displayChoice == true ) :

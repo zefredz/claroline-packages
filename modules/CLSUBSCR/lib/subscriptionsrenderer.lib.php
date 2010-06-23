@@ -31,6 +31,7 @@ class SubscriptionsRenderer {
         
         $out .= $tpl->render();
         
+        //use a connector
         switch( $subscription->getType() )
         {
             case 'multiple' :
@@ -68,6 +69,19 @@ class SubscriptionsRenderer {
         return $tpl->render();
     }
     
+    public static function edit( & $subscription )
+    {
+        $tpl = new ModuleTemplate( 'CLSUBSCR', 'add.tpl.php' );
+        
+        $tpl->assign( 'id', $subscription->getId() );
+        $tpl->assign( 'title', $subscription->getTitle() );
+        $tpl->assign( 'description', $subscription->getDescription() );
+        $tpl->assign( 'context', $subscription->getContext() );
+        $tpl->assign( 'type', $subscription->getType() );
+        $tpl->assign( 'visibility', $subscription->getVisibility() );
+        
+        return $tpl->render();
+    }
     public static function add( & $subscription = null )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'add.tpl.php' );
@@ -82,6 +96,11 @@ class SubscriptionsRenderer {
         }
         
         return $tpl->render();
+    }
+    
+    public static function editSlot()
+    {
+        
     }
     
     public static function addSlot( & $subscription, & $dialogBox, $slots = null, $places = null, $slotsContent = null )
