@@ -29,7 +29,7 @@ $_lang['_granted'] = 'Yes';
 $_lang['_forbidden'] = 'No';
 $_lang['_when_closed'] = 'Yes, only when the votes are closed';
 $_lang['#locked'] = '<strong>[ can\'t be modified ]</strong>';
-$_lang['#choiceListhelp'] = 'You can modify the content of each field.<br />
-                             Clicking on <strong>"Add a choice"</strong> creates a new field.<br />
-                             Clicking on <strong>"Delete"</strong> removes the corresponding field.<br />
+$_lang['#choiceListhelp'] = 'You can modify the content of each choice.<br />
+                             Clicking on <strong>"Add a choice"</strong> creates a new choice.<br />
+                             Clicking on <strong>"Delete"</strong> removes the corresponding choice.<br />
                              To validate your modifications, click on the <strong>"OK"</strong> button ( at the bottom of this page ).';
