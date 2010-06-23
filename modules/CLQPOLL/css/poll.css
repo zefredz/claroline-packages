@@ -48,6 +48,18 @@
     margin-bottom: 4px;
 }
 
+#choiceListBox
+{
+    width: 450px;
+    float: left;
+}
+
+#choiceListHelp
+{
+    float:left;
+    width: 600px;
+}
+
 .properties
 {
     background-color: #FFDDDD;

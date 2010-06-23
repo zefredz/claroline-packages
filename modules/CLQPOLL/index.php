@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -199,7 +199,7 @@ try
                 $toAdd      = $userInput->get( 'add' ) ? $userInput->get( 'add' ) : array();
                 $toDelete   = $userInput->get( 'del' ) ? $userInput->get( 'del' ) : array();
                 
-                if ( $title && $question )
+                if ( $title )
                 {
                     $poll->setTitle( $title );
                     $poll->setQuestion( $question );
