@@ -6,6 +6,7 @@
         <thead>
             <tr class="headerX" align="center" valign="top">
                 <th><?php echo get_lang( 'Slot' ); ?></th>
+                <th><?php echo get_lang( 'Description' ); ?></th>
                 <th><?php echo get_lang( 'Space (available/total)' ); ?></th>
                 <th><?php echo get_lang( 'Choice' ); ?></th>
                 <?php
@@ -23,8 +24,9 @@
     ?>
         <tr>
             <td><?php echo $slot['title']; ?></td>
-            <td><?php echo $slot['subscribersCount']; ?> / <?php echo $slot['availableSpace']; ?>
-            <td>
+            <td><?php echo $slot['description']; ?></td>
+            <td style="text-align: center;"><?php echo $slot['subscribersCount']; ?> / <?php echo $slot['availableSpace']; ?>
+            <td style="text-align: center;">
                 <?php
                 if( isset( $this->userChoices[ $this->subscriptionId ][ $slot['id'] ] ) || $slot['subscribersCount'] != $slot['availableSpace'] ) :                
                 ?>

@@ -391,33 +391,6 @@ class subscriptionsCollection
         {
             $slotsAvailable = $slotsCollection->getAvailableSlots( $c['id'] );
             
-            /*$slotsAvailable = 0;
-            
-            $query =    "SELECT                            
-                            (ss.`availableSpace` - count( sl_sub.`subscriberId` ) ) as `slotsAvailable`
-                        FROM
-                            `{$this->table['subscr_slots']}` ss
-                        LEFT JOIN
-                            `{$this->table['subscr_slots_subscribers']}` sl_sub
-                            ON ss.`id` = sl_sub.`slotId`
-                        WHERE
-                            ss.`subscriptionId` = " . (int) $c['id'] ."
-                        GROUP BY
-                            ss.`id`
-                        ";
-            
-            $tmp = Claroline::getDatabase()->query( $query );
-             
-            if( $tmp )
-            {
-                foreach( $tmp as $r )
-                {
-                   if( $r['slotsAvailable'] > 0 )
-                   {
-                        $slotsAvailable++;
-                   }
-                }
-            }*/
             $collection[ $i ]['slotsAvailable'] = $slotsAvailable;
         }        
         
@@ -438,7 +411,7 @@ class slot
         $this->title = '';
         $this->description = '';
         $this->availableSpace = null;
-        $tihs->visibility = 'visible';
+        $this->visibility = 'visible';
         
         $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
     }
@@ -446,7 +419,7 @@ class slot
     public function __call( $name, $arguments )
     {
         //setter
-        if( strpos( 'set', $name ) !== false && ( strpos( 'set', $name ) ) == 0 )
+        if( strpos( $name, 'set' ) !== false && ( strpos( $name, 'set' ) ) === 0 )
         {
             $var = lcfirst( substr( $name, 3, strlen( $name ) ) );
             $this->$var = $arguments[0];
@@ -454,7 +427,7 @@ class slot
             return $this;
         }
         //getter
-        elseif( strpos( 'get', $name ) !== false && ( strpos( 'get', $name ) ) == 0 )
+        elseif( strpos( $name, 'get' ) !== false && ( strpos( $name, 'get' ) ) == 0 )
         {
             $var = lcfirst( substr( $name, 3, strlen( $name ) ) );
             
@@ -634,7 +607,7 @@ class slotsCollection
                         ON
                             sl_sub.`slotId` = slot.`id`
                     WHERE
-                        sub.`type` = 'user' AND sub.`type_id` = " . $userId
+                        sub.`type` = 'user' AND sub.`typeId` = " . $userId
                     ;
         
         $collection = Claroline::getDatabase()->query( $query );
