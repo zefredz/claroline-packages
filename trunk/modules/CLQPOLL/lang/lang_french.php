@@ -31,7 +31,7 @@ $_lang['#locked'] = ' <strong>[ ne peut pas être changé ]</strong>';
 $_lang['#choiceListhelp'] = 'Vous pouvez modifier le contenu des différents choix.<br />
                              Cliquer sur <strong>"Ajouter un choix"</strong> fait apparaitre un nouveau choix.<br />
                              Cliquer sur <strong>"Supprimer"</strong> supprime le choix correspondant.<br />
-                             Vos modifications ne seront effectives que lorsque vous ne les aurez validé en cliquant sur <strong>"OK"</strong> ( en bas de la page).';
+                             Vos modifications ne seront effectives que lorsque vous ne les aurez validées en cliquant sur <strong>"OK"</strong> ( en bas de la page).';
 $_lang['Add a new choice'] = 'Ajouter un choix';
 $_lang['Anonymous poll?'] = 'Sondage anonyme?';
 $_lang['Answer to this poll'] = 'Répondre à ce sondage';
