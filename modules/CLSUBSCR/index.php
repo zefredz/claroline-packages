@@ -84,9 +84,11 @@ try
                         
                         $slotsCollection = new slotsCollection();
                         
+                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
                         $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                            $slotsCollection->getAll( $subscription->getId() ),
-                                                                            $slotsCollection->getAllFromUser( claro_get_current_user_id() )
+                                                                            $allSlots,
+                                                                            $allSlotsFromUsers
                                                                             );
                     }
                     else
@@ -120,10 +122,12 @@ try
                                 
                                 $slotsCollection = new slotsCollection();
                         
+                                $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                                $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
                                 $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                                   $slotsCollection->getAll( $subscription->getId() ),
-                                                                                   $slotsCollection->getAllFromUser( claro_get_current_user_id() )
-                                                                                   );
+                                                                                    $allSlots,
+                                                                                    $allSlotsFromUsers
+                                                                                    );
                             }
                             else
                             {
@@ -172,9 +176,11 @@ try
                     {
                         $slotsCollection = new slotsCollection();
                         
+                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
                         $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                            $slotsCollection->getAll( $subscription->getId() ),
-                                                                            $slotsCollection->getAllFromUser( claro_get_current_user_id() )
+                                                                            $allSlots,
+                                                                            $allSlotsFromUsers
                                                                             );
                     }
                 }
@@ -258,11 +264,9 @@ try
                             foreach( $_POST['title'] as $i => $title )
                             {
                                 $slot = new slot();
-                                
                                 $slot->setTitle( $title );
                                 $slot->setDescription( $_POST['description'][ $i ] );
                                 $slot->setAvailableSpace( $_POST['places'][ $i ]);
-                                
                                 $slot->setSubscriptionId( $_REQUEST['subscrId'] );
                                 
                                 $slots[] = $slot;
@@ -404,7 +408,8 @@ try
                     
                     $slotsCollection = new slotsCollection();
                     
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $slotsCollection->getAllFromUser( claro_get_current_user_id() ) );
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers );
                 }
             }
             break;
@@ -454,7 +459,8 @@ try
                     
                     $slotsCollection = new slotsCollection();
                     
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $slotsCollection->getAllFromUser( claro_get_current_user_id() ) );
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers );
                 }
             }
             break;
@@ -630,8 +636,8 @@ try
                $subscriptionsCollection = new subscriptionsCollection();
                
                $slotsCollection = new slotsCollection();
-               
-               $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $slotsCollection->getAllFromUser( claro_get_current_user_id() ) ); 
+               $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+               $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers ); 
             }
             break;
     }

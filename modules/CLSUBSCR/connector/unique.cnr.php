@@ -12,12 +12,12 @@ class slotUnique extends slot
         }
         
         //check if subscriber exists in database
-        $query = "SELECT `id` FROM `{$this->table['subscr_subscribers']}` WHERE `type` = '" . $context . "' AND `type_id` = " . $userId;
+        $query = "SELECT `id` FROM `{$this->table['subscr_subscribers']}` WHERE `type` = '" . $context . "' AND `typeId` = " . $userId;
         
         $subscriber = Claroline::getDatabase()->query( $query )->fetch();
         if( ! $subscriber )
         {
-            $query = "INSERT INTO `{$this->table['subscr_subscribers']}` SET `type` = '" . $context . "', `type_id` = " . $userId;
+            $query = "INSERT INTO `{$this->table['subscr_subscribers']}` SET `type` = '" . $context . "', `typeId` = " . $userId;
             $result = Claroline::getDatabase()->exec( $query );
             if( $result )
             {
