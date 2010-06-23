@@ -199,7 +199,7 @@ try
                 $toAdd      = $userInput->get( 'add' ) ? $userInput->get( 'add' ) : array();
                 $toDelete   = $userInput->get( 'del' ) ? $userInput->get( 'del' ) : array();
                 
-                if ( $title )
+                if ( $title && $toModify + $toAdd )
                 {
                     $poll->setTitle( $title );
                     $poll->setQuestion( $question );
@@ -439,9 +439,13 @@ try
                 {
                     $dialogBox->success( get_lang( 'Your new poll has been created!' ) );
                 }
+                elseif( $toAdd + $toModify )
+                {
+                    $dialogBox->error( '<strong>' . get_lang( 'You must fill the required fields' ) . '</strong>' );
+                }
                 else
                 {
-                    $dialogBox->error( '<strong>' . get_lang( 'You have not correctly filled the form!' ) . '</strong>' );
+                    $dialogBox->error( '<strong>' . get_lang( 'The poll must have at least one choice' ) . '</strong>' );
                 }
                 
                 $template = 'polledit';
@@ -469,9 +473,13 @@ try
                 {
                     $dialogBox->success( get_lang( 'Changes successful!' ) );
                 }
-                else
+                elseif( $toAdd + $toModify )
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'Cannot modify poll' ) . '</strong>' );
+                }
+                else
+                {
+                    $dialogBox->error( '<strong>' . get_lang( 'The poll must have at least one choice' ) . '</strong>' );
                 }
                 
                 $template  = 'polledit';

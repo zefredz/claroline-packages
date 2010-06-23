@@ -26,11 +26,11 @@ $_lang['_anonymous'] = 'L\'identité des votants est cachée, <strong>y compris</s
 $_lang['_stat_access'] = 'Les étudiants ont accès aux statistiques?';
 $_lang['_granted'] = 'Oui';
 $_lang['_forbidden'] = 'Non';
-$_lang['_when_closed'] = 'Uniquement quand les votes sont clôturés';
+$_lang['_when_closed'] = 'Oui, uniquement quand les votes sont clôturés';
 $_lang['#locked'] = ' <strong>[ ne peut pas être changé ]</strong>';
-$_lang['#choiceListhelp'] = 'Vous pouvez modifier le contenu des différents champs.<br />
-                             Cliquer sur <strong>"Ajouter un choix"</strong> fait apparaitre un nouveau champ.<br />
-                             Cliquer sur <strong>"Supprimer"</strong> supprime le champ correspondant.<br />
+$_lang['#choiceListhelp'] = 'Vous pouvez modifier le contenu des différents choix.<br />
+                             Cliquer sur <strong>"Ajouter un choix"</strong> fait apparaitre un nouveau choix.<br />
+                             Cliquer sur <strong>"Supprimer"</strong> supprime le choix correspondant.<br />
                              Vos modifications ne seront effectives que lorsque vous ne les aurez validé en cliquant sur <strong>"OK"</strong> ( en bas de la page).';
 $_lang['Add a new choice'] = 'Ajouter un choix';
 $_lang['Anonymous poll?'] = 'Sondage anonyme?';
@@ -85,6 +85,7 @@ $_lang['The poll has been deleted!'] = 'Le sondage a été supprimé!';
 $_lang['The poll has been purged!'] = 'Le sondage a été ré-initialisé!';
 $_lang['The poll has been successfully purged!'] = 'Le sondage a été réinitialisé avec succès!';
 $_lang['The poll has been successfully deleted!'] = 'Le sondage a été supprimé!';
+$_lang['The poll must have at least one choice'] = 'Le sondage doit comporter au moins un choix!';
 $_lang['The visibility has been changed.'] = 'La visibilité du sondage a été modifiée.';
 $_lang['The votes are closed'] = 'Les votes sont fermé';
 $_lang['The votes are open'] = 'Les votes sont ouverts';
@@ -104,7 +105,7 @@ $_lang['You cannot see the statistics for this poll!'] = 'Les statistiques de ce
 $_lang['Voting mode'] = 'Modalités de vote';
 $_lang['You cannot vote anymore: all the choices are locked'] = 'Vous ne pouvez plus voter: tous les choix sont verrouillés!';
 $_lang['You have allready voted!'] = 'Vous avez déjà voté!';
-$_lang['You have not correctly filled the form!'] = 'Veuillez remplir les champs obligatoires!';
+$_lang['You must fill the required fields'] = 'Veuillez remplir les champs obligatoires!';
 $_lang['You must validate a choice!'] = 'Réponse obligatoire!';
 $_lang['You must validate only one choice!'] = 'Vous ne pouvez valider qu\'un seul choix!';
 $_lang['Your new poll has been created!'] = 'Votre sondage à été créé avec succès!';
