@@ -13,7 +13,7 @@
 class subscription
 {
   
-  private $id, $title, $description, $context, $type, $visibility, $lock;
+  private $id, $title, $description, $context, $type, $visibility, $lock, $slotsAvailable, $totalSlotsAvailable;
   private $table, $errors;
   
   public function __construct()
@@ -109,6 +109,11 @@ class subscription
     $this->visibility = $subscription['visibility'];
     $this->lock = $subscription['lock'];
     
+    $slotsCollection = new slotsCollection();
+    
+    $this->slotsAvailable = $slotsCollection->getAvailableSlots( $this->id );
+    $this->totalSlotsAvailable = $slotsCollection->getTotalAvailableSlots( $this->id );
+    
     return $this;
   }
   
@@ -195,6 +200,8 @@ class subscription
     $subscription['type'] = $this->type;
     $subscription['visibility'] = $this->visibility;
     $subscription['lock'] = $this->lock;
+    $subscription['slotsAvailable'] = $this->slotsAvailable;
+    $subscription['totalSlotsAvailable'] = $this->totalSlotsAvailable;
     
     return $subscription;
   }
@@ -265,6 +272,26 @@ class subscription
     return $this;
   }
   
+  public function isVisible()
+  {
+    if( $this->visibility == 'visible' )
+    {
+        return true;
+    }
+    
+    return false;
+  }
+  
+  public function isInvisible()
+  {
+    if( $this->visibility == 'invisible' )
+    {
+        return true;
+    }
+    
+    return false;
+  }
+  
   public function getLock()
   {
     return $this->lock;
@@ -275,6 +302,16 @@ class subscription
     $this->lock = $lock;
     
     return $this;
+  }
+  
+  public function isLocked()
+  {
+    if( $this->lock == 'close' )
+    {
+        return true;
+    }
+    
+    return false;
   }
   /**
    * Return errors set during validation
@@ -325,20 +362,66 @@ class subscriptionsCollection
    public function getAll()
    {
         $query =    "SELECT
-                        `id`, `title`, `description`, `context`, `type`, `visibility`, `lock`
+                        s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`visibility`, s.`lock`,
+                        count( ss.`id` ) as `totalSlotsAvailable`                        
                     FROM
-                        `{$this->table['subscr_sessions']}`
+                        `{$this->table['subscr_sessions']}` s
+                    LEFT JOIN
+                        `{$this->table['subscr_slots']}` ss
+                        ON s.`id` = ss.`subscriptionId`
+                    GROUP BY
+                        s.`id`
                     ORDER BY
-                        `id`";
+                        s.`id`";
         
         $collection = Claroline::getDatabase()->query( $query );
         
-        if ( ! $collection )
+        if( $collection )
         {
-            $collection = new ArrayIterator( array() );
+            $collection = iterator_to_array( $collection, true );
+        }
+        else
+        {
+            $collection = array();
         }
         
-        return $collection;
+        $slotsCollection = new slotsCollection();
+        
+        foreach( $collection as $i => $c )
+        {
+            $slotsAvailable = $slotsCollection->getAvailableSlots( $c['id'] );
+            
+            /*$slotsAvailable = 0;
+            
+            $query =    "SELECT                            
+                            (ss.`availableSpace` - count( sl_sub.`subscriberId` ) ) as `slotsAvailable`
+                        FROM
+                            `{$this->table['subscr_slots']}` ss
+                        LEFT JOIN
+                            `{$this->table['subscr_slots_subscribers']}` sl_sub
+                            ON ss.`id` = sl_sub.`slotId`
+                        WHERE
+                            ss.`subscriptionId` = " . (int) $c['id'] ."
+                        GROUP BY
+                            ss.`id`
+                        ";
+            
+            $tmp = Claroline::getDatabase()->query( $query );
+             
+            if( $tmp )
+            {
+                foreach( $tmp as $r )
+                {
+                   if( $r['slotsAvailable'] > 0 )
+                   {
+                        $slotsAvailable++;
+                   }
+                }
+            }*/
+            $collection[ $i ]['slotsAvailable'] = $slotsAvailable;
+        }        
+        
+        return  new ArrayIterator( $collection );
    }
 }
 
@@ -468,6 +551,26 @@ class slot
         }
     }
     
+    public function spaceAvailable()
+    {
+        $query =    "SELECT
+                        count( `subscriberId` ) as `subscribersCount`
+                    FROM `{$this->table['subscr_slots_subscribers']}`
+                    WHERE
+                        `slotId` = " . (int) $this->id;
+        
+        $result = Claroline::getDatabase()->query( $query );
+        
+        if( ! $result->numRows() )
+        {
+            return 0;
+        }
+        
+        $data = $result->fetch();
+        
+        return $this->availableSpace - $data['subscribersCount'];
+    }
+    
     
 }
 
@@ -485,13 +588,24 @@ class slotsCollection
         $subscriptionId = (int) $subscriptionId;
         
         $query =    "SELECT
-                        `id`, `subscriptionId`, `title`, `description`, `availableSpace`, `visibility`
+                        s.`id`,
+                        s.`subscriptionId`,
+                        s.`title`,
+                        s.`description`,
+                        s.`availableSpace`,
+                        s.`visibility`,
+                        count( ss.`slotId` ) as `subscribersCount`                        
                     FROM
-                        `{$this->table['subscr_slots']}`
+                        `{$this->table['subscr_slots']}` s
+                    LEFT JOIN
+                        `{$this->table['subscr_slots_subscribers']}` ss
+                        ON s.`id` = ss.`slotId`
                     WHERE
-                        `subscriptionId` = " . $subscriptionId . "
+                        s.`subscriptionId` = " . $subscriptionId . "
+                    GROUP BY
+                        ( s.`id` )
                     ORDER BY
-                        `id`";
+                        s.`id`";
         
         $collection = Claroline::getDatabase()->query( $query );
         
@@ -514,7 +628,7 @@ class slotsCollection
                     JOIN
                         `{$this->table['subscr_slots_subscribers']}` sl_sub
                         ON
-                            sub.`type_id` = sl_sub.`subscriberId`
+                            sub.`id` = sl_sub.`subscriberId`
                     JOIN
                         `{$this->table['subscr_slots']}` slot
                         ON
@@ -533,6 +647,55 @@ class slotsCollection
         }        
         
         return $slots;
+    }
+    
+    public function getAvailableSlots( $subscriptionId )
+    {
+        $slotsAvailable = 0;
+        
+        $query =    "SELECT                            
+                        (ss.`availableSpace` - count( sl_sub.`subscriberId` ) ) as `slotsAvailable`
+                    FROM
+                        `{$this->table['subscr_slots']}` ss
+                    LEFT JOIN
+                        `{$this->table['subscr_slots_subscribers']}` sl_sub
+                        ON ss.`id` = sl_sub.`slotId`
+                    WHERE
+                        ss.`subscriptionId` = " . (int) $subscriptionId ."
+                    GROUP BY
+                        ss.`id`
+                    ";
+        
+        $collection = Claroline::getDatabase()->query( $query );
+         
+        if( $collection )
+        {
+            foreach( $collection as $c )
+            {
+               if( $c['slotsAvailable'] > 0 )
+               {
+                    $slotsAvailable++;
+               }
+            }
+        }
+        
+        return $slotsAvailable;
+    }
+    
+    public function getTotalAvailableSlots( $subscriptionId )
+    {
+        $result = Claroline::getDatabase()->query(
+                    "SELECT
+                        count( `id` ) as `totalSlotsAvailable`
+                    FROM
+                        `{$this->table['subscr_slots']}`
+                    WHERE
+                        `subscriptionId` = " . (int) $subscriptionId
+                    );
+        
+        $data = $result->fetch();
+        
+        return $data['totalSlotsAvailable'];
     }
 }
 

@@ -17,7 +17,18 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
 
 ?>
 <form name="createSubscription" method="post" action="<?php echo $_SERVER['PHP_SELF'] . claro_url_relay_context( '?' ); ?>" >
+   <?php
+   if( isset( $this->id ) ) :   
+   ?>
+   <input type="hidden" name="subscrId" value="<?php echo (int) $this->id; ?>" />
+   <input type="hidden" name="cmd" value="exEdit" />
+   <?php
+   else :
+   ?>
    <input type="hidden" name="cmd" value="exAdd" />
+   <?php
+   endif;
+   ?>
    <fieldset>
        <legend><?php echo get_lang( 'Properties' ); ?></legend>
        <dl>

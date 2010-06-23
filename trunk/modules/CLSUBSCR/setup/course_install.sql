@@ -5,10 +5,10 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__subscr_sessions` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(255) NOT NULL default '',
     `description` TEXT NOT NULL,
-    `context` ENUM('USER','GROUP') NOT NULL DEFAULT 'USER',
-    `type` ENUM('UNIQUE', 'MULTIPLE') NOT NULL DEFAULT 'UNIQUE',
-    `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
-    `lock` ENUM('OPEN','CLOSE') NOT NULL default 'OPEN',
+    `context` ENUM('user','group') NOT NULL DEFAULT 'user',
+    `type` ENUM('unique', 'multiple') NOT NULL DEFAULT 'unique',
+    `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
+    `lock` ENUM('open','close') NOT NULL default 'open',
     PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
 
@@ -18,13 +18,13 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__subscr_slots` (
     `title` VARCHAR(255) NOT NULL default '',
     `description` TEXT NOT NULL,
     `space_available` INT(3) NOT NULL default 0,
-    `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
+    `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
     PRIMARY KEY(`id`)
 ) TYPE = MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__subscr_subscribers` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `type` ENUM('USER','GROUP') NOT NULL DEFAULT 'USER',
+    `type` ENUM('user','group') NOT NULL DEFAULT 'user',
     `type_id` INT(11) NOT NULL default 0,
     PRIMARY KEY(`id`)
 ) TYPE = MyISAM;

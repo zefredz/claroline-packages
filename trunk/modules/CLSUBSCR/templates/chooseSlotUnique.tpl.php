@@ -8,6 +8,13 @@
                 <th><?php echo get_lang( 'Slot' ); ?></th>
                 <th><?php echo get_lang( 'Space (available/total)' ); ?></th>
                 <th><?php echo get_lang( 'Choice' ); ?></th>
+                <?php
+                if( claro_is_allowed_to_edit() ) :                
+                ?>
+                <th><?php echo get_lang( 'Edit' ); ?></th>
+                <?php
+                endif;
+                ?>
             </tr>
         </thead>
         <tbody>        
@@ -16,8 +23,26 @@
     ?>
         <tr>
             <td><?php echo $slot['title']; ?></td>
-            <td>0 / <?php echo $slot['availableSpace']; ?>
-            <td><input type="radio" name="choice" value="<?php echo (int) $slot['id']; ?>" <?php echo isset( $this->userChoices[ $this->subscriptionId ][ $slot['id'] ] ) ? 'checked="checked"' : ''; ?> /></td>
+            <td><?php echo $slot['subscribersCount']; ?> / <?php echo $slot['availableSpace']; ?>
+            <td>
+                <?php
+                if( isset( $this->userChoices[ $this->subscriptionId ][ $slot['id'] ] ) || $slot['subscribersCount'] != $slot['availableSpace'] ) :                
+                ?>
+                <input type="radio" name="choice" value="<?php echo (int) $slot['id']; ?>" <?php echo isset( $this->userChoices[ $this->subscriptionId ][ $slot['id'] ] ) ? 'checked="checked"' : ''; ?> />
+                <?php
+                endif;
+                ?>
+            </td>
+            <?php
+            if( claro_is_allowed_to_edit() ) :                
+            ?>
+            <td style="text-align: right;">
+                <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotEdit&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" /></a>
+                <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotDelete&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>        
+            </td>
+            <?php
+            endif;
+            ?>
         </tr>
     <?php
     endforeach;

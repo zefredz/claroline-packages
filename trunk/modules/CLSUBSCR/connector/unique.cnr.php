@@ -8,7 +8,7 @@ class slotUnique extends slot
         
         if( ! ( in_array( $context, array( 'user', 'group' ) ) && $userId ) )
         {
-            return false;
+            return get_lang( 'Unable to save your choice.' );
         }
         
         //check if subscriber exists in database
@@ -25,7 +25,7 @@ class slotUnique extends slot
             }
             else
             {
-                return false;
+                return get_lang( 'Unable to save your choice.' );
             }
         }
         else
@@ -52,27 +52,52 @@ class slotUnique extends slot
             //Update only if the slotId is not the same
             if( !( $slot_subscrib && $slot_subscrib['slotId'] == $this->id ) )
             {
-                $result = Claroline::getDatabase()->exec(
-                    "UPDATE
-                        `{$this->table['subscr_slots_subscribers']}`
-                    SET
-                        `slotId` = " . (int) $this->id . "
-                    WHERE
-                        `subscriberId` = " . $subscriberId . " AND `subscriptionId` = " . $subscriptionId . "
-                    LIMIT 1 "
-                );
+                //check if there is enough space in the slot
+                if( $this->spaceAvailable() == 0 )
+                {
+                    return get_lang( 'No enough space in the selected slot.' );
+                }
+                else
+                {
+                    $result = Claroline::getDatabase()->exec(
+                        "UPDATE
+                            `{$this->table['subscr_slots_subscribers']}`
+                        SET
+                            `slotId` = " . (int) $this->id . "
+                        WHERE
+                            `subscriberId` = " . $subscriberId . " AND `subscriptionId` = " . $subscriptionId . "
+                        LIMIT 1 "
+                    );                    
+                }
+            }
+            else
+            {
+                return true;
             }
         }
         else
         {
-            $result = Claroline::getDatabase()->exec(
-                "INSERT INTO
-                        `{$this->table['subscr_slots_subscribers']}`
-                SET
-                    `slotId` = " . (int) $this->id . ",
-                    `subscriberId` = " . $subscriberId . ",
-                    `subscriptionId` = " . $subscriptionId
-            );
+            //check if there is enough space in the slot
+            if( $this->spaceAvailable() == 0 )
+            {
+                return get_lang( 'No enough space in the selected slot.' );
+            }
+            else
+            {
+                $result = Claroline::getDatabase()->exec(
+                    "INSERT INTO
+                            `{$this->table['subscr_slots_subscribers']}`
+                    SET
+                        `slotId` = " . (int) $this->id . ",
+                        `subscriberId` = " . $subscriberId . ",
+                        `subscriptionId` = " . $subscriptionId
+                );                
+            }
+        }
+        
+        if( ! $result )
+        {
+            return get_lang( 'Unable to save your choice.' );
         }
         
         return $result;        
