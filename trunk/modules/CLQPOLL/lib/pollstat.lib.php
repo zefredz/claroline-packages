@@ -84,9 +84,9 @@ class PollStat
     {
         if ( empty( $this->result ) || $force )
         {
-            //$this->result = array_fill_keys( $this->choiceList , 0 ); // PHP >= 5.2
+            //$this->result = array_fill_keys( array_keys( $this->choiceList ) , 0 ); // PHP >= 5.2
             
-            // PHP < 5.2
+            //PHP < 5.2
             foreach( array_keys( $this->choiceList ) as $id )
             {
                 $this->result[ $id ] = 0;

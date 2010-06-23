@@ -42,6 +42,10 @@
             <th>
                 <?php echo get_lang( 'Visibility' ); ?>
             </th>
+            <?php else : ?>
+            <th>
+                <?php echo get_lang( 'Open/close' ); ?>
+            </th>
             <?php endif; ?>
             <th>
                 <?php echo get_lang( 'Statistics' ); ?>
@@ -91,6 +95,15 @@
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&&tpl=polllist&pollId='. $poll['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
                 </a>
+                    <?php endif; ?>
+            </td>
+                <?php else : ?>
+            </td>
+            <td align="center">
+                    <?php if ( $poll['status'] == Poll::OPEN_VOTE ) : ?>
+                <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
+                    <?php else: ?>
+                <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
                     <?php endif; ?>
             </td>
                 <?php endif; ?>

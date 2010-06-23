@@ -3,31 +3,35 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$_lang['_type'] = 'Modalités de vote';
+$_lang['_type'] = 'Nombre de réponses possibles';
 $_lang['_multi'] = 'Plusieurs réponses possibles';
-$_lang['_single'] = 'Une et une seule réponse';
-$_lang['_answer'] = 'Réponse obligatoire?';
-$_lang['_revote'] = 'Possibilité de modifier son vote';
-$_lang['_allowed'] = 'Vote modifiable';
-$_lang['_not_allowed'] = 'Vote irrévocable';
-$_lang['_required'] = 'Requise';
-$_lang['_optional'] = 'Non obligatoire';
+$_lang['_single'] = 'Une seule réponse';
+$_lang['_answer'] = 'Les votants doivent choisir au moins une des réponses proposées';
+$_lang['_revote'] = 'Les votants peuvent modifier ultérieurement leur vote';
+$_lang['_allowed'] = 'Oui';
+$_lang['_not_allowed'] = 'Non';
+$_lang['_required'] = 'Oui';
+$_lang['_optional'] = 'Non';
 $_lang['_privacy'] = 'Confidentialité';
-$_lang['_public'] = 'Public : les noms des votants sont publiquement affichés.';
-$_lang['_private'] = 'Privé : les noms des votants ne sont visibles que pour les gestionnaires de cours.';
-$_lang['_anonymous'] = 'Anonyme : les gestionnaires de cours ne peuvent pas voir les noms des votants ( attention : c\'est un choix irréversible! )';
-$_lang['_stat_access'] = 'Statistiques';
-$_lang['_granted'] = 'Visibles pour tous les utilisateurs';
-$_lang['_forbidden'] = 'Visibles seulement pour les gestionnaires de cours';
-$_lang['_when_closed'] = 'Une fois le sondage clôturé';
+$_lang['_public'] = 'L\'identité des votants est publiquement accessible.';
+$_lang['_private'] = 'L\'identité des votants n\'est visible que pour les gestionnaires de cours.';
+$_lang['_anonymous'] = 'L\'identité des votants est cachée, <strong>y compris</strong> pour les gestionnaires de cours - <em>Attention: c\'est un choix irréversible!</em>';
+$_lang['_stat_access'] = 'Les étudiants ont accès aux statistiques?';
+$_lang['_granted'] = 'Oui';
+$_lang['_forbidden'] = 'Non';
+$_lang['_when_closed'] = 'Uniquement quand les votes sont clôturés';
 $_lang['#locked'] = ' <strong>[ ne peut pas être changé ]</strong>';
+$_lang['#choiceListhelp'] = 'Vous pouvez modifier le contenu des différents champs.<br />
+                             Cliquer sur <strong>"Ajouter un choix"</strong> fait apparaitre un nouveau champ.<br />
+                             Cliquer sur <strong>"Supprimer"</strong> supprime le champ correspondant.<br />
+                             Vos modifications ne seront effectives que lorsque vous ne les aurez validé en cliquant sur <strong>"OK"</strong> ( en bas de la page).';
 $_lang['Add a new choice'] = 'Ajouter un choix';
 $_lang['Anonymous poll?'] = 'Sondage anonyme?';
 $_lang['Answer to this poll'] = 'Répondre à ce sondage';
@@ -56,6 +60,7 @@ $_lang['No option yet'] = 'Aucune option pour l\'instant';
 $_lang['No vote'] = 'Pas de vote';
 $_lang['No vote for this poll'] = 'Aucune réponse pour ce sondage';
 $_lang['Number of votes'] = 'Nombre de réponses';
+$_lang['Open/close'] = 'Ouvert/fermé';
 $_lang['Open poll'] = "Ouvrir les votes pour ce sondage";
 $_lang['Poll'] = 'Sondage';
 $_lang['Poll list'] = 'Liste des sondages';

@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -54,7 +54,7 @@
     <fieldset id="pollDescription">
         <legend><?php echo get_lang( 'Poll properties' ); ?></legend>
         <dl>
-            <dt><label for="title" ><?php echo get_lang( 'Title' ); ?><span class="required">*</span></label>&nbsp;:</dt>
+            <dt><label for="title" ><?php echo get_lang( 'Heading' ); ?><span class="required">*</span></label>&nbsp;:</dt>
             <dd>
                 <input  id="title"
                         type="text"
@@ -64,19 +64,20 @@
             </dd>
         </dl>
         <dl>
-            <dt><label for="question" ><?php echo get_lang( 'Question' ); ?><span class="required">*</span></label>&nbsp;:</dt>
+            <dt><label for="question" ><?php echo get_lang( 'Description' ); ?></label>&nbsp;:</dt>
             <dd>
                 <input  id="question"
                         type="text"
                         name="question"
                         value="<?php echo $this->poll->getQuestion(); ?>"
-                        size="60" />
+                        size="80" />
             </dd>
         </dl>
     </fieldset>
     
     <fieldset id="choices">
         <legend><?php echo get_lang( 'Poll choices' ); ?></legend>
+        <div id="choiceListBox">
         <ul id="choiceList">
         <?php if ( $this->poll->getChoiceList() ) : ?>
             <?php foreach( $this->poll->getChoiceList() as $choiceId => $label ) : ?>
@@ -101,12 +102,16 @@
             <img src="<?php echo get_icon_url( 'quiz_new' ); ?>" alt="<?php echo get_lang( 'create a new choice' ); ?>"/>
             <span class="claroCmd"><?php echo get_lang( 'Add a new choice' ); ?></span>
         </a>
+        </div>
+        <div id="choiceListHelp">
+            <blockquote><?php echo get_lang( '#choiceListhelp' ); ?></blockquote>
+        </div>
     </fieldset>
     
     <fieldset>
         <legend><?php echo get_lang( 'Access' ); ?></legend>
         <dl>
-            <dt><label><?php echo get_lang( 'Status' ); ?></label>&nbsp;:</dt>
+            <dt><label><?php echo get_lang( 'The votes are open' ); ?></label>&nbsp;:</dt>
             <dd>
                 <input  type="radio"
                         name="status"
@@ -114,14 +119,14 @@
                         <?php if ( $this->poll->isOpen() ) : ?>checked="checked"<?php endif; ?>/>
                 <img    src="<?php echo get_icon_url( 'unlock' ); ?>"
                         alt="<?php echo get_lang( 'Open'); ?>"/>
-                <?php echo get_lang( 'The votes are open' ); ?><br />
+                <?php echo get_lang( 'Yes' ); ?><br />
                 <input  type="radio"
                         name="status"
                         value="closed"
                         <?php if ( ! $this->poll->isOpen() ) : ?>checked="checked"<?php endif; ?>/>
                 <img    src="<?php echo get_icon_url( 'locked' ); ?>"
                         alt="<?php echo get_lang( 'Closed'); ?>"/>
-                <?php echo get_lang( 'The votes are closed' ); ?>
+                <?php echo get_lang( 'No' ); ?>
             </dd>
         </dl>
         <dl>
@@ -131,12 +136,16 @@
                         name="visibility"
                         value="visible"
                        <?php if ( $this->poll->isVisible() ) : ?>checked="checked"<?php endif; ?>/>
-                <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
+                <img    src="<?php echo get_icon_url( 'visible' ); ?>"
+                        alt="<?php echo get_lang( 'Visible'); ?>"/>
+                <?php echo get_lang( 'Visible'); ?><br />
                 <input  type="radio"
                         name="visibility"
                         value="invisible"
-                                    <?php if ( ! $this->poll->isVisible() ) : ?>checked="checked"<?php endif; ?>/>
-                <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                        <?php if ( ! $this->poll->isVisible() ) : ?>checked="checked"<?php endif; ?>/>
+                <img    src="<?php echo get_icon_url( 'invisible' ); ?>"
+                        alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                <?php echo get_lang( 'Invisible'); ?>
             </dd>
         </dl>
     </fieldset>
