@@ -493,7 +493,8 @@ class slot
                             `subscriptionId` = '" . Claroline::getDatabase()->escape( $this->subscriptionId ) . "',
                             `title` = '" . Claroline::getDatabase()->escape( $this->title ) . "',
                             `description` = '" . Claroline::getDatabase()->escape( $this->description ) . "',
-                            `availableSpace` = " . (int) $this->availableSpace
+                            `availableSpace` = " . (int) $this->availableSpace . ",
+                            `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "'"
                         ;
             
             $result = Claroline::getDatabase()->exec( $query );
@@ -512,7 +513,8 @@ class slot
                             `subscriptionId` = '" . Claroline::getDatabase()->escape( $this->subscriptionId ) . "',
                             `title` = '" . Claroline::getDatabase()->escape( $this->title ) . "',
                             `description` = '" . Claroline::getDatabase()->escape( $this->description ) . "',
-                            `availableSpace` = " . (int) $this->availableSpace . "
+                            `availableSpace` = " . (int) $this->availableSpace . ",
+                            `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "'
                         WHERE
                             `id` = " . (int) $this->id ."
                         LIMIT 1"
@@ -576,6 +578,17 @@ class slot
         return $data['subscribersCount'];
     }
     
+    public function isVisible()
+    {
+        if( $this->visibility == 'visible' )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     
 }
 
@@ -620,6 +633,53 @@ class slotsCollection
         }
         
         return $collection;
+    }
+    
+    public function getAllFromUsers( $subscriptionId )
+    {
+        $subscriptionId = (int) $subscriptionId;
+        
+        $query =    "SELECT
+                        sl_sub.`subscriptionId`, sl_sub.`slotId`, sl_sub.`subscriberId`, slot.`title`, sub.`typeId`, sub.`type`
+                    FROM
+                        `{$this->table['subscr_subscribers']}` sub
+                    JOIN
+                        `{$this->table['subscr_slots_subscribers']}` sl_sub
+                        ON
+                            sub.`id` = sl_sub.`subscriberId`
+                    JOIN
+                        `{$this->table['subscr_slots']}` slot
+                        ON
+                            sl_sub.`slotId` = slot.`id`
+                    WHERE
+                        sub.`type` = 'user' AND sl_sub.`subscriptionId` = " . $subscriptionId
+                    ;
+        
+        $collection = Claroline::getDatabase()->query( $query );
+        
+        $slots = array();
+        
+        foreach( $collection as $c )
+        {
+            switch( $c['type'] )
+            {
+                case 'group' :
+                    {
+                        
+                    }
+                    break;
+                case 'user' :
+                    {
+                        $userData = user_get_properties( $c['typeId'] );
+                        $c['subscriberData'] = $userData;
+                    }
+                    break;
+            }
+            $slots[ $c['slotId'] ][ $c['subscriberId'] ] = $c;
+            
+        }
+        
+        return $slots;
     }
     
     public function getAllFromUser( $userId )
