@@ -1,4 +1,15 @@
-<?php
+<?php // $Id$
+
+/**
+ * Subscription
+ *
+ * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLSUBSCR
+ * @author      Dimitri Rambout <dim@claroline.net>
+ */
+
 if( isset( $this->subscription ) ) :
     if( ! claro_is_allowed_to_edit() && $this->subscription['visibility'] == 'invisible' ) :
         claro_die( get_lang( 'Not allowed' ) );
@@ -23,6 +34,7 @@ endif;
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqDelete&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exVisible&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['visibility'] == 'visible'? get_icon_url( 'visible' ) : get_icon_url( 'invisible'); ?>" alt="<?php echo $subscription['visibility'] == 'visible' ? get_lang( 'Visible' ) : get_lang('Invisible'); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exLock&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['lock'] == 'close'? get_icon_url( 'locked' ) : get_icon_url( 'unlock'); ?>" alt="<?php echo $subscription['lock'] == 'close' ? get_lang( 'Locked' ) : get_lang('Unlock'); ?>" /></a>
+        <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqResult&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'statistics'); ?>" alt="<?php echo get_lang( 'Result' ); ?>" /></a>
     </div>
     <?php
     elseif( $subscription['lock'] == 'close' ) :
