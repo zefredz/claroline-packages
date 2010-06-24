@@ -33,6 +33,8 @@ claro_set_display_mode_available(true);
 
 $dialogBox = new DialogBox();
 
+$context = claro_is_in_a_group() ? 'group' : 'user';
+
 try
 {
     $userInput = Claro_UserInput::getInstance();
@@ -725,7 +727,7 @@ try
                     $slotsCollection = new slotsCollection();
                     
                     $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers );
+                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
                 }
             }
             break;
@@ -776,7 +778,7 @@ try
                     $slotsCollection = new slotsCollection();
                     
                     $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers );
+                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
                 }
             }
             break;
@@ -953,7 +955,7 @@ try
                
                $slotsCollection = new slotsCollection();
                $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
-               $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers ); 
+               $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context ); 
             }
             break;
     }

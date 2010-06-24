@@ -88,12 +88,12 @@ class SubscriptionsRenderer {
         return $out;
     }
     
-    public static function listSubscriptions( & $subscriptionsCollection, & $userChoices = null )
+    public static function listSubscriptions( & $subscriptionsCollection, & $userChoices = null, $context = null )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'listAll.tpl.php' );
         
         $tpl->assign( 'userChoices', $userChoices );
-        $tpl->assign( 'subscriptions', $subscriptionsCollection->getAll() );
+        $tpl->assign( 'subscriptions', $subscriptionsCollection->getAll( $context ) );
         $tpl->assign( 'displayChoice', true);
         
         return $tpl->render();

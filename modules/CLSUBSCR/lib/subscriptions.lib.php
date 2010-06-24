@@ -359,8 +359,18 @@ class subscriptionsCollection
         $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
    }
    
-   public function getAll()
+   public function getAll( $context = null )
    {
+        if( ! is_null( $context ) )
+        {
+            $acceptedContext = array( 'group', 'user' );
+            
+            if( ! in_array( $context, $acceptedContext ) )
+            {
+                $context = null;
+            }
+        }
+        
         $query =    "SELECT
                         s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`visibility`, s.`lock`,
                         count( ss.`id` ) as `totalSlotsAvailable`                        
@@ -369,7 +379,11 @@ class subscriptionsCollection
                     LEFT JOIN
                         `{$this->table['subscr_slots']}` ss
                         ON s.`id` = ss.`subscriptionId`
-                    GROUP BY
+                    "
+                    .
+                    ( ! is_null( $context ) ? " WHERE s.`context` = '" . Claroline::getDatabase()->escape( $context ) . "'" : '' )
+                    .
+                    "GROUP BY
                         s.`id`
                     ORDER BY
                         s.`id`";
