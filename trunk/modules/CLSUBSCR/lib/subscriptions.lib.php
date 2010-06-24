@@ -524,7 +524,39 @@ class slot
         }
     }
     
+    public function delete()
+    {
+        $result = Claroline::getDatabase()->exec(   "DELETE FROM
+                                                        `{$this->table['subscr_slots_subscribers']}`
+                                                    WHERE
+                                                        `slotId` = " . (int) $this->id
+                                                    );
+        if( $result === false )
+        {
+            return false;
+        }
+        //Delete every slots linked to this subescription
+        $result = Claroline::getDatabase()->exec(   "DELETE FROM
+                                                        `{$this->table['subscr_slots']}`
+                                                    WHERE
+                                                        `id` = " . (int) $this->id
+                                                    );
+        
+        if( $result === false )
+        {
+            return false;
+        }
+        
+        return true;
+    }
+    
     public function spaceAvailable()
+    {
+        $totalSubscribers = $this->totalSubscribers();
+        return $this->availableSpace - $totalSubscribers;
+    }
+    
+    public function totalSubscribers()
     {
         $query =    "SELECT
                         count( `subscriberId` ) as `subscribersCount`
@@ -541,7 +573,7 @@ class slot
         
         $data = $result->fetch();
         
-        return $this->availableSpace - $data['subscribersCount'];
+        return $data['subscribersCount'];
     }
     
     

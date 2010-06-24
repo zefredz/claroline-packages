@@ -98,9 +98,39 @@ class SubscriptionsRenderer {
         return $tpl->render();
     }
     
-    public static function editSlot()
+    public function deleteSlot( & $subscription, & $slot )
     {
+        $out = '';
         
+        $tpl =  new ModuleTemplate( 'CLSUBSCR', 'deleteSlot.tpl.php' );
+        
+        $tpl->assign( 'slot', $slot );
+        $tpl->assign( 'subscription', $subscription );
+        
+        return $tpl->render();        
+    }
+    
+    public static function editSlot( & $subscription, & $slot, & $slots, $error = false )
+    {
+        $out = '';
+        
+        $tpl = new ModuleTemplate( 'CLSUBSCR', 'subscription.tpl.php' );
+        
+        $tpl->assign( 'subscription', $subscription->flat() );
+        
+        $out .= $tpl->render();
+        
+        $template = 'editSlot' . ucfirst( $subscription->getType() ) . '.tpl.php';
+        
+        $tpl = new ModuleTemplate( 'CLSUBSCR', $template );
+        $tpl->assign( 'thisSlot', $slot );
+        $tpl->assign( 'slots', $slots );
+        $tpl->assign( 'subscriptionId', $subscription->getId() );
+        $tpl->assign( 'error', $error );
+        
+        $out .= $tpl->render();
+        
+        return $out;
     }
     
     public static function addSlot( & $subscription, & $dialogBox, $slots = null, $places = null, $slotsContent = null )

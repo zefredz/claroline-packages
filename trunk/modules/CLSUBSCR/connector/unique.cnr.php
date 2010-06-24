@@ -103,5 +103,3 @@ class slotUnique extends slot
         return $result;        
     }
 }
-
-?>
