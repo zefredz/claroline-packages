@@ -5,8 +5,9 @@
   <license>GPL</license>
   <type>tool</type>
   <entry>index.php</entry>
-  <icon>icon.png</icon>
-
+  <icon>icon.png</icon>  
+  <context>course</context>
+  <context>group</context>
   <description>
     
   </description>
