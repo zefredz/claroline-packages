@@ -50,8 +50,8 @@ class subscription
                     `context` = '" . Claroline::getDatabase()->escape( $this->context ) ."',
                     `type` = '" . Claroline::getDatabase()->escape( $this->type ) . "',
                     `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "',
-                    `visibilityFrom` = '" . Claroline::getDatabase()->escape( $this->visibilityFrom ) . "',
-                    `visibilityTo` = '" . Claroline::getDatabase()->escape( $this->visibilityTo ) . "',
+                    " . ( ! is_null( $this->visibilityFrom ) ? "`visibilityFrom` = " . (int) Claroline::getDatabase()->escape( $this->visibilityFrom ) . "," : '' ) . "
+                    " . ( ! is_null( $this->visibilityTo ) ? "`visibilityTo` = " . (int) Claroline::getDatabase()->escape( $this->visibilityTo ) . "," : '' ) . "
                     `lock` = '" . Claroline::getDatabase()->escape( $this->lock ) . "'";
     
     // New subscription
