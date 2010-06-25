@@ -541,11 +541,11 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                if( ! isset( $_REQUEST['subscrId'] ) )
+                $subscription = new subscription();
+                
+                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
-                    $dialogBox->error( get_lang( 'Unable to load this subscription.') . ' ' . get_lang( 'The ID is missing.' ) );
-                    
-                    $out .= $dialogBox->render();
+                    $out .= $result;
                 }
                 else
                 {
@@ -557,37 +557,42 @@ try
                         && ( ( count( $_POST['title'] ) == count( $_POST['description'] ) ) == count( $_POST['places'] ) )
                     )
                     {
-                        $subscription = new subscription();
-                    
-                        if( ! $subscription->load( $_REQUEST['subscrId'] ) )
+                        $errors = array();
+                        $error = false;
+                        $slots = array();
+                        foreach( $_POST['title'] as $i => $title )
                         {
-                            $dialogBox->error( get_lang( 'Unable to load this subscription.' ) );
+                            $slot = new slot();
+                            $slot->setTitle( $title );
+                            $slot->setDescription( $_POST['description'][ $i ] );
+                            $slot->setAvailableSpace( $_POST['places'][ $i ]);
+                            $slot->setSubscriptionId( $_REQUEST['subscrId'] );
                             
-                            $out .= $dialogBox->render();
+                            $slots[] = $slot;
+                            
+                            if( ! $slot->validate() )                                
+                            {
+                                $errors[] = true;
+                                $error = true;
+                            }
+                            else
+                            {
+                                $errors[] = false;
+                            }
+                        }
+                        
+                        if( $error )
+                        {
+                            $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, count( $_POST['title'] ), null, array( 'title' => $_POST['title'], 'description' => $_POST['description'], 'places' => $_POST['places'], 'errors' => $errors ) );
                         }
                         else
                         {
-                            $errors = array();
-                            $error = false;
-                            $slots = array();
-                            foreach( $_POST['title'] as $i => $title )
+                            // each slot is valide and can be saved
+                            foreach( $slots as $slot )
                             {
-                                $slot = new slot();
-                                $slot->setTitle( $title );
-                                $slot->setDescription( $_POST['description'][ $i ] );
-                                $slot->setAvailableSpace( $_POST['places'][ $i ]);
-                                $slot->setSubscriptionId( $_REQUEST['subscrId'] );
-                                
-                                $slots[] = $slot;
-                                
-                                if( ! $slot->validate() )                                
+                                if( ! $slot->save() )
                                 {
-                                    $errors[] = true;
-                                    $error = true;
-                                }
-                                else
-                                {
-                                    $errors[] = false;
+                                    $error = false;
                                 }
                             }
                             
@@ -597,27 +602,10 @@ try
                             }
                             else
                             {
-                                // each slot is valide and can be saved
-                                foreach( $slots as $slot )
-                                {
-                                    if( ! $slot->save() )
-                                    {
-                                        $error = false;
-                                    }
-                                }
-                                
-                                if( $error )
-                                {
-                                    $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, count( $_POST['title'] ), null, array( 'title' => $_POST['title'], 'description' => $_POST['description'], 'places' => $_POST['places'], 'errors' => $errors ) );
-                                }
-                                else
-                                {
-                                    $dialogBox->success( get_lang( 'Slots added successfully to the subscription.' ) );
-                            
-                                    $out .= $dialogBox->render();
-                                }
+                                $dialogBox->success( get_lang( 'Slots added successfully to the subscription.' ) );
+                        
+                                $out .= $dialogBox->render();
                             }
-                            
                         }
                     }
                 }                
@@ -631,42 +619,22 @@ try
                 }
                 
                 
-                if( ! isset( $_REQUEST['subscrId'] ) )
+                $subscription = new subscription();
+                
+                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
-                    $dialogBox->error( get_lang( 'Unable to load this subscription.') . ' ' . get_lang( 'The ID is missing.' ) );
-                    
-                    $out .= $dialogBox->render();
+                    $out .= $result;
                 }
                 else
                 {
-                    $subscription = new subscription();
-                    
-                    if( ! $subscription->load( $_REQUEST['subscrId'] ) )
+                    if( isset( $_POST['slots'] ) && isset( $_POST['places'] ) )
                     {
-                        $dialogBox->error( get_lang( 'Unable to load this subscription.' ) );
-                        
-                        $out .= $dialogBox->render();
+                        $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, $_POST['slots'], $_POST['places'] );
                     }
                     else
                     {
-                        
-                        
-                        if( isset( $_POST['slots'] ) && isset( $_POST['places'] ) )
-                        {
-                            $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, $_POST['slots'], $_POST['places'] );
-                        }
-                        else
-                        {
-                            $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox );
-                        }
-                            
-                            /*$slots = (int) $_POST['slots'];
-                            
-                            for( $i=0; $i < $slots; $i++ )
-                            {
-                                $out .= SubscriptionsRenderer::addSlotPlaces( $_POST['places'] );
-                            }*/
-                    }                    
+                        $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox );
+                    }
                 }
             }
             break;
@@ -865,6 +833,28 @@ try
                     $subscription->setContext( $userInput->get( 'context' ) );
                     $subscription->setType( $userInput->get( 'type' ) );
                     $subscription->setVisibility( $userInput->get( 'visibility' ) );
+                    if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
+                    {
+                        $fromDate = claro_mktime( $userInput->get( 'visibilityFromHour' ),
+                                            $userInput->get( 'visibilityFromMinute' ),
+                                            0,
+                                            $userInput->get( 'visibilityFromMonth' ),
+                                            $userInput->get( 'visibilityFromDay' ),
+                                            $userInput->get( 'visibilityFromYear')
+                                          );
+                        $subscription->setVisibilityFrom( $fromDate );
+                    }
+                    if( (int) $userInput->get( 'visibilityTo' ) == 1 )
+                    {
+                        $toDate = claro_mktime( $userInput->get( 'visibilityToHour' ),
+                                            $userInput->get( 'visibilityToMinute' ),
+                                            0,
+                                            $userInput->get( 'visibilityToMonth' ),
+                                            $userInput->get( 'visibilityToDay' ),
+                                            $userInput->get( 'visibilityToYear')
+                                          );
+                        $subscription->setVisibilityTo( $toDate );
+                    }
                     
                     if( $subscription->validate() )
                     {
@@ -926,6 +916,28 @@ try
                 $subscription->setContext( $userInput->get( 'context' ) );
                 $subscription->setType( $userInput->get( 'type' ) );
                 $subscription->setVisibility( $userInput->get( 'visibility' ) );
+                if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
+                {
+                    $fromDate = mktime( $userInput->get( 'visibilityFromHour' ),
+                                        $userInput->get( 'visibilityFromMinute' ),
+                                        0,
+                                        $userInput->get( 'visibilityFromMonth' ),
+                                        $userInput->get( 'visibilityFromDay' ),
+                                        $userInput->get( 'visibilityFromYear')
+                                      );
+                    $subscription->setVisibilityFrom( $fromDate );
+                }
+                if( (int) $userInput->get( 'visibilityTo' ) == 1 )
+                {
+                    $toDate = mktime( $userInput->get( 'visibilityToHour' ),
+                                        $userInput->get( 'visibilityToMinute' ),
+                                        0,
+                                        $userInput->get( 'visibilityToMonth' ),
+                                        $userInput->get( 'visibilityToDay' ),
+                                        $userInput->get( 'visibilityToYear')
+                                      );
+                    $subscription->setVisibilityTo( $toDate );
+                }
                 
                 if( $subscription->validate() )
                 {

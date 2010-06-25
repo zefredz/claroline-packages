@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__subscr_sessions` (
     `context` ENUM('user','group') NOT NULL DEFAULT 'user',
     `type` ENUM('unique', 'multiple') NOT NULL DEFAULT 'unique',
     `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
+    `visibilityFrom` int(11) DEFAULT NULL,
+    `visibilityTo` int(11) DEFAULT NULL,
     `lock` ENUM('open','close') NOT NULL default 'open',
     PRIMARY KEY(`id`)
 ) TYPE = MyISAM;

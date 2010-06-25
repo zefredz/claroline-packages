@@ -13,7 +13,15 @@
 class subscription
 {
   
-  private $id, $title, $description, $context, $type, $visibility, $lock, $slotsAvailable, $totalSlotsAvailable;
+  private   $id,
+            $title,
+            $description,
+            $context,
+            $type,
+            $visibility, $visibilityFrom, $visibilityTo,
+            $lock,
+            $slotsAvailable,
+            $totalSlotsAvailable;
   private $table, $errors;
   
   public function __construct()
@@ -26,6 +34,8 @@ class subscription
     $this->context = 'user';
     $this->type = 'unique';
     $this->visibility = 'visible';
+    $this->visibilityFrom = null;
+    $this->visibilityTo = null;
     $this->lock = 'open';    
   }
   
@@ -40,6 +50,8 @@ class subscription
                     `context` = '" . Claroline::getDatabase()->escape( $this->context ) ."',
                     `type` = '" . Claroline::getDatabase()->escape( $this->type ) . "',
                     `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "',
+                    `visibilityFrom` = '" . Claroline::getDatabase()->escape( $this->visibilityFrom ) . "',
+                    `visibilityTo` = '" . Claroline::getDatabase()->escape( $this->visibilityTo ) . "',
                     `lock` = '" . Claroline::getDatabase()->escape( $this->lock ) . "'";
     
     // New subscription
@@ -85,7 +97,7 @@ class subscription
     $id = (int) $id;
     
     $query =    "SELECT
-                    `id`, `title`, `description`, `context`, `type`, `visibility`, `lock`
+                    `id`, `title`, `description`, `context`, `type`, `visibility`, `visibilityFrom`, `visibilityTo`, `lock`
                 FROM
                     `{$this->table['subscr_sessions']}`
                 WHERE
@@ -107,6 +119,8 @@ class subscription
     $this->type = $subscription['type'];
     $this->context = $subscription['context'];
     $this->visibility = $subscription['visibility'];
+    $this->visibilityFrom = $subscription['visibilityFrom'];
+    $this->visibilityTo = $subscription['visibilityTo'];
     $this->lock = $subscription['lock'];
     
     $slotsCollection = new slotsCollection();
@@ -199,6 +213,9 @@ class subscription
     $subscription['context'] = $this->context;
     $subscription['type'] = $this->type;
     $subscription['visibility'] = $this->visibility;
+    $subscription['visibilityFrom'] = $this->visibilityFrom;
+    $subscription['visibilityTo'] = $this->visibilityTo;
+    $subscription['isVisible'] = isSubscriptionVisible( $this->visibility, $this->visibilityFrom, $this->visibilityTo );
     $subscription['lock'] = $this->lock;
     $subscription['slotsAvailable'] = $this->slotsAvailable;
     $subscription['totalSlotsAvailable'] = $this->totalSlotsAvailable;
@@ -272,14 +289,60 @@ class subscription
     return $this;
   }
   
-  public function isVisible()
+  public function getVisibilityFrom()
   {
-    if( $this->visibility == 'visible' )
+    return $this->visibilityFrom;
+  }
+  
+  public function setVisibilityFrom( $visibilityFrom )
+  {
+    $this->visibilityFrom = (int) $visibilityFrom;
+    
+    if( $this->visibilityFrom == 0)
     {
-        return true;
+        $this->visibilityFrom = null;
     }
     
-    return false;
+    return $this;
+  }
+  
+  public function getVisibilityTo()
+  {
+    return $this->visibilityTo;
+  }
+  
+  public function setVisibilityTo( $visibilityTo )
+  {
+    $this->visibilityTo = (int) $visibilityTo;
+    
+    if( $this->visibilityTo == 0)
+    {
+        $this->visibilityTo = null;
+    }
+    
+    return $this;
+  }
+  
+  public function isVisible()
+  {
+    if( $this->visibility == 'invisible' )
+    {
+        return false;
+    }
+    else
+    {
+        $now = claro_time();
+        
+        if( ! is_null( $this->visibilityFrom ) && $this->visibilityFrom > $now )
+        {
+            return false;
+        }
+        if( ! is_null( $this->visibilityTo ) && $this->visibilityTo < $now )
+        {
+            return false;
+        }
+        return true;   
+    }
   }
   
   public function isInvisible()
@@ -372,7 +435,7 @@ class subscriptionsCollection
         }
         
         $query =    "SELECT
-                        s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`visibility`, s.`lock`,
+                        s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`visibility`, s.`visibilityFrom`, s.`visibilityTo`, s.`lock`,
                         count( ss.`id` ) as `totalSlotsAvailable`                        
                     FROM
                         `{$this->table['subscr_sessions']}` s
@@ -403,6 +466,9 @@ class subscriptionsCollection
         
         foreach( $collection as $i => $c )
         {
+            $collection[ $i ]['isVisible'] = isSubscriptionVisible( $c['visibility'], $c['visibilityFrom'], $c['visibilityTo'] );
+            
+            
             $slotsAvailable = $slotsCollection->getAvailableSlots( $c['id'] );
             
             $collection[ $i ]['slotsAvailable'] = $slotsAvailable;
@@ -804,9 +870,37 @@ function checkRequestSubscription( &$subscription, & $dialogBox )
             $dialogBox->error( get_lang( 'Unable to load this subscription.' ) );
             
             $out .= $dialogBox->render();
+        }
+        elseif( ! claro_is_allowed_to_edit() && ! $subscription->isVisible() )
+        {
+            $dialogBox->error( get_lang( 'Not allowed' ) );
+            
+            $out .= $dialogBox->render();
         }        
     }
     
     return $out;
+}
+
+function isSubscriptionVisible( $visibility, $from, $to )
+{
+    if( $visibility == 'invisible' )
+    {
+        return false;
+    }
+    else
+    {
+        $now = claro_time();
+        
+        if( ! is_null( $from ) && $from > $now )
+        {
+            return false;
+        }
+        if( ! is_null( $to ) && $to < $now )
+        {
+            return false;
+        }
+        return true;   
+    }
 }
 ?>
