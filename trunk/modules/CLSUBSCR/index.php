@@ -34,6 +34,7 @@ claro_set_display_mode_available(true);
 $dialogBox = new DialogBox();
 
 $context = claro_is_in_a_group() ? 'group' : 'user';
+$groupId = claro_get_current_group_id();
 
 try
 {
@@ -125,7 +126,9 @@ try
                             $slotsCollection = new slotsCollection();
                         
                             $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                            $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                            
+                            $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                            $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                             $out .= SubscriptionsRenderer::displaySubscription( $subscription,
                                                                                 $allSlots,
                                                                                 $allSlotsFromUsers
@@ -143,6 +146,11 @@ try
                 {
                     $out .= $result;
                 }
+                elseif( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) )
+                {
+                    $dialogBox->error( get_lang( 'Not in good context' ) );
+                    $out .= $dialogBox->render();
+                }
                 else
                 {
                     if( ! isset( $_POST['choice'] ) )
@@ -154,7 +162,9 @@ try
                         $slotsCollection = new slotsCollection();
                         
                         $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                        
+                        $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                         $out .= SubscriptionsRenderer::displaySubscription( $subscription,
                                                                             $allSlots,
                                                                             $allSlotsFromUsers
@@ -196,7 +206,9 @@ try
                                 $slotsCollection = new slotsCollection();
                         
                                 $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                                $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                                
+                                $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                                $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                                 $out .= SubscriptionsRenderer::displaySubscription( $subscription,
                                                                                     $allSlots,
                                                                                     $allSlotsFromUsers
@@ -205,7 +217,9 @@ try
                             else
                             {
                                 // Save the choice for the user/slot
-                                if( ( $resultSave = $slot->saveSubscriberChoice( claro_get_current_user_id(), $subscription->getId(), $subscription->getContext() ) ) != 1 )
+                                $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                                
+                                if( ( $resultSave = $slot->saveSubscriberChoice( $subscriberId, $subscription->getId(), $subscription->getContext() ) ) != 1 )
                                 {
                                      $dialogBox->error( get_lang( $resultSave ) );
                                 
@@ -231,31 +245,29 @@ try
             break;
         case 'rqSlotChoice' :
             {
-                if( ! isset( $_REQUEST['subscrId'] ) )
+                $subscription = new subscription();
+                
+                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
-                    $dialogBox->error( get_lang( 'Unable to load this subscription.') . ' ' . get_lang( 'The ID is missing.' ) );
-                    
+                    $out .= $result;
+                }
+                elseif( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) )
+                {
+                    $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();
                 }
                 else
                 {
-                    $subscription = new subscription();
+                    $slotsCollection = new slotsCollection();
                     
-                    if( ! $subscription->load( $_REQUEST['subscrId'] ) )
-                    {
-                        $dialogBox->error( get_lang( 'Unable to load this subscription.' ) );
-                    }
-                    else
-                    {
-                        $slotsCollection = new slotsCollection();
-                        
-                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
-                        $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                            $allSlots,
-                                                                            $allSlotsFromUsers
-                                                                            );
-                    }
+                    $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                    
+                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                    $out .= SubscriptionsRenderer::displaySubscription( $subscription,
+                                                                        $allSlots,
+                                                                        $allSlotsFromUsers
+                                                                        );
                 }
             }
             break;
@@ -462,7 +474,9 @@ try
                                         $slotsCollection = new slotsCollection();
                         
                                         $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                                        
+                                        $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                                         $out .= SubscriptionsRenderer::displaySubscription( $subscription,
                                                                                             $allSlots,
                                                                                             $allSlotsFromUsers
@@ -674,7 +688,7 @@ try
                     $slotsCollection = new slotsCollection();
                     
                     $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUsers( $subscription->getId() );
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
                     $out .= SubscriptionsRenderer::result( $subscription, $allSlots, $allSlotsFromUsers );
                 }
             }
@@ -726,7 +740,8 @@ try
                     
                     $slotsCollection = new slotsCollection();
                     
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                     $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
                 }
             }
@@ -777,7 +792,8 @@ try
                     
                     $slotsCollection = new slotsCollection();
                     
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
                     $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
                 }
             }
@@ -954,7 +970,9 @@ try
                $subscriptionsCollection = new subscriptionsCollection();
                
                $slotsCollection = new slotsCollection();
-               $allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+               
+               $subscriberId = claro_is_in_a_group() ? $groupId : claro_get_current_user_id();
+               $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, (claro_is_in_a_group() ? 'group' : 'user' ) );
                $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context ); 
             }
             break;

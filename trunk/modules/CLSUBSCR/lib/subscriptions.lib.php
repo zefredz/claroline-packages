@@ -649,7 +649,7 @@ class slotsCollection
         return $collection;
     }
     
-    public function getAllFromUsers( $subscriptionId )
+    public function getAllFromUsers( $subscriptionId, $context )
     {
         $subscriptionId = (int) $subscriptionId;
         
@@ -666,7 +666,7 @@ class slotsCollection
                         ON
                             sl_sub.`slotId` = slot.`id`
                     WHERE
-                        sub.`type` = 'user' AND sl_sub.`subscriptionId` = " . $subscriptionId
+                        sub.`type` = '" . Claroline::getDatabase()->escape( $context ) . "' AND sl_sub.`subscriptionId` = " . $subscriptionId
                     ;
         
         $collection = Claroline::getDatabase()->query( $query );
@@ -679,7 +679,8 @@ class slotsCollection
             {
                 case 'group' :
                     {
-                        
+                        $groupData = claro_get_group_data( array( CLARO_CONTEXT_COURSE => claro_get_current_course_id(), CLARO_CONTEXT_GROUP => $c['typeId'] ) );
+                        $c['subscriberData'] = $groupData;
                     }
                     break;
                 case 'user' :
@@ -696,7 +697,7 @@ class slotsCollection
         return $slots;
     }
     
-    public function getAllFromUser( $userId )
+    public function getAllFromUser( $userId, $context )
     {
         $userId = (int) $userId;
         
@@ -713,7 +714,9 @@ class slotsCollection
                         ON
                             sl_sub.`slotId` = slot.`id`
                     WHERE
-                        sub.`type` = 'user' AND sub.`typeId` = " . $userId
+                        sub.`type` = '" . Claroline::getDatabase()->escape( $context ) ."'
+                        AND
+                        sub.`typeId` = " . $userId
                     ;
         
         $collection = Claroline::getDatabase()->query( $query );
