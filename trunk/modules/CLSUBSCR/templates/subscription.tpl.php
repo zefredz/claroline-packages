@@ -11,9 +11,9 @@
  */
 
 if( isset( $this->subscription ) ) :
-    if( ! claro_is_allowed_to_edit() && $this->subscription['visibility'] == 'invisible' ) :
+    /*if( ! claro_is_allowed_to_edit() && $this->subscription['visibility'] == 'invisible' ) :
         claro_die( get_lang( 'Not allowed' ) );
-    endif;
+    endif;*/
     
     $subscription = $this->subscription;
     if( $this->subscription['lock'] == 'close' ) :
@@ -30,6 +30,27 @@ endif;
     if( claro_is_allowed_to_edit() ) :
     ?>
     <div style="float: right;">
+        <?php
+        if( ( ! is_null( $subscription['visibilityFrom'] ) || ! is_null( $subscription['visibilityTo'] ) ) && ! $subscription['isVisible'] && $subscription['visibility'] == 'visible' ) :
+        ?>
+        <span style="font-weight: bold; color: red;">
+        <?php
+            echo get_lang( 'This session is only available' );
+        ?>
+        <?php
+            if( ! is_null( $subscription['visibilityFrom'] ) ) :
+                echo get_lang( 'from %dateFrom', array( '%dateFrom' => claro_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ) );
+            endif;
+        ?>
+        <?php
+            if( ! is_null( $subscription['visibilityTo'] ) ) :
+                echo get_lang( 'to %dateTo', array( '%dateTo' => claro_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
+            endif;
+        ?>
+        </span>
+        <?php
+        endif;
+        ?>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqEdit&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqDelete&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exVisible&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['visibility'] == 'visible'? get_icon_url( 'visible' ) : get_icon_url( 'invisible'); ?>" alt="<?php echo $subscription['visibility'] == 'visible' ? get_lang( 'Visible' ) : get_lang('Invisible'); ?>" /></a>

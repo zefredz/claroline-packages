@@ -62,23 +62,8 @@ class SubscriptionsRenderer {
         $out .= $tpl->render();
         
         //use a connector
-        switch( $subscription->getType() )
-        {
-            case 'multiple' :
-            {
-                
-            }
-            break;
-            case 'preference' :
-            {
-                
-            }
-            break;
-            default :
-            {
-                $tpl = new ModuleTemplate( 'CLSUBSCR', 'chooseSlotUnique.tpl.php');
-            }
-        }
+        $tplName = 'chooseSlot' . ucfirst( $subscription->getType() ) . '.tpl.php';
+        $tpl = new ModuleTemplate( 'CLSUBSCR', $tplName );
         
         $tpl->assign( 'subscriptionId', $subscription->getId() );
         $tpl->assign( 'slots', $slots );
@@ -110,6 +95,9 @@ class SubscriptionsRenderer {
         $tpl->assign( 'type', $subscription->getType() );
         $tpl->assign( 'visibility', $subscription->getVisibility() );
         
+        $tpl->assign( 'visibilityFrom', ( ! is_null( $subscription->getVisibilityFrom() ) ? $subscription->getVisibilityFrom() : false ) );
+        $tpl->assign( 'visibilityTo', ( ! is_null( $subscription->getVisibilityTo() ) ? $subscription->getVisibilityTo() : false ) );
+        
         return $tpl->render();
     }
     public static function add( & $subscription = null )
@@ -123,6 +111,9 @@ class SubscriptionsRenderer {
             $tpl->assign( 'context', $subscription->getContext() );
             $tpl->assign( 'type', $subscription->getType() );
             $tpl->assign( 'visibility', $subscription->getVisibility() );
+            
+            $tpl->assign( 'visibilityFrom', ( ! is_null( $subscription->getVisibilityFrom() ) ? $subscription->getVisibilityFrom() : false ) );
+            $tpl->assign( 'visibilityTo', ( ! is_null( $subscription->getVisibilityTo() ) ? $subscription->getVisibilityTo() : false ) );
         }
         
         return $tpl->render();

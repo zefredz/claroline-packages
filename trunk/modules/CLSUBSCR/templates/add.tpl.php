@@ -56,7 +56,15 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
                <dt><?php echo get_lang( 'Visibility' ); ?></dt>
                <dd>
                   <input type="radio" name="visibility" id="invisible" value="invisible" <?php echo isset( $this->visibility ) && $this->visibility == 'invisible' ? 'checked="checked"' : ''; ?> /><label for="invisible"><?php echo get_lang( 'Invisible (users cannot subscribe)' ); ?></label><br />
-                  <input type="radio" name="visibility" id="visible" value="visible" <?php echo isset( $this->visibility ) ? ( $this->visibility == 'visible' ? 'checked="checked"' : '' ) : 'checked="checked"'; ?> /><label for="visible"><?php echo get_lang( 'Visible' ); ?></label>
+                  <input type="radio" name="visibility" id="visible" value="visible" <?php echo isset( $this->visibility ) ? ( $this->visibility == 'visible' ? 'checked="checked"' : '' ) : 'checked="checked"'; ?> /><label for="visible"><?php echo get_lang( 'Visible' ); ?></label><br />
+                  <div style="margin-left: 5px;">
+                     <input type="checkbox" name="visibilityFrom" id="visibilityFrom" value="1" <?php echo isset( $this->visibilityFrom ) && $this->visibilityFrom ? 'checked="checked"' : ''; ?> /><label for="visibilityFrom"><?php echo get_lang( 'Starting date'); ?></label>
+                     <?php echo claro_html_date_form( 'visibilityFromDay', 'visibilityFromMonth', 'visibilityFromYear', ( isset( $this->visibilityFrom ) ? $this->visibilityFrom : time() ) ); ?>
+                     <?php echo claro_html_time_form( 'visibilityFromHour', 'visibilityFromMinute',  ( isset( $this->visibilityFrom ) ? $this->visibilityFrom : time() ) ); ?><br />
+                     <input type="checkbox" name="visibilityTo" id="visibilityTo" value="1" <?php echo isset( $this->visibilityTo ) && $this->visibilityTo ? 'checked="checked"' : ''; ?> /><label for="visibilityTo"><?php echo get_lang( 'Stopping date'); ?></label>
+                     <?php echo claro_html_date_form( 'visibilityToDay', 'visibilityToMonth', 'visibilityToYear', ( isset( $this->visibilityTo ) ? $this->visibilityTo : time() ) ); ?>
+                     <?php echo claro_html_time_form( 'visibilityToHour', 'visibilityToMinute',  ( isset( $this->visibilityTo ) ? $this->visibilityTo : time() ) ); ?><br />
+                  </div>                     
                </dd>            
            </dl>
        </div>
