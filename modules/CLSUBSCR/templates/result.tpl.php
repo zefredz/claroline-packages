@@ -39,7 +39,7 @@ foreach( $this->slots as $slot ):
             <?php
                switch( $userSlot['type'] ) :
                   case 'group' :
-                     
+                     echo $userSlot['subscriberData']['name'];
                      break;
                   case 'user' :
                      echo $userSlot['subscriberData']['lastname'] . ' ' . $userSlot['subscriberData']['firstname'] . ( $userSlot['subscriberData']['email'] ? ' ('. $userSlot['subscriberData']['email'] .')' : '' ) . ' ';

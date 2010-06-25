@@ -10,7 +10,13 @@
  * @author      Dimitri Rambout <dim@claroline.net>
  */
 
+if( claro_is_allowed_to_edit() ) :
 ?>
+<a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotAdd&amp;subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><?php echo get_lang( 'Add more slots' ); ?></a>
+<?php
+endif;
+?>
+
 <form name="chooseSlot" action="<?php echo $_SERVER['PHP_SELF'] . claro_url_relay_context( '?'); ?>" method="post" >
     <input type="hidden" name="subscrId" value="<?php echo (int) $this->subscriptionId; ?>" />
     <input type="hidden" name="cmd" value="exSlotChoice" />
