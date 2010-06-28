@@ -455,7 +455,7 @@ class subscriptionsCollection
         
         if( $collection )
         {
-            $collection = iterator_to_array( $collection, true );
+            $collection = iterator_to_array( $collection );
         }
         else
         {
