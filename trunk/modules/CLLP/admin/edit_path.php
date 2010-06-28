@@ -139,6 +139,8 @@ if( $cmd == 'exEdit' )
             {
                 $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
+                
+                $eventNotifier->notifyCourseEvent("cllp_path_created",claro_get_current_course_id(), claro_get_current_tool_id(), $pathId, claro_get_current_group_id(), claro_get_current_user_id() );
             }
             else
             {
@@ -255,6 +257,8 @@ if( $cmd == 'exAddItem' )
                 if( $addedItem->save() )
                 {
                     $dialogBox->success( get_lang('Item "%itemTitle" successfully added', array('%itemTitle' => $title) ) );
+                    
+                    $eventNotifier->notifyCourseEvent("cllp_resource_created",claro_get_current_course_id(), claro_get_current_tool_id(), $addedItem->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
                 }
                 else
                 {
@@ -363,6 +367,8 @@ if( $cmd == 'exDelete' )
     if( $item->delete() )
     {
         $dialogBox->success( get_lang('Item succesfully deleted') );
+        
+        $eventNotifier->notifyCourseEvent("cllp_resource_deleted",claro_get_current_course_id(), claro_get_current_tool_id(), $itemId, claro_get_current_group_id(), claro_get_current_user_id() );
     }
     else
     {
@@ -636,6 +642,8 @@ if( $cmd == 'exVisible' )
     $item->setVisible();
 
     $item->save();
+    
+    $eventNotifier->notifyCourseEvent("cllp_resource_visible",claro_get_current_course_id(), claro_get_current_tool_id(), $item->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
 }
 
 if( $cmd == 'exInvisible' )
@@ -643,6 +651,8 @@ if( $cmd == 'exInvisible' )
     $item->setInvisible();
 
     $item->save();
+    
+    $eventNotifier->notifyCourseEvent("cllp_resource_invisible",claro_get_current_course_id(), claro_get_current_tool_id(), $item->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
 }
 
 

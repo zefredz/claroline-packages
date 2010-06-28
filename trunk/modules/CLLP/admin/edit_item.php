@@ -140,6 +140,8 @@ if( $cmd == 'exEdit' )
 		if( $insertedId = $item->save() )
 		{
 		    $dialogBox->success( get_lang('Item successfully modified') );
+			
+			$eventNotifier->notifyCourseEvent("cllp_resource_created",claro_get_current_course_id(), claro_get_current_tool_id(), $itemId, claro_get_current_group_id(), claro_get_current_user_id() );
 		}
 		else
 		{
