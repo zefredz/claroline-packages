@@ -738,13 +738,14 @@ class PathScormExport
         }
         
         // Copy usual files (.css, .js, .xsd, etc)
-        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet') ) )
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/main.css', $this->destDir . '/' . get_conf('claro_stylesheet') ) )
         {
             $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'main.css' ) );
             return false;
         }
         
-        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet')) )
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet')) )
         {
             $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'rtl.css' ) );
             return false;
