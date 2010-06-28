@@ -738,26 +738,110 @@ class PathScormExport
         }
         
         // Copy usual files (.css, .js, .xsd, etc)
-        if (
-               !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet'))
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet'))
-            || !claro_copy_file(dirname(__FILE__).'/../export/APIWrapper.js', $this->destDir.'/js')
-            || !claro_copy_file(dirname(__FILE__).'/../export/scores.js', $this->destDir.'/js')
-            || !claro_copy_file(dirname(__FILE__).'/../export/ims_xml.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/imscp_rootv1p1p2.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/imsmd_rootv1p2p1.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/adlcp_rootv1p2.xsd', $this->destDir)
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/jquery.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.ui.js', $this->destDir.'/js')
-            || !claro_copy_file(get_module_path('CLLP')  . '/js/connector13.js', $this->destDir.'/js')
-            || !claro_copy_file(get_module_path('CLLP')  . '/js/scormtime.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys')  . '/document/js/cllp.cnr.js', $this->destDir.'/js')
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet') ) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'main.css' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet')) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'rtl.css' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/APIWrapper.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'APIWrapper.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/scores.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'scores.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/ims_xml.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'ims_xml.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/imscp_rootv1p1p2.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'imscp_rootv1p1p2.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/imsmd_rootv1p2p1.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'imsmd_rootv1p2p1.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/export/adlcp_rootv1p2.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'adlcp_rootv1p2.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/jquery.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'jquery.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'claroline.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.ui.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'claroline.ui.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/js/scormtime.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'scormtome.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLLP') . '/js/connector13.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'connector13.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLDOC') . '/js/cllp.cnr.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'cllp.cnr.js' ) );
+            return false;
+        }
+        
+        /*if (
+               !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file( get_module_path('CLLP') . '/export/APIWrapper.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLLP') . '/export/scores.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLLP') . '/export/ims_xml.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('CLLP') . '/export/imscp_rootv1p1p2.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('CLLP') . '/export/imsmd_rootv1p2p1.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('CLLP') . '/export/adlcp_rootv1p2.xsd', $this->destDir)
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/jquery.js', $this->destDir.'/js')
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.js', $this->destDir.'/js')
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.ui.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLLP') . '/js/connector13.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLLP') . '/js/scormtime.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLDOC') . '/js/cllp.cnr.js', $this->destDir.'/js')
            )
         {
             $this->error = get_lang('Error when copying needed SCORM files');
             return false;
-        }
+        }*/
         
         if (! $this->createProgressFrame( $this->destDir ) )
         {
