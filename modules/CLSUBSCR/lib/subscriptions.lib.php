@@ -904,13 +904,18 @@ function isSubscriptionVisible( $visibility, $from, $to )
     }
 }
 
-if( ! function_exists( 'lcfirst' ) )
+if(false === function_exists('lcfirst'))
 {
-    function lcfirst( $string )
-    {
-        $string[0] = strtolower( $string[0 ] );
+    /**
+     * Make a string's first character lowercase
+     *
+     * @param string $str
+     * @return string the resulting string.
+     */
+    function lcfirst( $str ) {
         
-        return $string;
+        $str[0] = strtolower($str[0]);
+        
+        return (string) $str;
     }
-}
-?>
+}?>
