@@ -53,7 +53,7 @@ try
     
     $cmdMenu = array();
     
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=list' . claro_url_relay_context( '&' ), get_lang( 'Home' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=list' . claro_url_relay_context( '&' ), get_lang( 'Subscriptions list' ) );
     if( claro_is_allowed_to_edit() )
     {
         $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqAdd' . claro_url_relay_context( '&' ), get_lang( 'Create a new subscription' ) );
