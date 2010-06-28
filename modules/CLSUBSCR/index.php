@@ -146,7 +146,7 @@ try
                 {
                     $out .= $result;
                 }
-                elseif( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) )
+                elseif( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
                 {
                     $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();
@@ -251,7 +251,7 @@ try
                 {
                     $out .= $result;
                 }
-                elseif( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) )
+                elseif( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
                 {
                     $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();

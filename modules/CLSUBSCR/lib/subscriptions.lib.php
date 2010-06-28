@@ -444,7 +444,7 @@ class subscriptionsCollection
                         ON s.`id` = ss.`subscriptionId`
                     "
                     .
-                    ( ! is_null( $context ) ? " WHERE s.`context` = '" . Claroline::getDatabase()->escape( $context ) . "'" : '' )
+                    ( ! is_null( $context ) && ! claro_is_allowed_to_edit() ? " WHERE s.`context` = '" . Claroline::getDatabase()->escape( $context ) . "'" : '' )
                     .
                     "GROUP BY
                         s.`id`
