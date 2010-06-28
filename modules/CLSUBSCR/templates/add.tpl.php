@@ -44,8 +44,8 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
            <dt><label for="type"><?php echo get_lang( 'Subscriptions by user/group' ); ?> :</label></dt>
            <dd>
                <input type="radio" name="type" id="typeUnique" value="unique" <?php echo isset( $this->type ) && $this->type == 'unique' ? 'checked="checked"' : ''; ?> /><label for="typeUnique"><?php echo get_lang( 'One' ); ?></label><br />
-               <input type="radio" name="type" id="typeMultiple" value="multiple" <?php echo isset( $this->type ) && $this->type == 'multiple' ? 'checked="checked"' : ''; ?> /><label for="typeMultiple"><?php echo get_lang( 'Multiple choices' ); ?></label><br />
-               <input type="radio" name="type" id="typePreference" value="preference" <?php echo isset( $this->type ) && $this->type == 'preference' ? 'checked="checked"' : ''; ?> /><label for="typePreference"><?php echo get_lang( 'By preference' ); ?></label>
+               <input type="hidden" name="type" id="typeMultiple" value="multiple" <?php echo isset( $this->type ) && $this->type == 'multiple' ? 'checked="checked"' : ''; ?> /><!--label for="typeMultiple"><?php echo get_lang( 'Multiple choices' ); ?></label><br /-->
+               <input type="hidden" name="type" id="typePreference" value="preference" <?php echo isset( $this->type ) && $this->type == 'preference' ? 'checked="checked"' : ''; ?> /><!--label for="typePreference"><?php echo get_lang( 'By preference' ); ?></label-->
            </dd>
        </dl>
    </fieldset>
