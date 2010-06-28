@@ -263,7 +263,7 @@ class item
             if( $insertedId )
             {
                 $this->id = (int) $insertedId;
-
+                
                 return $this->id;
             }
             else
@@ -353,8 +353,9 @@ class item
                 WHERE `item_id` = ". $this->id;
         
         if( claro_sql_query($sql) == false ) return false;
-
+        
         $this->id = -1;
+        
         return true;
     }
 

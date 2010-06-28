@@ -134,6 +134,8 @@ if( $is_allowedToEdit )
         if( $path->delete() )
         {
             $dialogBox->success( get_lang('Path succesfully deleted') );
+            
+            $eventNotifier->notifyCourseEvent("cllp_path_deleted",claro_get_current_course_id(), claro_get_current_tool_id(), $pathId, claro_get_current_group_id(), claro_get_current_user_id() );
         }
         else
         {
@@ -172,6 +174,8 @@ if( $is_allowedToEdit )
         $path->setVisible();
 
         $path->save();
+        
+        $eventNotifier->notifyCourseEvent("cllp_path_visible",claro_get_current_course_id(), claro_get_current_tool_id(), $path->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
     }
 
     if( $cmd == 'exInvisible' )
@@ -179,6 +183,8 @@ if( $is_allowedToEdit )
         $path->setInvisible();
 
         $path->save();
+        
+        $eventNotifier->notifyCourseEvent("cllp_path_invisible",claro_get_current_course_id(), claro_get_current_tool_id(), $path->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
     }
 
     if( $cmd == 'exMoveUp' || $cmd == 'exMoveDown' )

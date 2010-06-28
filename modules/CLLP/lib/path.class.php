@@ -193,7 +193,7 @@ class path
             if( $insertedId )
             {
                 $this->id = (int) $insertedId;
-
+                
                 return $this->id;
             }
             else
@@ -263,7 +263,7 @@ class path
 
         // delete path repository
         claro_delete_file(get_path('coursesRepositorySys') . claro_get_course_path() . '/scormPackages/path_' . $this->id );
-
+        
         $this->id = -1;
         return true;
     }
