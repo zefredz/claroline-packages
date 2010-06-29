@@ -730,29 +730,28 @@ class PathScormExport
             return false;
         }
         //CSS
-        // JS
-        if ( !claro_mkdir($this->destDir.'/' . get_conf('claro_stylesheet'), CLARO_FILE_PERMISSIONS , true) )
+        /*if ( !claro_mkdir($this->destDir.'/' . get_conf('claro_stylesheet'), CLARO_FILE_PERMISSIONS , true) )
         {
             $this->error = get_lang('Unable to create directory : ') . $this->destDir . '/' . get_conf('claro_stylesheet');
             return false;
-        }
+        }*/
         
         // Copy usual files (.css, .js, .xsd, etc)
         // Check css to use
-        if( file_exists( get_path( 'clarolineRepositorySys' ) . '../platform/css/' . $claro_stylesheet ) )
+        if( file_exists( get_path( 'clarolineRepositorySys' ) . '../platform/css/' . get_conf('claro_stylesheet') ) )
         {
-            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../platform/css/' . $claro_stylesheet;
+            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../platform/css/' . get_conf('claro_stylesheet');
         }
-        elseif( file_exists( get_path( 'clarolineRepositorySys' ) . '../web/css/' . $claro_stylesheet ) )
+        elseif( file_exists( get_path( 'clarolineRepositorySys' ) . '../web/css/' . get_conf('claro_stylesheet') ) )
         {
-            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../web/css/' . $claro_stylesheet;
+            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../web/css/' . get_conf('claro_stylesheet');
         }
         else
         {
             return false;
         }
         
-        if( !claro_copy_file( $claro_stylesheet_path, $this->destDir . '/' . get_conf('claro_stylesheet') ) )
+        if( !claro_copy_file( $claro_stylesheet_path, $this->destDir . '/' ) )
         {
             $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'main.css' ) );
             return false;
@@ -936,7 +935,7 @@ class PathScormExport
         .    '<input type="radio" name="progress" id="full" class="progressRadio" value="100" />' . "\n"
         .    '<label for="full">100%</label>' . "\n"
         
-        .    '<input type="button" value="'.get_lang('Done').'" id="progressDone" />' . "\n"
+        //.    '<input type="button" value="'.get_lang('Done').'" id="progressDone" />' . "\n"
         .    '</form>
         </div>
         </body>
