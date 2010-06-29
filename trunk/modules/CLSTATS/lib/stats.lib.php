@@ -218,7 +218,7 @@ class ClaroStats
     {
         $table = get_module_main_tbl( array( 'stats' ) );
         
-        if( is_array( $data ) && count( $data ) )
+        /*if( is_array( $data ) && count( $data ) )
         {
             foreach( $data as $code_course => $tools )
             {
@@ -239,6 +239,41 @@ class ClaroStats
                         Claroline::getDatabase()->exec( $sql );
                     }
                 }
+            }
+        }*/
+        
+        if( is_array( $data ) && count( $data ) )
+        {
+            $sql = "";
+            foreach( $data as $code_course => $tools )
+            {
+                foreach( $tools as $toolLabel => $values )
+                {
+                    foreach( $values as $key => $value )
+                    {
+                        if( $sql )
+                        {
+                            $sql .= ', ';
+                        }
+                        $sql .= "(  '" . Claroline::getDatabase()->escape( $code_course ) . "',
+                                    '" . Claroline::getDatabase()->escape( $toolLabel ) . "',
+                                    '" . Claroline::getDatabase()->escape( $key ) . "',
+                                    '" . Claroline::getDatabase()->escape( $value ) . "',
+                                    '" . time() . "'
+                                    )";                                    
+                    }
+                }
+            }
+            
+            if( $sql )
+            {
+                $sql = "INSERT INTO
+                            `{$table['stats']}`
+                        (`code_course`, `toolLabel`, `itemName`, `itemValue`, `dateCreation`)
+                            VALUES
+                        " . $sql;
+                
+                Claroline::getDatabase()->exec( $sql );  
             }
         }
         
