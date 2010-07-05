@@ -12,7 +12,7 @@
  * @package CLLP
  *
  * @author Claro Team <cvs@claroline.net>
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  */
 
 $tlabelReq = 'CLLP';

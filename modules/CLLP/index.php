@@ -11,7 +11,7 @@
  * @package CLLP
  *
  * @author Sebastien Piraux
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  */
 

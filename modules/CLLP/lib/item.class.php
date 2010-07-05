@@ -277,7 +277,7 @@ class item
             $sql = "UPDATE `".$this->tblItem."`
                     SET `path_id` = '".(int) $this->pathId."',
                         `type` = '".addslashes($this->type)."',
-                    	`title` = '".addslashes($this->title)."',
+                      `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `visibility` = '".addslashes($this->visibility)."',
                         `rank` = ".(int) $this->rank.",
@@ -785,7 +785,7 @@ class item
         $rankMax = claro_sql_query_get_single_value($sql);
 
         if( !is_null($rankMax) || !$rankMax ) return (int) $rankMax;
-        else                     			  return 0;
+        else                       		  return 0;
     }
     
     public function getRedirectBranchConditions()
@@ -1292,7 +1292,7 @@ class itemList
     
     /**
      * returns an array of all children ids
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param $tree array that represent a tree
      * @return array
      * 
@@ -1327,12 +1327,12 @@ class itemList
     {
 	    foreach( $tree as $branch )
 	    {
-    	    if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
-    	    {
-    	        return $branch;
-    	    }
-    	    elseif( is_array($branch) && isset($branch['children']) && is_array($branch['children']) )
-    	    {
+          if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
+          {
+              return $branch;
+          }
+          elseif( is_array($branch) && isset($branch['children']) && is_array($branch['children']) )
+          {
                 $node = $this->getNode($branch['children'],$nodeId);
                 if( is_array($node) ) return $node;
 	        }

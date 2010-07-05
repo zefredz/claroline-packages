@@ -1,30 +1,23 @@
 <?php // $Id$
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
- * CLAROLINE
+ * Librairy to manage attempt, item attempt & item attempt list
  *
- * $Revision$
- *
+ * @version 0.1 $Revision$
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLLP
- *
  * @author Sebastien Piraux
- *
+ * @author Dimitri Rambout <dim@claroline.net>
  */
 
-/*
- CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_attempt` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `path_id` INT(11) NOT NULL,
-  `user_id` INT(11) NOT NULL,
-  `last_item_id` INT(11),
-  `progress` INT(11),
-  `attempt_number` INT(11),
-  PRIMARY KEY(`id`)
-) TYPE=MyISAM;
+/**
+ * Attempt class
+ *
+ * Manage an attempt in a learning path
+ *
+ * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
  */
 class attempt
 {
@@ -101,11 +94,13 @@ class attempt
     }
 
     /**
-     * if no attemptNumber is specified load the last attempt for $userId in $pathId from DB
+     * If no attemptNumber is specified load the last attempt for $userId in $pathId from DB
      * else load the specified attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param integer $id id of path
+     * @param integer $pathId id of path
+     * @param int $userId id of the user
+     * @param int $attemptNumber 
      * @return boolean load successfull ?
      */
     public function load($pathId, $userId, $attemptNumber = null)
@@ -129,14 +124,14 @@ class attempt
 
         if( is_null($attemptNumber) )
         {
-        	// take last attempt for this user on this path
-        	$sql .= " ORDER BY `attempt_number` DESC
-        			LIMIT 1";
+          // take last attempt for this user on this path
+          $sql .= " ORDER BY `attempt_number` DESC
+          		LIMIT 1";
         }
         else
         {
-        	// take specified attempt
-        	$sql .= " AND `attempt_number` = ".(int) $attemptNumber;
+          // take specified attempt
+          $sql .= " AND `attempt_number` = ".(int) $attemptNumber;
         }
 
         $data = claro_sql_query_get_single_row($sql);
@@ -164,7 +159,7 @@ class attempt
     }
 
     /**
-     * save attempt to DB
+     * Save attempt into DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
@@ -226,7 +221,7 @@ class attempt
     }
 
     /**
-     * delete attempt
+     * Delete attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -252,7 +247,7 @@ class attempt
     //-- Getter & Setter
 
     /**
-     * get id
+     * Get id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -263,7 +258,7 @@ class attempt
     }
 
     /**
-     * get path id
+     * Get path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -274,10 +269,10 @@ class attempt
     }
 
     /**
-     * set path id
+     * Set path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the path
+     * @param int $value id of the path
      * @return int
      */
     public function setPathId($value)
@@ -286,7 +281,7 @@ class attempt
     }
 
     /**
-     * get user id
+     * Get user id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -297,10 +292,10 @@ class attempt
     }
 
     /**
-     * set user id
+     * Set user id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the user
+     * @param int $value id of the user
      * @return int
      */
     public function setUserId($value)
@@ -309,7 +304,7 @@ class attempt
     }
 
     /**
-     * get last item id
+     * Get last item id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -320,10 +315,10 @@ class attempt
     }
 
     /**
-     * set last item id
+     * Set last item id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the last item viewed
+     * @param int $value id of the last item viewed
      * @return int
      */
     public function setLastItemId($value)
@@ -332,7 +327,7 @@ class attempt
     }
 
     /**
-     * get progress for this path (pourcent)
+     * Get progress for this path (pourcent)
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -343,23 +338,23 @@ class attempt
     }
 
     /**
-     * set progress for this path (pourcent)
+     * Set progress for this path (pourcent)
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int progression
+     * @param int $value progression
      * @return int
      */
     public function setProgress($value)
     {
-    	// value must be between 0 and 100
-    	$value = max(0,$value);
-    	$value = min(100,$value);
+      // value must be between 0 and 100
+      $value = max(0,$value);
+      $value = min(100,$value);
 
         $this->progress = (int) $value;
     }
 
     /**
-     * get attempt number for this path and this user
+     * Get attempt number for this path and this user
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -370,10 +365,10 @@ class attempt
     }
 
     /**
-     * set attempt number for this path and this user
+     * Set attempt number for this path and this user
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int progression
+     * @param int $value progression
      * @return int
      */
     public function setAttemptNumber($value)
@@ -382,56 +377,45 @@ class attempt
     }
 
     /**
-     * get attempt number for this path and this user
+     * Set the highest attempt number for this path and this user
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int progression
      * @return int
      */
     public function setHigherAttemptNumber()
     {
-    	// use max instead of count to handle suppressed attempts
-    	$sql = "SELECT MAX(`attempt_number`)
-    			FROM `".$this->tblAttempt."`
-    			WHERE `path_id` = ".(int) $this->pathId."
-    			AND `user_id` = ".(int) $this->userId;
+      // use max instead of count to handle suppressed attempts
+      $sql = "SELECT MAX(`attempt_number`)
+      		FROM `".$this->tblAttempt."`
+      		WHERE `path_id` = ".(int) $this->pathId."
+      		AND `user_id` = ".(int) $this->userId;
 
-    	$higherAttempt = claro_sql_query_get_single_value($sql);
+      $higherAttempt = claro_sql_query_get_single_value($sql);
 
-    	if( is_null($higherAttempt)  || !$higherAttempt )
-    	{
-    		// error in query
-    		$higherAttempt = 1;
-    	}
-    	else
-    	{
-    		// value is at least 1
-    		$higherAttempt = max(1,$higherAttempt);
-    	}
+      if( is_null($higherAttempt)  || !$higherAttempt )
+      {
+      	// error in query
+      	$higherAttempt = 1;
+      }
+      else
+      {
+      	// value is at least 1
+      	$higherAttempt = max(1,$higherAttempt);
+      }
 
-    	$this->setAttemptNumber($higherAttempt);
+      $this->setAttemptNumber($higherAttempt);
     }
 }
 
-/*
- CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `attempt_id` INT(11) NOT NULL,
-  `item_id` INT(11) NOT NULL,
-  `location` varchar(255) NOT NULL default '',
-  `completion_status` enum('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN') NOT NULL default 'NOT ATTEMPTED',
-  `entry` enum('AB-INITIO','RESUME','') NOT NULL default 'AB-INITIO',
-  `score_raw` tinyint(4) NOT NULL default '-1',
-  `score_min` tinyint(4) NOT NULL default '-1',
-  `score_max` tinyint(4) NOT NULL default '-1',
-  `total_time` varchar(13) NOT NULL default '0000:00:00.00',
-  `session_time` varchar(13) NOT NULL default '0000:00:00.00',
-  `suspend_data` text NOT NULL,
-  `credit` enum('CREDIT','NO-CREDIT') NOT NULL default 'NO-CREDIT',
-  PRIMARY KEY(`id`)
-) TYPE=MyISAM;
- */
 include_once get_module_path('CLLP') . '/lib/utils.lib.php';
+/**
+ * itemAttempt class
+ *
+ * Manage an itemAttempt in a learning path
+ *
+ * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class itemAttempt
 {
     /**
@@ -536,34 +520,34 @@ class itemAttempt
 
     }
 
-	/**
-     * load item attempt
+    /**
+     * Load item attempt
      *
-     * @param $attemptId int id of attempt
-     * @param $itemId int id of item
+     * @param int $attemptId id of attempt
+     * @param int $itemId id of item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
      */
     public function load($attemptId, $itemId)
     {
-    	$sql = "SELECT `id`,
-    			`attempt_id`,
-    			`item_id`,
-    			`location`,
-    			`completion_status`,
-    			`entry`,
-    			`score_raw`,
-    			`score_min`,
-    			`score_max`,
-    			`total_time`,
-    			`session_time`,
-    			`suspend_data`,
-    			`credit`
-    			FROM `". $this->tblItemAttempt."`
-    			WHERE `attempt_id` = ". (int) $attemptId ."
-    			AND `item_id` = ". (int) $itemId ;
-	
+      $sql = "SELECT `id`,
+            `attempt_id`,
+            `item_id`,
+            `location`,
+            `completion_status`,
+            `entry`,
+            `score_raw`,
+            `score_min`,
+            `score_max`,
+            `total_time`,
+            `session_time`,
+            `suspend_data`,
+            `credit`
+            FROM `". $this->tblItemAttempt."`
+            WHERE `attempt_id` = ". (int) $attemptId ."
+            AND `item_id` = ". (int) $itemId ;
+    
         $data = claro_sql_query_get_single_row($sql);
 
         if( $data !== false && !empty($data) )
@@ -592,7 +576,7 @@ class itemAttempt
     }
 
     /**
-     * save item attempt to DB
+     * Save item attempt to DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
@@ -611,16 +595,16 @@ class itemAttempt
             // insert
             $sql = "INSERT INTO `".$this->tblItemAttempt."`
                     SET `attempt_id` = '".(int) $this->attemptId."',
-                    	`item_id` = '".(int) $this->itemId."',
-                    	`location` = '".addslashes($this->location)."',
-                    	`completion_status` = '".addslashes($this->completionStatus)."',
-                    	`entry` = '".addslashes($this->entry)."',
-                    	`score_raw` = '".(int) $this->scoreRaw."',
-                    	`score_min` = '".(int) $this->scoreMin."',
-                    	`score_max` = '".(int) $this->scoreMax."',
-                    	`total_time` = '".addslashes($totalTime)."',
-                    	`session_time` = '".addslashes($sessionTime)."',
-                    	`suspend_data` = '".addslashes($this->suspendData)."',
+                      `item_id` = '".(int) $this->itemId."',
+                      `location` = '".addslashes($this->location)."',
+                      `completion_status` = '".addslashes($this->completionStatus)."',
+                      `entry` = '".addslashes($this->entry)."',
+                      `score_raw` = '".(int) $this->scoreRaw."',
+                      `score_min` = '".(int) $this->scoreMin."',
+                      `score_max` = '".(int) $this->scoreMax."',
+                      `total_time` = '".addslashes($totalTime)."',
+                      `session_time` = '".addslashes($sessionTime)."',
+                      `suspend_data` = '".addslashes($this->suspendData)."',
                         `credit` = '".addslashes($this->credit)."'";
 
             // execute the creation query and get id of inserted assignment
@@ -668,7 +652,7 @@ class itemAttempt
     }
 
     /**
-     * delete item attempt
+     * Delete item attempt
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -677,7 +661,7 @@ class itemAttempt
     {
         if( $this->id == -1 ) return true;
 
-		// TODO delete all item_attempts
+        // TODO delete all item_attempts
 
         $sql = "DELETE FROM `" . $this->tblItemAttempt . "`
                 WHERE `id` = " . (int) $this->id ;
@@ -689,15 +673,15 @@ class itemAttempt
     }
 
     /**
-     * check that all scorm data are consistent and that value are correct
+     * Check that all scorm data are consistent and values are correct
      */
     public function validate()
     {
-	    return true;
+        return true;
     }
 
     /**
-     * get id
+     * Get id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -708,7 +692,7 @@ class itemAttempt
     }
 
     /**
-     * get attempt id
+     * Get attempt id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -719,10 +703,10 @@ class itemAttempt
     }
 
     /**
-     * set attempt id
+     * Set attempt id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the attempt
+     * @param int $value id of the attempt
      */
     public function setAttemptId($value)
     {
@@ -730,7 +714,7 @@ class itemAttempt
     }
 
     /**
-     * get item id
+     * Get item id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -741,10 +725,10 @@ class itemAttempt
     }
 
     /**
-     * set item id
+     * Set item id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the item
+     * @param int $value id of the item
      */
     public function setItemId($value)
     {
@@ -755,33 +739,33 @@ class itemAttempt
     * set location
     *
     * @author Sebastien Piraux <pir@cerdecam.be>
-    * @param $value location in the SCO
+    * @param string $value location in the SCO
     */
     public function setLocation($value)
     {
-	   $this->location = trim($value);
+       $this->location = trim($value);
     }
 
     /**
-     * get location
+     * Get location
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string location in the SCO
      */
     public function getLocation()
     {
-	   return $this->location;
+       return $this->location;
     }
 
     /**
-     * set completionStatus
+     * Set completionStatus
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value completionStatus of the SCO
-	 */
+     * @param string $value completionStatus of the SCO
+     */
     public function setCompletionStatus($value)
     {
-	$acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
+        $acceptedValues = array('NOT ATTEMPTED','PASSED','FAILED','COMPLETED','BROWSED','INCOMPLETE','UNKNOWN');
 
         if( in_array(strtoupper($value), $acceptedValues) )
         {
@@ -792,25 +776,25 @@ class itemAttempt
     }
 
     /**
-     * get completionStatus
+     * Get completionStatus
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string completionStatus of the SCO
      */
     public function getCompletionStatus()
     {
-	return $this->completionStatus;
+        return $this->completionStatus;
     }
 
     /**
-     * set entry
+     * Set entry
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value entry of the SCO
+     * @param string $value entry of the SCO
      */
     public function setEntry($value)
     {
-	$acceptedValues = array('AB-INITIO','RESUME','');
+        $acceptedValues = array('AB-INITIO','RESUME','');
 
         if( in_array(strtoupper($value), $acceptedValues) )
         {
@@ -821,18 +805,18 @@ class itemAttempt
     }
 
     /**
-     * get entry
+     * Get entry
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string entry of the SCO
      */
     public function getEntry()
     {
-	   return $this->entry;
+       return $this->entry;
     }
 
     /**
-     * get score raw
+     * Get score raw
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score raw
@@ -843,10 +827,10 @@ class itemAttempt
     }
 
     /**
-     * set score raw
+     * Set score raw
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int score raw
+     * @param int $value score raw
      */
     public function setScoreRaw($value)
     {
@@ -854,7 +838,7 @@ class itemAttempt
     }
 
     /**
-     * get score min
+     * Get score min
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score min
@@ -865,10 +849,10 @@ class itemAttempt
     }
 
     /**
-     * set score min
+     * Set score min
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int score min
+     * @param int $value score min
      */
     public function setScoreMin($value)
     {
@@ -876,7 +860,7 @@ class itemAttempt
     }
 
     /**
-     * get score max
+     * Get score max
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int score max
@@ -887,10 +871,10 @@ class itemAttempt
     }
 
     /**
-     * set score max
+     * Set score max
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int score max
+     * @param int $value score max
      */
     public function setScoreMax($value)
     {
@@ -898,7 +882,7 @@ class itemAttempt
     }
 
     /**
-     * get sessionTime
+     * Get sessionTime
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int session time in SCO
@@ -909,10 +893,10 @@ class itemAttempt
     }
 
     /**
-     * set sessionTime
+     * Set sessionTime
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int sessionTime
+     * @param int $value sessionTime
      */
     public function setSessionTime($value)
     {
@@ -920,7 +904,7 @@ class itemAttempt
     }
 
     /**
-     * get totalTime
+     * Get totalTime
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int total time in SCO
@@ -931,10 +915,10 @@ class itemAttempt
     }
 
     /**
-     * set totalTime
+     * Set totalTime
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int totalTime
+     * @param int $value totalTime
      */
     public function setTotalTime($value)
     {
@@ -942,8 +926,8 @@ class itemAttempt
     }
 
 
-	/**
-     * get suspend data
+    /**
+     * Get suspend data
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string suspend data
@@ -954,10 +938,10 @@ class itemAttempt
     }
 
     /**
-     * set suspend data
+     * Set suspend data
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value string suspend data
+     * @param string $value suspend data
      */
     public function setSuspendData($value)
     {
@@ -965,10 +949,10 @@ class itemAttempt
     }
 
     /**
-    * set credit
+    * Set credit
     *
     * @author Sebastien Piraux <pir@cerdecam.be>
-    * @param $value credit of the SCO
+    * @param credit $value of the SCO
     */
     public function setCredit($value)
     {
@@ -983,7 +967,7 @@ class itemAttempt
     }
     
     /**
-    * get credit
+    * Get credit
     *
     * @author Sebastien Piraux <pir@cerdecam.be>
     * @return string credit of the SCO
@@ -995,17 +979,25 @@ class itemAttempt
 
 }
 
+/**
+ * itemAttemptList class
+ *
+ * Manage an itemAttempt list in a learning path
+ *
+ * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class itemAttemptList
 {
-	private $tblPath;
-	private $tblItem;
+    private $tblPath;
+    private $tblItem;
 
     /**
      * Constructor
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-	public function __construct()
+    public function __construct()
     {
         // define module table names
         $tblNameList = array(
@@ -1016,39 +1008,48 @@ class itemAttemptList
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblItemAttempt = $tbl_lp_names['lp_item_attempt'];
     }
+    
+    /**
+     * Load a list of item attempt
+     *
+     * @param int $attemptId id of the attempt
+     * @return array item attempt list
+     */
 
     public function load($attemptId)
     {
-    	$sql = "SELECT `id`,
-    			`item_id`,
-    			`location`,
-    			`completion_status`,
-    			`entry`,
-    			`score_raw`,
-    			`score_min`,
-    			`score_max`,
-    			`total_time`,
-    			`session_time`,
-    			`suspend_data`,
-    			`credit`
-    			FROM `". $this->tblItemAttempt."`
-    			WHERE `attempt_id` = ". (int) $attemptId ;
+        $sql = "SELECT
+                    `id`,
+                    `item_id`,
+                    `location`,
+                    `completion_status`,
+                    `entry`,
+                    `score_raw`,
+                    `score_min`,
+                    `score_max`,
+                    `total_time`,
+                    `session_time`,
+                    `suspend_data`,
+                    `credit`
+                FROM
+                    `". $this->tblItemAttempt."`
+                WHERE
+                    `attempt_id` = ". (int) $attemptId ;
 
-    	$data = claro_sql_query_fetch_all_rows($sql);
+        $data = claro_sql_query_fetch_all_rows($sql);
 
-		if( is_array($data) && !empty($data) )
-		{
-			// for simplier use later we will use the item id as index for this array
-			foreach( $data as $itemAttempt )
-			{
-				$itemAttemptList[$itemAttempt['item_id']] = $itemAttempt;
-			}
-		}
-		else
-		{
-			$itemAttemptList = array();
-		}
-
-		return $itemAttemptList;
+        if( is_array($data) && !empty($data) )
+        {
+            // for simplier use later we will use the item id as index for this array
+            foreach( $data as $itemAttempt )
+            {
+                $itemAttemptList[$itemAttempt['item_id']] = $itemAttempt;
+            }
+        }
+        else
+        {
+            $itemAttemptList = array();
+        }
+        return $itemAttemptList;
     }
 }

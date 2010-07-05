@@ -54,7 +54,7 @@ else
     if( !$path->load( $pathId ) )
     {
         //header("Location: ../index.php");
-    	exit();
+      exit();
     }
     else
     {

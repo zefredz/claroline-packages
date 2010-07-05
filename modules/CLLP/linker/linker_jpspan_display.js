@@ -41,7 +41,7 @@
         **/
         function display_navigator(crl)
         {
-        	show_div('navbox');
+          show_div('navbox');
             var nav = new navigatorjpspan(tool_bar_handler);
             nav.gettoolbar(crl);
             var nav = new navigatorjpspan(resource_handler);
@@ -57,14 +57,14 @@
         **/
         function init_shopping_cart()
         {
-        	if(localcrl != false )
-        	{
-        		var nav = new navigatorjpspan(resource_db_handler);
-            	nav.getresourcedb(localcrl);
+          if(localcrl != false )
+          {
+          	var nav = new navigatorjpspan(resource_db_handler);
+              nav.getresourcedb(localcrl);
             }
             else
             {
-            	display_shopping_cart();
+              display_shopping_cart();
             }
         }
 
@@ -74,8 +74,8 @@
         **/
         function display_other_course()
         {
-        	var nav = new navigatorjpspan(other_course_handler);
-           	nav.getothercourse();
+          var nav = new navigatorjpspan(other_course_handler);
+             nav.getothercourse();
         }
 
         /**
@@ -84,8 +84,8 @@
         **/
         function display_public_course()
         {
-        	var nav = new navigatorjpspan(public_course_handler);
-           	nav.getpubliccourses();
+          var nav = new navigatorjpspan(public_course_handler);
+             nav.getpubliccourses();
         }
 
 	   /**
@@ -143,16 +143,16 @@
 
                 servAdd++;
 
-            	var item = new Array();
-            	item["crl"] = crl;
-            	item["title"] = title;
+              var item = new Array();
+              item["crl"] = crl;
+              item["title"] = title;
 
                 shopping_cart.push( item );
                 serv_add.push( crl );
 
                 if( (in_array( serv_del , crl )) == true )
                 {
-                	serv_del = array_delete( serv_del , crl );
+                  serv_del = array_delete( serv_del , crl );
                 }
             }
             else
@@ -181,12 +181,12 @@
 
                 if( (in_array( serv_add , crl )) == false  )
                 {
-                	serv_del.push( crl );
+                  serv_del.push( crl );
                 }
                 else
-              	{
-              		serv_add = array_delete( serv_add, crl );
-              	}
+                {
+                	serv_add = array_delete( serv_add, crl );
+                }
             }
 
             display_shopping_cart();
@@ -198,11 +198,11 @@
         **/
         function linker_confirm()
         {
-        	/* if( linklistallreadysubmitted == false )
-        	{
-            	var nav = new navigatorjpspan(set_shopping_cart_handler);
-            	nav.registerattachementlist(serv_add , serv_del );
-            	linklistallreadysubmitted = true;
+          /* if( linklistallreadysubmitted == false )
+          {
+              var nav = new navigatorjpspan(set_shopping_cart_handler);
+              nav.registerattachementlist(serv_add , serv_del );
+              linklistallreadysubmitted = true;
             } */
         }
 
@@ -237,8 +237,8 @@
         **/
         function show_div(divid)
         {
-        	var d = document.getElementById(divid);
-        	d.style.display = 'block';
+          var d = document.getElementById(divid);
+          d.style.display = 'block';
         }
 
        /**
@@ -248,8 +248,8 @@
         **/
         function hide_div(divid)
         {
-        	var d = document.getElementById(divid);
-        	d.style.display = 'none';
+          var d = document.getElementById(divid);
+          d.style.display = 'none';
         }
 
         /**
@@ -258,42 +258,42 @@
         **/
         function close_navigator()
         {
-        	hide_div('navbox');
-        	clear('nav');
+          hide_div('navbox');
+          clear('nav');
             clear('toolBar');
         }
 
         var resource_db_handler =
         {
-        	getresourcedb:function(result)
-        	{
-        		for( var i = 0; i < result.length; i++)
+          getresourcedb:function(result)
+          {
+          	for( var i = 0; i < result.length; i++)
                 {
-                	var item = new Array();
-            		item['crl'] = result[i]['crl'];
-            		item['title'] = result[i]['title'];
+                  var item = new Array();
+              	item['crl'] = result[i]['crl'];
+              	item['title'] = result[i]['title'];
 
-                	shopping_cart.push( item );
+                  shopping_cart.push( item );
 
                 }
                 display_shopping_cart();
-        	}
+          }
         }
 
 
         var set_shopping_cart_handler =
         {
-        	registerattachementlist:function(result)
-        	{
-        		if( result == true )
-        		{
-        			clear_all();
-        		}
-        		else
-        		{
-        			alert("session registration failed");
-        		}
-        	}
+          registerattachementlist:function(result)
+          {
+          	if( result == true )
+          	{
+          		clear_all();
+          	}
+          	else
+          	{
+          		alert("session registration failed");
+          	}
+          }
         }
 
         var tool_bar_handler =
@@ -341,25 +341,25 @@
 
                     if( container )
                     {
-                    	if( visible == false )
-                    	{
-                        	line += "<a href=\"http://claroline.net\" class=\"invisible\" onclick=\"display_navigator(\'"+crl+"\');return false;\">"+name+"</a>";
+                      if( visible == false )
+                      {
+                          line += "<a href=\"http://claroline.net\" class=\"invisible\" onclick=\"display_navigator(\'"+crl+"\');return false;\">"+name+"</a>";
                         }
                         else
                         {
-                        	line += "<a href=\"http://claroline.net\" onclick=\"display_navigator(\'"+crl+"\');return false;\">"+name+"</a>";
+                          line += "<a href=\"http://claroline.net\" onclick=\"display_navigator(\'"+crl+"\');return false;\">"+name+"</a>";
                         }
                     }
                     else
                     {
-                    	if( visible == false )
-                    	{
-                    		line += '<span class="invisible">'+name+'</span>';
-                    	}
-                    	else
-                    	{
-                    		line += name;
-                    	}
+                      if( visible == false )
+                      {
+                      	line += '<span class="invisible">'+name+'</span>';
+                      }
+                      else
+                      {
+                      	line += name;
+                      }
                     }
 
                     line += '</td><td>\n';
@@ -382,7 +382,7 @@
             }
         }
 
-  	   /**
+       /**
 	    *  print a message in a div
 	    *
 	    * @param div
@@ -400,7 +400,7 @@
 	    **/
         function clear(div)
         {
-        	document.getElementById(div).innerHTML = '';
+          document.getElementById(div).innerHTML = '';
         }
 
        /**
@@ -410,17 +410,17 @@
         * @return boolean
         **/
         function in_shopping_cart( item )
-    	{
-        	for( var i = 0; i < shopping_cart.length; i++)
-        	{
-        	    if( shopping_cart[i]["crl"] == item )
-        	    {
-        	        return true;
-        	    }
-        	}
+      {
+          for( var i = 0; i < shopping_cart.length; i++)
+          {
+              if( shopping_cart[i]["crl"] == item )
+              {
+                  return true;
+              }
+          }
 
-        	return false;
-    	}
+          return false;
+      }
 
 	   /**
 		*  delete a crl in the shoppingCart
@@ -429,27 +429,27 @@
 		* @return the shoppingCart without the item
 		*/
         function shopping_cart_delete( item )
-    	{
-        	var temp = new Array();
+      {
+          var temp = new Array();
 
-        	for( var i = 0; i < shopping_cart.length; i++)
-        	{
-        	    if( shopping_cart[i]["crl"] != item )
-        	    {
-        		    temp.push( shopping_cart[i] );
-        	    }
-        	}
+          for( var i = 0; i < shopping_cart.length; i++)
+          {
+              if( shopping_cart[i]["crl"] != item )
+              {
+          	    temp.push( shopping_cart[i] );
+              }
+          }
 
-        	return temp;
-    	}
+          return temp;
+      }
 
-    	/**
+      /**
 		*
 		*
 		* @param gap
 		*
 		*/
-    	function delay(gap)
+      function delay(gap)
         {
             var then,now;
 
@@ -467,36 +467,36 @@
 		*
 		*/
         function prompt_for_external_link()
-   		{
-    		var url = prompt_for_url();
-    		var crl = null;
+     	{
+      	var url = prompt_for_url();
+      	var crl = null;
 
-    		if( url != null )
-    		{
+      	if( url != null )
+      	{
  				crl = coursecrl+"/CLEXT___/"+url;
  				crl = html_escape(crl);
 
  				attach( crl , url );
-    		}
-   		}
+      	}
+     	}
 
-   		/**
+     	/**
 		*
 		* @param
 		* @return
 		*/
-   		function html_escape(str)
-   		{
-     		encodedHtml = escape(str);
-     		encodedHtml = encodedHtml.replace(/\//g,"%2F");
-     		encodedHtml = encodedHtml.replace(/\?/g,"%3F");
-     		encodedHtml = encodedHtml.replace(/=/g,"%3D");
-      		encodedHtml = encodedHtml.replace(/&/g,"%26");
-      		encodedHtml = encodedHtml.replace(/@/g,"%40");
-      		return encodedHtml;
-      	}
+     	function html_escape(str)
+     	{
+       	encodedHtml = escape(str);
+       	encodedHtml = encodedHtml.replace(/\//g,"%2F");
+       	encodedHtml = encodedHtml.replace(/\?/g,"%3F");
+       	encodedHtml = encodedHtml.replace(/=/g,"%3D");
+        	encodedHtml = encodedHtml.replace(/&/g,"%26");
+        	encodedHtml = encodedHtml.replace(/@/g,"%40");
+        	return encodedHtml;
+        }
 
-    	/**
+      /**
 		*
 		* @param
 		* @return
@@ -506,19 +506,19 @@
 			 clear('openCloseAttachment');
 
 		     if ( btn == 'open' )
-     		 {
-         		print('openCloseAttachment','<a href="#btn" name="btn" onclick="change_button(\'close\');return false;">'+lang_linker_close+'</a>');
-         		display_navigator();
-     		 }
-     		 else if ( btn == 'close' )
-     		 {
-        		 print('openCloseAttachment','<a href="#btn" name="btn" onclick="change_button(\'open\');return false;\">'+lang_linker_add_new_attachment+'</a>');
-        		 close_navigator();
-     		 }
-     		 else
-     		 {
-         		alert( 'error: button ' + btn + ' not found' );
-     		 }
+       	 {
+           	print('openCloseAttachment','<a href="#btn" name="btn" onclick="change_button(\'close\');return false;">'+lang_linker_close+'</a>');
+           	display_navigator();
+       	 }
+       	 else if ( btn == 'close' )
+       	 {
+          	 print('openCloseAttachment','<a href="#btn" name="btn" onclick="change_button(\'open\');return false;\">'+lang_linker_add_new_attachment+'</a>');
+          	 close_navigator();
+       	 }
+       	 else
+       	 {
+           	alert( 'error: button ' + btn + ' not found' );
+       	 }
 		}
 
 //</script>

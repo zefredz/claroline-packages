@@ -1,9 +1,14 @@
-/*
- *
+//$Id$
+/**
  * Check the answers of a scorm quiz.
  *
+ * @version 0.1 $Revision$
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package CLLP
+ * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
  */
-
 function CalculateRawScore(objDoc, idCount, fillin)
 {
     var i;
@@ -60,6 +65,4 @@ function CalculateRawScore(objDoc, idCount, fillin)
     }
     
     return score;
-        
-
 }

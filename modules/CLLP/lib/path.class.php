@@ -207,7 +207,7 @@ class path
             $sql = "UPDATE `".$this->tblPath."`
                     SET `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
-  						`visibility` = '".addslashes($this->visibility)."',
+    					`visibility` = '".addslashes($this->visibility)."',
                         `rank` = '".(int) $this->rank."',
                         `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
@@ -624,7 +624,7 @@ class path
 /**
  * path scorm export enable to export a learning path to a zip archive in SCORM 2004 formart
  *
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  **/
 
@@ -658,7 +658,7 @@ class PathScormExport
     /**
      * Constructor
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      */
     public function __construct( &$path )
     {
@@ -669,7 +669,7 @@ class PathScormExport
     /**
      * Export the content of a learning path
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     public function export()
@@ -685,7 +685,7 @@ class PathScormExport
     /**
      * Fetch - load path item list and set directories names
      *
-     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimtiri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function fetch()
@@ -711,7 +711,7 @@ class PathScormExport
     /**
      * Prepare - copy files (statics & from modules) needed to export the LP
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function prepare()
@@ -895,7 +895,7 @@ class PathScormExport
     /**
      * Create a progress frame needed for Documents & co
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param string $destDir Destination directory when the frame is saved
      * @return boolean
      */
@@ -957,7 +957,7 @@ class PathScormExport
     /**
      * Prepare item for the zip, copy directories and files in the destination directory
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param array $item item information from a path
      * @param string $destDir Destination directory when files are copied
      * @param int $deepness Deepness of the directory
@@ -1029,7 +1029,7 @@ class PathScormExport
     /**
      * Create a frame file to include item from the module
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param string $frameName name used to create the file
      * @param string $docId title of the frame
      * @param object $item item of a path
@@ -1112,7 +1112,7 @@ class PathScormExport
     /**
      * Create the manifest needed to use the export
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function createManifest()
@@ -1175,7 +1175,7 @@ class PathScormExport
     /**
      * Create items for the manifest
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param array $item item's data
      * @return boolean
      */
@@ -1203,7 +1203,7 @@ class PathScormExport
     /**
      * Create resources for the manifest
      *
-     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimtiri Rambout <dim@claroline.net>
      * @param array $item item's data
      * @param string $destDir destination directory
      * @return boolean
@@ -1269,7 +1269,7 @@ class PathScormExport
     /**
      * Create a zip file with all the files in $destDir
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function zip()
@@ -1294,7 +1294,7 @@ class PathScormExport
     /**
      * Send the zip in the header for direct download
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      */
     private function send()
     {
@@ -1313,7 +1313,7 @@ class PathScormExport
     /**
      * Return the error stored in $error
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return string $error
      */
     public function getError()
