@@ -1,16 +1,18 @@
 <?php // $Id$
 /**
- * CLAROLINE
+ * Edition of a learning path.
+ *
+ * This page is used to manage a path and some part of a resource.
+ * The title, description, embbed/full screen are setted here for the path.
+ * It's also the place to enable/disable prerequisites for a path.
+ * It also display a list of items linked to the path. It's possible to change de visibility of the  items, set prerequisites for a specific resource, ...
  *
  * @version 0.1 $Revision$
- *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLLP
- *
  * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  */
 

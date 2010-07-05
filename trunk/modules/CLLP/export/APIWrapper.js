@@ -188,7 +188,7 @@ function doLMSGetValue(name)
          // an error was encountered so display the error description
          var errDescription = api.GetErrorString(errCode);
 	if(_Debug){
-         	alert("LMSGetValue("+name+") failed. \n"+ errDescription);
+           alert("LMSGetValue("+name+") failed. \n"+ errDescription);
 	}
          return "";
       }
@@ -251,7 +251,7 @@ function doLMSCommit()
    if (api == null)
    {
 	if(_Debug){
-      		alert("Unable to locate the LMS's API Implementation.\nLMSCommit was not successful.");
+        	alert("Unable to locate the LMS's API Implementation.\nLMSCommit was not successful.");
 	}
       return "false";
    }
@@ -333,7 +333,7 @@ function doLMSGetDiagnostic(errorCode)
    {
 	if(_Debug){
 	      alert("Unable to locate the LMS's API Implementation.\nLMSGetDiagnostic was not successful.");
-   	}
+     }
     }
 
    return api.GetDiagnostic(errorCode).toString();
@@ -361,7 +361,7 @@ function LMSIsInitialized()
 	if(_Debug){
 	      alert("Unable to locate the LMS's API Implementation.\nLMSIsInitialized() failed.");
 	}
-     	 return false;
+        return false;
    }
    else
    {
@@ -465,7 +465,7 @@ function findAPI(win)
       if (findAPITries > 7) 
       {
 	if(_Debug){
-         	alert("Error finding API -- too deeply nested.");
+           alert("Error finding API -- too deeply nested.");
 	}
          return null;
       }

@@ -1,16 +1,35 @@
+// $Id$
+/**
+ * Librairy to manage a learning path in Ajax
+ * 
+ * @version 0.1 $Revision$
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package CLLP
+ * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 //$(document).ready(init);
 
+/**
+ * Function to initialize variables/functions in object
+ *
+ * @param int pathId Id of a learning path
+ * @param string cidReq Id of a course
+ * @param string moduleUrl Url of a module
+ * @param boolean debugMode Active or not the debug mode
+ */
 function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 {
-	this.pathId = pathId;
-	this.cidReq = cidReq;
-	this.moduleUrl = moduleUrl;
-	this.debugMode = debugMode;
+    this.pathId = pathId;
+    this.cidReq = cidReq;
+    this.moduleUrl = moduleUrl;
+    this.debugMode = debugMode;
 
 
-	/**
-	 * Commit
- 	 * Send all values to server to store them
+    /**
+     * Commit
+      * Send all values to server to store them
       *
       */
     this.commit = commit;
@@ -79,13 +98,14 @@ function lpHandler(pathId, cidReq, moduleUrl, debugMode)
 
 /**
  * Functions mapped in object
- *
  */
 
 /**
  * Commit
  * Send all values to server to store them
  *
+ * @param string datamodel the data model of a path
+ * @return HTML
  */
 function commit(datamodel) {
     debug("Commit",1);
@@ -105,37 +125,37 @@ function commit(datamodel) {
             // do nothing, this should be an array with value, mod and format as keys
         }
     }
-		var jsonDatamodelValues = $.toJSON(datamodelValues);
-		$.ajax({
+        var jsonDatamodelValues = $.toJSON(datamodelValues);
+        $.ajax({
         type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
         data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
         success: function( response ){
-					refreshToc();
-					//branching conditions
-					$.ajax({
-						type: "POST",
-						url: lpHandler.moduleUrl + "viewer/scormServer.php",
-						data: "cmd=rqBranchConditions&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-						success: function(response)
-						{
-							if( !isNaN(parseInt(response, 10)) )
-							{								
-								lpHandler.setContent(response);	
-							}
-							else
-							{
-								if( response )
-								{
-									lpHandler.itemId = 0;
-									this.itemId = 0;
-									mkOpenItem( response );
-								}								
-							}
-						},
-						dataType: 'html'
-					});	
-				},
+                    refreshToc();
+                    //branching conditions
+                    $.ajax({
+                        type: "POST",
+                        url: lpHandler.moduleUrl + "viewer/scormServer.php",
+                        data: "cmd=rqBranchConditions&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+                        success: function(response)
+                        {
+                            if( !isNaN(parseInt(response, 10)) )
+                            {                                
+                                lpHandler.setContent(response);    
+                            }
+                            else
+                            {
+                                if( response )
+                                {
+                                    lpHandler.itemId = 0;
+                                    this.itemId = 0;
+                                    mkOpenItem( response );
+                                }                                
+                            }
+                        },
+                        dataType: 'html'
+                    });    
+                },
         dataType: 'html'
     });
 
@@ -152,8 +172,8 @@ function setContent(itemId) {
     debug("setContent("+itemId+")",1);
     // set item id
     this.itemId = itemId;
-		lpHandler.itemId = this.itemId;
-		// refresh api then refresh content
+        lpHandler.itemId = this.itemId;
+        // refresh api then refresh content
     $.getScript("apiData.php?cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + itemId, rqOpenItem );
 }
 
@@ -163,13 +183,13 @@ function setContent(itemId) {
  *
  */
 function rqOpenItem() {
-	debug("rqOpenItem()",1);
-	// get url and set frame location to this url
-	$.ajax({
-			url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-			success: mkOpenItem,
-			dataType: 'html'
-	});
+    debug("rqOpenItem()",1);
+    // get url and set frame location to this url
+    $.ajax({
+            url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=rqContentUrl&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+            success: mkOpenItem,
+            dataType: 'html'
+    });
 }
 
 
@@ -180,37 +200,37 @@ function rqOpenItem() {
  */
 function mkOpenItem(itemUrl) {
     debug("mkOpenItem()",1);
-		if( itemUrl != '' )
+        if( itemUrl != '' )
     {
       //get newWindow
-			$.ajax({
-				type: "GET",
-				url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getNewWindow&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-				success: function( response ){
-					if( response != 0 )
-					{
-						var newWindow = window.open( itemUrl, 'newWindow');						
-					}
-					else
-					{
-						var frame = lp_top.frames['lp_content'].document;
-						$(frame.getElementById('description')).children().remove();
-						$.ajax({
-							type: "GET",
-							url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-							success: function(response){
-								if( response )
-								{
-									$(frame.getElementById('description')).append(response);
-								}
-							},
-							dataType: 'html'
-						});
-						//lp_top.lp_content.content.location = itemUrl;
-						$(frame.getElementById('content')).attr('src', itemUrl);
-					}					
-				}
-			});
+            $.ajax({
+                type: "GET",
+                url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getNewWindow&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+                success: function( response ){
+                    if( response != 0 )
+                    {
+                        var newWindow = window.open( itemUrl, 'newWindow');                        
+                    }
+                    else
+                    {
+                        var frame = lp_top.frames['lp_content'].document;
+                        $(frame.getElementById('description')).children().remove();
+                        $.ajax({
+                            type: "GET",
+                            url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+                            success: function(response){
+                                if( response )
+                                {
+                                    $(frame.getElementById('description')).append(response);
+                                }
+                            },
+                            dataType: 'html'
+                        });
+                        //lp_top.lp_content.content.location = itemUrl;
+                        $(frame.getElementById('content')).attr('src', itemUrl);
+                    }                    
+                }
+            });
     }
     else
     {
@@ -272,16 +292,16 @@ function goPrevious() {
 function goNext() {
     debug("goNext()",1);
     $.ajax({
-	type: "POST",
-	url: lpHandler.moduleUrl + "viewer/scormServer.php",
-	data: "cmd=getNextId&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-	success: function(response){
-	    if( isInteger(response) )
-	    {	
-		lpHandler.setContent(response);
-	    }
-	},
-	dataType: 'html'
+    type: "POST",
+    url: lpHandler.moduleUrl + "viewer/scormServer.php",
+    data: "cmd=getNextId&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+    success: function(response){
+        if( isInteger(response) )
+        {    
+        lpHandler.setContent(response);
+        }
+    },
+    dataType: 'html'
     }); 
 
     /*if( $(".active", lp_top.frames["lp_toc"].document).size() == 1 )
@@ -297,10 +317,10 @@ function goNext() {
     if( isDefined(nextItemId) )
     {
         var id = nextItemId.substring( nextItemId.indexOf('_') + 1);
-	if(id.indexOf('_'))
-	{
-		id = id.substring( 0, id.indexOf('_'));
-	}
+    if(id.indexOf('_'))
+    {
+        id = id.substring( 0, id.indexOf('_'));
+    }
         debug(id, 1);
         lpHandler.setContent(id);
     }
@@ -438,7 +458,7 @@ function addBlockingCondition( pathId ) {
     
     if( $("select[name='item[]']").size() > 0)
     {
-      var sConditions = $("<select>").attr("name","condition[]");			
+      var sConditions = $("<select>").attr("name","condition[]");            
       $.ajax({
         type: "POST",
         url: "../viewer/scormServer.php",
@@ -476,31 +496,31 @@ function addBlockingCondition( pathId ) {
     $(div).append(sOperators);
     
     var sStatus = $("<select>").attr("name","status[]");
-		$(sStatus).change( function(){
-				
-				$(div).find('span').remove();
-				var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right');
-				var sSpan = $('<span>');
-				if( $(sStatus).attr("value") == 'COMPLETED' )
-				{
-					$(iPct).attr('type','text');
-					sSpan.append(iPct);
-					sSpan.append('%');
-				}
-				else
-				{
-					$(iPct).attr('type','hidden');
-					sSpan.append(iPct);
-				}
-				$(div).append(sSpan);
-			});
+        $(sStatus).change( function(){
+                
+                $(div).find('span').remove();
+                var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right');
+                var sSpan = $('<span>');
+                if( $(sStatus).attr("value") == 'COMPLETED' )
+                {
+                    $(iPct).attr('type','text');
+                    sSpan.append(iPct);
+                    sSpan.append('%');
+                }
+                else
+                {
+                    $(iPct).attr('type','hidden');
+                    sSpan.append(iPct);
+                }
+                $(div).append(sSpan);
+            });
     $(div).append(sStatus);
-		var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right').attr('type','text');		
-		var sSpan = $('<span>');
-		sSpan.append(iPct);
-		sSpan.append('%');
-		$(div).append(sSpan);
-		
+        var iPct = $('<input>').attr('name','raw_to_pass[]').css('width','50px').css('text-align','right').attr('type','text');        
+        var sSpan = $('<span>');
+        sSpan.append(iPct);
+        sSpan.append('%');
+        $(div).append(sSpan);
+        
     $.ajax({
         type: "POST",
         url: "../viewer/scormServer.php",
@@ -519,13 +539,13 @@ function addBlockingCondition( pathId ) {
 
 function addBranchCondition( pathId )
 {
-	$.ajax({
-		type: "POST",
-		url: "../viewer/scormServer.php",
-		data: "cmd=createBranchCondition&pathId=" + pathId,
-		success:  function(response){
-			$(response).insertBefore("#branch_condition_button");
-		}
-	}
-	);
+    $.ajax({
+        type: "POST",
+        url: "../viewer/scormServer.php",
+        data: "cmd=createBranchCondition&pathId=" + pathId,
+        success:  function(response){
+            $(response).insertBefore("#branch_condition_button");
+        }
+    }
+    );
 }
