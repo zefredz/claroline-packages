@@ -41,7 +41,7 @@ try
     $userInput = Claro_UserInput::getInstance();
   
     $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-        'list', 'rqAdd', 'exAdd', 'rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exLock', 'rqResult',
+        'list', 'rqAdd', 'exAdd', 'rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exLock', 'rqResult', 'export',
         'rqSlotAdd', 'exSlotAdd', 'rqSlotEdit', 'exSlotEdit', 'rqSlotDelete', 'exSlotDelete', 'rqSlotChoice', 'exSlotChoice', 'exSlotVisible'
     ) ) );
     
@@ -636,6 +636,71 @@ try
                         $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox );
                     }
                 }
+            }
+            break;
+        case 'export' :
+            {
+                if( ! ( isset( $_REQUEST['type'] ) && $_REQUEST['type'] == 'csv' ) )
+                {
+                    claro_die( get_lang( 'Not allowed' ) );
+                }
+                
+                $subscription = new subscription();
+                
+                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
+                {
+                    $out .= $result;
+                }
+                else
+                {
+                    FromKernel::uses( 'csv.class' );
+                
+                    $csv = new csv( ';' );
+                    
+                    $slotsCollection = new slotsCollection();
+                    
+                    $allSlotsFromUsersToExport = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
+                    
+                    $export[ 0 ][ 'title' ] = get_lang( 'Title' );                    
+                    if( $subscription->getContext() == 'user' )
+                    {
+                        $export[ 0 ][ 'lastname' ] = get_lang( 'Last name' );
+                        $export[ 0 ][ 'firstname' ] = get_lang( 'First name' );
+                    }
+                    else
+                    {
+                        $export[ 0 ][ 'groupname' ] = get_lang( 'Group name' );
+                    }
+                    $i = 1;
+                    
+                    foreach( $allSlotsFromUsersToExport as $allSlots )
+                    {
+                        foreach( $allSlots as $slot )
+                        {
+                            $export[ $i ][ 'title' ] = $slot[ 'title' ];
+                            if( $subscription->getContext() == 'user' )
+                            {
+                               $export[ $i ][ 'lastname' ] = $slot[ 'subscriberData' ][ 'lastname' ];
+                               $export[ $i ][ 'firstname' ] = $slot[ 'subscriberData' ][ 'firstname' ];
+                            }
+                            else
+                            {
+                                $export[ $i ][ 'groupname' ] = $slot[ 'subscriberData' ][ 'name' ];
+                            }
+                            $i++;
+                        }
+                    }
+                    
+                }
+                
+                $csv->recordList = $export;
+                
+                $csvContent = $csv->export();
+                
+                header("Content-type: application/csv");
+                header('Content-Disposition: attachment; filename="'. $subscription->getTitle() . '.csv"');
+                echo $csvContent;
+                exit;
             }
             break;
         case 'rqResult' :
