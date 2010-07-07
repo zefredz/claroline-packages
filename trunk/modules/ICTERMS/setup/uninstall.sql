@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `__CL_MAIN__icterms_acceptances`;
