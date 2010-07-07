@@ -42,7 +42,7 @@
             <td style="text-align: center;"><input type="text" name="places" value="<?php echo $this->thisSlot->getAvailableSpace(); ?>" style="width: 20px; text-align: right; <?php echo $this->error == true && $this->thisSlot->getAvailableSpace() <= 0 ? 'border-color: #900' : ''; ?>" /></td>
             <td colspan="2" style="text-align: center;">
                 <input type="submit" name="buttonSave" value="<?php echo get_lang( 'Save' ); ?>" />
-                <input type="button" name="buttonSave" value="<?php echo get_lang( 'Cancel' ); ?>" />
+                <?php echo claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')); ?>
         </tr>
     <?php
         else :

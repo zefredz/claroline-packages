@@ -74,5 +74,5 @@ endif;
         </tbody>
     </table>
     <input type="submit" name="saveButton" value="<?php echo get_lang( 'Save' ); ?>" />
-    <input type="button" name="cancelButton" value="<?php echo get_lang( 'Cancel' ); ?>" />
+    <?php echo claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')); ?>
 </form>

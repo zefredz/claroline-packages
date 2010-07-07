@@ -70,5 +70,5 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
        </div>
    </fieldset>
    <input type="submit" name="submitButton" value="<?php echo get_lang('Save'); ?>" />
-   <input type="button" name="cancelButton" value="<?php echo get_lang('Cancel'); ?>" />
+   <?php echo claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')); ?>
 </form>
