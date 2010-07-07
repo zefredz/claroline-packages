@@ -383,7 +383,7 @@ class TranslationManage{
         $content .= '$_lang[\''. $lang .'\'] = \'' . $lang . '\';' . "\n";
       }
     }
-    $content .= "\n" . '?>';
+    /*$content .= "\n" . '?>';*/
     
     if( file_put_contents( $file, $content) )
     {
@@ -686,7 +686,7 @@ class TranslationManage{
           $value = str_replace( "'", "\'", $value);
           $content .= '$_lang[\''. $key .'\'] = \'' . $value . '\';' . "\n";
         }
-        $content .= "\n" . '?>';
+        /*$content .= "\n" . '?>';*/
         return file_put_contents( $langFile, $content);
       }
       else
