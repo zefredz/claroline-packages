@@ -19,15 +19,19 @@ $conf_def['config_class'] = 'tool';
 
 $conf_def['section']['main']['label']='Main Settings';
 $conf_def['section']['main']['properties'] =
-array ( 'icterms_forceTermsAcceptance' );
+array (
+    'icterms_forceTermsAcceptance',
+    'icterms_useAccountCreationAgreement'
+);
 
-$conf_def_property_list['icterms_forceTermsAcceptance'] =
-array ( 'label'       => 'Force user to accept terms of use on login'
-      , 'default'       => true
-      , 'type'          => 'boolean'
-      , 'display'       => TRUE
-      , 'readonly'      => FALSE
-      , 'acceptedValue' => array ( true => 'Yes'
-                               , false => 'No'
-                               )
-      );
+$conf_def_property_list['icterms_forceTermsAcceptance'] = array (
+    'label'         => 'Force user to accept terms of use on login',
+    'default'       => TRUE,
+    'type'          => 'boolean',
+    'display'       => TRUE,
+    'readonly'      => FALSE,
+    'acceptedValue' => array (
+        'TRUE' => 'Yes',
+        'FALSE' => 'No'
+    )
+);
