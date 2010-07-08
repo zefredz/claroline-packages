@@ -1,20 +1,23 @@
 <?php // $Id$
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
- * CLAROLINE
+ * Librairy to manage a resource in a learning path
  *
- * $Revision$
- *
+ * @version 0.1 $Revision$
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLLP
- *
  * @author Sebastien Piraux
- *
  */
 
+/**
+ * Item class
+ *
+ * Manage a resource in a learning path
+ * 
+ * @author Dimitri Rambout <dim@claroline.net>
+ * @author Sebastien Piraux
+ */
 class item
 {
     /**
@@ -122,7 +125,6 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-
     public function __construct()
     {
         $this->id = (int) -1;
@@ -155,7 +157,7 @@ class item
     }
 
     /**
-     * load an item from DB
+     * Load an item from DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer $id id of path
@@ -225,7 +227,7 @@ class item
     }
 
     /**
-     * save path to DB
+     * Save an item into DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
@@ -307,7 +309,7 @@ class item
     }
 
     /**
-     * delete path
+     * Delete an item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -360,7 +362,7 @@ class item
     }
 
     /**
-     * check if data are valide
+     * Check if data are valide
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -378,10 +380,10 @@ class item
         return true; // no errors, form is valide
     }
 
+    
     //-- Getter & Setter
-
     /**
-     * get id
+     * Get id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -392,7 +394,7 @@ class item
     }
 
     /**
-     * get path id
+     * Get path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -403,11 +405,10 @@ class item
     }
 
     /**
-     * set path id
+     * Set path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the path
-     * @return int
+     * @param int $value id of the path
      */
     public function setPathId($value)
     {
@@ -415,7 +416,7 @@ class item
     }
 
     /**
-     * get type
+     * Get type
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -426,10 +427,10 @@ class item
     }
 
     /**
-     * set type
+     * Set type
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item type
      */
     public function setType($value)
     {
@@ -444,7 +445,7 @@ class item
     }
 
     /**
-     * get title
+     * Get title
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -455,10 +456,10 @@ class item
     }
 
     /**
-     * set title
+     * Set title
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item title
      */
     public function setTitle($value)
     {
@@ -466,7 +467,7 @@ class item
     }
 
     /**
-     * get description
+     * Get description
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -477,10 +478,10 @@ class item
     }
 
     /**
-     * set description
+     * Set description
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item description
      */
     public function setDescription($value)
     {
@@ -488,7 +489,7 @@ class item
     }
 
     /**
-     * set visible
+     * Set visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -498,7 +499,7 @@ class item
     }
 
     /**
-     * set invisible
+     * Set invisible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -508,7 +509,7 @@ class item
     }
 
     /**
-     * is the item visible
+     * Check if the item is visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -520,7 +521,7 @@ class item
     }
 
     /**
-     * is the item invisible
+     * Check if the item is invisible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -531,7 +532,7 @@ class item
     }
 
     /**
-     * get identifier
+     * Get identifier
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -545,7 +546,7 @@ class item
      * set identifier
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item identifier
      */
     public function setIdentifier($value)
     {
@@ -553,7 +554,7 @@ class item
     }
 
     /**
-     * get rank
+     * Get rank
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -564,10 +565,10 @@ class item
     }
 
     /**
-     * set rank
+     * Set rank
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item rank
      */
     public function setRank($value)
     {
@@ -575,9 +576,10 @@ class item
     }
 
     /**
+     * Set higher rank
      *
-     *
-     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param int $pathId Path id of an item
      */
     public function setHigherRank($pathId)
     {
@@ -585,7 +587,7 @@ class item
     }
 
     /**
-     * get lock
+     * Get lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -596,10 +598,10 @@ class item
     }
 
     /**
-     * set lock
+     * Set lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Lock
      */
     public function setLock($value)
     {
@@ -607,7 +609,7 @@ class item
     }
 
     /**
-     * set lock
+     * Set lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -617,7 +619,7 @@ class item
     }
 
     /**
-     * set unlock
+     * Set unlock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -627,7 +629,7 @@ class item
     }
 
     /**
-     * is the path locked ?
+     * Check if an item is locked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -639,7 +641,7 @@ class item
     }
 
     /**
-     * is the path unlocked ?
+     * Check if an item is unlocked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -650,7 +652,7 @@ class item
     }
 
     /**
-     * get sysPath
+     * Get sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
@@ -661,7 +663,7 @@ class item
     }
 
     /**
-     * set sysPath
+     * Set sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
@@ -672,7 +674,7 @@ class item
     }
 
     /**
-     * get parent id
+     * Get parent id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -683,10 +685,10 @@ class item
     }
 
     /**
-     * set parent id
+     * Set parent id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the parent
+     * @param int $value id of the parent
      * @return int
      */
     public function setParentId($value)
@@ -695,7 +697,7 @@ class item
     }
 
     /**
-     * get launchData
+     * Get launchData
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string data provided by manifest to the SCO
@@ -706,7 +708,7 @@ class item
     }
 
     /**
-     * set launchData
+     * Set launchData
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value data provided by manifest to the SCO
@@ -717,7 +719,7 @@ class item
     }
 
     /**
-     * get timeLimitAction
+     * Get timeLimitAction
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string defines how the LMS must handle SCO when time is out
@@ -728,10 +730,10 @@ class item
     }
 
     /**
-     * set timeLimitAction
+     * Set timeLimitAction
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string defines how the LMS must handle SCO when time is out
+     * @param string $value defines how the LMS must handle SCO when time is out
      */
     public function setTimeLimitAction($value)
     {
@@ -746,7 +748,7 @@ class item
     }
 
     /**
-     * get completionThreshold
+     * Get completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string value of threshold required if setted to compute tu completion_status
@@ -757,7 +759,7 @@ class item
     }
 
     /**
-     * set completionThreshold
+     * Set completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string value of threshold required if setted to compute tu completion_status
@@ -768,11 +770,10 @@ class item
     }
 
     /**
-     * get the higher rank of items in learning path
+     * Get the higher rank of items in learning path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $pathId
-     * @param $parentId
      * @return int higher item rank for items that have same parentId
      */
     private function getHigherRank($pathId)
@@ -788,11 +789,24 @@ class item
         else                       		  return 0;
     }
     
+    /**
+     * Get if on score, item redirect auto to the correct branching conditions
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return int Auto redirect to the correct branching conditions (if return = 1)
+     */
     public function getRedirectBranchConditions()
     {
         return $this->redirectBranchConditions;
     }
     
+    /**
+     * Set if on score, item redirect auto to the correct branching conditions
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $value 1 or 0
+     *
+     */
     public function setRedirectBranchConditions( $value )
     {
         $value = (int) $value;
@@ -807,13 +821,24 @@ class item
         }        
     }
     
+    /**
+     * Get branching conditions linked to an item
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array Branching conditions linked to the item
+     */
     public function getBranchConditions()
     {
         $_branchConditions = unserialize( $this->branchConditions );
         
         return $_branchConditions;
     }
-    
+    /**
+     * Set branching conditions linked to an item
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param array $branchConditions Array of branching conditions
+     */
     public function setBranchConditions( $branchConditions = null )
     {
         if( is_null( $branchConditions ) )
@@ -847,11 +872,27 @@ class item
         return true;
     }
     
+    /**
+     * Get New Window
+     *
+     * Incidate if resource needs to be opened in a new window
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return int 1 if the resource needs to be opened in a new window, 0 in other case
+     */
     public function getNewWindow()
     {
         return (int) $this->newWindow;
     }
     
+    /**
+     * Set New Window
+     *
+     * Set the value that indicate that a resource needs to be opened in a new window or not
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $value 1 if the resource needs to be opened in a new window, 0 in other case
+     */
     public function setNewWindow( $value )
     {
         $value = (int) $value;
@@ -866,6 +907,13 @@ class item
         }
     }
     
+    /**
+     * Evalute a branching conditions to access a resource
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId id of a path
+     * @return mixed Boolean or item id
+     */
     public function evalBranchConditions( $pathId )
     {
         $attempt = new attempt();
@@ -991,15 +1039,42 @@ class item
     }
 }
 
+/**
+ * ItemList Class
+ *
+ * Manage an resource list in a learning path
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class itemList
 {
+    /**
+     * @var int $pathId Id of a learning path
+     */
     protected $pathId;
+    /**
+     * @var string $tblPath Name of the SQL Table for the learning paths
+     */
     protected $tblPath;
+    /**
+     * @var string $tblItem Name of the SQL Table for the resources
+     */
     protected $tblItem;
+    /**
+     * @var string $tblItemBlockCondition Name of the SQL Table for the blocking conditions for a resource
+     */
     protected $tblItemBlockCondition;
+    /**
+     * @var string $treeItemList List of resources displayed as a tree
+     */
     protected $treeItemList;
 
-
+    /**
+     * Constructor
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId Id of a learning path
+     */
     public function __construct($pathId)
     {
         $this->pathId = (int) $pathId;
@@ -1315,7 +1390,7 @@ class itemList
         return $list;
     }
 
-	/**
+    /**
      * returns a given node and its children
      *
      * @author Sebastien Piraux <pir@cerdecam.be>

@@ -403,7 +403,7 @@ if( $is_allowedToEdit )
 
             // export
             $out .= '<td>' . "\n"
-            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '" onclick="return confirm(\'' . get_lang( 'Only Exercises and documents will be exported.' ) . '\')";>' . "\n"
             .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";
