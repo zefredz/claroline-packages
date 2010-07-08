@@ -21,7 +21,7 @@ $tlabelReq = 'CLATT';
 
 require '../../claroline/inc/claro_init_global.inc.php';
 
-if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() || !get_init('is_authenticated')) claro_disp_auth_form(true);
+if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form(true);
 
 //claro_set_display_mode_available(true);
 
@@ -45,7 +45,7 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
  */
 
 $cmd = array_key_exists( 'cmd', $_REQUEST ) ? $_REQUEST['cmd'] : null;
-$id = array_key_exists( 'id', $_REQUEST ) ? (int)$_REQUEST['id'] : 0 ;
+$idList = array_key_exists( 'idList', $_REQUEST ) ? (int)$_REQUEST['idList'] : 0 ;
 
 if(isset($_POST['yearDateBegin']))
 	$dateBegin = claro_sql_escape($_POST['yearDateBegin'])
@@ -82,6 +82,8 @@ else $titleAtt = NULL;
 $dialogBox = new DialogBox();
 	
 $userMenu = Array();
+
+$out = '';
 
 if($is_allowedToEdit)
 {
@@ -126,9 +128,9 @@ if($is_allowedToEdit)
     	$dialogBox->form( '<p>' . get_lang("Delete a list of attendance") . '</p>'
         . '<table><form action="' . $_SERVER [ 'PHP_SELF' ] . '" method="post">' . "\n"
         . '<tr><td><label for="cmd">' . get_lang( ' Are you sure to delete this list of attendance : ' ) 
-        . get_title($id) . ' ' . claro_date('d/m/Y',get_date($id)) .' </label></td>'
+        . get_title($idList) . ' ' . claro_date('d/m/Y',get_date($idList)) .' </label></td>'
 		. '<td><input type="checkbox" name="cmd" value="exDelete">'
-		. '<input type="hidden" name="id" value="' . $id . '"></td>'
+		. '<input type="hidden" name="id" value="' . $idList . '"></td>'
         . '<br />' . "\n"
         . '<tr><td><input value="' . ucfirst(get_lang( 'continue' )) . '" type="submit" /></td><td>'
 		. '</form></table>');
@@ -136,9 +138,9 @@ if($is_allowedToEdit)
 	
     if( $cmd == 'exDelete')
     {
-    	if($id>0)
+    	if($idList>0)
     	{
-            if (del_attendanceList($id))
+            if (del_attendanceList($idList))
     		$dialogBox->success(ucfirst(get_lang('List of attendance deleted')));
     	}
     	else
@@ -152,21 +154,21 @@ if($is_allowedToEdit)
     	$dialogBox->form( '<p>' . get_lang("Add a list of attendance") . '</p>'
         . '<table><form action="' . $_SERVER [ 'PHP_SELF' ] . '" method="post">' . "\n"
         . '<input name="cmd" type="hidden" value="exEdit" />' . "\n"
-        . '<input name="id" type="hidden" value="' . $id . '" />' . "\n"
+        . '<input name="id" type="hidden" value="' . $idList . '" />' . "\n"
         . '<tr><td><label for="titleAtt">' . ucfirst(get_lang( 'Title for this list' )) . ': </label></td><td>'
-		. '<input type="text" name="titleAtt" value="' . get_title($id) . '"/>'
+		. '<input type="text" name="titleAtt" value="' . get_title($idList) . '"/>'
         . '<br />' . "\n"
         . '<tr><td><label for="dateAtt">' . ucfirst(get_lang( 'Date for this list' )) . ': </label></td><td>'
-		. claro_html_date_form('dayDateToAdd', 'monthDateToAdd', 'yearDateToAdd',get_date($id))
+		. claro_html_date_form('dayDateToAdd', 'monthDateToAdd', 'yearDateToAdd',get_date($idList))
 		. ' no date <input type="checkbox" name="noDate" value="noDate">'
         . '<br />' . "\n"
         . '<tr><td><input value="' . ucfirst(get_lang( 'continue' )) . '" type="submit" /></td><td>'
 		. '</form></table>');
     }
     
-    if ($cmd == 'exEdit' && $id>0)
+    if ($cmd == 'exEdit' && $idList>0)
     {
-        if(edit_attendanceList($id,$dateAtt,$titleAtt) > 0)
+        if(edit_attendanceList($idList,$dateAtt,$titleAtt) > 0)
     		$dialogBox->success(get_lang('Attendance saved'));
         else 
             $dialogBox->error(get_lang('Attendance not saved'));
@@ -175,36 +177,33 @@ if($is_allowedToEdit)
 	if( $cmd == 'exExport')
     {
         require_once( dirname(__FILE__) . '/lib/exportAttList.lib.php');
-
-        $dateBegin = claro_sql_escape($_POST['yearDateBegin'])."-".claro_sql_escape($_POST['monthDateBegin'])."-".claro_sql_escape($_POST['dayDateBegin']);
-		$dateEnd = claro_sql_escape($_POST['yearDateEnd'])."-".claro_sql_escape($_POST['monthDateEnd'])."-".claro_sql_escape($_POST['dayDateEnd']);
 		
         // contruction of XML flow
-        $csv = export_attendance_list(NULL, $dateBegin, $dateEnd,$id);
+        $csv = export_attendance_list(NULL, $dateBegin, $dateEnd,$idList);
 		
         if( !empty($csv) )
         {
             header("Content-type: application/csv");
             header('Content-Disposition: attachment; filename="'.claro_get_current_course_id().'_attendancelist.csv"');
             echo $csv;
-            exit;
+            exit();
         }
     }
     
 	if( $cmd == 'rqExport')
     {
 		
-		$dialogBox->form( '<p>' . ucfirst(get_lang("select date")) . '</p>'
+		$dialogBox->form( '<p>' .get_lang('select date') . '</p>'
             . '<table><form action="' . $_SERVER [ 'PHP_SELF' ] . '" method="post">' . "\n"
             . '<input name="cmd" type="hidden" value="exExport" />' . "\n"
-            . '<tr><td><label for="dateToAdd">' . ucfirst(get_lang( 'start date' )) . ': </label></td><td>'
+            . '<tr><td><label for="dateToAdd">' . get_lang( 'start date' ) . ': </label></td><td>'
 			. claro_html_date_form('dayDateBegin', 'monthDateBegin', 'yearDateBegin')
             . '</td></tr>' . "\n"
-			. '<tr><td><label for="dateToAdd">' . ucfirst(get_lang( 'end date' )) . ': </label></td><td>'
+			. '<tr><td><label for="dateToAdd">' . get_lang( 'end date' ) . ': </label></td><td>'
 			. claro_html_date_form('dayDateEnd', 'monthDateEnd', 'yearDateEnd')
             . '</td></tr>' . "\n"
             . '<tr><td>' . "\n"
-            . '<input value="' . ucfirst(get_lang( 'continue' )) . '" type="submit" />'
+            . '<input value="' . get_lang( 'continue' ) . '" type="submit" />'
             . '</td></tr>' . "\n"
 			. '</form></table>');
     }
@@ -227,17 +226,25 @@ if($is_allowedToEdit)
         // Export CSV file of attendance with date choice
 		$userMenu[] = claro_html_cmd_link( htmlspecialchars(Url::Contextualize(
                                         $_SERVER['PHP_SELF'] . '?cmd=rqExport' ))
-                                     , '<img src="' . get_icon_url('rqExport') . '" alt="" />'
+                                     , '<img src="' . get_icon_url('export') . '" alt="" />'
                                      . ucfirst(get_lang('export attendance list with date choice')));
+                                     
+        // Summary of attendance
+		$userMenu[] = claro_html_cmd_link( htmlspecialchars(Url::Contextualize(
+                                        'summary.php?idList=' . $idList ))
+                                     , '<img src="' . get_icon_url('summary') . '" alt="" />'
+                                     . ucfirst(get_lang('Summary of attendance')));
     } 
 }
 
 /*=====================================================================
    Display section
   =====================================================================*/
-ClaroBreadCrumbs::getInstance()->prepend( get_lang('Attendance'), Url::Contextualize(get_module_url('CLATT') . '/index.php') );
+//ClaroBreadCrumbs::getInstance()->prepend( get_lang('Attendance'), Url::Contextualize(get_module_url('CLATT') . '/index.php') );
 
-$out = '';
+$nameTools = get_lang('List of attendance');
+
+$out .= claro_html_tool_title($nameTools);
 
 $out .= $dialogBox->render(); 
 

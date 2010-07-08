@@ -118,9 +118,25 @@ if($is_allowedToEdit && get_conf('allow_export_csv'))
 /*=====================================================================
    Display section
   =====================================================================*/
-ClaroBreadCrumbs::getInstance()->prepend( get_lang('List of attendance'), Url::Contextualize(get_module_url('CLATT') . '/index.php') );
+ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('List of attendance'), Url::Contextualize(get_module_url('CLATT') . '/index.php') );
+ClaroBreadCrumbs::getInstance()->append(claro_date('d/m/Y',get_date($idList)) . ' - '  . get_title($idList));
 
 $out = '';
+
+$out .= '<script type="text/javascript">'
+        .   'function changeAllCheckbox()
+            {
+                if( $("#checkAll").attr("checked") )
+                {
+                    $(".checkAll").attr("checked", true);
+                }
+                else
+                {
+                    $(".checkAll").attr("checked", false);
+                }
+            }
+            '
+        .   '</script>';
 
 $out .= $dialogBox->render(); 
 
@@ -130,7 +146,8 @@ $out .= claro_html_menu_horizontal($userMenu);
 $out .= '<table class="claroTable emphaseLine" width="100%" cellpadding="2" cellspacing="1" '
        .' border="0" summary="' . ucfirst(get_lang('course users list')) . '">' . "\n";
 $out .= '<caption class="header">' . claro_date('d/m/Y',get_date($idList)) . ' - '  . get_title($idList) . '</caption>';
-
+$out .= '<th></th>' . "\n";
+ 
 $out    .=   '<thead>' . "\n"
         .    '<tr class="headerX" align="center" valign="top">'."\n"
         .    '<th>' .claro_html_cmd_link( htmlspecialchars(Url::Contextualize(
@@ -139,7 +156,9 @@ $out    .=   '<thead>' . "\n"
         .    '<th>' . claro_html_cmd_link( htmlspecialchars(Url::Contextualize(
                                                $_SERVER['PHP_SELF'] . '?order=prenom&id='. $idList .'' ))
                                             , get_lang('First name')) . '</th>'."\n"
-        .    '<th>' . get_lang('Attendance') .  '</th>'."\n";
+        .    '<th>' . get_lang('Attendance') 
+        .      ' <input type="checkbox" name="checkAll" id="checkAll" 
+        					onchange="changeAllCheckbox();"  /></th>'."\n";
 
 $out .= '<th>' . get_lang('Comment') .  '</th>'."\n";
 
@@ -183,27 +202,36 @@ foreach ($userList as $thisUser)
     	if($is_allowedToEdit)
     	{
     		$out .= '<td>';
-    	    $out .= get_lang('Present') . '<input type="radio" name="attendance_'.$thisUser['user_id'].'" value="present" ';		
+    		
+    	    $out .= get_lang('Present') . '<input type="radio" class="checkAll" name="attendance_'.$thisUser['user_id'].'" value="present" ';		
     		
     	    if($attendance=='present')
     		{
-    			$out .= 'checked >';
+    			$out .= 'checked > ';
     		}
-    		else $out .= '>';
+    		else $out .= '> ';
+
+    		$out .= get_lang('Partially present') . '<input type="radio" name="attendance_'.$thisUser['user_id'].'" value="partial" ';		
+    		
+    		if($attendance=='partial')
+    		{
+    			$out .= 'checked > ';
+    		}
+    		else $out .= '> ';
     		
     		$out .= get_lang('Absent') . '<input type="radio" name="attendance_'.$thisUser['user_id'].'" value="absent" ';		
     		if($attendance=='absent')
     		{
-    			$out .= 'checked >';
+    			$out .= 'checked > ';
     		}
-    		else $out .= '>'; 
+    		else $out .= '> '; 
     		
     		$out .= get_lang('Excused') . '<input type="radio" name="attendance_'.$thisUser['user_id'].'" value="excused" ';
     		if($attendance=='excused')
     		{
-    			$out .= 'checked >';
+    			$out .= 'checked > ';
     		}
-    		else $out .= '>'; 
+    		else $out .= '> '; 
     		
     		$out .= '</td>' . "\n";
     		$out .= '<td><input type="text" value="'.$comment.'" name="comment_'.$thisUser['user_id'].'"/></td>';
