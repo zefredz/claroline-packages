@@ -37,7 +37,9 @@ function get_course_user_list($order = 'nom')
                     FROM `" . $tbl_users . "`           AS user,
                         `" . $tbl_rel_course_user . "` AS course_user
                     WHERE `user`.`user_id`=`course_user`.`user_id`
-                    AND   `course_user`.`code_cours`='" .  claro_get_current_course_id() . "'
+                    	AND   `course_user`.`code_cours`='" .  claro_get_current_course_id() . "' 
+                    	AND   `isCourseManager` = 0
+                    	AND   `tutor` = 0
                     ORDER BY " . Claroline::getDatabase()->escape($order) . " ;";
     
     $result = Claroline::getDatabase()->query($sql);
@@ -207,5 +209,38 @@ function del_attendanceList($id = NULL)
     
     if ($result>0 && $result2) return true;
     else return false;
+}
+
+/**
+ * Summary af the attendance (sum of presence,... for each user) 
+ *
+ * @param mysql date $dateBegin
+ * @param mysql date $dateEnd
+ */
+function get_summary_attendance($dateBegin = 0,$dateEnd = 0)
+{
+        $tbl_mdb_names = claro_sql_get_main_tbl();
+        $tbl_user = $tbl_mdb_names['user'];
+        $toolTables = get_module_course_tbl( array( 'attendance','attendance_session' ), claro_get_current_course_id() );
+		
+        $sql = "SELECT 	s.`id`, s.`date_att`, s.`title`, 
+        				u.`user_id`, u.`prenom`, u.`nom`,  
+        				SUM(IF(attendance='present',1,0)) as present,
+        				SUM(IF(attendance='partial',1,0)) as partial,
+        				SUM(IF(attendance='absent',1,0)) as absent,
+        				SUM(IF(attendance='excused',1,0)) as excused
+                FROM `" . $tbl_user . "` u
+                INNER JOIN `" . $toolTables['attendance'] . "` a ON u.`user_id` = a.`user_id`
+                INNER JOIN `" . $toolTables['attendance_session'] . "` s ON s.`id` = a.`id_list` ";
+        
+        if ($dateBegin != 0 && $dateEnd != 0) 
+            $sql .= "WHERE s.date_att >'" . $this->start_date 
+                    . "' AND s.date_att <'" . $this->end_date ."' ";
+
+        $sql .= "GROUP BY u.`user_id` ORDER BY u.nom, u.prenom  ;";
+            
+        $result = Claroline::getDatabase()->query($sql);
+        
+        return $result;
 }
 ?>

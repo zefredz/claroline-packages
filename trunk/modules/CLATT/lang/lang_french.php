@@ -34,13 +34,13 @@ $_lang['end date'] = 'date de fin';
 $_lang['endno date'] = 'pas de date';
 $_lang['Absent'] = 'Absent';
 $_lang['Present'] = 'Présent';
-$_lang['Presents'] = 'présents';
-$_lang['Late'] = 'en retard';
-$_lang['Excused'] = 'excusé';
-$_lang['Comment'] = 'commentaire';
-$_lang['missings'] = 'absents';
-$_lang['date to add for attendance'] = 'date à ajouter pour les présences';
-$_lang['date to delete for attendance'] = 'date à supprimer pour les présences';
+$_lang['Presents'] = 'Présents';
+$_lang['Late'] = 'En retard';
+$_lang['Excused'] = 'Excusé';
+$_lang['Comment'] = 'Commentaire';
+$_lang['missings'] = 'Absents';
+$_lang['date to add for attendance'] = 'Date à ajouter pour les présences';
+$_lang['date to delete for attendance'] = 'Date à supprimer pour les présences';
 $_lang['export attendance list'] = 'Exporter la liste de présence';
 $_lang['export attendance list with date choice'] = 'Exporter la liste de présence avec le choix des dates';
 
@@ -49,4 +49,6 @@ $_lang['view attendance'] = 'voir les présences';
 
 $_lang['Allow to export attendance list'] = 'Permet l\'export de la liste de présence';
 $_lang['Allow users to see their attendance'] = 'Permettre aux utilisateurs de voir leurs présences';
+$_lang['Partial presence'] = 'Présence partielle'; 
+$_lang['Summary of attendance'] = 'Résumé des presences';
 ?>
