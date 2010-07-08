@@ -1146,6 +1146,15 @@ class PathScormExport
         ';
         foreach( $itemTree as $item )
         {
+            if( $item[ 'type' ] == 'MODULE' )
+            {
+                $itemModuleLabel = ClarolineResourceLocator::parse( $item['sys_path'] )->getModuleLabel();
+            
+                if( ! ( $itemModuleLabel == 'CLDOC' || $itemModuleLabel == 'CLQWZ' ) )
+                {
+                    continue;
+                }
+            }
             $organizations .= $this->createManifestItems( $item );
             $resources .= $this->createManifestResources( $item, '.');
         }
