@@ -20,8 +20,7 @@ $conf_def['config_class'] = 'tool';
 $conf_def['section']['main']['label']='Main Settings';
 $conf_def['section']['main']['properties'] =
 array (
-    'icterms_forceTermsAcceptance',
-    'icterms_useAccountCreationAgreement'
+    'icterms_forceTermsAcceptance'
 );
 
 $conf_def_property_list['icterms_forceTermsAcceptance'] = array (
