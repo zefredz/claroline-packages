@@ -111,7 +111,7 @@ function icterms_get_terms_contents()
         $termsOfUse = '';
     }
     
-    if ( empty( $termOfUse ) )
+    if ( empty( $termsOfUse ) )
     {
         $termsOfUse = get_block('ictermsTermsOfUse');
     }
