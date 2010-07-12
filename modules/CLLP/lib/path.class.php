@@ -297,8 +297,7 @@ class path
      * @param int $itemId Id of the item (can be null)
      * 
      * @return boolean
-     */
-    
+     */    
     public function clearProgression( $userId = null, $itemId = null )
     {
         if( $this->id == -1 )

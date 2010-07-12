@@ -18,6 +18,15 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * @author Dimitri Rambout <dim@claroline.net>
  * @author Sebastien Piraux
  */
+
+/**
+ * Item class
+ *
+ * Manage a resource in a learning path
+ * 
+ * @author Dimitri Rambout <dim@claroline.net>
+ * @author Sebastien Piraux
+ */
 class item
 {
     /**
@@ -1091,26 +1100,35 @@ class itemList
         $this->tblItem = $tbl_lp_names['lp_item'];
         $this->tblItemBlockCondition = $tbl_lp_names['lp_item_blockcondition'];
     }
-
-    // load correct flat list of modules depending on parameters
+    
+    /**
+     * Get a flat list of modules depending on parameters
+     *
+     * @author Dimitri Rambout <dim@clarolinet.net>
+     * @return
+     */
     public function getFlatList()
     {
         return $this->flatList( $this->treeItemList );
     }
-
+    /**
+     * Get a tree of items
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array Item tree
+     */
     public function getItemTree()
     {
         return $this->treeItemList;
     }
-    
     /**
-     * Build an tree of $list from $id using the 'parent'
+     * Build a tree of $list from $id using the 'parent'
      * table. (recursive function)
      * Rows with a father id not existing in the array will be ignored
      *
-     * @param $list modules of the learning path list
-     * @param $id learnPath_module_id of the node to build
-     * @return tree of the learning path
+     * @param mixed $list modules of the learning path list
+     * @param int $excludedItemId learnPath_module_id of the node to build
+     * @return array tree of the learning path
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
@@ -1118,7 +1136,14 @@ class itemList
     {
         return $this->recursiveBuildTree($list, $excludedItemId);
     }
-    
+    /**
+     * Build a tree of $list from $id recursively
+     *
+     * @param mixed $list modules of the learning path list
+     * @param int $exliedItemId item id that need to be excluded from the tree
+     * @param int $id Child or not
+     * @param int $depth 
+     */
     protected function recursiveBuildTree($list, $excludedItemId = null, $id = -1, $depth = 0 )
     {
         $tree = array();
@@ -1162,12 +1187,12 @@ class itemList
     }
 
     /**
-     * return a flattened tree of the modules of a learnPath after having add
+     * Return a flattened tree of the modules of a learnPath after having add
      * 'up' and 'down' fields to let know if the up and down arrows have to be
      * displayed. (recursive function)
      *
-     * @param $elementList a tree array as one returned by build_element_list
-     * @param $deepness
+     * @param array $treeList a tree array as one returned by build_element_list
+     * @param int $deepness
      * @return array containing infos of the learningpath, each module is an element
         of this array and each one has 'up' and 'down' boolean and deepness added in
      *
@@ -1217,11 +1242,11 @@ class itemList
 
 
 
-	/**
-     * move item one position up in the tree if possible
+    /**
+     * Move item one position up in the tree if possible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $item object item to move up
+     * @param object $item item to move up
      * @return boolean result of operation
      */
     public function moveItemUp($item,$path)
@@ -1274,15 +1299,14 @@ class itemList
     }
 
     /**
-     * move item one position down in the tree if possible
+     * Move item one position down in the tree if possible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $item object item to move down
+     * @param object $item item to move down
      * @return boolean result of operation
      */
     public function moveItemDown($item,$path)
     {
-
         $list = $this->getNodeChildren($path->getId(), $item->getParentId());
 
         // find where is the path is the list to get the id of the previous one
@@ -1331,11 +1355,11 @@ class itemList
     }
 
     /**
-     * returns, for a path, the children of a node
+     * Returns, for a path, the children of a node
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $tree array that represent a tree (fields id and children should be setted)
-     * @param $nodeId int id of the node to get
+     * @param array $tree array that represent a tree (fields id and children should be setted)
+     * @param int $nodeId id of the node to get
      * @return boolean result of operation
      */
     public function getNodeChildren($pathId,$itemId)
@@ -1366,10 +1390,11 @@ class itemList
     }
     
     /**
-     * returns an array of all children ids
+     * Returns an array of all children ids
+     * 
      * @author Dimitri Rambout <dim@claroline.net>
-     * @param $tree array that represent a tree
-     * @return array
+     * @param array $tree array that represent a tree
+     * @return array array of id
      * 
      */
     public function getNodeChildrenId( $pathId, $itemId )
@@ -1391,17 +1416,17 @@ class itemList
     }
 
     /**
-     * returns a given node and its children
+     * Returns a given node and its children
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $tree array that represent a tree (fields id and children should be setted)
-     * @param $nodeId int id of the node to get
+     * @param array $tree array that represent a tree (fields id and children should be setted)
+     * @param int $nodeId id of the node to get
      * @return boolean result of operation
      */
     public function getNode($tree,$nodeId)
     {
-	    foreach( $tree as $branch )
-	    {
+        foreach( $tree as $branch )
+        {
           if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
           {
               return $branch;
@@ -1410,14 +1435,20 @@ class itemList
           {
                 $node = $this->getNode($branch['children'],$nodeId);
                 if( is_array($node) ) return $node;
-	        }
-	    }
+            }
+        }
 
-	    // not found
-	    return false;
-	}
-	
-    // methods used to jump from one item to another in LP viewer
+        // not found
+        return false;
+    }
+    
+    /**
+     * Methods used to jump from one item to another in LP viewer
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $currentId Id of the current item
+     * @return int next item id
+     */
     public function getNext( $currentId )
     {
         $itemFlatList = $this->getFlatList();
@@ -1459,6 +1490,13 @@ class itemList
         }
     }
     
+    /**
+     * Methods used to jump from one item to a previous one in LP viewer
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $currentId Id of the current item
+     * @return int previous item id
+     */
     public function getPrevious( $currentId )
     {
         $itemFlatList = $this->getFlatList();
@@ -1501,8 +1539,22 @@ class itemList
     }
 }
 
+/**
+ * PathItemList Class
+ *
+ * Extension of the class ItemList for a specific path
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class PathItemList extends ItemList
 {
+    /**
+     * Constructor
+     *
+     * Build a tree on loading
+     *
+     * @param int $pathId Id of a learning path
+     */
     public function __construct($pathId)
     {
         parent::__construct($pathId);
@@ -1510,6 +1562,12 @@ class PathItemList extends ItemList
         $this->treeItemList = $this->buildTree($this->load());
     }
     
+    /**
+     * Load an item list based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of item
+     */
     public function load()
     {
         // prevent a query made on incorrect data
@@ -1559,9 +1617,15 @@ class PathItemList extends ItemList
     }
 
 
+    /**
+     * Load the list of container based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of container
+     */
     public function loadContainerList()
     {
-    // prevent a query made on incorrect data
+        // prevent a query made on incorrect data
         if( is_null($this->pathId) || !is_numeric($this->pathId) )
         {
             return array();
@@ -1596,24 +1660,63 @@ class PathItemList extends ItemList
         }
     }
     
+    /**
+     * Get the list of all container
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array List of containers
+     */
     public function getContainerList()
     {
         return $this->loadContainerList();
     }
-    
+    /**
+     * Get a list of container as a tree
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array tree of containers
+     */
     public function getContainerTree()
     {
         return $this->buildTree($this->loadContainerList());
     }
 }
 
+/**
+ * PathUserItemList Class
+ *
+ * Extension of the class ItemList for a specific path and user
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class PathUserItemList extends ItemList 
 {
+    /**
+     * @var int $userId Id of a user
+     */
     private $userId;
+    /**
+     * @var int $attemptId Id of an attempt
+     */
     private $attemptId;
+    /**
+     * @var string $tblAttempt Name of attempt table in database 
+     */
     private $tblAttempt;
+    /**
+     * @var string $tblAttempt Name of itemAttempt table in database
+     */
     private $tblItemAttempt;
-    
+    /**
+     * Constructor
+     *
+     * Build a tree on loading
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId Id of a path
+     * @param int $userId Id of a user
+     * @param int $attemptId Id of an attempt
+     */
     public function __construct($pathId, $userId, $attemptId)
     {
         parent::__construct($pathId);
@@ -1632,7 +1735,12 @@ class PathUserItemList extends ItemList
         
         $this->treeItemList = $this->buildTree($this->load());
     }
-    
+    /**
+     * Load an item list based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of item
+     */
     public function load()
     {
         if( is_null($this->pathId) || !is_numeric($this->pathId) )
