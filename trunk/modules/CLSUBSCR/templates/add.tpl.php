@@ -41,12 +41,13 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
                <input type="radio" name="context" id="contextUser" value="user" <?php echo isset( $this->context ) && $this->context == 'user' ? 'checked="checked"' : '';  ?> /><label for="contextUser"><?php echo get_lang( 'Unique user' ); ?></label><br />
                <input type="radio" name="context" id="contextGroup" value="group" <?php echo isset( $this->context ) && $this->context == 'group' ? 'checked="checked"' : '';  ?> /><label for="contextGroup"><?php echo get_lang( 'Group' ); ?></label>
            </dd>
-           <dt><label for="type"><?php echo get_lang( 'Subscriptions by user/group' ); ?> :</label></dt>
-           <dd>
-               <input type="radio" name="type" id="typeUnique" value="unique" <?php echo isset( $this->type ) && $this->type == 'unique' ? 'checked="checked"' : ''; ?> /><label for="typeUnique"><?php echo get_lang( 'One' ); ?></label><br />
+           <!--dt><label for="type"><?php echo get_lang( 'Subscriptions by user/group' ); ?> :</label></dt>
+           <dd-->
+               <input type="hidden" name="type" id="typeUnique" value="unique" />
+               <!--input type="radio" name="type" id="typeUnique" value="unique" <?php echo isset( $this->type ) && $this->type == 'unique' ? 'checked="checked"' : ''; ?> /><label for="typeUnique"><?php echo get_lang( 'One' ); ?></label><br /-->
                <!--input type="radio" name="type" id="typeMultiple" value="multiple" <?php echo isset( $this->type ) && $this->type == 'multiple' ? 'checked="checked"' : ''; ?> /><label for="typeMultiple"><?php echo get_lang( 'Multiple choices' ); ?></label><br /-->
                <!--input type="radio" name="type" id="typePreference" value="preference" <?php echo isset( $this->type ) && $this->type == 'preference' ? 'checked="checked"' : ''; ?> /><label for="typePreference"><?php echo get_lang( 'By preference' ); ?></label-->
-           </dd>
+           <!--/dd-->
        </dl>
    </fieldset>
    <fieldset id="advanced" class="collapsible collapsed">
@@ -62,7 +63,7 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
                      <?php echo claro_html_date_form( 'visibilityFromDay', 'visibilityFromMonth', 'visibilityFromYear', ( isset( $this->visibilityFrom ) ? $this->visibilityFrom : time() ) ); ?>
                      <?php echo claro_html_time_form( 'visibilityFromHour', 'visibilityFromMinute',  ( isset( $this->visibilityFrom ) ? $this->visibilityFrom : time() ) ); ?><br />
                      <input type="checkbox" name="visibilityTo" id="visibilityTo" value="1" <?php echo isset( $this->visibilityTo ) && $this->visibilityTo ? 'checked="checked"' : ''; ?> /><label for="visibilityTo"><?php echo get_lang( 'Stopping date'); ?></label>
-                     <?php echo claro_html_date_form( 'visibilityToDay', 'visibilityToMonth', 'visibilityToYear', ( isset( $this->visibilityTo ) ? $this->visibilityTo : time() ) ); ?>
+                     <?php echo claro_html_date_form( 'visibilityToDay', 'visibilityToMonth', 'visibilityToYear', ( isset( $this->visibilityTo ) ? $this->visibilityTo : time() + 86400 ) ); ?>
                      <?php echo claro_html_time_form( 'visibilityToHour', 'visibilityToMinute',  ( isset( $this->visibilityTo ) ? $this->visibilityTo : time() ) ); ?><br />
                   </div>                     
                </dd>            

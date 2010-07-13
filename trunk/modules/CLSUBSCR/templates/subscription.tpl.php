@@ -72,7 +72,15 @@ endif;
         <?php echo $subscription['description']; ?>
     </div>
     <div>
-        <?php echo get_lang( 'Information about the session : %slotsAvailable slots are still available on %totalSlotsAvailable', array( '%slotsAvailable' => $subscription['slotsAvailable'], '%totalSlotsAvailable' => $subscription['totalSlotsAvailable'] ) ); ?>
+        <?php
+        if( $subscription['slotsAvailable'] > 1 ):
+            echo get_lang( 'Information about the session : %slotsAvailable slots are still available on %totalSlotsAvailable', array( '%slotsAvailable' => $subscription['slotsAvailable'], '%totalSlotsAvailable' => $subscription['totalSlotsAvailable'] ) );
+        elseif( $subscription['slotsAvailable'] > 0 ):
+            echo get_lang( 'Information about the session : %slotsAvailable slot is still available on %totalSlotsAvailable', array( '%slotsAvailable' => $subscription['slotsAvailable'], '%totalSlotsAvailable' => $subscription['totalSlotsAvailable'] ) );
+        else:
+            echo get_lang( 'Information about the session : no more slot available.' );
+        endif;
+        ?>
     </div>
     <?php
     if( isset( $this->displayChoice ) && $this->displayChoice == true ) :
@@ -80,7 +88,7 @@ endif;
     <div style="padding-top: 3px;">
         <?php
         if( isset( $this->userChoices[ $subscription['id'] ] ) ) :
-            echo get_lang( 'My choice : ');
+            echo get_lang( 'My choice :') . ' ';
             foreach( $this->userChoices[ $subscription['id'] ] as $slot ) :
                 echo $slot['title'];
             endforeach;
@@ -90,6 +98,12 @@ endif;
         else :
         ?>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'enroll' ); ?>" alt="" /> <?php echo get_lang( 'Make a choice' ); ?></a>
+        <?php
+        endif;
+        
+        if( claro_is_allowed_to_edit() ) :
+        ?>
+        | <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><?php echo get_lang( 'Edit proposed slots' ); ?></a>
         <?php
         endif;
         ?>
