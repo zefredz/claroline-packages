@@ -8,11 +8,14 @@ $_lang['By preference'] = 'By preference';
 $_lang['Choice'] = 'Choice';
 $_lang['Choice saved successfully.'] = 'Choice saved successfully.';
 $_lang['Create a new subscription'] = 'Create a new subscription';
+$_lang['Edit proposed slots'] = 'Edit proposed slots';
 $_lang['Export in CSV'] = 'Export in CSV';
 $_lang['How many slots do you want to create ?'] = 'How many slots do you want to create ?';
 $_lang['If you want to continue by adding slots to your subscription, click <strong><a href="%ahrefContinue">here</a></strong>.'] = 'If you want to continue by adding slots to your subscription, click <strong><a href="%ahrefContinue">here</a></strong>.';
 $_lang['Impossible to delete the subscription <strong>%title</strong>'] = 'Impossible to delete the subscription <strong>%title</strong>';
+$_lang['Information about the session : %slotsAvailable slot is still available on %totalSlotsAvailable'] = 'Information about the session : %slotsAvailable slot is still available on %totalSlotsAvailable';
 $_lang['Information about the session : %slotsAvailable slots are still available on %totalSlotsAvailable'] = 'Information about the session : %slotsAvailable slots are still available on %totalSlotsAvailable';
+$_lang['Information about the session : no more slot available.'] = 'Information about the session : no more slot available.';
 $_lang['Invisible (users cannot subscribe)'] = 'Invisible (users cannot subscribe)';
 $_lang['Make a choice'] = 'Make a choice';
 $_lang['Multiple choices'] = 'Multiple choices';
@@ -66,5 +69,3 @@ $_lang['from %dateFrom'] = 'from %dateFrom';
 $_lang['places'] = 'places';
 $_lang['slots with'] = 'slots with';
 $_lang['to %dateTo'] = 'to %dateTo';
-
-?>
