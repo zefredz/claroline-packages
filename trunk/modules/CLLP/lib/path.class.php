@@ -1147,9 +1147,9 @@ class PathScormExport
         {
             if( $item[ 'type' ] == 'MODULE' )
             {
-                $itemModuleLabel = ClarolineResourceLocator::parse( $item['sys_path'] )->getModuleLabel();
-            
-                if( ! ( $itemModuleLabel == 'CLDOC' || $itemModuleLabel == 'CLQWZ' ) )
+                $connectorPath = get_module_path( ClarolineResourceLocator::parse( $item['sys_path'] )->getModuleLabel() ) . '/connector/cllp.scormexport.cnr.php';
+                
+                if( ! file_exists( $connectorPath ) )
                 {
                     continue;
                 }
