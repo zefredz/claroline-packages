@@ -56,7 +56,7 @@ array (  'label'        => 'GEB Webservice'
        );
 
 $conf_def_property_list['courses_wsdl'] =
-array (  'label'        => 'GEB Webservice (coursse)'
+array (  'label'        => 'GEB Webservice (courses)'
        , 'description'  => 'URL of the GEB Webservice (courses)'
        , 'default'      => ''
        ,  'type'        => 'string'

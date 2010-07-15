@@ -29,7 +29,7 @@ require_once get_path('incRepositorySys') . '/lib/fileManage.lib.php';
  * init request vars
  */
 $acceptedCmdList = array(   'rqDelete', 'exDelete',
-                            'exLock', 'exUnlock',
+                            //'exLock', 'exUnlock',
                             'exVisible', 'exInvisible',
                             'exExport',
                             'rqImport', 'exImport',
@@ -72,8 +72,8 @@ if( $is_allowedToEdit )
 {
     if( $cmd == 'exImport')
     {
-    	// include import lib
-				require_once dirname( __FILE__ ) . '/lib/xmlize.php';
+        // include import lib
+        require_once dirname( __FILE__ ) . '/lib/xmlize.php';
         require_once dirname( __FILE__ ) . '/lib/scorm.import.lib.php';
         // path class is already included
         require_once dirname( __FILE__ ) . '/lib/item.class.php';
@@ -107,7 +107,7 @@ if( $is_allowedToEdit )
         include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
         include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
 
-        $maxFilledSpace = 100000000;
+        $maxFilledSpace = 1000000000;
 
         $courseDir   = claro_get_course_path() . '/scormPackages/';
         $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
@@ -134,6 +134,8 @@ if( $is_allowedToEdit )
         if( $path->delete() )
         {
             $dialogBox->success( get_lang('Path succesfully deleted') );
+            
+            $eventNotifier->notifyCourseEvent("grapple_path_deleted",claro_get_current_course_id(), claro_get_current_tool_id(), $pathId, claro_get_current_group_id(), claro_get_current_user_id() );
         }
         else
         {
@@ -153,7 +155,7 @@ if( $is_allowedToEdit )
         $dialogBox->question( $htmlConfirmDelete );
     }
 
-    if( $cmd == 'exLock' )
+    /*if( $cmd == 'exLock' )
     {
         $path->lock();
 
@@ -165,13 +167,15 @@ if( $is_allowedToEdit )
         $path->unlock();
 
         $path->save();
-    }
+    }*/
 
     if( $cmd == 'exVisible' )
     {
         $path->setVisible();
 
         $path->save();
+        
+        $eventNotifier->notifyCourseEvent("grapple_path_visible",claro_get_current_course_id(), claro_get_current_tool_id(), $path->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
     }
 
     if( $cmd == 'exInvisible' )
@@ -179,6 +183,8 @@ if( $is_allowedToEdit )
         $path->setInvisible();
 
         $path->save();
+        
+        $eventNotifier->notifyCourseEvent("grapple_path_invisible",claro_get_current_course_id(), claro_get_current_tool_id(), $path->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
     }
 
     if( $cmd == 'exMoveUp' || $cmd == 'exMoveDown' )
@@ -212,20 +218,20 @@ if( $is_allowedToEdit )
     if( $cmd == 'exExport' )
     {
         $thisPath = $path;
-				FromKernel::uses( 'core/linker.lib' );
-				require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
-		    require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
-				include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
+        FromKernel::uses( 'core/linker.lib' );
+        require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
+        require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
+        include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
 
-				$pathExport = new PathScormExport( $thisPath );
-				if( ! $pathExport->export() )
-				{
-						$dialogBox->error(
-															get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
-														.	'<br />' . "\n"
-														.	$pathExport->getError()
-														);
-				}
+        $pathExport = new PathScormExport( $thisPath );
+        if( ! $pathExport->export() )
+        {
+            $dialogBox->error(
+                                get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
+                                .   '<br />' . "\n"
+                                .   $pathExport->getError()
+                            );
+        }
     }
 }
 
@@ -288,7 +294,7 @@ if( $is_allowedToEdit )
     $out .= '<th>' . get_lang('Learning path') . '</th>' . "\n"
     .    '<th>' . get_lang('Modify') . '</th>' . "\n"
     .    '<th>' . get_lang('Delete') . '</th>' . "\n"
-    .    '<th>' . get_lang('Block') . '</th>' . "\n"
+    //.    '<th>' . get_lang('Block') . '</th>' . "\n"
     .    '<th>' . get_lang('Visibility') . '</th>' . "\n"
     .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
     .    '<th>' . get_lang('Export').'</th>' . "\n"
@@ -333,7 +339,7 @@ if( $is_allowedToEdit )
             .    '</td>' . "\n";
 
             // block/unblock
-            if( $aPath['lock'] == 'OPEN' )
+            /*if( $aPath['lock'] == 'OPEN' )
             {
                 $out .= '<td>' . "\n"
                 .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exLock&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
@@ -348,7 +354,7 @@ if( $is_allowedToEdit )
                 .    '<img src="' . get_icon_url('block') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
                 .    '</a>'
                 .    '</td>' . "\n";
-            }
+            }*/
             // visible/invisible
             if( $aPath['visibility'] == 'VISIBLE' )
             {
@@ -397,7 +403,7 @@ if( $is_allowedToEdit )
 
             // export
             $out .= '<td>' . "\n"
-            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '">' . "\n"
+            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '" onclick="return confirm(\'' . get_lang( 'Only Exercises and documents will be exported.' ) . '\')";>' . "\n"
             .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
             .    '</a>'
             .    '</td>' . "\n";

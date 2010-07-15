@@ -1,4 +1,18 @@
-<?php
+<?php // $Id$
+
+/**
+ * Linker used to display available resources.
+ * The file cllp.linker.cnr.php need to be in the connector folder of the module.
+ * If the file is present, the linker will list the available resources for this module.
+ *
+ * @version 0.1 $Revision$
+ * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package GRAPPLE
+ * @author Dimitri Rambout <dim@claroline.net>
+ *
+ * @return string JSON content
+ */
 
 try
 {

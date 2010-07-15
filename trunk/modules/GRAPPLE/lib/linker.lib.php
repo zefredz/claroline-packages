@@ -18,7 +18,8 @@ class GRAPPLE_ResourceLinker extends ResourceLinker
         // init linkerFronted
         ClaroHeader::getInstance()->addInlineJavascript(
              'linkerFrontend.base_url = "'.get_module_url('GRAPPLE').'/backends/linker.php";' . "\n"
-            .'linkerFrontend.deleteIconUrl = "'.get_icon_url('delete').'";'
+            .'linkerFrontend.deleteIconUrl = "'.get_icon_url('delete').'";' . "\n"
+            .'linkerFrontend.invisibleIconUrl = "'.get_icon_url('invisible').'"; '. "\n"
             .'Claroline.lang["Attach"] = "'.get_lang('Attach').'";'
             .'Claroline.lang["Delete"] = "'.get_lang('Delete').'";'
         );

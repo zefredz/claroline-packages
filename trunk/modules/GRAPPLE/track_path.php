@@ -11,7 +11,7 @@
  * @package GRAPPLE
  *
  * @author Claro Team <cvs@claroline.net>
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  */
 
 $tlabelReq = 'GRAPPLE';
@@ -69,8 +69,15 @@ else
     .   '<tr class="headerX" align="center" valign="top">'
     .   '<th>'.get_lang('Student').'</th>'."\n"
     .   '<th colspan="2">'.get_lang('Progress').'</th>'."\n"
-    .   '</tr>'."\n\n"
-    .   '<tbody>'."\n\n";
+    ;
+    if( $is_allowedToEdit )
+    {
+        $out .= '<th style="width: 15%;">' . get_lang( 'Clear progression' ) . '</th>' . "\n"
+        ;
+    }
+    $out .=   '</tr>'."\n\n"
+    .   '<tbody>'."\n\n"
+    ;
     
     $usersList = claro_get_course_user_list();
     
@@ -108,7 +115,13 @@ else
         .   '</a>'
         .    '</small>' . "\n"
         .    '</td>' . "\n"
-        .   '</tr>' . "\n"
+        ;
+        if( $is_allowedToEdit )
+        {
+            $out .= '<td style="text-align: center;"><a href="track_path_details.php?cmd=rqClearProgression&pathId=' . $pathId . '&userId=' . $user['user_id'] . '"><img src="' . get_icon_url( 'delete' ) . '" alt="' . get_lang('Delete') . '" /></a></td>'
+            ;
+        }
+        $out .=   '</tr>' . "\n"
         ;
     }
     

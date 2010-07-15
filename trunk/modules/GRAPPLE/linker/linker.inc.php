@@ -13,7 +13,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * @author Frédéric Minne <minne@ipm.ucl.ac.be>
  *
  * @desc linker file adapted for learning path tool
- * @package CLLP
+ * @package GRAPPLE
  *
  */
     // include for the linker

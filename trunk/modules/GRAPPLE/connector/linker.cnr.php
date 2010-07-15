@@ -2,8 +2,13 @@
 
 // vim: expandtab sw=4 ts=4 sts=4:
 
+FromKernel::uses('fileManage.lib', 'file.lib');
+
 /**
  * Resource Resolver for the CLLP tool
+ * 
+ * CLLP_Resolver is used to list the resources that can be added in a path from an other path.
+ * Only items (and not an entire path) can be added as a new resource in a path.
  *
  * @version 1.9 $Revision$
  * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
@@ -11,13 +16,16 @@
  * @author claroline Team <cvs@claroline.net>
  * @author Dimitri Rambout <dim@claroline.net>
  * @package GRAPPLE
- *
  */
-
-FromKernel::uses('fileManage.lib', 'file.lib');
 
 class GRAPPLE_Resolver implements ModuleResourceResolver
 {
+    /**
+     * Function called to resolve an URL based on a resourceId.
+     *
+     * @param ResourceLocator $locator The locator of the resource.
+     * @return string the URL of the item
+     */
     public function resolve ( ResourceLocator $locator )
     {
         $baseUrl = get_module_url('GRAPPLE');
@@ -73,6 +81,12 @@ class GRAPPLE_Resolver implements ModuleResourceResolver
         }
     }
 
+    /**
+     * Return the title of a Resource
+     *
+     * @param ResourceLocator $locator The locator of the resource.
+     * @return string The title of the resource (false if there is no resourceId or is not in a course)
+     */
     public function getResourceName( ResourceLocator $locator)
     {
         if( $locator->hasResourceId() && $locator->inCourse() )
@@ -84,9 +98,11 @@ class GRAPPLE_Resolver implements ModuleResourceResolver
     }
     
     /**
-     * @param  $course_sys_code identifies a course in data base
-     * @param  $id integer who identifies the exercice
-     * @return the title of a annoncement
+     * Return the title of an item in a course
+     *
+     * @param  $courseId identifies a course in database
+     * @param  $itemId integer who identifies the exercice
+     * @return string The title of the item
      */
     function _getTitle( $courseId , $itemId )
     {
@@ -103,18 +119,39 @@ class GRAPPLE_Resolver implements ModuleResourceResolver
 }
 
 /**
- * Class GRAPPLE Navigator
+ * Resource Navigator for the CLLP tool
  *
+ * GRAPPLE_Navigator is used to navigate in a resource and provide the children list of the resource.
+ *
+ * @version 1.9 $Revision$
+ * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @author claroline Team <cvs@claroline.net>
+ * @author Dimitri Rambout <dim@claroline.net>
  * @package GRAPPLE
  *
  */
 class GRAPPLE_Navigator implements ModuleResourceNavigator
 {
+    /**
+     * Get the id of a resource.
+     *
+     * @param array $params An array of params
+     * @return boolean False
+     * @deprecated 0.1
+     */
     public function getResourceId( $params = array() )
     {
         return false;
     }
     
+    /**
+     * Check if a resource is navigable.
+     * If the resource is an item, the method will return true. In other cases, it will return false.
+     *
+     * @param ResourceLocator $locator The resource locator.
+     * @return boolean True or False
+     */
     public function isNavigable( ResourceLocator $locator )
     {
         if (  $locator->hasResourceId() )
@@ -134,11 +171,23 @@ class GRAPPLE_Navigator implements ModuleResourceNavigator
         }
     }
     
+    /**
+     * Get the id of the parent
+     *
+     * @param ResourceLocator $locator The resource locator
+     * @return boolean false
+     * @deprecated 0.1
+     */
     public function getParentResourceId( ResourceLocator $locator )
     {
         return false;
     }
-    
+    /**
+     * Provide the list of available resources for a resource
+     *
+     * @para ResourceLocator $locator The resource locator.
+     * @return LinkerResourceIterator Resource list as an iterator
+     */
     public function getResourceList( ResourceLocator $locator )
     {
         $tbl_cdb_names = get_module_course_tbl( array( 'lp_path', 'lp_item', 'lp_attempt', 'lp_item_attempt', 'lp_item_blockcondition' ), $locator->getCourseId() );

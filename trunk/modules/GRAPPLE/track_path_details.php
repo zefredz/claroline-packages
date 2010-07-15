@@ -24,11 +24,23 @@ require_once dirname( __FILE__ ) . '/lib/item.class.php';
 require_once get_path('incRepositorySys').'/lib/course_user.lib.php';
 require_once get_path('incRepositorySys').'/lib/user.lib.php';
 
+/*
+ * init request vars
+ */
+$acceptedCmdList = array(   'rqClearProgression', 'exClearProgression',
+                            'rqClearThisProgression', 'exClearThisProgression' );
+
+if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
+else                                                                            $cmd = null;
+
 if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = (int) $_REQUEST['pathId'];
 else                                                                  $pathId = null;
 
 if( isset($_REQUEST['userId']) && is_numeric($_REQUEST['userId']) )   $userId = (int) $_REQUEST['userId'];
 else                                                                  $userId = claro_get_current_user_id();
+
+if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
+else                                                                  $itemId = null;
 
 $path = new path();
 
@@ -55,6 +67,58 @@ elseif( !$is_allowedToEdit && $userId != claro_get_current_user_id() )
 }
 else
 {
+    if( $is_allowedToEdit )
+    {
+        switch( $cmd )
+        {
+            case 'rqClearProgression' :
+                {
+                    $htmlConfirmDelete = get_lang( 'Are you sure that you want to clear all the progression of this user ?' )
+                    .    '<br /><br />'
+                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exClearProgression&amp;pathId='.$pathId.'&userId='.$userId.'">' . get_lang('Yes') . '</a>'
+                    .    '&nbsp;|&nbsp;'
+                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'&userId='.$userId.'">' . get_lang('No') . '</a>'
+                    ;
+                    $dialogBox->question( $htmlConfirmDelete );
+                }
+                break;
+            case 'exClearProgression' :
+                {
+                    if( $path->clearProgression( $userId ) )
+                    {
+                        $dialogBox->success( get_lang( 'Progression cleared successfully for this user.' ) );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang( 'Unable to clear the progression for this user.' ) );
+                    }
+                }
+                break;
+            case 'rqClearThisProgression' :
+                {
+                    $htmlConfirmDelete = get_lang( 'Are you sure that you want to clear all this progression ?' )
+                    .    '<br /><br />'
+                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exClearThisProgression&amp;pathId='.$pathId.'&userId='.$userId.'&itemId=' .$itemId . '">' . get_lang('Yes') . '</a>'
+                    .    '&nbsp;|&nbsp;'
+                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'&userId='.$userId.'">' . get_lang('No') . '</a>'
+                    ;
+                    $dialogBox->question( $htmlConfirmDelete );
+                }
+                break;
+            case 'exClearThisProgression' :
+                {
+                    if( $path->clearProgression( $userId, $itemId ) )
+                    {
+                        $dialogBox->success( get_lang( 'Progression cleared successfully for this user.' ) );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang( 'Unable to clear the progression for this user.' ) );
+                    }
+                }
+                break;
+        }
+    }
     $itemList = new PathItemList($pathId);
     $itemListArray = $itemList->getFlatList();
     
@@ -97,7 +161,13 @@ else
     .   '<th>'.get_lang('Total time').'</th>'."\n"
     .   '<th>'.get_lang('Module status').'</th>'."\n"
     .   '<th colspan="2">'.get_lang('Progress').'</th>'."\n"
-    .   '</tr>'."\n\n"
+    ;
+    if( $is_allowedToEdit )
+    {
+        $out .= '<th style="width: 15%;">' . get_lang( 'Clear progression' ) . '</th>' . "\n"
+        ;
+    }
+    $out .=   '</tr>'."\n\n"
     .   '<tbody>'."\n\n"
     ;
     
@@ -164,6 +234,11 @@ else
                 .   '<td align="right">' . claro_html_progress_bar($progress, 1) .'</td>'
                 .   '<td align="left">' . $progress . '%' . '</td>'
                 ;
+                if( $is_allowedToEdit )
+                {
+                    $out .= '<td style="text-align: center;"><a href="track_path_details.php?cmd=rqClearThisProgression&pathId=' . $pathId . '&userId=' . $userId . '&itemId=' . $anItem['id'] .'"><img src="' . get_icon_url( 'delete' ) . '" alt="' . get_lang('Delete') . '" /></a></td>'
+                    ;
+                }
             }
             $out .= '</tr>'
             ;

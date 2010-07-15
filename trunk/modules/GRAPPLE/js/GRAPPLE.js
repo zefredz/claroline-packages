@@ -110,16 +110,7 @@ function commit(datamodel) {
         type: "POST",
         url: lpHandler.moduleUrl + "viewer/scormServer.php",
         data: "cmd=doCommit&cidReq="+ lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId + "&scormdata=" + jsonDatamodelValues,
-        success: function( response ){
-          /*$.ajax({
-            type: "POST",
-            url: lpHandler.moduleUrl + "viewer/scormServer.php",
-            data: "cmd=doGrapple&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-            success: function ( response ){
-              alert( response );
-            },
-            dataType: 'html'
-          });*/
+        success: function( response ){          
           refreshToc();
           //branching conditions
           $.ajax({
@@ -218,7 +209,18 @@ function mkOpenItem(itemUrl) {
             //lp_top.lp_content.content.location = itemUrl;
             $(frame.getElementById('content')).attr('src', itemUrl);
           }          
-        }
+        }        
+      });
+      $.ajax({
+        type: "POST",
+        url: lpHandler.moduleUrl + "viewer/scormServer.php",
+        data: "cmd=doGrapple&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+        success: function ( response ){
+          //return GVIS stuff to put in the TOC
+          $("#gvis", lp_top.frames["lp_toc"].document).empty();
+          $("#gvis", lp_top.frames["lp_toc"].document).append(response);
+        },
+        dataType: 'html'
       });
     }
     else
