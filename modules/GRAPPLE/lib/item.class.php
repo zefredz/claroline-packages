@@ -1,18 +1,22 @@
 <?php // $Id$
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
- * CLAROLINE
+ * Librairy to manage a resource in a learning path
  *
- * $Revision$
- *
+ * @version 0.1 $Revision$
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package GRAPPLE
- *
  * @author Sebastien Piraux
+ */
+
+/**
+ * Item class
  *
+ * Manage a resource in a learning path
+ * 
+ * @author Dimitri Rambout <dim@claroline.net>
+ * @author Sebastien Piraux
  */
 
 class item
@@ -155,7 +159,7 @@ class item
     }
 
     /**
-     * load an item from DB
+     * Load an item from DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param integer $id id of path
@@ -204,7 +208,14 @@ class item
             $this->nextId = $data['next_id'];
             $this->launchData = $data['launch_data'];
             $this->timeLimitAction = $data['timeLimitAction'];
-            $this->completionThreshold = $data['completionThreshold'];
+            if( is_numeric( $this->completionThreshold ) )
+            {
+                $this->completionThreshold = $data['completionThreshold'];
+            }
+            else
+            {
+                $this->completionThreshold = 50;
+            }
             $this->redirectBranchConditions = $data['redirectBranchConditions'];
             $this->branchConditions = $data['branchConditions'];
             $this->newWindow = $data['newWindow'];
@@ -218,7 +229,7 @@ class item
     }
 
     /**
-     * save path to DB
+     * Save an item into DB
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return mixed false or id of the record
@@ -256,7 +267,7 @@ class item
             if( $insertedId )
             {
                 $this->id = (int) $insertedId;
-
+                
                 return $this->id;
             }
             else
@@ -270,7 +281,7 @@ class item
             $sql = "UPDATE `".$this->tblItem."`
                     SET `path_id` = '".(int) $this->pathId."',
                         `type` = '".addslashes($this->type)."',
-                    	`title` = '".addslashes($this->title)."',
+                        `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `visibility` = '".addslashes($this->visibility)."',
                         `rank` = ".(int) $this->rank.",
@@ -300,7 +311,7 @@ class item
     }
 
     /**
-     * delete path
+     * Delete an item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -346,13 +357,14 @@ class item
                 WHERE `item_id` = ". $this->id;
         
         if( claro_sql_query($sql) == false ) return false;
-
+        
         $this->id = -1;
+        
         return true;
     }
 
     /**
-     * check if data are valide
+     * Check if data are valide
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -361,7 +373,6 @@ class item
     {
         // title is a mandatory element
         $title = strip_tags($this->title);
-
         if( empty($title) )
         {
             claro_failure::set_failure('item_no_title');
@@ -371,10 +382,10 @@ class item
         return true; // no errors, form is valide
     }
 
+    
     //-- Getter & Setter
-
     /**
-     * get id
+     * Get id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -385,7 +396,7 @@ class item
     }
 
     /**
-     * get path id
+     * Get path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -396,11 +407,10 @@ class item
     }
 
     /**
-     * set path id
+     * Set path id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the path
-     * @return int
+     * @param int $value id of the path
      */
     public function setPathId($value)
     {
@@ -408,7 +418,7 @@ class item
     }
 
     /**
-     * get type
+     * Get type
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -419,10 +429,10 @@ class item
     }
 
     /**
-     * set type
+     * Set type
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item type
      */
     public function setType($value)
     {
@@ -437,7 +447,7 @@ class item
     }
 
     /**
-     * get title
+     * Get title
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -448,10 +458,10 @@ class item
     }
 
     /**
-     * set title
+     * Set title
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item title
      */
     public function setTitle($value)
     {
@@ -459,7 +469,7 @@ class item
     }
 
     /**
-     * get description
+     * Get description
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -470,10 +480,10 @@ class item
     }
 
     /**
-     * set description
+     * Set description
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item description
      */
     public function setDescription($value)
     {
@@ -481,7 +491,7 @@ class item
     }
 
     /**
-     * set visible
+     * Set visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -491,7 +501,7 @@ class item
     }
 
     /**
-     * set invisible
+     * Set invisible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -501,7 +511,7 @@ class item
     }
 
     /**
-     * is the item visible
+     * Check if the item is visible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -513,7 +523,7 @@ class item
     }
 
     /**
-     * is the item invisible
+     * Check if the item is invisible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -524,7 +534,7 @@ class item
     }
 
     /**
-     * get identifier
+     * Get identifier
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -538,7 +548,7 @@ class item
      * set identifier
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item identifier
      */
     public function setIdentifier($value)
     {
@@ -546,7 +556,7 @@ class item
     }
 
     /**
-     * get rank
+     * Get rank
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -557,10 +567,10 @@ class item
     }
 
     /**
-     * set rank
+     * Set rank
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Item rank
      */
     public function setRank($value)
     {
@@ -568,9 +578,10 @@ class item
     }
 
     /**
+     * Set higher rank
      *
-     *
-     *
+     * @author Sebastien Piraux <pir@cerdecam.be>
+     * @param int $pathId Path id of an item
      */
     public function setHigherRank($pathId)
     {
@@ -578,7 +589,7 @@ class item
     }
 
     /**
-     * get lock
+     * Get lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string
@@ -589,10 +600,10 @@ class item
     }
 
     /**
-     * set lock
+     * Set lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string $value
+     * @param string $value Lock
      */
     public function setLock($value)
     {
@@ -600,7 +611,7 @@ class item
     }
 
     /**
-     * set lock
+     * Set lock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -610,7 +621,7 @@ class item
     }
 
     /**
-     * set unlock
+     * Set unlock
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
@@ -620,7 +631,7 @@ class item
     }
 
     /**
-     * is the path locked ?
+     * Check if an item is locked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -632,7 +643,7 @@ class item
     }
 
     /**
-     * is the path unlocked ?
+     * Check if an item is unlocked ?
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return boolean
@@ -643,7 +654,7 @@ class item
     }
 
     /**
-     * get sysPath
+     * Get sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
@@ -654,7 +665,7 @@ class item
     }
 
     /**
-     * set sysPath
+     * Set sysPath
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value crl of claroline ressource or SCORM ressource relative path or scorm webcontent url
@@ -665,7 +676,7 @@ class item
     }
 
     /**
-     * get parent id
+     * Get parent id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return int
@@ -676,10 +687,10 @@ class item
     }
 
     /**
-     * set parent id
+     * Set parent id
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $value int id of the parent
+     * @param int $value id of the parent
      * @return int
      */
     public function setParentId($value)
@@ -688,7 +699,7 @@ class item
     }
 
     /**
-     * get launchData
+     * Get launchData
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string data provided by manifest to the SCO
@@ -699,7 +710,7 @@ class item
     }
 
     /**
-     * set launchData
+     * Set launchData
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string $value data provided by manifest to the SCO
@@ -710,7 +721,7 @@ class item
     }
 
     /**
-     * get timeLimitAction
+     * Get timeLimitAction
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string defines how the LMS must handle SCO when time is out
@@ -721,10 +732,10 @@ class item
     }
 
     /**
-     * set timeLimitAction
+     * Set timeLimitAction
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param string defines how the LMS must handle SCO when time is out
+     * @param string $value defines how the LMS must handle SCO when time is out
      */
     public function setTimeLimitAction($value)
     {
@@ -739,7 +750,7 @@ class item
     }
 
     /**
-     * get completionThreshold
+     * Get completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @return string value of threshold required if setted to compute tu completion_status
@@ -750,7 +761,7 @@ class item
     }
 
     /**
-     * set completionThreshold
+     * Set completionThreshold
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param string value of threshold required if setted to compute tu completion_status
@@ -761,11 +772,10 @@ class item
     }
 
     /**
-     * get the higher rank of items in learning path
+     * Get the higher rank of items in learning path
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      * @param $pathId
-     * @param $parentId
      * @return int higher item rank for items that have same parentId
      */
     private function getHigherRank($pathId)
@@ -778,14 +788,27 @@ class item
         $rankMax = claro_sql_query_get_single_value($sql);
 
         if( !is_null($rankMax) || !$rankMax ) return (int) $rankMax;
-        else                     			  return 0;
+        else                                  return 0;
     }
     
+    /**
+     * Get if on score, item redirect auto to the correct branching conditions
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return int Auto redirect to the correct branching conditions (if return = 1)
+     */
     public function getRedirectBranchConditions()
     {
         return $this->redirectBranchConditions;
     }
     
+    /**
+     * Set if on score, item redirect auto to the correct branching conditions
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $value 1 or 0
+     *
+     */
     public function setRedirectBranchConditions( $value )
     {
         $value = (int) $value;
@@ -800,42 +823,78 @@ class item
         }        
     }
     
+    /**
+     * Get branching conditions linked to an item
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array Branching conditions linked to the item
+     */
     public function getBranchConditions()
     {
         $_branchConditions = unserialize( $this->branchConditions );
         
         return $_branchConditions;
     }
-    
-    public function setBranchConditions( $branchConditions )
+    /**
+     * Set branching conditions linked to an item
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param array $branchConditions Array of branching conditions
+     */
+    public function setBranchConditions( $branchConditions = null )
     {
-        if( !( isset( $branchConditions['sign'] ) && isset( $branchConditions['item'] ) && isset( $branchConditions['value'] ) ) )
+        if( is_null( $branchConditions ) )
         {
-            return false;
+            $this->branchConditions = '';
+        }
+        else
+        {
+            if( !( isset( $branchConditions['sign'] ) && isset( $branchConditions['item'] ) && isset( $branchConditions['value'] ) ) )
+            {
+                return false;
+            }
+            
+            if( !( ( count( $branchConditions['sign'] ) == count( $branchConditions['item'] ) )
+                && ( count( $branchConditions['sign'] ) == count( $branchConditions['value'] ) ) ) )
+            {
+                return false;
+            }
+            
+            $_branchConditions = array();
+            
+            foreach( $branchConditions['sign'] as $key => $sign )
+            {
+                $_branchConditions[$key]['sign'] = $sign;
+                $_branchConditions[$key]['value'] = $branchConditions['value'][$key];
+                $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
+            }
+            $this->branchConditions = serialize( $_branchConditions );
         }
         
-        if( !( ( count( $branchConditions['sign'] ) == count( $branchConditions['item'] ) )
-            && ( count( $branchConditions['sign'] ) == count( $branchConditions['value'] ) ) ) )
-        {
-            return false;
-        }
-        
-        $_branchConditions = array();
-        
-        foreach( $branchConditions['sign'] as $key => $sign )
-        {
-            $_branchConditions[$key]['sign'] = $sign;
-            $_branchConditions[$key]['value'] = $branchConditions['value'][$key];
-            $_branchConditions[$key]['item'] = $branchConditions['item'][$key];
-        }
-        $this->branchConditions = serialize( $_branchConditions );
+        return true;
     }
     
+    /**
+     * Get New Window
+     *
+     * Incidate if resource needs to be opened in a new window
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return int 1 if the resource needs to be opened in a new window, 0 in other case
+     */
     public function getNewWindow()
     {
         return (int) $this->newWindow;
     }
     
+    /**
+     * Set New Window
+     *
+     * Set the value that indicate that a resource needs to be opened in a new window or not
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $value 1 if the resource needs to be opened in a new window, 0 in other case
+     */
     public function setNewWindow( $value )
     {
         $value = (int) $value;
@@ -850,6 +909,13 @@ class item
         }
     }
     
+    /**
+     * Evalute a branching conditions to access a resource
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId id of a path
+     * @return mixed Boolean or item id
+     */
     public function evalBranchConditions( $pathId )
     {
         $attempt = new attempt();
@@ -975,48 +1041,87 @@ class item
     }
 }
 
+/**
+ * ItemList Class
+ *
+ * Manage an resource list in a learning path
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class itemList
 {
+    /**
+     * @var int $pathId Id of a learning path
+     */
     protected $pathId;
+    /**
+     * @var string $tblPath Name of the SQL Table for the learning paths
+     */
     protected $tblPath;
+    /**
+     * @var string $tblItem Name of the SQL Table for the resources
+     */
     protected $tblItem;
+    /**
+     * @var string $tblItemBlockCondition Name of the SQL Table for the blocking conditions for a resource
+     */
+    protected $tblItemBlockCondition;
+    /**
+     * @var string $treeItemList List of resources displayed as a tree
+     */
     protected $treeItemList;
 
-
+    /**
+     * Constructor
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId Id of a learning path
+     */
     public function __construct($pathId)
     {
         $this->pathId = (int) $pathId;
         
         $tblNameList = array(
             'lp_path',
-            'lp_item'
+            'lp_item',
+            'lp_item_blockcondition'
         );
 
         // convert to Claroline course table names
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblPath = $tbl_lp_names['lp_path'];
         $this->tblItem = $tbl_lp_names['lp_item'];
+        $this->tblItemBlockCondition = $tbl_lp_names['lp_item_blockcondition'];
     }
 
-    // load correct flat list of modules depending on parameters
+    /**
+     * Get a flat list of modules depending on parameters
+     *
+     * @author Dimitri Rambout <dim@clarolinet.net>
+     * @return
+     */
     public function getFlatList()
     {
         return $this->flatList( $this->treeItemList );
     }
-
+    /**
+     * Get a tree of items
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array Item tree
+     */
     public function getItemTree()
     {
         return $this->treeItemList;
     }
-    
     /**
-     * Build an tree of $list from $id using the 'parent'
+     * Build a tree of $list from $id using the 'parent'
      * table. (recursive function)
      * Rows with a father id not existing in the array will be ignored
      *
-     * @param $list modules of the learning path list
-     * @param $id learnPath_module_id of the node to build
-     * @return tree of the learning path
+     * @param mixed $list modules of the learning path list
+     * @param int $excludedItemId learnPath_module_id of the node to build
+     * @return array tree of the learning path
      *
      * @author Piraux Sebastien <pir@cerdecam.be>
      */
@@ -1024,7 +1129,14 @@ class itemList
     {
         return $this->recursiveBuildTree($list, $excludedItemId);
     }
-    
+    /**
+     * Build a tree of $list from $id recursively
+     *
+     * @param mixed $list modules of the learning path list
+     * @param int $exliedItemId item id that need to be excluded from the tree
+     * @param int $id Child or not
+     * @param int $depth 
+     */
     protected function recursiveBuildTree($list, $excludedItemId = null, $id = -1, $depth = 0 )
     {
         $tree = array();
@@ -1068,12 +1180,12 @@ class itemList
     }
 
     /**
-     * return a flattened tree of the modules of a learnPath after having add
+     * Return a flattened tree of the modules of a learnPath after having add
      * 'up' and 'down' fields to let know if the up and down arrows have to be
      * displayed. (recursive function)
      *
-     * @param $elementList a tree array as one returned by build_element_list
-     * @param $deepness
+     * @param array $treeList a tree array as one returned by build_element_list
+     * @param int $deepness
      * @return array containing infos of the learningpath, each module is an element
         of this array and each one has 'up' and 'down' boolean and deepness added in
      *
@@ -1123,11 +1235,11 @@ class itemList
 
 
 
-	/**
-     * move item one position up in the tree if possible
+    /**
+     * Move item one position up in the tree if possible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $item object item to move up
+     * @param object $item item to move up
      * @return boolean result of operation
      */
     public function moveItemUp($item,$path)
@@ -1180,15 +1292,14 @@ class itemList
     }
 
     /**
-     * move item one position down in the tree if possible
+     * Move item one position down in the tree if possible
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $item object item to move down
+     * @param object $item item to move down
      * @return boolean result of operation
      */
     public function moveItemDown($item,$path)
     {
-
         $list = $this->getNodeChildren($path->getId(), $item->getParentId());
 
         // find where is the path is the list to get the id of the previous one
@@ -1237,11 +1348,11 @@ class itemList
     }
 
     /**
-     * returns, for a path, the children of a node
+     * Returns, for a path, the children of a node
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $tree array that represent a tree (fields id and children should be setted)
-     * @param $nodeId int id of the node to get
+     * @param array $tree array that represent a tree (fields id and children should be setted)
+     * @param int $nodeId id of the node to get
      * @return boolean result of operation
      */
     public function getNodeChildren($pathId,$itemId)
@@ -1272,10 +1383,11 @@ class itemList
     }
     
     /**
-     * returns an array of all children ids
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-     * @param $tree array that represent a tree
-     * @return array
+     * Returns an array of all children ids
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param array $tree array that represent a tree
+     * @return array array of id
      * 
      */
     public function getNodeChildrenId( $pathId, $itemId )
@@ -1297,33 +1409,39 @@ class itemList
     }
 
 	/**
-     * returns a given node and its children
+     * Returns a given node and its children
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
-     * @param $tree array that represent a tree (fields id and children should be setted)
-     * @param $nodeId int id of the node to get
+     * @param array $tree array that represent a tree (fields id and children should be setted)
+     * @param int $nodeId id of the node to get
      * @return boolean result of operation
      */
     public function getNode($tree,$nodeId)
     {
-	    foreach( $tree as $branch )
-	    {
-    	    if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
-    	    {
-    	        return $branch;
-    	    }
-    	    elseif( is_array($branch) && isset($branch['children']) && is_array($branch['children']) )
-    	    {
+        foreach( $tree as $branch )
+        {
+          if( !empty($branch['id']) && $branch['id'] ==  $nodeId )
+          {
+              return $branch;
+          }
+          elseif( is_array($branch) && isset($branch['children']) && is_array($branch['children']) )
+          {
                 $node = $this->getNode($branch['children'],$nodeId);
                 if( is_array($node) ) return $node;
-	        }
-	    }
+            }
+        }
 
-	    // not found
-	    return false;
-	}
-	
-    // methods used to jump from one item to another in LP viewer
+        // not found
+        return false;
+    }
+    
+    /**
+     * Methods used to jump from one item to another in LP viewer
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $currentId Id of the current item
+     * @return int next item id
+     */
     public function getNext( $currentId )
     {
         $itemFlatList = $this->getFlatList();
@@ -1365,6 +1483,13 @@ class itemList
         }
     }
     
+    /**
+     * Methods used to jump from one item to a previous one in LP viewer
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $currentId Id of the current item
+     * @return int previous item id
+     */
     public function getPrevious( $currentId )
     {
         $itemFlatList = $this->getFlatList();
@@ -1407,8 +1532,22 @@ class itemList
     }
 }
 
+/**
+ * PathItemList Class
+ *
+ * Extension of the class ItemList for a specific path
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class PathItemList extends ItemList
 {
+    /**
+     * Constructor
+     *
+     * Build a tree on loading
+     *
+     * @param int $pathId Id of a learning path
+     */
     public function __construct($pathId)
     {
         parent::__construct($pathId);
@@ -1416,6 +1555,12 @@ class PathItemList extends ItemList
         $this->treeItemList = $this->buildTree($this->load());
     }
     
+    /**
+     * Load an item list based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of item
+     */
     public function load()
     {
         // prevent a query made on incorrect data
@@ -1448,14 +1593,31 @@ class PathItemList extends ItemList
         }
         else
         {
+            foreach( $data as $k => $v )
+            {
+                $sql = "SELECT `cond_item_id` FROM `" . $this->tblItemBlockCondition . "` WHERE `item_id` = " . (int) $v['id'] . " LIMIT 1";
+                if( $tmp = claro_sql_query_fetch_single_value( $sql ) )
+                {
+                    $data[ $k ]['blockingConditions'] = true;
+                }
+                else
+                {
+                    $data[ $k ]['blockingConditions'] = false;
+                }
+            }
             return $data;
         }
     }
 
-
+    /**
+     * Load the list of container based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of container
+     */
     public function loadContainerList()
     {
-    // prevent a query made on incorrect data
+        // prevent a query made on incorrect data
         if( is_null($this->pathId) || !is_numeric($this->pathId) )
         {
             return array();
@@ -1490,24 +1652,63 @@ class PathItemList extends ItemList
         }
     }
     
+    /**
+     * Get the list of all container
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array List of containers
+     */
     public function getContainerList()
     {
         return $this->loadContainerList();
     }
-    
+    /**
+     * Get a list of container as a tree
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array tree of containers
+     */
     public function getContainerTree()
     {
         return $this->buildTree($this->loadContainerList());
     }
 }
 
+/**
+ * PathUserItemList Class
+ *
+ * Extension of the class ItemList for a specific path and user
+ *
+ * @author Dimitri Rambout <dim@claroline.net>
+ */
 class PathUserItemList extends ItemList 
 {
+    /**
+     * @var int $userId Id of a user
+     */
     private $userId;
+    /**
+     * @var int $attemptId Id of an attempt
+     */
     private $attemptId;
+    /**
+     * @var string $tblAttempt Name of attempt table in database 
+     */
     private $tblAttempt;
+    /**
+     * @var string $tblAttempt Name of itemAttempt table in database
+     */
     private $tblItemAttempt;
-    
+    /**
+     * Constructor
+     *
+     * Build a tree on loading
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param int $pathId Id of a path
+     * @param int $userId Id of a user
+     * @param int $attemptId Id of an attempt
+     */
     public function __construct($pathId, $userId, $attemptId)
     {
         parent::__construct($pathId);
@@ -1526,7 +1727,12 @@ class PathUserItemList extends ItemList
         
         $this->treeItemList = $this->buildTree($this->load());
     }
-    
+    /**
+     * Load an item list based on the pathId
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return array list of item
+     */
     public function load()
     {
         if( is_null($this->pathId) || !is_numeric($this->pathId) )

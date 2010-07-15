@@ -1,7 +1,23 @@
-<?php
+<?php// $Id$
 
+/**
+ * Connector used to merge CLLP data from 2 users
+ *
+ * @version 1.9 $Revision$
+ * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @author Dimitri Rambout <dim@claroline.net>
+ * @package MergeUser
+ */
 class GRAPPLE_MergeUser implements Module_MergeUser
 {
+    /**
+     * Merge the data from 2 users in a course
+     *
+     * @param int $uidToRemove User id that need to be removed
+     * @param int $uidToKeep User id that need to be kept
+     * @param int $courseId Course id concerned by the merging
+     */
     public function mergeCourseUsers( $uidToRemove, $uidToKeep, $courseId )
     {
         $tblList[] = 'lp_path';

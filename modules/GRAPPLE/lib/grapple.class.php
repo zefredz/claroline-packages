@@ -194,7 +194,7 @@ class grapple{
   {
     if( $this->connect() )
     {
-      $xml = $this->generateLearningActivityAddition( $userId, $itemId );
+      $xml = $this->generateLearningActivityAddition( $userId, $itemId, $courseId );
       return $this->sendData( $xml, $previousId, 'learningActivityAddition' );
     }
     else
@@ -212,7 +212,7 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return string XML content
    */
-  private function generateLearningActivityAddition( $userId, $itemId )
+  private function generateLearningActivityAddition( $userId, $itemId, $courseId )
   {
     $userData = user_get_properties( $userId );
     
@@ -282,7 +282,7 @@ class grapple{
   {
     if( $this->connect() )
     {
-      $xml = $this->generateLearningActivityChange( $userId, $itemId );
+      $xml = $this->generateLearningActivityChange( $userId, $itemId, $courseId );
       return $this->sendData( $xml, $previousId, 'learningActivityChange' );
     }
     else
@@ -301,7 +301,7 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return string XML content
    */
-  public function generateLearningActivityChange( $userId, $itemId )
+  public function generateLearningActivityChange( $userId, $itemId, $courseId )
   {
     $userData = user_get_properties( $userId );
     
@@ -370,7 +370,7 @@ class grapple{
   {
     if( $this->connect() )
     {
-      $xml = $this->generateLearningActivityDeleted( $userId, $itemId );
+      $xml = $this->generateLearningActivityDeleted( $userId, $itemId, $courseId );
       return $this->sendData( $xml, $previousId, 'learningActivityChange' );
     }
     else
@@ -389,7 +389,7 @@ class grapple{
    * @author Dimitri Rambout <dim@claroline.net>
    * @return string XML content
    */
-  public function generateLearningActivityDeleted( $userId, $itemId )
+  public function generateLearningActivityDeleted( $userId, $itemId, $courseId )
   {
     $userData = user_get_properties( $userId );
     

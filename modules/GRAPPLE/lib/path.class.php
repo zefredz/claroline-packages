@@ -287,7 +287,65 @@ class path
 
         return true; // no errors, form is valide
     }
+    /**
+     * Clear LearningPath progression (if both param are null, the entire progression for every users will be cleared)
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     *
+     * @param int $userId Id of the user (can be null)
+     * @param int $itemId Id of the item (can be null)
+     * 
+     * @return boolean
+     */    
+    public function clearProgression( $userId = null, $itemId = null )
+    {
+        if( $this->id == -1 )
+        {
+            return false;
+        }
+        // define module table names
+        $tblNameList = array(
+            'lp_attempt',
+            'lp_item_attempt'
+        );
 
+        // convert to Claroline course table names
+        $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
+        
+        $query = "SELECT `id` FROM `" . $tbl_lp_names['lp_attempt'] . "` WHERE `path_id` = '" . $this->id . "'";
+        if( ! is_null( $userId ) )
+        {
+            $query .= " AND `user_id` = " . (int) $userId;
+        }
+        
+        $result = Claroline::getDatabase()->query( $query );
+        
+        $attemptIds = array();
+        
+        while( $attemptId = $result->fetch() )
+        {
+            $attemptIds[] = $attemptId;
+        }
+        
+        foreach( $attemptIds as $attemptId )
+        {
+            if( is_null( $itemId ) )
+            {
+                $query = "DELETE FROM `" . $tbl_lp_names['lp_attempt'] . "` WHERE `id` = " . (int) $attemptId['id'];
+                Claroline::getDatabase()->exec( $query );
+            }
+            
+            $query = "DELETE FROM `" . $tbl_lp_names['lp_item_attempt'] . "` WHERE `attempt_id` = " . (int) $attemptId['id'];
+            if( ! is_null( $itemId ) )
+            {
+                $query .= " AND `item_id` = " . (int) $itemId;
+            }
+            Claroline::getDatabase()->exec( $query );
+        }
+        
+        return true;    
+    }
+    
     //-- Getter & Setter
 
     /**
@@ -564,7 +622,7 @@ class path
 /**
  * path scorm export enable to export a learning path to a zip archive in SCORM 2004 formart
  *
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  **/
 
@@ -598,7 +656,7 @@ class PathScormExport
     /**
      * Constructor
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      */
     public function __construct( &$path )
     {
@@ -609,7 +667,7 @@ class PathScormExport
     /**
      * Export the content of a learning path
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     public function export()
@@ -625,7 +683,7 @@ class PathScormExport
     /**
      * Fetch - load path item list and set directories names
      *
-     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimtiri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function fetch()
@@ -651,7 +709,7 @@ class PathScormExport
     /**
      * Prepare - copy files (statics & from modules) needed to export the LP
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function prepare()
@@ -670,34 +728,125 @@ class PathScormExport
             return false;
         }
         //CSS
-        // JS
-        if ( !claro_mkdir($this->destDir.'/' . get_conf('claro_stylesheet'), CLARO_FILE_PERMISSIONS , true) )
+        /*if ( !claro_mkdir($this->destDir.'/' . get_conf('claro_stylesheet'), CLARO_FILE_PERMISSIONS , true) )
         {
             $this->error = get_lang('Unable to create directory : ') . $this->destDir . '/' . get_conf('claro_stylesheet');
             return false;
-        }
+        }*/
         
         // Copy usual files (.css, .js, .xsd, etc)
-        if (
-               !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet'))
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet'))
-            || !claro_copy_file(dirname(__FILE__).'/../export/APIWrapper.js', $this->destDir.'/js')
-            || !claro_copy_file(dirname(__FILE__).'/../export/scores.js', $this->destDir.'/js')
-            || !claro_copy_file(dirname(__FILE__).'/../export/ims_xml.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/imscp_rootv1p1p2.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/imsmd_rootv1p2p1.xsd', $this->destDir)
-            || !claro_copy_file(dirname(__FILE__).'/../export/adlcp_rootv1p2.xsd', $this->destDir)
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/jquery.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys') . '../web/js/claroline.ui.js', $this->destDir.'/js')
-            || !claro_copy_file(get_module_path('GRAPPLE')  . '/js/connector13.js', $this->destDir.'/js')
-            || !claro_copy_file(get_module_path('GRAPPLE')  . '/js/scormtime.js', $this->destDir.'/js')
-            || !claro_copy_file(get_path('clarolineRepositorySys')  . '/document/js/cllp.cnr.js', $this->destDir.'/js')
+        // Check css to use
+        if( file_exists( get_path( 'clarolineRepositorySys' ) . '../platform/css/' . get_conf('claro_stylesheet') ) )
+        {
+            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../platform/css/' . get_conf('claro_stylesheet');
+        }
+        elseif( file_exists( get_path( 'clarolineRepositorySys' ) . '../web/css/' . get_conf('claro_stylesheet') ) )
+        {
+            $claro_stylesheet_path = get_path( 'clarolineRepositorySys' ) . '../web/css/' . get_conf('claro_stylesheet');
+        }
+        else
+        {
+            return false;
+        }
+        
+        if( !claro_copy_file( $claro_stylesheet_path, $this->destDir . '/' ) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'main.css' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/APIWrapper.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'APIWrapper.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/scores.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'scores.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/ims_xml.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'ims_xml.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/imscp_rootv1p1p2.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'imscp_rootv1p1p2.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/imsmd_rootv1p2p1.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'imsmd_rootv1p2p1.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/export/adlcp_rootv1p2.xsd', $this->destDir) )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'adlcp_rootv1p2.xsd' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/jquery.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'jquery.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'claroline.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.ui.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'claroline.ui.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/js/scormtime.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'scormtome.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('GRAPPLE') . '/js/connector13.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'connector13.js' ) );
+            return false;
+        }
+        
+        if( !claro_copy_file( get_module_path('CLDOC') . '/js/cllp.cnr.js', $this->destDir.'/js') )
+        {
+            $this->error = get_lang('Error when copying needed SCORM files') . ' ' . get_lang( '%fileName', array( '%fileName' => 'cllp.cnr.js' ) );
+            return false;
+        }
+        
+        /*if (
+               !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/main.css', $this->destDir . '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/css/'.get_conf('claro_stylesheet').'/rtl.css', $this->destDir. '/' . get_conf('claro_stylesheet'))
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/APIWrapper.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/scores.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/ims_xml.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/imscp_rootv1p1p2.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/imsmd_rootv1p2p1.xsd', $this->destDir)
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/export/adlcp_rootv1p2.xsd', $this->destDir)
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/jquery.js', $this->destDir.'/js')
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.js', $this->destDir.'/js')
+            || !claro_copy_file( get_path('clarolineRepositorySys') . '/../web/js/claroline.ui.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/js/connector13.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('GRAPPLE') . '/js/scormtime.js', $this->destDir.'/js')
+            || !claro_copy_file( get_module_path('CLDOC') . '/js/cllp.cnr.js', $this->destDir.'/js')
            )
         {
             $this->error = get_lang('Error when copying needed SCORM files');
             return false;
-        }
+        }*/
         
         if (! $this->createProgressFrame( $this->destDir ) )
         {
@@ -744,7 +893,7 @@ class PathScormExport
     /**
      * Create a progress frame needed for Documents & co
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param string $destDir Destination directory when the frame is saved
      * @return boolean
      */
@@ -784,7 +933,7 @@ class PathScormExport
         .    '<input type="radio" name="progress" id="full" class="progressRadio" value="100" />' . "\n"
         .    '<label for="full">100%</label>' . "\n"
         
-        .    '<input type="button" value="'.get_lang('Done').'" id="progressDone" />' . "\n"
+        //.    '<input type="button" value="'.get_lang('Done').'" id="progressDone" />' . "\n"
         .    '</form>
         </div>
         </body>
@@ -806,7 +955,7 @@ class PathScormExport
     /**
      * Prepare item for the zip, copy directories and files in the destination directory
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param array $item item information from a path
      * @param string $destDir Destination directory when files are copied
      * @param int $deepness Deepness of the directory
@@ -878,7 +1027,7 @@ class PathScormExport
     /**
      * Create a frame file to include item from the module
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param string $frameName name used to create the file
      * @param string $docId title of the frame
      * @param object $item item of a path
@@ -961,7 +1110,7 @@ class PathScormExport
     /**
      * Create the manifest needed to use the export
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function createManifest()
@@ -995,6 +1144,15 @@ class PathScormExport
         ';
         foreach( $itemTree as $item )
         {
+            if( $item[ 'type' ] == 'MODULE' )
+            {
+                $connectorPath = get_module_path( ClarolineResourceLocator::parse( $item['sys_path'] )->getModuleLabel() ) . '/connector/cllp.scormexport.cnr.php';
+                
+                if( ! file_exists( $connectorPath ) )
+                {
+                    continue;
+                }
+            }
             $organizations .= $this->createManifestItems( $item );
             $resources .= $this->createManifestResources( $item, '.');
         }
@@ -1024,7 +1182,7 @@ class PathScormExport
     /**
      * Create items for the manifest
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param array $item item's data
      * @return boolean
      */
@@ -1052,7 +1210,7 @@ class PathScormExport
     /**
      * Create resources for the manifest
      *
-     * @author Dimtiri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimtiri Rambout <dim@claroline.net>
      * @param array $item item's data
      * @param string $destDir destination directory
      * @return boolean
@@ -1118,7 +1276,7 @@ class PathScormExport
     /**
      * Create a zip file with all the files in $destDir
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */
     private function zip()
@@ -1143,7 +1301,7 @@ class PathScormExport
     /**
      * Send the zip in the header for direct download
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      */
     private function send()
     {
@@ -1162,7 +1320,7 @@ class PathScormExport
     /**
      * Return the error stored in $error
      *
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return string $error
      */
     public function getError()

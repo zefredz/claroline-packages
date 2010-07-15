@@ -1,47 +1,44 @@
-<?php 
+<?php //$Id$
 if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
- * CLAROLINE
+ * Library to manage blocking condition of a learning path
  *
- * $Revision$
- *
+ * @version 0.1 $Revision$
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package GRAPPLE
- *
  * @author Dimitri Rambout
- *
  */
 
 class blockingcondition
 {
-		/**
-		* @var $blockconds contains the blocking conditions for an item
-		*/
-		private $blockconds;
-		
-		/**
-		 * @var $item_id contains the general item_id
-		 */
-		private $item_id;
-		/**
-		 * @var $tblBlockcond name of the blocking condition table
-		 */
-		private $tblBlockcond;
-		/*
-		 * @var $tblItem name of the item table
-		 */
-		private $tblItem;
-		
-		/**
-		 * Constructor
-		 *
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 */
-		public function __construct( $item_id )
-		{
+    /**
+    * @var $blockconds contains the blocking conditions for an item
+    */
+    private $blockconds;
+    
+    /**
+     * @var $item_id contains the general item_id
+     */
+    private $item_id;
+    /**
+     * @var $tblBlockcond name of the blocking condition table
+     */
+    private $tblBlockcond;
+    /*
+     * @var $tblItem name of the item table
+     */
+    private $tblItem;
+    
+    /**
+     * Constructor
+     *
+     * Init database tables
+     *
+     * @author Dimitri Rambout <dim@claroline.net>
+     */
+    public function __construct( $item_id )
+    {
         $this->item_id = (int) $item_id;
         
         $tblNameList = array(
@@ -52,21 +49,21 @@ class blockingcondition
         $tbl_lp_names = get_module_course_tbl( $tblNameList, claro_get_current_course_id() );
         $this->tblBlockcond = $tbl_lp_names['lp_item_blockcondition'];
         $this->tblItem = $tbl_lp_names['lp_item'];
-		}
-		/**
-		 * Save the blocking conditions in the database
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @return boolean
-		 */
-		public function save()
-		{
+    }
+    /**
+     * Save the blocking conditions in the database
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return boolean
+     */
+    public function save()
+    {
         if( !$this->checkBlockConds() )
         {
             return false;
         }
         else
         {
-            
             $this->delete();
             
             $sql = "";
@@ -81,12 +78,12 @@ class blockingcondition
                             '".$this->blockconds['status'][$key]."',
                             '".$this->blockconds['operator'][$key]."',
                             '".(isset($this->blockconds['condition'][$key]) ? $this->blockconds['condition'][$key] : -1)."',
-														'".(int) $this->blockconds['raw_to_pass'][$key] ."') ";
+                            '".(int) $this->blockconds['raw_to_pass'][$key] ."') ";
             }
             $sql = "INSERT INTO `".$this->tblBlockcond."`
                         ( `item_id`, `cond_item_id`, `completion_status`, `operator`, `condition`, `raw_to_pass`) VALUES " . $sql;
             $insertedId = claro_sql_query_insert_id($sql);
-             
+            
             if( $insertedId )
             {
                 return true;
@@ -101,7 +98,8 @@ class blockingcondition
     
     /**
      * Load the blocking conditions if not already loaded. Based on $this->item_id
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
      * @return boolean
      */    
     public function load()
@@ -115,7 +113,7 @@ class blockingcondition
             $sql = "SELECT * FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$this->item_id."' ORDER BY `id`";
             $data = claro_sql_query_fetch_all_rows( $sql );
             
-            if( is_null($data) || !count($data) )
+            if( is_null($data) || !count($data) || $data == false )
             {
                 return false;
             }
@@ -127,7 +125,7 @@ class blockingcondition
                     $blockconds['item'][] = $d['cond_item_id'];
                     $blockconds['operator'][] = $d['operator'];
                     $blockconds['status'][] = $d['completion_status'];
-										$blockconds['raw_to_pass'][] = $d['raw_to_pass'];
+                    $blockconds['raw_to_pass'][] = $d['raw_to_pass'];
                     if($k)
                     {
                         $blockconds['condition'][] = $data[$k-1]['condition'];
@@ -142,7 +140,8 @@ class blockingcondition
 		
     /**
      * Eval the blocking conditions for an item (and parents if recursive is at true)
-     * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
      * @param $item_id int id of the item
      * @param $recursive boolean set recursive
      * @return array of boolean (eval of the blocking conditions for each item)
@@ -175,22 +174,24 @@ class blockingcondition
         
         return $block;        
     }
-		
-		/**
-		 * Clean the blocking conditions in memory
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 */	    
+    
+    /**
+     * Clean the blocking conditions in memory
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
+     */
     private function clearBlockConds()
     {
         $this->blockconds = null;
     }
     
     /**
-		 * Eval blocking conditions of an item
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @param array $data Array of items that need to be evaluated
-		 * @return boolean True or False
-		 */    
+    * Eval blocking conditions of an item
+    * 
+    * @author Dimitri Rambout <dim@claroline.net>
+    * @param array $data Array of items that need to be evaluated
+    * @return boolean True or False
+    */ 
     private function evalBlockCond( $data )
     {
         $eval = "";
@@ -217,10 +218,11 @@ class blockingcondition
                                 break;
                 }
                 $eval .= "'".$itemAttempt->getCompletionStatus()."'";
-								if( $data['status'][$key] == 'COMPLETED' && $data['raw_to_pass'][$key] > 0 )
-								{
-										$eval .= " && " . (int) $itemAttempt->getScoreRaw() ." > " . (int) $data['raw_to_pass'][$key];
-								}
+                if( $data['status'][$key] == 'COMPLETED' && $data['raw_to_pass'][$key] > 0 )
+                {
+                    $eval .= " && " . (int) $data['raw_to_pass'][$key] ." <= " . (int) $itemAttempt->getScoreRaw()
+                    ;
+                }
             }
             
             if( $eval && isset($data['condition'][$key]) )
@@ -234,7 +236,7 @@ class blockingcondition
         }
         if($eval)
         {
-            $eval = "if($eval){ return true; }else{ return false;}";
+            $eval = "if($eval){ return true; }else{ return false; }";
             
             return eval($eval);
         }
@@ -245,20 +247,23 @@ class blockingcondition
     }
     
     /**
-		 * Load blocking conditions from item and parent blocking conditions
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @param int $item_id Id of the item
-		 * @param boolean $printable true or false
-		 * @return array blocking conditions
-		 */
-		public function loadRecursive($item_id, $printable){
+    * Load blocking conditions from item and parent blocking conditions
+    * 
+    * @author Dimitri Rambout <dim@claroline.net>
+    * @param int $item_id Id of the item
+    * @param boolean $printable true or false
+    * @return array blocking conditions
+    */
+    public function loadRecursive( $item_id, $printable )
+    {
         
         $blocking_conditions = array();
         
-				$sql = "SELECT i.`id`, i.`parent_id`, `title`
-                FROM `".$this->tblItem."` i
-                WHERE i.`id` = '".$item_id."'
-                LIMIT 1";
+        $sql = "SELECT i.`id`, i.`parent_id`, `title`
+        FROM `".$this->tblItem."` i
+        WHERE i.`id` = '".$item_id."'
+        LIMIT 1";
+        
         $item = claro_sql_query_fetch_single_row($sql);
         
         $sql = "SELECT * FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$item_id."' ORDER BY `id`";
@@ -269,7 +274,8 @@ class blockingcondition
                 $data[$item_id]['data']['item'][] = $d['cond_item_id'];
                 $data[$item_id]['data']['operator'][] = $d['operator'];
                 $data[$item_id]['data']['status'][] = $d['completion_status'];
-								$data[$item_id]['data']['raw_to_pass'][] = $d['raw_to_pass'];
+                $data[$item_id]['data']['raw_to_pass'][] = $d['raw_to_pass'];
+                
                 if($k)
                 {
                     $data[$item_id]['data']['condition'][] = $_data[$k-1]['condition'];
@@ -301,26 +307,28 @@ class blockingcondition
     }
     
     
-		/**
-		 * Delete blocking conditions for the current item
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @return boolean True if query ok, false is query not ok
-		 */
-		public function delete()
+    /**
+     * Delete blocking conditions for the current item
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @return boolean True if query ok, false is query not ok
+     */
+    public function delete()
     {
         if( !is_int($this->item_id) )
-				{
-						return false;
-				}
-				$sql = "DELETE FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$this->item_id."'";
+        {
+                return false;
+        }
+        $sql = "DELETE FROM `".$this->tblBlockcond."` WHERE `item_id` = '".$this->item_id."'";
         
         return claro_sql_query( $sql );
     }
     /**
-		 * Check if each blocking condition are well formed
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @return boolean True if check ok, false in other case
-		 */
+    * Check if each blocking condition are well formed
+    * 
+    * @author Dimitri Rambout <dim@claroline.net>
+    * @return boolean True if check ok, false in other case
+    */
     private function checkBlockConds()
     {
         if( !is_null($this->blockconds) && is_array($this->blockconds) )
@@ -394,24 +402,26 @@ class blockingcondition
     }
     
     
-		/**
-		 * Set blocking conditions
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @param array $data blocking conditions
-		 * @return boolean true
-		 */
-		public function setBlockConds( $data )
+    /**
+     * Set blocking conditions
+     * 
+     * @author Dimitri Rambout <dim@claroline.net>
+     * @param array $data blocking conditions
+     * @return boolean true
+     */
+    public function setBlockConds( $data )
     {
         $this->blockconds = $data;
-				
-				return true;
+
+        return true;
     }
     
-		/**
-		 * Get blocking conditions
-		 * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-		 * @return array Array of blocking conditions
-		 */
+    /**
+     * Get blocking conditions
+     * 
+    * @author Dimitri Rambout <dim@claroline.net>
+    * @return array Array of blocking conditions
+    */
     public function getBlockConds()
     {
         return $this->blockconds;

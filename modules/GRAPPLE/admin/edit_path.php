@@ -1,16 +1,18 @@
 <?php // $Id$
 /**
- * CLAROLINE
+ * Edition of a learning path.
+ *
+ * This page is used to manage a path and some part of a resource.
+ * The title, description, embbed/full screen are setted here for the path.
+ * It's also the place to enable/disable prerequisites for a path.
+ * It also display a list of items linked to the path. It's possible to change de visibility of the  items, set prerequisites for a specific resource, ...
  *
  * @version 0.1 $Revision$
- *
  * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package GRAPPLE
- *
  * @author Sebastien Piraux
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  */
 
@@ -56,6 +58,7 @@ $acceptedCmdList = array(   'rqEdit', 'exEdit',
                             'rqPrereq', 'exPrereq', 'rqDeletePrereq', 'exDeletePrereq',
                             'exVisible', 'exInvisible',
                             'rqMove', 'exMove', 'exMoveUp','exMoveDown',
+                            'exLock', 'exUnlock',
                             'rqGrappleCoursesList', 'exGrappleCoursesList'
                     );
 
@@ -68,6 +71,14 @@ else                                                                  $pathId = 
 if( isset($_REQUEST['itemId']) && is_numeric($_REQUEST['itemId']) )   $itemId = (int) $_REQUEST['itemId'];
 else                                                                  $itemId = null;
 
+if( isset( $_SESSION[ 'grapple' ][ 'previousGEBId' ] ) )
+{
+    $grapple_idAssignedEvent = $_SESSION[ 'grapple' ][ 'previousGEBId' ];
+}
+else
+{
+    $grapple_idAssignedEvent = 0;
+}
 
 /*
  * init other vars
@@ -141,6 +152,8 @@ if( $cmd == 'exEdit' )
             {
                 $dialogBox->success( get_lang('Empty learning path successfully created') );
                 $pathId = $insertedId;
+                
+                $eventNotifier->notifyCourseEvent("grapple_path_created",claro_get_current_course_id(), claro_get_current_tool_id(), $pathId, claro_get_current_group_id(), claro_get_current_user_id() );
             }
             else
             {
@@ -182,7 +195,7 @@ if( $cmd == 'rqEdit' )
 
     $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pathId='.$pathId.'" method="post">' . "\n"
     .    claro_form_relay_context()
-    //.     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
+    .     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
     .     '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
 
     // title
@@ -256,12 +269,15 @@ if( $cmd == 'exAddItem' )
             {
                 if( $addedItem->save() )
                 {
-                    if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId();,  $grapple_idAssignedEvent ) )
+                    $grapple = new grapple();
+                    if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId(),  $grapple_idAssignedEvent ) )
                     {
                       $grapple_idAssignedEvent = $data->idAssignedEvent;
                       $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
                     }
                     $dialogBox->success( get_lang('Item "%itemTitle" successfully added', array('%itemTitle' => $title) ) );
+                    
+                    $eventNotifier->notifyCourseEvent("grapple_resource_created",claro_get_current_course_id(), claro_get_current_tool_id(), $addedItem->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
                 }
                 else
                 {
@@ -369,13 +385,16 @@ if( $cmd == 'exDelete' )
 {
     if( $item->delete() )
     {
-        if( $data = $grapple->learningActivityDeleted( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId();,  $grapple_idAssignedEvent ) )
+        $grapple = new grapple();
+        if( $data = $grapple->learningActivityDeleted( claro_get_current_user_id(), claro_get_current_course_id(), $addedItem->getId(),  $grapple_idAssignedEvent ) )
         {
           $grapple_idAssignedEvent = $data->idAssignedEvent;
           $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
         }
         
         $dialogBox->success( get_lang('Item succesfully deleted') );
+        
+        $eventNotifier->notifyCourseEvent("grapple_resource_deleted",claro_get_current_course_id(), claro_get_current_tool_id(), $itemId, claro_get_current_group_id(), claro_get_current_user_id() );
     }
     else
     {
@@ -496,6 +515,8 @@ if( $cmd == 'rqPrereq' )
 {    
     if( !is_null( $itemId ) )
     {
+        Claroline::getInstance()->display->header->addInlineJavascript('var langRemove = "' . get_lang('Remove') .'"');
+        
         $blockcond = new blockingcondition( $itemId );
         
         $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
@@ -541,7 +562,7 @@ if( $cmd == 'rqPrereq' )
                              .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
                              //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
                              .   '</select>'
-                             .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" disabled="disabled" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
+                             .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" disabled="disabled" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />' .( $blockconds['status'][$key] == 'COMPLETED' ? '%' : '' ) . '</span>' . "\n"
                              .   '</div>' . "\n";
                         }
                         $htmlPrereqContainer .= '</div>' . "\n";
@@ -602,7 +623,7 @@ if( $cmd == 'rqPrereq' )
                 .   '<option value="INCOMPLETE" '.( $blockconds['status'][$key] == 'INCOMPLETE' ? 'selected="selected"' : '' ).'>'.get_lang('incomplete').'</option>' . "\n"
                 //.   '<option value="PASSED" '.( $blockconds['status'][$key] == 'PASSED' ? 'selected="selected"' : '' ).'>'.get_lang('passed').'</option>' . "\n"
                 .   '</select>' . "\n"
-                .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />%</span>' . "\n"
+                .   '<span><input type="'.($blockconds['status'][$key] == 'COMPLETED' ? 'text' : 'hidden').'" name="raw_to_pass[]" value="'.(int) $blockconds['raw_to_pass'][$key].'" style="width: 50px; text-align: right;" />' .( $blockconds['status'][$key] == 'COMPLETED' ? '%' : '' ) . '</span>' . "\n"
                 .   '</div>' . "\n";
             }
         }
@@ -623,16 +644,16 @@ if( $cmd == 'exDeletePrereq' )
     $blockcond = new blockingcondition( $itemId );
     if( $blockcond->delete() )
     {
-        $dialogBox->success( get_lang('Blocking conditions successfully deleted') );
+        $dialogBox->success( get_lang('Prerequisites successfully deleted') );
     }
     else
     {
-        $dialogBox->error( get_lang('Fatal error : cannot delete blocking conditions') );
+        $dialogBox->error( get_lang('Fatal error : cannot delete prerequisites') );
     }
 }
 if ( $cmd == 'rqDeletePrereq' )
 {
-    $htmlPrereqContainer = get_lang('Are you sure to delete blocking conditions for "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+    $htmlPrereqContainer = get_lang('Are you sure that you want to delete prerequisites for "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
     .     '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeletePrereq&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'
@@ -647,6 +668,8 @@ if( $cmd == 'exVisible' )
     $item->setVisible();
 
     $item->save();
+    
+    $eventNotifier->notifyCourseEvent("grapple_resource_visible",claro_get_current_course_id(), claro_get_current_tool_id(), $item->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
 }
 
 if( $cmd == 'exInvisible' )
@@ -654,6 +677,22 @@ if( $cmd == 'exInvisible' )
     $item->setInvisible();
 
     $item->save();
+    
+    $eventNotifier->notifyCourseEvent("grapple_resource_invisible",claro_get_current_course_id(), claro_get_current_tool_id(), $item->getId(), claro_get_current_group_id(), claro_get_current_user_id() );
+}
+
+if( $cmd == 'exLock' )
+{
+    $path->lock();
+
+    $path->save();
+}
+
+if( $cmd == 'exUnlock' )
+{
+    $path->unlock();
+
+    $path->save();
 }
 
 if( $cmd == 'rqGrappleCoursesList' )
@@ -696,6 +735,7 @@ if( $cmd == 'exGrappleCoursesList' )
         //check the coursesList if in session, if not, load it
         if( ! ( isset( $_SESSION['grapple']['coursesList'] ) && count( $_SESSION['grapple']['coursesList'] ) ) )
         {
+            $grapple = new grapple();
             $_SESSION['grapple']['coursesList'] = $grapple->requestCoursesList();
         }
         
@@ -725,7 +765,8 @@ if( $cmd == 'exGrappleCoursesList' )
                     
                     if( $item->save() )
                     {
-                        if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $item->getId();,  $grapple_idAssignedEvent ) )
+                        $grapple = new grapple();
+                        if( $data = $grapple->learningActivityAddition( claro_get_current_user_id(), claro_get_current_course_id(), $item->getId(),  $grapple_idAssignedEvent ) )
                         {
                           $grapple_idAssignedEvent = $data->idAssignedEvent;
                           $_SESSION[ 'grapple' ][ 'previousGEBId' ] = $grapple_idAssignedEvent;
@@ -788,13 +829,29 @@ $out .= '<p>'
 .    '</p>'
 ;
 
+//sub menu
+if( $is_allowedToEdit && !is_null($pathId) )
+{
+    $cmdSubMenu = array();
+    if( $path->getLock() == 'CLOSE' )
+    {
+        $cmdSubMenu[] = claro_html_cmd_link( $_SERVER['PHP_SELF'] . '?cmd=exUnlock&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon( 'block' ) . '" alt="" />' . get_lang( 'Disable prerequisites') );
+    }
+    else
+    {
+        $cmdSubMenu[] = claro_html_cmd_link( $_SERVER['PHP_SELF'] . '?cmd=exLock&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon( 'unblock' ) . '" alt="" />' . get_lang( 'Enable prerequisites') );
+    }
+    
+    $out .= '<p>' . claro_html_menu_horizontal( $cmdSubMenu ) . '</p>';
+}
+
 $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
 .    '<thead>' . "\n"
 .    '<tr class="headerX" align="center" valign="top">' . "\n"
 .     '<th>' . get_lang('Item') . '</th>' . "\n"
 .     '<th>' . get_lang('Modify') . '</th>' . "\n"
 .     '<th>' . get_lang('Delete') . '</th>' . "\n"
-.     '<th>' . get_lang('Prerequisites') . '</th>' . "\n"
+.     ( $path->getLock() == 'CLOSE' ? '<th>' . get_lang('Prerequisites') . '</th>' . "\n" : '' )
 .     '<th>' . get_lang('Visibility') . '</th>' . "\n"
 .     '<th>' . get_lang('Move') . '</th>' . "\n"
 .     '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
@@ -833,11 +890,21 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         .    '</td>' . "\n";
 
         // prerequisites
-        $out .= '<td>' . "\n"
-        .    '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
-        .    '<img src="' . get_icon_url('unblock') . '" border="0" alt="' . get_lang('Unblock') . '" />' . "\n"
-        .    '</a>'
-        .    '</td>' . "\n";
+        if( $path->getLock() == 'CLOSE' )
+        {
+            $out .= '<td>' . "\n"
+            .   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=rqPrereq&amp;pathId=' . $pathId . '&amp;itemId='.$anItem['id'].'">' . "\n"
+            . (
+               ( $anItem['blockingConditions'] == true )
+               ?                
+                    '<img src="' . get_icon_url('block_cond') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+                :
+                    '<img src="' . get_icon_url('block_cond_empty') . '" border="0" alt="' . get_lang('Edit blocking conditions') . '" />' . "\n"
+                )
+            .    '</a>'
+            .    '</td>' . "\n"
+            ;
+        }
 
         // visible/invisible
         if( $anItem['visibility'] == 'VISIBLE' )
