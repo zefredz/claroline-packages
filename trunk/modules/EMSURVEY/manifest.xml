@@ -1,0 +1,23 @@
+<module>
+  <label>EMSURVEY</label>
+  <name>Surveys dispatcher</name>
+  <version>1.0</version>
+  <license>GPL</license>
+  <type>admin</type>
+  <entry>index.php</entry>
+  <icon>icon.png</icon>
+
+  <description>Dispatch surveys created through the LVSURVEY module into courses.  Also give the possibility to use a 'magic replace' functionnality, replacing '%speaker%' by the names of each course's tutor.</description>
+
+  <author>
+     <name>Antonin Bourguignon</name>
+     <email>antonin.bourguignon@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.10</version>
+    </claroline>
+    <module>LVSURVEY</module></requirements>
+</module>
