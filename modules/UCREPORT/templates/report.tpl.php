@@ -1,3 +1,13 @@
+<?php // $Id$
+/**
+ * Claroline Poll Tool
+ *
+ * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     UCREPORT
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */ ?>
 <?php if ( count( $this->reportDataList ) ) : ?>
 <?php include dirname( __FILE__ ) . '/menu.tpl.php'; ?>
 <table id="report" class="claroTable emphaseLine" style="width: 100%;">

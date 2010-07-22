@@ -1,3 +1,13 @@
+<?php // $Id$
+/**
+ * Claroline Poll Tool
+ *
+ * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     UCREPORT
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */ ?>
 <h1>
     <?php echo $this->courseData[ 'name' ] . ' (' . $this->courseData[ 'sysCode' ] . ')'; ?>
 </h1>
