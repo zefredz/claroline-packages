@@ -430,9 +430,10 @@ class Poll
     }
     
     /**
-     * deletes the poll
+     * Deletes the poll
+     * @return true if successful
      */
-    function delete()
+    public function delete()
     {
         Claroline::getDatabase()->exec( "
             DELETE FROM
