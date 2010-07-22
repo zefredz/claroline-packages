@@ -1,0 +1,537 @@
+<?php
+/**
+ * Claroline Poll Tool
+ *
+ * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     UCREPORT
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
+/**
+ * Retrieves the students' scores for all the assignments, adds weights,
+ * and calculates average scores and students'final (weighted) results
+ * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignement
+ * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignment weights are stored
+ * @const VISIBLE database value for visible assignment
+ * @property array $userList the list of course's users who posted works
+ * @property array $assignmentDataList the visible assignment list with some datas (weight, average,...)
+ * @property array $reportDataList the students' scores for each assignment
+ * @property string $weightFileUrl the Url of the file which stores the assignements weights
+ * @property int $averageScore the global weighted average score
+ */
+class Report
+{
+    const DEFAULT_ASSIGNEMENT_WEIGHT = 100;
+    const ASSIGNMENT_DATA_FILE_NAME = 'assignments.data';
+    const VISIBLE = 'VISIBLE';
+    const INVISIBLE = 'INVISIBLE';
+    
+    private $userList = array();
+    private $reportDataList = array();
+    private $assignmentDataList = array();
+    
+    private $id;
+    private $courseId;
+    private $title;
+    private $date;
+    private $visibility;
+    private $assignmentListFileUrl;
+    private $averageScore;
+    
+    /**
+     * Constructor
+     * If it receives a report id, it loads the datas stored in database
+     * If not, it retrieves the 'realtime' datas from the assignments
+     * @param the location of the "assignmentWeight.data" file
+     * @param int $reportId the id of the report
+     */
+    public function __construct( $courseId = false , $reportId = false )
+    {
+        $this->courseId = $courseId ? $courseId : claro_get_current_course_id();
+        
+        $this->tbl_names = get_module_main_tbl( array( 'user' ) , $courseId );
+        $this->tbl = get_module_course_tbl ( array ( 'wrk_assignment'
+                                                   , 'wrk_submission'
+                                                   , 'group_rel_team_user'
+                                                   , 'report_reports' ) , $courseId );
+        
+        if ( ! $reportId || ! $this->loadReport( $reportId ) )
+        {
+            $this->assignmentListFileUrl = '../../courses/'
+                                         . claro_get_course_path( $this->courseId )
+                                         . '/' . self::ASSIGNMENT_DATA_FILE_NAME;
+            $this->load();
+        }
+    }
+    
+    /**
+     * Retrieves the 'realtime' data from assignments database
+     * This method is called by the constructor if it doesn't receive a report id
+     */
+    public function load()
+    {
+        $assignmentQueryResult = Claroline::getDatabase()->query( "
+            SELECT
+                id, title, visibility
+            FROM
+                `{$this->tbl['wrk_assignment']}`" );
+        
+        foreach( $assignmentQueryResult as $line )
+        {
+            $is_visible = $line[ 'visibility' ] == self::VISIBLE;
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'title' ] = $line[ 'title' ];
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'active' ] = $is_visible;
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'weight' ] = self::DEFAULT_ASSIGNEMENT_WEIGHT;
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'submission_count' ] = 0;
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'average' ] = 0;
+        }
+        
+        if ( file_exists( $this->assignmentListFileUrl )
+            && $content = unserialize( file_get_contents( $this->assignmentListFileUrl ) ) )
+        {
+            foreach( $content as $assignmentId => $datas )
+            {
+                if ( isset( $this->assignmentDataList[ $assignmentId ] ) )
+                {
+                    $this->assignmentDataList[ $assignmentId ][ 'weight' ] = $datas[ 'weight' ];
+                    $this->assignmentDataList[ $assignmentId ][ 'active' ] = $datas[ 'active' ];
+                }
+            }
+        }
+        
+        $dataQueryResult = Claroline::getDatabase()->query( "
+            SELECT
+                S1.id,
+                S1.user_id,
+                U.prenom AS firstname,
+                U.nom AS lastname,
+                S1.assignment_id,
+                A.title,
+                S2.score,
+                S2.creation_date
+            FROM
+                `{$this->tbl_names['user']}` AS U,
+                `{$this->tbl['wrk_assignment']}` AS A,
+                `{$this->tbl['wrk_submission']}` AS S2,
+                `{$this->tbl['wrk_submission']}` AS S1
+            LEFT JOIN
+                `{$this->tbl['group_rel_team_user']}` AS R
+            ON
+                R.team = S1.group_id
+            AND
+                R.user = S1.user_id
+            WHERE
+                U.user_id = S1.user_id
+            AND
+                A.id = S1.assignment_id
+            AND
+                S2.parent_id = S1.id
+            AND
+                S2.score >= 0
+            ORDER BY
+                U.nom, U.prenom, S2.creation_date DESC" );
+        
+        foreach( $dataQueryResult as $line )
+        {
+            if ( isset( $this->assignmentDataList[ $line[ 'assignment_id' ] ] )
+                 && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ] )
+            {
+                if ( ! isset( $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] ) )
+                {
+                $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] = $line[ 'score' ];
+                
+                if ( ! isset( $this->userList[ $line[ 'user_id' ] ] ) )
+                {
+                    $this->userList[ $line[ 'user_id' ] ][ 'firstname' ] = $line[ 'firstname' ];
+                    $this->userList[ $line[ 'user_id' ] ][ 'lastname' ] = $line[ 'lastname' ];
+                }
+                
+                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'submission_count' ]++;
+                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'average' ] += $line[ 'score' ];
+                }
+            }
+        }
+        
+        foreach( $this->assignmentDataList as $assignmentId => $assignment )
+        {
+            if ( $assignment[ 'submission_count' ] )
+            {
+                $average = round( $this->assignmentDataList[ $assignmentId ][ 'average' ]
+                            / $assignment[ 'submission_count' ] , 1 );
+                $this->assignmentDataList[ $assignmentId ][ 'average' ] = $average;
+            }
+            else
+            {
+                unset( $this->assignmentDataList[ $assignmentId ][ 'average' ] );
+            }
+        }
+        
+        $this->setProportionalWeight();
+        
+        foreach( $this->reportDataList as $userId => $userReport )
+        {
+            $finalScore = 0;
+            
+            foreach( $userReport as $assignmentId => $score )
+            {
+                if ( isset( $this->assignmentDataList[ $assignmentId ] ) )
+                {
+                    $finalScore += $score * $this->assignmentDataList[ $assignmentId ][ 'proportional_weight' ];
+                }
+            }
+            
+            $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
+        }
+        
+        $this->averageScore = 0;
+        
+        foreach( $this->assignmentDataList as $assignment )
+        {
+            if ( $assignment[ 'submission_count' ] )
+            {
+                $this->averageScore += $assignment[ 'average' ] * $assignment[ 'proportional_weight' ];
+            }
+        }
+    }
+    
+    /**
+     * Loads the report datas
+     * This methode is called by the constructor if it receives a report id
+     */
+    public function loadReport( $reportId )
+    {
+        if ( $reportQueryResult = Claroline::getDatabase()->query( "
+            SELECT
+                title, datas, publication_date, visibility
+            FROM
+                `{$this->tbl['report_reports']}`
+            WHERE
+                id = " . Claroline::getDatabase()->escape( (int)$reportId )
+        )->fetch() )
+        {
+            try
+            {
+                $this->title = $reportQueryResult[ 'title' ];
+                $this->date = $reportQueryResult[ 'publication_date' ];
+                $this->visibility = $reportQueryResult[ 'visibility' ] == self::VISIBLE
+                                    ? self::VISIBLE
+                                    : self::INVISIBLE;
+                
+                $datas = unserialize( $reportQueryResult[ 'datas' ] );
+                
+                $this->reportDataList = $datas[ 'report' ];
+                $this->userList = $datas[ 'users' ];
+                $this->assignmentDataList = $datas[ 'assignments' ];
+                $this->averageScore = $datas[ 'average' ];
+                
+                $this->id = $reportId;
+            }
+            catch( Exception $e )
+            {
+                echo 'invalid datas : ' . $e->getMessage();
+            }
+        }
+        
+        return $this->id;
+    }
+    
+    /**
+     * Common getter for id
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * Common getter for $courseid
+     */
+    public function getCourseId()
+    {
+        return $this->courseId;
+    }
+    
+    /**
+     * Common getter for title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
+    /**
+     * Common getter for date
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+    
+    /**
+     * Common getter for reportDataList
+     */
+    public function getReportDataList()
+    {
+        return $this->reportDataList;
+    }
+    
+    /**
+     * Common getter for userList
+     */
+    public function getUserList()
+    {
+        return $this->userList;
+    }
+    
+    /**
+     * Common getter for assignmentDataList
+     */
+    public function getAssignmentDataList()
+    {
+        return $this->assignmentDataList;
+    }
+    
+    /**
+     * Gets the global average (weighted) score
+     * @return int $this->averegaScore (rounded)
+     */
+    public function getAverageScore()
+    {
+        return round( $this->averageScore , 1);
+    }
+    
+    /**
+     * Gets the final score for the specified user
+     * @param int $userId
+     * @return int $finalScore
+     * @throws excpetion if thre is no entry for the specified $userId
+     */
+    public function getFinalScore( $userId )
+    {
+        if ( isset( $this->userList[ $userId ] ) )
+        {
+            return $this->userList[ $userId][ 'final_score' ];
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    /**
+     * Common setter for title
+     * @param string $title;
+     */
+    public function setTitle( $title )
+    {
+        $this->title = $title;
+    }
+    
+    /**
+     * Sets an assignment active
+     * @param int $assignmentId
+     * @param boolean $active
+     */
+    public function setActive( $assignmentId , $active = false )
+    {
+        if ( isset( $this->id ) )
+        {
+            throw new Exception( 'Cannot change the active list of an published report' );
+        }
+        
+        if ( isset( $this->assignmentDataList[ $assignmentId ] ) )
+        {
+            $this->assignmentDataList[ $assignmentId ][ 'active' ] = (boolean)$active;
+            $this->setProportionalWeight();
+        }
+        else
+        {
+            throw new Exception( 'Invalid assignment id' );
+        }
+    }
+    
+    /**
+     * Sets weight for assignment
+     * @param int $assignmentId the id of the assignment
+     * @param int $weight the weight of the assignment
+     */
+    public function setWeight( $assignmentId , $weight )
+    {
+        if ( isset( $this->id ) )
+        {
+            throw new Exception( 'Cannot change the weight of an published report' );
+        }
+        
+        if ( isset( $this->assignmentDataList[ $assignmentId ] ) )
+        {
+            $this->assignmentDataList[ $assignmentId ][ 'weight' ] = (int)$weight;
+            $this->setProportionalWeight();
+        }
+        else
+        {
+            throw new Exception( 'Invalid assignment id' );
+        }
+    }
+    
+    /**
+     * Calculates the proportional weights and put them in $this->assignmentDataList
+     * @return void
+     */
+    public function setProportionalWeight()
+    {
+        if ( isset( $this->id ) )
+        {
+            throw new Exception( 'Cannot change the weight of an published report' );
+        }
+        
+        $weightSum = 0;
+        
+        foreach( $this->assignmentDataList as $assignment )
+        {
+            if ( $assignment[ 'active' ] )
+            {
+                $weightSum += $assignment[ 'weight' ];
+            }
+        }
+        
+        foreach( array_keys( $this->assignmentDataList  ) as $assignmentId )
+        {
+            if ( $this->assignmentDataList[ $assignmentId ][ 'active' ] )
+            {
+                $proportionalWeight = round( $this->assignmentDataList[ $assignmentId ][ 'weight' ] / $weightSum , 3 );
+            }
+            else
+            {
+                $proportionalWeight = 0;
+            }
+            $this->assignmentDataList[ $assignmentId ][ 'proportional_weight' ] = $proportionalWeight;
+        }
+    }
+    
+    /**
+     * Stores the weights values in file
+     * @return boolean true if process is successful
+     */
+    public function saveAssignmentList()
+    {
+        $weightList = array();
+        
+        foreach( $this->assignmentDataList as $assignmentId => $assignmentData )
+        {
+            $assignmentList[ $assignmentId ] = array( 'active' => $assignmentData[ 'active' ]
+                                                    , 'weight' => $assignmentData[ 'weight' ] );
+        }
+        
+        return create_file( $this->assignmentListFileUrl , serialize( $assignmentList ) );
+    }
+    
+    /**
+     * Saves the reports
+     * @return boolean true if successful
+     */
+    public function saveReport()
+    {
+        if ( ! $this->title )
+        {
+            throw new Exception( 'Cannot save a report without title!' );
+        }
+        
+        $this->saveAssignmentList();
+        
+        $data = array(
+                'users' => $this->userList,
+                'assignments' => $this->assignmentDataList,
+                'report' => $this->reportDataList,
+                'average' => $this->averageScore );
+        
+        if ( $this->id )
+        {
+            return Claroline::getDatabase()->exec( "
+                UPDATE
+                    `{$this->tbl['report_reports']}`
+                SET
+                    title = " . Claroline::getDatabase()->quote( $this->title ) . ",
+                    datas = " . Claroline::getDatabase()->quote( serialize( $data ) ) . ",
+                    publication_date " . Claroline::getDatabase()->quote($this->date ) .",
+                    visibility = " . Claroline::getDatabase()->quote( $this->visibility ) . "
+                WHERE
+                    id = " . Claroline::getDatabase()->escape( $this->id )
+            );
+        }
+        else
+        {
+            $this->visibility = self::VISIBLE;
+            
+            Claroline::getDatabase()->exec( "
+                INSERT INTO
+                    `{$this->tbl['report_reports']}`
+                SET
+                    title = " . Claroline::getDatabase()->quote( $this->title ) . ",
+                    datas = " . Claroline::getDatabase()->quote( serialize( $data ) ) . ",
+                    publication_date = NOW(),
+                    visibility = " . Claroline::getDatabase()->quote( $this->visibility )
+            );
+            
+            return $this->id = Claroline::getDatabase()->insertId();
+        }
+    }
+    
+    /**
+     * Deletes the report with the specified id
+     * @return boolean true if successful
+     */
+    public function delete()
+    {
+        return Claroline::getDatabase()->exec( "
+            DELETE FROM
+                `{$this->tbl['report_reports']}`
+            WHERE
+                id = " . (int)$this->id );
+    }
+    
+    /**
+     * Gets the list of all the reports associated to the course
+     * @static
+     * @param boolean $seeAll : false show only the visible ones
+     * @return resultset $reportList
+     */
+    public static function getReportList( $seeAll = true )
+    {
+        $tbl = get_module_course_tbl ( array ( 'report_reports' ) );
+        $where = $seeAll ? "" : "\nWHERE visibility = '" . self::VISIBLE ."'";
+        
+        return Claroline::getDatabase()->query( "
+            SELECT
+                id, title, publication_date, visibility
+            FROM
+                `{$tbl['report_reports']}`" . $where . "
+            ORDER BY
+                publication_date ASC"
+        );
+    }
+    
+    /**
+     * Change the visibility of a report
+     * @param int $reportId
+     * @param enum( self::INVISIBLE , self::VISIBLE ) $visibility
+     */
+    public static function changeVisibility( $reportId, $visibility )
+    {
+        $newVisibility = $visibility == self::VISIBLE
+                        ? self::INVISIBLE
+                        : self::VISIBLE;
+                        
+        $tbl = get_module_course_tbl ( array ( 'report_reports' ) );
+        
+        return Claroline::getDatabase()->exec( "
+            UPDATE
+                `{$tbl['report_reports']}`
+            SET
+                visibility = " . Claroline::getDatabase()->quote( $newVisibility ) ."
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $reportId )
+        );
+    }
+}
