@@ -36,7 +36,7 @@ if ( claro_is_platform_admin() )
                     '<form id="editContactPage" action="' .
                     htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) . '">' .
                     '<input type="hidden" name="cmd" value="exEditPage" />' .
-                    claro_html_textarea_editor( 'contactList' , $content, 20 , 80 ) .
+                    claro_html_textarea_editor( 'contactList' , $content , 20 , 80 ) .
                     '<input type="submit" name="save" value="' . get_lang('Ok') . '" />' .
                     claro_html_button(htmlspecialchars( Url::Contextualize( $_SERVER[ 'HTTP_REFERER' ]) ), get_lang('Cancel')) .
                     '</form>';
@@ -73,7 +73,7 @@ if ( claro_is_platform_admin() )
 }
 else
 {
-    $dialogBox = new DialogBox();
+    $dialogBox = new DialogBox;
     
     $dialogBox->warning( get_lang( 'This section is forbidden for users with no admin right' ) );
     

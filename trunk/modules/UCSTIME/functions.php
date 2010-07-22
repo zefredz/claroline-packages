@@ -2,7 +2,7 @@
 /**
 * Server Time?
 *
-* @version     UCSTIME 0.1 $Revision$ - Claroline 1.9
+* @version     UCSTIME 1.1.1 $Revision$ - Claroline 1.9
 * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
 * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
 * @package     UCSTIME
@@ -21,8 +21,8 @@ ClaroHeader::getInstance()->addHtmlHeader( '
         var timeShift;
         function serverTimeShift(){
             var _localDate = new Date();
-            var _serverDate = Date.fromDatetime( "'. date( "Y-m-d H:i:s" ) .'");
-             timeShift = _localDate.getTime() - _serverDate.getTime();
+            var _serverDate = Date.fromDatetime( "'. date( "Y-m-d H:i:s" ) .'" );
+            timeShift = _localDate.getTime() - _serverDate.getTime();
         }
         function serverTimeDisplay(){
             var localDate = new Date();
