@@ -7,10 +7,13 @@
           xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
           xmlns:html="http://www.w3.org/TR/REC-html40">
     <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
-        <LastAuthor>production</LastAuthor>
-        <Created>2010-07-14T16:17:16Z</Created>
-        <LastSaved>2010-07-14T16:16:45Z</LastSaved>
-        <Version>12.0</Version>
+        <Title><?php echo get_lang( 'Report' ) . ' : ' . $this->courseData[ 'name' ]; ?></Title>
+        <Author><?php echo $this->courseData[ 'titular' ]; ?></Author>
+        <LastAuthor><?php echo $this->userData[ 'firstName' ] . ' ' . $this->userData[ 'lastName' ]; ?></LastAuthor>
+        <Created><?php echo date( 'c' ); ?></Created>
+        <LastSaved><?php echo date( 'c' ); ?></LastSaved>
+        <Company><?php echo get_conf( 'institution_name' ); ?></Company>
+        <Version>1.0</Version>
     </DocumentProperties>
     <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
         <WindowHeight>9000</WindowHeight>
