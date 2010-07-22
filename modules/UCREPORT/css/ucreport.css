@@ -1,0 +1,24 @@
+.cell
+{
+    text-align: center;
+}
+
+.empty
+{
+    text-align: center;
+    font-style: italic;
+    color: silver;
+}
+
+.average
+{
+    font-weight: bold;
+    background-color: beige;
+}
+
+.final
+{
+    color: dimGrey;
+    font-weight: bold;
+    /*background-color: linen;*/
+}
