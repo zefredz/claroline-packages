@@ -1,4 +1,5 @@
 /**
+ * $Id$
  * Claroline Poll Tool
  *
  * @version     UCREPORT 0.7.0 $Revision$ - Claroline 1.9

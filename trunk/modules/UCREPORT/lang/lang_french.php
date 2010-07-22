@@ -1,4 +1,14 @@
-<?php
+<?php // $Id$
+/**
+ * Claroline Poll Tool
+ *
+ * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     UCREPORT
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
 $_lang['An error occured: the report has not been created!'] = 'Une erreur est survenue: le bulletin n\' a pu être créé!';
 $_lang['An error occured: the report has not been deleted!'] = 'Une erreur est survenue: le bulletin n\' a  pu être supprimé!';
 $_lang['An error occured: the visibility change failed!'] = 'Une erreur est survenue: la visibilité n\'a pu être changée!';

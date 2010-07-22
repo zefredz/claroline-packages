@@ -1,4 +1,4 @@
-<?php
+<?php // $Id$
 /**
  * Claroline Poll Tool
  *
