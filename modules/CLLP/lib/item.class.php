@@ -19,14 +19,6 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
  * @author Sebastien Piraux
  */
 
-/**
- * Item class
- *
- * Manage a resource in a learning path
- * 
- * @author Dimitri Rambout <dim@claroline.net>
- * @author Sebastien Piraux
- */
 class item
 {
     /**
@@ -288,7 +280,7 @@ class item
             $sql = "UPDATE `".$this->tblItem."`
                     SET `path_id` = '".(int) $this->pathId."',
                         `type` = '".addslashes($this->type)."',
-                      `title` = '".addslashes($this->title)."',
+                        `title` = '".addslashes($this->title)."',
                         `description` = '".addslashes($this->description)."',
                         `visibility` = '".addslashes($this->visibility)."',
                         `rank` = ".(int) $this->rank.",
