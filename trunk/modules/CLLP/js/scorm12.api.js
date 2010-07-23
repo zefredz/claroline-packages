@@ -8,8 +8,8 @@ var API = {
     //
 
     _Initialized : false,
-  _Terminated : false,
-  _lastError : "0",
+    _Terminated : false,
+    _lastError : "0",
     _lastDiagnostic : "",
 
     _datamodel : {},
@@ -17,34 +17,34 @@ var API = {
     // Error codes and Error diagnostics
     //
     _errCodes : {
-      "0" : "No Error",
-      "101" : "General Exception",
-      "102" : "Server is busy",
-      "201" : "Invalid Argument Error",
-      "202" : "Element cannot have children",
-      "203" : "Element not an array.  Cannot have count",
-      "301" : "Not initialized",
-      "401" : "Not implemented error",
-      "402" : "Invalid set value, element is a keyword",
-      "403" : "Element is read only",
-      "404" : "Element is write only",
-      "405" : "Incorrect Data Type"
+        "0" : "No Error",
+        "101" : "General Exception",
+        "102" : "Server is busy",
+        "201" : "Invalid Argument Error",
+        "202" : "Element cannot have children",
+        "203" : "Element not an array.  Cannot have count",
+        "301" : "Not initialized",
+        "401" : "Not implemented error",
+        "402" : "Invalid set value, element is a keyword",
+        "403" : "Element is read only",
+        "404" : "Element is write only",
+        "405" : "Incorrect Data Type"
     },
 
 
     _errDiagn : {
-      "0" : "No Error",
-      "101" : "Possible Server error.  Contact System Administrator",
-      "102" : "Server is busy and cannot handle the request.  Please try again",
-      "201" : "The course made an incorrect function call.  Contact course vendor or system administrator",
-      "202" : "The course made an incorrect function call.  Contact course vendor or system administrator",
-      "203" : "The course made an incorrect function call.  Contact course vendor or system administratort",
-      "301" : "The system has not been initialized correctly.  Please contact your system administrator",
-      "401" : "The course made a request for data not supported.",
-      "402" : "The course made a bad data saving request.  Contact course vendor or system administrator",
-      "403" : "The course tried to write to a read only value.  Contact course vendor",
-      "404" : "The course tried to read a value that can only be written to.  Contact course vendor",
-      "405" : "The course gave an incorrect Data type.  Contact course vendor"
+        "0" : "No Error",
+        "101" : "Possible Server error.  Contact System Administrator",
+        "102" : "Server is busy and cannot handle the request.  Please try again",
+        "201" : "The course made an incorrect function call.  Contact course vendor or system administrator",
+        "202" : "The course made an incorrect function call.  Contact course vendor or system administrator",
+        "203" : "The course made an incorrect function call.  Contact course vendor or system administratort",
+        "301" : "The system has not been initialized correctly.  Please contact your system administrator",
+        "401" : "The course made a request for data not supported.",
+        "402" : "The course made a bad data saving request.  Contact course vendor or system administrator",
+        "403" : "The course tried to write to a read only value.  Contact course vendor",
+        "404" : "The course tried to read a value that can only be written to.  Contact course vendor",
+        "405" : "The course gave an incorrect Data type.  Contact course vendor"
     },
 
 

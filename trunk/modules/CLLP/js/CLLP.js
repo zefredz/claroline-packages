@@ -200,37 +200,37 @@ function rqOpenItem() {
  */
 function mkOpenItem(itemUrl) {
     debug("mkOpenItem()",1);
-        if( itemUrl != '' )
+    if( itemUrl != '' )
     {
-      //get newWindow
-            $.ajax({
-                type: "GET",
-                url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getNewWindow&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-                success: function( response ){
-                    if( response != 0 )
-                    {
-                        var newWindow = window.open( itemUrl, 'newWindow');                        
-                    }
-                    else
-                    {
-                        var frame = lp_top.frames['lp_content'].document;
-                        $(frame.getElementById('description')).children().remove();
-                        $.ajax({
-                            type: "GET",
-                            url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
-                            success: function(response){
-                                if( response )
-                                {
-                                    $(frame.getElementById('description')).append(response);
-                                }
-                            },
-                            dataType: 'html'
-                        });
-                        //lp_top.lp_content.content.location = itemUrl;
-                        $(frame.getElementById('content')).attr('src', itemUrl);
-                    }                    
+        //get newWindow
+        $.ajax({
+            type: "GET",
+            url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getNewWindow&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+            success: function( response ){
+                if( response != 0 )
+                {
+                    var newWindow = window.open( itemUrl, 'newWindow');                        
                 }
-            });
+                else
+                {
+                    var frame = lp_top.frames['lp_content'].document;
+                    $(frame.getElementById('description')).children().remove();
+                    $.ajax({
+                        type: "GET",
+                        url: lpHandler.moduleUrl + "viewer/scormServer.php?cmd=getItemDescription&cidReq=" + lpHandler.cidReq + "&pathId=" + lpHandler.pathId + "&itemId=" + lpHandler.itemId,
+                        success: function(response){
+                            if( response )
+                            {
+                                $(frame.getElementById('description')).append(response);
+                            }
+                        },
+                        dataType: 'html'
+                    });
+                    //lp_top.lp_content.content.location = itemUrl;
+                    $(frame.getElementById('content')).attr('src', itemUrl);
+                }
+            }
+        });
     }
     else
     {
