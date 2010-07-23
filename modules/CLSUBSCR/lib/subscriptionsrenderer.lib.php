@@ -11,7 +11,9 @@
  */
 
 class SubscriptionsRenderer {
-    
+    /**
+     * Display the page to delete a subscription
+     */
     public static function delete( & $subscription )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'delete.tpl.php');
@@ -21,7 +23,9 @@ class SubscriptionsRenderer {
         
         return $tpl->render();
     }
-    
+    /**
+     * Display the selected slots by users
+     */
     public static function result( & $subscription, & $slots, & $usersChoices )
     {
         $out = '';
@@ -51,6 +55,9 @@ class SubscriptionsRenderer {
         return $out;
     }
     
+    /**
+     * Display a subscription
+     */
     public static function displaySubscription( & $subscription, & $slots = null, & $userChoices = null )
     {
         $out = '';
@@ -72,7 +79,9 @@ class SubscriptionsRenderer {
         
         return $out;
     }
-    
+    /**
+     * Display the list of all subscription
+     */
     public static function listSubscriptions( & $subscriptionsCollection, & $userChoices = null, $context = null )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'listAll.tpl.php' );
@@ -83,7 +92,9 @@ class SubscriptionsRenderer {
         
         return $tpl->render();
     }
-    
+    /**
+     * Display the form to edit a subscription
+     */
     public static function edit( & $subscription )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'add.tpl.php' );
@@ -100,6 +111,9 @@ class SubscriptionsRenderer {
         
         return $tpl->render();
     }
+    /**
+     * Display the form to add a subscription
+     */
     public static function add( & $subscription = null )
     {
         $tpl = new ModuleTemplate( 'CLSUBSCR', 'add.tpl.php' );
@@ -118,7 +132,9 @@ class SubscriptionsRenderer {
         
         return $tpl->render();
     }
-    
+    /**
+     * Display the page to delete a slot
+     */
     public function deleteSlot( & $subscription, & $slot )
     {
         $out = '';
@@ -130,7 +146,9 @@ class SubscriptionsRenderer {
         
         return $tpl->render();        
     }
-    
+    /**
+     * Display the form to edit a slot
+     */
     public static function editSlot( & $subscription, & $slot, & $slots, $error = false )
     {
         $out = '';
@@ -153,7 +171,9 @@ class SubscriptionsRenderer {
         
         return $out;
     }
-    
+    /**
+     * Display the form to add a slot
+     */
     public static function addSlot( & $subscription, & $dialogBox, $slots = null, $places = null, $slotsContent = null )
     {
         if( ! $subscription->validate() )
@@ -182,7 +202,9 @@ class SubscriptionsRenderer {
             return $tpl->render();
         }
     }
-    
+    /**
+     * 
+     */
     public static function addSlotPlaces( $places )
     {
         $places = (int) $places;

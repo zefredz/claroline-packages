@@ -12,18 +12,63 @@
 
 class subscription
 {
-  
+  /**
+   * @var int id Subscription's id
+   */
   private   $id,
+  /**
+   * @var string $title Title
+   */
             $title,
+  /**
+   * @var string $description Description
+   */
             $description,
+  /**
+   * @var string $context Context (user, group)
+   */
             $context,
+  /**
+   * @var string $type Type (unique, multiple, preference, ...)
+   */
             $type,
-            $visibility, $visibilityFrom, $visibilityTo,
+  /**
+   * @var string $visibility Visiblity (visibile, invisible)
+   */
+            $visibility,
+  /**
+   * @var int $visibilityFrom Visibility start date (timestamp)
+   */
+            $visibilityFrom,
+  /**
+   * @var int $visibilityTo Visibility stop date (timestamp)
+   */
+            $visibilityTo,
+  /**
+   * @var string $lock Lock (open, close)
+   */
             $lock,
+  /**
+   * @var int $slotsAvailable Number of slots still available
+   */
             $slotsAvailable,
+  /**
+   * @var int $totalSlotsAvailable Slots available
+   */
             $totalSlotsAvailable;
-  private $table, $errors;
-  
+  /**
+   * @var array $table Database tables
+   */
+  private $table,
+  /**
+   * @var string $errors Errors
+   */
+          $errors;
+  /**
+   * Constructor
+   *
+   * @author Dimitri Rambout <dim@claroline.net>
+   */
   public function __construct()
   {
     $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
@@ -42,6 +87,8 @@ class subscription
   /**
    * Save a subscription
    *
+   * @author Dimitri Rambout <dim@claroline.net>
+   * @return int Affected rows
    */
   public function save()
   {
@@ -89,8 +136,7 @@ class subscription
    * Load a subscription
    *
    * @param int $id Id of the subscription
-   * 
-   * @return 
+   * @return mixed False if subscription it unloadable or $this
    */
   public function load( $id )
   {
@@ -175,6 +221,12 @@ class subscription
     }
   }
   
+  /**
+   * Delete a subscription
+   *
+   * @param boolean $deleteSlots Indicate if slots need to be deleted
+   * @return int Affected rows
+   */
   public function delete( $deleteSlots = true )
   {
     //Delete the subscription
@@ -205,6 +257,11 @@ class subscription
     return $result;
   }
   
+  /**
+   * Return the subscription as an array
+   *
+   * @return array Subscription as an array instead of an object
+   */
   public function flat()
   {
     $subscription['id'] = $this->id;
@@ -225,75 +282,135 @@ class subscription
   /**
    * Setters & Getters
    */
+  /**
+   * Get id
+   *
+   * @return int Id
+   */
   public function getId()
   {
     return $this->id;
   }
+  /**
+   * Get title
+   *
+   * @return string Title
+   */
   public function getTitle()
   {
     return $this->title;
   }
-  
+  /**
+   * Set title
+   *
+   * @param string $title Title of the Subscription
+   * @return object $this
+   */
   public function setTitle( $title )
   {
     $this->title = $title;
     
     return $this;
   }
-  
+  /**
+   * Get description
+   *
+   * @return string Description
+   */
   public function getDescription()
   {
     return $this->description;
   }
-  
+  /**
+   * Set description
+   *
+   * @param string $description Description of the Subscription
+   * @return object $this
+   */
   public function setDescription( $description )
   {
     $this->description = $description;
     
     return $this;
-  }
-  
+  }  
+  /**
+   * Get context
+   *
+   * @return string Context (user or group)
+   */
   public function getContext()
   {
     return $this->context;
   }
-  
+  /**
+   * Set context
+   *
+   * @param string $context Context of the Subscription (user or group)
+   * @return object $this
+   */
   public function setContext( $context )
   {
     $this->context = $context;
     
     return $this;
   }
-  
+  /**
+   * Get type
+   *
+   * @return string Type (unique, multiple, preference)
+   */
   public function getType()
   {
     return $this->type;
   }
-  
+  /**
+   * Set Type
+   *
+   * @param string $type Type of the Subscription (unique, multiple, preference)
+   * @return object $this
+   */
   public function setType( $type )
   {
     $this->type = $type;
     
     return $this;
   }
-  
+  /**
+   * Get Visibility
+   *
+   * @return string Visibility (visible, invisible)
+   */
   public function getVisibility()
   {
     return $this->visibility;
   }
-  
+  /**
+   * Set visibility
+   *
+   * @param string $visibility Visibility of the Subscription (visibile, invisible)
+   * @return object $this
+   */
   public function setVisibility( $visibility )
   {
     $this->visibility = $visibility;
     
     return $this;
   }
-  
+  /**
+   * Get starting date of visibility
+   *
+   * @return int Starting date (timestamp)
+   */
   public function getVisibilityFrom()
   {
     return $this->visibilityFrom;
   }
-  
+  /**
+   * Set starting date of visibility
+   *
+   * @param int $visibilityFrom Starting date (timestamp)
+   * @return object $this
+   */
   public function setVisibilityFrom( $visibilityFrom )
   {
     $this->visibilityFrom = (int) $visibilityFrom;
@@ -305,12 +422,21 @@ class subscription
     
     return $this;
   }
-  
+  /**
+   * Get ending date of visibility
+   *
+   * @return int Ending date (timestamp)
+   */
   public function getVisibilityTo()
   {
     return $this->visibilityTo;
   }
-  
+  /**
+   * Set ending date of visibility
+   *
+   * @param string $visibilityTo Ending date (timestamp)
+   * @return object $this
+   */
   public function setVisibilityTo( $visibilityTo )
   {
     $this->visibilityTo = (int) $visibilityTo;
@@ -322,7 +448,11 @@ class subscription
     
     return $this;
   }
-  
+  /**
+   * Check if the subscription is visible
+   *
+   * @return boolean False if is invisible or if starting/ending date doesn't match , true in other case
+   */
   public function isVisible()
   {
     if( $this->visibility == 'invisible' )
@@ -344,7 +474,11 @@ class subscription
         return true;   
     }
   }
-  
+  /**
+   * Check if the subscription is invisible
+   *
+   * @return boolean True if subscription is invisible, false in other case
+   */
   public function isInvisible()
   {
     if( $this->visibility == 'invisible' )
@@ -354,19 +488,32 @@ class subscription
     
     return false;
   }
-  
+  /**
+   * Get lock of the subscription
+   *
+   * @return string Open or close
+   */
   public function getLock()
   {
     return $this->lock;
   }
-  
+  /**
+   * Set lock of the subscription
+   *
+   * @param string $lock Open of close
+   * @return object $this
+   */
   public function setLock( $lock )
   {
     $this->lock = $lock;
     
     return $this;
   }
-  
+  /**
+   * Check if the subscription is lockec
+   *
+   * @return boolean True if lock = close, false in other case
+   */
   public function isLocked()
   {
     if( $this->lock == 'close' )
@@ -413,15 +560,35 @@ class subscription
   }
 }
 
+/**
+ * Subscription Collection
+ *
+ * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLSUBSCR
+ * @author      Dimitri Rambout <dim@claroline.net>
+ */
 class subscriptionsCollection
 {
+   /**
+    * @var array $table Database tables
+    */
    private $table;
    
+   /**
+    * Constructor
+    */
    public function __construct()
    {
         $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
    }
-   
+   /**
+    * Get the list of all subscriptions
+    *
+    * @param string $context Specify the context of the list (null will return the entire list)
+    * @return ArrayIterator List of subscriptions
+    */
    public function getAll( $context = null )
    {
         if( ! is_null( $context ) )
@@ -477,13 +644,23 @@ class subscriptionsCollection
         return  new ArrayIterator( $collection );
    }
 }
-
+/**
+ * Slot
+ * 
+ * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLSUBSCR
+ * @author      Dimitri Rambout <dim@claroline.net>
+ */
 class slot
 {
     protected $id, $subscriptionId, $title, $description, $availableSpace, $visibility;
     
     protected $table;
-    
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->id = null;
@@ -495,7 +672,13 @@ class slot
         
         $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
     }
-    
+    /**
+     * Used to manage dynamically Setters and Getters
+     *
+     * @param string $name function's name
+     * @param array $arguments Array of arguments (used for the setter)
+     * @return mixed $this if setter, value of the requested variable if getter
+     */
     public function __call( $name, $arguments )
     {
         //setter
@@ -516,7 +699,11 @@ class slot
         
         return false;
     }
-    
+    /**
+     * Validate a slot before saving it in database
+     *
+     * @return boolean
+     */
     public function validate()
     {
         if( empty( $this->title ) )
@@ -531,7 +718,12 @@ class slot
         
         return true;
     }
-    
+    /**
+     * Load a slot from database
+     *
+     * @param int $slotId Slot's id
+     * @return mixed Boolen if the slot cannot be loaded, $this in other case
+     */
     public function load( $slotId )
     {
         $slotId = (int) $slotId;
@@ -563,6 +755,11 @@ class slot
         
         return $this;
     }
+    /**
+     * Save a slot in database
+     *
+     * @return int Affected rows
+     */
     public function save()
     {
         if( is_null( $this->id ) )
@@ -605,7 +802,11 @@ class slot
             return $result;
         }
     }
-    
+    /**
+     * Delete a slot in database
+     *
+     * @return boolean False if the slot cannot be deleted, true in other case
+     */
     public function delete()
     {
         $result = Claroline::getDatabase()->exec(   "DELETE FROM
@@ -631,13 +832,21 @@ class slot
         
         return true;
     }
-    
+    /**
+     * Get the space available in a slot
+     *
+     * @return int Available space in the slot
+     */
     public function spaceAvailable()
     {
         $totalSubscribers = $this->totalSubscribers();
         return $this->availableSpace - $totalSubscribers;
     }
-    
+    /**
+     * Get the total of subscribers in the slot
+     *
+     * return int total of subscribers
+     */
     public function totalSubscribers()
     {
         $query =    "SELECT
@@ -657,7 +866,11 @@ class slot
         
         return $data['subscribersCount'];
     }
-    
+    /**
+     * Check if the slot if visible
+     *
+     * @return boolean
+     */
     public function isVisible()
     {
         if( $this->visibility == 'visible' )
@@ -671,16 +884,31 @@ class slot
     }
     
 }
-
+/**
+ * Slot collection
+ * 
+ * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLSUBSCR
+ * @author      Dimitri Rambout <dim@claroline.net>
+ */
 class slotsCollection
 {
     private $table;
-   
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
     }
-   
+    /**
+     * Get all slots of a subscription
+     *
+     * @param int $subscriptionId Id of a subscription
+     * @return ArrayIterator List of all slots of the subscription
+     */
     public function getAll( $subscriptionId )
     {
         $subscriptionId = (int) $subscriptionId;
@@ -714,7 +942,13 @@ class slotsCollection
         
         return $collection;
     }
-    
+    /**
+     * Get all slots from specific context
+     *
+     * @param int $subscriptionId Id of a subscription
+     * @param string $context Subscription's context
+     * @return array List of all slots
+     */
     public function getAllFromUsers( $subscriptionId, $context )
     {
         $subscriptionId = (int) $subscriptionId;
@@ -762,7 +996,13 @@ class slotsCollection
         
         return $slots;
     }
-    
+    /**
+     * Get all slots from a specif user in a specif context
+     *
+     * @param int $userId Id of a user
+     * @param string $collection Subscription's context
+     * @return array List of all slots
+     */
     public function getAllFromUser( $userId, $context )
     {
         $userId = (int) $userId;
@@ -796,7 +1036,12 @@ class slotsCollection
         
         return $slots;
     }
-    
+    /**
+     * Get number of slots available in a subscription
+     *
+     * @param int $subscriptionId Id of a subscription
+     * @return int total of slots available
+     */
     public function getAvailableSlots( $subscriptionId )
     {
         $slotsAvailable = 0;
@@ -852,7 +1097,13 @@ class slotsCollection
  * Functions
  *
  */
-
+/**
+ * Function that check if a subscription if loadable ($_REQUEST['subscrId'], load(), ...) and return the dialobox render
+ *
+ * @param object $subscription Subscription object
+ * @param object $dialogBox DialogBox object
+ * @return string DialogBox render
+ */
 function checkRequestSubscription( &$subscription, & $dialogBox )
 {
     $out = '';
@@ -881,7 +1132,14 @@ function checkRequestSubscription( &$subscription, & $dialogBox )
     
     return $out;
 }
-
+/**
+ * Check if a subscription if visibile
+ *
+ * @param string $visibility Visible or Invisible
+ * @param int $from Starting date
+ * @param int $to Ending date
+ * @return boolean
+ */
 function isSubscriptionVisible( $visibility, $from, $to )
 {
     if( $visibility == 'invisible' )
