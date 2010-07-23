@@ -61,8 +61,8 @@
                     <?php else :?>
                 <span class="empty"><?php echo get_lang( 'empty' ); ?></span>
                     <?php endif; ?>
-                <?php endif; ?>
             </td>
+                <?php endif; ?>
             <?php endforeach; ?>
             <td class="cell final">
                 <?php echo $this->userList[ $userId ][ 'final_score' ]; ?>

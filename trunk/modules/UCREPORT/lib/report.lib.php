@@ -14,7 +14,8 @@
  * and calculates average scores and students'final (weighted) results
  * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignement
  * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignment weights are stored
- * @const VISIBLE database value for visible assignment
+ * @const VISIBLE database value for visible assignments
+ * @const INVISIBLE database value for invisible assignments
  * @property array $userList the list of course's users who posted works
  * @property array $assignmentDataList the visible assignment list with some datas (weight, average,...)
  * @property array $reportDataList the students' scores for each assignment

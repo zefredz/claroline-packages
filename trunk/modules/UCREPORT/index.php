@@ -23,7 +23,7 @@ $pageTitle = array( 'mainTitle' => get_lang( 'Report' ) );
 
 $userInput = Claro_UserInput::getInstance();
 
-if ( claro_is_course_member() || claro_is_allowed_to_edit() )
+if ( claro_is_course_member() || claro_is_allowed_to_edit() )
 {
     if ( claro_is_allowed_to_edit() )
     {
