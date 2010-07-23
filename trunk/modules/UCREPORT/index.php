@@ -242,6 +242,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             $reportXml->assign( 'courseData' , claro_get_current_course_data() );
             $reportXml->assign( 'userData' , claro_get_current_user_data() );
             $reportXml->assign( 'averageScore' , $averageScore );
+            $reportXml->assign( 'date' , $report->getDate() ? $report->getDate() : date( 'c' ) );
             header("Content-type: application/xml");
             header('Content-Disposition: attachment; filename="report'
                    . claro_get_current_course_id()
