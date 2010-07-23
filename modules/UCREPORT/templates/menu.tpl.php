@@ -30,20 +30,20 @@
 </span>
     <?php endif; ?>
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2xml') ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2xml&reportId=' . $this->reportId ) ); ?>">
         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="export" />
         <?php echo get_lang( 'Export to MS-Excel xlsx file' ); ?>
     </a>
 </span>
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2csv') ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2csv&reportId=' . $this->reportId ) ); ?>">
         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="export" />
         <?php echo get_lang( 'Export to csv' ); ?>
     </a>
 </span>
 <?php endif; ?>
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2pdf') ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2pdf&reportId=' . $this->reportId ) ); ?>">
         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="export" />
         <?php echo get_lang( 'Export to pdf' ); ?>
     </a>
