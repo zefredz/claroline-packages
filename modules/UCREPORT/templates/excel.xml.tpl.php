@@ -20,7 +20,7 @@
         <Title><?php echo get_lang( 'Report' ) . ' : ' . $this->courseData[ 'name' ]; ?></Title>
         <Author><?php echo $this->courseData[ 'titular' ]; ?></Author>
         <LastAuthor><?php echo $this->userData[ 'firstName' ] . ' ' . $this->userData[ 'lastName' ]; ?></LastAuthor>
-        <Created><?php echo date( 'c' ); ?></Created>
+        <Created><?php echo $this->date; ?></Created>
         <LastSaved><?php echo date( 'c' ); ?></LastSaved>
         <Company><?php echo get_conf( 'institution_name' ); ?></Company>
         <Version>1.0</Version>
