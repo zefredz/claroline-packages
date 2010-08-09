@@ -74,9 +74,9 @@ class UserReport
                     $reportDataList = unserialize( $courseReport[ 'datas' ] );
                     $finalScore = isset( $reportDataList[ 'users' ][$this->userId ][ 'final_score' ] )
                                 ? $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ]
-                                : false;
+                                : null;
                     
-                    if ( $finalScore )
+                    if ( isset( $finalScore ) )
                     {
                         $this->userReportList[ $courseReport[ 'id' ] ] = array( 'title' => $courseReport[ 'title' ]
                                                                         , 'course_code' => $course[ 'code' ]

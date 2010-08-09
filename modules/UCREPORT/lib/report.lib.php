@@ -579,10 +579,20 @@ class Report
         
         $this->saveAssignmentList();
         
+        $reportDataList = array();
+        
+        foreach( $this->reportDataList as $userId => $userDataList )
+        {
+            if ( isset( $this->userList[ $userId ][ 'final_score' ] ) )
+            {
+                $reportDataList[ $userId ] = $userDataList;
+            }
+        }
+        
         $data = array(
                 'users' => $this->userList,
                 'assignments' => $this->assignmentDataList,
-                'report' => $this->reportDataList,
+                'report' => $reportDataList,
                 'average' => $this->averageScore );
         
         if ( $this->id )
