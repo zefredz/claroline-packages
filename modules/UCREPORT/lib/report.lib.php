@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -12,8 +12,10 @@
 /**
  * Retrieves the students' scores for all the assignments, adds weights,
  * and calculates average scores and students'final (weighted) results
- * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignement
- * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignment weights are stored
+ * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignment
+ * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignments weights are stored
+ * @const EXAMINATION_DATA_FILE the name of the file where examination scores are stored
+ * @const EXAMINATION_ID the examination id in $reportDataList
  * @const VISIBLE database value for visible assignments
  * @const INVISIBLE database value for invisible assignments
  * @property array $userList the list of course's users who posted works
@@ -25,7 +27,10 @@
 class Report
 {
     const DEFAULT_ASSIGNEMENT_WEIGHT = 100;
+    const DEFAULT_MAX_SCORE = 100;
     const ASSIGNMENT_DATA_FILE_NAME = 'assignments.data';
+    const EXAMINATION_DATA_FILE = 'examination.data';
+    const EXAMINATION_ID = 'exam';
     const VISIBLE = 'VISIBLE';
     const INVISIBLE = 'INVISIBLE';
     
@@ -39,6 +44,7 @@ class Report
     private $date;
     private $visibility;
     private $assignmentListFileUrl;
+    private $examinationFileUrl;
     private $averageScore;
     
     /**
@@ -63,6 +69,9 @@ class Report
             $this->assignmentListFileUrl = '../../courses/'
                                          . claro_get_course_path( $this->courseId )
                                          . '/' . self::ASSIGNMENT_DATA_FILE_NAME;
+            $this->examinationFileUrl = '../../courses/'
+                                      . claro_get_course_path( $this->courseId )
+                                      . '/' . self::EXAMINATION_DATA_FILE;
             $this->load();
         }
     }
@@ -88,6 +97,12 @@ class Report
             $this->assignmentDataList[ $line[ 'id' ] ][ 'submission_count' ] = 0;
             $this->assignmentDataList[ $line[ 'id' ] ][ 'average' ] = 0;
         }
+        
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'title' ] = get_lang( 'Examination' );
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'active' ] = false;
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'weight' ] = self::DEFAULT_ASSIGNEMENT_WEIGHT;
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'submission_count' ] = 0;
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'average' ] = 0;
         
         if ( file_exists( $this->assignmentListFileUrl )
             && $content = unserialize( file_get_contents( $this->assignmentListFileUrl ) ) )
@@ -155,6 +170,21 @@ class Report
             }
         }
         
+        if ( file_exists( $this->examinationFileUrl )
+            && $content = unserialize( file_get_contents( $this->examinationFileUrl ) ) )
+        {
+            foreach( $content as $userId => $datas )
+            {
+                if ( isset( $this->userList[ $userId ] ) )
+                {
+                    $this->reportDataList[ $userId ][ self::EXAMINATION_ID ] = $datas[ 'score' ];
+                    $this->userList[ $userId ][ 'comment' ] = $datas[ 'comment' ];
+                    $this->assignmentDataList[ self::EXAMINATION_ID ][ 'submission_count' ]++;
+                    $this->assignmentDataList[ self::EXAMINATION_ID ][ 'average' ] += $datas[ 'score' ];
+                }
+            }
+        }
+        
         foreach( $this->assignmentDataList as $assignmentId => $assignment )
         {
             if ( $assignment[ 'submission_count' ] )
@@ -175,15 +205,23 @@ class Report
         {
             $finalScore = 0;
             
-            foreach( $userReport as $assignmentId => $score )
+            foreach( $this->assignmentDataList as $assignmentId => $assignment )
             {
-                if ( isset( $this->assignmentDataList[ $assignmentId ] ) )
+                if ( isset( $userReport[ $assignmentId ] ) )
                 {
-                    $finalScore += $score * $this->assignmentDataList[ $assignmentId ][ 'proportional_weight' ];
+                    $finalScore += $userReport[ $assignmentId ] * $this->assignmentDataList[ $assignmentId ][ 'proportional_weight' ];
+                }
+                elseif ( $assignment[ 'active' ] )
+                {
+                    unset( $finalScore );
+                    break;
                 }
             }
             
-            $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
+            if ( isset( $finalScore ) )
+            {
+                $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
+            }
         }
         
         $this->averageScore = 0;
@@ -412,6 +450,82 @@ class Report
     }
     
     /**
+     * Sets examination score for a specified user
+     * @param int $userId the user id
+     * @param int $score
+     */
+    public function setScore( $userId , $score = null )
+    {
+        if ( isset( $this->userList[ $userId ] ) && abs( (int)$score ) <= self::DEFAULT_MAX_SCORE )
+        {
+            if ( is_null( $score ) )
+            {
+                unset( $this->reportDataList[ $userId ][ self::EXAMINATION_ID ] );
+                unset( $this->userList[ $userId ][ 'comment' ] );
+            }
+            else
+            {
+                $this->reportDataList[ $userId ][ self::EXAMINATION_ID ] = abs( (int)$score );
+            }
+        }
+        else
+        {
+            throw new Exception( 'Wrong parameters : ' . $userId . ' ' . $score );
+        }
+    }
+    
+    /**
+     * Set a comment for a user
+     * @param int $userId
+     * @param string $comment
+     */
+    public function setComment( $userId , $comment = null )
+    {
+        if ( isset( $this->userList[ $userId ] ) )
+        {
+            if ( is_null( $comment ) )
+            {
+                unset( $this->userList[ $userId ][ 'Comment' ] );
+            }
+            else
+            {
+                $this->userList[ $userId ][ 'comment' ] = $comment;
+            }
+        }
+        else
+        {
+            throw new Exception( 'Wrong parameters : ' . $userId . ' ' . $score );
+        }
+    }
+    
+    /**
+     * Helper method to unset score
+     */
+    public function unsetScore( $userId )
+    {
+        $this->setScore( $userId );
+    }
+    
+    /**
+     * Helper method to unset comment
+     */
+    public function unsetComment( $userId )
+    {
+        $this->setComment( $userId );
+    }
+    
+    /**
+     * Resets the examination score list
+     */
+    public function resetScoreList()
+    {
+        foreach( array_keys( $this->userList ) as $userId )
+        {
+            $this->unsetScore( $userId );
+        }
+    }
+    
+    /**
      * Stores the weights values in file
      * @return boolean true if process is successful
      */
@@ -426,6 +540,30 @@ class Report
         }
         
         return create_file( $this->assignmentListFileUrl , serialize( $assignmentList ) );
+    }
+    
+    /**
+     * Stores the examination datas in file
+     * @return boolean true if process is successful
+     */
+    public function saveScoreList()
+    {
+        $scoreList = array();
+        
+        foreach( $this->reportDataList as $userId => $score )
+        {
+            if ( isset( $score[ self::EXAMINATION_ID ] ) )
+            {
+                $scoreList[ $userId ][ 'score' ] = $score[ self::EXAMINATION_ID ];
+            }
+            
+            if ( isset( $this->userList[ $userId ][ 'comment' ] ) )
+            {
+                $scoreList[ $userId ][ 'comment' ] = $this->userList[ $userId ][ 'comment' ];
+            }
+        }
+        
+        return create_file( $this->examinationFileUrl , serialize( $scoreList ) );
     }
     
     /**

@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -30,11 +30,15 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
         $userInput->setValidator( 'cmd' ,
                                   new Claro_Validator_AllowedList( array( 'rqShowList',
                                                                           'rqShowReport',
+                                                                          'rqShowScores',
                                                                           'rqCreateReport',
                                                                           'rqEditReport',
+                                                                          'rqEditScores',
                                                                           'rqDeleteReport',
                                                                           'exCreateReport',
                                                                           'exEditReport',
+                                                                          'exEditScores',
+                                                                          'exResetScores',
                                                                           'exDeleteReport',
                                                                           'exChangeVisibility',
                                                                           'exExport2xml',
@@ -63,13 +67,24 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
     {
         case 'rqShowList' :
         case 'rqShowReport' :
+        case 'rqShowScores' :
         case 'rqCreateReport':
         case 'rqEditReport' :
+        case 'rqEditScores' :
         case 'rqDeleteReport':
         case 'exExport2xml' :
         case 'exExport2csv' :
         case 'exExport2pdf' :
         {
+            break;
+        }
+        
+        case 'exCreateReport' :
+        {
+            $title = $userInput->get( 'title' );
+            $report->setTitle( $title );
+            $report_saved = $report->saveReport();
+            $reportId = $report->getId();
             break;
         }
         
@@ -90,12 +105,36 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             break;
         }
         
-        case 'exCreateReport' :
+        case 'exEditScores' :
         {
-            $title = $userInput->get( 'title' );
-            $report->setTitle( $title );
-            $report_saved = $report->saveReport();
-            $reportId = $report->getId();
+            $scoreList = $userInput->get( 'score' );
+            $commentList = $userInput->get( 'comment' );
+            
+            foreach( array_keys( $report->getUserList() ) as $userId )
+            {
+                if ( $scoreList[ $userId ] != '' )
+                {
+                    $score = abs( (int)$scoreList[ $userId ] ) <= Report::DEFAULT_MAX_SCORE
+                        ? abs( (int)$scoreList[ $userId ] )
+                        : Report::DEFAULT_MAX_SCORE;
+                    
+                    $report->setScore( $userId , $score );
+                    $report->setComment( $userId , $commentList[ $userId ] );
+                }
+                else
+                {
+                    $report->unsetScore( $userId );
+                    $report->unsetComment( $userId );
+                }
+            }
+            
+            $scores_saved = $report->saveScoreList();
+            break;
+        }
+        
+        case 'exResetScores' :
+        {
+            $report->resetScoreList();
             break;
         }
         
@@ -125,6 +164,13 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
     $assignmentDataList = $report->getAssignmentDataList();
     $reportDataList = $report->getReportDataList();
     $averageScore = $report->getAverageScore();
+    
+    $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
+             ? '<strong>'
+               . get_lang( 'Comment' )
+               . ' : </strong>'
+               . $userList[ claro_get_current_user_id() ][ 'comment' ]
+             : false;
     
     switch( $cmd )
     {
@@ -190,6 +236,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             $reportView->assign( 'userList' , $userList );
             $reportView->assign( 'assignmentDataList' , $assignmentDataList );
             $reportView->assign( 'averageScore' , $averageScore );
+            $reportView->assign( 'comment' , $comment );
             
             if ( $cmd == 'rqCreateReport' )
             {
@@ -211,6 +258,18 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             break;
         }
         
+        case 'rqShowScores' :
+        {
+            $pageTitle[ 'subTitle' ] = $report->getTitle() . ' : ' . get_lang( 'Examination scores' );
+            
+            $reportView = new PhpTemplate( dirname( __FILE__ ) . '/templates/score.tpl.php' );
+            $reportView->assign( 'assignmentDataList' , $assignmentDataList );
+            $reportView->assign( 'reportDataList' , $reportDataList );
+            $reportView->assign( 'userList' , $userList );
+            $reportView->assign( 'reportId' , $reportId );
+            break;
+        }
+        
         case 'rqEditReport' :
         case 'exEditReport' :
         {
@@ -228,6 +287,30 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
                 else
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'Error while saving the modifications' ) . '</strong>' );
+                }
+            }
+            break;
+        }
+        
+        case 'rqEditScores' :
+        case 'exEditScores' :
+        case 'exResetScores' :
+        {
+            $pageTitle[ 'subTitle' ] = get_lang( 'Examination scores' );
+            
+            $reportView = new PhpTemplate( dirname( __FILE__ ) . '/templates/editscore.tpl.php' );
+            $reportView->assign( 'reportDataList' , $reportDataList );
+            $reportView->assign( 'userList' , $userList );
+            
+            if ( $cmd == 'exEditScores' )
+            {
+                if ( $scores_saved )
+                {
+                    $dialogBox->success( get_lang( 'Your modifications have been successfully saved!') );
+                }
+                else
+                {
+                    $dialogBox->error( get_lang( 'Error while saving the modifications' ) );
                 }
             }
             break;
@@ -271,6 +354,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             $reportPdf->assign( 'assignmentDataList' , $assignmentDataList );
             $reportPdf->assign( 'averageScore' , $averageScore );
             $reportPdf->assign( 'courseData' , claro_get_current_course_data() );
+            $reportPdf->assign( 'comment' , $comment );
             
             $pdf = new TCPDF( 'L' , 'mm' , 'A4' , true , 'UTF-8' , false);
             $pdf->setTitle( claro_utf8_encode( 'Report_' . claro_get_current_course_id() ) );

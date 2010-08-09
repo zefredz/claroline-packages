@@ -94,7 +94,7 @@
     <?php endforeach; ?>
                 <Cell ss:Formula="=SUM(RC[-<?php echo $nb + 1; ?>]:RC[-1])"
                       ss:StyleID="s29">
-                    <Data ss:Type="Number">1.0</Data>
+                    <Data ss:Type="Number" />
                 </Cell>
             </Row>
             <Row ss:AutoFitHeight="0" ss:Height="12.0">
@@ -103,21 +103,15 @@
                 </Cell>
     <?php foreach( $this->assignmentDataList as $assignment ) : ?>
         <?php if ( $assignment[ 'active' ] ) : ?>
-            <?php if ( isset( $assignment[ 'average' ] ) ) : ?>
                 <Cell ss:Formula="=AVERAGE(R[1]C:R[<?php echo count( $this->userList ); ?>]C)"
                       ss:StyleID="s29">
-                    <Data ss:Type="Number"><?php echo $assignment[ 'average' ]; ?></Data>
+                    <Data ss:Type="Number" />
                 </Cell>
-            <?php else : ?>
-                <Cell ss:StyleID="s29">
-                    <Data ss:Type="String" />
-                </Cell>
-            <?php endif; ?>
         <?php endif; ?>
     <?php endforeach; ?>
                 <Cell ss:Formula="=SUMPRODUCT(RC[-<?php echo $nb + 1; ?>]:RC[-1],R[-1]C[-<?php echo $nb + 1; ?>]:R[-1]C[-1])"
                       ss:StyleID="s29">
-                    <Data ss:Type="Number"><?php echo $this->averageScore; ?></Data>
+                    <Data ss:Type="Number" />
                 </Cell>
             </Row>
     <?php foreach( $this->reportDataList as $userId => $userReport ) : ?>
@@ -128,20 +122,18 @@
                 </Cell>
         <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
             <?php if ( $assignment[ 'active' ] ) : ?>
+                <Cell>
                 <?php if ( isset( $userReport[ $id ] ) ) : ?>
-                <Cell>
                     <Data ss:Type="Number"><?php echo $userReport[ $id ]; ?></Data>
-                </Cell>
                 <?php else : ?>
-                <Cell>
                     <Data ss:Type="String" />
-                </Cell>
                 <?php endif; ?>
+                </Cell>
             <?php endif; ?>
         <?php endforeach; ?>
                 <Cell ss:Formula="=SUMPRODUCT(RC[-<?php echo $nb + 1; ?>]:RC[-1],R[-<?php echo $row; ?>]C[-<?php echo $nb + 1; ?>]:R[-<?php echo $row; ?>]C[-1])"
                       ss:StyleID="s29">
-                    <Data ss:Type="Number"><?php echo $this->userList[ $userId ][ 'final_score' ]; ?></Data>
+                    <Data ss:Type="Number" />
                 </Cell>
             </Row>
     <?php endforeach; ?>

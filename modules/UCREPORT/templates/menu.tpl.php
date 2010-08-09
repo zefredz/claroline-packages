@@ -28,6 +28,19 @@
         <?php echo get_lang( 'Report settings' ); ?>
     </a>
 </span>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditScores') ); ?>">
+        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="edit" />
+        <?php echo get_lang( 'Edit examination scores' ); ?>
+    </a>
+</span>
+    <?php elseif ( isset( $this->assignmentDataList[ Report::EXAMINATION_ID ] ) ) : ?>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowScores&reportId=' . $this->reportId ) ); ?>">
+        <img src="<?php echo get_icon_url( 'mime/text-x-generic' ); ?>" alt="comment" />
+        <?php echo get_lang( 'See examination scores' ); ?>
+    </a>
+</span>
     <?php endif; ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport2xml&reportId=' . $this->reportId ) ); ?>">

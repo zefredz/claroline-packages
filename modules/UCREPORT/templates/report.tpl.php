@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -65,13 +65,20 @@
                 <?php endif; ?>
             <?php endforeach; ?>
             <td class="cell final">
+                <?php if ( isset( $this->userList[ $userId ][ 'final_score' ] ) ) : ?>
                 <?php echo $this->userList[ $userId ][ 'final_score' ]; ?>
+                <?php else : ?>
+                <span class="empty"><?php echo get_lang( 'incomplete' ); ?></span>
+                    <?php endif; ?>
             </td>
         </tr>
         <?php endif; ?>
     <?php endforeach; ?>
     </tbody>
 </table>
+    <?php if ( $this->comment ) :?>
+<p class="exam"><?php echo $this->comment; ?></p>
+    <?php endif; ?>
 <?php else : ?>
 <p class="empty"><?php echo get_lang( 'No result at this time' ); ?></p>
 <?php endif; ?>

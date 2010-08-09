@@ -74,10 +74,17 @@
                 <?php endif; ?>
             <?php endforeach; ?>
             <td>
+                <?php if ( isset( $this->userList[ $userId ][ 'final_score' ] ) ) : ?>
                 <strong><?php echo $this->userList[ $userId ][ 'final_score' ]; ?></strong>
+                <?php else : ?>
+                <span style="color: silver; font-style: italic;"><?php echo get_lang( 'incomplete' ); ?></span>
+                <?php endif; ?>
             </td>
         </tr>
         <?php endif; ?>
     <?php endforeach; ?>
     </tbody>
 </table>
+    <?php if ( $this->comment ) :?>
+<p class="exam"><?php echo $this->comment; ?></p>
+    <?php endif; ?>
