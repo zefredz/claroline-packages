@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.7.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -72,7 +72,7 @@ class UserReport
                 foreach( $courseReportList as $courseReport )
                 {
                     $reportDataList = unserialize( $courseReport[ 'datas' ] );
-                    $finalScore = isset( $reportDataList[ 'users' ][$this->userId ] )
+                    $finalScore = isset( $reportDataList[ 'users' ][$this->userId ][ 'final_score' ] )
                                 ? $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ]
                                 : false;
                     

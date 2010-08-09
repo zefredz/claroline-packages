@@ -15,6 +15,14 @@
         <?php echo get_lang( 'Generate the preview' ); ?>
     </a>
 </span>
+<?php if ( $this->assignmentDataList[ Report::EXAMINATION_ID ][ 'active' ] ) : ?>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditScores') ); ?>">
+        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="edit" />
+        <?php echo get_lang( 'Edit examination scores' ); ?>
+    </a>
+</span>
+<?php endif; ?>
 <form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEditReport' ) ); ?>" >
     <table class="claroTable emphaseLine" style="width: 100%;">
         <thead>
@@ -27,7 +35,7 @@
         </thead>
         <tbody>
     <?php foreach( $this->assignmentDataList as $assignmentId => $assignment ) : ?>
-            <tr>
+            <tr <?php if ( $assignmentId == Report::EXAMINATION_ID ) echo 'class="exam"'; ?>>
                 <td>
                     <?php echo $assignment[ 'title' ]; ?>
                 </td>
