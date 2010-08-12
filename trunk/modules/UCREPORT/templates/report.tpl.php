@@ -2,8 +2,8 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
