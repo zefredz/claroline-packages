@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -11,7 +11,8 @@
 
 /**
  * Retrieves the students' scores for all the assignments, adds weights,
- * and calculates average scores and students'final (weighted) results
+ * calculates average scores and students'final (weighted) results,
+ * and generates a report.
  * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignment
  * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignments weights are stored
  * @const EXAMINATION_DATA_FILE the name of the file where examination scores are stored
@@ -49,7 +50,7 @@ class Report
     
     /**
      * Constructor
-     * If it receives a report id, it loads the datas stored in database
+     * If it receives a report id, it loads the datas stored in database.
      * If not, it retrieves the 'realtime' datas from the assignments
      * @param the location of the "assignmentWeight.data" file
      * @param int $reportId the id of the report
@@ -77,7 +78,7 @@ class Report
     }
     
     /**
-     * Retrieves the 'realtime' data from assignments database
+     * Retrieves the 'realtime' data from assignments database.
      * This method is called by the constructor if it doesn't receive a report id
      */
     public function load()
@@ -236,7 +237,7 @@ class Report
     }
     
     /**
-     * Loads the report datas
+     * Loads the report datas.
      * This methode is called by the constructor if it receives a report id
      */
     public function loadReport( $reportId )
@@ -285,7 +286,7 @@ class Report
     }
     
     /**
-     * Common getter for $courseid
+     * Common getter for courseId
      */
     public function getCourseId()
     {
@@ -345,7 +346,7 @@ class Report
      * Gets the final score for the specified user
      * @param int $userId
      * @return int $finalScore
-     * @throws excpetion if thre is no entry for the specified $userId
+     * @throws execption if there is no entry for the specified $userId
      */
     public function getFinalScore( $userId )
     {
@@ -415,7 +416,7 @@ class Report
     }
     
     /**
-     * Calculates the proportional weights and put them in $this->assignmentDataList
+     * Calculates the proportional weights and put them in assignmentDataList
      * @return void
      */
     public function setProportionalWeight()
@@ -663,7 +664,7 @@ class Report
     /**
      * Gets the list of all the reports associated to the course
      * @static
-     * @param boolean $seeAll : false show only the visible ones
+     * @param boolean $seeAll : false shows only the visible ones
      * @return resultset $reportList
      */
     public static function getReportList( $seeAll = true )
