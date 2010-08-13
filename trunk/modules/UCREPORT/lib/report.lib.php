@@ -628,6 +628,26 @@ class Report
     }
     
     /**
+     * Change the visibility
+     * @param enum( self::INVISIBLE , self::VISIBLE ) $visibility
+     */
+    public function changeVisibility( $visibility )
+    {
+        $newVisibility = $visibility == self::VISIBLE
+                        ? self::INVISIBLE
+                        : self::VISIBLE;
+        
+        return Claroline::getDatabase()->exec( "
+            UPDATE
+                `{$this->tbl['report_reports']}`
+            SET
+                visibility = " . Claroline::getDatabase()->quote( $newVisibility ) ."
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $this->id )
+        );
+    }
+    
+    /**
      * Deletes the report with the specified id
      * @return boolean true if successful
      */
@@ -658,29 +678,6 @@ class Report
                 `{$tbl['report_reports']}`" . $where . "
             ORDER BY
                 publication_date ASC"
-        );
-    }
-    
-    /**
-     * Change the visibility of a report
-     * @param int $reportId
-     * @param enum( self::INVISIBLE , self::VISIBLE ) $visibility
-     */
-    public static function changeVisibility( $reportId, $visibility )
-    {
-        $newVisibility = $visibility == self::VISIBLE
-                        ? self::INVISIBLE
-                        : self::VISIBLE;
-                        
-        $tbl = get_module_course_tbl ( array ( 'report_reports' ) );
-        
-        return Claroline::getDatabase()->exec( "
-            UPDATE
-                `{$tbl['report_reports']}`
-            SET
-                visibility = " . Claroline::getDatabase()->quote( $newVisibility ) ."
-            WHERE
-                id = " . Claroline::getDatabase()->escape( $reportId )
         );
     }
 }
