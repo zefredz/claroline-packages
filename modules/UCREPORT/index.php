@@ -147,7 +147,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
         case 'exChangeVisibility' :
         {
             $visibility = $userInput->get( 'visibility' );
-            $visibility_changed = $report->changeVisibility( $reportId , $visibility );
+            $visibility_changed = $report->changeVisibility( $visibility );
             break;
         }
         
