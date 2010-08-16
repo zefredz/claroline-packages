@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.7.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -41,7 +41,7 @@ else
     {
         $output .= '        <tr>' . "\n"
                 .  '            <td>' . $report[ 'course_code' ] . '</td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/index.php?cidReq=' . $report[ 'course_code' ] ) . '">' . $report[ 'course_title' ] . '</a></td>' . "\n"
+                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/index.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
                 .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/index.php?cmd=rqShowReport&cidReq=' . $report[ 'course_code' ] . '&reportId=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
                 .  '            <td>'. $report[ 'date' ] . '</td>' . "\n"
                 .  '            <td>'. $report[ 'final_score' ] . '</td>' . "\n"
