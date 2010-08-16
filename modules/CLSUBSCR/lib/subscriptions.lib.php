@@ -539,6 +539,17 @@ class subscription
     return false;
   }
   /**
+   * Verify if the user with specified id made a choice
+   * @param $userId
+   * @return boolean
+   */
+  public function choiceExists( $userId )
+  {
+    $slotCollection = new slotsCollection( $this->id );
+    
+    return (boolean)( $slotCollection->getAllFromUser( $userId , $this->getContext() ) );
+  }
+  /**
    * Get lock of the subscription
    *
    * @return string Open or close
@@ -1178,7 +1189,7 @@ function checkRequestSubscription( &$subscription, & $dialogBox )
             
             $out .= $dialogBox->render();
         }
-        elseif( ! $subscription->isModifiable() && ! claro_is_allowed_to_edit() )
+        elseif( $subscription->choiceExists( claro_get_current_user_id() ) && ! $subscription->isModifiable() && ! claro_is_allowed_to_edit() )
         {
             $dialogBox->error( get_lang( 'Not allowed' ) );
             
