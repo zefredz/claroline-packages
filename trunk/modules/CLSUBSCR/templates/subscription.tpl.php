@@ -3,7 +3,7 @@
 /**
  * Subscription
  *
- * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @version     CLSUBSCR 0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLSUBSCR
@@ -93,7 +93,9 @@ endif;
                 echo $slot['title'];
             endforeach;
         ?>
+        <?php if ( $subscription['modifiable'] == 'modifiable' ) : ?>
         (<a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><?php echo get_lang( 'Modify' ); ?></a>)
+        <?php endif; ?>
         <?php
         else :
         ?>

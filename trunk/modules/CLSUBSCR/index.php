@@ -2,7 +2,7 @@
 /**
  * CLAROLINE
  *
- * @version 0.1 $Revision$
+ * @version 0.2 $Revision$
  *
  * @copyright (c) 2010 Universite catholique de Louvain (UCL)
  *
@@ -53,10 +53,10 @@ try
     
     $cmdMenu = array();
     
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=list' . claro_url_relay_context( '&' ), get_lang( 'Subscriptions list' ) );
+    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=list' . claro_url_relay_context( '&amp;' ), get_lang( 'Subscriptions list' ) );
     if( claro_is_allowed_to_edit() )
     {
-        $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqAdd' . claro_url_relay_context( '&' ), get_lang( 'Create a new subscription' ) );
+        $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqAdd' . claro_url_relay_context( '&amp;' ), get_lang( 'Create a new subscription' ) );
     }
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
@@ -897,6 +897,7 @@ try
                     $subscription->setDescription( $userInput->get( 'description' ) );
                     $subscription->setContext( $userInput->get( 'context' ) );
                     $subscription->setType( $userInput->get( 'type' ) );
+                    $subscription->setModifiable( $userInput->get( 'modifiable' ) );
                     $subscription->setVisibility( $userInput->get( 'visibility' ) );
                     if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
                     {

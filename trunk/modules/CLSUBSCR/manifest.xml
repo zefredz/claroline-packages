@@ -1,7 +1,7 @@
 <module>
   <label>CLSUBSCR</label>
   <name>Subscription</name>
-  <version>0.1</version>
+  <version>0.2</version>
   <license>GPL</license>
   <type>tool</type>
   <entry>index.php</entry>
@@ -15,6 +15,12 @@
   <author>
      <name>Dimitri Rambout</name>
      <email>dim@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+  
+  <author>
+     <name>Frederic Fervaille</name>
+     <email>frederic.fervaille@uclouvain.be</email>
      <web>http://www.claroline.net</web>
   </author>
 
