@@ -28,7 +28,7 @@
         <?php echo get_lang( 'Report settings' ); ?>
     </a>
 </span>
-<?php if ( isset( $this->reportDataList[ Report::EXAMINATION_ID ] ) ) : ?>
+<?php if ( $this->assignmentDataList[ Report::EXAMINATION_ID ][ 'active' ] ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditScores') ); ?>">
         <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="edit" />
