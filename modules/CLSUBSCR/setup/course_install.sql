@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__subscr_sessions` (
     `description` TEXT NOT NULL,
     `context` ENUM('user','group') NOT NULL DEFAULT 'user',
     `type` ENUM('unique', 'multiple') NOT NULL DEFAULT 'unique',
+    `modifiable`ENUM('modifiable', 'not_modifiable') NOT NULL DEFAULT 'modifiable',
     `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
     `visibilityFrom` int(11) DEFAULT NULL,
     `visibilityTo` int(11) DEFAULT NULL,

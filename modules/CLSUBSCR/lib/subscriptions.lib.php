@@ -3,7 +3,7 @@
 /**
  * Subscription
  *
- * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @version     CLSUBSCR 0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLSUBSCR
@@ -32,6 +32,11 @@ class subscription
    * @var string $type Type (unique, multiple, preference, ...)
    */
             $type,
+  /**
+   * @var string $modifiable Modifiable (modifiable, not_modifiable)
+   */
+            $modifiable,
+  /**
   /**
    * @var string $visibility Visiblity (visibile, invisible)
    */
@@ -79,6 +84,7 @@ class subscription
     $this->context = 'user';
     $this->type = 'unique';
     $this->visibility = 'visible';
+    $this->modifiable = 'modifiable';
     $this->visibilityFrom = null;
     $this->visibilityTo = null;
     $this->lock = 'open';    
@@ -96,6 +102,7 @@ class subscription
                     `description` = '" . Claroline::getDatabase()->escape( $this->description ) . "',
                     `context` = '" . Claroline::getDatabase()->escape( $this->context ) ."',
                     `type` = '" . Claroline::getDatabase()->escape( $this->type ) . "',
+                    `modifiable` = '" . Claroline::getDatabase()->escape( $this->modifiable ) . "',
                     `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "',
                     " . ( ! is_null( $this->visibilityFrom ) ? "`visibilityFrom` = " . (int) Claroline::getDatabase()->escape( $this->visibilityFrom ) . "," : '' ) . "
                     " . ( ! is_null( $this->visibilityTo ) ? "`visibilityTo` = " . (int) Claroline::getDatabase()->escape( $this->visibilityTo ) . "," : '' ) . "
@@ -143,7 +150,7 @@ class subscription
     $id = (int) $id;
     
     $query =    "SELECT
-                    `id`, `title`, `description`, `context`, `type`, `visibility`, `visibilityFrom`, `visibilityTo`, `lock`
+                    `id`, `title`, `description`, `context`, `type`, `modifiable`, `visibility`, `visibilityFrom`, `visibilityTo`, `lock`
                 FROM
                     `{$this->table['subscr_sessions']}`
                 WHERE
@@ -163,6 +170,7 @@ class subscription
     $this->title = $subscription['title'];
     $this->description = $subscription['description'];
     $this->type = $subscription['type'];
+    $this->modifiable = $subscription['modifiable'];
     $this->context = $subscription['context'];
     $this->visibility = $subscription['visibility'];
     $this->visibilityFrom = $subscription['visibilityFrom'];
@@ -194,22 +202,32 @@ class subscription
         $this->setError( get_lang( 'The title cannot be empty.' ) );
     }
     
-    if( ! in_array( $this->context, $acceptedContext ) )
+    if ( ! $this->context )
     {
-        $this->setError( get_lang( 'This subscription\'s type is not allowed.' ) );
+        $this->setError( get_lang( 'You must choice a subscription type' ) );
+    }
+    elseif( ! in_array( $this->context, $acceptedContext ) )
+    {
+        $this->setError( get_lang( 'This context doesn\'t exist.' ) );
     }
     
-    if( ! in_array( $this->type, $acceptedType ) )
+    if ( ! $this->type )
     {
-        $this->setError( get_lang( 'This kind of subscription is not allowed.' ) );
+        $this->setError( get_lang( 'You must choice a subscription type' ) );
+    }
+    elseif( ! in_array( $this->type, $acceptedType ) )
+    {
+        $this->setError( get_lang( 'This subscription type is not allowed.' ) );
     }
     
-    if( ! in_array( $this->visibility, $acceptedVisibility ) )
+    if ( ! $this->visibility )
+    {
+        $this->setError( get_lang( 'The visibility is not defined.' ) );
+    }
+    elseif( ! in_array( $this->visibility, $acceptedVisibility ) )
     {
         $this->setError( get_lang( 'This visibility is not allowed.' ) );
     }
-    
-    
     
     if( ! empty( $this->errors ) )
     {
@@ -374,6 +392,38 @@ class subscription
     $this->type = $type;
     
     return $this;
+  }
+  /**
+   * Get Modifiable
+   *
+   * @return string Modifiable (modifiable, not_modifiable)
+   */
+  public function getModifiable()
+  {
+    return $this->modifiable;
+  }
+  /**
+   * Set Modifiable
+   *
+   * @param string $modifiable
+   * @return $this
+   */
+  public function setModifiable( $modifiable = 'modifiable' )
+  {
+    if ( $modifiable != 'modifiable' && $modifiable !='not_modifiable')
+    {
+        throw new Exception( 'Wrong parameter' );
+    }
+    $this->modifiable = $modifiable;
+    return $this;
+  }
+  /**
+   * Control if the Subscription is modifiable
+   * return boolean true if is modifiable
+   */
+  public function isModifiable()
+  {
+    return $this->modifiable == 'modifiable';
   }
   /**
    * Get Visibility
@@ -602,7 +652,7 @@ class subscriptionsCollection
         }
         
         $query =    "SELECT
-                        s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`visibility`, s.`visibilityFrom`, s.`visibilityTo`, s.`lock`,
+                        s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`modifiable`, s.`visibility`, s.`visibilityFrom`, s.`visibilityTo`, s.`lock`,
                         count( ss.`id` ) as `totalSlotsAvailable`                        
                     FROM
                         `{$this->table['subscr_sessions']}` s
@@ -1127,7 +1177,13 @@ function checkRequestSubscription( &$subscription, & $dialogBox )
             $dialogBox->error( get_lang( 'Not allowed' ) );
             
             $out .= $dialogBox->render();
-        }        
+        }
+        elseif( ! $subscription->isModifiable() && ! claro_is_allowed_to_edit() )
+        {
+            $dialogBox->error( get_lang( 'Not allowed' ) );
+            
+            $out .= $dialogBox->render();
+        }
     }
     
     return $out;

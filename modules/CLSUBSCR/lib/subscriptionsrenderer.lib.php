@@ -3,7 +3,7 @@
 /**
  * Subscription
  *
- * @version     CLSUBSCR 1.0-alpha $Revision$ - Claroline 1.9
+ * @version     CLSUBSCR 0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLSUBSCR
@@ -104,6 +104,7 @@ class SubscriptionsRenderer {
         $tpl->assign( 'description', $subscription->getDescription() );
         $tpl->assign( 'context', $subscription->getContext() );
         $tpl->assign( 'type', $subscription->getType() );
+        $tpl->assign( 'isModifiable' , $subscription->isModifiable() );
         $tpl->assign( 'visibility', $subscription->getVisibility() );
         
         $tpl->assign( 'visibilityFrom', ( ! is_null( $subscription->getVisibilityFrom() ) ? $subscription->getVisibilityFrom() : false ) );
@@ -124,6 +125,7 @@ class SubscriptionsRenderer {
             $tpl->assign( 'description', $subscription->getDescription() );
             $tpl->assign( 'context', $subscription->getContext() );
             $tpl->assign( 'type', $subscription->getType() );
+            $tpl->assign( 'isModifiable' , $subscription->isModifiable() );
             $tpl->assign( 'visibility', $subscription->getVisibility() );
             
             $tpl->assign( 'visibilityFrom', ( ! is_null( $subscription->getVisibilityFrom() ) ? $subscription->getVisibilityFrom() : false ) );
