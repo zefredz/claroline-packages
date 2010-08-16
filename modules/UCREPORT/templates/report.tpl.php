@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -77,7 +77,7 @@
     </tbody>
 </table>
     <?php if ( $this->comment ) :?>
-<p class="exam"><?php echo $this->comment; ?></p>
+<p class="exam"><strong><?php echo get_lang( 'Comment' ); ?> :</strong> <?php echo $this->comment; ?></p>
     <?php endif; ?>
 <?php else : ?>
 <p class="empty"><?php echo get_lang( 'No result at this time' ); ?></p>

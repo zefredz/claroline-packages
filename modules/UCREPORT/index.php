@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -166,10 +166,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
     $averageScore = $report->getAverageScore();
     
     $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
-             ? '<strong>'
-               . get_lang( 'Comment' )
-               . ' : </strong>'
-               . $userList[ claro_get_current_user_id() ][ 'comment' ]
+             ? $userList[ claro_get_current_user_id() ][ 'comment' ]
              : false;
     
     switch( $cmd )
