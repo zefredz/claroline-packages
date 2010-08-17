@@ -93,7 +93,7 @@ endif;
                 echo $slot['title'];
             endforeach;
         ?>
-        <?php if ( $subscription['modifiable'] == 'modifiable' ) : ?>
+        <?php if ( $subscription['modifiable'] == 'modifiable' || claro_is_allowed_to_edit() ) : ?>
         (<a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><?php echo get_lang( 'Modify' ); ?></a>)
         <?php endif; ?>
         <?php
