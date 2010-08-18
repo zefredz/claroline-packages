@@ -133,9 +133,19 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
     
     public function setReportAverage( &$report, $itemName, $item, $nbCourses )
     {
+        $result = Claroline::getDatabase()->query(
+            "SELECT AVG(itemValue) as average
+            FROM `{$this->table['stats_usage']}`
+            WHERE `itemName` = " . $itemName . ";"
+        );
+        
+        $result->setFetchMode(Database_ResultSet::FETCH_VALUE);
+        
+        $avg = (float) $result_>fetch();
+        
         if( isset( $report[ $itemName ][ 'max' ] ) )
         {
-            $report[ $itemName ][ 'average' ] = round( $report[ $itemName ][ 'max' ] / $nbCourses );
+            $report[ $itemName ][ 'average' ] = round( $avg );
         }
     }
     
@@ -156,41 +166,6 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         }
     }
 }
-
-/*class ClaroStats_TaskQueue extends ClaroStats_Task
-{
-    protected $tasks = array();
-    
-    public function queue( Upgrade_Task $task )
-    {
-        array_unshift( $this->tasks, $task );
-    }
-    
-    public function dequeue()
-    {
-        if ( count( $this->tasks ) > 0 )
-        {
-            return array_pop( $this->tasks );
-        }
-        else
-        {
-            return null;
-        }
-    }
-    
-    public function run( $course )
-    {
-        while ( $task = $this->dequeue() )
-        {
-            if ( $task->before( $course ) && $task->around( $course ) )
-            {
-                $task->run( $course );
-                
-                $task->around( $course ) && $task->after( $course );
-            }
-        }
-    }
-}*/
 
 class ClaroStats
 {
@@ -217,30 +192,6 @@ class ClaroStats
     public function add( $data )
     {
         $table = get_module_main_tbl( array( 'stats' ) );
-        
-        /*if( is_array( $data ) && count( $data ) )
-        {
-            foreach( $data as $code_course => $tools )
-            {
-                foreach( $tools as $toolLabel => $values )
-                {
-                    
-                    foreach( $values as $key => $value )
-                    {
-                        $sql = "INSERT INTO `{$table['stats']}`
-                                (`code_course`, `toolLabel`, `itemName`, `itemValue`, `dateCreation`)
-                                VALUES
-                                ('" . Claroline::getDatabase()->escape( $code_course ) . "',
-                                '" . Claroline::getDatabase()->escape( $toolLabel ) . "',
-                                '" . Claroline::getDatabase()->escape( $key ) . "',
-                                '" . Claroline::getDatabase()->escape( $value ) . "',
-                                '" . time() . "');
-                                ";
-                        Claroline::getDatabase()->exec( $sql );
-                    }
-                }
-            }
-        }*/
         
         if( is_array( $data ) && count( $data ) )
         {
@@ -533,93 +484,6 @@ class Stats_Report
         return array( 'report' => $report, 'usageReport' => $usageReport);
         
         exit();
-        /*
-        
-        $result = Claroline::getDatabase()->query(
-            "SELECT max(`date`) as `lastReportDate` FROM `{$this->table['stats_reports']}` WHERE 1;"
-            );
-        $lastReportDate = (int) $result->fetch(Database_ResultSet::FETCH_VALUE);
-        
-        $stats = ClaroStats::load($lastReportDate, time());
-        
-        $cleanStats = array();
-        
-        foreach( $stats as $stat )
-        {
-            if( !(isset( $report[ $stat[ 'code_course'] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] )
-               && $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] > $stat[ 'dateCreation' ]  )
-               )
-            {
-                $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'date' ] = $stat[ 'dateCreation' ];
-                $cleanStats[ $stat[ 'code_course' ] ][ $stat[ 'toolLabel' ] ][ $stat[ 'itemName' ] ][ 'value' ] = (int) $stat[ 'itemValue' ];                
-            }
-        }
-        
-        $report = array();
-        
-        foreach( $cleanStats as $codeCourse => $tools )
-        {
-            foreach( $tools as $toolLabel => $items )
-            {
-                foreach( $items as $itemName => $item )
-                {
-                    if( ! isset( $report[ $toolLabel ][ $itemName ][ 'lessFive'] ) )
-                    {
-                        $report[ $toolLabel ][ $itemName ][ 'lessFive' ] = 0;
-                    }
-                    if( ! isset( $report[ $toolLabel ][ $itemName ][ 'moreFive'] ) )
-                    {
-                        $report[ $toolLabel ][ $itemName ][ 'moreFive' ] = 0;
-                    }
-                    //Less than 5 items                
-                    if( $item[ 'value' ] < 5 )
-                    {
-                        $report[ $toolLabel ][ $itemName ][ 'lessFive' ]++;
-                        
-                    }
-                    else
-                    {
-                       $report[ $toolLabel ][ $itemName ][ 'moreFive' ]++;
-                    }
-                    if( isset( $report[ $toolLabel ][ $itemName ]['value'] ) )
-                    {
-                        $report[ $toolLabel ][ $itemName ]['value'] += $item[ 'value' ];
-                    }
-                    else
-                    {
-                        $report[ $toolLabel ][ $itemName ]['value'] = $item[ 'value' ];
-                    }
-                }
-            }
-        }
-        
-        foreach( $report as $toolLabel => $item )
-        {
-            foreach( $item as $itemName => $thisItem )
-            {
-                //Max
-                if( isset( $report[ $toolLabel ][ $itemName ][ 'max' ] ) )
-                {
-                    if( $report[ $toolLabel ][ $itemName ][ 'max' ] < $thisItem[ 'value' ] )
-                    {
-                        $report[ $toolLabel ][ $itemName ][ 'max' ] = $thisItem[ 'value' ];
-                    }
-                }
-                else
-                {
-                    $report[ $toolLabel ][ $itemName ][ 'max' ] = $thisItem[ 'value' ];
-                }
-                //Average
-                $report[ $toolLabel ][ $itemName ][ 'average' ] = round( $report[ $toolLabel ][ $itemName ][ 'max' ] / count( $cleanStats ) );
-            }
-            
-        }
-        
-        
-        unset( $stats );
-        unset( $cleanStats );
-        
-        return $report;*/
     }
     
     public function load( $date )
