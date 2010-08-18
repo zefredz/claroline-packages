@@ -138,7 +138,7 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         $result = Claroline::getDatabase()->query(
             "SELECT AVG(itemValue) as average
             FROM `{$table['stats']}`
-            WHERE `itemName` = " . $itemName . ";"
+            WHERE `itemName` = '" . $itemName . "';"
         );
         
         $result->setFetchMode(Database_ResultSet::FETCH_VALUE);
