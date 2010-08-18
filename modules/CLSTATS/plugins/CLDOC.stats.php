@@ -32,6 +32,17 @@ class CLDOC_Stats extends ClaroStats_CourseTask
             }
         }
         
+        $it2 = new DirectoryIterator($courseRootPath);
+        $cldoc_count_items_at_first_level = 0;
+        
+        foreach ( $it as $file )
+        {
+            if ( !preg_match('/^\.+/', $file->getFileName() ) )
+            {
+                $cldoc_count_items_at_first_level++;
+            }
+        }
+        
         // 4. count invisible files
         // 5. count invisible folders
         // 6. invisible items = #invis_files + #invis_folders
@@ -69,6 +80,7 @@ class CLDOC_Stats extends ClaroStats_CourseTask
             'cldoc_count_files' => $cldoc_count_files,
             'cldoc_count_invisible_folders' => $cldoc_count_invisible_folders,
             'cldoc_count_folders' => $cldoc_count_folders,
+            'cldoc_count_items_at_first_level' => $cldoc_count_items_at_first_level,
             'cldoc_count_comments' => $cldoc_count_comments['value']
         );
     }
