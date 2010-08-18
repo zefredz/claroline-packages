@@ -35,19 +35,7 @@ class CLWIKI_Stats extends ClaroStats_CourseTask
             
             parent::setReportMax( $report, $itemName, $item );
             parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
-        }        
-        
-        /*$report[ 'clwiki_count_totalwiki' ][ 'zero' ] = $report[ 'clwiki_count_coursewiki' ][ 'zero' ] + $report[ 'clwiki_count_groupwiki' ][ 'zero' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'one' ] = $report[ 'clwiki_count_coursewiki' ][ 'one' ] + $report[ 'clwiki_count_groupwiki' ][ 'one' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'two' ] = $report[ 'clwiki_count_coursewiki' ][ 'two' ] + $report[ 'clwiki_count_groupwiki' ][ 'two' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'three' ] = $report[ 'clwiki_count_coursewiki' ][ 'three' ] + $report[ 'clwiki_count_groupwiki' ][ 'three' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'four' ] = $report[ 'clwiki_count_coursewiki' ][ 'four' ] + $report[ 'clwiki_count_groupwiki' ][ 'four' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'five' ] = $report[ 'clwiki_count_coursewiki' ][ 'five' ] + $report[ 'clwiki_count_groupwiki' ][ 'five' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'moreFive' ] = $report[ 'clwiki_count_coursewiki' ][ 'moreFive' ] + $report[ 'clwiki_count_groupwiki' ][ 'moreFive' ];
-        $report[ 'clwiki_count_totalwiki' ][ 'value' ] = $report[ 'clwiki_count_coursewiki' ][ 'value' ] + $report[ 'clwiki_count_groupwiki' ][ 'value' ];
-        
-        parent::setReportMax( $report, 'clwiki_count_totalwiki', $report[ 'clwiki_count_totalwiki'] );
-        parent::setReportAverage( $report, 'clwiki_count_totalwiki', $report[ 'clwiki_count_totalwiki'], $nbCourses );*/
+        }
         
         return $report[ 'clwiki_count_totalwiki' ]['value'];
     }
