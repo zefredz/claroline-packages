@@ -131,14 +131,15 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         }
     }
     
-    public function setReportAverage( &$report, $itemName, $item, $nbCourses )
+    /*public function setReportAverage( &$report, $itemName, $item, $nbCourses )
     {
         $table = get_module_main_tbl( array( 'stats' ) );
         
         $result = Claroline::getDatabase()->query(
             "SELECT AVG(itemValue) as average
             FROM `{$table['stats']}`
-            WHERE `itemName` = '" . $itemName . "';"
+            WHERE `itemName` = '" . $itemName . "'
+            AND ;"
         );
         
         $result->setFetchMode(Database_ResultSet::FETCH_VALUE);
@@ -149,7 +150,7 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         {
             $report[ $itemName ][ 'average' ] = ceil( $avg );
         }
-    }
+    }*/
     
     public function run( $course )
     {
@@ -540,7 +541,7 @@ class Stats_Report
                                 '" . Claroline::getDatabase()->escape( $toolLabel ) . "',
                                 '" . Claroline::getDatabase()->escape( $itemName ) . "',
                                 " . (int) Claroline::getDatabase()->escape( $item['max'] ) . ",
-                                " . (int) Claroline::getDatabase()->escape( $item['average'] ) . ",
+                                NULL,
                                 " . (int) Claroline::getDatabase()->escape( $item['zero'] ) . ",
                                 " . (int) Claroline::getDatabase()->escape( $item['one'] ) . ",
                                 " . (int) Claroline::getDatabase()->escape( $item['two'] ) . ",
