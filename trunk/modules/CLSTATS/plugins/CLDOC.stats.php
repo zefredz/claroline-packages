@@ -15,14 +15,14 @@ class CLDOC_Stats extends ClaroStats_CourseTask
         $courseData = claro_get_course_data( $course );
         
         $courseRootPath = get_conf( 'rootSys' ) . get_conf( 'coursesRepositoryAppend') . $courseData[ 'path' ] . '/document';
-        $it = new RecursiveIteratorIterator(  new RecursiveDirectoryIterator($courseRootPath) );
+        $it = new RecursiveDirectoryIterator($courseRootPath);
         
         $cldoc_count_files = 0;
         $cldoc_count_folders = 0;
         
         foreach ( $it as $file )
         {
-            if ( $file->isDir() && ! $file->isDot() )
+            if ( $file->isDir() && !preg_match('/^\.+/', $file->getFileName() ) )
             {
                 $cldoc_count_folders++;
             }
