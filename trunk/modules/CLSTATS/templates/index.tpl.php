@@ -31,7 +31,7 @@ else :
                         <th><?php echo get_lang( 'Tool' ); ?></th>
                         <th><?php echo get_lang( 'Item' ); ?></th>
                         <th><?php echo get_lang( 'Max Usage' ); ?></th>
-                        <th><?php echo get_lang( 'Average Usage' ); ?></th>
+                        <!-- th><?php echo get_lang( 'Average Usage' ); ?></th -->
                         <th><?php echo get_lang( 'Zero Item' ); ?></th>
                         <th><?php echo get_lang( '1 Item' ); ?></th>
                         <th><?php echo get_lang( '2 Items' ); ?></th>
@@ -49,7 +49,7 @@ else :
                         <td style="text-align: left;"><?php echo claro_get_tool_name( $thisReport['toolLabel'] ); ?></td>
                         <td style="text-align: left;"><?php echo $thisReport['itemName']; ?></td>
                         <td style="text-align: center;"><?php echo $thisReport['max']; ?></td>
-                        <td style="text-align: center;"><?php echo $thisReport['average']; ?></td>
+                        <!-- td style="text-align: center;"><?php /* echo $thisReport['average']; */ ?></td -->
                         <td style="text-align: center;"><?php echo $thisReport['zero']; ?></td>
                         <td style="text-align: center;"><?php echo $thisReport['one']; ?></td>
                         <td style="text-align: center;"><?php echo $thisReport['two']; ?></td>
@@ -71,7 +71,7 @@ else :
                     <tr class="headerX" align="center" valign="top">
                         <th><?php echo get_lang( 'Tool' ); ?></th>
                         <th><?php echo get_lang( 'Max Usage' ); ?></th>
-                        <th><?php echo get_lang( 'Average Usage' ); ?></th>
+                        <!-- th><?php echo get_lang( 'Average Usage' ); ?></th -->
                         <th><?php echo get_lang( 'Less than 5 Items' ); ?></th>
                         <th><?php echo get_lang( '5 Items or more' ); ?></th>
                     </tr>
@@ -84,7 +84,7 @@ else :
                     <tr>
                         <td style="text-align: left;"><?php echo claro_get_tool_name( $toolLabel ); ?></td>
                         <td style="text-align: center;"><?php echo $thisReport['max']; ?></td>
-                        <td style="text-align: center;"><?php echo $thisReport['average']; ?></td>
+                        <!-- td style="text-align: center;"><?php /* echo $thisReport['average']; */ ?></td -->
                         <td style="text-align: center;"><?php echo $thisReport['lessFive']; ?></td>
                         <td style="text-align: center;"><?php echo $thisReport['moreFive']; ?></td>                    
                     </tr>

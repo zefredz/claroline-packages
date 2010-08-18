@@ -37,7 +37,7 @@ class CLFRM_Stats extends ClaroStats_CourseTask
             parent::initReportData( $report, $itemName, $item );
             parent::setReportData( $report, $itemName, $item );
             parent::setReportMax( $report, $itemName, $item );
-            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+            //parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
         }
         
         return round( $itemStats[ 'clfrm_count_posts' ]['value'] / $itemStats[ 'clfrm_count_topics' ]['value'] );

@@ -34,7 +34,7 @@ class CLWIKI_Stats extends ClaroStats_CourseTask
             parent::setReportData( $report, $itemName, $item );            
             
             parent::setReportMax( $report, $itemName, $item );
-            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+            //parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
         }
         
         return $report[ 'clwiki_count_totalwiki' ]['value'];

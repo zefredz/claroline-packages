@@ -32,7 +32,7 @@ class CLWRK_Stats extends ClaroStats_CourseTask
             parent::initReportData( $report, $itemName, $item );
             parent::setReportData( $report, $itemName, $item );
             parent::setReportMax( $report, $itemName, $item );
-            parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
+            //parent::setReportAverage( $report, $itemName, $item, $nbCourses );            
         }
         
         return $itemStats[ 'clwrk_count_assignments' ]['value'];
