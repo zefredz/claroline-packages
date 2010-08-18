@@ -133,9 +133,11 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
     
     public function setReportAverage( &$report, $itemName, $item, $nbCourses )
     {
+        $table = get_module_main_tbl( array( 'stats' ) );
+        
         $result = Claroline::getDatabase()->query(
             "SELECT AVG(itemValue) as average
-            FROM `{$this->table['stats_usage']}`
+            FROM `{$table['stats']}`
             WHERE `itemName` = " . $itemName . ";"
         );
         
