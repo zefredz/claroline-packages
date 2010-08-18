@@ -14,6 +14,11 @@
     text-align: center;
 }
 
+.cell a
+{
+    color: #444;
+}
+
 .empty
 {
     text-align: center;
@@ -34,10 +39,19 @@
     /*background-color: linen;*/
 }
 
-.exam
+.exam, .noscore
 {
-    font-weight: bold;
-    background-color: mistyRose;
+    /*font-weight: bold;*/
     border: 1px solid black;
     padding: 5px;
+}
+
+.exam
+{
+    background-color: mistyRose;
+}
+
+.noscore
+{
+    background-color: linen;
 }

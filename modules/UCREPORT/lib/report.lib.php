@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -14,7 +14,7 @@
  * calculates average scores and students'final (weighted) results,
  * and generates a report.
  * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignment
- * @const ASSIGNMENT_DATA_FILE_NAME the name of the file where assignments weights are stored
+ * @const ASSIGNMENT_DATA_FILE the name of the file where assignments weights are stored
  * @const EXAMINATION_DATA_FILE the name of the file where examination scores are stored
  * @const EXAMINATION_ID the examination id in $reportDataList
  * @const VISIBLE database value for visible assignments
@@ -29,8 +29,9 @@ class Report
 {
     const DEFAULT_ASSIGNEMENT_WEIGHT = 100;
     const DEFAULT_MAX_SCORE = 100;
-    const ASSIGNMENT_DATA_FILE_NAME = 'assignments.data';
+    const ASSIGNMENT_DATA_FILE = 'assignments.data';
     const EXAMINATION_DATA_FILE = 'examination.data';
+    const ACTIVE_USER_DATA_FILE = 'active_users.data';
     const EXAMINATION_ID = 'exam';
     const VISIBLE = 'VISIBLE';
     const INVISIBLE = 'INVISIBLE';
@@ -46,6 +47,7 @@ class Report
     private $visibility;
     private $assignmentListFileUrl;
     private $examinationFileUrl;
+    private $activeUserListFileUrl;
     private $averageScore;
     
     /**
@@ -69,10 +71,13 @@ class Report
         {
             $this->assignmentListFileUrl = '../../courses/'
                                          . claro_get_course_path( $this->courseId )
-                                         . '/' . self::ASSIGNMENT_DATA_FILE_NAME;
+                                         . '/' . self::ASSIGNMENT_DATA_FILE;
             $this->examinationFileUrl = '../../courses/'
                                       . claro_get_course_path( $this->courseId )
                                       . '/' . self::EXAMINATION_DATA_FILE;
+            $this->activeUserListFileUrl = '../../courses/'
+                                      . claro_get_course_path( $this->courseId )
+                                      . '/' . self::ACTIVE_USER_DATA_FILE;
             $this->load();
         }
     }
@@ -172,7 +177,7 @@ class Report
         }
         
         if ( file_exists( $this->examinationFileUrl )
-            && $content = unserialize( file_get_contents( $this->examinationFileUrl ) ) )
+             && $content = unserialize( file_get_contents( $this->examinationFileUrl ) ) )
         {
             foreach( $content as $userId => $datas )
             {
@@ -182,6 +187,18 @@ class Report
                     $this->userList[ $userId ][ 'comment' ] = $datas[ 'comment' ];
                     $this->assignmentDataList[ self::EXAMINATION_ID ][ 'submission_count' ]++;
                     $this->assignmentDataList[ self::EXAMINATION_ID ][ 'average' ] += $datas[ 'score' ];
+                }
+            }
+        }
+        
+        if ( file_exists( $this->activeUserListFileUrl )
+             && $content = unserialize( file_get_contents( $this->activeUserListFileUrl ) ) )
+        {
+            foreach( $content as $userId => $is_active )
+            {
+                if ( isset( $this->userList[ $userId ] ) )
+                {
+                    $this->userList[ $userId ][ 'active' ] = (boolean)$is_active;
                 }
             }
         }
@@ -222,6 +239,11 @@ class Report
             if ( isset( $finalScore ) )
             {
                 $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
+            }
+            
+            if ( ! isset( $this->userList[ $userId ][ 'active' ] ) )
+            {
+                $this->userList[ $userId ][ 'active' ] = isset( $finalScore );
             }
         }
         
@@ -393,6 +415,22 @@ class Report
     }
     
     /**
+     * Activates an user
+     * @param int $userId
+     */
+    public function setUserActive( $userId , $active = false )
+    {
+        if ( isset( $this->userList[ $userId ] ) )
+        {
+            return $this->userList[ $userId ][ 'active' ] = (boolean)$active;
+        }
+        else
+        {
+            throw new Excception( 'Invalid user id' );
+        }
+    }
+    
+    /**
      * Sets weight for assignment
      * @param int $assignmentId the id of the assignment
      * @param int $weight the weight of the assignment
@@ -527,6 +565,22 @@ class Report
     }
     
     /**
+     * Resets the active users list
+     */
+    public function resetActiveUserList()
+    {
+        if ( file_exists( $this->activeUserListFileUrl ) )
+        {
+            unlink( $this->activeUserListFileUrl );
+            
+            foreach( $this->userList as $userId => $data )
+            {
+                $this->userList[ $userId ][ 'active' ] = isset( $this->userList[ $userId ][ 'final_score' ] );
+            }
+        }
+    }
+    
+    /**
      * Stores the weights values in file
      * @return boolean true if process is successful
      */
@@ -568,6 +622,22 @@ class Report
     }
     
     /**
+     * Stores the active user list in file
+     * @return boolean true if process is successful
+     */
+    public function saveActiveUserList()
+    {
+        $activeUserList = array();
+        
+        foreach( $this->userList as $userId => $data )
+        {
+            $activeUserList[ $userId ] = $data[ 'active' ];
+        }
+        
+        return create_file( $this->activeUserListFileUrl, serialize( $activeUserList ) );
+    }
+    
+    /**
      * Saves the reports
      * @return boolean true if successful
      */
@@ -584,7 +654,12 @@ class Report
         
         foreach( $this->reportDataList as $userId => $userDataList )
         {
-            if ( isset( $this->userList[ $userId ][ 'final_score' ] ) )
+            /*
+             if ( isset( $this->userList[ $userId ][ 'final_score' ] ) )
+            {
+                $reportDataList[ $userId ] = $userDataList;
+            }*/
+            if ( $this->userList[ $userId ][ 'active' ] )
             {
                 $reportDataList[ $userId ] = $userDataList;
             }

@@ -2,7 +2,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -53,7 +53,7 @@ class UserReport
         foreach( $userCourseList as $course )
         {
             $tbl = get_module_course_tbl( array( 'report_reports' ) , $course[ 'code' ] );
-            $weightFileUrl = '../../courses/' . claro_get_course_path( $course[ 'code' ] ) . '/' . Report::ASSIGNMENT_DATA_FILE_NAME;
+            $weightFileUrl = '../../courses/' . claro_get_course_path( $course[ 'code' ] ) . '/' . Report::ASSIGNMENT_DATA_FILE;
             
             if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'code' ] )
                  && file_exists( $weightFileUrl ) )
@@ -72,12 +72,12 @@ class UserReport
                 foreach( $courseReportList as $courseReport )
                 {
                     $reportDataList = unserialize( $courseReport[ 'datas' ] );
-                    $finalScore = isset( $reportDataList[ 'users' ][$this->userId ][ 'final_score' ] )
-                                ? $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ]
-                                : null;
-                    
-                    if ( isset( $finalScore ) )
+                    if ( isset( $reportDataList[ 'users' ][ $this->userId ][ 'active' ] ) )
                     {
+                        $finalScore = isset( $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ] )
+                                    ? $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ]
+                                    : null;
+                        
                         $this->userReportList[ $courseReport[ 'id' ] ] = array( 'title' => $courseReport[ 'title' ]
                                                                         , 'course_code' => $course[ 'code' ]
                                                                         , 'course_title' => $course[ 'title' ]
