@@ -14,6 +14,8 @@
  *
  */
 
+set_time_limit(0);
+
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 //SECURITY CHECK
