@@ -143,7 +143,7 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         
         $result->setFetchMode(Database_ResultSet::FETCH_VALUE);
         
-        $avg = (float) $result_>fetch();
+        $avg = (float) $result->fetch();
         
         if( isset( $report[ $itemName ][ 'max' ] ) )
         {
