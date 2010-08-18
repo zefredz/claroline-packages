@@ -2,13 +2,14 @@
 /**
  * Claroline Poll Tool
  *
- * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
+$_lang['Activate'] = 'Activer';
 $_lang['An error occured: the report has not been created!'] = 'Une erreur est survenue: le bulletin n\' a pu être créé!';
 $_lang['An error occured: the report has not been deleted!'] = 'Une erreur est survenue: le bulletin n\' a  pu être supprimé!';
 $_lang['An error occured: the visibility change failed!'] = 'Une erreur est survenue: la visibilité n\'a pu être changée!';
@@ -37,6 +38,7 @@ $_lang['Publication date'] = 'Date de publication';
 $_lang['Report'] = 'Bulletin';
 $_lang['Report list'] = 'Liste des bulletins';
 $_lang['Report settings'] = 'Paramètres du bulletin';
+$_lang['Reset'] = 'Rétablir';
 $_lang['Reset scores'] = 'Tout remettre à zéro';
 $_lang['See examination scores'] = 'Revoir les commentaires';
 $_lang['Student Report'] = 'Bulletin';
@@ -48,5 +50,6 @@ $_lang['Weight'] = 'Pondération';
 $_lang['weight'] = 'pondération';
 $_lang['wt.'] = 'pond.';
 $_lang['Weighted global score'] = 'Moyenne globale pondérée';
+$_lang['You don\'t have score in this report'] = 'Vous n\'avez pas de note pour ce bulletin';
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 $_lang['Your modifications have been successfully saved!'] = 'Vos modifications ont été enregistrées avec succès';

@@ -2,7 +2,7 @@
     <label>UCREPORT</label>
     <name>Student Report</name>
     <description><![CDATA[ Student report ]]></description>
-    <version>0.9.2</version>
+    <version>0.9.4</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>tool</type>
