@@ -147,7 +147,7 @@ abstract class ClaroStats_CourseTask extends ClaroCourseTask
         
         if( isset( $report[ $itemName ][ 'max' ] ) )
         {
-            $report[ $itemName ][ 'average' ] = round( $avg );
+            $report[ $itemName ][ 'average' ] = ceil( $avg );
         }
     }
     
