@@ -29,7 +29,7 @@ class CLDOC_Stats extends ClaroStats_CourseTask
         
         foreach ( $courseDocumentIterator as $file )
         {
-            if ( $file->isDot() )
+            if ( '.' == substr( $file->getFilename(), 0 , 1 ) )
             {
                 continue;
             }
@@ -48,7 +48,7 @@ class CLDOC_Stats extends ClaroStats_CourseTask
         
         foreach ( $firstLevelIterator as $file )
         {
-            if ( $file->isDot() )
+            if ( '.' == substr( $file->getFilename(), 0 , 1 ) )
             {
                 continue;
             }
