@@ -14,15 +14,26 @@ class CLDOC_Stats extends ClaroStats_CourseTask
         // 3. total items = #files + #folders
         $courseData = claro_get_course_data( $course );
         
-        $courseRootPath = get_conf( 'rootSys' ) . get_conf( 'coursesRepositoryAppend') . $courseData[ 'path' ] . '/document';
-        $it = new RecursiveDirectoryIterator($courseRootPath);
+        $courseRootPath = get_conf( 'rootSys' )
+            . get_conf( 'coursesRepositoryAppend')
+            . $courseData[ 'path' ]
+            . '/document'
+            ;
+        
+        $courseDocumentIterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator( $courseRootPath ),
+            RecursiveIteratorIterator::SELF_FIRST );
         
         $cldoc_count_files = 0;
         $cldoc_count_folders = 0;
         
-        foreach ( $it as $file )
+        foreach ( $courseDocumentIterator as $file )
         {
-            if ( $file->isDir() && !preg_match('/^\.+/', $file->getFileName() ) )
+            if ( $file->isDot() )
+            {
+                continue;
+            }
+            elseif ( $file->isDir() )
             {
                 $cldoc_count_folders++;
             }
@@ -32,12 +43,16 @@ class CLDOC_Stats extends ClaroStats_CourseTask
             }
         }
         
-        $it2 = new DirectoryIterator($courseRootPath);
+        $firstLevelIterator = new DirectoryIterator($courseRootPath);
         $cldoc_count_items_at_first_level = 0;
         
-        foreach ( $it as $file )
+        foreach ( $firstLevelIterator as $file )
         {
-            if ( !preg_match('/^\.+/', $file->getFileName() ) )
+            if ( $file->isDot() )
+            {
+                continue;
+            }
+            else
             {
                 $cldoc_count_items_at_first_level++;
             }
