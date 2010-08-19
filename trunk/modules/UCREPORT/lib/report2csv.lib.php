@@ -71,7 +71,9 @@ class Report2Csv extends csv
                     }
                 }
                 
-                $userScoreList[] = (string)$userList[ $userId ][ 'final_score' ];
+                $userScoreList[] = isset( $userList[ $userId ][ 'final_score' ] )
+                                 ? (string)$userList[ $userId ][ 'final_score' ]
+                                 : '';
                 
                 $this->recordList[] = array_merge( $userName , $userScoreList );
             }
