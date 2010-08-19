@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `condition` enum('-1','AND','OR') NOT NULL,
   `raw_to_pass` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) TYPE=MyISAM
+) TYPE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_grapple_resources` (
   `grappleId` varchar(255) NOT NULL,
@@ -83,4 +83,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_grapple_resources` (
   `name` text,
   `path` text,
   PRIMARY KEY (`grappleId`)
-) TYPE=MyISAM
+) TYPE=MyISAM;
