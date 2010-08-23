@@ -97,7 +97,7 @@
     <?php endforeach; ?>
     </tbody>
 </table>
-    <?php if ( ! isset( $this->userList[ claro_get_current_user_id() ] ) && ! claro_is_allowed_to_edit() ) : ?>
+    <?php if ( ! isset( $this->reportDataList[ claro_get_current_user_id() ] ) && ! claro_is_allowed_to_edit() ) : ?>
 <p class="noscore"><?php echo get_lang( 'You don\'t have score in this report' ); ?></p>
     <?php endif; ?>
     <?php if ( $this->comment ) :?>

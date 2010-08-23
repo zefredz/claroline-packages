@@ -41,7 +41,7 @@ class UserReport
             SELECT
                 C.code, C.intitule AS title
             FROM
-                `{$this->tbl['cours']}`          AS C
+                `{$this->tbl['cours']}`         AS C
             INNER JOIN
                 `{$this->tbl['cours_user']}`    AS U
             ON
@@ -72,7 +72,7 @@ class UserReport
                 foreach( $courseReportList as $courseReport )
                 {
                     $reportDataList = unserialize( $courseReport[ 'datas' ] );
-                    if ( isset( $reportDataList[ 'users' ][ $this->userId ][ 'active' ] ) )
+                    if ( isset( $reportDataList[ 'report' ][ $this->userId ] ) )
                     {
                         $finalScore = isset( $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ] )
                                     ? $reportDataList[ 'users' ][ $this->userId ][ 'final_score' ]
