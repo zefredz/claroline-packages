@@ -1,6 +1,6 @@
 <?php // $Id$
 /**
- * Claroline Poll Tool
+ * Student Report for Claroline
  *
  * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
