@@ -1,6 +1,6 @@
 <?php // $Id$
 /**
- * Claroline Poll Tool
+ * Student Report for Claroline
  *
  * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
@@ -260,7 +260,7 @@ class Report
     
     /**
      * Loads the report datas.
-     * This methode is called by the constructor if it receives a report id
+     * This method is called by the constructor if it receives a report id
      */
     public function loadReport( $reportId )
     {
