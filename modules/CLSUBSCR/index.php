@@ -981,6 +981,7 @@ try
                 $subscription->setDescription( $userInput->get( 'description' ) );
                 $subscription->setContext( $userInput->get( 'context' ) );
                 $subscription->setType( $userInput->get( 'type' ) );
+                $subscription->setModifiable( $userInput->get( 'modifiable' ) );
                 $subscription->setVisibility( $userInput->get( 'visibility' ) );
                 if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
                 {
