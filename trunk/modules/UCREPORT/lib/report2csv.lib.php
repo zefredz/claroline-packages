@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -50,7 +50,7 @@ class Report2Csv extends csv
                                               , $average
                                               , array( $averageScore ) );
             
-            foreach( array_keys( $userList ) as $userId )
+            foreach( $reportDataList as $userId  => $reportData )
             {
                 $userName = array( $userList[ $userId ][ 'firstname' ] . ' ' . $userList[ $userId ][ 'lastname' ] );
                 
@@ -60,9 +60,9 @@ class Report2Csv extends csv
                 {
                     if ( $assignment[ 'active' ] )
                     {
-                        if ( isset( $reportDataList[ $userId ][ $id ] ) )
+                        if ( isset( $reportData[ $id ] ) )
                         {
-                            $userScoreList[] = $reportDataList[ $userId ][ $id ];
+                            $userScoreList[] = $reportData[ $id ];
                         }
                         else
                         {

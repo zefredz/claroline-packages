@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -140,12 +140,14 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             $userId = $userInput->get( 'userId' );
             $report->setUserActive( $userId , $active );
             $report->saveActiveUserList();
+            $report->load();
             break;
         }
         
         case 'exResetActiveList' :
         {
             $report->resetActiveUserList();
+            $report->load();
             break;
         }
         
