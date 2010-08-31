@@ -14,11 +14,6 @@
  * @package     ICMAIL
  */
 
-if ( count( get_included_files() ) == 1 )
-{
-    die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
-}
-
 class ICMAIL
 {
     public static function getUserList( $type )
@@ -31,56 +26,100 @@ class ICMAIL
         switch($type)
         {
             // all users
-            /*case 'all':
-                $sql = 'SELECT user_id AS id
-                        FROM `'.$tbl_user.'`';
-            break;*/
+            case 'all':
+                $sql = "SELECT DISTINCT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u
+                        WHERE
+                            u.authSource != 'disabled'";
+            break;
+        
             // course creators
             case 'creators':
-                $sql = 'SELECT user_id AS id
-                        FROM `'.$tbl_user.'`
-                        WHERE `isCourseCreator` = 1';
+                $sql = "SELECT DISTINCT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u
+                        WHERE
+                            u.`isCourseCreator` = 1
+                        AND
+                            u.authSource != 'disabled'";
             break;
+        
             // users with no courses
-            /*case 'nocourse':
-                $sql = 'SELECT DISTINCT  user_id AS id
-                        FROM `'.$tbl_user.'` AS u 
-                        INNER JOIN `'.$tbl_course_user.'` AS cu
-                        ON  u.user_id = cu.user_id
-                        WHERE cu.user_id IS NULL';
-            break;*/
+            case 'nocourse':
+                $sql = "SELECT DISTINCT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u 
+                        INNER JOIN
+                            `{$tbl_course_user}` AS cu
+                        ON
+                            u.user_id = cu.user_id
+                        WHERE
+                            cu.user_id IS NULL
+                        AND
+                            u.authSource != 'disabled'";
+            break;
+        
             // course managers
             case 'managers':
-                $sql = 'SELECT DISTINCT u.user_id AS id
-                        FROM `'.$tbl_user.'` AS u 
-                        INNER JOIN `'.$tbl_course_user.'` AS cu
-                        ON  u.user_id = cu.user_id
-                        AND `isCourseManager` = 1';
+                $sql = "SELECT DISTINCT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u 
+                        INNER JOIN
+                            `{$tbl_course_user}` AS cu
+                        ON
+                            u.user_id = cu.user_id
+                        AND
+                            cu.`isCourseManager` = 1
+                        AND
+                            u.authSource != 'disabled'";
             break;
+        
             // course managers with public courses
             case 'publicmanagers':
-                $sql = 'SELECT DISTINCT u.user_id AS id
-                        FROM `'.$tbl_user.'` AS u 
-                        INNER JOIN `'.$tbl_course_user.'` AS cu
-                        ON  u.user_id = cu.user_id
-                        INNER JOIN `'.$tbl_course.'` AS c
-                        ON c.`code` = cu.`code_cours`
-                        WHERE cu.`isCourseManager` = 1
-                        AND c.`access` = "public"';
+                $sql = "SELECT DISTINCT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u 
+                        INNER JOIN
+                            `{$tbl_course_user}` AS cu
+                        ON
+                            u.user_id = cu.user_id
+                        INNER JOIN
+                            `{$tbl_course}` AS c
+                        ON
+                            c.`code` = cu.`code_cours`
+                        WHERE
+                            cu.`isCourseManager` = 1
+                        AND
+                            c.`access` = 'public'
+                        AND
+                            u.authSource != 'disabled'";
             break;
+        
             // admins
             case 'admin':
             default:
-                $sql = 'SELECT user_id AS id
-                        FROM `'.$tbl_user.'` 
-                        WHERE `isPlatformAdmin` = 1';
+                $sql = "SELECT
+                            u.email AS email
+                        FROM
+                            `{$tbl_user}` AS u
+                        WHERE
+                            u.`isPlatformAdmin` = 1
+                        AND
+                            u.authSource != 'disabled'";
+            break;
         }
     
         $cols =  claro_sql_query_fetch_all_cols($sql);
         
         if ( is_array( $cols ) && count( $cols ) >= 1 )
         {
-            return $cols['id'];
+            return $cols['email'];
         }
         else
         {
@@ -88,21 +127,18 @@ class ICMAIL
         }
     }
     
-    public static function sendHtmlMailToList( $userIdList, $message, $subject , $specificFrom='', $specificFromName='', $altBody='' )
+    public static function sendHtmlMailToList( $emailList, $message, $subject , $specificFrom='', $specificFromName='', $altBody='' )
     {
-        if ( ! is_array($userIdList) ) $userIdList = array($userIdList);
-        if ( count($userIdList) == 0)  return 0;
-    
-        $tbl      = claro_sql_get_main_tbl();
-        $tbl_user = $tbl['user'];
-    
-        $sql = 'SELECT DISTINCT email
-                FROM `'.$tbl_user.'`
-                WHERE user_id IN ('. implode(', ', array_map('intval', $userIdList) ) . ')';
-    
-        $emailList = claro_sql_query_fetch_all_cols($sql);
-        $emailList = $emailList['email'];
-    
+        if ( ! is_array( $emailList ) )
+        {
+            $emailList = array( $emailList );
+        }
+        
+        if ( count($emailList) == 0 )
+        {
+            return 0;
+        }
+        
         $emailList = array_filter($emailList, 'is_well_formed_email_address');
     
         $mail = new ClaroPHPMailer();
@@ -122,27 +158,43 @@ class ICMAIL
             $mail->AltBody = $altBody;
         }    
         
-        if ($specificFrom != '')     $mail->From = $specificFrom;
-        else                         $mail->From = get_conf('administrator_email');
+        $mail->From = !empty($specificFrom)
+            ? $specificFrom
+            : get_conf('administrator_email')
+            ;
     
-        if ($specificFromName != '') $mail->FromName = $specificFromName;
-        else                         $mail->FromName = get_conf('administrator_name');
+        $mail->FromName = !empty($specificFromName)
+            ? $specificFromName
+            : get_conf('administrator_name')
+            ;
     
         $mail->Sender = $mail->From;
+        
+        $emailSent = 0;
     
         foreach ($emailList as $thisEmail)
         {
+            if ( empty( $thisEmail ) )
+            {
+                continue;
+            }
+            
             $mail->AddAddress($thisEmail);
             
             $mail->Send();
             
+            $eamilSent++;
+            
             $mail->ClearAddresses();
         }
+        
+        return $emailSent;
     }
     
     public static function sendHtmlMailToUser( $to, $toName = '', $message, $subject , $specificFrom='', $specificFromName='', $altBody='' )
     {
         $mail = new ClaroPHPMailer();
+        
         $mail->IsHTML(true);
         
         $mail->Subject = $subject;
@@ -159,11 +211,15 @@ class ICMAIL
             $mail->AltBody = $altBody;
         }    
         
-        if ($specificFrom != '')     $mail->From = $specificFrom;
-        else                         $mail->From = get_conf('administrator_email');
+        $mail->From = !empty($specificFrom)
+            ? $specificFrom
+            : get_conf('administrator_email')
+            ;
     
-        if ($specificFromName != '') $mail->FromName = $specificFromName;
-        else                         $mail->FromName = get_conf('administrator_name');
+        $mail->FromName = !empty($specificFromName)
+            ? $specificFromName
+            : get_conf('administrator_name')
+            ;
     
         $mail->Sender = $mail->From;
         
