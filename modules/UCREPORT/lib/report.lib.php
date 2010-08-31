@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -36,9 +36,9 @@ class Report
     const VISIBLE = 'VISIBLE';
     const INVISIBLE = 'INVISIBLE';
     
-    private $userList = array();
-    private $reportDataList = array();
-    private $assignmentDataList = array();
+    private $userList;
+    private $reportDataList;
+    private $assignmentDataList;
     
     private $id;
     private $courseId;
@@ -88,6 +88,10 @@ class Report
      */
     public function load()
     {
+        $this->assignmentDataList = array();
+        $this->userList = array();
+        $this->reportDataList = array();
+        
         $assignmentQueryResult = Claroline::getDatabase()->query( "
             SELECT
                 id, title, visibility
@@ -222,28 +226,41 @@ class Report
         foreach( $this->reportDataList as $userId => $userReport )
         {
             $finalScore = 0;
+            $activeCount = 0;
+            $submissionCount = 0;
             
             foreach( $this->assignmentDataList as $assignmentId => $assignment )
             {
-                if ( isset( $userReport[ $assignmentId ] ) )
+                $activeCount += (int)$assignment[ 'active' ];
+                
+                if ( $assignment[ 'active' ] && isset( $userReport[ $assignmentId ] ) )
                 {
                     $finalScore += $userReport[ $assignmentId ] * $this->assignmentDataList[ $assignmentId ][ 'proportional_weight' ];
-                }
-                elseif ( $assignment[ 'active' ] )
-                {
-                    unset( $finalScore );
-                    break;
+                    $submissionCount++;
                 }
             }
             
-            if ( isset( $finalScore ) )
-            {
-                $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
-            }
+            $complete = $submissionCount == $activeCount;
             
             if ( ! isset( $this->userList[ $userId ][ 'active' ] ) )
             {
-                $this->userList[ $userId ][ 'active' ] = isset( $finalScore );
+                $this->userList[ $userId ][ 'active' ] = $complete;
+            }
+            
+            if ( $this->userList[ $userId ][ 'active' ] || $complete )
+            {
+                $this->userList[ $userId ][ 'final_score' ] = round( $finalScore , 1 );
+                
+                if ( ! $complete )
+                {
+                    foreach( array_keys( $this->assignmentDataList ) as $assignmentId )
+                    {
+                        if ( ! isset( $this->reportDataList[ $userId ][ $assignmentId ] ) )
+                        {
+                            $this->reportDataList[ $userId ][ $assignmentId ] = 0;
+                        }
+                    }
+                }
             }
         }
         
