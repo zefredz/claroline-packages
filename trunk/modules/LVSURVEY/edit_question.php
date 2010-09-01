@@ -10,9 +10,14 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 	private $question = null;
 	private $questionId = 0;
 
+
+    private $questionLine = null;
+    private $answerRequired = true;
+
 	private $survey = null;
 
 	private $showSuccess = false;
+
 	
  	public function __construct()
 	{
@@ -20,23 +25,43 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 		$input = Claro_UserInput::getInstance();
 		$idValidator = new Claro_Validator_ValueType('intstr');
 		$input->setValidator('questionId', $idValidator);
-		$input->setValidator('surveyId', $idValidator);		
+		$input->setValidator('surveyId', $idValidator);
+        $input->setValidator('questionLineId', $idValidator);
+       
 		$surveyId = (int)$input->get('surveyId', '0');
+        $questionLineId = (int)$input->get('questionLineId', '0');
 		$this->questionId = (int)$input->get('questionId', '0');
-		
-		if(!empty($this->questionId) && $this->questionId != -1)
-		{
-			$this->question = Question::load($this->questionId);
-		} 
-		else 
-		{
-			$this->question = new Question();
-		}
-		
+
+        
 		if(!empty($surveyId))
 		{
 			$this->survey = Survey::load($surveyId);
-		}		
+            if($questionLineId > 0)
+            {
+                $this->questionLine = SurveyLineFactory::loadSingleLine($questionLineId, $this->survey);
+                $this->question = $this->questionLine->question;
+                $this->questionId = $this->question->id;
+            }
+            else
+            {
+                $this->questionLine = 
+                        SurveyLineFactory::createQuestionLine(
+                                    $this->survey,
+                                    $this->question, 
+                                    true);
+            }
+		}
+
+
+        if(!empty($this->questionId) && $this->questionId != -1)
+		{
+			$this->question = Question::load($this->questionId);
+		} 
+		if(empty($this->question))
+		{
+			$this->question = new Question();
+		}
+
 	}
 	
 	
@@ -69,8 +94,11 @@ class EditQuestionPage extends ManagerSurveyLessPage {
     	$editQuestionTpl->assign('question', $this->question);
 	    if(!empty($this->survey))
 	    {
-	    	$editQuestionTpl->assign('surveyId', $this->survey->id);
+	    	$editQuestionTpl->assign('survey', $this->survey);
 	    }
+        
+        $editQuestionTpl->assign('answerRequired', $this->questionLine->isRequired());
+        $editQuestionTpl->assign('questionLine', $this->questionLine);
 	
     	return $editQuestionTpl->render();    
     
@@ -101,14 +129,20 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 	
 	public function performQuestionSave()
 	{
-		
-		try
+       try
 		{
 			$this->question = Question::loadFromForm();
 			$this->question->save();
-			if(!empty($this->survey) && $this->question->id != $this->questionId)
+			if(!empty($this->survey))
 			{
-				$this->addQuestionToSurvey();
+               
+                $input = Claro_UserInput::getInstance();
+                $input->setValidator('answerRequired', new Claro_Validator_ValueType('intstr') );
+                $this->answerRequired = (bool) ($input->get('answerRequired', '1')) ;
+                $this->questionLine->question = $this->question;
+                $this->questionLine->setRequired($this->answerRequired);
+                $this->questionLine->save();
+
 			}
 			parent::success(get_lang("Question was successfully saved"));
 			$this->showSuccess = true;
@@ -117,12 +151,6 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 		{
 			parent::error($e->getMessage());
 		}
-	}
-	private function addQuestionToSurvey()
-	{
-			$surveyLine = SurveyLineFactory::createQuestionLine($this->survey,$this->question);        
-	        $surveyLine->save();		
-	        $this->survey->addSurveyLine($surveyLine);	
 	}
 }
 

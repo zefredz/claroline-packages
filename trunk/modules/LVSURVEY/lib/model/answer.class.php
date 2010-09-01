@@ -327,5 +327,33 @@ class Answer
     		DELETE FROM `".SurveyConstants::$ANSWER_TBL."`
     		WHERE 		`id` = ".(int) $this->id."; "; 
     	$dbCnx->exec($sql);
-    } 
+    }
+
+    public function isValid()
+    {
+        $questionLine = $this->getQuestionLine();
+        if(!$questionLine->isRequired()) return true;
+
+        if($questionLine->question->type == 'OPEN' )
+        {
+            $selectedChoiceList = $this->getSelectedChoiceList();
+            $answerText = $selectedChoiceList[0]->text;
+            if(trim($answerText) == '') return false;
+        }
+
+        if($questionLine->question->type == 'ARRAY' )
+        {
+            $expectedChoiceCount = sizeof($questionLine->question->getChoiceList());
+            $selectedOptionList = $this->getSelectedOptionList();
+            if(sizeof($selectedOptionList) != $expectedChoiceCount) return false;
+        }
+
+        if($questionLine->question->type == 'MCMA' || $questionLine->question->type == 'MCSA' )
+        {
+            $selectedChoiceList = $this->getSelectedChoiceList();
+            if(empty($selectedChoiceList))return false;
+        }
+        return true;
+
+    }
 }

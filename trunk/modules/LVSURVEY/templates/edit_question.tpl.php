@@ -15,8 +15,11 @@
        
 <form method="post" action="./edit_question.php" >
 	<input type="hidden" name="questionId" value="<?php  echo $this->question->id; ?>" />
-	<?php if (isset($this->surveyId)):?>
-		<input type="hidden" name="surveyId" value="<?php echo $this->surveyId; ?>" />
+	<?php if (isset($this->survey)):?>
+		<input type="hidden" name="surveyId" value="<?php echo $this->survey->id; ?>" />
+	<?php endif;?>
+    <?php if (isset($this->questionLine)):?>
+		<input type="hidden" name="questionLineId" value="<?php echo $this->questionLine->id; ?>" />
 	<?php endif;?>
 	<input type="hidden" name="claroFormId" value="<?php  echo uniqid(''); ?>">
 	<input type="hidden" name="cmd" value="QuestionSave">
@@ -114,6 +117,20 @@
 			</div>
 		</td>
 	</tr>
+    <?php if (isset($this->survey)): ?>
+		<!-- REQUIRED OR OPTIONAL -->
+        <tr>
+            <td>
+                <?php  echo get_lang('Answer required'); ?>
+            </td>
+            <td>
+                <input type="radio" id="answerRequiredYes" name="answerRequired" value="1" <?php echo $this->answerRequired?"checked":""; ?> />
+                <label for="answerRequiredYes"><?php echo get_lang('Yes'); ?></label>
+                <input type="radio" id="answerRequiredNo" name="answerRequired" value="0" <?php echo $this->answerRequired?"":"checked"; ?> />
+                <label for="answerRequiredNo"><?php  echo get_lang('No'); ?></label>
+            </td>
+        </tr>
+	<?php endif;?>
 	<!-- SUBMIT -->
 	<tr>
 		<td>

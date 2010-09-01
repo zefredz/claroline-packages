@@ -7,12 +7,15 @@ class QuestionLine extends SurveyLine{
 	public $question;	
 	
 	public $maxCommentSize;
+
+    private $required;
 	
 	public function __construct($survey, $question)
 	{
 		parent::__construct($survey);
 		$this->question = $question;
-		$this->maxCommentSize = $survey->maxCommentSize;	
+		$this->maxCommentSize = $survey->maxCommentSize;
+        $this->required = true;
 	}
 	
 	static function __set_state($array)
@@ -47,6 +50,7 @@ class QuestionLine extends SurveyLine{
         	INSERT INTO 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."`
             SET 			`id`	 		= ".(int) $this->id.",
                     		`questionId` 	= ".(int) $this->question->id.",
+                            `required` 	= ".(int) $this->required.",
                     		`maxCommentSize` = ".(int) $this->maxCommentSize." ; ";
         // execute the creation query and get id of inserted assignment
         $dbCnx->exec($sqlInsertRel);        
@@ -60,6 +64,7 @@ class QuestionLine extends SurveyLine{
         $sqlUpdate = "
         	UPDATE 			`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."`
             SET       		`questionId` 		= ".(int) $this->question->id.",
+                            `required`          = ".(int) $this->required.",
                     		`maxCommentSize` 	= ".(int) $this->maxCommentSize." 
             WHERE 			`id`                = ".(int) $this->id." ; ";
         // execute the creation query and get id of inserted assignment
@@ -106,8 +111,16 @@ class QuestionLine extends SurveyLine{
     	$questionLineTpl->assign('editMode', $editMode);
     	return $questionLineTpl->render();
 	}
+
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    public function setRequired($required)
+    {
+        $this->required = $required;
+    }
 	
 	
 }
-
-?>

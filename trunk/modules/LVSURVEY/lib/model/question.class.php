@@ -359,7 +359,7 @@ class Question
 	{
 		$sql = "
         	DELETE 				C, O
-        	FROM 				`".SurveyConstants::$CHOICE_TBL."` AS C `
+        	FROM 				`".SurveyConstants::$CHOICE_TBL."` AS C 
         	INNER JOIN 			`".SurveyConstants::$OPTION_TBL."` AS O 
 	        ON 					C.`id` = O.`choiceId` 
         	WHERE 				C.`questionId` = ".(int)$this->id;

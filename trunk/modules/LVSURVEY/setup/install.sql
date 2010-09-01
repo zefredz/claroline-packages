@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
   `surveyId` 			INTEGER 										NOT NULL,
   `rank` 				INTEGER 										NULL,
   PRIMARY KEY  (`id`)
-  -- , UNIQUE(`surveyId`, `rank`) -- removes for allowing swapping lines
+  -- , UNIQUE(`surveyId`, `rank`) -- removed for allowing swapping lines
 );
 
 -- --------------------------------------------------------
@@ -51,6 +51,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
   `id` 					INTEGER 										NOT NULL,
   `questionId` 			INTEGER 										NOT NULL,
   `maxCommentSize`		INTEGER 										NOT NULL	DEFAULT 200,
+  `required`            TINYINT(1)                                      NULL DEFAULT  1,
   PRIMARY KEY  (`id`)
 );
 

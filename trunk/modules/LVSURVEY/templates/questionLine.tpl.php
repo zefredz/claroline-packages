@@ -20,15 +20,19 @@
 		<?php
 			if($this->editMode)
 			{ 
-				$urlMoveUp = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$this->surveyLine->id.'&amp;cmd=lineMoveUp';     		 
+				$urlMoveUp = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$surveyLine->id.'&amp;cmd=lineMoveUp';     		 
                 echo claro_html_link($urlMoveUp, $arrowUpIcon);
-                $urlMoveDown = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$this->surveyLine->id.'&amp;cmd=lineMoveDown';     		 
+                $urlMoveDown = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$surveyLine->id.'&amp;cmd=lineMoveDown';     		 
                 echo claro_html_link($urlMoveDown, $arrowDownIcon);
-                $urlEdit = 'edit_question.php?surveyId='.$surveyLine->survey->id.'&amp;questionId='.$question->id;
+                $urlEdit = 'edit_question.php?questionLineId='.$surveyLine->id.'&amp;surveyId='.$surveyLine->survey->id;
                 echo claro_html_link($urlEdit, $editIcon);
-                $urlRemove = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$this->surveyLine->id.'&amp;cmd=lineRemove';
+                $urlRemove = 'show_survey.php?surveyId='.$surveyLine->survey->id.'&amp;surveyLineId='.$surveyLine->id.'&amp;cmd=lineRemove';
 				echo claro_html_link($urlRemove, $deleteIcon);
 			}
+            if($surveyLine->isRequired())
+            {
+                echo '<span class="required">*</span>';
+            }
 			echo htmlspecialchars($question->text). ' ';
                 ?>
                 </div>

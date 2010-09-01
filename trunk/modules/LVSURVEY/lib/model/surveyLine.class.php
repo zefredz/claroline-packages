@@ -143,11 +143,11 @@ abstract class SurveyLine
         }
 
         //attention c'est parti pour le show
-        // l'id�e est de cr�er une vue temporaire en faisant une
+        // l'idee est de creer une vue temporaire en faisant une
         // jointure sur soi-meme.
         // si on essaie de swapper le row [id = 5, rank = 4] avec
         // le row [id = 12, rank = 5]
-        // il faut d'abord cr�er un resultset qui ressemble �
+        // il faut d'abord creer un resultset qui ressemble a
         //   id1    |     rank1      | id2    | rank2
         //--------------------------------------------
         //   5              4           12         5
@@ -175,10 +175,6 @@ abstract class SurveyLine
                 $surveyLine->rank = $ranks[0]['rank'];
 
         }
-
-
-
-
     }
 
     abstract public function render($editMode, $participation);
@@ -207,7 +203,8 @@ class SurveyLineFactory
     			SELECT          SL.`id` 				as surveyLineId,
 		    					SL.`rank`				as rank, 
 		    					SLQ.`maxCommentSize` 	as maxCommentSize, 
-		    					SLQ.`questionId`		as questionId, 
+		    					SLQ.`questionId`		as questionId,
+                                SLQ.`required`  		as required,
 		    					Q.`text`				as questionText, 
 		    					Q.`type`				as questionType,
 		    					SLS.`title`				as separatorTitle,
@@ -249,7 +246,8 @@ class SurveyLineFactory
                 'survey' 			=> $survey,
                 'rank'				=> $row['rank'],
                 'question' 			=> $question,
-                'maxCommentSize' 	=> $row['maxCommentSize']);
+                'maxCommentSize' 	=> $row['maxCommentSize'],
+                'required'          => $row['required']);
 
         return QuestionLine::__set_state($questionLineData);
     }
@@ -266,9 +264,11 @@ class SurveyLineFactory
     }
 
 
-    public static function createQuestionLine($survey,$question)
+    public static function createQuestionLine($survey,$question, $answerRequired = true)
     {
-        return new QuestionLine($survey,$question);
+        $res =  new QuestionLine($survey,$question);
+        $res->setRequired($answerRequired);
+        return $res;
     }
     public static function createSeparatorLine($survey,$title)
     {
