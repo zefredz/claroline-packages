@@ -151,4 +151,7 @@ $_lang['Message successfully sent'] = 'Le message a bien été envoyé';
 $_lang['Options'] = 'options';
 $_lang['Display comments'] = 'Afficher les commentaires';
 $_lang['Hide comments'] = 'Cacher les commentaires';
+$_lang['Answer required'] = 'Réponse obligatoire';
+$_lang['Cannot save participation, you might have forgotten required answers'] = 'La participation n\'a pu etre sauvée. Vous avez peut-être oublié des questions obligatoires';
+
 ?>

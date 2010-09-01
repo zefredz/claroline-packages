@@ -50,7 +50,11 @@ class ShowSurveyPage extends SurveyPage{
 		try
 			{
 				$participation = Participation::loadFromForm();
-        		$participation->save(); 
+        		if(!$participation->isValid())
+                {
+                    throw new Exception('Cannot save participation, you might have forgotten required answers');
+                }
+                $participation->save();
 				$this->redirectToResultsIfPossible();
         		parent::success('Participation saved');				
 			}

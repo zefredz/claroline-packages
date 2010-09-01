@@ -256,6 +256,29 @@ class Participation
     		DELETE FROM `".SurveyConstants::$PARTICIPATION_TBL."`
     		WHERE 		`id` = ".(int) $this->id."; "; 
     	Claroline::getDatabase()->exec($sql);
-    } 
+    }
+
+    public function isValid()
+    {
+        //check for required answers
+        $surveyLineList = $this->survey->getSurveyLineList();
+        foreach($surveyLineList as $surveyLine)
+        {
+            if( $surveyLine instanceof SeparatorLine) continue;
+            $check = $this->checkAnswerForSurveyLine($surveyLine->id);
+            if(!$check) return false;
+        }
+        return true;
+    }
+
+    private function checkAnswerForSurveyLine($surveyLineId)
+    {
+        $answerList = $this->getAnswerList();
+    	foreach($answerList as $answer)
+    	{
+    		if($answer->getSurveyLineId() == $surveyLineId) return $answer->isValid();
+    	}
+        return false;
+    }
 	
 }
