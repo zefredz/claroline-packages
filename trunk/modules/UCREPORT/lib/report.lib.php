@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.6 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.0.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -92,13 +92,16 @@ class Report
         $this->userList = array();
         $this->reportDataList = array();
         
-        $assignmentQueryResult = Claroline::getDatabase()->query( "
-            SELECT
-                id, title, visibility
-            FROM
-                `{$this->tbl['wrk_assignment']}`" );
+        if ( ! isset( $this->assignmentQueryResut ) )
+        {
+            $this->assignmentQueryResult = Claroline::getDatabase()->query( "
+                SELECT
+                    id, title, visibility
+                FROM
+                    `{$this->tbl['wrk_assignment']}`" );
+        }
         
-        foreach( $assignmentQueryResult as $line )
+        foreach( $this->assignmentQueryResult as $line )
         {
             $is_visible = $line[ 'visibility' ] == self::VISIBLE;
             $this->assignmentDataList[ $line[ 'id' ] ][ 'title' ] = $line[ 'title' ];
@@ -127,39 +130,42 @@ class Report
             }
         }
         
-        $dataQueryResult = Claroline::getDatabase()->query( "
-            SELECT
-                S1.id,
-                S1.user_id,
-                U.prenom AS firstname,
-                U.nom AS lastname,
-                S1.assignment_id,
-                A.title,
-                S2.score,
-                S2.creation_date
-            FROM
-                `{$this->tbl_names['user']}` AS U,
-                `{$this->tbl['wrk_assignment']}` AS A,
-                `{$this->tbl['wrk_submission']}` AS S2,
-                `{$this->tbl['wrk_submission']}` AS S1
-            LEFT JOIN
-                `{$this->tbl['group_rel_team_user']}` AS R
-            ON
-                R.team = S1.group_id
-            AND
-                R.user = S1.user_id
-            WHERE
-                U.user_id = S1.user_id
-            AND
-                A.id = S1.assignment_id
-            AND
-                S2.parent_id = S1.id
-            AND
-                S2.score >= 0
-            ORDER BY
-                U.nom, U.prenom, S2.creation_date DESC" );
+        if ( ! isset( $this->dataQueryResult ) )
+        {
+            $this->dataQueryResult = Claroline::getDatabase()->query( "
+                SELECT
+                    S1.id,
+                    S1.user_id,
+                    U.prenom AS firstname,
+                    U.nom AS lastname,
+                    S1.assignment_id,
+                    A.title,
+                    S2.score,
+                    S2.creation_date
+                FROM
+                    `{$this->tbl_names['user']}` AS U,
+                    `{$this->tbl['wrk_assignment']}` AS A,
+                    `{$this->tbl['wrk_submission']}` AS S2,
+                    `{$this->tbl['wrk_submission']}` AS S1
+                LEFT JOIN
+                    `{$this->tbl['group_rel_team_user']}` AS R
+                ON
+                    R.team = S1.group_id
+                AND
+                    R.user = S1.user_id
+                WHERE
+                    U.user_id = S1.user_id
+                AND
+                    A.id = S1.assignment_id
+                AND
+                    S2.parent_id = S1.id
+                AND
+                    S2.score >= 0
+                ORDER BY
+                    U.nom, U.prenom, S2.creation_date DESC" );
+        }
         
-        foreach( $dataQueryResult as $line )
+        foreach( $this->dataQueryResult as $line )
         {
             if ( isset( $this->assignmentDataList[ $line[ 'assignment_id' ] ] )
                  && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ] )
