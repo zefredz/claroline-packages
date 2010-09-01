@@ -601,8 +601,10 @@ class Report
                 $this->userList[ $userId ][ 'active' ] = isset( $this->userList[ $userId ][ 'final_score' ] );
             }
             
-            return unlink( $this->activeUserListFileUrl );
+            unlink( $this->activeUserListFileUrl );
         }
+        
+        return ! file_exists( $this->activeUserListFileUrl );
     }
     
     /**
