@@ -213,20 +213,6 @@ class Report
             }
         }
         
-        foreach( $this->assignmentDataList as $assignmentId => $assignment )
-        {
-            if ( $assignment[ 'submission_count' ] )
-            {
-                $average = round( $this->assignmentDataList[ $assignmentId ][ 'average' ]
-                            / $assignment[ 'submission_count' ] , 1 );
-                $this->assignmentDataList[ $assignmentId ][ 'average' ] = $average;
-            }
-            else
-            {
-                unset( $this->assignmentDataList[ $assignmentId ][ 'average' ] );
-            }
-        }
-        
         $this->setProportionalWeight();
         
         foreach( $this->reportDataList as $userId => $userReport )
@@ -264,9 +250,24 @@ class Report
                         if ( ! isset( $this->reportDataList[ $userId ][ $assignmentId ] ) )
                         {
                             $this->reportDataList[ $userId ][ $assignmentId ] = 0;
+                            $this->assignmentDataList[ $assignmentId ][ 'submission_count' ]++;
                         }
                     }
                 }
+            }
+        }
+        
+        foreach( $this->assignmentDataList as $assignmentId => $assignment )
+        {
+            if ( $assignment[ 'submission_count' ] )
+            {
+                $average = round( $this->assignmentDataList[ $assignmentId ][ 'average' ]
+                            / $assignment[ 'submission_count' ] , 1 );
+                $this->assignmentDataList[ $assignmentId ][ 'average' ] = $average;
+            }
+            else
+            {
+                unset( $this->assignmentDataList[ $assignmentId ][ 'average' ] );
             }
         }
         
@@ -589,17 +590,18 @@ class Report
     
     /**
      * Resets the active users list
+     * @return boolean true if process is successful
      */
     public function resetActiveUserList()
     {
         if ( file_exists( $this->activeUserListFileUrl ) )
         {
-            unlink( $this->activeUserListFileUrl );
-            
             foreach( $this->userList as $userId => $data )
             {
                 $this->userList[ $userId ][ 'active' ] = isset( $this->userList[ $userId ][ 'final_score' ] );
             }
+            
+            return unlink( $this->activeUserListFileUrl );
         }
     }
     
@@ -617,7 +619,14 @@ class Report
                                                     , 'weight' => $assignmentData[ 'weight' ] );
         }
         
-        return create_file( $this->assignmentListFileUrl , serialize( $assignmentList ) );
+        if ( create_file( $this->assignmentListFileUrl , serialize( $assignmentList ) ) )
+        {
+            return $this->resetActiveUserList();
+        }
+        else
+        {
+            throw new Exception( 'Cannont save assignments datas' );
+        }
     }
     
     /**
