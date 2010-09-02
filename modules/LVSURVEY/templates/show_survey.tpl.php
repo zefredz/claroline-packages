@@ -9,6 +9,7 @@ $editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify')
 $currentUserId = claro_get_current_user_id();
 $participation = $this->participation;
 $surveyLineList = $this->survey->getSurveyLineList();
+$allowChange = $participation->isNew() || $this->survey->isAllowedToChangeAnswers();
 
 usort($surveyLineList, array('SurveyLine', 'cmp_surveyLines'));
 
@@ -72,12 +73,14 @@ echo $infoBox->render();
             <?php echo get_lang('No question in this survey'); ?>
         <?php else :?>
             <?php foreach($surveyLineList as $surveyLine) :?>
-                <?php echo $surveyLine->render($this->editMode, $participation); ?>
+                <?php echo $surveyLine->render($this->editMode, $participation, $allowChange); ?>
             <?php endforeach;?>
         <?php endif; ?>
     </div>
     <?php  if(!$this->survey->hasEnded()) : ?>
-    <input type="submit" value="<?php echo get_lang('Submit'); ?>" />
+    <?php if($allowChange) : ?>
+        <input type="submit" value="<?php echo get_lang('Submit'); ?>" />
+    <?php endif; ?>
 </form>
 <?php endif; ?>
 

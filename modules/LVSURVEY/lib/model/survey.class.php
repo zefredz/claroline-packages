@@ -55,6 +55,8 @@ class Survey {
     //map userID to answer
     protected $participationList;
 
+    private $allowChangeAnswers;
+
     public function __construct($courseId)
     {
         $this->id = -1;
@@ -63,6 +65,7 @@ class Survey {
         $this->description = '';
         $this->is_anonymous = true;
         $this->is_visible = false;
+        $this->allowChangeAnswers = true;
         $this->resultsVisibility = 'INVISIBLE';
         $this->startDate = time();
         $nextMonth = strtotime( "+1 month" );
@@ -112,6 +115,7 @@ class Survey {
                    `description`					AS description,
                    `is_anonymous` 					AS is_anonymous,
                    `is_visible`						AS is_visible,
+                   `allow_change_answers`			AS allowChangeAnswers,
                    `resultsVisibility`				AS resultsVisibility,
                    `maxCommentSize`					AS maxCommentSize,
                    `rank`							AS rank,
@@ -144,10 +148,11 @@ class Survey {
     	{
 	    	$formId = (string)$userInput->getMandatory('surveyId');  
 	    	$formTitle = (string)$userInput->getMandatory('surveyTitle');
-	    	$formIsAnonymous = $userInput->getMandatory('surveyAnonymous');
+	    	$formIsAnonymous = (string)$userInput->getMandatory('surveyAnonymous');
 	    	$formDescription = (string)$userInput->getMandatory('surveyDescription');
 	    	$formResultsVisibility = (string)$userInput->getMandatory('surveyResultsVisibility');
 	    	$formMaxCommentSize = (int)$userInput->getMandatory('maxCommentSize');
+            $formAllowChangeAnswers = (string)$userInput->getMandatory('surveyAllowChangeAnswers');
     	}
     	catch(Claro_Validator_Exception $e)
     	{
@@ -170,7 +175,7 @@ class Survey {
 		if($formId == -1)
 		{			
 			// we can never override anonimity
-    		$survey->is_anonymous = ('true' == $formIsAnonymous ? true : false);
+    		$survey->is_anonymous = ('true' == $formIsAnonymous);
 			
 		}
 		else 
@@ -184,6 +189,7 @@ class Survey {
 		$survey->startDate = DateValidator::getInstance()->getTimeStamp($formStartDate);
 		$survey->endDate = DateValidator::getInstance()->getTimeStamp($formEndDate);
 		$survey->maxCommentSize = $formMaxCommentSize;
+        $survey->allowChangeAnswers = ('true' == $formAllowChangeAnswers);
 		
 		return $survey;
             
@@ -200,6 +206,7 @@ class Survey {
                    		`description`					AS description,
                    		`is_anonymous`					AS is_anonymous,
                    		`is_visible`					AS is_visible,
+                        `allow_change_answers`			AS allowChangeAnswers,
                    		`resultsVisibility`				AS resultsVisibility,
                    		`maxCommentSize`				AS maxCommentSize,
                    		`rank`							AS rank, 
@@ -328,6 +335,7 @@ class Survey {
                     `description` 			= ".$dbCnx->quote($this->description).",
                     `is_anonymous` 			= ".($this->is_anonymous?1:0).",
                     `is_visible` 			= ".($this->is_visible?1:0).",
+                    `allow_change_answers`  = ".($this->allowChangeAnswers?1:0).",
                     `resultsVisibility` 	= ".$dbCnx->quote($this->resultsVisibility).",
                     `maxCommentSize`		= ".(int) $this->maxCommentSize.", 
                     `startDate` = ".(is_null($this->startDate)?"NULL":"FROM_UNIXTIME(".$this->startDate.")").",
@@ -355,9 +363,10 @@ class Survey {
         	UPDATE 	`".SurveyConstants::$SURVEY_TBL."`
             SET 	`title` 				= ".$dbCnx->quote($this->title).",
                     `description` 			= ".$dbCnx->quote($this->description).", 
-                   	`is_visible` 			= ".$dbCnx->quote($this->is_visible).",
+                   	`is_visible` 			= ".($this->is_visible?1:0).",
                     `resultsVisibility` 	= ".$dbCnx->quote($this->resultsVisibility).",
-                    `maxCommentSize`		= ".$dbCnx->quote($this->maxCommentSize).", 
+                    `maxCommentSize`		= ".$dbCnx->quote($this->maxCommentSize).",
+                    `allow_change_answers`  = ".($this->allowChangeAnswers?1:0).",
                     `startDate` = ".(is_null($this->startDate)?"NULL":"FROM_UNIXTIME(".$this->startDate.")").",
                     `endDate` = ".(is_null($this->endDate)?"NULL":"FROM_UNIXTIME(".$this->endDate.")")." 
             WHERE 	`id` = ".(int)$this->id ;
@@ -562,6 +571,16 @@ class Survey {
     {
     	if(0 == $this->startDate) return false;
     	return $this->startDate < time();    	
+    }
+
+    public function isAllowedToChangeAnswers()
+    {
+        return $this->allowChangeAnswers;
+    }
+
+    public function setAllowToChangeAnswers($allowed)
+    {
+        $this->allowChangeAnswers = $allowed;
     }
 
     

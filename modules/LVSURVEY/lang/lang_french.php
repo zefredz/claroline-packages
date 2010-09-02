@@ -153,5 +153,5 @@ $_lang['Display comments'] = 'Afficher les commentaires';
 $_lang['Hide comments'] = 'Cacher les commentaires';
 $_lang['Answer required'] = 'Réponse obligatoire';
 $_lang['Cannot save participation, you might have forgotten required answers'] = 'La participation n\'a pu etre sauvée. Vous avez peut-être oublié des questions obligatoires';
-
+$_lang['Allow users to change their answer until the survey is closed'] = 'Autoriser les utilisateurs à changer leur(s) réponse(s) tant que le sondage est actif'
 ?>

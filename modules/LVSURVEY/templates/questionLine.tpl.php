@@ -38,10 +38,16 @@
                 </div>
 	<div class="LVSURVEYQuestionContent">
 		<?php if ('OPEN' == $question->type) : ?>
-			<textarea name="choiceText<?php  echo $surveyLine->id; ?>" id="choiceText<?php  echo $surveyLine->id; ?>" rows="3" cols="40"><?php 
-            		$answerText = empty($selectedChoiceList)?'':reset($selectedChoiceList)->text;
-            		echo htmlspecialchars($answerText);
-            	?></textarea>
+			<textarea
+                name="choiceText<?php  echo $surveyLine->id; ?>"
+                id="choiceText<?php  echo $surveyLine->id; ?>"
+                rows="3"
+                cols="40"
+                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+                ><?php
+                        $answerText = empty($selectedChoiceList)?'':reset($selectedChoiceList)->text;
+                        echo htmlspecialchars($answerText);
+                    ?></textarea>
 		<?php endif; ?>
 		<?php if ('MCSA' == $question->type) : ?>
 			<ul>
@@ -52,7 +58,8 @@
 								value="<?php  echo $choice->id; ?>" 
 								id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>"
 								<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> 
-						/>
+                                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+                        />
                         <label 	for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
@@ -69,7 +76,8 @@
 								value="<?php  echo $choice->id; ?>" 
 								id="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>"
 								<?php echo in_array($choice->id, array_map(array('Functions', 'idOf'),$selectedChoiceList))?'checked="checked"':''; ?> 
-						/>
+                                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+                        />
                         <label for="choiceId<?php  echo $surveyLine->id; ?>[]_<?php  echo $choice->id; ?>">
                         	<?php echo htmlspecialchars($choice->text); ?>
                         </label>
@@ -90,7 +98,8 @@
 										type="radio" 
 										value="<?php  echo $option->getId(); ?>" 
 										id="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>_optionId<?php  echo $option->getId(); ?>"
-										<?php echo in_array($option->getId(), array_map(array('Functions', 'idOf'),$selectedOptionList))?'checked="checked"':''; ?> 
+										<?php echo in_array($option->getId(), array_map(array('Functions', 'idOf'),$selectedOptionList))?'checked="checked"':''; ?>
+                                        <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
 								/>
 		                        <label 	for="choiceId<?php  echo $surveyLine->id; ?>_<?php  echo $choice->id; ?>_optionId<?php  echo $option->getId(); ?>">
 		                        	<?php echo htmlspecialchars($option->getText()); ?>
@@ -117,11 +126,22 @@
         <?php echo get_lang('Comment'); ?> : 
         <?php if ($surveyLine->maxCommentSize == 0) : ?>
         	<?php echo get_lang('No Comments'); ?>
-        	<input type="hidden"name="answerComment<?php echo $surveyLine->id; ?>" 
-        		value="<?php echo $answer->comment; ?>" />
+        	<input 
+                type="hidden"
+                name="answerComment<?php echo $surveyLine->id; ?>"
+        		value="<?php echo $answer->comment; ?>"
+                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+            />
         <?php else : ?>
-        	<input maxlength="<?php echo $surveyLine->maxCommentSize; ?>" type="text" size="70" name="answerComment<?php echo $surveyLine->id; ?>" id="answerComment<?php echo $surveyLine->id; ?>"
-        		value="<?php echo $answer->comment; ?>" />
+        	<input
+                maxlength="<?php echo $surveyLine->maxCommentSize; ?>"
+                type="text"
+                size="70"
+                name="answerComment<?php echo $surveyLine->id; ?>"
+                id="answerComment<?php echo $surveyLine->id; ?>"
+        		value="<?php echo $answer->comment; ?>"
+                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+            />
         	<span id="commentCharLeft<?php echo $surveyLine->id; ?>" class="commentCharLeft"></span>
         	<?php echo get_lang('char(s) left'); ?>
         <?php endif;?>        			

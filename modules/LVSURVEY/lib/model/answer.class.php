@@ -348,11 +348,13 @@ class Answer
             if(sizeof($selectedOptionList) != $expectedChoiceCount) return false;
         }
 
-        if($questionLine->question->type == 'MCMA' || $questionLine->question->type == 'MCSA' )
+        if( $questionLine->question->type == 'MCSA' )
         {
             $selectedChoiceList = $this->getSelectedChoiceList();
             if(empty($selectedChoiceList))return false;
         }
+
+        //NOTHING TO CHECK FOR MCMA
         return true;
 
     }

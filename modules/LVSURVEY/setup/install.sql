@@ -5,12 +5,13 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey` (
   `title` 				VARCHAR(255) 									NOT NULL,
   `description` 		TEXT 											NOT NULL,
   `is_anonymous`		TINYINT(1) 										NOT NULL 	DEFAULT 0,
-  `is_visible` 		TINYINT(1) 										NOT NULL 	DEFAULT 0,
+  `is_visible`          TINYINT(1) 										NOT NULL 	DEFAULT 0,
   `resultsVisibility` 	ENUM('VISIBLE','INVISIBLE','VISIBLE_AT_END') 	NOT NULL 	DEFAULT 'INVISIBLE',
   `startDate` 			DATETIME 										NULL,
   `endDate` 			DATETIME										NULL,
   `rank` 				INTEGER 										NULL,
   `maxCommentSize` 		INTEGER 										NOT NULL 	DEFAULT 200,
+  `allow_change_answers` TINYINT(1)                                     NULL DEFAULT 1,
   PRIMARY KEY  (`id`)
 ) ;
 
