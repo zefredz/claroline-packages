@@ -49,7 +49,7 @@ if($this->survey->isAnswered()){
          <?php else : ?>
          	<?php echo ($this->survey->is_anonymous?get_lang('Yes'):get_lang('No')); ?>
          	<input type="hidden" name="surveyAnonymous" id="surveyAnonymous" 
-                value="<?php echo ($this->survey->is_anonymous?'true" ':'false'); ?>" />
+                value="<?php echo ($this->survey->is_anonymous?'true':'false'); ?>" />
          <?php endif; ?>
          </td>
      </tr>
@@ -139,9 +139,8 @@ if($this->survey->isAnswered()){
      <!--  COMMENT SIZE  --> 
      <tr>
          <td valign="top">
-             <label for="maxCommentSize"><?php echo get_lang('Comment size'); ?>&nbsp;
+             <?php echo get_lang('Comment size'); ?>&nbsp;
                  <span class="required">*</span>&nbsp;:
-             </label>
          </td>
          <td>
              <input type="radio" name="maxCommentSize" value="0" 
