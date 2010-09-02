@@ -101,6 +101,22 @@ if($this->survey->isAnswered()){
              
          </td>
      </tr>
+     <!--  ALLOW PARTICIPANTS TO CHANGE THEIR ANSWERS  -->
+     <tr>
+         <td valign="top">
+             <?php echo get_lang('Allow users to change their answer until the survey is closed'); ?>
+         </td>
+         <td>
+             <input type="radio" name="surveyAllowChangeAnswers" id="surveyAllowChangeAnswersYes" value="true"
+                <?php echo ($this->survey->isAllowedToChangeAnswers()?'checked="checked" ':''); ?>
+            />
+             <label for="surveyAllowChangeAnswersYes"><?php echo get_lang('Yes'); ?></label>
+             <input type="radio" name="surveyAllowChangeAnswers" id="surveyAllowChangeAnswersNo" value="false"
+                <?php echo ($this->survey->isAllowedToChangeAnswers()?'':'checked="checked"'); ?>
+            />
+             <label for="surveyAllowChangeAnswersNo"><?php echo get_lang('No'); ?></label>
+         </td>
+     </tr>
      <!--  RESULTS VISIBILITY  --> 
      <tr>
          <td valign="top">

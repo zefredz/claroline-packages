@@ -74,7 +74,7 @@ class EditSurveyPage extends SurveyPage{
 			$survey = Survey::loadFromForm(claro_get_current_course_id());			
 			$survey->save();
 			parent::setSurvey($survey);
-        	parent::success('Survey saved');
+        	parent::success(get_lang("Survey has been saved")."!");
         	$this->showSuccessBox = true;				
 		}
 		catch(Exception $e)

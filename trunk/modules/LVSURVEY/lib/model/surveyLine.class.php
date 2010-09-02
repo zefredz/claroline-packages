@@ -177,7 +177,7 @@ abstract class SurveyLine
         }
     }
 
-    abstract public function render($editMode, $participation);
+    abstract public function render($editMode, $participation, $allowChange = true);
 
 
 

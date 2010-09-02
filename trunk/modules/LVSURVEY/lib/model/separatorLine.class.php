@@ -92,11 +92,12 @@ class SeparatorLine extends SurveyLine
         $dbCnx->exec($sql);
     }
 
-    public function render($editMode, $participation)
+    public function render($editMode, $participation, $allowChange = true)
     {
         $separatorLineTpl = new PhpTemplate(get_module_path('LVSURVEY').'/templates/separatorLine.tpl.php');
         $separatorLineTpl->assign('surveyLine', $this);
         $separatorLineTpl->assign('editMode', $editMode);
+        $separatorLineTpl->assign('allowChange', $allowChange);
         return $separatorLineTpl->render();
     }
 

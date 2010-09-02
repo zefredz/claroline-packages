@@ -103,12 +103,13 @@ class QuestionLine extends SurveyLine{
 	    
 	    $dbCnx->exec($sql);
 	}
-	public function render($editMode, $participation)
+	public function render($editMode, $participation, $allowChange = true)
 	{
 		$questionLineTpl = new PhpTemplate(get_module_path('LVSURVEY').'/templates/questionLine.tpl.php');
     	$questionLineTpl->assign('surveyLine', $this);
 		$questionLineTpl->assign('participation', $participation);
     	$questionLineTpl->assign('editMode', $editMode);
+        $questionLineTpl->assign('allowChange', $allowChange);
     	return $questionLineTpl->render();
 	}
 

@@ -280,5 +280,10 @@ class Participation
     	}
         return false;
     }
+
+    public function isNew()
+    {
+        return $this->id <= 0;
+    }
 	
 }
