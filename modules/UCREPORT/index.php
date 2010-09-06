@@ -245,7 +245,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
             }
             else
             {
-                $pageTitle[ 'subTitle' ] = get_lang( 'Current datas' );
+                $pageTitle[ 'subTitle' ] = get_lang( 'Gathering datas' );
             }
             
             $reportView = new PhpTemplate( dirname( __FILE__ ) . '/templates/report.tpl.php' );

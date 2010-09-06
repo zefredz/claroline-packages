@@ -18,6 +18,7 @@ $_lang['Average'] = 'Moyenne';
 $_lang['Back to the report'] = 'Retour au bulletin';
 $_lang['Back to the report list'] = 'Retour à la liste des bulletins';
 $_lang['Create a new report'] = 'Créer un nouveau bulletin';
+$_lang['Gathering datas'] = 'Récupération des données';
 $_lang['Do you really want to delete this report?'] = 'Etes-vous sûr de vouloir supprimer ce bulletin?';
 $_lang['empty'] = 'vide';
 $_lang['Edit examination scores'] = 'Modifier les notes d\'examen';
