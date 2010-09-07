@@ -98,14 +98,22 @@ class subscription
    */
   public function save()
   {
+    $visibilityFrom = isset( $this->visibilityFrom )
+                    ? (int) Claroline::getDatabase()->escape( $this->visibilityFrom )
+                    : Claroline::getDatabase()->quote( '' );
+                    
+    $visibilityTo = isset( $this->visibilityTo )
+                    ? (int) Claroline::getDatabase()->escape( $this->visibilityTo )
+                    : Claroline::getDatabase()->quote( '' );
+                    
     $query_fields = "`title` = '" . Claroline::getDatabase()->escape( $this->title ) . "',
                     `description` = '" . Claroline::getDatabase()->escape( $this->description ) . "',
                     `context` = '" . Claroline::getDatabase()->escape( $this->context ) ."',
                     `type` = '" . Claroline::getDatabase()->escape( $this->type ) . "',
                     `modifiable` = '" . Claroline::getDatabase()->escape( $this->modifiable ) . "',
                     `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "',
-                    " . ( ! is_null( $this->visibilityFrom ) ? "`visibilityFrom` = " . (int) Claroline::getDatabase()->escape( $this->visibilityFrom ) . "," : '' ) . "
-                    " . ( ! is_null( $this->visibilityTo ) ? "`visibilityTo` = " . (int) Claroline::getDatabase()->escape( $this->visibilityTo ) . "," : '' ) . "
+                    `visibilityFrom` = '" . $visibilityFrom . "',
+                    `visibilityTo`= '" . $visibilityTo . "',
                     `lock` = '" . Claroline::getDatabase()->escape( $this->lock ) . "'";
     
     // New subscription

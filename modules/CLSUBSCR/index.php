@@ -910,6 +910,11 @@ try
                                           );
                         $subscription->setVisibilityFrom( $fromDate );
                     }
+                    else
+                    {
+                        $subscription->setVisibilityFrom( 0 );
+                    }
+                    
                     if( (int) $userInput->get( 'visibilityTo' ) == 1 )
                     {
                         $toDate = claro_mktime( $userInput->get( 'visibilityToHour' ),
@@ -920,6 +925,10 @@ try
                                             $userInput->get( 'visibilityToYear')
                                           );
                         $subscription->setVisibilityTo( $toDate );
+                    }
+                    else
+                    {
+                        $subscription->setVisibilityTo( 0 );
                     }
                     
                     if( $subscription->validate() )
