@@ -100,11 +100,11 @@ class subscription
   {
     $visibilityFrom = isset( $this->visibilityFrom )
                     ? (int) Claroline::getDatabase()->quote( $this->visibilityFrom )
-                    : 'null';
+                    : 'NULL';
                     
     $visibilityTo = isset( $this->visibilityTo )
                     ? (int) Claroline::getDatabase()->quote( $this->visibilityTo )
-                    : 'null';
+                    : 'NULL';
                     
     $query_fields = "`title` = " . Claroline::getDatabase()->quote( $this->title ) . ",
                     `description` = " . Claroline::getDatabase()->quote( $this->description ) . ",
