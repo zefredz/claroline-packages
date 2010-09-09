@@ -99,22 +99,22 @@ class subscription
   public function save()
   {
     $visibilityFrom = isset( $this->visibilityFrom )
-                    ? (int) Claroline::getDatabase()->escape( $this->visibilityFrom )
-                    : Claroline::getDatabase()->quote( '' );
+                    ? (int) Claroline::getDatabase()->quote( $this->visibilityFrom )
+                    : 'null';
                     
     $visibilityTo = isset( $this->visibilityTo )
-                    ? (int) Claroline::getDatabase()->escape( $this->visibilityTo )
-                    : Claroline::getDatabase()->quote( '' );
+                    ? (int) Claroline::getDatabase()->quote( $this->visibilityTo )
+                    : 'null';
                     
-    $query_fields = "`title` = '" . Claroline::getDatabase()->escape( $this->title ) . "',
-                    `description` = '" . Claroline::getDatabase()->escape( $this->description ) . "',
-                    `context` = '" . Claroline::getDatabase()->escape( $this->context ) ."',
-                    `type` = '" . Claroline::getDatabase()->escape( $this->type ) . "',
-                    `modifiable` = '" . Claroline::getDatabase()->escape( $this->modifiable ) . "',
-                    `visibility` = '" . Claroline::getDatabase()->escape( $this->visibility ) . "',
-                    `visibilityFrom` = '" . $visibilityFrom . "',
-                    `visibilityTo`= '" . $visibilityTo . "',
-                    `lock` = '" . Claroline::getDatabase()->escape( $this->lock ) . "'";
+    $query_fields = "`title` = " . Claroline::getDatabase()->quote( $this->title ) . ",
+                    `description` = " . Claroline::getDatabase()->quote( $this->description ) . ",
+                    `context` = " . Claroline::getDatabase()->quote( $this->context ) .",
+                    `type` = " . Claroline::getDatabase()->quote( $this->type ) . ",
+                    `modifiable` = " . Claroline::getDatabase()->quote( $this->modifiable ) . ",
+                    `visibility` = " . Claroline::getDatabase()->quote( $this->visibility ) . ",
+                    `visibilityFrom` = " . $visibilityFrom . ",
+                    `visibilityTo`= " . $visibilityTo . ",
+                    `lock` = " . Claroline::getDatabase()->quote( $this->lock );
     
     // New subscription
     if( is_null( $this->id ) )
