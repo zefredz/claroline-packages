@@ -73,88 +73,79 @@ try
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
     
-    switch( $cmd )
+    if( $subscrId && $result = checkRequestSubscription( $subscription, $dialogBox ) )
     {
-        case 'exSlotVisible' :
+        $out .= $result;
+    }
+    else
+    {
+        switch( $cmd )
+        {
+            case 'exSlotVisible' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( ! isset( $_REQUEST['slotId'] ) )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
+                    $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                    
+                    $out .= $dialogBox->render();
                 }
                 else
                 {
-                    if( ! isset( $_REQUEST['slotId'] ) )
+                    $slot = new slot();
+                    if( ! $slot->load( $_REQUEST['slotId'] ) )
                     {
-                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
                         $out .= $dialogBox->render();
                     }
                     else
                     {
-                        $slot = new slot();
-                        if( ! $slot->load( $_REQUEST['slotId'] ) )
+                        if( $slot->isVisible() )
                         {
-                            $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
+                            $slot->setVisibility( 'invisible' );
                             
-                            $out .= $dialogBox->render();
-                        }
-                        else
-                        {
-                            if( $slot->isVisible() )
+                            if( ! $slot->save() )
                             {
-                                $slot->setVisibility( 'invisible' );
-                                
-                                if( ! $slot->save() )
-                                {
-                                    $dialogBox->error( get_lang( 'Unable to change the visibility of the slot.' ) );
-                                }
-                                else
-                                {
-                                    $dialogBox->success( get_lang( 'The slot is now invisible.' ) );
-                                }
+                                $dialogBox->error( get_lang( 'Unable to change the visibility of the slot.' ) );
                             }
                             else
                             {
-                                $slot->setVisibility( 'visible' );
-                                
-                                if( ! $slot->save() )
-                                {
-                                    $dialogBox->error( get_lang( 'Unable to change the visibility of the slot.' ) );
-                                }
-                                else
-                                {
-                                    $dialogBox->success( get_lang( 'The slot is now visible.' ) );
-                                }
+                                $dialogBox->success( get_lang( 'The slot is now invisible.' ) );
                             }
-                            $out .= $dialogBox->render();
-                            
-                            $slotsCollection = new slotsCollection();
-                        
-                            $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                            
-                            $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
-                            $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
-                            $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                                $allSlots,
-                                                                                $allSlotsFromUsers
-                                                                                );
                         }
+                        else
+                        {
+                            $slot->setVisibility( 'visible' );
+                            
+                            if( ! $slot->save() )
+                            {
+                                $dialogBox->error( get_lang( 'Unable to change the visibility of the slot.' ) );
+                            }
+                            else
+                            {
+                                $dialogBox->success( get_lang( 'The slot is now visible.' ) );
+                            }
+                        }
+                        $out .= $dialogBox->render();
+                        
+                        $slotsCollection = new slotsCollection();
+                    
+                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                        
+                        $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                        $out .= SubscriptionsRenderer::displaySubscription( $subscription,
+                                                                            $allSlots,
+                                                                            $allSlotsFromUsers
+                                                                            );
                     }
                 }
             }
             break;
-        case 'exSlotChoice' :
+            
+            case 'exSlotChoice' :
             {
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                elseif( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
+                if( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
                 {
                     $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();
@@ -251,13 +242,10 @@ try
                 }
             }
             break;
-        case 'rqSlotChoice' :
+            
+            case 'rqSlotChoice' :
             {
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                elseif( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
+                if( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
                 {
                     $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();
@@ -277,75 +265,60 @@ try
                 }
             }
             break;
-        case 'exSlotDelete' :
+            
+            case 'exSlotDelete' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( ! isset( $_REQUEST['slotId'] ) )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
+                    $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                    
+                    $out .= $dialogBox->render();
                 }
                 else
                 {
-                    if( ! isset( $_REQUEST['slotId'] ) )
+                    $slot = new slot();
+                    if( ! $slot->load( $_REQUEST['slotId'] ) )
                     {
-                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
                         $out .= $dialogBox->render();
                     }
                     else
                     {
-                        $slot = new slot();
-                        if( ! $slot->load( $_REQUEST['slotId'] ) )
+                        if( ( $totalSubscribers = $slot->totalSubscribers() ) > 0 && ! ( isset( $_GET['confirmDelete'] ) ) )
                         {
-                            $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
+                            //Warning if the total of Subsctibers for this slot is not 0
+                            $dialogBox->warning( get_lang( 'There are %totalSubscribers subsctibers registered to this slot. Do you confirm you want to delete the slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong> ?', array( '%totalSubscribers' => $totalSubscribers, '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) )
+                            .     '<br /><br />'
+                            .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exSlotDelete&amp;confirmDelete=1&amp;slotId=' . $slot->getId() . '&amp;subscrId=' . $subscription->getId() . claro_url_relay_context( '&' ) . '">' . get_lang('Yes') . '</a>'
+                            .    '&nbsp;|&nbsp;'
+                            .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>' );
                             
                             $out .= $dialogBox->render();
                         }
                         else
                         {
-                            if( ( $totalSubscribers = $slot->totalSubscribers() ) > 0 && ! ( isset( $_GET['confirmDelete'] ) ) )
+                            //Delete the slot
+                            if( ! $slot->delete() )
                             {
-                                //Warning if the total of Subsctibers for this slot is not 0
-                                $dialogBox->warning( get_lang( 'There are %totalSubscribers subsctibers registered to this slot. Do you confirm you want to delete the slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong> ?', array( '%totalSubscribers' => $totalSubscribers, '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) )
-                                .     '<br /><br />'
-                                .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exSlotDelete&amp;confirmDelete=1&amp;slotId=' . $slot->getId() . '&amp;subscrId=' . $subscription->getId() . claro_url_relay_context( '&' ) . '">' . get_lang('Yes') . '</a>'
-                                .    '&nbsp;|&nbsp;'
-                                .    '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang('No') . '</a>' );
+                                $dialogBox->error( get_lang( 'Unable to delete the slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong>.', array( '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) ) );
                                 
                                 $out .= $dialogBox->render();
                             }
                             else
                             {
-                                //Delete the slot
-                                if( ! $slot->delete() )
-                                {
-                                    $dialogBox->error( get_lang( 'Unable to delete the slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong>.', array( '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) ) );
-                                    
-                                    $out .= $dialogBox->render();
-                                }
-                                else
-                                {
-                                    $dialogBox->success( get_lang( 'Slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong> deleted successfully.', array( '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) ) );
-                                    
-                                    $out .= $dialogBox->render();
-                                }
+                                $dialogBox->success( get_lang( 'Slot <strong>%slotTitle</strong> in session <strong>%sessionTitle</strong> deleted successfully.', array( '%slotTitle' => $slot->getTitle(), '%sessionTitle' => $subscription->getTitle() ) ) );
+                                
+                                $out .= $dialogBox->render();
                             }
                         }
                     }
                 }
             }
             break;
-        case 'rqSlotDelete' :
+            
+            case 'rqSlotDelete' :
             {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -375,52 +348,75 @@ try
                 }
             }
             break;
-        case 'exSlotEdit' :
+            
+            case 'exSlotEdit' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( ! isset( $_REQUEST['slotId'] ) )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
+                    $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                    
+                    $out .= $dialogBox->render();
                 }
                 else
                 {
-                    if( ! isset( $_REQUEST['slotId'] ) )
+                    $slot = new slot();
+                    if( ! $slot->load( $_REQUEST['slotId'] ) )
                     {
-                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
                         $out .= $dialogBox->render();
                     }
                     else
                     {
-                        $slot = new slot();
-                        if( ! $slot->load( $_REQUEST['slotId'] ) )
+                        if( ! ( isset( $_POST['title'] ) && isset( $_POST['description'] ) && isset( $_POST['places'] ) ) )
                         {
-                            $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
-                            
+                            $dialogBox->error( get_lang( 'Unable to save this slot.' ) );
+                        
                             $out .= $dialogBox->render();
                         }
                         else
                         {
-                            if( ! ( isset( $_POST['title'] ) && isset( $_POST['description'] ) && isset( $_POST['places'] ) ) )
+                            $slot->setTitle( $_POST['title'] )
+                            ->setDescription( $_POST['description'] )
+                            ->setAvailableSpace( $_POST['places'] );
+                            
+                            if( ! $slot->validate() )
                             {
                                 $dialogBox->error( get_lang( 'Unable to save this slot.' ) );
-                            
+                                
                                 $out .= $dialogBox->render();
+                                
+                                $slotsCollection = new slotsCollection();
+                                $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                                
+                                $out .= SubscriptionsRenderer::editSlot(    $subscription,
+                                                                            $slot,
+                                                                            $allSlots,
+                                                                            true
+                                                                        );
                             }
                             else
                             {
-                                $slot->setTitle( $_POST['title'] )
-                                ->setDescription( $_POST['description'] )
-                                ->setAvailableSpace( $_POST['places'] );
+                                //check if the number of subscribers in the slot ($oldAvailableSpace - $slot->spaceAvailable()) is not lower than the new availableSpace
+                                if( $slot->totalSubscribers() > $slot->getAvailableSpace() )
+                                {
+                                    $dialogBox->error( get_lang( 'There are more subscribers registered to this slot than the number of available places you defined.' ) );
                                 
-                                if( ! $slot->validate() )
+                                    $out .= $dialogBox->render();
+                                    
+                                    $slotsCollection = new slotsCollection();
+                                    $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                                    
+                                    $out .= SubscriptionsRenderer::editSlot(    $subscription,
+                                                                                $slot,
+                                                                                $allSlots,
+                                                                                true
+                                                                            );
+                                }
+                                elseif( ! $slot->save() )
                                 {
                                     $dialogBox->error( get_lang( 'Unable to save this slot.' ) );
-                                    
+                                
                                     $out .= $dialogBox->render();
                                     
                                     $slotsCollection = new slotsCollection();
@@ -434,146 +430,106 @@ try
                                 }
                                 else
                                 {
-                                    //check if the number of subscribers in the slot ($oldAvailableSpace - $slot->spaceAvailable()) is not lower than the new availableSpace
-                                    if( $slot->totalSubscribers() > $slot->getAvailableSpace() )
-                                    {
-                                        $dialogBox->error( get_lang( 'There are more subscribers registered to this slot than the number of available places you defined.' ) );
+                                    $dialogBox->success( get_lang( 'Slot saved successfully.' ) );
                                     
-                                        $out .= $dialogBox->render();
-                                        
-                                        $slotsCollection = new slotsCollection();
-                                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                                        
-                                        $out .= SubscriptionsRenderer::editSlot(    $subscription,
-                                                                                    $slot,
-                                                                                    $allSlots,
-                                                                                    true
-                                                                                );
-                                    }
-                                    elseif( ! $slot->save() )
-                                    {
-                                        $dialogBox->error( get_lang( 'Unable to save this slot.' ) );
+                                    $out .= $dialogBox->render();
                                     
-                                        $out .= $dialogBox->render();
-                                        
-                                        $slotsCollection = new slotsCollection();
-                                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                                        
-                                        $out .= SubscriptionsRenderer::editSlot(    $subscription,
-                                                                                    $slot,
-                                                                                    $allSlots,
-                                                                                    true
-                                                                                );
-                                    }
-                                    else
-                                    {
-                                        $dialogBox->success( get_lang( 'Slot saved successfully.' ) );
-                                        
-                                        $out .= $dialogBox->render();
-                                        
-                                        $slotsCollection = new slotsCollection();
-                        
-                                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                                        
-                                        $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
-                                        $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
-                                        $out .= SubscriptionsRenderer::displaySubscription( $subscription,
-                                                                                            $allSlots,
-                                                                                            $allSlotsFromUsers
-                                                                                            );
-                                    }
-                                }                                
-                            }
+                                    $slotsCollection = new slotsCollection();
+                    
+                                    $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                                    
+                                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                                    $out .= SubscriptionsRenderer::displaySubscription( $subscription,
+                                                                                        $allSlots,
+                                                                                        $allSlotsFromUsers
+                                                                                        );
+                                }
+                            }                                
                         }
                     }
                 }
             }
             break;
-        case 'rqSlotEdit' :
+            
+            case 'rqSlotEdit' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( ! isset( $_REQUEST['slotId'] ) )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
+                    $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                    
+                    $out .= $dialogBox->render();
                 }
                 else
                 {
-                    if( ! isset( $_REQUEST['slotId'] ) )
+                    $slot = new slot();
+                    if( ! $slot->load( $_REQUEST['slotId'] ) )
                     {
-                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
                         $out .= $dialogBox->render();
                     }
                     else
                     {
-                        $slot = new slot();
-                        if( ! $slot->load( $_REQUEST['slotId'] ) )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
-                            
-                            $out .= $dialogBox->render();
-                        }
-                        else
-                        {
-                            $slotsCollection = new slotsCollection();
-                            $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                            //$allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
-                            
-                            $out .= SubscriptionsRenderer::editSlot(    $subscription,
-                                                                        $slot,
-                                                                        $allSlots
-                                                                    );
-                        }
-                    }                    
+                        $slotsCollection = new slotsCollection();
+                        $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                        //$allSlotsFromUsers = $slotsCollection->getAllFromUser( claro_get_current_user_id() );
+                        
+                        $out .= SubscriptionsRenderer::editSlot(    $subscription,
+                                                                    $slot,
+                                                                    $allSlots
+                                                                );
+                    }
                 }
             }
             break;
-        case 'exSlotAdd' :
+            
+            case 'exSlotAdd' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( ( isset( $_POST['title'] ) && is_array( $_POST['title'] ) && count( $_POST['title'] ) )
+                    &&
+                    ( isset( $_POST['description'] ) && is_array( $_POST['description'] ) && count( $_POST['description'] ) )
+                    &&
+                    ( isset( $_POST['places'] ) && is_array( $_POST['places'] ) && count( $_POST['places'] ) )
+                    && ( ( count( $_POST['title'] ) == count( $_POST['description'] ) ) == count( $_POST['places'] ) )
+                )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    if( ( isset( $_POST['title'] ) && is_array( $_POST['title'] ) && count( $_POST['title'] ) )
-                        &&
-                        ( isset( $_POST['description'] ) && is_array( $_POST['description'] ) && count( $_POST['description'] ) )
-                        &&
-                        ( isset( $_POST['places'] ) && is_array( $_POST['places'] ) && count( $_POST['places'] ) )
-                        && ( ( count( $_POST['title'] ) == count( $_POST['description'] ) ) == count( $_POST['places'] ) )
-                    )
+                    $errors = array();
+                    $error = false;
+                    $slots = array();
+                    foreach( $_POST['title'] as $i => $title )
                     {
-                        $errors = array();
-                        $error = false;
-                        $slots = array();
-                        foreach( $_POST['title'] as $i => $title )
+                        $slot = new slot();
+                        $slot->setTitle( $title );
+                        $slot->setDescription( $_POST['description'][ $i ] );
+                        $slot->setAvailableSpace( $_POST['places'][ $i ]);
+                        $slot->setSubscriptionId( $_REQUEST['subscrId'] );
+                        
+                        $slots[] = $slot;
+                        
+                        if( ! $slot->validate() )                                
                         {
-                            $slot = new slot();
-                            $slot->setTitle( $title );
-                            $slot->setDescription( $_POST['description'][ $i ] );
-                            $slot->setAvailableSpace( $_POST['places'][ $i ]);
-                            $slot->setSubscriptionId( $_REQUEST['subscrId'] );
-                            
-                            $slots[] = $slot;
-                            
-                            if( ! $slot->validate() )                                
+                            $errors[] = true;
+                            $error = true;
+                        }
+                        else
+                        {
+                            $errors[] = false;
+                        }
+                    }
+                    
+                    if( $error )
+                    {
+                        $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, count( $_POST['title'] ), null, array( 'title' => $_POST['title'], 'description' => $_POST['description'], 'places' => $_POST['places'], 'errors' => $errors ) );
+                    }
+                    else
+                    {
+                        // each slot is valide and can be saved
+                        foreach( $slots as $slot )
+                        {
+                            if( ! $slot->save() )
                             {
-                                $errors[] = true;
-                                $error = true;
-                            }
-                            else
-                            {
-                                $errors[] = false;
+                                $error = false;
                             }
                         }
                         
@@ -583,105 +539,71 @@ try
                         }
                         else
                         {
-                            // each slot is valide and can be saved
-                            foreach( $slots as $slot )
-                            {
-                                if( ! $slot->save() )
-                                {
-                                    $error = false;
-                                }
-                            }
+                            $dialogBox->success( get_lang( 'Slots added successfully to the subscription.' ) );
                             
-                            if( $error )
-                            {
-                                $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, count( $_POST['title'] ), null, array( 'title' => $_POST['title'], 'description' => $_POST['description'], 'places' => $_POST['places'], 'errors' => $errors ) );
-                            }
-                            else
-                            {
-                                $dialogBox->success( get_lang( 'Slots added successfully to the subscription.' ) );
-                                
-                                $out .= $dialogBox->render();
-                            }
+                            $out .= $dialogBox->render();
                         }
                     }
                 }
             }
             break;
-        case 'rqSlotAdd' :
+            
+            case 'rqSlotAdd' :
             {
-                if( ! claro_is_allowed_to_edit() )
+                if( isset( $_POST['slots'] ) && isset( $_POST['places'] ) )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
+                    $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, $_POST['slots'], $_POST['places'] );
                 }
                 else
                 {
-                    if( isset( $_POST['slots'] ) && isset( $_POST['places'] ) )
-                    {
-                        $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox, $_POST['slots'], $_POST['places'] );
-                    }
-                    else
-                    {
-                        $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox );
-                    }
+                    $out .= SubscriptionsRenderer::addSlot( $subscription, $dialogBox );
                 }
             }
             break;
-        case 'export' :
+            
+            case 'export' :
             {
                 if( ! ( isset( $_REQUEST['type'] ) && $_REQUEST['type'] == 'csv' ) )
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
+                FromKernel::uses( 'csv.class' );
+                
+                $csv = new csv( ';' );
+                
+                $slotsCollection = new slotsCollection();
+                
+                $allSlotsFromUsersToExport = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
+                
+                $export[ 0 ][ 'title' ] = get_lang( 'Title' );                    
+                if( $subscription->getContext() == 'user' )
                 {
-                    $out .= $result;
+                    $export[ 0 ][ 'lastname' ] = get_lang( 'Last name' );
+                    $export[ 0 ][ 'firstname' ] = get_lang( 'First name' );
                 }
                 else
                 {
-                    FromKernel::uses( 'csv.class' );
-                    
-                    $csv = new csv( ';' );
-                    
-                    $slotsCollection = new slotsCollection();
-                    
-                    $allSlotsFromUsersToExport = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
-                    
-                    $export[ 0 ][ 'title' ] = get_lang( 'Title' );                    
-                    if( $subscription->getContext() == 'user' )
+                    $export[ 0 ][ 'groupname' ] = get_lang( 'Group name' );
+                }
+                $i = 1;
+                
+                foreach( $allSlotsFromUsersToExport as $allSlots )
+                {
+                    foreach( $allSlots as $slot )
                     {
-                        $export[ 0 ][ 'lastname' ] = get_lang( 'Last name' );
-                        $export[ 0 ][ 'firstname' ] = get_lang( 'First name' );
-                    }
-                    else
-                    {
-                        $export[ 0 ][ 'groupname' ] = get_lang( 'Group name' );
-                    }
-                    $i = 1;
-                    
-                    foreach( $allSlotsFromUsersToExport as $allSlots )
-                    {
-                        foreach( $allSlots as $slot )
+                        $export[ $i ][ 'title' ] = $slot[ 'title' ];
+                        if( $subscription->getContext() == 'user' )
                         {
-                            $export[ $i ][ 'title' ] = $slot[ 'title' ];
-                            if( $subscription->getContext() == 'user' )
-                            {
-                               $export[ $i ][ 'lastname' ] = $slot[ 'subscriberData' ][ 'lastname' ];
-                               $export[ $i ][ 'firstname' ] = $slot[ 'subscriberData' ][ 'firstname' ];
-                            }
-                            else
-                            {
-                                $export[ $i ][ 'groupname' ] = $slot[ 'subscriberData' ][ 'name' ];
-                            }
-                            $i++;
+                           $export[ $i ][ 'lastname' ] = $slot[ 'subscriberData' ][ 'lastname' ];
+                           $export[ $i ][ 'firstname' ] = $slot[ 'subscriberData' ][ 'firstname' ];
                         }
+                        else
+                        {
+                            $export[ $i ][ 'groupname' ] = $slot[ 'subscriberData' ][ 'name' ];
+                        }
+                        $i++;
                     }
-                    
                 }
                 
                 $csv->recordList = $export;
@@ -694,295 +616,200 @@ try
                 exit;
             }
             break;
-        case 'rqResult' :
+            
+            case 'rqResult' :
             {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
+                $slotsCollection = new slotsCollection();
                 
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    $slotsCollection = new slotsCollection();
-                    
-                    $allSlots = $slotsCollection->getAll( $subscription->getId() );
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
-                    $out .= SubscriptionsRenderer::result( $subscription, $allSlots, $allSlotsFromUsers );
-                }
+                $allSlots = $slotsCollection->getAll( $subscription->getId() );
+                $allSlotsFromUsers = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
+                $out .= SubscriptionsRenderer::result( $subscription, $allSlots, $allSlotsFromUsers );
             }
             break;
-        case 'exLock' :
+            
+            case 'exLock' :
             {
-                
-                if( ! claro_is_allowed_to_edit() )
+                if( $subscription->isLocked() )
                 {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    if( $subscription->isLocked() )
-                    {
-                        $subscription->setLock( 'open' );
-                        if( ! $subscription->save() )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to change the lock of the subscription.' ) );
-                        }
-                        else
-                        {
-                            $dialogBox->success( get_lang( 'The subscription is now open.' ) );
-                        }
-                    }
-                    else
-                    {
-                        $subscription->setLock( 'close' );
-                        if( ! $subscription->save() )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to change the lock of the subscription.' ) );
-                        }
-                        else
-                        {
-                            $dialogBox->success( get_lang( 'The subscription is now closed.' ) );
-                        }
-                    }
-                    
-                    $out .= $dialogBox->render();
-                    
-                    $subscriptionsCollection = new subscriptionsCollection();
-                    
-                    $slotsCollection = new slotsCollection();
-                    
-                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
-                }
-            }
-            break;
-        case 'exVisible' :
-            {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    $subscription->setVisibility( 'visible' );
+                    $subscription->setLock( 'open' );
                     if( ! $subscription->save() )
                     {
-                        $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
+                        $dialogBox->error( get_lang( 'Unable to change the lock of the subscription.' ) );
                     }
                     else
                     {
-                        $dialogBox->success( get_lang( 'The subscription is now visible.' ) );
+                        $dialogBox->success( get_lang( 'The subscription is now open.' ) );
                     }
-                    
-                    $out .= $dialogBox->render();
-                    
-                    $subscriptionsCollection = new subscriptionsCollection();
-                    
-                    $slotsCollection = new slotsCollection();
-                    
-                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
-                }
-            }
-            break;
-        
-        case 'exInvisible' :
-            {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
                 }
                 else
                 {
-                    $subscription->setVisibility( 'invisible' );
+                    $subscription->setLock( 'close' );
                     if( ! $subscription->save() )
                     {
-                        $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
+                        $dialogBox->error( get_lang( 'Unable to change the lock of the subscription.' ) );
                     }
                     else
                     {
-                        $dialogBox->success( get_lang( 'The subscription is now invisible.' ) );
+                        $dialogBox->success( get_lang( 'The subscription is now closed.' ) );
+                    }
+                }
+                
+                $out .= $dialogBox->render();
+                
+                $subscriptionsCollection = new subscriptionsCollection();
+                
+                $slotsCollection = new slotsCollection();
+                
+                $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
+            }
+            break;
+            
+            case 'exVisible' :
+            {
+                $subscription->setVisibility( 'visible' );
+                if( ! $subscription->save() )
+                {
+                    $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
+                }
+                else
+                {
+                    $dialogBox->success( get_lang( 'The subscription is now visible.' ) );
+                }
+                
+                $out .= $dialogBox->render();
+                
+                $subscriptionsCollection = new subscriptionsCollection();
+                
+                $slotsCollection = new slotsCollection();
+                
+                $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
+            }
+            break;
+            
+            case 'exInvisible' :
+            {
+                $subscription->setVisibility( 'invisible' );
+                if( ! $subscription->save() )
+                {
+                    $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
+                }
+                else
+                {
+                    $dialogBox->success( get_lang( 'The subscription is now invisible.' ) );
+                }
+                
+                $out .= $dialogBox->render();
+                
+                $subscriptionsCollection = new subscriptionsCollection();
+                
+                $slotsCollection = new slotsCollection();
+                
+                $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
+            }
+            break;
+            
+            case 'exDelete' :
+            {
+                if( ! $subscription->delete() )
+                {
+                    $dialogBox->error( get_lang( 'Impossible to delete the subscription <strong>%title</strong>', array( '%title' => $subscription->getTitle() ) ) );
+                }
+                else
+                {
+                    $dialogBox->success( get_lang( 'Subscription <strong>%title</strong> deleted successfully', array( '%title' => $subscription->getTitle() ) ) );
+                }
+                
+                $out .= $dialogBox->render();
+            }
+            break;
+            
+            case 'rqDelete' :
+            {
+                $out .= SubscriptionsRenderer::delete( $subscription );
+            }
+            break;
+            
+            case 'exEdit' :
+            {
+                $subscription->setTitle( $userInput->get( 'title' ) );
+                $subscription->setDescription( $userInput->get( 'description' ) );
+                $subscription->setContext( $userInput->get( 'context' ) );
+                $subscription->setType( $userInput->get( 'type' ) );
+                $subscription->setModifiable( $userInput->get( 'modifiable' ) );
+                $subscription->setVisibility( $userInput->get( 'visibility' ) );
+                if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
+                {
+                    $fromDate = claro_mktime( $userInput->get( 'visibilityFromHour' ),
+                                        $userInput->get( 'visibilityFromMinute' ),
+                                        0,
+                                        $userInput->get( 'visibilityFromMonth' ),
+                                        $userInput->get( 'visibilityFromDay' ),
+                                        $userInput->get( 'visibilityFromYear')
+                                      );
+                    $subscription->setVisibilityFrom( $fromDate );
+                }
+                else
+                {
+                    $subscription->setVisibilityFrom( 0 );
+                }
+                
+                if( (int) $userInput->get( 'visibilityTo' ) == 1 )
+                {
+                    $toDate = claro_mktime( $userInput->get( 'visibilityToHour' ),
+                                        $userInput->get( 'visibilityToMinute' ),
+                                        0,
+                                        $userInput->get( 'visibilityToMonth' ),
+                                        $userInput->get( 'visibilityToDay' ),
+                                        $userInput->get( 'visibilityToYear')
+                                      );
+                    $subscription->setVisibilityTo( $toDate );
+                }
+                else
+                {
+                    $subscription->setVisibilityTo( 0 );
+                }
+                
+                if( $subscription->validate() )
+                {
+                    if( $subscription->save() )
+                    {
+                        $dialogBox->success( get_lang( 'Subscription saved successfully.' ) );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang( 'Unable to save the subscription.' ) );
                     }
                     
                     $out .= $dialogBox->render();
-                    
-                    $subscriptionsCollection = new subscriptionsCollection();
-                    
-                    $slotsCollection = new slotsCollection();
-                    
-                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
-                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
-                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
-                }
-            }
-            break;
-        
-        case 'exDelete' :
-            {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
                 }
                 else
                 {
-                    if( ! $subscription->delete() )
-                    {
-                        $dialogBox->error( get_lang( 'Impossible to delete the subscription <strong>%title</strong>', array( '%title' => $subscription->getTitle() ) ) );
-                    }
-                    else
-                    {
-                        $dialogBox->success( get_lang( 'Subscription <strong>%title</strong> deleted successfully', array( '%title' => $subscription->getTitle() ) ) );
-                    }
+                    $errors = $subscription->getErrors( true );
+                    
+                    $dialogBox->error( get_lang('Unable to save the subscription.') . ' ' .get_lang( 'Please check the following errors.') . "<br />\n<br />\n" . str_replace( "\n", "<br />\n", $errors ) );
                     
                     $out .= $dialogBox->render();
-                }
-            }
-            break;
-        case 'rqDelete' :
-            {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    $out .= SubscriptionsRenderer::delete( $subscription );
-                }
-            }
-            break;
-        case 'exEdit' :
-            {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    $subscription->setTitle( $userInput->get( 'title' ) );
-                    $subscription->setDescription( $userInput->get( 'description' ) );
-                    $subscription->setContext( $userInput->get( 'context' ) );
-                    $subscription->setType( $userInput->get( 'type' ) );
-                    $subscription->setModifiable( $userInput->get( 'modifiable' ) );
-                    $subscription->setVisibility( $userInput->get( 'visibility' ) );
-                    if( (int) $userInput->get( 'visibilityFrom' ) == 1 )
-                    {
-                        $fromDate = claro_mktime( $userInput->get( 'visibilityFromHour' ),
-                                            $userInput->get( 'visibilityFromMinute' ),
-                                            0,
-                                            $userInput->get( 'visibilityFromMonth' ),
-                                            $userInput->get( 'visibilityFromDay' ),
-                                            $userInput->get( 'visibilityFromYear')
-                                          );
-                        $subscription->setVisibilityFrom( $fromDate );
-                    }
-                    else
-                    {
-                        $subscription->setVisibilityFrom( 0 );
-                    }
                     
-                    if( (int) $userInput->get( 'visibilityTo' ) == 1 )
-                    {
-                        $toDate = claro_mktime( $userInput->get( 'visibilityToHour' ),
-                                            $userInput->get( 'visibilityToMinute' ),
-                                            0,
-                                            $userInput->get( 'visibilityToMonth' ),
-                                            $userInput->get( 'visibilityToDay' ),
-                                            $userInput->get( 'visibilityToYear')
-                                          );
-                        $subscription->setVisibilityTo( $toDate );
-                    }
-                    else
-                    {
-                        $subscription->setVisibilityTo( 0 );
-                    }
-                    
-                    if( $subscription->validate() )
-                    {
-                        if( $subscription->save() )
-                        {
-                            $dialogBox->success( get_lang( 'Subscription saved successfully.' ) );
-                        }
-                        else
-                        {
-                            $dialogBox->error( get_lang( 'Unable to save the subscription.' ) );
-                        }
-                        
-                        $out .= $dialogBox->render();
-                    }
-                    else
-                    {
-                        $errors = $subscription->getErrors( true );
-                        
-                        $dialogBox->error( get_lang('Unable to save the subscription.') . ' ' .get_lang( 'Please check the following errors.') . "<br />\n<br />\n" . str_replace( "\n", "<br />\n", $errors ) );
-                        
-                        $out .= $dialogBox->render();
-                        
-                        //set fields for form                    
-                        $out .= SubscriptionsRenderer::add( $subscription );
-                    }
+                    //set fields for form
+                    $out .= SubscriptionsRenderer::add( $subscription );
                 }
             }
             break;
-        case 'rqEdit' :
+            
+            case 'rqEdit' :
             {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    $out .= SubscriptionsRenderer::edit( $subscription );
-                }
+                $out .= SubscriptionsRenderer::edit( $subscription );
             }
             break;
-        case 'exAdd' :
+            
+            case 'exAdd' :
             {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
                 $subscription = new subscription();
                 $subscription->setTitle( $userInput->get( 'title' ) );
                 $subscription->setDescription( $userInput->get( 'description' ) );
@@ -1001,6 +828,7 @@ try
                                       );
                     $subscription->setVisibilityFrom( $fromDate );
                 }
+                
                 if( (int) $userInput->get( 'visibilityTo' ) == 1 )
                 {
                     $toDate = mktime( $userInput->get( 'visibilityToHour' ),
@@ -1040,17 +868,14 @@ try
                 }
             }
             break;
-        case 'rqAdd' :
+            
+            case 'rqAdd' :
             {
-                if( ! claro_is_allowed_to_edit() )
-                {
-                    claro_die( get_lang( 'Not allowed' ) );
-                }
-                
                 $out .= SubscriptionsRenderer::add();
             }
             break;
-        case 'list' :
+            
+            case 'list' :
             {
                $subscriptionsCollection = new subscriptionsCollection();
                
@@ -1061,10 +886,10 @@ try
                $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context ); 
             }
             break;
+        }
     }
     
-    $claroline->display->body->appendContent( $out );
-
+$claroline->display->body->appendContent( $out );
 }
 catch(Exception $e )
 {
