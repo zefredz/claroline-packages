@@ -53,7 +53,7 @@ $_lang['There are more subscribers registered to this slot than the number of av
 $_lang['The visibility is not defined.'] = 'La visibilité n\'est pas définie';
 $_lang['This context doesn\'t exist.'] = 'Le contexte n\'est pas valide';
 $_lang['This subscription type is not allowed.'] = 'Ce type de session n\'est pas autorisé.';
-$_lang['This session is only available'] = 'Cette session est uniquement disponbile';
+$_lang['This session is only available'] = 'Cette session est uniquement disponible';
 $_lang['This subscription is locked. You can\'t update your choice.'] = 'Cette session est verouillée. Vous ne pouvez pas mettre à jour votre choix.';
 $_lang['This visibility is not allowed.'] = 'Cette visibilité n\'est pas autorisée.';
 $_lang['Unable to change the lock of the subscription.'] = 'Impossible de changer le vérou de cette session.';
