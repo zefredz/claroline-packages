@@ -50,7 +50,6 @@ try
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
             'rqShowList', 'rqViewPoll', 'rqViewStats',
             'exSubmitVote'
-
         ) ) );
     }
     else

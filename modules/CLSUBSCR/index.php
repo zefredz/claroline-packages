@@ -21,7 +21,7 @@ require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.p
 if ( ! claro_is_user_authenticated() ) claro_disp_auth_form();
 
 FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib');
-From::Module( $tlabelReq )->uses( 'subscriptions.lib', 'subscriptionsrenderer.lib' );
+From::Module( $tlabelReq )->uses( 'subscriptions.lib', 'subscriptionsrenderer.lib' , 'datetool.lib' );
 
 $jsLoader = JavascriptLoader::getInstance();
 $jsLoader->load( 'claroline.ui');
@@ -39,13 +39,25 @@ $groupId = claro_get_current_group_id();
 try
 {
     $userInput = Claro_UserInput::getInstance();
-  
-    $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
-        'list', 'rqAdd', 'exAdd', 'rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exLock', 'rqResult', 'export',
-        'rqSlotAdd', 'exSlotAdd', 'rqSlotEdit', 'exSlotEdit', 'rqSlotDelete', 'exSlotDelete', 'rqSlotChoice', 'exSlotChoice', 'exSlotVisible'
-    ) ) );
+    
+    if ( claro_is_allowed_to_edit() )
+    {
+        $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
+            'list', 'rqAdd', 'exAdd', 'rqEdit', 'exEdit', 'rqDelete', 'exDelete', 'exVisible', 'exInvisible', 'exLock', 'rqResult', 'export',
+            'rqSlotAdd', 'exSlotAdd', 'rqSlotEdit', 'exSlotEdit', 'rqSlotDelete', 'exSlotDelete', 'rqSlotChoice', 'exSlotChoice', 'exSlotVisible'
+        ) ) );
+    }
+    else
+    {
+        $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
+            'list', 'rqSlotChoice', 'exSlotChoice'
+        ) ) );
+    }
     
     $cmd = $userInput->get( 'cmd','list' );
+    $subscrId = $userInput->get( 'subscrId' );
+    
+    $subscription = new Subscription( $subscrId );
     
     $out = '';
     
@@ -69,8 +81,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -140,8 +150,6 @@ try
             break;
         case 'exSlotChoice' :
             {
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -245,8 +253,6 @@ try
             break;
         case 'rqSlotChoice' :
             {
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -277,8 +283,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -342,8 +346,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -379,8 +381,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -496,8 +496,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -540,8 +538,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -603,12 +599,12 @@ try
                             else
                             {
                                 $dialogBox->success( get_lang( 'Slots added successfully to the subscription.' ) );
-                        
+                                
                                 $out .= $dialogBox->render();
                             }
                         }
                     }
-                }                
+                }
             }
             break;
         case 'rqSlotAdd' :
@@ -617,9 +613,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -645,8 +638,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -654,7 +645,7 @@ try
                 else
                 {
                     FromKernel::uses( 'csv.class' );
-                
+                    
                     $csv = new csv( ';' );
                     
                     $slotsCollection = new slotsCollection();
@@ -710,8 +701,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -733,8 +722,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -786,37 +773,20 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
                 }
                 else
                 {
-                    if( $subscription->isVisible() )
+                    $subscription->setVisibility( 'visible' );
+                    if( ! $subscription->save() )
                     {
-                        $subscription->setVisibility( 'invisible' );
-                        if( ! $subscription->save() )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
-                        }
-                        else
-                        {
-                            $dialogBox->success( get_lang( 'The subscription is now invisible.' ) );
-                        }
+                        $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
                     }
                     else
                     {
-                        $subscription->setVisibility( 'visible' );
-                        if( ! $subscription->save() )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
-                        }
-                        else
-                        {
-                            $dialogBox->success( get_lang( 'The subscription is now visible.' ) );
-                        }
+                        $dialogBox->success( get_lang( 'The subscription is now visible.' ) );
                     }
                     
                     $out .= $dialogBox->render();
@@ -831,14 +801,49 @@ try
                 }
             }
             break;
-        case 'exDelete' :
+        
+        case 'exInvisible' :
             {
                 if( ! claro_is_allowed_to_edit() )
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
+                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
+                {
+                    $out .= $result;
+                }
+                else
+                {
+                    $subscription->setVisibility( 'invisible' );
+                    if( ! $subscription->save() )
+                    {
+                        $dialogBox->error( get_lang( 'Unable to change the visibility of the subscription.' ) );
+                    }
+                    else
+                    {
+                        $dialogBox->success( get_lang( 'The subscription is now invisible.' ) );
+                    }
+                    
+                    $out .= $dialogBox->render();
+                    
+                    $subscriptionsCollection = new subscriptionsCollection();
+                    
+                    $slotsCollection = new slotsCollection();
+                    
+                    $subscriberId = claro_is_in_a_group() && $subscription->getContext() == 'group' ? $groupId : claro_get_current_user_id();
+                    $allSlotsFromUsers = $slotsCollection->getAllFromUser( $subscriberId, $subscription->getContext() );
+                    $out .= SubscriptionsRenderer::listSubscriptions( $subscriptionsCollection, $allSlotsFromUsers, $context );
+                }
+            }
+            break;
+        
+        case 'exDelete' :
+            {
+                if( ! claro_is_allowed_to_edit() )
+                {
+                    claro_die( get_lang( 'Not allowed' ) );
+                }
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -866,8 +871,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -884,8 +887,6 @@ try
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
-                
-                $subscription = new subscription();
                 
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
@@ -948,7 +949,6 @@ try
                     {
                         $errors = $subscription->getErrors( true );
                         
-                        
                         $dialogBox->error( get_lang('Unable to save the subscription.') . ' ' .get_lang( 'Please check the following errors.') . "<br />\n<br />\n" . str_replace( "\n", "<br />\n", $errors ) );
                         
                         $out .= $dialogBox->render();
@@ -966,8 +966,6 @@ try
                     claro_die( get_lang( 'Not allowed' ) );
                 }
                 
-                $subscription = new subscription();
-                
                 if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
                 {
                     $out .= $result;
@@ -977,7 +975,7 @@ try
                     $out .= SubscriptionsRenderer::edit( $subscription );
                 }
             }
-            break;        
+            break;
         case 'exAdd' :
             {
                 if( ! claro_is_allowed_to_edit() )
@@ -1040,7 +1038,6 @@ try
                     //set fields for form                    
                     $out .= SubscriptionsRenderer::add( $subscription );
                 }
-                
             }
             break;
         case 'rqAdd' :

@@ -31,21 +31,14 @@ endif;
     ?>
     <div style="float: right;">
         <?php
-        if( ( ! is_null( $subscription['visibilityFrom'] ) || ! is_null( $subscription['visibilityTo'] ) ) && ! $subscription['isVisible'] && $subscription['visibility'] == 'visible' ) :
+        if( ( ! is_null( $subscription['visibilityFrom'] ) || ! is_null( $subscription['visibilityTo'] ) ) && $subscription['visibility'] == 'visible' ) :
         ?>
         <span style="font-weight: bold; color: red;">
         <?php
             echo get_lang( 'This session is only available' );
         ?>
         <?php
-            if( ! is_null( $subscription['visibilityFrom'] ) && ! is_null( $subscription['visibilityTo'] ) ) :
-                echo get_lang( 'from %dateFrom to %dateTo', array( '%dateFrom' => claro_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ,
-                                                                   '%dateTo'   => claro_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
-            elseif( ! is_null( $subscription['visibilityTo'] ) ) :
-                echo get_lang( 'until %dateTo', array( '%dateTo' => claro_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
-            else :
-                echo get_lang( 'from %dateFrom', array( '%dateFrom' => claro_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ) );
-            endif;
+            echo availability_date( $subscription['visibilityFrom'] , $subscription[ 'visibilityTo' ] );
         ?>
         </span>
         <?php
@@ -53,7 +46,11 @@ endif;
         ?>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqEdit&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqDelete&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>
-        <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exVisible&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['visibility'] == 'visible'? get_icon_url( 'visible' ) : get_icon_url( 'invisible'); ?>" alt="<?php echo $subscription['visibility'] == 'visible' ? get_lang( 'Visible' ) : get_lang('Invisible'); ?>" /></a>
+        <?php if ( $subscription[ 'visibility' ] == 'visible' ) : ?>
+        <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exInvisible&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible' ); ?>" /></a>
+        <?php else : ?>
+        <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exVisible&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>" /></a>
+        <?php endif; ?>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exLock&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $subscription['lock'] == 'close'? get_icon_url( 'locked' ) : get_icon_url( 'unlock'); ?>" alt="<?php echo $subscription['lock'] == 'close' ? get_lang( 'Locked' ) : get_lang('Unlock'); ?>" /></a>
         <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqResult&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'statistics'); ?>" alt="<?php echo get_lang( 'Result' ); ?>" /></a>
     </div>

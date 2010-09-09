@@ -74,7 +74,7 @@ class subscription
    *
    * @author Dimitri Rambout <dim@claroline.net>
    */
-  public function __construct()
+  public function __construct( $id = null )
   {
     $this->table = get_module_course_tbl( array( 'subscr_sessions', 'subscr_slots', 'subscr_subscribers', 'subscr_slots_subscribers' ) );
     
@@ -87,7 +87,9 @@ class subscription
     $this->modifiable = 'modifiable';
     $this->visibilityFrom = null;
     $this->visibilityTo = null;
-    $this->lock = 'open';    
+    $this->lock = 'open';
+    
+    $this->load( $id );
   }
   
   /**
