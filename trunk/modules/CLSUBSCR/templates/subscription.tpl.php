@@ -39,12 +39,12 @@ endif;
         ?>
         <?php
             if( ! is_null( $subscription['visibilityFrom'] ) && ! is_null( $subscription['visibilityTo'] ) ) :
-                echo get_lang( 'from %dateFrom to %dateTo', array( '%dateFrom' => claro_disp_localised_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ,
-                                                                   '%dateTo'   => claro_disp_localised_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
+                echo get_lang( 'from %dateFrom to %dateTo', array( '%dateFrom' => claro_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ,
+                                                                   '%dateTo'   => claro_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
             elseif( ! is_null( $subscription['visibilityFrom'] ) ) :
-                echo get_lang( 'from %dateFrom', array( '%dateFrom' => claro_disp_localised_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ) );
+                echo get_lang( 'from %dateFrom', array( '%dateFrom' => claro_date( 'Y/m/d - H:i', $subscription['visibilityFrom'] ) ) );
             elseif( ! is_null( $subscription['visibilityTo'] ) ) :
-                echo get_lang( 'until %dateTo', array( '%dateTo' => claro_disp_localised_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
+                echo get_lang( 'until %dateTo', array( '%dateTo' => claro_date( 'Y/m/d - H:i', $subscription['visibilityTo'] ) ) );
             endif;
         ?>
         </span>
