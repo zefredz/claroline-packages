@@ -99,11 +99,11 @@ class subscription
   public function save()
   {
     $visibilityFrom = isset( $this->visibilityFrom )
-                    ? (int) Claroline::getDatabase()->quote( $this->visibilityFrom )
+                    ? (int) Claroline::getDatabase()->escape( $this->visibilityFrom )
                     : 'NULL';
                     
     $visibilityTo = isset( $this->visibilityTo )
-                    ? (int) Claroline::getDatabase()->quote( $this->visibilityTo )
+                    ? (int) Claroline::getDatabase()->escape( $this->visibilityTo )
                     : 'NULL';
                     
     $query_fields = "`title` = " . Claroline::getDatabase()->quote( $this->title ) . ",
