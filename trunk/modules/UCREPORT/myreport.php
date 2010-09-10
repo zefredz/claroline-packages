@@ -13,6 +13,7 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 
 From::Module( 'UCREPORT' )->uses( 'report.lib' , 'userreport.lib' );
 CssLoader::getInstance()->load( 'report' , 'screen' );
+language::load_module_translation( 'UCREPORT' );
 
 $myReport = new UserReport( claro_get_current_user_id() );
 $reportList = $myReport->getUserReportList();
