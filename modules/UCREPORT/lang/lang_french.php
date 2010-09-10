@@ -15,6 +15,7 @@ $_lang['An error occured: the report has not been deleted!'] = 'Une erreur est s
 $_lang['An error occured: the visibility change failed!'] = 'Une erreur est survenue: la visibilité n\'a pu être changée!';
 $_lang['Access denied'] = 'Accès non autorisé!';
 $_lang['Average'] = 'Moyenne';
+$_lang['Average score'] = 'Moyenne';
 $_lang['Back to the report'] = 'Retour au bulletin';
 $_lang['Back to the report list'] = 'Retour à la liste des bulletins';
 $_lang['Create a new report'] = 'Créer un nouveau bulletin';
