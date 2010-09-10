@@ -25,7 +25,7 @@ $output = '<table class="claroTable emphaseLine" style="width: 100%;">' . "\n"
         . '            <th>' . get_lang( 'Course' ) . '</th>' . "\n"
         . '            <th>' . get_lang( 'Report') . '</th>' . "\n"
         . '            <th>' . get_lang( 'Publication date') . '</th>' . "\n"
-        . '            <th>' . get_lang( 'Your average score' ) . '</th>' . "\n"
+        . '            <th>' . get_lang( 'Average score' ) . '</th>' . "\n"
         . '        </tr>' . "\n"
         . '    </thead>' . "\n"
         . '    <tbody>' . "\n";
