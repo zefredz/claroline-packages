@@ -31,6 +31,7 @@ $_lang['Export to pdf'] = 'Exporter en pdf';
 $_lang['Generate the preview'] = 'Générer l\'aperçu';
 $_lang['Generate the report'] = 'Générer le bulletin';
 $_lang['incomplete'] = 'incomplet';
+$_lang['My report'] = 'Mon bulletin';
 $_lang['No report available'] = 'Aucun bulletin disponible';
 $_lang['No result at this time'] = 'Pas de résultats pour le moment';
 $_lang['Please, give a title to your new report...'] = 'Veuillez donner un nom à votre nouveau bulletin...';
