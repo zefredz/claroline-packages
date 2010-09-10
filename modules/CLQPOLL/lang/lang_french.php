@@ -53,6 +53,7 @@ $_lang['Do you really want to delete this vote?'] = 'Voulez-vous vraiment suprri
 $_lang['Do you really want to purge this poll?'] = 'Ceci fera disparaître toutes les réponses! Voulez-vous vraiment réinitialiser ce sondage?';
 $_lang['Edit poll']= 'Modifier le sondage';
 $_lang['Error'] = 'Erreur';
+$_lang['Modify your vote'] = 'Modifier votre vote';
 $_lang['No choices'] = 'Aucun choix';
 $_lang['No poll for this course yet'] = 'Il n\'y a pas encore de sondage pour ce cours';
 $_lang['No option for this poll yet'] = 'Le sondage est vide';

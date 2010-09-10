@@ -97,7 +97,7 @@
         <table>
             <tr class="userline">
                 <th class="name">
-                <input class="submit" type="submit" value="<?php echo get_lang( 'Vote' ); ?>"/>
+                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->getVote() ? 'Modify your vote' : 'Vote' ); ?>"/>
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
@@ -114,7 +114,7 @@
         <table>
             <tr class="userline">
                 <th class="name">
-                    <input class="submit" type="submit" value="<?php echo get_lang( 'Vote' ); ?>"/>
+                    <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->getVote() ? 'Modify your vote' : 'Vote' ); ?>"/>
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
