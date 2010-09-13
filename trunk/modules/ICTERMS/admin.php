@@ -86,6 +86,9 @@ try
             break;
     }
     
+    ClaroBreadCrumbs::getInstance()->prepend( get_lang( 'Administration' ), get_path('url').'/claroline/admin/index.php' );
+    ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Terms of use') );
+    Claroline::getDisplay()->body->appendContent( claro_html_tool_title( get_lang('Terms of use') ) );
     Claroline::getDisplay()->body->appendContent($dialogBox->render());
     
     echo Claroline::getDisplay()->render();
