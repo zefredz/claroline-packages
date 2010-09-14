@@ -12,12 +12,12 @@
 
 if( claro_is_allowed_to_edit() ) :
 ?>
-<a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotAdd&amp;subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><?php echo get_lang( 'Add more slots' ); ?></a>
+<a href="<?php echo htmlspecialchars( php_self() . '?cmd=rqSlotAdd&subscrId=' . $this->subscriptionId ); ?>"><?php echo get_lang( 'Add more slots' ); ?></a>
 <?php
 endif;
 ?>
 
-<form name="chooseSlot" action="<?php echo $_SERVER['PHP_SELF'] . claro_url_relay_context( '?'); ?>" method="post" >
+<form name="chooseSlot" action="<?php echo htmlspecialchars( php_self() . claro_url_relay_context( '?' ) ); ?>" method="post" >
     <input type="hidden" name="subscrId" value="<?php echo (int) $this->subscriptionId; ?>" />
     <input type="hidden" name="cmd" value="exSlotChoice" />
     
@@ -29,7 +29,7 @@ endif;
                 <th><?php echo get_lang( 'Space (available/total)' ); ?></th>
                 <th><?php echo get_lang( 'Choice' ); ?></th>
                 <?php
-                if( claro_is_allowed_to_edit() ) :                
+                if( claro_is_allowed_to_edit() ) :
                 ?>
                 <th><?php echo get_lang( 'Edit' ); ?></th>
                 <?php
@@ -37,7 +37,7 @@ endif;
                 ?>
             </tr>
         </thead>
-        <tbody>        
+        <tbody>
     <?php
     foreach( $this->slots as $slot ) :
         if( $slot['visibility'] == 'visible' || claro_is_allowed_to_edit() ) :
@@ -56,12 +56,12 @@ endif;
                 ?>
             </td>
             <?php
-            if( claro_is_allowed_to_edit() ) :                
+            if( claro_is_allowed_to_edit() ) :
             ?>
             <td style="text-align: right;">
-                <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotEdit&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" /></a>
-                <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=exSlotVisible&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><img src="<?php echo $slot['visibility'] == 'visible'? get_icon_url( 'visible' ) : get_icon_url( 'invisible'); ?>" alt="<?php echo $slot['visibility'] == 'visible' ? get_lang( 'Visible' ) : get_lang('Invisible'); ?>" /></a>
-                <a href="<?php echo $_SERVER['PHP_SELF'] . '?cmd=rqSlotDelete&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId . claro_url_relay_context( '&' ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>        
+                <a href="<?php echo htmlspecialchars( php_self() . '?cmd=rqSlotEdit&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId ); ?>"><img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" /></a>
+                <a href="<?php echo htmlspecialchars( php_self() . '?cmd=exSlotVisible&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId ); ?>"><img src="<?php echo $slot['visibility'] == 'visible'? get_icon_url( 'visible' ) : get_icon_url( 'invisible'); ?>" alt="<?php echo $slot['visibility'] == 'visible' ? get_lang( 'Visible' ) : get_lang('Invisible'); ?>" /></a>
+                <a href="<?php echo htmlspecialchars( php_self() . '?cmd=rqSlotDelete&slotId=' . $slot['id'] . '&subscrId=' . $this->subscriptionId ); ?>"><img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" /></a>        
             </td>
             <?php
             endif;
@@ -74,5 +74,5 @@ endif;
         </tbody>
     </table>
     <input type="submit" name="saveButton" value="<?php echo get_lang( 'Save' ); ?>" />
-    <?php echo claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel')); ?>
+    <?php echo claro_html_button( php_self() , get_lang( 'Cancel' ) ); ?>
 </form>

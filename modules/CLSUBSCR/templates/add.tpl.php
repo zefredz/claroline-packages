@@ -16,7 +16,7 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
 }
 
 ?>
-<form name="createSubscription" method="post" action="<?php echo $_SERVER['PHP_SELF'] . claro_url_relay_context( '?' ); ?>" >
+<form name="createSubscription" method="post" action="<?php echo htmlspecialchars( php_self() . claro_url_relay_context( '?' ) ); ?>" >
    <?php if( isset( $this->id ) ) : ?>
    <input type="hidden" name="subscrId" value="<?php echo (int) $this->id; ?>" />
    <input type="hidden" name="cmd" value="exEdit" />
@@ -31,7 +31,7 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
            <dd><input type="text" id="title" name="title" value="<?php echo isset( $this->title ) ? $this->title : ''; ?>" /></dd>
            <dt><label for="description"><?php echo get_lang( 'Description' ); ?> :</label></dt>
            <dd><?php echo claro_html_advanced_textarea( 'description', ( isset( $this->description ) ? $this->description : '' ) );  ?></dd>
-           <dt><label for="context"><?php echo get_lang( 'Subscription\'s type' ); ?> :</label></dt>
+           <dt><label><?php echo get_lang( 'Subscription\'s type' ); ?> :</label></dt>
            <dd>
                <input type="radio" name="context" id="contextUser" value="user" <?php echo ! isset( $this->context ) || $this->context == 'user' ? 'checked="checked"' : '';  ?> /><label for="contextUser"><?php echo get_lang( 'Unique user' ); ?></label><br />
                <input type="radio" name="context" id="contextGroup" value="group" <?php echo isset( $this->context ) && $this->context == 'group' ? 'checked="checked"' : '';  ?> /><label for="contextGroup"><?php echo get_lang( 'Group' ); ?></label>

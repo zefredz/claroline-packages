@@ -26,8 +26,7 @@ From::Module( $tlabelReq )->uses( 'subscriptions.lib', 'subscriptionsrenderer.li
 $jsLoader = JavascriptLoader::getInstance();
 $jsLoader->load( 'claroline.ui');
 
-//ClaroBreadCrumbs::getInstance()->prepend( get_lang('Subscriptions'), '../index.php'.claro_url_relay_context('?') );
-ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Subscriptions'), './index.php' . claro_url_relay_context('?') );
+ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Subscriptions'), htmlspecialchars( php_self() . claro_url_relay_context('?') ) );
 
 claro_set_display_mode_available(true);
 
@@ -65,10 +64,10 @@ try
     
     $cmdMenu = array();
     
-    $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=list' . claro_url_relay_context( '&amp;' ), get_lang( 'Subscriptions list' ) );
+    $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( php_self() . '?cmd=list' ) ) , get_lang( 'Subscriptions list' ) );
     if( claro_is_allowed_to_edit() )
     {
-        $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=rqAdd' . claro_url_relay_context( '&amp;' ), get_lang( 'Create a new subscription' ) );
+        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( php_self() . '?cmd=rqAdd' ) ) , get_lang( 'Create new subscription' ) );
     }
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
@@ -182,8 +181,6 @@ try
                         
                         $slot = new $className();
                         
-                        //$slot = new slot();
-                        
                         if( ! $slot->load( $_POST['choice'] ) )
                         {
                             $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
@@ -196,6 +193,7 @@ try
                             {
                                 claro_die( get_lang( 'Not allowed' ) );
                             }
+                            
                             if( $subscription->isLocked() )
                             {
                                 $dialogBox->error( get_lang( 'Unable to save your choice.' ) . ' ' . get_lang( 'The subscription is locked.' ) );
@@ -445,7 +443,7 @@ try
                                                                                         $allSlotsFromUsers
                                                                                         );
                                 }
-                            }                                
+                            }
                         }
                     }
                 }
@@ -507,7 +505,7 @@ try
                         
                         $slots[] = $slot;
                         
-                        if( ! $slot->validate() )                                
+                        if( ! $slot->validate() )
                         {
                             $errors[] = true;
                             $error = true;
@@ -576,7 +574,7 @@ try
                 
                 $allSlotsFromUsersToExport = $slotsCollection->getAllFromUsers( $subscription->getId(), $subscription->getContext() );
                 
-                $export[ 0 ][ 'title' ] = get_lang( 'Title' );                    
+                $export[ 0 ][ 'title' ] = get_lang( 'Title' );
                 if( $subscription->getContext() == 'user' )
                 {
                     $export[ 0 ][ 'lastname' ] = get_lang( 'Last name' );
@@ -906,4 +904,3 @@ catch(Exception $e )
 }
 
 echo $claroline->display->render();
-?>
