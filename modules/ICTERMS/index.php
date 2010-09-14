@@ -92,6 +92,8 @@ try
         }
     }
     
+    ClaroBreadCrumbs::getInstance()->setCurrent( get_lang('Terms of use') );
+    Claroline::getDisplay()->body->appendContent( claro_html_tool_title( get_lang('Terms of use') ) );
     Claroline::getDisplay()->body->appendContent($dialogBox->render());
     
     echo Claroline::getDisplay()->render();
