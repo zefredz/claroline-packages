@@ -41,7 +41,7 @@ if( ! isset( $this->subscription ) )
 <?php
 if( isset( $this->slots ) ) :
 ?>
-<form name="addSlotPlaces" action="<?php echo $_SERVER['PHP_SELF'] . claro_url_relay_context( '?' ); ?>" method="post">
+<form name="addSlotPlaces" action="<?php echo htmlspecialchars( php_self() . claro_url_relay_context( '?' ) ); ?>" method="post">
     <input type="hidden" name="cmd" value="exSlotAdd" />
     <input type="hidden" name="slots" value="<?php echo $this->slots; ?>" />
     <input type="hidden" name="subscrId" value="<?php echo $this->subscription->getId(); ?>" />
@@ -53,7 +53,7 @@ if( isset( $this->slots ) ) :
         $availableSpace = (int) ( isset( $this->slotsContent['places'][ $i ] ) ? $this->slotsContent['places'][ $i ] : $this->places );
 ?>
     <div class="claroDialogBox <?php echo isset( $this->slotsContent['errors'][ $i ] ) ? ($error == true  ? 'boxError' : 'boxSuccess') : ''; ?>">
-        <div class="claroDialogMsg msgForm">        
+        <div class="claroDialogMsg msgForm">
             <fieldset style="border: none; margin: 0; padding: 0;">
                 <dl>
                     <dt><label for="title"><?php echo get_lang( 'Title' ); ?> :</label></dt>

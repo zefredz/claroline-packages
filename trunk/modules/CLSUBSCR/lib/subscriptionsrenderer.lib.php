@@ -43,9 +43,8 @@ class SubscriptionsRenderer {
         $tpl->assign( 'slots', $slots );
         $tpl->assign( 'usersChoices', $usersChoices );
         
-        $cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=export&amp;type=csv&amp;subscrId=' . $subscription->getId() . claro_url_relay_context( '&' ), get_lang( 'Export in CSV' ) );
-        //$cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=export&amp;type=xls&amp;subscrId=' . $subscription->getId() . claro_url_relay_context( '&' ), get_lang( 'Export in XLS' ) );
-        //$cmdMenu[] = claro_html_cmd_link( 'index.php?cmd=export&amp;type=ods&amp;subscrId=' . $subscription->getId() . claro_url_relay_context( '&' ), get_lang( 'Export in ODS' ) );
+        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( php_self() . '?cmd=export&amp;type=csv&amp;subscrId=' . $subscription->getId() , get_lang( 'Export in CSV' ) ) );
+        
         $menu = claro_html_menu_horizontal( $cmdMenu );
         
         $tpl->assign( 'menu', $menu );
@@ -221,5 +220,3 @@ class SubscriptionsRenderer {
         }
     }
 }
- 
-?>
