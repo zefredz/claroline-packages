@@ -1,6 +1,6 @@
 <module>
   <label>CLSUBSCR</label>
-  <name>Subscription</name>
+  <name>Subscriptions</name>
   <version>0.2</version>
   <license>GPL</license>
   <type>tool</type>

@@ -15,6 +15,7 @@
  */
 
 $tlabelReq = 'CLSUBSCR';
+$nameTools = 'Subscriptions';
 
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
@@ -60,7 +61,7 @@ try
     
     $out = '';
     
-    $out .= claro_html_tool_title( 'Subscriptions' );
+    $out .= claro_html_tool_title( get_lang( 'Subscriptions' ) );
     
     $cmdMenu = array();
     
