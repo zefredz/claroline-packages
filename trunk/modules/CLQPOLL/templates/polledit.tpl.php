@@ -94,7 +94,9 @@
             <?php endforeach; ?>
         <?php else : ?>
             <li>
-                <span class="disabled"><?php echo get_lang( 'No choices' ); ?></span>
+                <!-- <span class="disabled"><?php echo get_lang( 'No choices' ); ?></span> -->
+                <input id="choicex1" type="text" name="add[1]" value="" size="40" />
+                <span class="required">*</span>
             </li>
         <?php endif; ?>
         </ul>

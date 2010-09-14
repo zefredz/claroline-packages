@@ -262,9 +262,13 @@ try
             }
             
             case 'exMkVisible':
+            {
+                $poll->setVisibility( Poll::VISIBLE );
+                $visibility_changed = $poll->save();
+            }
             case 'exMkInvisible':
             {
-                $poll->changeVisibility();
+                $poll->setVisibility( Poll::INVISIBLE );
                 $visibility_changed = $poll->save();
                 break;
             }
@@ -601,7 +605,7 @@ if ( isset ( $template ) )
             $scriptContent = '<script type="text/javascript">
                         <!--
                         $(document).ready(function(){
-                            var nbToAdd=0;
+                            var nbToAdd=1;
                             $("#addChoice").click(function(){
                                 nbToAdd++;
                                 $("#choiceList").append("<li>'
