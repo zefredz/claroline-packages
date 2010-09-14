@@ -20,12 +20,25 @@ $conf_def['config_class'] = 'tool';
 $conf_def['section']['main']['label']='Main Settings';
 $conf_def['section']['main']['properties'] =
 array (
-    'icterms_forceTermsAcceptance'
+    'icterms_forceTermsAcceptance',
+    'icterms_useAccountCreationAgreement'
 );
 
 $conf_def_property_list['icterms_forceTermsAcceptance'] = array (
     'label'         => 'Force user to accept terms of use on login',
     'default'       => TRUE,
+    'type'          => 'boolean',
+    'display'       => TRUE,
+    'readonly'      => FALSE,
+    'acceptedValue' => array (
+        'TRUE' => 'Yes',
+        'FALSE' => 'No'
+    )
+);
+
+$conf_def_property_list['icterms_useAccountCreationAgreement'] = array (
+    'label'         => 'Use the agreement textzone defined for the user account creation',
+    'default'       => FALSE,
     'type'          => 'boolean',
     'display'       => TRUE,
     'readonly'      => FALSE,

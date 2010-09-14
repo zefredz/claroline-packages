@@ -46,7 +46,8 @@ try
     
     switch ( $cmd )
     {
-        case 'exEditTemsOfUse':
+        case 'exEditTermsOfUse':
+            
             $confirmEmpty = ('true' == $userInput->get('confirmEmpty','false'));
                 
             if( $confirmEmpty )
