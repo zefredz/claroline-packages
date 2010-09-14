@@ -87,7 +87,7 @@ try
                 $tpl = new ModuleTemplate('ICTERMS', 'touacceptform.tpl.php' );
                 $tpl->assign( 'termsContents', icterms_get_terms_contents() );
                 
-                $dialogBox->form($tpl->render());
+                $dialogBox->warning($tpl->render());
             }
         }
     }
