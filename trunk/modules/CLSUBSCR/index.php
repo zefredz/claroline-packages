@@ -67,7 +67,7 @@ try
     $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( php_self() . '?cmd=list' ) ) , get_lang( 'Subscriptions list' ) );
     if( claro_is_allowed_to_edit() )
     {
-        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( php_self() . '?cmd=rqAdd' ) ) , get_lang( 'Create new subscription' ) );
+        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( php_self() . '?cmd=rqAdd' ) ) , get_lang( 'Create a new subscription' ) );
     }
     
     $out .= claro_html_menu_horizontal( $cmdMenu );
