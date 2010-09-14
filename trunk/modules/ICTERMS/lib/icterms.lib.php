@@ -32,18 +32,22 @@ function icterms_terms_acceptance_in_progress()
         && $_SESSION['icterms_terms_acceptance_in_progress'];
 }
 
-function icterms_get_acceptance_timestamp( $userId )
+/**
+ * Check if the given user has already accepted the terms of use
+ * @return boolean
+ */
+function icterms_user_has_accepted_tou( $userId )
 {
     // get value from database
-        $tbl = get_module_main_tbl(array('icterms_acceptances'));
+    $tbl = get_module_main_tbl(array('icterms_acceptances'));
+
+    $res = Claroline::getDatabase()->query("
+        SELECT terms_acceptance_timestamp
+        FROM `{$tbl['icterms_acceptances']}`
+        WHERE user_id = ".(int)Claroline::getDatabase()->escape($userId)."
+    ");
     
-        $res = Claroline::getDatabase()->query("
-            SELECT terms_acceptance_timestamp
-            FROM `{$tbl['icterms_acceptances']}`
-            WHERE user_id = ".(int)Claroline::getDatabase()->escape($userId)."
-        ");
-        
-        return ($res->numRows() == 0);
+    return ($res->numRows() == 0);
 }
 
 /**
@@ -57,7 +61,7 @@ function icterms_user_must_accept_terms( $userId )
     
     if ( ! $userMustAcceptTermsFromSession )
     {
-        $userMustAcceptTermsFromDatabase = icterms_get_acceptance_timestamp( $userId );
+        $userMustAcceptTermsFromDatabase = icterms_user_has_accepted_tou( $userId );
     }
     else
     {
