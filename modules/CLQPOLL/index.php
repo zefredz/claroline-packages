@@ -265,7 +265,9 @@ try
             {
                 $poll->setVisibility( Poll::VISIBLE );
                 $visibility_changed = $poll->save();
+                break;
             }
+            
             case 'exMkInvisible':
             {
                 $poll->setVisibility( Poll::INVISIBLE );
