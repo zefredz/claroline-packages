@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 0.9.9 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -97,7 +97,7 @@
         <table>
             <tr class="userline">
                 <th class="name">
-                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->getVote() ? 'Modify your vote' : 'Vote' ); ?>"/>
+                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists() ? 'Modify your vote' : 'Vote' ); ?>"/>
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
@@ -148,9 +148,6 @@
             <!-- END Displays the current user vote -->
             <tr>
                 <th class="invisible">
-                <?php if ( $this->poll->getAllVoteList() && $this->userRights[ 'see_names' ] ) : ?>
-                    <span class="vote"><?php echo get_lang( 'Votes' ); ?></span>
-                <?php endif; ?>
                 <?php echo get_lang( 'Choices' ); ?>
                 </th>
             <?php foreach ( $this->poll->getChoiceList() as $label ) : ?>
