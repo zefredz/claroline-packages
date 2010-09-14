@@ -555,9 +555,16 @@ class subscription
    */
   public function choiceExists( $userId )
   {
-    $slotCollection = new slotsCollection( $this->id );
-    
-    return (boolean)( $slotCollection->getAllFromUser( $userId , $this->getContext() ) );
+        return Claroline::getDatabase()->query( "
+            SELECT
+                slotId
+            FROM
+                `{$this->table['subscr_slots_subscribers']}`
+            WHERE
+                subscriberId = " . Claroline::getDatabase()->escape( $userId ) . "
+            AND
+                subscriptionId = " . Claroline::getDatabase()->escape( $this->id )
+        )->numRows();
   }
   /**
    * Get lock of the subscription
@@ -991,7 +998,7 @@ class slotsCollection
                         s.`description`,
                         s.`availableSpace`,
                         s.`visibility`,
-                        count( ss.`slotId` ) as `subscribersCount`                        
+                        count( ss.`slotId` ) as `subscribersCount`
                     FROM
                         `{$this->table['subscr_slots']}` s
                     LEFT JOIN
@@ -1102,7 +1109,7 @@ class slotsCollection
         
         foreach( $collection as $c )
         {
-            $slots[ $c['subscriptionId'] ][ $c['slotId'] ] = $c;            
+            $slots[ $c['subscriptionId'] ][ $c['slotId'] ] = $c;
         }        
         
         return $slots;
@@ -1117,7 +1124,7 @@ class slotsCollection
     {
         $slotsAvailable = 0;
         
-        $query =    "SELECT                            
+        $query =    "SELECT
                         (ss.`availableSpace` - count( sl_sub.`subscriberId` ) ) as `slotsAvailable`
                     FROM
                         `{$this->table['subscr_slots']}` ss
