@@ -100,15 +100,22 @@ function icterms_register_user_terms_acceptance( $userId )
  */
 function icterms_get_terms_contents()
 {
-    $textzone = get_path('rootSys').'/platform/module_data/ICTERMS/textzone_terms_of_use.html';
-    
-    if ( file_exists( $textzone ) )
+    if ( get_conf('icterms_useAccountCreationAgreement', false) )
     {
-        $termsOfUse = trim( file_get_contents( $textzone ) );
+        $termsOfUse = claro_text_zone::get_content('textzone_inscription_form');
     }
     else
     {
-        $termsOfUse = '';
+        $textzone = get_path('rootSys').'platform/module_data/ICTERMS/textzone_terms_of_use.html';
+    
+        if ( file_exists( $textzone ) )
+        {
+            $termsOfUse = trim( file_get_contents( $textzone ) );
+        }
+        else
+        {
+            $termsOfUse = '';
+        }
     }
     
     if ( empty( $termsOfUse ) )
@@ -126,14 +133,14 @@ function icterms_get_terms_contents()
  */
 function icterms_put_terms_contents( $contents )
 {
-    $textzone = get_path('rootSys').'/platform/module_data/ICTERMS/textzone_terms_of_use.html';
+    $textzone = get_path('rootSys').'platform/module_data/ICTERMS/textzone_terms_of_use.html';
     
-    if ( file_exists( dirname( $textzone ) ) )
+    if ( !file_exists( dirname( $textzone ) ) )
     {
         claro_mkdir( dirname($textzone), CLARO_FILE_PERMISSIONS, true );
     }
     
-    file_put_contents( $textzone );
+    file_put_contents( $textzone, $contents );
 }
 
 /**
@@ -143,7 +150,7 @@ function icterms_put_terms_contents( $contents )
  */
 function icterms_delete_terms_contents()
 {
-    $textzone = get_path('rootSys').'/platform/module_data/ICTERMS/textzone_terms_of_use.html';
+    $textzone = get_path('rootSys').'platform/module_data/ICTERMS/textzone_terms_of_use.html';
     
     if ( file_exists( $textzone ) )
     {

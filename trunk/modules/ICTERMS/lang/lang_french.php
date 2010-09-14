@@ -2,7 +2,7 @@
 
 $_lang['Cannot change terms of use : terms of use empty'] = 'Impossible de modifier les conditions d\'utilisation : texte vide';
 $_lang['Force user to accept terms of use on login'] = 'Obliger l\'utilisateur à accepter les conditions d\'utilisation lors du login';
-$_lang['I have read and understood the terms of use of this web site and I accept them.'] = 'J\'ai lu les conditions d\'utilisation de ce site et je les accepte';
+$_lang['I have read and understood the terms of use of this web site and I accept them.'] = 'J\'ai pris connaissance des conditions d\'utilisation de ce site et je les accepte';
 $_lang['If you want to reset the terms of use to the platform defaults, check the box at the bottom of the form'] = 'Pour remettre le texte par défaut, cochez la case en bas du formulaire';
 $_lang['Main Settings'] = 'Paramètres généraux';
 $_lang['Reset terms of use to defaults'] = 'Remettre le texte par défaut';
