@@ -198,7 +198,7 @@ try
                 $toAdd      = $userInput->get( 'add' ) ? $userInput->get( 'add' ) : array();
                 $toDelete   = $userInput->get( 'del' ) ? $userInput->get( 'del' ) : array();
                 
-                if ( $title && $toModify + $toAdd )
+                if ( $title && ( ! empty( $toModify ) || count( $toAdd ) > 1 || $toAdd[ 1 ] != '' ) )
                 {
                     $poll->setTitle( $title );
                     $poll->setQuestion( $question );
