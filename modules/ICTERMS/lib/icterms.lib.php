@@ -144,7 +144,7 @@ function icterms_put_terms_contents( $contents )
         claro_mkdir( dirname($textzone), CLARO_FILE_PERMISSIONS, true );
     }
     
-    file_put_contents( $textzone, $contents );
+    file_put_contents( $textzone, $contents . "\n<!-- content: html tiny_mce -->\n" );
 }
 
 /**
