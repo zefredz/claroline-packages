@@ -292,6 +292,7 @@ if( $cmd == 'rqToc' )
     }
     else
     {
+        $thisAttempt = new Attempt();
         $itemList = new PathItemList($pathId);
     }
 
