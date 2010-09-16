@@ -681,7 +681,7 @@ class subscriptionsCollection
         
         $query =    "SELECT
                         s.`id`, s.`title`, s.`description`, s.`context`, s.`type`, s.`modifiable`, s.`visibility`, s.`visibilityFrom`, s.`visibilityTo`, s.`lock`,
-                        count( ss.`id` ) as `totalSlotsAvailable`                        
+                        count( ss.`id` ) as `totalSlotsAvailable`
                     FROM
                         `{$this->table['subscr_sessions']}` s
                     LEFT JOIN

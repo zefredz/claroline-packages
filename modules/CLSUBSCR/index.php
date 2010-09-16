@@ -56,6 +56,8 @@ try
     
     $cmd = $userInput->get( 'cmd','list' );
     $subscrId = $userInput->get( 'subscrId' );
+    $slotId = $userInput->get( 'slotId' );
+    $type = $userInput->get( 'type' );
     
     $subscription = new Subscription( $subscrId );
     
@@ -83,7 +85,7 @@ try
         {
             case 'exSlotVisible' :
             {
-                if( ! isset( $_REQUEST['slotId'] ) )
+                if( ! isset( $slotId ) )
                 {
                     $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
                     
@@ -92,7 +94,7 @@ try
                 else
                 {
                     $slot = new slot();
-                    if( ! $slot->load( $_REQUEST['slotId'] ) )
+                    if( ! $slot->load( $slotId ) )
                     {
                         $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
@@ -267,7 +269,7 @@ try
             
             case 'exSlotDelete' :
             {
-                if( ! isset( $_REQUEST['slotId'] ) )
+                if( ! isset( $slotId ) )
                 {
                     $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
                     
@@ -276,7 +278,7 @@ try
                 else
                 {
                     $slot = new slot();
-                    if( ! $slot->load( $_REQUEST['slotId'] ) )
+                    if( ! $slot->load( $slotId ) )
                     {
                         $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
@@ -318,39 +320,7 @@ try
             
             case 'rqSlotDelete' :
             {
-                if( $result = checkRequestSubscription( $subscription, $dialogBox ) )
-                {
-                    $out .= $result;
-                }
-                else
-                {
-                    if( ! isset( $_REQUEST['slotId'] ) )
-                    {
-                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
-                        
-                        $out .= $dialogBox->render();
-                    }
-                    else
-                    {
-                        $slot = new slot();
-                        if( ! $slot->load( $_REQUEST['slotId'] ) )
-                        {
-                            $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
-                            
-                            $out .= $dialogBox->render();
-                        }
-                        else
-                        {
-                            $out .= SubscriptionsRenderer::deleteSlot( $subscription, $slot );
-                        }
-                    }
-                }
-            }
-            break;
-            
-            case 'exSlotEdit' :
-            {
-                if( ! isset( $_REQUEST['slotId'] ) )
+                if( ! isset( $slotId ) )
                 {
                     $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
                     
@@ -359,7 +329,32 @@ try
                 else
                 {
                     $slot = new slot();
-                    if( ! $slot->load( $_REQUEST['slotId'] ) )
+                    if( ! $slot->load( $slotId ) )
+                    {
+                        $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
+                        
+                        $out .= $dialogBox->render();
+                    }
+                    else
+                    {
+                        $out .= SubscriptionsRenderer::deleteSlot( $subscription, $slot );
+                    }
+                }
+            }
+            break;
+            
+            case 'exSlotEdit' :
+            {
+                if( ! isset( $slotId ) )
+                {
+                    $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
+                    
+                    $out .= $dialogBox->render();
+                }
+                else
+                {
+                    $slot = new slot();
+                    if( ! $slot->load( $slotId ) )
                     {
                         $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
@@ -453,7 +448,7 @@ try
             
             case 'rqSlotEdit' :
             {
-                if( ! isset( $_REQUEST['slotId'] ) )
+                if( ! isset( $slotId ) )
                 {
                     $dialogBox->error( get_lang( 'Unable to load this slot.' ) . ' ' . get_lang( 'The ID is missing.' ) );
                     
@@ -462,7 +457,7 @@ try
                 else
                 {
                     $slot = new slot();
-                    if( ! $slot->load( $_REQUEST['slotId'] ) )
+                    if( ! $slot->load( $slotId ) )
                     {
                         $dialogBox->error( get_lang( 'Unable to load this slot.' ) );
                         
@@ -562,7 +557,7 @@ try
             
             case 'export' :
             {
-                if( ! ( isset( $_REQUEST['type'] ) && $_REQUEST['type'] == 'csv' ) )
+                if( ! ( isset( $type ) && $type == 'csv' ) )
                 {
                     claro_die( get_lang( 'Not allowed' ) );
                 }
