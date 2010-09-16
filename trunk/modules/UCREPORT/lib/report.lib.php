@@ -13,7 +13,8 @@
  * Retrieves the students' scores for all the assignments, adds weights,
  * calculates average scores and students'final (weighted) results,
  * and generates a report.
- * @const DEFAULT_ASSIGNEMENT_WEIGHT the default weight for an assignment
+ * @const DEFAULT_ASSIGNMENT_WEIGHT the default weight for an assignment
+ * @const DEFAULT_MAX_SCORE the default maximum score for an assignment
  * @const ASSIGNMENT_DATA_FILE the name of the file where assignments weights are stored
  * @const EXAMINATION_DATA_FILE the name of the file where examination scores are stored
  * @const EXAMINATION_ID the examination id in $reportDataList
@@ -27,7 +28,7 @@
  */
 class Report
 {
-    const DEFAULT_ASSIGNEMENT_WEIGHT = 100;
+    const DEFAULT_ASSIGNMENT_WEIGHT = 100;
     const DEFAULT_MAX_SCORE = 100;
     const ASSIGNMENT_DATA_FILE = 'assignments.data';
     const EXAMINATION_DATA_FILE = 'examination.data';
@@ -106,14 +107,14 @@ class Report
             $is_visible = $line[ 'visibility' ] == self::VISIBLE;
             $this->assignmentDataList[ $line[ 'id' ] ][ 'title' ] = $line[ 'title' ];
             $this->assignmentDataList[ $line[ 'id' ] ][ 'active' ] = $is_visible;
-            $this->assignmentDataList[ $line[ 'id' ] ][ 'weight' ] = self::DEFAULT_ASSIGNEMENT_WEIGHT;
+            $this->assignmentDataList[ $line[ 'id' ] ][ 'weight' ] = self::DEFAULT_ASSIGNMENT_WEIGHT;
             $this->assignmentDataList[ $line[ 'id' ] ][ 'submission_count' ] = 0;
             $this->assignmentDataList[ $line[ 'id' ] ][ 'average' ] = 0;
         }
         
         $this->assignmentDataList[ self::EXAMINATION_ID ][ 'title' ] = get_lang( 'Examination' );
         $this->assignmentDataList[ self::EXAMINATION_ID ][ 'active' ] = false;
-        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'weight' ] = self::DEFAULT_ASSIGNEMENT_WEIGHT;
+        $this->assignmentDataList[ self::EXAMINATION_ID ][ 'weight' ] = self::DEFAULT_ASSIGNMENT_WEIGHT;
         $this->assignmentDataList[ self::EXAMINATION_ID ][ 'submission_count' ] = 0;
         $this->assignmentDataList[ self::EXAMINATION_ID ][ 'average' ] = 0;
         
