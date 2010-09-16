@@ -44,8 +44,8 @@ if ( count( get_included_files() ) == 1  || !claro_is_allowed_to_edit() )
            <!--/dd-->
            <dt><label for="modifiable"><?php echo get_lang( 'Users can modify their choices' ); ?> :</label></dt>
            <dd>
-               <input type="radio" name="modifiable" id="modifiable" value="modifiable" <?php echo ! isset( $this->isModifiable ) || $this->isModifiable ? 'checked="checked"' : '';  ?> /><label for="contextUser"><?php echo get_lang( 'Yes' ); ?></label><br />
-               <input type="radio" name="modifiable" id="not_modifiable" value="not_modifiable" <?php echo isset( $this->isModifiable ) && ! $this->isModifiable ? 'checked="checked"' : '';  ?> /><label for="contextGroup"><?php echo get_lang( 'No' ); ?></label>
+               <input type="radio" name="modifiable" id="modifiable" value="modifiable" <?php echo ! isset( $this->isModifiable ) || $this->isModifiable ? 'checked="checked"' : '';  ?> /><label for="modifiable"><?php echo get_lang( 'Yes' ); ?></label><br />
+               <input type="radio" name="modifiable" id="not_modifiable" value="not_modifiable" <?php echo isset( $this->isModifiable ) && ! $this->isModifiable ? 'checked="checked"' : '';  ?> /><label for="not_modifiable"><?php echo get_lang( 'No' ); ?></label>
            </dd>
        </dl>
    </fieldset>
