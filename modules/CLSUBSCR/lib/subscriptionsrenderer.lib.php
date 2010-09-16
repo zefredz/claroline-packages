@@ -43,7 +43,7 @@ class SubscriptionsRenderer {
         $tpl->assign( 'slots', $slots );
         $tpl->assign( 'usersChoices', $usersChoices );
         
-        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( php_self() . '?cmd=export&amp;type=csv&amp;subscrId=' . $subscription->getId() , get_lang( 'Export in CSV' ) ) );
+        $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( php_self() . '?cmd=export&amp;type=csv&amp;subscrId=' . $subscription->getId() ) , get_lang( 'Export in CSV' ) );
         
         $menu = claro_html_menu_horizontal( $cmdMenu );
         
