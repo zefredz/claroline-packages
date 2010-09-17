@@ -12,7 +12,7 @@
 
 $tlabelReq = 'CLQPOLL';
 
-$nameTools = 'Quick poll';
+$nameTools = get_lang( 'Quick poll' );
 
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
