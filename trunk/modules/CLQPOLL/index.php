@@ -12,12 +12,12 @@
 
 $tlabelReq = 'CLQPOLL';
 
-$nameTools = get_lang( 'Quick poll' );
-
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' );
 From::Module( 'CLQPOLL' )->uses( 'poll.lib' , 'polllist.lib' , 'uservote.lib' , 'pollpager.lib' , 'pollstat.lib' );
+
+$nameTools = get_lang( 'Quick poll' );
 
 if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form( true );
 
@@ -25,7 +25,7 @@ claro_set_display_mode_available( true );
 
 CssLoader::getInstance()->load( 'poll' , 'screen' );
 $dialogBox = new DialogBox();
-$pageTitle = array( 'mainTitle' => get_lang( 'Quick poll tool' ) );
+$pageTitle = array( 'mainTitle' => $nameTools );
 
 try
 {
