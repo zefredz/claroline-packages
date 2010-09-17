@@ -9,10 +9,10 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$tlabelReq = 'UCREPORT';
-$nameTools = 'Student report';
-
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+
+$tlabelReq = 'UCREPORT';
+$nameTools = get_lang( 'Student report' );
 
 FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' , 'thirdparty/tcpdf/tcpdf' , 'fileUpload.lib' );
 From::Module( 'UCREPORT' )->uses( 'report.lib' , 'report2csv.lib' );
