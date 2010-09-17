@@ -15,7 +15,6 @@
  */
 
 $tlabelReq = 'CLSUBSCR';
-$nameTools = 'Subscriptions';
 
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
@@ -23,6 +22,8 @@ if ( ! claro_is_user_authenticated() ) claro_disp_auth_form();
 
 FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib');
 From::Module( $tlabelReq )->uses( 'subscriptions.lib', 'subscriptionsrenderer.lib' , 'datetool.lib' );
+
+$nameTools = get_lang( 'Subscriptions' );
 
 $jsLoader = JavascriptLoader::getInstance();
 $jsLoader->load( 'claroline.ui');
