@@ -16,10 +16,9 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' , 'thirdparty/tcpdf/tcpdf' , 'fileUpload.lib' );
 From::Module( 'UCREPORT' )->uses( 'report.lib' , 'report2csv.lib' );
 
-$nameTools = get_lang( 'Student Report' );
-
 if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form( true );
 
+$nameTools = get_lang( 'Student Report' );
 $dialogBox = new DialogBox();
 $pageTitle = array( 'mainTitle' => get_lang( 'Report' ) );
 
@@ -393,7 +392,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
         }
     }
     
-    ClaroBreadCrumbs::getInstance()->append( get_lang( 'Student Report' )
+    ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
                                                             . $dialogBox->render()
