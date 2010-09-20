@@ -72,7 +72,7 @@ if( $is_allowedToEdit )
 {
     if( $cmd == 'exImport')
     {
-        if( get_conf( 'import_allowed' ) || $is_allowedToEdit )
+        if( get_conf( 'import_allowed' ) || claro_is_platform_admin() )
         {
             // include import lib
             require_once dirname( __FILE__ ) . '/lib/xmlize.php';
@@ -109,29 +109,36 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'rqImport' )
     {
-        include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
-        include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
-
-        $maxFilledSpace = 1000000000;
-
-        $courseDir   = claro_get_course_path() . '/scormPackages/';
-        $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
-
-        $dialogBox->form("\n\n"
-        .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
-        .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
-        .    claro_form_relay_context()
-        //.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
-        .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
-        .    '<br />' . "\n"
-        .     '<input type="file" name="uploadedPackage" />' . "\n"
-        .     '<br />' . "\n"
-        .     '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
-        .    '<br /><br />' . "\n"
-        .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
-        .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
-        .    claro_html_button('index.php', get_lang('Cancel'))
-        .    '</form>' . "\n");
+        if ( get_conf( 'import_allowed' ) || claro_is_platform_admin() )
+        {
+            include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
+            include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
+    
+            $maxFilledSpace = 1000000000;
+    
+            $courseDir   = claro_get_course_path() . '/scormPackages/';
+            $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
+    
+            $dialogBox->form("\n\n"
+            .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
+            .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
+            .    claro_form_relay_context()
+            //.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
+            .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
+            .    '<br />' . "\n"
+            .     '<input type="file" name="uploadedPackage" />' . "\n"
+            .     '<br />' . "\n"
+            .     '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
+            .    '<br /><br />' . "\n"
+            .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
+            .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
+            .    claro_html_button('index.php', get_lang('Cancel'))
+            .    '</form>' . "\n");
+        }
+        else
+        {
+            $dialogBox->error( 'Not allowed' );
+        }
     }
 
     if( $cmd == 'exDelete' )
@@ -222,7 +229,7 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'exExport' )
     {
-        if ( get_conf( 'export_allowed' ) || $is_allowedToEdit )
+        if ( get_conf( 'export_allowed' ) || claro_is_platform_admin() )
         {
             $thisPath = $path;
             FromKernel::uses( 'core/linker.lib' );
