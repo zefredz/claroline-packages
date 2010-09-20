@@ -27,7 +27,7 @@ $conf_def['config_class'] = 'tool';
 
 $conf_def['section']['display']['label']='Display Settings';
 $conf_def['section']['display']['properties'] =
-array ( 'scorm_api_debug' );
+array ( 'scorm_api_debug' , 'import_allowed' ,'export_allowed' );
 
 $conf_def_property_list['scorm_api_debug'] =
 array ( 'label'       => 'SCORM API debug mode'
@@ -42,5 +42,24 @@ array ( 'label'       => 'SCORM API debug mode'
                                )
       );
 
+$conf_def_property_list['import_allowed'] =
+array ( 'label'       => 'Import allowed'
+      , 'description' => 'Allows learning path export'
+      , 'default'       => FALSE
+      , 'type'          => 'boolean'
+      , 'display'       => TRUE
+      , 'readonly'      => FALSE
+      , 'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );
+
+$conf_def_property_list['export_allowed'] =
+array ( 'label'       => 'Export allowed'
+      , 'description' => 'Allows learning path export'
+      , 'default'       => FALSE
+      , 'type'          => 'boolean'
+      , 'display'       => TRUE
+      , 'readonly'      => FALSE
+      , 'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+      );
 
 ?>
