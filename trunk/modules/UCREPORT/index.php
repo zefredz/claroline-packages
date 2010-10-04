@@ -394,7 +394,7 @@ if ( claro_is_course_member() || claro_is_allowed_to_edit() )
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help.php' )
                                                             . $dialogBox->render()
                                                             . $reportView->render() );
 }
