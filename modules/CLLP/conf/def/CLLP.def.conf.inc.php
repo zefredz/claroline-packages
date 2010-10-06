@@ -44,7 +44,7 @@ array ( 'label'       => 'SCORM API debug mode'
 
 $conf_def_property_list['import_allowed'] =
 array ( 'label'       => 'Import allowed'
-      , 'description' => 'Allows learning path export'
+      , 'description' => 'Allows learning path import'
       , 'default'       => FALSE
       , 'type'          => 'boolean'
       , 'display'       => TRUE
