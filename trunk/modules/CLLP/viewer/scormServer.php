@@ -319,7 +319,7 @@ if( $cmd == 'rqToc' )
         }
         
         //$completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
-        $completionIcon = strtolower($anItem['completion_status']) == 'completed';
+        //$completionIcon = strtolower($anItem['completion_status']) == 'completed';
         
         $html .= '<a id="item_'.$anItem['id'].'_anchor"></a>' . "\n";
 
