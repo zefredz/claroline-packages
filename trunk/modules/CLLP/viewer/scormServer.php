@@ -304,11 +304,22 @@ if( $cmd == 'rqToc' )
     .    '<div id="table_of_content_inner" >' . "\n";
 
     $html .= '<h3>'.htmlspecialchars($path->getTitle()).'</h3>' . "\n";
-
+    
+    $is_authenticated = claro_is_user_authenticated();
+    
     foreach( $itemListArray as $anItem )
     {
+        if ( $is_authenticated )
+        {
+            $completionIcon = $anItem[ 'completion_status' ] == 'completed';
+        }
+        else
+        {
+            $completionIcon = isset( $_SESSION[ 'item' . $anItem[ 'id' ] . 'completed' ] );
+        }
+        
         //$completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
-        $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? true : false;
+        $completionIcon = strtolower($anItem['completion_status']) == 'completed';
         
         $html .= '<a id="item_'.$anItem['id'].'_anchor"></a>' . "\n";
 
