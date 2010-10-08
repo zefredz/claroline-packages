@@ -15,7 +15,6 @@
 
 try
 {
-    // $tlabelReq = 'ICTERMS';
     $cidReset = true;
     $cidReq = false;
     
@@ -45,7 +44,7 @@ try
         
         $dialogBox->info(
             get_lang('Continue to the <a href="%homePage%">home page</a>',
-                array('%homePage%' => get_path('url') )
+                array('%homePage%' => get_path('url') . '/index.php' )
             )
         );
     }
@@ -68,7 +67,7 @@ try
                     // with link to index.php 'continue'
                     $dialogBox->info(
                         get_lang('Continue to the <a href="%homePage%">home page</a>',
-                            array('%homePage%' => get_path('url') )
+                            array('%homePage%' => get_path('url') . '/index.php' )
                         )
                     );
                     break;
