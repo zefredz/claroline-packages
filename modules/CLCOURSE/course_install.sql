@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__manage_course_homepage` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `description` VARCHAR(255) NOT NULL DEFAULT '',
+  `rank` INT(11) NOT NULL,
+  `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
+  PRIMARY KEY(id)
+) TYPE=MyISAM;
