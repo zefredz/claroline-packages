@@ -1,0 +1,28 @@
+<module>
+  <label>CLCOURSE</label>
+  <name>Course</name>
+  <version>0.1</version>
+  <license>GPL</license>
+  <type>tool</type>
+  <entry>index.php</entry>
+  <icon>icon.png</icon>
+
+  <description>
+  <![CDATA[
+	This  tool  is an  add-on tool of claroline.
+	It's  able to organize the course homepage.
+  ]]>
+  </description>
+
+  <author>
+     <name>Claroline team</name>
+     <email>info@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author>
+
+  <requirements>
+    <claroline>
+      <version>1.9.4</version>
+    </claroline>
+  </requirements>
+</module>
