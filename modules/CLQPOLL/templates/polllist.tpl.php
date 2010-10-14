@@ -34,6 +34,9 @@
                 <?php echo get_lang( 'Modify' ); ?>
             </th>
             <th>
+                <?php echo get_lang( 'Purge' ); ?>
+            </th>
+            <th>
                 <?php echo get_lang( 'Delete' ); ?>
             </th>
             <th>
@@ -67,18 +70,23 @@
                 <?php if ( claro_is_allowed_to_edit() ) : ?>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPoll&pollId='. $poll['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Modify'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Modify' ); ?>"/>
+                </a>
+            </td>
+            <td align="center">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPurgePoll&pollId='. $poll['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'sweep' ); ?>" alt="<?php echo get_lang( 'Purge' ); ?>"/>
                 </a>
             </td>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePoll&pollId='. $poll['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
             </td>
             <td align="center">
                     <?php if ( $poll['status'] == Poll::OPEN_VOTE ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exClose&tpl=polllist&pollId='. $poll['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open' ); ?>"/>
                 </a>
                     <?php else: ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exOpen&tpl=polllist&pollId='. $poll['id'] ) );?>">
@@ -93,7 +101,7 @@
                 </a>
                     <?php else: ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&&tpl=polllist&pollId='. $poll['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>"/>
                 </a>
                     <?php endif; ?>
             </td>
