@@ -21,12 +21,6 @@
     </span>
     <?php if ( $this->poll->getAllVoteList() ) : ?>
     <span>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewStats&pollId=' . $this->poll->getId() ) ); ?>">
-            <img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="<?php echo get_lang( 'View stats'); ?>"/>
-            <?php echo get_lang( 'View stats' ); ?>
-        </a>
-    </span>
-    <span>
         <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPurgePoll&pollId=' . $this->poll->getId() ) ); ?>">
             <img src="<?php echo get_icon_url( 'sweep' ); ?>" alt="<?php echo get_lang( 'Purge this poll'); ?>"/>
             <?php echo get_lang( 'Purge this poll' ); ?>
@@ -39,6 +33,14 @@
         <?php echo get_lang( 'Delete this poll' ); ?>
         </a>
     </span>
+    <?php if ( $this->poll->getAllVoteList() ) : ?>
+    <span>
+        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewStats&pollId=' . $this->poll->getId() ) ); ?>">
+            <img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="<?php echo get_lang( 'View stats'); ?>"/>
+            <?php echo get_lang( 'View stats' ); ?>
+        </a>
+    </span>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php echo $this->dialogBox->render(); ?>

@@ -363,7 +363,7 @@ try
                 $crumb = get_lang( 'Purge poll' );
                 $msg = get_lang( 'Do you really want to purge this poll?' );
                 $urlAction = 'exPurgePoll';
-                $urlCancel = 'rqEditPoll';
+                $urlCancel = 'rqViewPoll';
                 $template = 'pollview';
                 break;
             }

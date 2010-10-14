@@ -15,34 +15,6 @@
 <!-- BEGIN ToolBar -->
 <?php if ( $this->userRights[ 'edit' ]) : ?>
 <span>
-    <?php if ( $this->poll->getStatus() == Poll::OPEN_VOTE ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exClose&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
-        <?php echo get_lang( 'Close poll' ); ?>
-    </a>
-    <?php else: ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exOpen&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
-        <?php echo get_lang( 'Open poll' ); ?>
-    </a>
-    <?php endif; ?>
-</span>
-
-<span>
-    <?php if ( $this->poll->isVisible() ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
-        <?php echo get_lang( 'Make invisible' ); ?>
-    </a>
-    <?php else : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
-        <?php echo get_lang( 'Make visible' ); ?>
-    </a>
-    <?php endif; ?>
-</span>
-
-<span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPoll&pollId='. $this->poll->getId() ) );?>">
         <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit poll'); ?>"/>
         <?php echo get_lang( 'Edit poll' ); ?>
@@ -54,6 +26,34 @@
         <img src="<?php echo get_icon_url( 'sweep' ); ?>" alt="<?php echo get_lang( 'Purge poll'); ?>"/>
         <?php echo get_lang( 'Purge this poll' ); ?>
     </a>
+</span>
+
+<span>
+    <?php if ( $this->poll->getStatus() == Poll::OPEN_VOTE ) : ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exClose&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
+        <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
+        <?php echo get_lang( 'Close poll' ); ?>
+    </a>
+    <?php else: ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exOpen&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
+        <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
+        <?php echo get_lang( 'Open poll' ); ?>
+    </a>
+    <?php endif; ?>
+</span>
+
+<span>
+    <?php if ( $this->poll->isVisible() ) : ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
+        <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+        <?php echo get_lang( 'Make invisible' ); ?>
+    </a>
+    <?php else : ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
+        <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
+        <?php echo get_lang( 'Make visible' ); ?>
+    </a>
+    <?php endif; ?>
 </span>
 <?php endif; ?>
 
