@@ -23,7 +23,7 @@ if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_f
 
 claro_set_display_mode_available( true );
 
-CssLoader::getInstance()->load( 'poll' , 'screen' );
+CssLoader::getInstance()->load( 'poll' , 'screen' , 'print' );
 $dialogBox = new DialogBox();
 $pageTitle = array( 'mainTitle' => $nameTools );
 
