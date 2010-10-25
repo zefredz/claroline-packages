@@ -412,7 +412,7 @@ try
                 }
                 elseif ( $poll->getOption( '_revote' ) != '_allowed' )
                 {
-                    $dialogBox->error( get_lang( 'You have allready voted!' ) );
+                    $dialogBox->error( get_lang( 'You have already voted!' ) );
                 }
                 else
                 {
