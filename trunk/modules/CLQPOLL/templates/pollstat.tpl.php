@@ -23,7 +23,8 @@
 </h2>
 
     <?php if ( $this->poll->getAllVoteList() ) : ?>
-<div class="stat" style="width: <?php echo 100 + ( 150 * count( $this->poll->getChoiceList() ) ); ?>px;">
+<div class="stat" style="width: <?php echo 60 + ( 160 * $this->pollStat->getColumnCount() ); ?>px;
+                         height: <?php echo 340 * $this->pollStat->getRawCount(); ?>px;">
     <h3>
         <?php echo $this->poll->getQuestion(); ?>
     </h3>

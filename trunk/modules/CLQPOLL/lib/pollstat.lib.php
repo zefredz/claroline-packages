@@ -22,6 +22,8 @@
  */
 class PollStat
 {
+    const DEFAULT_COLUMN_COUNT = 6;
+    
     protected $poll;
     
     protected $userCount;
@@ -32,6 +34,10 @@ class PollStat
     protected $result = array();
     protected $voteHistory = array();
     
+    protected $choiceCount;
+    protected $rawCount;
+    protected $columnCount;
+    
     /**
      * Contructor
      * @param int pollId
@@ -40,6 +46,10 @@ class PollStat
     {
         $this->poll = $poll;
         $this->choiceList = $poll->getChoiceList();
+        $this->choiceCount = count( $this->choiceList );
+        $this->rawCount = ceil( $this->choiceCount / self::DEFAULT_COLUMN_COUNT );
+        $this->columnCount = $this->choiceCount < self::DEFAULT_COLUMN_COUNT  ? $this->choiceCount - self::DEFAULT_COLUMN_COUNT * $this->rawCount
+                                                                              : self::DEFAULT_COLUMN_COUNT;
     }
     
     /**
@@ -51,6 +61,24 @@ class PollStat
         $this->answerCount = count( $this->poll->getAllVoteList() );
         $this->popularity = $this->answerCount / $this->userCount;
         $this->answerRate = ( round( 100 * ( $this->answerCount ) / ( $this->userCount ) , 1 ) ) . " %";
+    }
+    
+    /**
+     * Common getter for $rawCount
+     * @return int $rawCount
+     */
+    public function getRawCount()
+    {
+        return $this->rawCount;
+    }
+    
+    /**
+     * Common getter for $columnCount
+     * @return int $columnCount
+     */
+    public function getColumnCount()
+    {
+        return $this->columnCount;
     }
     
     /**
