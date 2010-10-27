@@ -104,7 +104,7 @@ class Pager
      */
     public function getPage( $pageNb )
     {
-        if ( count( $this->getPageCount() ) < $pageNb )
+        if ( $this->getPageCount() < $pageNb )
         {
             throw new Exception( 'This page does not exist!' );
         }
