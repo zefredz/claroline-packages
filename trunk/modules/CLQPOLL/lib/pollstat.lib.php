@@ -48,7 +48,7 @@ class PollStat
         $this->choiceList = $poll->getChoiceList();
         $this->choiceCount = count( $this->choiceList );
         $this->rawCount = ceil( $this->choiceCount / self::DEFAULT_COLUMN_COUNT );
-        $this->columnCount = $this->choiceCount < self::DEFAULT_COLUMN_COUNT  ? $this->choiceCount - self::DEFAULT_COLUMN_COUNT * $this->rawCount
+        $this->columnCount = $this->choiceCount < self::DEFAULT_COLUMN_COUNT  ? $this->choiceCount - self::DEFAULT_COLUMN_COUNT * ( $this->rawCount - 1 )
                                                                               : self::DEFAULT_COLUMN_COUNT;
     }
     
