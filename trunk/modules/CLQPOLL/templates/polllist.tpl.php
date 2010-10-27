@@ -125,7 +125,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td class="empty" colspan="<?php echo claro_is_allowed_to_edit() ? 6 : 2; ?>"><?php echo get_lang( 'No poll for this course yet' ); ?></td>
+            <td class="empty" colspan="<?php echo claro_is_allowed_to_edit() ? 7 : 3; ?>"><?php echo get_lang( 'No poll for this course yet' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
