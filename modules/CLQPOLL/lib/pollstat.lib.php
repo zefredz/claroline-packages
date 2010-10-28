@@ -215,7 +215,9 @@ class PollStat
                     . (int)(50 + ( 100 * $score ) )
                     . ', '
                     . (int)(150 - ( 100 * $score ) )
-                    . ', 0 );';
+                    . ', 0 ); background-position: 0% '
+                    . (int)( ( 1 - $score ) * 100 )
+                    . '%;';
             
             $graph[ $choiceId ] = array( 'label' => $this->choiceList[ $choiceId ] ,
                                          'count' => $voteCount ,
