@@ -74,3 +74,4 @@ $_lang['from %dateFrom to %dateTo'] = 'de %dateFrom à %dateTo';
 $_lang['until %dateTo'] = 'jusqu\'au %dateTo';
 $_lang['places'] = 'places';
 $_lang['slots with'] = 'choix avec';
+$_lang['Show results'] = 'Afficher le résultat';

@@ -63,7 +63,7 @@ endif;
     <?php
     endif;
     ?>
-    <?php if ( $subscription['type'] == 'group' ) : ?>
+    <?php if ( $subscription['context'] == 'group' ) : ?>
     <img src="<?php echo get_icon_url( 'group' ); ?>" alt="<?php echo get_lang( 'Group' ); ?>" />
     <?php else: ?>
     <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'User' ); ?>" />

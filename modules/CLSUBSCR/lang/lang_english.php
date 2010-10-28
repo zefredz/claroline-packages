@@ -70,3 +70,4 @@ $_lang['from %dateFrom to %dateTo'] = 'from %dateFrom to %dateTo';
 $_lang['until %dateTo'] = 'until %dateTo';
 $_lang['places'] = 'places';
 $_lang['slots with'] = 'slots with';
+$_lang['Show results'] = 'Show results';
