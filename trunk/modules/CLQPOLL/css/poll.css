@@ -318,6 +318,8 @@ textarea
 
 .histobar
 {
+    background-image: url(../img/histo_color.png);
+    background-repeat: repeat-x;
     color: #FFFFEE;
     font-size: xx-large;
     margin: 0px;
