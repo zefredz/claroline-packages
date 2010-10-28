@@ -63,6 +63,11 @@ endif;
     <?php
     endif;
     ?>
+    <?php if ( $subscription['type'] == 'group' ) : ?>
+    <img src="<?php echo get_icon_url( 'group' ); ?>" alt="<?php echo get_lang( 'Group' ); ?>" />
+    <?php else: ?>
+    <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'User' ); ?>" />
+    <?php endif; ?>
     <span class="msgTitle"><?php echo $subscription['title']; ?></span>
     <div style="clear: both;"></div>
     <div style="margin: 1px; padding: 0 5px 0 5px ; border: 1px #CCC solid;">
@@ -103,6 +108,7 @@ endif;
         if( claro_is_allowed_to_edit() ) :
         ?>
         | <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><?php echo get_lang( 'Edit proposed slots' ); ?></a>
+        | <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqResult&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="" /> <?php echo get_lang( 'Show results' ); ?></a>
         <?php
         endif;
         ?>
