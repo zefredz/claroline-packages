@@ -95,11 +95,10 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 	    if(!empty($this->survey))
 	    {
 	    	$editQuestionTpl->assign('survey', $this->survey);
+            $editQuestionTpl->assign('answerRequired', $this->questionLine->isRequired());
+            $editQuestionTpl->assign('questionLine', $this->questionLine);
 	    }
-        
-        $editQuestionTpl->assign('answerRequired', $this->questionLine->isRequired());
-        $editQuestionTpl->assign('questionLine', $this->questionLine);
-	
+        	
     	return $editQuestionTpl->render();    
     
 	}
