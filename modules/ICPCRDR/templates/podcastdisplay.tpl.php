@@ -19,6 +19,10 @@
     foreach( $this->items as $item ):
 ?>
 <h4 class="itemTitle"><?php echo htmlspecialchars( claro_utf8_decode($item->metadata['title']) ); ?></h4>
+<a href="<?php echo htmlspecialchars( $item->enclosure['url'] );?>">
+    <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
+    <?php echo get_lang( 'Download this video' ); ?>
+</a>
 <p class="itemPubDate"><?php echo htmlspecialchars( $item->metadata['pubDate'] ); ?></p>
 <p class="itemDescription"><?php echo claro_utf8_decode(strip_tags($item->metadata['description'])); ?></p>
 <a  
