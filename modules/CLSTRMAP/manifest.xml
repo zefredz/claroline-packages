@@ -1,0 +1,21 @@
+<module>
+    <label>CLSTRMAP</label>
+    <name>Cluster Map</name>
+    <description><![CDATA[ . ]]></description>
+    <version>.1alpha</version>
+    <license>GPL</license>
+    <icon></icon>
+    <type>applet</type>
+    <entry>entry.php</entry>
+    <default_dock>campusHomePageRightMenu</default_dock>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@claroline.net</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
