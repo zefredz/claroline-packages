@@ -1,6 +1,16 @@
-<?php
+<?php // $Id$
 
-$url = get_path( 'rootWeb' );
+/**
+ * Claroline Poll Tool
+ *
+ * @version     CLSTRMAP 1.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLSTRMAP
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
+$url = get_conf( 'clustrMapsUrl' );
 
 $html = '<a href="http://www2.clustrmaps.com/counter/maps.php?url=' . $url .'" id="clustrMapsLink">
          <img src="http://www2.clustrmaps.com/counter/index2.php?url=' . $url .'" 
