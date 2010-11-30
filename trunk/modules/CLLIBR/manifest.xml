@@ -1,0 +1,26 @@
+<module>
+    <label>CLLIBR</label>
+    <name>Online Library</name>
+    <description><![CDATA[ Online Library for Claroline ]]></description>
+    <version>0.0.1</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>tool</type>
+    <context>course</context>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Minne</name>
+        <email>frederic.minne@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
