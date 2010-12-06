@@ -3,7 +3,7 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
+ * @version     CLQPOLL 1.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
@@ -48,8 +48,9 @@ class PollStat
         $this->choiceList = $poll->getChoiceList();
         $this->choiceCount = count( $this->choiceList );
         $this->rawCount = ceil( $this->choiceCount / self::DEFAULT_COLUMN_COUNT );
-        $this->columnCount = $this->choiceCount < self::DEFAULT_COLUMN_COUNT  ? $this->choiceCount - self::DEFAULT_COLUMN_COUNT * ( $this->rawCount - 1 )
-                                                                              : self::DEFAULT_COLUMN_COUNT;
+        $this->columnCount = $this->choiceCount < self::DEFAULT_COLUMN_COUNT
+                           ? $this->choiceCount - self::DEFAULT_COLUMN_COUNT * ( $this->rawCount - 1 )
+                           : self::DEFAULT_COLUMN_COUNT;
     }
     
     /**

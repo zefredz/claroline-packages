@@ -55,6 +55,12 @@
     </a>
     <?php endif; ?>
 </span>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=export&pollId=' . $this->poll->getId() ) ); ?>">
+        <img src="<?php echo get_icon_url( 'export' ); ?>" alt="export" />
+        <?php echo get_lang( 'Export to csv' ); ?>
+    </a>
+</span>
 <?php endif; ?>
 
 <?php if ( $this->userRights[ 'see_stats' ] ) : ?>
