@@ -15,7 +15,8 @@ $tlabelReq = 'CLQPOLL';
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' );
-From::Module( 'CLQPOLL' )->uses( 'poll.lib' , 'polllist.lib' , 'uservote.lib' , 'pollpager.lib' , 'pollstat.lib' );
+From::Module( 'CLQPOLL' )->uses( 'poll.lib' , 'polllist.lib' , 'uservote.lib'
+                               , 'pollpager.lib' , 'pollstat.lib' , 'poll2csv.lib' );
 
 $nameTools = get_lang( 'Quick poll' );
 
@@ -42,7 +43,7 @@ try
             'exDeletePoll', 'exPurgePoll',
             'exSubmitVote', 'exDeleteVote',
             'exMkVisible', 'exMkInvisible',
-            'exOpen', 'exClose'
+            'exOpen', 'exClose', 'export'
         ) ) );
     }
     elseif ( claro_is_course_member() )
@@ -273,6 +274,20 @@ try
                 $poll->setVisibility( Poll::INVISIBLE );
                 $visibility_changed = $poll->save();
                 break;
+            }
+            
+            case 'export':
+            {
+            $csv = new Poll2Csv();
+            $csv->loadDataList( $poll );
+            header("Content-type: application/csv");
+            header('Content-Disposition: attachment; filename="'
+                   . get_lang( 'Poll' )
+                   .'-'
+                   . $poll->getTitle()
+                   . '.csv"');
+            echo claro_utf8_encode( $csv->export() );
+            exit;
             }
             
             default:
