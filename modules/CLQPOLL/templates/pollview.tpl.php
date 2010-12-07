@@ -103,7 +103,7 @@
         <table>
             <tr class="userline">
                 <th class="name">
-                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists() ? 'Modify your vote' : 'Vote' ); ?>"/>
+                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists( true ) ? 'Modify your vote' : 'Vote' ); ?>"/>
                 </th>
                     <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
                 <td>
