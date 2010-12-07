@@ -18,12 +18,15 @@ class Poll2Csv extends csv
     {
         try
         {
-            $header = array();
             $displayNames = $poll->getOption( '_privacy' ) != '_anonymous';
             
             if ( $displayNames )
             {
-                $header[] = get_lang( 'Name' );
+                $header = array( get_lang( 'Name' ) , get_lang( 'First Name') );
+            }
+            else
+            {
+                $header = array( get_lang( 'Votes' ) );
             }
             
             $choiceList = $poll->getChoiceList();
@@ -36,11 +39,19 @@ class Poll2Csv extends csv
             }
             
             $this->recordList[] = $header;
+            $i = 1;
             
             foreach( $poll->getAllVoteList() as $vote )
             {
-                $line = array();
-                $line[] = $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ];
+                if ( $displayNames )
+                {
+                    $line = array( $vote[ 'lastName' ] , $vote[ 'firstName' ] );
+                }
+                else
+                {
+                    $line = array( get_lang( 'Vote' ) . ' ' . $i++ );
+                }
+                
                 ksort( $vote );
                 
                 foreach( $vote as $key => $item )
@@ -62,8 +73,8 @@ class Poll2Csv extends csv
             }
             
             $this->recordList[] = $displayNames
-                                ? array_merge( array( 'Result' ) , $result )
-                                : $result;
+                                ? array_merge( array( get_lang( 'Result') , ' ' ) , $result )
+                                : array_merge( array( get_lang( 'Result') ) , $result );
         }
         catch ( Exception $e ) // exceptions handling
         {

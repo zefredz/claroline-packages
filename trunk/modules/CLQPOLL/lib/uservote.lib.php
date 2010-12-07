@@ -120,8 +120,13 @@ class UserVote
      * Controls if the vote has been recorded
      * @return boolean
      */
-    public function voteExists()
+    public function voteExists( $force = false )
     {
+        if ( $force )
+        {
+            $this->load();
+        }
+        
         return $this->voteCount;
     }
     
