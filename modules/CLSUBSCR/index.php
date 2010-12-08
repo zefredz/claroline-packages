@@ -148,7 +148,7 @@ try
             
             case 'exSlotChoice' :
             {
-                if( ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) && ! claro_is_allowed_to_edit() )
+                if ( ( $subscription->getContext() == 'group' && ! claro_is_in_a_group() ) || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) ) // FIXME the second test does not need to be here
                 {
                     $dialogBox->error( get_lang( 'Not in good context' ) );
                     $out .= $dialogBox->render();
