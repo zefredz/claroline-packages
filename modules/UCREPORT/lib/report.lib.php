@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 1.0.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -451,7 +451,7 @@ class Report
         }
         else
         {
-            throw new Excception( 'Invalid user id' );
+            throw new Exception( 'Invalid user id' );
         }
     }
     
@@ -689,11 +689,6 @@ class Report
         
         foreach( $this->reportDataList as $userId => $userDataList )
         {
-            /*
-             if ( isset( $this->userList[ $userId ][ 'final_score' ] ) )
-            {
-                $reportDataList[ $userId ] = $userDataList;
-            }*/
             if ( $this->userList[ $userId ][ 'active' ] )
             {
                 $reportDataList[ $userId ] = $userDataList;
