@@ -17,6 +17,7 @@
  * @const DEFAULT_MAX_SCORE the default maximum score for an assignment
  * @const ASSIGNMENT_DATA_FILE the name of the file where assignments weights are stored
  * @const EXAMINATION_DATA_FILE the name of the file where examination scores are stored
+ * @const ACTIVE_USER_DATA_FILE the name of the file where active users are listed
  * @const EXAMINATION_ID the examination id in $reportDataList
  * @const VISIBLE database value for visible assignments
  * @const INVISIBLE database value for invisible assignments
