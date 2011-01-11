@@ -55,6 +55,6 @@
     </table>
     <input id="submit" type="submit" name="submitReport" value="<?php echo get_lang( 'OK' ); ?>" />
         <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exResetScores' ) ) , get_lang( 'Reset scores' ) ); ?>
-    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
+    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqEditReport' ) ) , get_lang( 'Cancel' ) ); ?>
 </form>
 <?php endif; ?>
