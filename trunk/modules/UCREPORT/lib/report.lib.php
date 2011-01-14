@@ -63,7 +63,8 @@ class Report
     {
         $this->courseId = $courseId ? $courseId : claro_get_current_course_id();
         
-        $this->tbl_names = get_module_main_tbl( array( 'user' ) , $courseId );
+        $this->tbl_names = get_module_main_tbl( array( 'user'
+                                                     , 'cours_user' ) , $courseId );
         $this->tbl = get_module_course_tbl ( array ( 'wrk_assignment'
                                                    , 'wrk_submission'
                                                    , 'group_rel_team_user'
