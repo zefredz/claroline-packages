@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 1.0.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.0.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -132,14 +132,36 @@ class Report
             }
         }
         
+        if ( ! isset( $this->userQueryResult ) )
+        {
+            $this->userQueryResult = Claroline::getDatabase()->query( "
+                SELECT
+                    U.user_id, U.prenom, U.nom
+                FROM
+                    `{$this->tbl_names['user']}` AS U
+                INNER JOIN
+                    `{$this->tbl_names['cours_user']}` AS C
+                ON
+                    U.user_id = C.user_id
+                WHERE
+                    C.code_cours = " . Claroline::getDatabase()->quote( $this->courseId )
+                );
+        }
+        
+        foreach( $this->userQueryResult as $line )
+        {
+            $this->userList[ $line[ 'user_id' ] ][ 'firstname' ] = $line[ 'prenom' ];
+            $this->userList[ $line[ 'user_id' ] ][ 'lastname' ] = $line[ 'nom' ];
+        }
+        
         if ( ! isset( $this->dataQueryResult ) )
         {
             $this->dataQueryResult = Claroline::getDatabase()->query( "
                 SELECT
                     S1.id,
                     S1.user_id,
-                    U.prenom AS firstname,
-                    U.nom AS lastname,
+                    U.prenom,
+                    U.nom,
                     S1.assignment_id,
                     A.title,
                     S2.score,
@@ -170,21 +192,13 @@ class Report
         foreach( $this->dataQueryResult as $line )
         {
             if ( isset( $this->assignmentDataList[ $line[ 'assignment_id' ] ] )
-                 && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ] )
+                 && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ]
+                 && isset( $this->userList[ $line[ 'user_id' ] ] )
+                 && ! isset( $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] ) )
             {
-                if ( ! isset( $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] ) )
-                {
                 $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] = $line[ 'score' ];
-                
-                if ( ! isset( $this->userList[ $line[ 'user_id' ] ] ) )
-                {
-                    $this->userList[ $line[ 'user_id' ] ][ 'firstname' ] = $line[ 'firstname' ];
-                    $this->userList[ $line[ 'user_id' ] ][ 'lastname' ] = $line[ 'lastname' ];
-                }
-                
                 $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'submission_count' ]++;
                 $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'average' ] += $line[ 'score' ];
-                }
             }
         }
         
