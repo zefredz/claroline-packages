@@ -44,15 +44,15 @@ class CLQPOLL_Stats extends ClaroStats_CourseTask
     
     public function getSummarizedReport( $items )
     {
-        if(isset( $items['clfrm_count_votes' ] ) )
+        if(isset( $items['clfrm_count_polls' ] ) )
         {
-            $items['clfrm_count_votes']['lessFive'] = $items['clfrm_count_votes']['zero']
-                                                            + $items['clfrm_count_votes']['one']
-                                                            + $items['clfrm_count_votes']['two']
-                                                            + $items['clfrm_count_votes']['three']
-                                                            + $items['clfrm_count_votes']['four'];
-            $items['clfrm_count_votes']['moreFive'] += $items['clfrm_count_votes']['five'];
-            return $items['clfrm_count_votes' ];
+            $items['clfrm_count_polls']['lessFive'] = $items['clfrm_count_polls']['zero']
+                                                            + $items['clfrm_count_polls']['one']
+                                                            + $items['clfrm_count_polls']['two']
+                                                            + $items['clfrm_count_polls']['three']
+                                                            + $items['clfrm_count_polls']['four'];
+            $items['clfrm_count_polls']['moreFive'] += $items['clfrm_count_polls']['five'];
+            return $items['clfrm_count_polls' ];
         }
         else
         {
