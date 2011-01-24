@@ -31,15 +31,17 @@
             </tr>
         </thead>
         <tbody>
-    <?php foreach( $this->reportDataList as $userId => $scoreList ) : ?>
+    <?php foreach( array_keys( $this->userList ) as $userId ) : ?>
             <tr>
                 <td>
                     <?php echo $this->userList[ $userId ][ 'firstname' ] . ' ' . $this->userList[ $userId ][ 'lastname' ]; ?>
                 </td>
                 <td>
-                    <input type="text" size="2" name="score[<?php echo $userId; ?>]" value="<?php echo isset( $scoreList[ Report::EXAMINATION_ID ] ) ? $scoreList[ Report::EXAMINATION_ID ] : ''; ?>" />
+                    <input type="text" size="2" name="score[<?php echo $userId; ?>]" value="<?php echo isset( $this->reportDataList[ '$userId' ][ Report::EXAMINATION_ID ] )
+                                                                                                ? $this->reportDataList[ '$userId' ][ Report::EXAMINATION_ID ]
+                                                                                                : ''; ?>" />
                 </td>
-                <?php if ( isset( $scoreList[ Report::EXAMINATION_ID ] ) ) : ?>
+                <?php if ( isset( $this->reportDataList[ '$userId' ][ Report::EXAMINATION_ID ] ) ) : ?>
                 <td>
                     <input type="text" size="80" name="comment[<?php echo $userId; ?>]" value="<?php echo isset( $this->userList[ $userId ][ 'comment' ] ) ? $this->userList[ $userId ][ 'comment' ] : ''; ?>" />
                 </td>
