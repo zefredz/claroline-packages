@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 1.0.3 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.0.5 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -56,7 +56,7 @@ class Report
      * Constructor
      * If it receives a report id, it loads the datas stored in database.
      * If not, it retrieves the 'realtime' datas from the assignments
-     * @param the location of the "assignmentWeight.data" file
+     * @param string $courseId
      * @param int $reportId the id of the report
      */
     public function __construct( $courseId = false , $reportId = false )
@@ -64,9 +64,10 @@ class Report
         $this->courseId = $courseId ? $courseId : claro_get_current_course_id();
         
         $this->tbl_names = get_module_main_tbl( array( 'user'
-                                                     , 'cours_user' ) , $courseId );
+                                                     , 'cours_user' ) );
         $this->tbl = get_module_course_tbl ( array ( 'wrk_assignment'
                                                    , 'wrk_submission'
+                                                   , 'group_team'
                                                    , 'group_rel_team_user'
                                                    , 'report_reports' ) , $courseId );
         
@@ -145,7 +146,8 @@ class Report
                 ON
                     U.user_id = C.user_id
                 WHERE
-                    C.code_cours = " . Claroline::getDatabase()->quote( $this->courseId )
+                    C.code_cours = " . Claroline::getDatabase()->quote( $this->courseId ) . "
+                ORDER BY U.prenom, U.nom ASC"
                 );
         }
         
@@ -153,11 +155,12 @@ class Report
         {
             $this->userList[ $line[ 'user_id' ] ][ 'firstname' ] = $line[ 'prenom' ];
             $this->userList[ $line[ 'user_id' ] ][ 'lastname' ] = $line[ 'nom' ];
+            $this->reportDataList[ $line[ 'user_id' ] ] = array();
         }
         
-        if ( ! isset( $this->dataQueryResult ) )
+        if ( ! isset( $this->individualQueryResult ) )
         {
-            $this->dataQueryResult = Claroline::getDatabase()->query( "
+            $this->individualQueryResult = Claroline::getDatabase()->query( "
                 SELECT
                     S1.id,
                     S1.user_id,
@@ -181,27 +184,59 @@ class Report
                 WHERE
                     U.user_id = S1.user_id
                 AND
+                    A.assignment_type = 'INDIVIDUAL'
+                AND
                     A.id = S1.assignment_id
                 AND
                     S2.parent_id = S1.id
+                AND
+                    S2.parent_id IS NOT NULL
                 AND
                     S2.score >= 0
                 ORDER BY
                     U.nom, U.prenom, S2.creation_date DESC" );
         }
         
-        foreach( $this->dataQueryResult as $line )
+        $this->extractResultSet( $this->individualQueryResult );
+        
+        if ( ! isset( $this->groupQueryResult ) )
         {
-            if ( isset( $this->assignmentDataList[ $line[ 'assignment_id' ] ] )
-                 && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ]
-                 && isset( $this->userList[ $line[ 'user_id' ] ] )
-                 && ! isset( $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] ) )
-            {
-                $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] = $line[ 'score' ];
-                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'submission_count' ]++;
-                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'average' ] += $line[ 'score' ];
-            }
+            $this->groupQueryResult = Claroline::getDatabase()->query( "
+                SELECT
+                    S1.id,
+                    S1.user_id,
+                    U.prenom,
+                    U.nom,
+                    S1.assignment_id,
+                    A.title,
+                    S2.score,
+                    S2.creation_date
+                FROM
+                    `{$this->tbl_names['user']}` AS U,
+                    `{$this->tbl['group_team']}` AS G,
+                    `{$this->tbl['group_rel_team_user']}` AS R,
+                    `{$this->tbl['wrk_assignment']}` AS A,
+                    `{$this->tbl['wrk_submission']}` AS S2,
+                    `{$this->tbl['wrk_submission']}` AS S1
+                WHERE
+                    G.id = R.team
+                AND
+                    R.user = U.user_id
+                AND
+                    A.assignment_type = 'GROUP'
+                AND
+                    A.id = S1.assignment_id
+                AND
+                    S2.parent_id = S1.id
+                AND
+                    S2.parent_id IS NOT NULL
+                AND
+                    S2.score >= 0
+                ORDER BY
+                    U.nom, U.prenom, S2.creation_date DESC" );
         }
+        
+        $this->extractResultSet( $this->groupQueryResult );
         
         if ( file_exists( $this->examinationFileUrl )
              && $content = unserialize( file_get_contents( $this->examinationFileUrl ) ) )
@@ -295,6 +330,26 @@ class Report
             if ( $assignment[ 'submission_count' ] )
             {
                 $this->averageScore += $assignment[ 'average' ] * $assignment[ 'proportional_weight' ];
+            }
+        }
+    }
+    
+    /**
+     * Extracts the datas from $this->dataQueryResult set to arrays
+     * @param ResultSet $resultSet
+     */
+    private function extractResultSet( $resultSet )
+    {
+        foreach( $resultSet as $line )
+        {
+            if ( isset( $this->assignmentDataList[ $line[ 'assignment_id' ] ] )
+                 && $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'active' ]
+                 && isset( $this->userList[ $line[ 'user_id' ] ] )
+                 && ! isset( $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] ) )
+            {
+                $this->reportDataList[ $line[ 'user_id' ] ][ $line[ 'assignment_id' ] ] = $line[ 'score' ];
+                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'submission_count' ]++;
+                $this->assignmentDataList[ $line[ 'assignment_id' ] ][ 'average' ] += $line[ 'score' ];
             }
         }
     }
