@@ -1,6 +1,93 @@
 Version history:
 
-3.x
+3.2.5
+-----
+- added new scaling option 'crop' that resizes to fill all available space, cropping on top/bottom or left/right
+- improvements to RSS file parsing
+- Now displays a hand cursor when a linkUrl is used in clips
+
+3.2.4
+-----
+- new flowplayer.js version, with Apple iDevice fixes
+
+3.2.3
+-----
+- a new 'type' clip property exposed to JS
+- changed the clip type property to better work as a read-write property. Now accepts 'video', 'audio',
+  'image' and 'api' as configuration values.
+- moved parallel rtmp connection mechanism from the RTMP plugin to Core so other plugins can use it (ie: securestreaming)
+Fixes:
+- fixed #112, wrong URL computation when using clip with relative URL on a page with a / after a # in its url
+- fixed #111, wrong behavior of pre/post roll images with duration 0
+- fixed multiple license keys logic
+Fixes:
+- correct verification of license keys in *.ca domains
+- fix to make playback to always reach end of video
+
+3.2.2
+-----
+Fixes:
+- Now recognizes following kind of urls as audio clips: 'mp3:audiostreamname' (ulrs with mp3 prefix and no extension)
+- Now ignores the duration from metadata if we already got one. Fix required for pseudostreaming
+- Fix to reuse buffered data when replaying a clip
+
+3.2.1
+---------
+- Support for RTMP redirects (tested with Wowza loadbalancing)
+- Fixed video size when no size info available in clip metadata
+
+Fixes:
+- Fix to correctly detect if the player SWF name contains a version number and if it does also use the version number
+when it automatically loads the controls plugin.
+
+3.2.0
+-----
+- canvas, controlbar and the content plugin backgound color and border color can be now given with rgb() and rgba() CSS style syntax
+- Added onMouseOver() and onMouseOut() listener registration methods to the Flowplayer API
+- enhancements to RSS playlist. Converted parsing to E4X, yahoo media and flowplayer namespace support. 
+- added feature to obtain bitrate and dimension information to a new clip custom property "bitrates" for future support for bitrate choosing. 
+- added getter for playerSwfName config
+- if clip.url has the string "mp3:" in it, the clip.type will report 'audio'
+- added setKeyboardShortcutsEnabled(), addKeyListener(), removeKeyListener() to FlowplayerBase
+Fixes:
+- onSeek() was not fired when seeking while paused and when using RTMP. An extra onStart was fired too.
+- fireErrorExternal() was not working properly with an error PlayerEvent
+- countPlugins() was throwing an error when a plugin was not found
+- external swf files were not scaled properly
+- the logo was unnecessary shown when going fullscreen if logo.displayTime was being used
+- added a loadPluginWithConfig method to FlowplayerBase, accessible from javascript. Fixed double onload callback call.
+- now handles cuepoint parameters injected using the Adobe Media Encoder
+- showPlugin was not working when config.play was null
+- handles 3-part duration values included in FLV metadata, like "500.123.123"
+- player wasn't always reaching end of video
+- fixed broken buffering: false
+- fixed event dispatching when embedding flowplayer without flowplayer.js (=without playlist config field)
+- fixed safari crashes when unloading player
+- fixed scrubber behaviour with a playlist containing 2 images (or swf) in a row
+- fixed errors in logs when using an RSS playlist
+- fixed OverlayPlayButton that was showing even if it shouldn't on some cases
+- fixed wrong behavior when onBeforeFinish was returning false within playlists
+- /!\ Don't use the fadeIn / fadeOut controlbar's API while using autoHide.
+- fixed play state button with images
+- fixed splash image flickering
+
+3.1.5
+-----
+Fixes:
+- The player went to a locked state when resuming playback after a period that was long enought to send the
+netConnection to an invalid state. Now when resuming playback on an invalid connection the clip starts again from
+the beginning. This is only when using RTMP connections and does not affect progressive download playback.
+- Custom netConnect and netStream events did not pass the info object to JS listeners
+
+3.1.4
+-----
+Fixes:
+- player did not initialize if the controlbar plugin was disabled and if the play button overlay was disabled with play: null
+- works properly without cachebusting on IE
+- RSS playlist parsing now respects the isDefault attribute used in mRSS media group items
+- Fixed passing of connection arguments
+
+3.1.3
 -----
 - enhancements to RSS playlist parsing: Now skips all media:content that have unsupported types. Now the type attribute
 of the media:content element is mandatory and has to be present in the RSS file
