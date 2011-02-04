@@ -4,7 +4,6 @@
 $conf_def['config_code'] = 'ICPCRDR';
 $conf_def['config_file'] = 'ICPCRDR.conf.php';
 $conf_def['config_name'] = 'Podcast reader';
-$conf_def['config_class'] = 'tool';
 
 // CONFIG SECTIONS
 $conf_def['section']['main']['label'] = 'Main';
