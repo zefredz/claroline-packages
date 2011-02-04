@@ -34,8 +34,8 @@
     flowplayer( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.2.5.swf", { 
         clip: { 
             // these two configuration variables does the trick 
-            autoPlay: false,  
-            autoBuffering: true // <- do not place a comma here   
+            autoPlay: <?php get_conf( 'flowplayer_autoPlay', false ) ? 'false' : 'true'; ?>,
+            autoBuffering: <?php get_conf( 'flowplayer_autoBuffering', false ) ? 'false' : 'true'; ?>
         } 
     } );
 </script>
