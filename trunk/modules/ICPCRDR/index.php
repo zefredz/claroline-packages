@@ -3,10 +3,10 @@
 /**
  * Claroline Advanced Link Tool
  *
- * @version     ICPCRDR 1.0-alpha $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+ * @version     ICPCRDR 1.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- * @package     CLLKTOOL
+ * @package     ICPCRDR
  * @author      Frederic Minne <frederic.minne@uclouvain.be>
  */
 
