@@ -15,6 +15,7 @@
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
 </span>
+<!-- NOT IMPLEMENTED YET
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exExportAll' ) ); ?>">
         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>" />
@@ -27,6 +28,7 @@
         <?php echo get_lang( 'Export selected' ); ?>
     </a>
 </span>
+-->
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
