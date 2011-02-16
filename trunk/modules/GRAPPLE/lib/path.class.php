@@ -287,6 +287,7 @@ class path
 
         return true; // no errors, form is valide
     }
+    
     /**
      * Clear LearningPath progression (if both param are null, the entire progression for every users will be cleared)
      *

@@ -333,7 +333,7 @@ function doLMSGetDiagnostic(errorCode)
    {
 	if(_Debug){
 	      alert("Unable to locate the LMS's API Implementation.\nLMSGetDiagnostic was not successful.");
-   	}
+     }
     }
 
    return api.GetDiagnostic(errorCode).toString();

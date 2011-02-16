@@ -861,6 +861,7 @@ $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspaci
 // Load refreshed list
 $itemList = new PathItemList($pathId);
 $itemListArray = $itemList->getFlatList();
+
 if( !empty($itemListArray) && is_array($itemListArray) )
 {
     $out .= '<tbody>' . "\n";

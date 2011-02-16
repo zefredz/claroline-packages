@@ -329,7 +329,6 @@ class ScormImporter
         }
     
         // go through all item ..['item'][0] ['item'][1] ...
-        
         foreach( $itemList as $item )
         {
             $this->addItem( $item, $resourcesXmlBase, $parentId );
@@ -437,6 +436,7 @@ class ScormImporter
             $insertedItem->setType('CONTAINER');
         }
         // try to save new item
+        
         if( $insertedItem->validate() )
         {
             if( $insertedItem->save() )
