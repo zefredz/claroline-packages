@@ -11,7 +11,7 @@
 
 $cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
 
-if ( ! is_dir( $cllibr_path ) && ! mkdir( $cllibr_path , 0700 ) )
+if ( ! is_dir( $cllibr_path ) && ! claro_mkdir( $cllibr_path , CLARO_FILE_PERMISSIONS ) )
 {
     throw new Exception( 'Error while creating the library root directory' );
     exit();
@@ -21,7 +21,5 @@ $htaccess_path = $cllibr_path . '/.htaccess';
 
 if( ! file_exists( $htaccess_path ) )
 {
-    $htaccess = fopen( $htaccess_path , 'w' );
-    fwrite( $htaccess , 'Deny from all' );
-    fclose( $htaccess );
+    file_put_contents( $htaccess_path , "Deny from all\n" );
 }
