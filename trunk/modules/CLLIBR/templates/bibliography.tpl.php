@@ -27,6 +27,7 @@
         <?php echo get_lang( 'Add selection to my bookmarks' ); ?>
     </a>
 </span>
+<!-- NOT IMPLEMENTED YET
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExportAll') ); ?>">
         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>" />
@@ -46,6 +47,7 @@
         <?php echo get_lang( 'Edit course bibliography' ); ?>
     </a>
 </span>
+-->
 <?php endif; ?>
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
