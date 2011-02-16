@@ -75,4 +75,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `condition` enum('-1','AND','OR') NOT NULL,
   `raw_to_pass` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) TYPE=MyISAM
+) TYPE=MyISAM;
