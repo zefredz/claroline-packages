@@ -126,7 +126,6 @@ class item
      *
      * @author Sebastien Piraux <pir@cerdecam.be>
      */
-
     public function __construct()
     {
         $this->id = (int) -1;

@@ -314,6 +314,7 @@ if( $cmd == 'rqToc' )
     }
     else
     {
+        $thisAttempt = new Attempt();
         $itemList = new PathItemList($pathId);
     }
 
@@ -325,29 +326,40 @@ if( $cmd == 'rqToc' )
     .    '<div id="table_of_content_inner" >' . "\n";
 
     $html .= '<h3>'.htmlspecialchars($path->getTitle()).'</h3>' . "\n";
-
+    
+    $is_authenticated = claro_is_user_authenticated();
+    
     foreach( $itemListArray as $anItem )
     {
+        if ( $is_authenticated )
+        {
+            $completionIcon = $anItem[ 'completion_status' ] == 'completed';
+        }
+        else
+        {
+            $completionIcon = isset( $_SESSION[ 'item' . $anItem[ 'id' ] . 'completed' ] );
+        }
+        
         //$completionIcon = (strtolower($anItem['completion_status']) == 'completed')? 'completed':'incomplete';
-        $completionIcon = (strtolower($anItem['completion_status']) == 'completed')? true : false;
+        //$completionIcon = strtolower($anItem['completion_status']) == 'completed';
         
         $html .= '<a id="item_'.$anItem['id'].'_anchor"></a>' . "\n";
 
         // title
         $html .= '<div style="padding-left:'.($anItem['deepness']*10).'px;" class="item" id="item_'.$anItem['id'].'">';
-        
-        if( $anItem['type'] == 'CONTAINER' )
-        {
-            $html .= '<img src="'.get_module_url('GRAPPLE').'/img/chapter.png" alt="" />'
-            .     '&nbsp;' . $anItem['title'];
-        }
-        else
+
+        if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' )
         {
             $html .= '<img src="'.get_module_url('GRAPPLE').'/img/item.png" alt="" />'
             .     '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>'
             //.    '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url($completionIcon).'" />';
             .    ( $completionIcon ? '<img id="item_'.$anItem['id'].'_status" src="'.get_icon_url( 'completed' ).'" />' : '')
             ;
+        }
+        elseif( $anItem['type'] == 'CONTAINER' )
+        {
+            $html .= '<img src="'.get_module_url('GRAPPLE').'/img/chapter.png" alt="" />'
+            .     '&nbsp;' . $anItem['title'];
         }
 
         $html .= '</div>' . "\n";

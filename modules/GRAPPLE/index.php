@@ -11,7 +11,7 @@
  * @package GRAPPLE
  *
  * @author Sebastien Piraux
- * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
+ * @author Dimitri Rambout <dim@claroline.net>
  *
  */
 
@@ -72,61 +72,73 @@ if( $is_allowedToEdit )
 {
     if( $cmd == 'exImport')
     {
-        // include import lib
-        require_once dirname( __FILE__ ) . '/lib/xmlize.php';
-        require_once dirname( __FILE__ ) . '/lib/scorm.import.lib.php';
-        // path class is already included
-        require_once dirname( __FILE__ ) . '/lib/item.class.php';
-
-
-        // check if something has been uploaded
-        if ( !isset($_FILES['uploadedPackage']['name']) )
+        if( get_conf( 'import_allowed' ) || claro_is_platform_admin() )
         {
-            $dialogBox->error( get_lang('Error : no file uploaded') );
-        }
-        else
-        {
-            $scormImporter = new ScormImporter($_FILES['uploadedPackage']);
-
-            if( $scormImporter->import() )
+            // include import lib
+            require_once dirname( __FILE__ ) . '/lib/xmlize.php';
+            require_once dirname( __FILE__ ) . '/lib/scorm.import.lib.php';
+            // path class is already included
+            require_once dirname( __FILE__ ) . '/lib/item.class.php';
+            
+            // check if something has been uploaded
+            if ( !isset($_FILES['uploadedPackage']['name']) )
             {
-                $dialogBox->success('<strong>' . get_lang('Import done') . '</strong>');
+                $dialogBox->error( get_lang('Error : no file uploaded') );
             }
             else
             {
-                $dialogBox->error('<strong>' . get_lang('Import failed') . '</strong>');
-                $cmd = 'rqImport';
+                $scormImporter = new ScormImporter($_FILES['uploadedPackage']);
+    
+                if( $scormImporter->import() )
+                {
+                    $dialogBox->success('<strong>' . get_lang('Import done') . '</strong>');
+                }
+                else
+                {
+                    $dialogBox->error('<strong>' . get_lang('Import failed') . '</strong>');
+                    $cmd = 'rqImport';
+                }
+                $dialogBox->info($scormImporter->backlog->output());
             }
-            $dialogBox->info($scormImporter->backlog->output());
         }
-
+        else
+        {
+            $dialogBox->error( get_lang( 'Not allowed' ) );
+        }
     }
 
     if( $cmd == 'rqImport' )
     {
-        include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
-        include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
-
-        $maxFilledSpace = 1000000000;
-
-        $courseDir   = claro_get_course_path() . '/scormPackages/';
-        $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
-
-        $dialogBox->form("\n\n"
-        .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
-        .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
-        .    claro_form_relay_context()
-        //.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
-        .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
-        .    '<br />' . "\n"
-        .     '<input type="file" name="uploadedPackage" />' . "\n"
-        .     '<br />' . "\n"
-        .     '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
-        .    '<br /><br />' . "\n"
-        .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
-        .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
-        .    claro_html_button('index.php', get_lang('Cancel'))
-        .    '</form>' . "\n");
+        if ( get_conf( 'import_allowed' ) || claro_is_platform_admin() )
+        {
+            include_once get_path('incRepositorySys') . '/lib/fileUpload.lib.php';
+            include_once get_path('incRepositorySys') . '/lib/fileDisplay.lib.php';
+    
+            $maxFilledSpace = 1000000000;
+    
+            $courseDir   = claro_get_course_path() . '/scormPackages/';
+            $baseWorkDir = get_path('coursesRepositorySys').$courseDir;
+    
+            $dialogBox->form("\n\n"
+            .    '<strong>' . get_lang('Import a learning path') . '</strong>' . "\n"
+            .    '<form enctype="multipart/form-data" action="' . $_SERVER['PHP_SELF'] . '" method="post">' . "\n"
+            .    claro_form_relay_context()
+            //.    '<input type="hidden" name="claroFormId" value="'.uniqid('').'">'."\n"
+            .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
+            .    '<br />' . "\n"
+            .     '<input type="file" name="uploadedPackage" />' . "\n"
+            .     '<br />' . "\n"
+            .     '<small>' . get_lang('Max file size : %size', array('%size' => format_file_size( get_max_upload_size($maxFilledSpace,$baseWorkDir) ) ) ) . '</small>' . "\n"
+            .    '<br /><br />' . "\n"
+            .    '<input type="hidden" name="cmd" value="exImport" />' . "\n"
+            .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
+            .    claro_html_button('index.php', get_lang('Cancel'))
+            .    '</form>' . "\n");
+        }
+        else
+        {
+            $dialogBox->error( 'Not allowed' );
+        }
     }
 
     if( $cmd == 'exDelete' )
@@ -217,20 +229,27 @@ if( $is_allowedToEdit )
 
     if( $cmd == 'exExport' )
     {
-        $thisPath = $path;
-        FromKernel::uses( 'core/linker.lib' );
-        require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
-        require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
-        include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
-
-        $pathExport = new PathScormExport( $thisPath );
-        if( ! $pathExport->export() )
+        if ( get_conf( 'export_allowed' ) || claro_is_platform_admin() )
         {
-            $dialogBox->error(
-                                get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
-                                .   '<br />' . "\n"
-                                .   $pathExport->getError()
-                            );
+            $thisPath = $path;
+            FromKernel::uses( 'core/linker.lib' );
+            require_once dirname(__FILE__).'/../../claroline/exercise/lib/exercise.class.php';
+            require_once dirname(__FILE__).'/../../claroline/exercise/export/scorm/scorm_classes.php';
+            include_once get_path('incRepositorySys') . "/lib/fileUpload.lib.php";
+    
+            $pathExport = new PathScormExport( $thisPath );
+            if( ! $pathExport->export() )
+            {
+                $dialogBox->error(
+                                    get_lang('Unable to export the path %title', array('%title' => $thisPath->getTitle()))
+                                    .   '<br />' . "\n"
+                                    .   $pathExport->getError()
+                                );
+            }
+        }
+        else
+        {
+            $dialogBox->error( get_lang( 'Not allowed' ) );
         }
     }
 }
@@ -271,7 +290,11 @@ $cmdMenu = array();
 if($is_allowedToEdit)
 {
     $cmdMenu[] = claro_html_cmd_link('admin/edit_path.php?cmd=rqEdit'. claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('learnpath_new') . '" border="0" alt="" />' . get_lang('Create a new learning path'));
-    $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqImport' . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('import') . '" border="0" alt="" />' . get_lang('Import a learning path'));
+    
+    if( get_conf( 'import_allowed' ) )
+    {
+        $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqImport' . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('import') . '" border="0" alt="" />' . get_lang('Import a learning path'));
+    }
 
     if( get_conf('is_trackingEnabled') )
     {
@@ -296,9 +319,12 @@ if( $is_allowedToEdit )
     .    '<th>' . get_lang('Delete') . '</th>' . "\n"
     //.    '<th>' . get_lang('Block') . '</th>' . "\n"
     .    '<th>' . get_lang('Visibility') . '</th>' . "\n"
-    .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n"
-    .    '<th>' . get_lang('Export').'</th>' . "\n"
-    ;
+    .    '<th colspan="2">' . get_lang('Order') . '</th>' . "\n";
+    
+    if( get_conf( 'export_allowed') )
+    {
+        $out .= '<th>' . get_lang('Export').'</th>' . "\n";
+    }
 
     if( get_conf('is_trackingEnabled') ) $out .= '<th>' . get_lang('Tracking') . '</th>' . "\n";
 
@@ -402,12 +428,15 @@ if( $is_allowedToEdit )
             }
 
             // export
-            $out .= '<td>' . "\n"
-            .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '" onclick="return confirm(\'' . get_lang( 'Only Exercises and documents will be exported.' ) . '\')";>' . "\n"
-            .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
-            .    '</a>'
-            .    '</td>' . "\n";
-
+            if( get_conf( 'export_allowed' ) )
+            {
+                $out .= '<td>' . "\n"
+                .    '<a href="'. htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&amp;pathId=' . $aPath['id'] ) ) . '" onclick="return confirm(\'' . get_lang( 'Only Exercises and documents will be exported.' ) . '\')";>' . "\n"
+                .    '<img src="' . get_icon_url('export') . '" border="0" alt="' . get_lang('Export') . '" />' . "\n"
+                .    '</a>'
+                .    '</td>' . "\n";
+            }
+            
             // tracking
             $out .= '<td>' . "\n"
             .    '<a href="' . htmlspecialchars( Url::Contextualize( get_module_url('GRAPPLE') . '/track_path.php?pathId=' . $aPath['id'] ) ) . '">' . "\n"
