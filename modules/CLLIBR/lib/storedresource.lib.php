@@ -121,14 +121,18 @@ class StoredResource
      */
     public function delete()
     {
-        if ( unlink( $this->location . $this->uid ) )
-        {
-            return Claroline::getDatabase()->exec( "
+        if ( Claroline::getDatabase()->exec( "
                 DELETE FROM
                     `{$this->tbl['library_stored_resource']}`
                 WHERE
                     uid = " . Claroline::getDatabase()->quote( $this->uid )
-            );
+            ) )
+        {
+            return claro_delete_file( $this->location . $this->uid );
+        }
+        else
+        {
+            throw new Exception( 'Cannot delete file ' . $this->uid );
         }
     }
 }
