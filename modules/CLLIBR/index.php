@@ -13,10 +13,22 @@
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' , 'fileUpload.lib' );
-From::Module( 'CLLIBR' )->uses( 'resource.lib' , 'resourceset.lib', 'storedresource.lib'
-                              , 'catalogue.lib', 'bibliography.lib', 'bookmark.lib'
-                              , 'librarylist.lib', 'library.lib', 'pluginloader.lib', 'tools.lib' );
+FromKernel::uses(
+    'utils/input.lib',
+    'utils/validator.lib',
+    'display/layout.lib',
+    'fileUpload.lib' );
+
+From::Module( 'CLLIBR' )->uses(
+    'resource.lib',
+    'resourceset.lib',
+    'storedresource.lib',
+    'catalogue.lib',
+    'bibliography.lib',
+    'bookmark.lib',
+    'librarylist.lib',
+    'library.lib',
+    'pluginloader.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
