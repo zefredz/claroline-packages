@@ -999,7 +999,7 @@ class grapple{
       //print_r( $exception );
     }
     
-    if( ! is_soap_fault( $res ) )
+    if( isset( $res ) && ! is_soap_fault( $res ) )
     {
         if( ! empty( $res ) )
         {

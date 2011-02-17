@@ -348,7 +348,7 @@ if( $cmd == 'rqToc' )
         // title
         $html .= '<div style="padding-left:'.($anItem['deepness']*10).'px;" class="item" id="item_'.$anItem['id'].'">';
 
-        if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' )
+        if( $anItem['type'] == 'MODULE' || $anItem['type'] == 'SCORM' || $anItem['type'] == 'GRAPPLE' )
         {
             $html .= '<img src="'.get_module_url('GRAPPLE').'/img/item.png" alt="" />'
             .     '&nbsp;<a href="#" onClick="lpHandler.setContent(\''.$anItem['id'].'\');return false;">' . $anItem['title'] . '</a>'
