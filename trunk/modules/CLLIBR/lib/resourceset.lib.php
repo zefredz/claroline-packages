@@ -109,11 +109,22 @@ abstract class ResourceSet
     }
     
     /**
+     * Verifies if specified resource is in the resource set
+     * @param $ResourceUid
+     * @return boolean true if exists
+     */
+    public function resourceExists( $resourceUid )
+    {
+        return array_key_exists( $resourceUid , $this->resourceList );
+    }
+    
+    /**
+     * Add a resource in the resource set
      * @param Resource $resource
      */
-    public function addResource( $resource )
-    {
-        if ( array_key_exists( $resource->getUid() , $this->resourceList ) )
+    public function addResource( $resourceUid )
+    { 
+        if ( resourceExists( $resourceUid ) )
         {
             throw new Exception( 'Resource already exists' );
         }
@@ -124,7 +135,7 @@ abstract class ResourceSet
             SET
                 type = " . Claroline::getDatabase()->quote( self::$_type ) . ",
                 ref_id = " . Claroline::getDatabase()->quote( $this->refId ) . ",
-                resource_uid = " . Claroline::getDatabase()->quote( $resource->getUid() ) ) )
+                resource_uid = " . Claroline::getDatabase()->quote( $resourceUid ) ) )
         {
             return $this->resourceList[ $resource->getUid() ] = array( 'title' => $resource->getTitle()
                                                                      , 'publication_date' => $resource->getDate() );

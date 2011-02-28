@@ -133,17 +133,16 @@ switch( $cmd )
     
     case 'exBookmark':
     {
-        if ( $context == 'Bookmark' )
+        
+        $bookmark = new Bookmark( $userId );
+        
+        if ( $bookmark->resourceExists( $resourceId ) )
         {
             $errorMsg = get_lang( 'The resource is already bookmarked' );
         }
-        else
-        {
-            $bookmark = new Bookmark( $userId );
-        }
         
         $execution_ok = ! $errorMsg
-                        && $bookmark->addResource( new Resource( $resourceId ) );
+                       && $bookmark->addResource( $resourceId );
         break;
     }
     
@@ -151,7 +150,7 @@ switch( $cmd )
     {
         $bibliography = new Bibliography( $courseId );
         
-        $execution_ok = $bibliography->addResource( new Resource( $resourceId ) );
+        $execution_ok = $bibliography->addResource( $resourceId );
         break;
     }
     
@@ -178,8 +177,8 @@ switch( $cmd )
         $library->setTitle( $title );
         $library->setPublic( (boolean)$is_public );
         $execution_ok = $library->save()
-                         && $libraryId
-                         || $library->addLibrarian( $userId );
+                     && $libraryId
+                     || $library->addLibrarian( $userId );
         break;
     }
     
@@ -234,7 +233,7 @@ switch( $cmd )
         }
         
         $execution_ok = ! $errorMsg
-                            && $resourceSet->addResource( $resource );
+                       && $resourceSet->addResource( $resource );
         break;
     }
     
