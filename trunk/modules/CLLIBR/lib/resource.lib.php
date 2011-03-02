@@ -31,7 +31,6 @@ class Resource
     protected $uid;
     protected $title;
     protected $type;
-    protected $metaDataList = array();
     
     protected $creationDate;
     protected $resourceName;
@@ -136,16 +135,6 @@ class Resource
     }
     
     /**
-     * Getter for metadatas list
-     * @return $metaDataList
-     * !!! NOTHING IMPLEMENTED YET - MAYBE AN OBJECT, MAYBE NOT AS PROPERTY !!!
-     */
-    public function getMetaDataList()
-    {
-        return $this->metaDataList;
-    }
-    
-    /**
      * Setter for the title orf the resource
      * @param string $title
      * @return bollean true on success
@@ -202,7 +191,7 @@ class Resource
             DELETE FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . Claroline::getDatabase()->escape( $this->uid ) );
+                uid = " . Claroline::getDatabase()->quote( $this->uid ) );
     }
     
     /**
