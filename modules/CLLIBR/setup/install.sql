@@ -43,5 +43,5 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource_set`(
     resource_uid VARCHAR(32) NOT NULL,
     type ENUM('catalogue','bibliography','bookmark'),
     ref_id VARCHAR(16) NOT NULL,
-    PRIMARY KEY( ref_id, type )
+    PRIMARY KEY( resource_uid, type )
 );

@@ -21,6 +21,7 @@ From::Module( 'CLLIBR' )->uses( 'resource.lib'
                               , 'bookmark.lib'
                               , 'librarylist.lib'
                               , 'library.lib'
+                              , 'metadatas.lib'
                               , 'pluginloader.lib' );
 
 load_module_language( 'CLLIBR' );

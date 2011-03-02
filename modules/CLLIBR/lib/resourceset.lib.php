@@ -122,9 +122,9 @@ abstract class ResourceSet
      * Add a resource in the resource set
      * @param Resource $resource
      */
-    public function addResource( $resourceUid )
+    public function addResource( $resource )
     { 
-        if ( resourceExists( $resourceUid ) )
+        if ( $this->resourceExists( $resource->getUid() ) )
         {
             throw new Exception( 'Resource already exists' );
         }
@@ -135,7 +135,7 @@ abstract class ResourceSet
             SET
                 type = " . Claroline::getDatabase()->quote( self::$_type ) . ",
                 ref_id = " . Claroline::getDatabase()->quote( $this->refId ) . ",
-                resource_uid = " . Claroline::getDatabase()->quote( $resourceUid ) ) )
+                resource_uid = " . Claroline::getDatabase()->quote( $resource->getUid() ) ) )
         {
             return $this->resourceList[ $resource->getUid() ] = array( 'title' => $resource->getTitle()
                                                                      , 'publication_date' => $resource->getDate() );

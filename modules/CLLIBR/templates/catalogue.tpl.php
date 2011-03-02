@@ -25,7 +25,7 @@
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add selection in bibliography' ); ?>" />
-        <?php echo get_lang( 'Add selection in course\' bibliography' ); ?>
+        <?php echo get_lang( 'Add selection in course\'s bibliography' ); ?>
     </a>
 </span>
 <?php endif; ?>
@@ -83,7 +83,7 @@
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDelete&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEdit&resourceId='. $resourceId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $resourceId . '&libraryId=' . $this->libraryId ) );?>">
                     <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                 </a>
         <?php endif; ?>

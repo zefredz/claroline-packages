@@ -28,6 +28,8 @@ From::Module( 'CLLIBR' )->uses(
     'bookmark.lib',
     'librarylist.lib',
     'library.lib',
+    'metadata.lib',
+    'metadataview.lib',
     'pluginloader.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
@@ -45,6 +47,7 @@ if ( substr( $repository , -1 ) != '/' )
 
 $pluginLoader = new PluginLoader( 'lib/plugins/' );
 $pluginLoader->loadPlugins();
+$pluginList = $pluginLoader->getPluginList();
 
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
@@ -68,6 +71,7 @@ $userInput->setValidator( 'cmd' ,
                                                                 , 'rqRemove'
                                                                 , 'exRemove'
                                                                 , 'rqAddResource'
+                                                                , 'rqEditResource'
                                                                 , 'rqCreateLibrary'
                                                                 , 'exCreateLibrary'
                                                                 , 'rqEditLibrary'
@@ -75,6 +79,7 @@ $userInput->setValidator( 'cmd' ,
                                                                 , 'rqDeleteLibrary'
                                                                 , 'exDeleteLibrary'
                                                                 , 'exAddResource'
+                                                                , 'exEditResource'
                                                                 , 'rqDelete'
                                                                 , 'exDelete' )
                         ) );
@@ -85,6 +90,17 @@ $cmd = $userInput->get( 'cmd' , 'rqShowList' );
 $libraryId = $userInput->get( 'libraryId' );
 $resourceId = $userInput->get( 'resourceId' );
 $context = $userInput->get( 'context' );
+
+if ( $libraryId )
+{
+    $library = new Library( $libraryId );
+}
+
+if ( $resourceId )
+{
+    $resource = new Resource( $resourceId );
+    $metadata = new Metadata( $resourceId );
+}
 
 if ( ! $context )
 {
@@ -125,8 +141,11 @@ switch( $cmd )
     case 'rqDeleteLibrary':
     case 'rqView':
     case 'rqAddResource':
+    case 'rqEditResource':
     case 'rqDelete':
     case 'rqRemove':
+    case 'rqCreateLibrary':
+    case 'rqEditLibrary':
     {
         break;
     }
@@ -160,20 +179,12 @@ switch( $cmd )
         break;
     }
     
-    case 'rqCreateLibrary':
-    case 'rqEditLibrary':
-    {
-        $library = new Library( $libraryId );
-        break;
-    }
-    
     case 'exEditLibrary':
     case 'exCreateLibrary':
     {
         $title = $userInput->get( 'title' );
         $is_public = $userInput->get( 'is_public' );
         
-        $library = new Library( $libraryId );
         $library->setTitle( $title );
         $library->setPublic( (boolean)$is_public );
         $execution_ok = $library->save()
@@ -194,6 +205,7 @@ switch( $cmd )
         $title = $userInput->get( 'title' );
         $type = $userInput->get( 'type' );
         $storage = $userInput->get( 'storage' );
+        $metadataList = $userInput->get( 'metadata' );
         
         $resource = new $type();
         $resource->setTitle( $title );
@@ -227,13 +239,37 @@ switch( $cmd )
             $storedResource = new LinkedResource( $repository );
         }
         
-        if ( ! $errorMsg )
+        if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
         {
-            $resource->save();
+            $metadata = new Metadata( $resource->getUid() );
+            
+            foreach( $metadataList as $property => $value )
+            {
+                $metadata->add( $property , $value );
+            }
         }
         
         $execution_ok = ! $errorMsg
                        && $resourceSet->addResource( $resource );
+        break;
+    }
+    
+    case 'exEditResource':
+    {
+        $title = $userInput->get( 'title' );
+        $metadataList = $userInput->get( 'metadata' );
+        
+        $resource->setTitle( $title );
+        
+        if ( ! empty( $metadataList ) )
+        {
+            foreach( $metadataList as $id => $value )
+            {
+                $metadata->modify( $id , $value );
+            }
+        }
+        
+        $execution_ok = $resource->save();
         break;
     }
     
@@ -257,7 +293,7 @@ CssLoader::getInstance()->load( 'cllibr' , 'screen' );
 
 $dialogBox = new DialogBox();
 
-$pageTitle[ 'subTitle' ] = get_lang( $context );
+$pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $library->getTitle() : '' );
 $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/' . strtolower( $context ) . '.tpl.php' );
 $template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
 $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
@@ -285,6 +321,7 @@ switch( $cmd )
     case 'exAdd':
     case 'exRemove':
     case 'exAddResource':
+    case 'exEditResource':
     case 'exCreateLibrary':
     case 'exEditLibrary':
     case 'exDeleteLibrary':
@@ -314,11 +351,20 @@ switch( $cmd )
     }
     
     case 'rqAddResource':
+    case 'rqEditResource':
     {
-        $pageTitle[ 'subTitle' ] = get_lang( 'Add a resource' );
-        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/addresource.tpl.php' );
+        $pageTitle[ 'subTitle' ] = $cmd == 'rqAddResource'
+                                 ? get_lang( 'Add a resource' )
+                                 : get_lang( 'Edit a resource' );
+        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/editresource.tpl.php' );
+        $template->assign( 'resourceId' , $resourceId );
+        $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
+        $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );
+        $template->assign( 'typeList' , $pluginList[ 'resource' ] );
+        $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
+        $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
         break;
     }
     
@@ -365,6 +411,12 @@ switch( $cmd )
     {
         throw new Exception( 'bad command' );
     }
+}
+
+if ( isset( $metadata ) )
+{
+    $dcView = new DublinCore( $metadata->export() );
+    ClaroHeader::getInstance()->addHtmlHeader( $dcView->render() );
 }
 
 ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
