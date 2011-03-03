@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -24,7 +24,6 @@
     <input type="hidden"
            name="context"
            value="Catalogue" />
-    <?php echo get_lang( 'Title'); ?> : <input type="text" name="title" value="<?php echo $this->title; ?>" /><br />
     <?php if ( $this->urlAction == 'exAddResource' ): ?>
     <?php echo get_lang( 'Resource type' ) . ' : '; ?>
     <select id="resourceType" name="type">
@@ -50,7 +49,7 @@
               {
                 foreach( $metadata as $id => $value )
                 {
-                    echo $name . ' : <input type="text" name="metadata[' . $id . ']" value="' . $value . '" /><br />';
+                    echo get_lang( ucwords( $name ) ) . ' : <input type="text" name="metadata[' . $id . ']" value="' . $value . '" /><br />';
                 }
               }
         ?>

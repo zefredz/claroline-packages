@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -91,16 +91,9 @@ $libraryId = $userInput->get( 'libraryId' );
 $resourceId = $userInput->get( 'resourceId' );
 $context = $userInput->get( 'context' );
 
-if ( $libraryId )
-{
-    $library = new Library( $libraryId );
-}
-
-if ( $resourceId )
-{
-    $resource = new Resource( $resourceId );
-    $metadata = new Metadata( $resourceId );
-}
+$library = new Library( $libraryId );
+$resource = new Resource( $resourceId );
+$metadata = new Metadata( $resourceId );
 
 if ( ! $context )
 {
@@ -117,6 +110,8 @@ if ( ! $context )
         $context = 'LibraryList';
     }
 }
+
+$refId = null;
 
 if ( $context == 'Catalogue' )
 {
@@ -169,7 +164,13 @@ switch( $cmd )
     {
         $bibliography = new Bibliography( $courseId );
         
-        $execution_ok = $bibliography->addResource( $resourceId );
+        if ( $bibliography->resourceExists( $resourceId ) )
+        {
+            $errorMsg = get_lang( 'The resource is already bookmarked' );
+        }
+        
+        $execution_ok = ! $errorMsg
+                       && $bibliography->addResource( $resourceId );
         break;
     }
     
@@ -202,13 +203,11 @@ switch( $cmd )
     
     case 'exAddResource':
     {
-        $title = $userInput->get( 'title' );
         $type = $userInput->get( 'type' );
         $storage = $userInput->get( 'storage' );
         $metadataList = $userInput->get( 'metadata' );
         
         $resource = new $type();
-        $resource->setTitle( $title );
         $resource->setType( $storage );
         
         if ( $storage == 'file' )
@@ -358,7 +357,7 @@ switch( $cmd )
                                  : get_lang( 'Edit a resource' );
         $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/editresource.tpl.php' );
         $template->assign( 'resourceId' , $resourceId );
-        $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
+        $template->assign( 'title' , $resourceId ? $metadata->get( 'title' ) : '' );
         $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );

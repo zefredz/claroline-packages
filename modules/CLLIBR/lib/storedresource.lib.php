@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -19,7 +19,6 @@
  */
 class StoredResource
 {
-    protected $resourceId;
     protected $fileName;
     protected $fileExtension;
     protected $uid;
@@ -28,15 +27,16 @@ class StoredResource
     /**
      * Constructor
      */
-    public function __construct( $location , $resourceId = null )
+    public function __construct( $location , $uid = null )
     {
         $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
         
         $this->location = $location;
         
-        if ( $resourceId )
+        if ( $uid )
         {
-            $this->resourceId = $resourceId;
+            $this->resourceId = $uid;
+            $this->load();
         }
     }
     
@@ -44,7 +44,7 @@ class StoredResource
      * Loads datas
      * This method is called by the constructor when it received an ID
      */
-    public function load( $id )
+    public function load()
     {
         $resultSet = Claroline::getDatabase()->query( "
             SELECT
@@ -53,7 +53,7 @@ class StoredResource
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . Claroline::getDatabase()->quote( $id )
+                uid = " . Claroline::getDatabase()->quote( $this->uid )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if ( count( $resultSet ) )
@@ -121,9 +121,11 @@ class StoredResource
      */
     public function delete()
     {
+        var_dump( $this->uid );
+        exit();
         if ( Claroline::getDatabase()->exec( "
                 DELETE FROM
-                    `{$this->tbl['library_stored_resource']}`
+                    `{$this->tbl['library_resource']}`
                 WHERE
                     uid = " . Claroline::getDatabase()->quote( $this->uid )
             ) )
