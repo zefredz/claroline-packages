@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -29,7 +29,6 @@ class Resource
     protected $authorizedFileType;
     
     protected $uid;
-    protected $title;
     protected $type;
     
     protected $creationDate;
@@ -40,13 +39,13 @@ class Resource
      * Constructor
      * @param int $resourceId
      */
-    public function __construct( $resourceUid = null )
+    public function __construct( $uid = null )
     {
         $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
         
-        if ( $resourceUid )
+        if ( $uid )
         {
-            $this->load( $resourceUid );
+            $this->load( $uid );
         }
     }
     
@@ -58,7 +57,6 @@ class Resource
     {
         $resultSet = Claroline::getDatabase()->query( "
             SELECT
-                title,
                 creation_date,
                 mime_type,
                 resource_name
@@ -70,7 +68,6 @@ class Resource
         
         if ( count( $resultSet ) )
         {
-            $this->title = $resultSet[ 'title' ];
             $this->creationDate = $resultSet[ 'creation_date' ];
             $this->type = $resultSet[ 'mime_type' ];
             $this->resourceName = $resultSet[ 'resource_name' ];
@@ -105,15 +102,6 @@ class Resource
     }
     
     /**
-     * Getter for the title of the resource
-     * @return string $title
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-    
-    /**
      * Getter for the "file name" of the resource
      * for an file: the name of the submitted (and downloaded) file
      * for an url : the complete url of the distant resource
@@ -132,16 +120,6 @@ class Resource
     public function setName( $name )
     {
         return $this->resourceName = $name;
-    }
-    
-    /**
-     * Setter for the title orf the resource
-     * @param string $title
-     * @return bollean true on success
-     */
-    public function setTitle( $title )
-    {
-        return $this->title = $title;
     }
     
     /**
@@ -202,7 +180,6 @@ class Resource
     {
         $sql = "\n    `{$this->tbl['library_resource']}`
                 SET
-                    title = " . Claroline::getDatabase()->quote( $this->title ) . ",
                     mime_type = " . Claroline::getDatabase()->quote( $this->type ) . ",
                     resource_name = " . Claroline::getDatabase()->quote( $this->resourceName ) . ",
                     creation_date = NOW()";

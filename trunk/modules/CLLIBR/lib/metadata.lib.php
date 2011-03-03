@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -18,9 +18,10 @@
  */
 class Metadata
 {
-    protected static $defaultMetadataList = array( 'author',
+    protected static $defaultMetadataList = array( 'title',
+                                                   'author',
                                                    'description',
-                                                   'date',
+                                                   'publication date',
                                                    'publisher' );
     
     protected $resourceUid;
@@ -101,6 +102,26 @@ class Metadata
             return $this->metadataList[ Claroline::getDatabase()->insertId() ] = array( 'name' => $name
                                                                                      , 'value' => $value );
         }
+    }
+    
+    /**
+     * Get the values for a specified metadata
+     * @param string $name
+     * @return array $values
+     */
+    public function get( $name )
+    {
+        $values = array();
+        
+        foreach( $this->metadataList as $metadata )
+        {
+            if ( $metadata[ 'name' ] == $name )
+            {
+                $values[] = $metadata[ 'value' ];
+            }
+        }
+        
+        return $values;
     }
     
     /**

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.1.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -54,9 +54,7 @@ abstract class ResourceSet
         
         $resultSet = Claroline::getDatabase()->query( "
             SELECT
-                R.uid,
-                R.title,
-                R.creation_date
+                R.uid
             FROM
                 `{$this->tbl['library_resource']}`     AS R
             LEFT JOIN
@@ -71,8 +69,7 @@ abstract class ResourceSet
         
         foreach( $resultSet as $line )
         {
-            $this->resourceList[ $line[ 'uid' ] ][ 'title' ] = $line[ 'title' ];
-            $this->resourceList[ $line[ 'uid' ] ][ 'creation_date' ] = $line[ 'creation_date' ];
+            $this->resourceList[ $line[ 'uid' ] ] = new Metadata( $line[ 'uid' ] );
         }
     }
     
@@ -122,9 +119,9 @@ abstract class ResourceSet
      * Add a resource in the resource set
      * @param Resource $resource
      */
-    public function addResource( $resource )
+    public function addResource( $resourceUid )
     { 
-        if ( $this->resourceExists( $resource->getUid() ) )
+        if ( $this->resourceExists( $resourceUid ) )
         {
             throw new Exception( 'Resource already exists' );
         }
@@ -135,10 +132,9 @@ abstract class ResourceSet
             SET
                 type = " . Claroline::getDatabase()->quote( self::$_type ) . ",
                 ref_id = " . Claroline::getDatabase()->quote( $this->refId ) . ",
-                resource_uid = " . Claroline::getDatabase()->quote( $resource->getUid() ) ) )
+                resource_uid = " . Claroline::getDatabase()->quote( $resourceUid ) ) )
         {
-            return $this->resourceList[ $resource->getUid() ] = array( 'title' => $resource->getTitle()
-                                                                     , 'publication_date' => $resource->getDate() );
+            return $this->resourceList[ $resourceUid ] = new Metadata( $resourceUid );
         }
     }
     
