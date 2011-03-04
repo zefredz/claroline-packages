@@ -166,7 +166,7 @@ switch( $cmd )
         
         if ( $bibliography->resourceExists( $resourceId ) )
         {
-            $errorMsg = get_lang( 'The resource is already bookmarked' );
+            $errorMsg = get_lang( 'The resource is already is added' );
         }
         
         $execution_ok = ! $errorMsg
@@ -249,7 +249,7 @@ switch( $cmd )
         }
         
         $execution_ok = ! $errorMsg
-                       && $resourceSet->addResource( $resource );
+                       && $resourceSet->addResource( $resource->getUid() );
         break;
     }
     
