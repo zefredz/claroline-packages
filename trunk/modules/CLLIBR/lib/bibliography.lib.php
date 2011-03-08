@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -16,15 +16,15 @@ class Bibliography extends ResourceSet
 {
     public function validate()
     {
-        $course_tbl = get_module_main_tbl( array( 'cours' ) );
+        $this->validateTbl = get_module_main_tbl( array( 'cours' ) );
         
-        return Claroline::getDatabase()->query( "
+        return $this->database->query( "
             SELECT
                 code
             FROM
-                `{$course_tbl['cours']}`
+                `{$this->validateTbl['cours']}`
             WHERE
-                code = " . Claroline::getDatabase()->quote( $this->refId )
+                code = " . $this->database->quote( $this->refId )
         )->numRows();
     }
 }

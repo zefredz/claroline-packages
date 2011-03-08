@@ -19,15 +19,15 @@ class Catalogue extends ResourceSet
      */
     public function validate()
     {
-        $library_tbl = get_module_main_tbl( array( 'library_library' ) );
+        $this->validateTbl = get_module_main_tbl( array( 'library_library' ) );
         
-        return Claroline::getDatabase()->query( "
+        return $this->database->query( "
             SELECT
                 id
             FROM
-                `{$library_tbl['library_library']}`
+                `{$this->validateTbl['library_library']}`
             WHERE
-                id = " . Claroline::getDatabase()->escape( $this->refId )
+                id = " . $this->database->escape( $this->refId )
         )->numRows();
     }
 }

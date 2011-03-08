@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -24,13 +24,16 @@ class Library
     protected $is_public;
     protected $librarianList = array();
     
+    protected $database;
+    
     /**
      * Contructor
      * @param int $userId
      * @param int id
      */
-    public function __construct( $id = null )
+    public function __construct( $database , $id = null )
     {
+        $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_library'
                                                , 'library_librarian' ) );
         
@@ -48,14 +51,14 @@ class Library
      */
     public function load( $id )
     {
-        $resultSet = Claroline::getDatabase()->query( "
+        $resultSet = $this->database->query( "
             SELECT
                 title,
                 is_public
             FROM
                 `{$this->tbl['library_library']}`
             WHERE
-                id = " . Claroline::getDatabase()->escape( $id )
+                id = " . $this->database->escape( $id )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if ( empty( $resultSet ) )
@@ -68,13 +71,13 @@ class Library
         
         $this->librarianList = array();
         
-        $resultSet = Claroline::getDatabase()->query( "
+        $resultSet = $this->database->query( "
             SELECT
                 user_id
             FROM
                 `{$this->tbl['library_librarian']}`
             WHERE
-                library_id = " . Claroline::getDatabase()->escape( $id )
+                library_id = " . $this->database->escape( $id )
         );
         
         foreach( $resultSet as $line )
@@ -178,12 +181,12 @@ class Library
             throw new Exception( 'librarian already exists' );
         }
         
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
                 INSERT INTO
                     `{$this->tbl['library_librarian']}`
                 set
-                    user_id = " . Claroline::getDatabase()->escape( $userId ) . ",
-                    library_id = " . Claroline::getDatabase()->escape( $this->id ) ) )
+                    user_id = " . $this->database->escape( $userId ) . ",
+                    library_id = " . $this->database->escape( $this->id ) ) )
         {
             return $this->librarianList[] = $userId;
         }
@@ -201,16 +204,16 @@ class Library
             throw new Exception( 'librarian does not exist' );
         }
         
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
                 DELETE FROM
                     `{$this->tbl['library_librarian']}`
                 WHERE
-                    user_id = " . Claroline::getDatabase()->escape( $userId ) . "
+                    user_id = " . $this->database->escape( $userId ) . "
                 AND
-                    library_id = " . Claroline::getDatabase()->escape( $this->id ) ) )
+                    library_id = " . $this->database->escape( $this->id ) ) )
         {
             unset( $this->librarianList[ array_search( $userId , $this->librarianList ) ] );
-            return Claroline::getDatabase()->affectedRows();
+            return $this->database->affectedRows();
         }
     }
     
@@ -220,16 +223,16 @@ class Library
      */
     public function delete()
     {
-        return Claroline::getDatabase()->exec( "
+        return $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_library']}`
             WHERE
-                id = " . Claroline::getDatabase()->quote( $this->id ) )
-        && Claroline::getDatabase()->exec( "
+                id = " . $this->database->quote( $this->id ) )
+        && $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_librarian']}`
             WHERE
-                library_id = " . Claroline::getDatabase()->quote( $this->id ) );
+                library_id = " . $this->database->quote( $this->id ) );
     }
     
     /**
@@ -240,26 +243,26 @@ class Library
     {
         $sql = "\n    `{$this->tbl['library_library']}`
                 SET
-                    title = " . Claroline::getDatabase()->quote( $this->title ) . ",
-                    is_public = " . Claroline::getDatabase()->escape( (int)$this->is_public );
+                    title = " . $this->database->quote( $this->title ) . ",
+                    is_public = " . $this->database->escape( (int)$this->is_public );
         
         if ( $this->id )
         {
-            Claroline::getDatabase()->exec( "
+            $this->database->exec( "
                 UPDATE" . $sql . "
                 WHERE
-                    id = " . Claroline::getDatabase()->escape( $this->id )
+                    id = " . $this->database->escape( $this->id )
             );
             
-            return Claroline::getDatabase()->affectedRows();
+            return $this->database->affectedRows();
         }
         else
         {
-            Claroline::getDatabase()->exec( "
+            $this->database->exec( "
                 INSERT INTO " . $sql
             );
             
-            return $this->id = Claroline::getDatabase()->insertId();
+            return $this->id = $this->database->insertId();
         }
     }
 }

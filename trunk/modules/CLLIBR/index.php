@@ -45,6 +45,8 @@ if ( substr( $repository , -1 ) != '/' )
     $repository = $repository . '/';
 }
 
+$database = Claroline::getDatabase();
+
 $pluginLoader = new PluginLoader( 'lib/plugins/' );
 $pluginLoader->loadPlugins();
 $pluginList = $pluginLoader->getPluginList();
@@ -89,11 +91,11 @@ $userInput->setValidator( 'cmd' ,
 $cmd = $userInput->get( 'cmd' , 'rqShowList' );
 $libraryId = $userInput->get( 'libraryId' );
 $resourceId = $userInput->get( 'resourceId' );
-$context = $userInput->get( 'context' );
+$context = $userInput->get( 'context' , 'LibraryList' );
 
-$library = new Library( $libraryId );
-$resource = new Resource( $resourceId );
-$metadata = new Metadata( $resourceId );
+$library = new Library( $database , $libraryId );
+$resource = new Resource( $database , $resourceId );
+$metadata = new Metadata( $database , $resourceId );
 
 if ( ! $context )
 {
@@ -126,7 +128,7 @@ else
     $refId = $userId;
 }
 
-$resourceSet = new $context( $refId );
+$resourceSet = new $context( $database , $refId );
 
 $errorMsg = false;
 
@@ -148,7 +150,7 @@ switch( $cmd )
     case 'exBookmark':
     {
         
-        $bookmark = new Bookmark( $userId );
+        $bookmark = new Bookmark( $database , $userId );
         
         if ( $bookmark->resourceExists( $resourceId ) )
         {
@@ -162,7 +164,7 @@ switch( $cmd )
     
     case 'exAdd':
     {
-        $bibliography = new Bibliography( $courseId );
+        $bibliography = new Bibliography( $database , $courseId );
         
         if ( $bibliography->resourceExists( $resourceId ) )
         {
@@ -196,7 +198,7 @@ switch( $cmd )
     
     case 'exDeleteLibrary':
     {
-        $library = new Library( $libraryId );
+        $library = new Library( $database , $libraryId );
         $execution_ok = $library->delete();
         break;
     }
@@ -207,12 +209,12 @@ switch( $cmd )
         $storage = $userInput->get( 'storage' );
         $metadataList = $userInput->get( 'metadata' );
         
-        $resource = new $type();
+        $resource = new $type( $database );
         $resource->setType( $storage );
         
         if ( $storage == 'file' )
         {
-            $storedResource = new StoredResource( $repository );
+            $storedResource = new StoredResource( $database , $repository );
             
             if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
             {
@@ -235,12 +237,12 @@ switch( $cmd )
         }
         else
         {
-            $storedResource = new LinkedResource( $repository );
+            $storedResource = new LinkedResource( $database , $repository );
         }
         
         if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
         {
-            $metadata = new Metadata( $resource->getUid() );
+            $metadata = new Metadata( $database , $resource->getUid() );
             
             foreach( $metadataList as $property => $value )
             {
@@ -274,8 +276,8 @@ switch( $cmd )
     
     case 'exDelete':
     {
-        $resource = new Resource( $resourceId );
-        $storedResource = new StoredResource( $repository , $resourceId );
+        $resource = new Resource( $database , $resourceId );
+        $storedResource = new StoredResource( $database , $repository , $resourceId );
         $execution_ok = $resource->delete() && $storedResource->delete();
         break;
     }
@@ -310,7 +312,7 @@ switch( $cmd )
     case 'rqView':
     {
         $resourceId = $userInput->get( 'resourceId' );
-        $storedResource = new StoredResource( $repository );
+        $storedResource = new StoredResource( $database , $repository );
         $storedResource->load( $resourceId );
         $storedResource->getFile();
         break;
