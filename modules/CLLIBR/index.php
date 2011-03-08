@@ -312,8 +312,7 @@ switch( $cmd )
     case 'rqView':
     {
         $resourceId = $userInput->get( 'resourceId' );
-        $storedResource = new StoredResource( $database , $repository );
-        $storedResource->load( $resourceId );
+        $storedResource = new StoredResource( $database , $repository , $resourceId );
         $storedResource->getFile();
         break;
     }

@@ -134,7 +134,7 @@ abstract class ResourceSet
                 ref_id = " . $this->database->quote( $this->refId ) . ",
                 resource_uid = " . $this->database->quote( $resourceUid ) ) )
         {
-            return $this->resourceList[ $resourceUid ] = new Metadata( $resourceUid );
+            return $this->resourceList[ $resourceUid ] = new Metadata( $this->database , $resourceUid );
         }
     }
     

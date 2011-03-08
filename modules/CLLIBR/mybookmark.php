@@ -28,7 +28,7 @@ load_module_language( 'CLLIBR' );
 
 $userId = claro_get_current_user_id();
 
-$myBookmark = new Bookmark( $userId );
+$myBookmark = new Bookmark( Claroline::getDatabase() , $userId );
 
 $portlet = new PhpTemplate( dirname( __FILE__ ) . '/templates/bookmark.tpl.php' );
 $portlet->assign( 'resourceList' , $myBookmark->getResourceList() );
