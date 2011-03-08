@@ -38,7 +38,7 @@ class StoredResource
         
         if ( $uid )
         {
-            $this->resourceId = $uid;
+            $this->uid = $uid;
             $this->load();
         }
     }
