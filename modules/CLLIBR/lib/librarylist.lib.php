@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,12 +21,15 @@ class LibraryList
     protected $userLibraryList;
     protected $publicLibraryList;
     
+    protected $database;
+    
     /**
      * Constructor
      * @param $userId
      */
-    public function __construct( $userId )
+    public function __construct( $database , $userId )
     {
+        $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_library' , 'library_librarian' ) );
         
         if ( $userId )
@@ -43,7 +46,7 @@ class LibraryList
      */
     protected function load( $userId )
     {
-        $this->userLibraryList = Claroline::getDatabase()->query( "
+        $this->userLibraryList = $this->database->query( "
             SELECT
                 LY.id,
                 LY.title,
@@ -55,10 +58,10 @@ class LibraryList
             ON
                 LY.id = LN.library_id
             WHERE
-                LN.user_id = " . Claroline::getDatabase()->escape( $userId )
+                LN.user_id = " . $this->database->escape( $userId )
         );
         
-        $this->publicLibraryList = Claroline::getDatabase()->query( "
+        $this->publicLibraryList = $this->database->query( "
             SELECT
                 LY.id,
                 LY.title
@@ -71,7 +74,7 @@ class LibraryList
             WHERE
                 LY.is_public = TRUE
             AND
-                LN.user_id != " . Claroline::getDatabase()->escape( $userId )
+                LN.user_id != " . $this->database->escape( $userId )
         );
     }
     

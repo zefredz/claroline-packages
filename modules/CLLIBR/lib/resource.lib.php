@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -35,12 +35,15 @@ class Resource
     protected $resourceName;
     protected $is_stored;
     
+    protected $database;
+    
     /**
      * Constructor
      * @param int $resourceId
      */
-    public function __construct( $uid = null )
+    public function __construct( $database , $uid = null )
     {
+        $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
         
         if ( $uid )
@@ -55,7 +58,7 @@ class Resource
      */
     protected function load( $uid )
     {
-        $resultSet = Claroline::getDatabase()->query( "
+        $resultSet = $this->database->query( "
             SELECT
                 creation_date,
                 mime_type,
@@ -63,7 +66,7 @@ class Resource
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . Claroline::getDatabase()->quote( $uid )
+                uid = " . $this->database->quote( $uid )
             )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if ( count( $resultSet ) )
@@ -165,11 +168,11 @@ class Resource
      */
     public function delete()
     {
-        return Claroline::getDatabase()->exec( "
+        return $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . Claroline::getDatabase()->quote( $this->uid ) );
+                uid = " . $this->database->quote( $this->uid ) );
     }
     
     /**
@@ -180,27 +183,27 @@ class Resource
     {
         $sql = "\n    `{$this->tbl['library_resource']}`
                 SET
-                    mime_type = " . Claroline::getDatabase()->quote( $this->type ) . ",
-                    resource_name = " . Claroline::getDatabase()->quote( $this->resourceName ) . ",
+                    mime_type = " . $this->database->quote( $this->type ) . ",
+                    resource_name = " . $this->database->quote( $this->resourceName ) . ",
                     creation_date = NOW()";
         
         if ( $this->is_stored )
         {
-            Claroline::getDatabase()->exec( "
+            $this->database->exec( "
                 UPDATE" . $sql . "
                 WHERE
-                    uid = " . Claroline::getDatabase()->quote( $this->uid )
+                    uid = " . $this->database->quote( $this->uid )
             );
         }
         else
         {
-            Claroline::getDatabase()->exec( "
+            $this->database->exec( "
                 INSERT INTO " . $sql . ",
-                    uid = " . Claroline::getDatabase()->quote( $this->uid )
+                    uid = " . $this->database->quote( $this->uid )
             );
         }
         
-        return Claroline::getDatabase()->affectedRows();
+        return $this->database->affectedRows();
     }
     
     /**

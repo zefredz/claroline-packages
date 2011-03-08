@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -16,15 +16,15 @@ class Bookmark extends ResourceSet
 {
     public function validate()
     {
-        $user_tbl = get_module_main_tbl( array( 'user' ) );
+        $this->validateTbl = get_module_main_tbl( array( 'user' ) );
         
-        return Claroline::getDatabase()->query( "
+        return $this->database->query( "
             SELECT
                 user_id
             FROM
-                `{$user_tbl['user']}`
+                `{$this->validateTbl['user']}`
             WHERE
-                user_id = " . Claroline::getDatabase()->quote( $this->refId )
+                user_id = " . $this->database->quote( $this->refId )
         )->numRows();
     }
 }

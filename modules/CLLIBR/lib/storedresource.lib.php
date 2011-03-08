@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -24,11 +24,14 @@ class StoredResource
     protected $uid;
     protected $location;
     
+    protected $database;
+    
     /**
      * Constructor
      */
-    public function __construct( $location , $uid = null )
+    public function __construct( $database , $location , $uid = null )
     {
+        $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
         
         $this->location = $location;
@@ -46,14 +49,14 @@ class StoredResource
      */
     public function load()
     {
-        $resultSet = Claroline::getDatabase()->query( "
+        $resultSet = $this->database->query( "
             SELECT
                 uid,
                 resource_name
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . Claroline::getDatabase()->quote( $this->uid )
+                uid = " . $this->database->quote( $this->uid )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if ( count( $resultSet ) )
@@ -123,11 +126,11 @@ class StoredResource
     {
         var_dump( $this->uid );
         exit();
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
                 DELETE FROM
                     `{$this->tbl['library_resource']}`
                 WHERE
-                    uid = " . Claroline::getDatabase()->quote( $this->uid )
+                    uid = " . $this->database->quote( $this->uid )
             ) )
         {
             return claro_delete_file( $this->location . $this->uid );

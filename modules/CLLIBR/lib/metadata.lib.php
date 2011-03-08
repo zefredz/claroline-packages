@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -27,12 +27,15 @@ class Metadata
     protected $resourceUid;
     protected $metadataList;
     
+    protected $database;
+    
     /**
      * Constructor
      * @param string $resourceUid
      */
-    public function __construct( $resourceUid )
+    public function __construct( $database , $resourceUid )
     {
+        $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );
         
         $this->resourceUid = $resourceUid;
@@ -48,7 +51,7 @@ class Metadata
     {
         $this->metadataList = array();
         
-        $result = Claroline::getDatabase()->query( "
+        $result = $this->database->query( "
             SELECT
                 id,
                 name,
@@ -56,7 +59,7 @@ class Metadata
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_uid = " . Claroline::getDatabase()->quote( $this->resourceUid )
+                resource_uid = " . $this->database->quote( $this->resourceUid )
         );
         
         foreach( $result as $line )
@@ -90,16 +93,16 @@ class Metadata
      */
     public function add( $name , $value )
     {
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
                 INSERT INTO
                     `{$this->tbl['library_metadata']}`
                 SET
-                    resource_uid = " . Claroline::getDatabase()->quote( $this->resourceUid ) . ",
-                    name = " . Claroline::getDatabase()->quote( $name ) . ",
-                    value = " . Claroline::getDatabase()->quote( $value ) ) )
+                    resource_uid = " . $this->database->quote( $this->resourceUid ) . ",
+                    name = " . $this->database->quote( $name ) . ",
+                    value = " . $this->database->quote( $value ) ) )
         {
             
-            return $this->metadataList[ Claroline::getDatabase()->insertId() ] = array( 'name' => $name
+            return $this->metadataList[ $this->database->insertId() ] = array( 'name' => $name
                                                                                      , 'value' => $value );
         }
     }
@@ -131,15 +134,15 @@ class Metadata
      */
     public function remove( $id )
     {
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_uid = " . Claroline::getDatabase()->quote( $id ) ) )
+                resource_uid = " . $this->database->quote( $id ) ) )
         {
             unset( $this->metadataList[ $id ] );
             
-            return Claroline::getDatabase()->affectedRows();
+            return $this->database->affectedRows();
         }
     }
     
@@ -151,13 +154,13 @@ class Metadata
      */
     public function modify( $id , $value )
     {
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
             UPDATE
                 `{$this->tbl['library_metadata']}`
             SET
-                value = " . Claroline::getDatabase()->quote( $value ) . "
+                value = " . $this->database->quote( $value ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape( $id ) ) )
+                id = " . $this->database->escape( $id ) ) )
         {
             return $this->metadataList[ $id ][ 'value' ] = $value;
         }

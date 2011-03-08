@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -23,16 +23,16 @@ abstract class ResourceSet
     protected $refId;
     protected $resourceList = array();
     
+    protected $database;
+    
     /**
      * Constructor
      */
-    public function __construct( $refId = null )
+    public function __construct( $database , $refId = null )
     {
-        if ( ! isset( $this->tbl ) )
-        {
-            $this->tbl = get_module_main_tbl( array( 'library_resource'
+        $this->database = $database;
+        $this->tbl = get_module_main_tbl( array( 'library_resource'
                                                    , 'library_resource_set' ) );
-        }
         
         self::$_type = strtolower( get_class( $this ) );
         
@@ -52,7 +52,7 @@ abstract class ResourceSet
     {
         $this->resourceList = array();
         
-        $resultSet = Claroline::getDatabase()->query( "
+        $resultSet = $this->database->query( "
             SELECT
                 R.uid
             FROM
@@ -62,14 +62,14 @@ abstract class ResourceSet
             ON
                 S.resource_uid = R.uid
             WHERE
-                S.type = " . Claroline::getDatabase()->quote( self::$_type ) . "
+                S.type = " . $this->database->quote( self::$_type ) . "
             AND
-                S.ref_id = " . Claroline::getDatabase()->quote( $refId )
+                S.ref_id = " . $this->database->quote( $refId )
         );
         
         foreach( $resultSet as $line )
         {
-            $this->resourceList[ $line[ 'uid' ] ] = new Metadata( $line[ 'uid' ] );
+            $this->resourceList[ $line[ 'uid' ] ] = new Metadata( $this->database , $line[ 'uid' ] );
         }
     }
     
@@ -126,13 +126,13 @@ abstract class ResourceSet
             throw new Exception( 'Resource already exists' );
         }
         
-        if ( Claroline::getDatabase()->exec( "
+        if ( $this->database->exec( "
             INSERT INTO
                 `{$this->tbl['library_resource_set']}`
             SET
-                type = " . Claroline::getDatabase()->quote( self::$_type ) . ",
-                ref_id = " . Claroline::getDatabase()->quote( $this->refId ) . ",
-                resource_uid = " . Claroline::getDatabase()->quote( $resourceUid ) ) )
+                type = " . $this->database->quote( self::$_type ) . ",
+                ref_id = " . $this->database->quote( $this->refId ) . ",
+                resource_uid = " . $this->database->quote( $resourceUid ) ) )
         {
             return $this->resourceList[ $resourceUid ] = new Metadata( $resourceUid );
         }
@@ -151,15 +151,15 @@ abstract class ResourceSet
         
         unset( $this->resourceList[ $resourceUid ] );
         
-        return Claroline::getDatabase()->exec( "
+        return $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_resource_set']}`
             WHERE
-                type = " . Claroline::getDatabase()->quote( self::$_type ) . "
+                type = " . $this->database->quote( self::$_type ) . "
             AND
-                ref_id = " . Claroline::getDatabase()->quote( $this->refId ) . "
+                ref_id = " . $this->database->quote( $this->refId ) . "
             AND
-                resource_uid = " . Claroline::getDatabase()->quote( $resourceUid ) );
+                resource_uid = " . $this->database->quote( $resourceUid ) );
     }
     
     /**
@@ -168,13 +168,13 @@ abstract class ResourceSet
      */
     public function deleteAll()
     {
-        return Claroline::getDatabase()->exec( "
+        return $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_resource_set']}`
             WHERE
-                type = " . Claroline::getDatabase()->quote( self::$_type ) . "
+                type = " . $this->database->quote( self::$_type ) . "
             AND
-                ref_id = " . Claroline::getDatabase()->quote( $this->refId ) );
+                ref_id = " . $this->database->quote( $this->refId ) );
     }
     
     /**
