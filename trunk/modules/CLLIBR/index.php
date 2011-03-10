@@ -257,10 +257,7 @@ switch( $cmd )
     
     case 'exEditResource':
     {
-        $title = $userInput->get( 'title' );
         $metadataList = $userInput->get( 'metadata' );
-        
-        $resource->setTitle( $title );
         
         if ( ! empty( $metadataList ) )
         {
