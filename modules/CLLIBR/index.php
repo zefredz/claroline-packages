@@ -91,7 +91,7 @@ $userInput->setValidator( 'cmd' ,
 $cmd = $userInput->get( 'cmd' , 'rqShowList' );
 $libraryId = $userInput->get( 'libraryId' );
 $resourceId = $userInput->get( 'resourceId' );
-$context = $userInput->get( 'context' , 'LibraryList' );
+$context = $userInput->get( 'context' );
 
 $library = new Library( $database , $libraryId );
 $resource = new Resource( $database , $resourceId );
