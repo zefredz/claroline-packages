@@ -3,7 +3,7 @@
  * Online library for Claroline
  *
  * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
- * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -32,7 +32,7 @@ abstract class ResourceSet
     {
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_resource'
-                                                   , 'library_resource_set' ) );
+                                               , 'library_resource_set' ) );
         
         self::$_type = strtolower( get_class( $this ) );
         
