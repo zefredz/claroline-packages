@@ -50,32 +50,29 @@ class PluginLoader
     {
         $pluginsRepository = new DirectoryIterator( $this->pluginDir );
         
-        foreach( $pluginsRepository as $directory )
+        foreach( $pluginsRepository as $plugin )
         {
-            $dirName = $directory->getFileName();
+            $fileName = $plugin->getFileName();
             
-            if ( $directory->isDir() && ! $directory->isDot() && substr( $dirName , -4 ) == 'type' )
+            if ( ! $plugin->isDir() && ! $plugin->isDot() )
             {
-                $pluginType = substr( $dirName, 0 , strlen( $dirName ) - 4 );
-                $pluginList = new DirectoryIterator( $this->pluginDir . $dirName );
+                $fileName = $plugin->getFileName();
+                $part = explode( '.' , $fileName );
                 
-                foreach( $pluginList as $plugin )
+                if ( $part[ 2 ] == 'plugin' && $part[ 3 ] == 'php' )
                 {
-                    $fileName = $plugin->getFileName();
-                    
-                    if ( $plugin->isFile() && substr( $fileName , -11 ) == '.plugin.php' )
+                    try
                     {
-                        try
-                        {
-                            require( $this->pluginDir . $dirName . '/' . $fileName );
-                            
-                            $pluginName = ucwords( substr( $fileName , 0 , strlen( $fileName ) - 11 ) );
-                            $this->pluginList[ $pluginType ][] = $pluginName;
-                        }
-                        catch( Exception $e )
-                        {
-                            return $e->getMessage();
-                        }
+                        require( $this->pluginDir . $fileName );
+                        
+                        $pluginName = ucwords( $part[ 1 ] );
+                        $pluginType = $part[ 0 ];
+                        
+                        $this->pluginList[ $pluginType ][] = $pluginName;
+                    }
+                    catch( Exception $e )
+                    {
+                        return $e->getMessage();
                     }
                 }
             }
