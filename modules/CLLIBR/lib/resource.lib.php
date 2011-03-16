@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,7 +14,8 @@
  * @const TYPE_FILE
  * @const TYPE_URL
  * @property $authorizedFileType
- * @property $uid
+ * @property $id
+ * @property $secretId
  * @property $title
  * @property $type
  * @property $metaDataList
@@ -28,7 +29,8 @@ class Resource
     
     protected $authorizedFileType;
     
-    protected $uid;
+    protected $id;
+    protected $secretId;
     protected $type;
     
     protected $creationDate;
@@ -41,14 +43,15 @@ class Resource
      * Constructor
      * @param int $resourceId
      */
-    public function __construct( $database , $uid = null )
+    public function __construct( $database , $id = null )
     {
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
         
-        if ( $uid )
+        if ( $id )
         {
-            $this->load( $uid );
+            $this->id = $id;
+            $this->load();
         }
     }
     
@@ -56,25 +59,26 @@ class Resource
      * Loads datas
      * This method is called by the constructor when it received an ID
      */
-    protected function load( $uid )
+    protected function load()
     {
-        $resultSet = $this->database->query( "
+        $result = $this->database->query( "
             SELECT
+                secret_id,
                 creation_date,
                 mime_type,
                 resource_name
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . $this->database->quote( $uid )
+                id = " . $this->database->escape( $this->id )
             )->fetch( Database_ResultSet::FETCH_ASSOC );
         
-        if ( count( $resultSet ) )
+        if ( count( $result ) )
         {
-            $this->creationDate = $resultSet[ 'creation_date' ];
-            $this->type = $resultSet[ 'mime_type' ];
-            $this->resourceName = $resultSet[ 'resource_name' ];
-            $this->uid = $uid;
+            $this->secretId = $result[ 'secret_id' ];
+            $this->creationDate = $result[ 'creation_date' ];
+            $this->type = $result[ 'mime_type' ];
+            $this->resourceName = $result[ 'resource_name' ];
             
             return $this->is_stored = true;
         }
@@ -83,26 +87,38 @@ class Resource
             throw new Exception( 'resource does not exists' );
         }
     }
-    
+        
     /**
-     * Generate an Unique ID
-     * @param string $fileName
-     * @return string $uid
+     * Getter for ID
+     * @return string $id
      */
-    protected function generateUid( $fileName )
+    public function getId()
     {
-        // TODO generate a bestUID
-        return $this->uid = md5( $fileName . time() );
+        return $this->id;
     }
     
     /**
-     * Getter for UID
-     * @return string $uid
+     * Getter for secret ID
+     * @return string $secretId
      */
-    public function getUid()
+    public function getSecretId()
     {
-        return $this->uid;
+        return $this->secretId;
     }
+    
+    /**
+     * Setter for secret ID
+     * @param string $secretId
+     */
+    public function setSecretId( $secretId )
+    {
+        if ( strlen( $secretId ) != 32 )
+        {
+            throw new Exception( 'invalid ID :' . $secretId );
+        }
+        
+        return $this->secretId = $secretId;
+    }    
     
     /**
      * Getter for the "file name" of the resource
@@ -113,16 +129,6 @@ class Resource
     public function getName()
     {
         return $this->resourceName;
-    }
-    
-    /**
-     * Setter for the name of the resource
-     * @param string $name
-     * @return boolean true on success
-     */
-    public function setName( $name )
-    {
-        return $this->resourceName = $name;
     }
     
     /**
@@ -172,7 +178,7 @@ class Resource
             DELETE FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                uid = " . $this->database->quote( $this->uid ) );
+                id = " . $this->database->escape( $this->id ) );
     }
     
     /**
@@ -181,6 +187,11 @@ class Resource
      */
     public function save()
     {
+        if ( ! $this->secretId )
+        {
+            throw new Exception( 'Secret ID missing' );
+        }
+        
         $sql = "\n    `{$this->tbl['library_resource']}`
                 SET
                     mime_type = " . $this->database->quote( $this->type ) . ",
@@ -192,15 +203,17 @@ class Resource
             $this->database->exec( "
                 UPDATE" . $sql . "
                 WHERE
-                    uid = " . $this->database->quote( $this->uid )
+                    secret_id = " . $this->database->quote( $this->secretId )
             );
         }
         else
         {
             $this->database->exec( "
                 INSERT INTO " . $sql . ",
-                    uid = " . $this->database->quote( $this->uid )
+                    secret_id = " . $this->database->quote( $this->secretId )
             );
+            
+            $this->id = $this->database->insertId();
         }
         
         return $this->database->affectedRows();
@@ -208,14 +221,13 @@ class Resource
     
     /**
      * Verifies the validity on the file name,
-     * generates an uid and sets the value in object
+     * and if valid, sets the resource name
      * @return boolean true on success
      */
     public function validate( $fileName )
     {
         return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
                         , $this->authorizedFileType )
-                && $this->generateUid( $fileName )
-                && $this->setName( $fileName );
+            && $this->resourceName = $fileName;
     }
 }

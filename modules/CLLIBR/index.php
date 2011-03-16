@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,13 +21,14 @@ FromKernel::uses(
 
 From::Module( 'CLLIBR' )->uses(
     'resource.lib',
-    'resourceset.lib',
+    'collection.lib',
     'storedresource.lib',
     'catalogue.lib',
     'bibliography.lib',
     'bookmark.lib',
     'librarylist.lib',
     'library.lib',
+    'librarian.lib',
     'metadata.lib',
     'metadataview.lib',
     'pluginloader.lib' );
@@ -46,6 +47,16 @@ if ( substr( $repository , -1 ) != '/' )
 }
 
 $database = Claroline::getDatabase();
+// for later -->
+$tableList = get_module_main_tbl( array( 'library_resource'
+                                       , 'library_metadata'
+                                       , 'library_library'
+                                       , 'library_librarian'
+                                       , 'library_collection' ) );
+/* for use with:
+  $DBTable = new DatabaseTable( $database , $tableList[ 'library_' . $className ] );
+  $class = new ClassName( $DBTable , ... ); */
+// <-- for later
 
 $pluginLoader = new PluginLoader( 'lib/plugins/' );
 $pluginLoader->loadPlugins();
@@ -60,10 +71,10 @@ $is_platform_admin = claro_is_platform_admin();
 $userInput = Claro_UserInput::getInstance();
 
 $userInput->setValidator( 'context' ,
-                          new Claro_Validator_AllowedList( array( 'LibraryList'
-                                                                , 'Catalogue'
-                                                                , 'Bibliography'
-                                                                , 'Bookmark' )
+                          new Claro_Validator_AllowedList( array( 'librarylist'
+                                                                , 'catalogue'
+                                                                , 'bibliography'
+                                                                , 'bookmark' )
                         ) );
 $userInput->setValidator( 'cmd' ,
                           new Claro_Validator_AllowedList( array( 'rqShowList'
@@ -97,29 +108,38 @@ $library = new Library( $database , $libraryId );
 $resource = new Resource( $database , $resourceId );
 $metadata = new Metadata( $database , $resourceId );
 
+if ( $libraryId )
+{
+    $librarian = new Librarian( $database , $libraryId );
+}
+
 if ( ! $context )
 {
     if ( $libraryId )
     {
-        $context = 'Catalogue';
+        $context = 'catalogue';
     }
     elseif ( $courseId )
     {
-        $context = 'Bibliography';
+        $context = 'bibliography';
+    }
+    elseif ( $userId )
+    {
+        $context = 'bookmark';
     }
     else
     {
-        $context = 'LibraryList';
+        $context = 'librarylist';
     }
 }
 
 $refId = null;
 
-if ( $context == 'Catalogue' )
+if ( $context == 'catalogue' )
 {
     $refId = $libraryId;
 }
-elseif( $context == 'Bibliography' )
+elseif( $context == 'bibliography' )
 {
     $refId = $courseId;
 }
@@ -128,7 +148,14 @@ else
     $refId = $userId;
 }
 
-$resourceSet = new $context( $database , $refId );
+if ( $context == 'librarylist' )
+{
+    $resourceSet = new LibraryList( $database , $userId );
+}
+else
+{
+    $resourceSet = new Collection( $database , $context , $refId );
+}
 
 $errorMsg = false;
 
@@ -150,7 +177,7 @@ switch( $cmd )
     case 'exBookmark':
     {
         
-        $bookmark = new Bookmark( $database , $userId );
+        $bookmark = new Collection( $database , 'bookmark' , $userId );
         
         if ( $bookmark->resourceExists( $resourceId ) )
         {
@@ -158,13 +185,13 @@ switch( $cmd )
         }
         
         $execution_ok = ! $errorMsg
-                       && $bookmark->addResource( $resourceId );
+                       && $bookmark->add( $resourceId );
         break;
     }
     
     case 'exAdd':
     {
-        $bibliography = new Bibliography( $database , $courseId );
+        $bibliography = new Collection( $database , 'bibliography' , $courseId );
         
         if ( $bibliography->resourceExists( $resourceId ) )
         {
@@ -172,13 +199,13 @@ switch( $cmd )
         }
         
         $execution_ok = ! $errorMsg
-                       && $bibliography->addResource( $resourceId );
+                       && $bibliography->add( $resourceId );
         break;
     }
     
     case 'exRemove':
     {
-        $execution_ok = $resourceSet->removeResource( $resourceId );
+        $execution_ok = $resourceSet->remove( $resourceId );
         break;
     }
     
@@ -190,9 +217,8 @@ switch( $cmd )
         
         $library->setTitle( $title );
         $library->setPublic( (boolean)$is_public );
-        $execution_ok = $library->save()
-                     && $libraryId
-                     || $library->addLibrarian( $userId );
+        $librarian = new Librarian( $database , $library->save() );
+        $execution_ok = $librarian->register( $userId );
         break;
     }
     
@@ -225,24 +251,27 @@ switch( $cmd )
                 $errorMsg = get_lang( 'file missing' );
             }
             
-            if ( ! $errorMsg && ! $resource->validate( $file['name'] ) )
+            if ( ! $errorMsg
+              && ! $resource->validate( $file['name'] ) )
             {
                 $errorMsg = get_lang( 'invalid file' );
             }
             
-            if ( ! $errorMsg && ! $storedResource->store( $file , $resource->getUid() ) )
+            if ( ! $errorMsg
+              && ! $resource->setSecretId( $storedResource->store( $file ) ) )
             {
                 $errorMsg = get_lang( 'file could not be stored' );
             }
         }
         else
         {
+            break; // NOT IMPLEMENTED YET
             $storedResource = new LinkedResource( $database , $repository );
         }
         
         if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
         {
-            $metadata = new Metadata( $database , $resource->getUid() );
+            $metadata = new Metadata( $database , $resource->getId() );
             
             foreach( $metadataList as $property => $value )
             {
@@ -251,7 +280,7 @@ switch( $cmd )
         }
         
         $execution_ok = ! $errorMsg
-                       && $resourceSet->addResource( $resource->getUid() );
+                       && $resourceSet->add( $resource->getId() );
         break;
     }
     
@@ -274,7 +303,7 @@ switch( $cmd )
     case 'exDelete':
     {
         $resource = new Resource( $database , $resourceId );
-        $storedResource = new StoredResource( $database , $repository , $resourceId );
+        $storedResource = new StoredResource( $database , $repository , $resource->getSecretId() );
         $execution_ok = $resource->delete() && $storedResource->delete();
         break;
     }
@@ -309,7 +338,10 @@ switch( $cmd )
     case 'rqView':
     {
         $resourceId = $userInput->get( 'resourceId' );
-        $storedResource = new StoredResource( $database , $repository , $resourceId );
+        $storedResource = new StoredResource( $database
+                                            , $repository
+                                            , $resource->getSecretId()
+                                            , $resource->getName() );
         $storedResource->getFile();
         break;
     }
@@ -410,7 +442,7 @@ switch( $cmd )
     }
 }
 
-if ( isset( $metadata ) )
+if ( $resourceId )
 {
     $dcView = new DublinCore( $metadata->export() );
     ClaroHeader::getInstance()->addHtmlHeader( $dcView->render() );

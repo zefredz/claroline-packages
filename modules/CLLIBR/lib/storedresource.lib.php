@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,82 +14,66 @@
  * @property $resourceId
  * @property $fileName
  * @property $fileExtension
- * @property $uid
+ * @property $secretId
  * @property $location
  */
 class StoredResource
 {
-    protected $fileName;
-    protected $fileExtension;
-    protected $uid;
     protected $location;
+    protected $secretId;
+    protected $fileName;
     
     protected $database;
     
     /**
      * Constructor
      */
-    public function __construct( $database , $location , $uid = null )
+    public function __construct( $database , $location , $secretId = null , $fileName = null )
     {
         $this->database = $database;
-        $this->tbl = get_module_main_tbl( array( 'library_resource' ) );
-        
         $this->location = $location;
         
-        if ( $uid )
+        if ( $secretId )
         {
-            $this->uid = $uid;
-            $this->load();
+            $this->secretId = $secretId;
+        }
+        
+        if ( $fileName && $secretId )
+        {
+            $this->fileName = $fileName;
         }
     }
     
     /**
-     * Loads datas
-     * This method is called by the constructor when it received an ID
+     * Generate a secret ID
+     * @param string $fileName
+     * @return string $secretId
      */
-    public function load()
+    protected function generateSecretId( $fileName )
     {
-        $resultSet = $this->database->query( "
-            SELECT
-                uid,
-                resource_name
-            FROM
-                `{$this->tbl['library_resource']}`
-            WHERE
-                uid = " . $this->database->quote( $this->uid )
-        )->fetch( Database_ResultSet::FETCH_ASSOC );
-        
-        if ( count( $resultSet ) )
+        do
         {
-            $this->uid = $resultSet[ 'uid' ];
-            $this->fileName = $resultSet[ 'resource_name' ];
+            $this->secretId = md5( $fileName . time() );
         }
-        else
-        {
-            throw new Exception( 'resource does not exist' );
-        }
+        while( file_exists( $this->location . $this->secretId ) );
     }
     
     /**
      * Stores a file
      * @param $_FILES[ 'uploadedFile' ] $file
-     * @param string $uid
-     * @return boolean true on success
+     * @return string $secretId
      */
-    public function store( $file , $uid )
+    public function store( $file )
     {
-        $fileName = $file[ 'name' ];
+        $this->fileName = $file[ 'name' ];
+        $this->generateSecretId( $this->fileName );
         
-        if ( strlen( $uid ) != 32 )
+        $target_path = $this->location . $this->secretId;
+        
+        if ( move_uploaded_file( $file[ 'tmp_name' ] , $target_path ) )
         {
-            throw new Exception( 'invalid UID :' . $uid );
+            return $this->secretId;
         }
-        
-        $target_path = $this->location . $uid;
-        
-        return move_uploaded_file( $file[ 'tmp_name' ] , $target_path )
-            && $this->fileName = $fileName
-            && $this->uid = $uid;
     }
     
     /**
@@ -98,14 +82,9 @@ class StoredResource
      */
     public function getFileExtension()
     {
-        if ( $this->fileExtension )
-        {
-            //$this->fileExtension = strtolower( pathinfo( $this->fileName, PATHINFO_EXTENSION ) );
-            $parts == explode( '.' , $this->filename );
-            $this->fileExtension = $parts[ count( $parts ) - 1 ];
-        }
-        
-        return $this->fileExtension;
+        //return strtolower( pathinfo( $this->fileName, PATHINFO_EXTENSION ) );
+        $parts = explode( '.' , $this->fileName );
+        return $parts[ count( $parts ) - 1 ];
     }
     
     /**
@@ -113,9 +92,9 @@ class StoredResource
      */
     public function getFile()
     {
-        header('Content-type: application/' . $this->fileExtension );
+        header('Content-type: application/' . $this->getFileExtension( $this->fileName ) );
         header('Content-Disposition: attachment; filename="' . $this->fileName . '"');
-        readfile( $this->location . $this->uid );
+        readfile( $this->location . $this->secretId );
     }
     
     /**
@@ -124,18 +103,7 @@ class StoredResource
      */
     public function delete()
     {
-        if ( $this->database->exec( "
-                DELETE FROM
-                    `{$this->tbl['library_resource']}`
-                WHERE
-                    uid = " . $this->database->quote( $this->uid )
-            ) )
-        {
-            return claro_delete_file( $this->location . $this->uid );
-        }
-        else
-        {
-            throw new Exception( 'Cannot delete file ' . $this->uid );
-        }
+        //return claro_delete_file( $this->location . $this->secretId );
+        return unlink( $this->location . $this->secretId );
     }
 }

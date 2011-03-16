@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -10,11 +10,11 @@
  */
 
 /**
- * A class the represents an library
+ * A class that represents a library
  * @property int $id
  * @property int userId
  * @property string $title
- * @property array $librarianList
+
  * @property boolean $is_public
  */
 class Library
@@ -22,7 +22,6 @@ class Library
     protected $id;
     protected $title;
     protected $is_public;
-    protected $librarianList = array();
     
     protected $database;
     
@@ -34,13 +33,12 @@ class Library
     public function __construct( $database , $id = null )
     {
         $this->database = $database;
-        $this->tbl = get_module_main_tbl( array( 'library_library'
-                                               , 'library_librarian' ) );
+        $this->tbl = get_module_main_tbl( array( 'library_library' ) );
         
         if ( $id )
         {
-            $this->load( $id );
             $this->id = $id;
+            $this->load();
         }
     }
     
@@ -49,7 +47,7 @@ class Library
      * This method is called by the constructor when it received an ID
      * @param int $id
      */
-    public function load( $id )
+    public function load()
     {
         $resultSet = $this->database->query( "
             SELECT
@@ -58,7 +56,7 @@ class Library
             FROM
                 `{$this->tbl['library_library']}`
             WHERE
-                id = " . $this->database->escape( $id )
+                id = " . $this->database->escape( $this->id )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if ( empty( $resultSet ) )
@@ -68,22 +66,6 @@ class Library
         
         $this->title = $resultSet[ 'title' ];
         $this->is_public = (boolean)$resultSet[ 'is_public' ];
-        
-        $this->librarianList = array();
-        
-        $resultSet = $this->database->query( "
-            SELECT
-                user_id
-            FROM
-                `{$this->tbl['library_librarian']}`
-            WHERE
-                library_id = " . $this->database->escape( $id )
-        );
-        
-        foreach( $resultSet as $line )
-        {
-            $this->librarianList[] = $line[ 'user_id' ];
-        }
     }
     
     /**
@@ -93,26 +75,6 @@ class Library
     public function getId()
     {
         return $this->id;
-    }
-    
-    /**
-     * Verifies if specified user is librarian of this library
-     * @param $int $userId
-     * @return boolean true if is librarian
-     */
-    public function isLibrarian( $userId )
-    {
-        return in_array( $userId , $this->librarianList );
-    }
-    
-    /**
-     * Verifes if specified user is allowed to access to this library
-     * @param int $userId
-     * @return boolean true if is allowed
-     */
-    public function isAllowed( $userId )
-    {
-        return $this->isLibrarian( $userId ) || $this->isPublic();
     }
     
     /**
@@ -156,68 +118,6 @@ class Library
     }
     
     /**
-     * Getter for librarian list
-     * @return array $librarianList
-     */
-    public function getLibrarianList( $force = false )
-    {
-        if ( $force )
-        {
-            $this->load();
-        }
-        
-        return $this->librarianList;
-    }
-    
-    /**
-     * Adds a librarian to the library
-     * @param int $userId
-     * @param int $userId
-     */
-    public function addLibrarian( $userId )
-    {
-        if ( in_array( $userId , $this->librarianList ) )
-        {
-            throw new Exception( 'librarian already exists' );
-        }
-        
-        if ( $this->database->exec( "
-                INSERT INTO
-                    `{$this->tbl['library_librarian']}`
-                set
-                    user_id = " . $this->database->escape( $userId ) . ",
-                    library_id = " . $this->database->escape( $this->id ) ) )
-        {
-            return $this->librarianList[] = $userId;
-        }
-    }
-    
-    /**
-     * Removes a librarian
-     * @param int $userId
-     * @return boolean $is_removed
-     */
-    public function removeLibrarian( $userId )
-    {
-        if ( in_array( $userId , $this->librarianList ) )
-        {
-            throw new Exception( 'librarian does not exist' );
-        }
-        
-        if ( $this->database->exec( "
-                DELETE FROM
-                    `{$this->tbl['library_librarian']}`
-                WHERE
-                    user_id = " . $this->database->escape( $userId ) . "
-                AND
-                    library_id = " . $this->database->escape( $this->id ) ) )
-        {
-            unset( $this->librarianList[ array_search( $userId , $this->librarianList ) ] );
-            return $this->database->affectedRows();
-        }
-    }
-    
-    /**
      * Deletes the library
      * @return boolean true on success
      */
@@ -227,12 +127,7 @@ class Library
             DELETE FROM
                 `{$this->tbl['library_library']}`
             WHERE
-                id = " . $this->database->quote( $this->id ) )
-        && $this->database->exec( "
-            DELETE FROM
-                `{$this->tbl['library_librarian']}`
-            WHERE
-                library_id = " . $this->database->quote( $this->id ) );
+                id = " . $this->database->quote( $this->id ) );
     }
     
     /**
