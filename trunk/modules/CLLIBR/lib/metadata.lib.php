@@ -24,23 +24,25 @@ class Metadata
                                                    'publication date',
                                                    'publisher' );
     
-    protected $resourceUid;
+    protected $resourceId;
     protected $metadataList;
     
     protected $database;
     
     /**
      * Constructor
-     * @param string $resourceUid
+     * @param int $resourceId
      */
-    public function __construct( $database , $resourceUid )
+    public function __construct( $database , $resourceId )
     {
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );
         
-        $this->resourceUid = $resourceUid;
-        
-        $this->load();
+        if ( $resourceId )
+        {
+            $this->resourceId = $resourceId;
+            $this->load();
+        }
     }
     
     /**
@@ -59,7 +61,7 @@ class Metadata
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_uid = " . $this->database->quote( $this->resourceUid )
+                resource_id = " . $this->database->escape( $this->resourceId )
         );
         
         foreach( $result as $line )
@@ -97,13 +99,13 @@ class Metadata
                 INSERT INTO
                     `{$this->tbl['library_metadata']}`
                 SET
-                    resource_uid = " . $this->database->quote( $this->resourceUid ) . ",
+                    resource_id = " . $this->database->quote( $this->resourceId ) . ",
                     name = " . $this->database->quote( $name ) . ",
                     value = " . $this->database->quote( $value ) ) )
         {
             
             return $this->metadataList[ $this->database->insertId() ] = array( 'name' => $name
-                                                                                     , 'value' => $value );
+                                                                             , 'value' => $value );
         }
     }
     
@@ -138,7 +140,7 @@ class Metadata
             DELETE FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_uid = " . $this->database->quote( $id ) ) )
+                resource_id = " . $this->database->quote( $id ) ) )
         {
             unset( $this->metadataList[ $id ] );
             

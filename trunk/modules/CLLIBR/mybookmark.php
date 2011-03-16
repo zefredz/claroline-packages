@@ -16,7 +16,7 @@ FromKernel::uses( 'utils/input.lib'
                 , 'display/layout.lib' );
 
 From::Module( 'CLLIBR' )->uses( 'resource.lib'
-                              , 'resourceset.lib'
+                              , 'collection.lib'
                               , 'storedresource.lib'
                               , 'bookmark.lib'
                               , 'librarylist.lib'
@@ -28,7 +28,7 @@ load_module_language( 'CLLIBR' );
 
 $userId = claro_get_current_user_id();
 
-$myBookmark = new Bookmark( Claroline::getDatabase() , $userId );
+$myBookmark = new Collection( Claroline::getDatabase() , 'bookmark' , $userId );
 
 $portlet = new PhpTemplate( dirname( __FILE__ ) . '/templates/bookmark.tpl.php' );
 $portlet->assign( 'resourceList' , $myBookmark->getResourceList() );
