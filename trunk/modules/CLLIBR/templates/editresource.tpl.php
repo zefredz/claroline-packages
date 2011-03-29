@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -16,14 +16,11 @@
            name="userId"
            value="<?php echo $this->userId; ?>" />
     <input type="hidden"
-           name="libraryId"
-           value="<?php echo $this->libraryId; ?>" />
-    <input type="hidden"
            name="resourceId"
            value="<?php echo $this->resourceId; ?>" />
     <input type="hidden"
            name="context"
-           value="catalogue" />
+           value="<?php echo $this->context; ?>" />
     <?php if ( $this->urlAction == 'exAddResource' ): ?>
     <?php echo get_lang( 'Resource type' ) . ' : '; ?>
     <select id="resourceType" name="type">
@@ -42,14 +39,14 @@
         <?php foreach( $this->defaultMetadataList as $property ) : ?>
             <?php echo get_lang( ucwords( $property ) ) . ' : '; ?>
     <input type="text"
-           name="metadata[<?php echo $property; ?>]" /><br />
+           name="metadata[<?php echo $property; ?>]" value="" /><br />
         <?php endforeach; ?>
     <?php else : ?>
         <?php foreach( $this->metadataList as $name => $metadata )
               {
                 foreach( $metadata as $id => $value )
                 {
-                    echo get_lang( ucwords( $name ) ) . ' : <input type="text" name="metadata[' . $id . ']" value="' . $value . '" /><br />';
+                    echo get_lang( ucwords( $name ) ) . ' : <input type="text" name="metadata[' . $id . ']" value="' . htmlspecialchars( $value ) . '" /><br />';
                 }
               }
         ?>
@@ -57,6 +54,6 @@
     <input type="hidden" name="storage" value="file" />
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
-                                                  . '?context=catalogue&libraryId='
-                                                  . $this->libraryId ) ) , get_lang( 'Cancel' ) ); ?>
+                                                  . '?context=' . $this->context . '&'
+                                                  . $this->refName . '=' . $this->refId ) ) , get_lang( 'Cancel' ) ); ?>
 </form>
