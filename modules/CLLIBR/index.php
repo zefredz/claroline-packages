@@ -138,14 +138,17 @@ $refId = null;
 if ( $context == 'catalogue' )
 {
     $refId = $libraryId;
+    $refName = 'libraryId';
 }
 elseif( $context == 'bibliography' )
 {
     $refId = $courseId;
+    $refName = 'courseId';
 }
 else
 {
     $refId = $userId;
+    $refName = 'userId';
 }
 
 if ( $context == 'librarylist' )
@@ -390,7 +393,9 @@ switch( $cmd )
         $template->assign( 'title' , $resourceId ? $metadata->get( 'title' ) : '' );
         $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
-        $template->assign( 'libraryId' , $libraryId );
+        $template->assign( 'context' , $context );
+        $template->assign( 'refId' , $refId );
+        $template->assign( 'refName' , $refName );
         $template->assign( 'typeList' , $pluginList[ 'resource' ] );
         $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
         $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
