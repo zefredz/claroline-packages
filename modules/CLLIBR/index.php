@@ -65,6 +65,8 @@ $pluginList = $pluginLoader->getPluginList();
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
 
+if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
+
 $is_allowed_to_edit = ( $courseId && claro_is_allowed_to_edit() ) || claro_is_allowed_to_create_course();
 $is_platform_admin = claro_is_platform_admin();
 
@@ -179,12 +181,18 @@ switch( $cmd )
     
     case 'exBookmark':
     {
-        
-        $bookmark = new Collection( $database , 'bookmark' , $userId );
-        
-        if ( $bookmark->resourceExists( $resourceId ) )
+        if ( $userId )
         {
-            $errorMsg = get_lang( 'The resource is already bookmarked' );
+            $bookmark = new Collection( $database , 'bookmark' , $userId );
+            
+            if ( $bookmark->resourceExists( $resourceId ) )
+            {
+                $errorMsg = get_lang( 'The resource is already bookmarked' );
+            }
+        }
+        else
+        {
+            $errorMsg = get_lang( 'not allowed' );
         }
         
         $execution_ok = ! $errorMsg
@@ -327,6 +335,7 @@ $pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $librar
 $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/' . strtolower( $context ) . '.tpl.php' );
 $template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
 $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
+$template->assign( 'userId' , $userId );
 $template->assign( 'libraryId' , $libraryId );
 $template->assign( 'courseId' , $courseId );
 $template->assign( 'icon' , get_icon_url( 'icon' ) );

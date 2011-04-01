@@ -32,11 +32,8 @@ class LibraryList
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_library' , 'library_librarian' , 'user' ) );
         
-        if ( $userId )
-        {
-            $this->userId = $userId;
-            $this->load();
-        }
+        $this->userId = $userId;
+        $this->load();
     }
     
     /**

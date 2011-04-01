@@ -10,7 +10,7 @@
  */ ?>
 
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?context=librarylist') ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'].'?context=librarylist&cidReset=1'); ?>">
         <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="<?php echo get_lang( 'Libraries' ); ?>" />
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
@@ -47,8 +47,9 @@
         <?php echo get_lang( 'Edit course bibliography' ); ?>
     </a>
 </span>
--->
 <?php endif; ?>
+-->
+
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
@@ -88,9 +89,11 @@
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
             <td align="center">
+        <?php if ( $this->userId ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add to my bookmarks' ); ?>"/>
                 </a>
+        <?php endif; ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                 </a>
