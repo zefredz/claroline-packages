@@ -53,8 +53,6 @@ class PluginLoader
         
         foreach( $pluginsRepository as $plugin )
         {
-            $fileName = $plugin->getFileName();
-            
             if ( ! $plugin->isDir() && ! $plugin->isDot() )
             {
                 $fileName = $plugin->getFileName();
