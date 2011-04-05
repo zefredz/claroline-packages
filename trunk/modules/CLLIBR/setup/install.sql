@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     resource_id INT(11) NOT NULL,
     name VARCHAR(128),
     value TEXT,
-    PRIMARY KEY( id )
+    PRIMARY KEY( id ),
+    FULLTEXT(name,value)
 );
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_library`(
