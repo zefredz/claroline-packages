@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -18,7 +18,6 @@ FromKernel::uses( 'utils/input.lib'
 From::Module( 'CLLIBR' )->uses( 'resource.lib'
                               , 'collection.lib'
                               , 'storedresource.lib'
-                              , 'bookmark.lib'
                               , 'librarylist.lib'
                               , 'library.lib'
                               , 'metadata.lib'

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -23,9 +23,6 @@ From::Module( 'CLLIBR' )->uses(
     'resource.lib',
     'collection.lib',
     'storedresource.lib',
-    'catalogue.lib',
-    'bibliography.lib',
-    'bookmark.lib',
     'librarylist.lib',
     'library.lib',
     'librarian.lib',
@@ -91,6 +88,11 @@ $userInput->setValidator( 'cmd' ,
                                                                 , 'exCreateLibrary'
                                                                 , 'rqEditLibrary'
                                                                 , 'exEditLibrary'
+                                                                , 'rqEditLibrarian'
+                                                                , 'rqAddLibrarian'
+                                                                , 'exAddLibrarian'
+                                                                , 'rqRemoveLibrarian'
+                                                                , 'exRemoveLibrarian'
                                                                 , 'rqDeleteLibrary'
                                                                 , 'exDeleteLibrary'
                                                                 , 'exAddResource'
@@ -103,6 +105,7 @@ $userInput->setValidator( 'cmd' ,
 // CONTROLLER
 $cmd = $userInput->get( 'cmd' , 'rqShowList' );
 $libraryId = $userInput->get( 'libraryId' );
+$librarianId = $userInput->get( 'librarianId');
 $resourceId = $userInput->get( 'resourceId' );
 $context = $userInput->get( 'context' );
 
@@ -175,6 +178,9 @@ switch( $cmd )
     case 'rqRemove':
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
+    case 'rqEditLibrarian':
+    case 'rqAddLibrarian':
+    case 'rqRemoveLibrarian':
     {
         break;
     }
@@ -314,8 +320,22 @@ switch( $cmd )
     case 'exDelete':
     {
         $resource = new Resource( $database , $resourceId );
-        $storedResource = new StoredResource( $database , $repository , $resource->getSecretId() );
-        $execution_ok = $resource->delete() && $storedResource->delete();
+        
+        if ( $resource->getType() == 'file' )
+        {
+            $storedResource = new StoredResource( $database , $repository , $resource->getSecretId() );
+            $execution_ok = $resource->delete() && $storedResource->delete();
+        }
+        else
+        {
+            $execution_ok = $resource->delete();
+        }
+        break;
+    }
+    
+    case 'exRemoveLibrarian':
+    {
+        $execution_ok = $librarian->unregister( $librarianId );
         break;
     }
     
@@ -367,6 +387,7 @@ switch( $cmd )
     case 'exEditLibrary':
     case 'exDeleteLibrary':
     case 'exDelete':
+    case 'exRemoveLibrarian':
     {
         if ( $execution_ok )
         {
@@ -379,6 +400,12 @@ switch( $cmd )
         break;
     }
     
+    case 'rqAddLibrarian':
+    {
+        $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/addlibrarian.tpl.php' ); 
+        break;
+    }
+    
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
     {
@@ -388,6 +415,14 @@ switch( $cmd )
         $form->assign( 'title' , $library->getTitle() );
         $form->assign( 'is_public' , $library->isPublic() );
         $dialogBox->form( $form->render() );
+        break;
+    }
+    
+    case 'rqEditLibrarian':
+    {
+        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/librarian.tpl.php' );
+        $template->assign( 'libraryId' , $libraryId );
+        $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
         break;
     }
     
@@ -413,40 +448,37 @@ switch( $cmd )
     
     case 'rqRemove':
     {
-        $question = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
-        $question->assign( 'msg' , get_lang( 'Do you really want to remove this resource?' ) );
-        $question->assign( 'urlAction' , 'exRemove' );
-        $question->assign( 'urlCancel' , 'rqShowList' );
-        $question->assign( 'xid' , 'resourceId' );
-        $question->assign( 'id' , $resourceId );
-        $question->assign( 'context' , $context );
-        $dialogBox->question( $question->render() );
+        $msg = get_lang( 'Do you really want to remove this resource?' );
+        $urlAction = 'exRemove';
+        $urlCancel = 'rqShowList';
+        $xid = array( 'resourceId' => $resourceId );
         break;
     }
     
     case 'rqDeleteLibrary':
     {
-        $question = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
-        $question->assign( 'msg' , get_lang( 'Do you really want to delete this library?' ) );
-        $question->assign( 'urlAction' , 'exDeleteLibrary' );
-        $question->assign( 'urlCancel' , 'rqShowList' );
-        $question->assign( 'xid' , 'libraryId' );
-        $question->assign( 'id' , $libraryId );
-        $question->assign( 'context' , $context );
-        $dialogBox->question( $question->render() );
+        $msg = get_lang( 'Do you really want to delete this library?' );
+        $urlAction = 'exDeleteLibrary';
+        $urlCancel = 'rqShowList';
+        $xid = array( 'libraryId' => $libraryId );
         break;
     }
     
     case 'rqDelete':
     {
-        $question = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
-        $question->assign( 'msg' , get_lang( 'Do you really want to delete this resource?' ) );
-        $question->assign( 'urlAction' , 'exDelete' );
-        $question->assign( 'urlCancel' , 'rqShowList' );
-        $question->assign( 'xid' , 'resourceId' );
-        $question->assign( 'id' , $resourceId );
-        $question->assign( 'context' , $context );
-        $dialogBox->question( $question->render() );
+        $msg = get_lang( 'Do you really want to delete this resource?' );
+        $urlAction = 'exDelete';
+        $urlCancel = 'rqShowList';
+        $xid = array( 'resourceId' => $resourceId );
+        break;
+    }
+    
+    case 'rqRemoveLibrarian':
+    {
+        $msg = get_lang( 'Do you really want to remove this librarian?' );
+        $urlAction = 'exRemoveLibrarian';
+        $urlCancel = 'rqShowList';
+        $xid = array( 'librarianId' => $librarianId , 'libraryId' => $libraryId );
         break;
     }
     
@@ -454,6 +486,17 @@ switch( $cmd )
     {
         throw new Exception( 'bad command' );
     }
+}
+
+if ( isset( $msg ) )
+{
+    $question = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
+    $question->assign( 'msg' , $msg );
+    $question->assign( 'urlAction' , $urlAction );
+    $question->assign( 'urlCancel' , $urlCancel );
+    $question->assign( 'xid' , $xid );
+    $question->assign( 'context' , $context );
+    $dialogBox->question( $question->render() );
 }
 
 if ( $resourceId )

@@ -113,12 +113,15 @@ class LibraryList
     {
         $result =  $this->database->query( "
             SELECT
-                L.user_id,
+                U.user_id,
                 U.nom,
                 U.prenom
             FROM
-                `{$this->tbl['library_librarian']}` AS L,
                 `{$this->tbl['user']}` AS U
+            LEFT JOIN
+                `{$this->tbl['library_librarian']}` AS L
+            ON
+                U.user_id = L.user_id
             WHERE
                 L.library_id = " . $this->database->escape( $libraryId ) );
         
