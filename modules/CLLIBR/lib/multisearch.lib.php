@@ -15,6 +15,7 @@
 class MultiSearch extends Search
 {
     /**
+     * Search query
      * @param array $searchQuery
      */
     public function search( $searchQuery )
@@ -46,7 +47,7 @@ class MultiSearch extends Search
     }
     
     /**
-     *
+     * Prepares the datas collected by the search() method
      */
     public function bake()
     {

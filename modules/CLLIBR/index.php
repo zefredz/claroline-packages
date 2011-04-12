@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.3 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -280,10 +280,22 @@ switch( $cmd )
                 $errorMsg = get_lang( 'file could not be stored' );
             }
         }
+        elseif ( $storage == 'url' )
+        {
+            $resourceUrl = $userInput->get( 'resourceUrl' );
+            
+            if ( $resourceUrl )
+            {
+                $resource->setName( $resourceUrl );
+            }
+            else
+            {
+                $errorMsg = get_lang( 'url missing' );
+            }
+        }
         else
         {
-            break; // NOT IMPLEMENTED YET
-            $storedResource = new LinkedResource( $database , $repository );
+            throw new Exception( 'bad resource type' );
         }
         
         if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
@@ -320,6 +332,7 @@ switch( $cmd )
     case 'exDelete':
     {
         $resource = new Resource( $database , $resourceId );
+        $metadata = new Metadata( $database , $resourceId );
         
         if ( $resource->getType() == 'file' )
         {
@@ -348,6 +361,10 @@ switch( $cmd )
 
 // VIEW
 CssLoader::getInstance()->load( 'cllibr' , 'screen' );
+
+$jsLoader = JavascriptLoader::getInstance();
+$jsLoader->load( 'editresource' );
+
 
 $dialogBox = new DialogBox();
 
@@ -437,12 +454,15 @@ switch( $cmd )
         $template->assign( 'title' , $resourceId ? $metadata->get( 'title' ) : '' );
         $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
+        $template->assign( 'libraryId' , $libraryId );
         $template->assign( 'context' , $context );
         $template->assign( 'refId' , $refId );
         $template->assign( 'refName' , $refName );
         $template->assign( 'typeList' , $pluginList[ 'resource' ] );
         $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
         $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
+        $template->assign( 'propertyList' , $metadata->getAllProperties() );
+        $template->assign( 'keywordsList' , $metadata->getAllKeywords() );
         break;
     }
     

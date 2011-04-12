@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,12 +12,15 @@
 /**
  * A class that represents the metadatas
  * related to a specified resource
+ * @const KEYWORD
  * @static array $defaultMetadataList
  * @property string $resourceUid
  * @property array $metaDataList
  */
 class Metadata
 {
+    const KEYWORD = 'keyword';
+    
     protected static $defaultMetadataList = array( 'title',
                                                    'author',
                                                    'description',
@@ -167,6 +170,35 @@ class Metadata
             return $this->metadataList[ $id ][ 'value' ] = $value;
         }
     }
+    
+    /**
+     * Gets all property names
+     */
+    public function getAllProperties()
+    {
+        return $this->database->query( "
+            SELECT
+                DISTINCT name
+            FROM
+                `{$this->tbl['library_metadata']}`"
+        );
+    }
+    
+    /**
+     * Gets all existing keywords
+     */
+    public function getAllKeywords()
+    {
+        return $this->database->query( "
+            SELECT
+                DISTINCT value
+            FROM
+                `{$this->tbl['library_metadata']}`
+            WHERE
+                name = " . $this->database->quote( self::KEYWORD )
+        );
+    }
+    
     
     /**
      * @static Getter for self::$defaultMetadataList

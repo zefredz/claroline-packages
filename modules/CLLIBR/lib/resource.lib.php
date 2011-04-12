@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -169,6 +169,16 @@ class Resource
     }
     
     /**
+     * Setter for resource's name
+     * @param string $name
+     * @return boolean true on success
+     */
+    public function setName( $name )
+    {
+        return $this->resourceName = $name;
+    }
+    
+    /**
      * Deletes the resource from platform
      * @return boolean true on success
      */
@@ -187,7 +197,7 @@ class Resource
      */
     public function save()
     {
-        if ( ! $this->secretId )
+        if ( ! $this->secretId && $this->type == self::TYPE_FILE )
         {
             throw new Exception( 'Secret ID missing' );
         }
