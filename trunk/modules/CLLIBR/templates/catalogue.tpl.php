@@ -86,7 +86,7 @@
                     <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                 </a>
         <?php if ( $this->is_allowed_to_edit ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDelete&resourceId='. $resourceId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $resourceId . '&libraryId=' . $this->libraryId ) );?>">
