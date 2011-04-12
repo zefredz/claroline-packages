@@ -40,9 +40,8 @@
 }
 
 .LVSURVEYQuestionContent ul{
-	list-style:none;
-	padding : 0px;
-	margin : 0px;
+	list-style-position: inside;
+	list-style-type: none;
 }
 
 .LVSURVEYQuestionResultChart
