@@ -168,7 +168,7 @@ class Collection
      * Remove all the resources from the resource collection
      * @return boolean true on success
      */
-    public function removeAll()
+    public function wipe()
     {
         $this->database->exec( "
             DELETE FROM
@@ -177,6 +177,22 @@ class Collection
                 type = " . $this->database->quote( $this->type ) . "
             AND
                 ref_id = " . $this->database->quote( $this->refId ) );
+        
+        return $this->database->affectedRows();
+    }
+    
+    /**
+     * Removes a specified resource from all the collections
+     * @param int $resourceId
+     * @return int $affectedRows
+     */
+    public function removeResource( $resourceId )
+    {
+        $this->database->exec( "
+            DELETE FROM
+                `{$this->tbl['library_collection']}`
+            WHERE
+                resource_id = " . $this->database->quote( $resourceId ) );
         
         return $this->database->affectedRows();
     }
