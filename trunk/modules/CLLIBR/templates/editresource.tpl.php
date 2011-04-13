@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<form method="post"
+<form class="msform" method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $this->urlAction ) ); ?>" >
     <input type="hidden"
@@ -24,64 +24,95 @@
     <input type="hidden"
            name="libraryId"
            value="<?php echo $this->libraryId; ?>" />
+
+    <!-- the following can be changed only when adding a new ressource -->
     <?php if ( $this->urlAction == 'exAddResource' ): ?>
-    <strong><?php echo get_lang( 'Resource type' ) . ' : '; ?></strong>
-    <select id="resourceType" name="type">
-        <?php foreach( $this->typeList as $type ) : ?>
-        <option value="<?php echo $type; ?>">
-            <?php echo get_lang( strtolower( $type ) ); ?>
-        </option>
-        <?php endforeach; ?>
-    </select><br />
-    <strong><?php echo get_lang( 'Storage type' ) . ' : '; ?></strong>
-    <select id="resourceStorage" name="storage">
-        <option value="file">
-            <?php echo get_lang( 'Local storage of a file' ); ?>
-        </option>
-        <option value="url">
-            <?php echo get_lang( 'External link' ); ?>
-        </option>
-    </select>
-    <span id="resourceSelect">
-        <input type="file"
-               name="uploadedFile" />
-    </span>
-    <!--
-    <div id="resourceSelect">
-        <strong><?php echo get_lang( 'Browse your file' ); ?></strong>
-        <input type="file"
-               name="uploadedFile" />
-    </div>
-    <div id="resourceUrl">
-        <strong><?php echo get_lang( 'Url of the resource' ); ?></strong>
-        <input type="text"
-               name="resourceUrl"
-               value="" />
-    </div>
-    -->
+    <fieldset id="resourseFile">
+        <legend><?php echo get_lang("Resource"); ?> : </legend>
+        <dl>
+            <dt>
+                <label for="resourceType"><?php echo get_lang( 'Resource type' ); ?> :</label>
+            </dt>
+            <dd>
+                <select id="resourceType" name="type">
+                <?php foreach( $this->typeList as $type ) : ?>
+                <option value="<?php echo $type; ?>">
+                    <?php echo get_lang( strtolower( $type ) ); ?>
+                </option>
+                <?php endforeach; ?>
+                </select>
+            </dd>
+            <dt>
+                <label for="resourceStorage"><?php echo get_lang( 'Storage type' ); ?> :</label>
+            </dt>
+            <dd>
+                <select id="resourceStorage" name="storage">
+                    <option value="file">
+                        <?php echo get_lang( 'Local storage of a file' ); ?>
+                    </option>
+                    <option value="url">
+                        <?php echo get_lang( 'External link' ); ?>
+                    </option>
+                </select>
+            </dd>
+            <dt>&nbsp;</dt>
+                <dd>
+                    <span id="resourceSelect">
+                        <input type="file"
+                               name="uploadedFile" />
+                    </span>
+                </dd>
+        </dl>
+    </fieldset>
     <?php endif; ?>
-    <h4><?php echo get_lang( 'Metadatas' ); ?></h4>
-    <div id="metadataList">
+
+    <fieldset>
+    <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
+
+    <dl id="metadataList">
+        <!-- when adding a new resource -->
         <?php if ( $this->urlAction == 'exAddResource' ) : ?>
+
             <?php foreach( $this->defaultMetadataList as $property ) : ?>
-                <?php echo get_lang( ucwords( $property ) ) . ' : '; ?>
-        <input type="text"
-               name="metadata[<?php echo $property; ?>]" value="" /><br />
+
+                <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
+                <dd><input type="text"
+               name="metadata[<?php echo $property; ?>]" value="" /></dd>
+
             <?php endforeach; ?>
+
+        <!-- when editing an existing resource -->
         <?php else : ?>
-            <?php foreach( $this->metadataList as $name => $metadata )
-                  {
-                    foreach( $metadata as $id => $value )
-                    {
-                        echo get_lang( ucwords( $name ) ) . ' : <input type="text" name="metadata[' . $id . ']" value="' . htmlspecialchars( $value ) . '" /><br />' . "\n";
-                    }
-                  }
+
+            <?php 
+                foreach( $this->metadataList as $name => $metadata ):
+                    foreach( $metadata as $id => $value ):
             ?>
+
+        <dt><label><?php echo get_lang( ucwords( $name ) ); ?> :</label></dt>
+        <dd>
+            <input type="text"
+                   name="metadata[<?php echo $id; ?>]"
+                   value="<?php echo htmlspecialchars( $value ); ?>" />
+        </dd>
+
+            <?php
+                    endforeach;
+                endforeach;
+            ?>
+
         <?php endif; ?>
-        <a id="addMetadata" href="#claroBody">
+         
+        <dt>&nbsp;</dt>
+        <dd>
+            <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
-        </a><br />
-    </div>
+            </a>
+        </dd>
+
+    </dl>
+    </fieldset>
+    
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                   . '?context=' . $this->context . '&'
