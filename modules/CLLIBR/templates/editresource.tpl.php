@@ -114,7 +114,8 @@
     </fieldset>
     
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
-    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
-                                                  . '?context=' . $this->context . '&'
-                                                  . $this->refName . '=' . $this->refId ) ) , get_lang( 'Cancel' ) ); ?>
+    <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+        $_SERVER['PHP_SELF'].'?context=' . $this->context . '&' . $this->refName . '=' . $this->refId ) ); ?>">
+        <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
+    </a>
 </form>
