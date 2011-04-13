@@ -70,36 +70,36 @@ $is_platform_admin = claro_is_platform_admin();
 $userInput = Claro_UserInput::getInstance();
 
 $userInput->setValidator( 'context' ,
-                          new Claro_Validator_AllowedList( array( 'librarylist'
-                                                                , 'catalogue'
-                                                                , 'bibliography'
-                                                                , 'bookmark' )
-                        ) );
+    new Claro_Validator_AllowedList( array( 'librarylist'
+                                          , 'catalogue'
+                                          , 'bibliography'
+                                          , 'bookmark' )
+) );
 $userInput->setValidator( 'cmd' ,
-                          new Claro_Validator_AllowedList( array( 'rqShowList'
-                                                                , 'rqView'
-                                                                , 'exBookmark'
-                                                                , 'exAdd'
-                                                                , 'rqRemove'
-                                                                , 'exRemove'
-                                                                , 'rqAddResource'
-                                                                , 'rqEditResource'
-                                                                , 'rqCreateLibrary'
-                                                                , 'exCreateLibrary'
-                                                                , 'rqEditLibrary'
-                                                                , 'exEditLibrary'
-                                                                , 'rqEditLibrarian'
-                                                                , 'rqAddLibrarian'
-                                                                , 'exAddLibrarian'
-                                                                , 'rqRemoveLibrarian'
-                                                                , 'exRemoveLibrarian'
-                                                                , 'rqDeleteLibrary'
-                                                                , 'exDeleteLibrary'
-                                                                , 'exAddResource'
-                                                                , 'exEditResource'
-                                                                , 'rqDelete'
-                                                                , 'exDelete' )
-                        ) );
+    new Claro_Validator_AllowedList( array( 'rqShowList'
+                                          , 'rqView'
+                                          , 'exBookmark'
+                                          , 'exAdd'
+                                          , 'rqRemove'
+                                          , 'exRemove'
+                                          , 'rqAddResource'
+                                          , 'rqEditResource'
+                                          , 'rqCreateLibrary'
+                                          , 'exCreateLibrary'
+                                          , 'rqEditLibrary'
+                                          , 'exEditLibrary'
+                                          , 'rqEditLibrarian'
+                                          , 'rqAddLibrarian'
+                                          , 'exAddLibrarian'
+                                          , 'rqRemoveLibrarian'
+                                          , 'exRemoveLibrarian'
+                                          , 'rqDeleteLibrary'
+                                          , 'exDeleteLibrary'
+                                          , 'exAddResource'
+                                          , 'exEditResource'
+                                          , 'rqDelete'
+                                          , 'exDelete' )
+) );
 
 
 // CONTROLLER
@@ -172,6 +172,7 @@ switch( $cmd )
     case 'rqShowList':
     case 'rqDeleteLibrary':
     case 'rqView':
+    case 'rqDownload':
     case 'rqAddResource':
     case 'rqEditResource':
     case 'rqDelete':
@@ -333,15 +334,16 @@ switch( $cmd )
     {
         $resource = new Resource( $database , $resourceId );
         $metadata = new Metadata( $database , $resourceId );
+        $catalogue = new Collection( $database , 'catalogue' , $libraryId );
         
-        if ( $resource->getType() == 'file' )
+        $execution_ok = $metadata->removeAll()
+                     && $catalogue->removeResource( $resourceId )
+                     && $resource->delete();
+        
+        if ( $execution_ok && $resource->getType() == 'file' )
         {
             $storedResource = new StoredResource( $database , $repository , $resource->getSecretId() );
-            $execution_ok = $resource->delete() && $storedResource->delete();
-        }
-        else
-        {
-            $execution_ok = $resource->delete();
+            $execution_ok = $storedResource->delete();
         }
         break;
     }
@@ -384,9 +386,8 @@ switch( $cmd )
         break;
     }
     
-    case 'rqView':
+    case 'rqDownload':
     {
-        $resourceId = $userInput->get( 'resourceId' );
         $storedResource = new StoredResource( $database
                                             , $repository
                                             , $resource->getSecretId()
@@ -519,7 +520,7 @@ if ( isset( $msg ) )
     $dialogBox->question( $question->render() );
 }
 
-if ( $resourceId )
+if ( $resourceId && $cmd == 'rqView' )
 {
     $dcView = new DublinCore( $metadata->export() );
     ClaroHeader::getInstance()->addHtmlHeader( $dcView->render() );

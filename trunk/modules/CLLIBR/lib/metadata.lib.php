@@ -143,12 +143,32 @@ class Metadata
             DELETE FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_id = " . $this->database->quote( $id ) ) )
+                resource_id = " . $this->database->quote( $this->resourceId ) . "
+            AND
+                id = " . $this->database->escape( $id ) ) )
         {
             unset( $this->metadataList[ $id ] );
-            
-            return $this->database->affectedRows();
         }
+        
+        return $this->database->affectedRows();
+    }
+    
+    /**
+     * Removes all metadatas
+     * @return boolean true on success
+     */
+    public function removeAll()
+    {
+        if ( $this->database->exec( "
+            DELETE FROM
+                `{$this->tbl['library_metadata']}`
+            WHERE
+                resource_id = " . $this->database->quote( $this->resourceId ) ) )
+        {
+            unset( $this->metadataList );
+        }
+        
+        return $this->database->affectedRows();
     }
     
     /**
