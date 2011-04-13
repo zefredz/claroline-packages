@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.5 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -78,6 +78,7 @@ $userInput->setValidator( 'context' ,
 $userInput->setValidator( 'cmd' ,
     new Claro_Validator_AllowedList( array( 'rqShowList'
                                           , 'rqView'
+                                          , 'rqDownload'
                                           , 'exBookmark'
                                           , 'exAdd'
                                           , 'rqRemove'
@@ -386,6 +387,20 @@ switch( $cmd )
         break;
     }
     
+    case 'rqView':
+    {
+        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/resource.tpl.php' );
+        $template->assign( 'resourceId' , $resourceId );
+        $template->assign( 'storageType' , $resource->getType() );
+        $template->assign( 'url' , $resource->getName() );
+        $template->assign( 'title' , $metadata->get( 'title' ) );
+        $template->assign( 'metadataList' , $metadata->export() );
+        $template->assign( 'userId' , $userId );
+        $template->assign( 'libraryId' , $libraryId );
+        $template->assign( 'context' , $context );
+        break;
+    }
+    
     case 'rqDownload':
     {
         $storedResource = new StoredResource( $database
@@ -420,7 +435,7 @@ switch( $cmd )
     
     case 'rqAddLibrarian':
     {
-        $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/addlibrarian.tpl.php' ); 
+        $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/addlibrarian.tpl.php' );
         break;
     }
     
@@ -490,7 +505,9 @@ switch( $cmd )
         $msg = get_lang( 'Do you really want to delete this resource?' );
         $urlAction = 'exDelete';
         $urlCancel = 'rqShowList';
-        $xid = array( 'resourceId' => $resourceId );
+        $xid = array( 'resourceId' => $resourceId
+                    , 'context' => 'catalogue'
+                    , 'libraryId' => $libraryId );
         break;
     }
     
