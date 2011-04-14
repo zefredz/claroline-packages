@@ -9,36 +9,49 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<div id="accessResource">
+<fieldset id="accessResource">
+
+    <legend><?php echo get_lang('Resource'); ?></legend>
+
 <?php if ( $this->storageType == 'file' ) : ?>
-<a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
-    <?php echo get_lang( 'Download' ); ?>
-</a>
+
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
+        <?php echo get_lang( 'Download' ); ?>
+    </a>
+
 <?php else : ?>
-<a class="claroCmd" href="<?php echo htmlspecialchars( $this->url ); ?>">
-    <?php echo get_lang( 'Link' ); ?>
-</a>
+
+    <a class="claroCmd" href="<?php echo htmlspecialchars( $this->url ); ?>">
+        <?php echo get_lang( 'Link' ); ?>
+    </a>
+
 <?php endif; ?>
-</div><br />
+
+</fieldset>
 
 <fieldset>
-<legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
+    
+    <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
 
-<dl id="metadataList">
-        <?php 
-            foreach( $this->metadataList as $name => $metadata ):
-                foreach( $metadata as $id => $value ):
-        ?>
+    <dl id="metadataList">
 
-    <dt><label><?php echo get_lang( ucwords( $name ) ); ?> :</label></dt>
-    <dd>
-        <?php echo htmlspecialchars( $value ); ?>
-    </dd>
+    <?php foreach( $this->metadataList as $name => $metadata ): ?>
 
-        <?php
-                endforeach;
-            endforeach;
-        ?>
+        <?php foreach( $metadata as $id => $value ): ?>
 
-</dl>
+        <dt>
+            <label>
+                <?php echo get_lang( ucwords( $name ) ); ?> :
+            </label>
+        </dt>
+        <dd>
+            <?php echo htmlspecialchars( $value ); ?>
+        </dd>
+
+        <?php endforeach; ?>
+
+    <?php endforeach; ?>
+
+    </dl>
+
 </fieldset>
