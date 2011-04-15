@@ -11,5 +11,5 @@
 
 class Picture extends Resource
 {
-    protected $authorizedFileType = array( 'png' , 'jpg' , 'jpeg' , 'gif' );
+    protected $authorizedFileType = array( 'png' , 'jpg' , 'jpeg' , 'gif' , 'pdf' );
 }

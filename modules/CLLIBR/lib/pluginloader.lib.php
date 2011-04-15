@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.1.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.3.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -44,7 +44,7 @@ class PluginLoader
     }
     
     /**
-     * search for plugins in the plugins directory
+     * Searches for plugins in the plugins directory
      * @return array $pluginList
      */
     public function loadPlugins()
@@ -76,5 +76,16 @@ class PluginLoader
                 }
             }
         }
+    }
+    
+    /**
+     * Controls if the specified plugin exists
+     * @param string $type
+     * @param string $name
+     * @return boolean true if exists
+     */
+    public function pluginExists( $type , $name )
+    {
+        return isset( $this->pluginList[ $type ][ $name ] );
     }
 }
