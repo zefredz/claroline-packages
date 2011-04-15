@@ -259,7 +259,7 @@ switch( $cmd )
         
         if ( $storage == 'file' )
         {
-            $storedResource = new StoredResource( $database , $repository );
+            $storedResource = new StoredResource( $repository );
             
             if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
             {
@@ -282,7 +282,7 @@ switch( $cmd )
                 $errorMsg = get_lang( 'file could not be stored' );
             }
         }
-        elseif ( $storage == 'url' )
+        else
         {
             $resourceUrl = $userInput->get( 'resourceUrl' );
             
@@ -294,10 +294,6 @@ switch( $cmd )
             {
                 $errorMsg = get_lang( 'url missing' );
             }
-        }
-        else
-        {
-            throw new Exception( 'bad resource type' );
         }
         
         if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
@@ -343,7 +339,7 @@ switch( $cmd )
         
         if ( $execution_ok && $resource->getType() == 'file' )
         {
-            $storedResource = new StoredResource( $database , $repository , $resource->getSecretId() );
+            $storedResource = new StoredResource( $repository , $resource->getSecretId() );
             $execution_ok = $storedResource->delete();
         }
         break;
@@ -403,8 +399,7 @@ switch( $cmd )
     
     case 'rqDownload':
     {
-        $storedResource = new StoredResource( $database
-                                            , $repository
+        $storedResource = new StoredResource( $repository
                                             , $resource->getSecretId()
                                             , $resource->getName() );
         $storedResource->getFile();

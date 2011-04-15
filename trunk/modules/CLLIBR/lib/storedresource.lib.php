@@ -23,14 +23,11 @@ class StoredResource
     protected $secretId;
     protected $fileName;
     
-    protected $database;
-    
     /**
      * Constructor
      */
-    public function __construct( $database , $location , $secretId = null , $fileName = null )
+    public function __construct( $location , $secretId = null , $fileName = null )
     {
-        $this->database = $database;
         $this->location = $location;
         
         if ( $secretId )
