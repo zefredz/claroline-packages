@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_path` (
   `view_mode` ENUM('EMBEDDED', 'FULLSCREEN') NOT NULL DEFAULT 'EMBEDDED',
   `encoding` VARCHAR(12) NOT NULL DEFAULT 'UTF-8',
   PRIMARY KEY(`id`)
-) TYPE = MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item` (
   `redirectBranchConditions` enum('0','1') NOT NULL DEFAULT '0',
   `newWindow` enum('0','1') NOT NULL DEFAULT '0',
   PRIMARY KEY(`id`)
-) TYPE = MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_attempt` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_attempt` (
   `progress` INT(11),
   `attempt_number` INT(11),
   PRIMARY KEY(`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_attempt` (
   `suspend_data` text NOT NULL,
   `credit` enum('CREDIT','NO-CREDIT') NOT NULL default 'NO-CREDIT',
   PRIMARY KEY(`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_item_blockcondition` (
   `condition` enum('-1','AND','OR') NOT NULL,
   `raw_to_pass` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_grapple_resources` (
   `grappleId` varchar(255) NOT NULL,
@@ -83,4 +83,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__lp_grapple_resources` (
   `name` text,
   `path` text,
   PRIMARY KEY (`grappleId`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

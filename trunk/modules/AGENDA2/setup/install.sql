@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS __CL_MAIN__event (
 	`end_date` datetime NOT NULL default '0000-00-00 00:00:00',
 	`master_event_id` int(11),
 PRIMARY KEY (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS`__CL_MAIN__rel_event_recipient` (
 	`id` int(11) NOT NULL auto_increment,
@@ -17,4 +17,4 @@ CREATE TABLE IF NOT EXISTS`__CL_MAIN__rel_event_recipient` (
 	`group_id` int(11),
 	`visibility` enum('SHOW','HIDE') NOT NULL default 'SHOW',
 PRIMARY KEY (`id`)
-)TYPE= MYISAM ;
+) ENGINE=MYISAM;

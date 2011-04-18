@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__clpres_attendance` (
   `user_id` int(11) NOT NULL,
   `is_att` tinyint NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;
