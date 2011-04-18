@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_librarian`(
     user_id  INT(11),
     library_id INT(11),
     PRIMARY KEY( user_id, library_id )
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     resource_id INT(11) NOT NULL,
