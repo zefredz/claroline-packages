@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     mime_type VARCHAR(128) NOT NULL DEFAULT 'text/html',
     resource_name VARCHAR(128) NOT NULL,
     PRIMARY KEY( id )
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -25,14 +25,14 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     value TEXT,
     PRIMARY KEY( id ),
     FULLTEXT(name,value)
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_library`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     title VARCHAR(127),
     is_public BOOLEAN DEFAULT FALSE,
     PRIMARY KEY( id )
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_librarian`(
     user_id  INT(11),
@@ -45,4 +45,4 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     type ENUM('catalogue','bibliography','bookmark'),
     ref_id VARCHAR(16) NOT NULL,
     PRIMARY KEY( resource_id, type, ref_id )
-);
+) ENGINE=MyISAM;
