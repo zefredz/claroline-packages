@@ -16,4 +16,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__report_reports`(
     publication_date DATETIME,
     visibility ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
     PRIMARY KEY( id )
-);
+) ENGINE=MyISAM;
