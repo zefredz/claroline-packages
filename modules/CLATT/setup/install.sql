@@ -4,11 +4,11 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__attendance` (
   `attendance` enum('present','absent','late','excused') NOT NULL,
   `comment` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`id_list`,`user_id`) USING BTREE
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__attendance_session` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date_att` datetime NOT NULL,
   `title` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) TYPE=MyISAM  AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;

@@ -49,7 +49,7 @@ $CourseUpgradeTasks->add(
             `forum_id` int(10) NOT NULL default '0',
             PRIMARY KEY  (`notify_id`),
             KEY `SECONDARY` (`user_id`,`forum_id`)
-         ) TYPE=MyISAM;",
+         ) ENGINE=MyISAM;",
         "Create a table to store the forum notification preferences of a user",
         Upgrade_TaskConstants::ON_ERROR_CONTINUE
     )

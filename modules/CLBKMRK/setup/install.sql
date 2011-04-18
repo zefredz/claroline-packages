@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__clbkmrk_bookmarks` (
   `url` varchar(255) NOT NULL,
   `owner_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

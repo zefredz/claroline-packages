@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__dim_conference` (
   `startTime` DATETIME NOT NULL default '0000-00-00 00:00:00',
   `confKey` VARCHAR(255) NOT NULL default '',
   PRIMARY KEY(`id`)
-) TYPE = MyISAM;
+) ENGINE=MyISAM;

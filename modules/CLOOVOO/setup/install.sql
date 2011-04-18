@@ -3,5 +3,4 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__oovoo_course` (
   `course_id` VARCHAR(40) NOT NULL,
   `username` VARCHAR(255) DEFAULT '',
   PRIMARY KEY(`id`)
-) TYPE = MyISAM;
-
+) ENGINE=MyISAM;

@@ -52,7 +52,7 @@ function createTable($tbl){
   `rank` INT(11) NOT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
   PRIMARY KEY(id)
-) TYPE=MyISAM");
+) ENGINE=MyISAM");
 }
 
 function setItemsInTbl($tbl){
@@ -123,7 +123,7 @@ function manageMv($id,$rank,$is_allowedToEdit){
 		return false;
 	else
 	{
-		if ($rank == 1) 
+		if ($rank == 1)
 			return '<a href='.$_SERVER['PHP_SELF'].'?action=mvDown&id='.$id.'><img src="../../module/CLCOURSE/img/move_down.png"></a>';
 		elseif ($rank == 2)
 			return '<a href='.$_SERVER['PHP_SELF'].'?action=mvUp&id='.$id.'><img src="../../module/CLCOURSE/img/move_up.png"></a><a href='.PHP_SELF().'?action=mvDown&id='.$id.'><img src="../../module/CLCOURSE/img/move_down.png"></a>';

@@ -4,4 +4,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__manage_course_homepage` (
   `rank` INT(11) NOT NULL,
   `visibility` ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
   PRIMARY KEY(id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__blog_posts` (
   contents TEXT,
   ctime datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY(id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__blog_comments` (
   id INT(11) NOT NULL AUTO_INCREMENT,
@@ -16,4 +16,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__blog_comments` (
   contents TEXT,
   ctime datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY(id)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
