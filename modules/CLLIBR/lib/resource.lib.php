@@ -20,7 +20,6 @@
  * @property $type
  * @property $metaDataList
  * @property $creationDate
- * @property $is_stored
  */
 class Resource
 {
@@ -30,12 +29,10 @@ class Resource
     protected $authorizedFileType;
     
     protected $id;
-    protected $secretId;
     protected $type;
     
     protected $creationDate;
     protected $resourceName;
-    protected $is_stored;
     
     protected $database;
     
@@ -63,9 +60,8 @@ class Resource
     {
         $result = $this->database->query( "
             SELECT
-                secret_id,
                 creation_date,
-                mime_type,
+                resource_type,
                 resource_name
             FROM
                 `{$this->tbl['library_resource']}`
@@ -75,12 +71,9 @@ class Resource
         
         if ( count( $result ) )
         {
-            $this->secretId = $result[ 'secret_id' ];
             $this->creationDate = $result[ 'creation_date' ];
-            $this->type = $result[ 'mime_type' ];
+            $this->type = $result[ 'resource_type' ];
             $this->resourceName = $result[ 'resource_name' ];
-            
-            return $this->is_stored = true;
         }
         else
         {
@@ -96,29 +89,6 @@ class Resource
     {
         return $this->id;
     }
-    
-    /**
-     * Getter for secret ID
-     * @return string $secretId
-     */
-    public function getSecretId()
-    {
-        return $this->secretId;
-    }
-    
-    /**
-     * Setter for secret ID
-     * @param string $secretId
-     */
-    public function setSecretId( $secretId )
-    {
-        if ( strlen( $secretId ) != 32 )
-        {
-            throw new Exception( 'invalid ID :' . $secretId );
-        }
-        
-        return $this->secretId = $secretId;
-    }    
     
     /**
      * Getter for the "file name" of the resource
@@ -197,36 +167,16 @@ class Resource
      */
     public function save()
     {
-        if ( ! $this->secretId && $this->type == self::TYPE_FILE )
-        {
-            throw new Exception( 'Secret ID missing' );
-        }
-        
-        $sql = "\n    `{$this->tbl['library_resource']}`
+        if ( $this->database->exec( "
+            INSERT INTO
+                `{$this->tbl['library_resource']}`
                 SET
-                    mime_type = " . $this->database->quote( $this->type ) . ",
+                    resource_type = " . $this->database->quote( $this->type ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
-                    creation_date = NOW()";
-        
-        if ( $this->is_stored )
+                    creation_date = NOW()" ) )
         {
-            $this->database->exec( "
-                UPDATE" . $sql . "
-                WHERE
-                    secret_id = " . $this->database->quote( $this->secretId )
-            );
+            return $this->id = $this->database->insertId();
         }
-        else
-        {
-            $this->database->exec( "
-                INSERT INTO " . $sql . ",
-                    secret_id = " . $this->database->quote( $this->secretId )
-            );
-            
-            $this->id = $this->database->insertId();
-        }
-        
-        return $this->database->affectedRows();
     }
     
     /**
@@ -238,6 +188,6 @@ class Resource
     {
         return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
                         , $this->authorizedFileType )
-            && $this->resourceName = $fileName;
+               && $this->resourceName = $fileName;
     }
 }

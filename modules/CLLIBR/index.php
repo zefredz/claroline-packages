@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -259,50 +259,53 @@ switch( $cmd )
         
         if ( $storage == 'file' )
         {
-            $storedResource = new StoredResource( $repository );
-            
             if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
             {
                 $file = $_FILES[ 'uploadedFile' ];
+                $resourceName = $file[ 'name' ];
             }
             else
             {
                 $errorMsg = get_lang( 'file missing' );
             }
             
+            /**
             if ( ! $errorMsg
               && ! $resource->validate( $file['name'] ) )
             {
                 $errorMsg = get_lang( 'invalid file' );
-            }
-            
-            if ( ! $errorMsg
-              && ! $resource->setSecretId( $storedResource->store( $file ) ) )
-            {
-                $errorMsg = get_lang( 'file could not be stored' );
-            }
+            }*/
         }
         else
         {
-            $resourceUrl = $userInput->get( 'resourceUrl' );
+            $resourceName = $userInput->get( 'resourceUrl' );
             
-            if ( $resourceUrl )
-            {
-                $resource->setName( $resourceUrl );
-            }
-            else
+            if ( ! $resourceName )
             {
                 $errorMsg = get_lang( 'url missing' );
             }
         }
         
-        if ( ! $errorMsg && $resource->save() && ! empty( $metadataList ) )
+        if ( ! $errorMsg
+            && $resource->setName( $resourceName )
+            && $resource->save()
+            && ! empty( $metadataList ) )
         {
             $metadata = new Metadata( $database , $resource->getId() );
             
             foreach( $metadataList as $property => $value )
             {
                 $metadata->add( $property , $value );
+            }
+        }
+        
+        if ( ! $errorMsg && $file )
+        {
+            $storedResource = new StoredResource( $repository , $resource );
+            
+            if ( ! $storedResource->store( $file ) )
+            {
+                $errorMsg = get_lang( 'cannot store the file' );
             }
         }
         
@@ -339,7 +342,7 @@ switch( $cmd )
         
         if ( $execution_ok && $resource->getType() == 'file' )
         {
-            $storedResource = new StoredResource( $repository , $resource->getSecretId() );
+            $storedResource = new StoredResource( $repository , $resource );
             $execution_ok = $storedResource->delete();
         }
         break;
@@ -399,9 +402,7 @@ switch( $cmd )
     
     case 'rqDownload':
     {
-        $storedResource = new StoredResource( $repository
-                                            , $resource->getSecretId()
-                                            , $resource->getName() );
+        $storedResource = new StoredResource( $repository , $resource );
         $storedResource->getFile();
         break;
     }
