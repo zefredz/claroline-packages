@@ -77,9 +77,7 @@ class LibraryList
             ON
                 LY.id = LN.library_id
             WHERE
-                LY.is_public = TRUE
-            AND
-                LN.user_id != " . $this->database->escape( $this->userId )
+                LY.is_public = TRUE"
         );
         
         foreach( $publicLibraryList as $library )

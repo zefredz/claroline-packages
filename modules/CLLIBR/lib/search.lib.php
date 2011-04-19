@@ -30,7 +30,7 @@ abstract class Search
         $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );
     }
     
-    abstract public function search();
+    abstract public function search( $searchString );
     abstract public function bake();
     
     /**

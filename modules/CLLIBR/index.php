@@ -27,6 +27,7 @@ From::Module( 'CLLIBR' )->uses(
     'library.lib',
     'librarian.lib',
     'metadata.lib',
+    'search.lib',
     'metadataview.lib',
     'pluginloader.lib',
     'thirdparty/uuid.lib' );
@@ -100,7 +101,8 @@ $userInput->setValidator( 'cmd' ,
                                           , 'exAddResource'
                                           , 'exEditResource'
                                           , 'rqDelete'
-                                          , 'exDelete' )
+                                          , 'exDelete'
+                                          , 'rqQSearch' )
 ) );
 
 
@@ -362,6 +364,15 @@ switch( $cmd )
         break;
     }
     
+    case 'rqQSearch':
+    {
+        $searchString = $userInput->get( 'searchString' );
+        $searchEngine = new FulltextSearch( $database );
+        $searchEngine->search( $searchString );
+        $searchEngine->bake();
+        break;
+    }
+    
     default:
     {
         throw new Exception( 'bad command' );
@@ -521,6 +532,13 @@ switch( $cmd )
         $urlAction = 'exRemoveLibrarian';
         $urlCancel = 'rqShowList';
         $xid = array( 'librarianId' => $librarianId , 'libraryId' => $libraryId );
+        break;
+    }
+    
+    case 'rqQSearch':
+    {
+        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/searchresult.tpl.php' );
+        $template->assign( 'result' , $searchEngine->getResult() );
         break;
     }
     

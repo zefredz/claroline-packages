@@ -15,10 +15,13 @@
         <?php echo get_lang( 'Create a new library' ); ?>
     </a>
 </span>
-
+<form id="searchForm" method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqQSearch') ); ?>">
+    <input type="submit" value="<?php echo get_lang( 'Quick search' ); ?>" />
+    <input type="text" name="searchString" value="" />
+</form>
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>
 <fieldset id="<?php echo $category; ?>Library">
-    <legend><?php echo get_lang( $category . ' library' ); ?></legend>
+    <legend><?php echo get_lang( $category . ' libraries' ); ?></legend>
     <table class="claroTable emphaseLine" style=" width: 100%;">
         <thead>
             <tr class="headerX">
