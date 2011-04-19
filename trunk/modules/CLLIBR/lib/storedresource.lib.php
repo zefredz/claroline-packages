@@ -37,9 +37,12 @@ class StoredResource
      * @param string $fileName
      * @return string $storedName
      */
-    public function generateStoredName( $fileName )
+    public function generateStoredName()
     {
-        return md5( $this->resource->getName() ) . '-' . $this->resource->getId();
+        return UUID::generate( UUID::UUID_NAME_MD5
+                             , UUID::FMT_STRING
+                             , $this->resource->getName() . $this->resource->getDate() );
+        //return md5( $this->resource->getName() . $this->resource->getDate() );
     }
     
     /**
@@ -49,7 +52,7 @@ class StoredResource
      */
     public function store( $file )
     {
-        $target_path = $this->location . $this->generateStoredName( $this->resource->getName() );
+        $target_path = $this->location . $this->generateStoredName();
         
         return move_uploaded_file( $file[ 'tmp_name' ] , $target_path );
     }
@@ -61,7 +64,7 @@ class StoredResource
     {
         header('Content-type: ' . self::getMimeType( $this->resource->getName() ) );
         header('Content-Disposition: attachment; filename="' . $this->resource->getName() . '"');
-        readfile( $this->location . $this->generateStoredName( $this->resource->getName() ) );
+        readfile( $this->location . $this->generateStoredName() );
     }
     
     /**
@@ -70,7 +73,8 @@ class StoredResource
      */
     public function delete()
     {
-        return unlink( $this->location . $this->generateStoredName( $this->resource->getName() ) );
+        return file_exists( $this->location . $this->generateStoredName() )
+            && unlink( $this->location . $this->generateStoredName() );
     }
     
     /**

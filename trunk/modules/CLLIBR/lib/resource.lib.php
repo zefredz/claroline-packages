@@ -149,6 +149,16 @@ class Resource
     }
     
     /**
+     * Setter for creation date
+     * @param string date
+     * @return boolean true on success
+     */
+    public function setDate( $date = null )
+    {
+        return $this->creationDate = $date ? $date : date( 'Y-m-d H:i:s' );
+    }
+    
+    /**
      * Deletes the resource from platform
      * @return boolean true on success
      */
@@ -167,13 +177,18 @@ class Resource
      */
     public function save()
     {
+        if ( ! $this->type || ! $this->resourceName || ! $this->creationDate )
+        {
+            throw new Exception( 'Missing atributes' );
+        }
+        
         if ( $this->database->exec( "
             INSERT INTO
                 `{$this->tbl['library_resource']}`
                 SET
                     resource_type = " . $this->database->quote( $this->type ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
-                    creation_date = NOW()" ) )
+                    creation_date = " . $this->database->quote( $this->creationDate ) ) )
         {
             return $this->id = $this->database->insertId();
         }
