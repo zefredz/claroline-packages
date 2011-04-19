@@ -75,7 +75,7 @@
             </td>
             <td align="center">
                 <?php if ( $this->courseId && $this->is_allowed_to_edit ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId . '&courseId=' . $this->courseId ) );?>">
                     <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\' bibliography' ); ?>"/>
                 </a>
                 <?php endif; ?>

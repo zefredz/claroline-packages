@@ -351,7 +351,14 @@ switch( $cmd )
     
     case 'exRemoveLibrarian':
     {
-        $execution_ok = $librarian->unregister( $librarianId );
+        if ( $librarian->isLibrarian( $librarianId )
+          && count( $librarian->getLibrarianList() == 1 ) )
+        {
+            $errorMsg = get_lang( 'A library must have at least one librarian' );
+        }
+        
+        $execution_ok = ! $errorMsg
+                       && $librarian->unregister( $librarianId );
         break;
     }
     
