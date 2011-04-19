@@ -69,6 +69,18 @@ class MultiSearch extends Search
             $result[ $id ][ 'count' ]++;
         }
         
-        return $this->searchResult = $result;
+        ////// NOT SURE
+        $searchResult = array();
+        
+        foreach( $result as $id => $datas )
+        {
+            $searchResult[ $datas[ 'count' ] ][ $id ] = $data[ 'matches' ];
+        }
+        
+        krsort( $searchResult );
+        //////
+        
+        //return $this->searchResult = $result;
+        return $this->searchResult = $searchResult;
     }
 }
