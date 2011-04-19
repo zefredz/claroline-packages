@@ -12,11 +12,8 @@
 
 /**
  * A class that represents the stored resource
- * @property $resourceId
- * @property $fileName
- * @property $fileExtension
- * @property $secretId
  * @property $location
+ * @property $resource
  */
 class StoredResource
 {

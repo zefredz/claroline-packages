@@ -10,7 +10,7 @@
  */ ?>
 
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'].'?context=librarylist&cidReset=1'); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'].'?context=librarylist'); ?>">
         <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="<?php echo get_lang( 'Libraries' ); ?>" />
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
