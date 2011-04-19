@@ -28,7 +28,8 @@ From::Module( 'CLLIBR' )->uses(
     'librarian.lib',
     'metadata.lib',
     'metadataview.lib',
-    'pluginloader.lib' );
+    'pluginloader.lib',
+    'thirdparty/uuid.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
@@ -256,38 +257,48 @@ switch( $cmd )
         
         $resource = new $type( $database );
         $resource->setType( $storage );
+        $resource->setDate();
         
         if ( $storage == 'file' )
         {
+            $storedResource = new StoredResource( $repository , $resource );
+            
             if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
             {
                 $file = $_FILES[ 'uploadedFile' ];
-                $resourceName = $file[ 'name' ];
             }
             else
             {
                 $errorMsg = get_lang( 'file missing' );
             }
             
-            /**
             if ( ! $errorMsg
               && ! $resource->validate( $file['name'] ) )
             {
                 $errorMsg = get_lang( 'invalid file' );
-            }*/
+            }
+            
+            if ( ! $errorMsg
+              && ! $storedResource->store( $file ) )
+            {
+                $errorMsg = getlang( 'File cannot be stored' );
+            }
         }
         else
         {
             $resourceName = $userInput->get( 'resourceUrl' );
             
-            if ( ! $resourceName )
+            if ( $resourceName )
+            {
+                $resource->setName( $resourceName );
+            }
+            else
             {
                 $errorMsg = get_lang( 'url missing' );
             }
         }
         
         if ( ! $errorMsg
-            && $resource->setName( $resourceName )
             && $resource->save()
             && ! empty( $metadataList ) )
         {
@@ -296,16 +307,6 @@ switch( $cmd )
             foreach( $metadataList as $property => $value )
             {
                 $metadata->add( $property , $value );
-            }
-        }
-        
-        if ( ! $errorMsg && $file )
-        {
-            $storedResource = new StoredResource( $repository , $resource );
-            
-            if ( ! $storedResource->store( $file ) )
-            {
-                $errorMsg = get_lang( 'cannot store the file' );
             }
         }
         
