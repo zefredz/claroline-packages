@@ -352,7 +352,7 @@ switch( $cmd )
     case 'exRemoveLibrarian':
     {
         if ( $librarian->isLibrarian( $librarianId )
-          && count( $librarian->getLibrarianList() == 1 ) )
+          && count( $librarian->getLibrarianList() ) == 1 )
         {
             $errorMsg = get_lang( 'A library must have at least one librarian' );
         }
