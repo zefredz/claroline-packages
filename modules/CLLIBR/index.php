@@ -64,8 +64,6 @@ $pluginList = $pluginLoader->getPluginList();
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
 
-if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
-
 $is_allowed_to_edit = ( $courseId && claro_is_allowed_to_edit() ) || claro_is_allowed_to_create_course();
 $is_platform_admin = claro_is_platform_admin();
 
@@ -141,6 +139,8 @@ if ( ! $context )
         $context = 'librarylist';
     }
 }
+
+if( $context != 'catalogue' && ! $userId ) claro_disp_auth_form( true );
 
 $refId = null;
 
