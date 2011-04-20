@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -15,12 +15,14 @@
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
 </span>
+<?php if ( $this->userId ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?context=bookmark') ); ?>">
         <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
         <?php echo get_lang( 'My bookmark' ); ?>
     </a>
 </span>
+<?php endif; ?>
 <!-- NOT IMPLEMENTED YET
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmarkSelected') ); ?>">
