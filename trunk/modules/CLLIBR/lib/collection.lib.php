@@ -75,8 +75,9 @@ class Collection
         
         foreach( $resultSet as $line )
         {
-            $this->resourceList[ $line[ 'resource_id' ] ] = new Metadata( $this->database , $line[ 'resource_id' ] ); // TODO Try to remove this dependency
-            //$this->resourceList[ $line[ 'resource_id' ] ] = $line[ 'resource_id' ];
+            $resourceId = $line[ 'resource_id' ];
+            $this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
+                                                      , new Metadata( $this->database , $resourceId ) );
         }
     }
     
@@ -137,8 +138,8 @@ class Collection
                 ref_id = " . $this->database->quote( $this->refId ) . ",
                 resource_id = " . $this->database->escape( $resourceId ) ) )
         {
-            return $this->resourceList[ $resourceId ] = new Metadata( $this->database , $resourceId ); // TODO Try to remove this dependency
-            //return $this->resourceList[ $resourceId ] = $resourceId;
+            return $this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
+                                                             , new Metadata( $this->database , $resourceId ) );
         }
     }
     

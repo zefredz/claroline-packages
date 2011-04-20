@@ -56,12 +56,12 @@
                 </select>
             </dd>
             <dt>&nbsp;</dt>
-                <dd>
-                    <span id="resourceSelect">
-                        <input type="file"
-                               name="uploadedFile" />
-                    </span>
-                </dd>
+            <dd>
+                <span id="resourceSelect">
+                    <input type="file"
+                           name="uploadedFile" />
+                </span>
+            </dd>
         </dl>
     </fieldset>
     <?php endif; ?>
@@ -70,6 +70,18 @@
     <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
 
     <dl id="metadataList">
+        <dt>
+            <?php echo get_lang( 'Title' ); ?> :
+        </dt>
+        <dd>
+            <input type="text" size="48" name="title" value="" />
+        </dd>
+        <dt>
+            <?php echo get_lang( 'Description' ); ?> :
+        </dt>
+        <dd>
+            <textarea cols="60" rows="8" name="description"></textarea>
+        </dd>
         <!-- when adding a new resource -->
         <?php if ( $this->urlAction == 'exAddResource' ) : ?>
 
@@ -77,7 +89,8 @@
 
                 <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
                 <dd><input type="text"
-               name="metadata[<?php echo $property; ?>]" value="" /></dd>
+                           size="32"
+                           name="metadata[<?php echo $property; ?>]" value="" /></dd>
 
             <?php endforeach; ?>
 

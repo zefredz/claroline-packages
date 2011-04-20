@@ -254,50 +254,62 @@ switch( $cmd )
     case 'exAddResource':
     {
         $type = $userInput->get( 'type' );
+        $title = $userInput->get( 'title' );
+        $description = $userInput->get( 'description' );
         $storage = $userInput->get( 'storage' );
         $metadataList = $userInput->get( 'metadata' );
         
         $resource = new $type( $database );
-        $resource->setType( $storage );
-        $resource->setDate();
         
-        if ( $storage == 'file' )
+        if ( $title )
         {
-            $storedResource = new StoredResource( $repository , $resource );
+            $resource->setTitle( $title );
+            $resource->setType( $storage );
+            $resource->setDate();
+            $resource->setDescription( $description );
             
-            if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
+            if ( $storage == 'file' )
             {
-                $file = $_FILES[ 'uploadedFile' ];
+                $storedResource = new StoredResource( $repository , $resource );
+                
+                if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
+                {
+                    $file = $_FILES[ 'uploadedFile' ];
+                }
+                else
+                {
+                    $errorMsg = get_lang( 'file missing' );
+                }
+                
+                if ( ! $errorMsg
+                  && ! $resource->validate( $file['name'] ) )
+                {
+                    $errorMsg = get_lang( 'invalid file' );
+                }
+                
+                if ( ! $errorMsg
+                  && ! $storedResource->store( $file ) )
+                {
+                    $errorMsg = getlang( 'File cannot be stored' );
+                }
             }
             else
             {
-                $errorMsg = get_lang( 'file missing' );
-            }
-            
-            if ( ! $errorMsg
-              && ! $resource->validate( $file['name'] ) )
-            {
-                $errorMsg = get_lang( 'invalid file' );
-            }
-            
-            if ( ! $errorMsg
-              && ! $storedResource->store( $file ) )
-            {
-                $errorMsg = getlang( 'File cannot be stored' );
+                $resourceName = $userInput->get( 'resourceUrl' );
+                
+                if ( $resourceName )
+                {
+                    $resource->setName( $resourceName );
+                }
+                else
+                {
+                    $errorMsg = get_lang( 'url missing' );
+                }
             }
         }
         else
         {
-            $resourceName = $userInput->get( 'resourceUrl' );
-            
-            if ( $resourceName )
-            {
-                $resource->setName( $resourceName );
-            }
-            else
-            {
-                $errorMsg = get_lang( 'url missing' );
-            }
+            $errorMsg = get_lang( 'You must give a title' );
         }
         
         if ( ! $errorMsg
@@ -411,7 +423,8 @@ switch( $cmd )
         $template->assign( 'resourceId' , $resourceId );
         $template->assign( 'storageType' , $resource->getType() );
         $template->assign( 'url' , $resource->getName() );
-        $template->assign( 'title' , $metadata->get( 'title' ) );
+        $template->assign( 'title' , $resource->getTitle() );
+        $template->assign( 'description' , $resource->getDescription() );
         $template->assign( 'metadataList' , $metadata->export() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );
