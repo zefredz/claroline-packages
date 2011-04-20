@@ -74,13 +74,13 @@
             <?php echo get_lang( 'Title' ); ?> :
         </dt>
         <dd>
-            <input type="text" size="48" name="title" value="" />
+            <input type="text" size="48" name="title" value="<?php echo $this->title; ?>" />
         </dd>
         <dt>
             <?php echo get_lang( 'Description' ); ?> :
         </dt>
         <dd>
-            <textarea cols="60" rows="8" name="description"></textarea>
+            <textarea cols="60" rows="8" name="description"><?php echo $this->description; ?></textarea>
         </dd>
         <!-- when adding a new resource -->
         <?php if ( $this->urlAction == 'exAddResource' ) : ?>

@@ -495,7 +495,8 @@ switch( $cmd )
                                  : get_lang( 'Edit a resource' );
         $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/editresource.tpl.php' );
         $template->assign( 'resourceId' , $resourceId );
-        $template->assign( 'title' , $resourceId ? $metadata->get( 'title' ) : '' );
+        $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
+        $template->assign( 'description' , $resourceId ? $resource->getDescription() : '' );
         $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );
