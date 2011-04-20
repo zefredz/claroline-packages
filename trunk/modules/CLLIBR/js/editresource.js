@@ -10,6 +10,7 @@
  */
 
 $(document).ready(function(){
+    $(".invisible").hide();
     $("#resourceStorage").change(function(){
         var storageType = $(this).val();
         $("#resourceSelect").empty();
@@ -31,8 +32,9 @@ $(document).ready(function(){
     var nbToAdd=0;
     $("#addMetadata").click(function(){
         nbToAdd++;
-        var content="<input id=\"metadatax"+nbToAdd+"\" type=\"text\" name=\"add["+nbToAdd+"]\" value=\"\" size=\"40\" \/><br />"+
-                    "<a id=\"delx"+nbToAdd+"\" class=\"delMetadata claroCmd\" href=\"#delx"+nbToAdd+"\">"+
+        var content="<dt><input id=\"name"+nbToAdd+"\" type=\"text\" name=\"name["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
+                    "<dd><input id=\"value"+nbToAdd+"\" type=\"text\" name=\"value["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dd>"+
+                    "<a id=\"delx"+nbToAdd+"\" class=\"claroCmd\" href=\"#delx"+nbToAdd+"\">"+
                     "<\/a>"+
                     "<script>"+
                     "    $(\"#delx"+nbToAdd+"\").click(function(){'"+
@@ -40,6 +42,7 @@ $(document).ready(function(){
                     "    });"+
                     "<\/script>";
         
+        $(".invisible").show();
         $("#metadataList").append(content);
     });
     

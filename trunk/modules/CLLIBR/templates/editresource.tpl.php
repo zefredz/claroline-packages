@@ -105,8 +105,12 @@
         <dt><label><?php echo get_lang( ucwords( $name ) ); ?> :</label></dt>
         <dd>
             <input type="text"
+                   size="32"
                    name="metadata[<?php echo $id; ?>]"
                    value="<?php echo htmlspecialchars( $value ); ?>" />
+            <a id="del<?php echo $id; ?>" class="claroCmd" href="#metadata<?php echo $id; ?>">
+                    <?php echo get_lang( 'Delete' ); ?>
+            </a>
         </dd>
 
             <?php
@@ -115,17 +119,22 @@
             ?>
 
         <?php endif; ?>
-         
-        <dt>&nbsp;</dt>
-        <dd>
+        <dt>
             <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
             </a>
+        </dt>
+        <dt class="invisible">
+            <strong><?php echo get_lang( 'Metadata\'s name' ); ?></strong>
+        </dt>
+        <dd class="invisible">
+            <strong><?php echo get_lang( 'Metadata\'s content' ); ?></strong>
         </dd>
 
     </dl>
+
     </fieldset>
-    
+
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
         $_SERVER['PHP_SELF'].'?context=' . $this->context . '&' . $this->refName . '=' . $this->refId ) ); ?>">
