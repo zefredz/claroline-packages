@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     creation_date DATETIME,
     resource_type VARCHAR(16) NOT NULL DEFAULT 'text/html',
     resource_name VARCHAR(128) NOT NULL,
+    title VARCHAR(256) NOT NULL,
+    description TEXT,
     PRIMARY KEY( id )
 ) ENGINE=MyISAM;
 

@@ -34,6 +34,18 @@
     <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
 
     <dl id="metadataList">
+        <dt>
+            <?php echo get_lang( 'Title' ); ?> :
+        </dt>
+        <dd>
+            <?php echo $this->title; ?>
+        </dd>
+        <dt>
+            <?php echo get_lang( 'Description' ); ?> :
+        </dt>
+        <dd>
+            <?php echo $this->description; ?>
+        </dd>
 
     <?php foreach( $this->metadataList as $name => $metadata ): ?>
 

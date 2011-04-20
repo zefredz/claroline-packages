@@ -30,6 +30,8 @@ class Resource
     
     protected $id;
     protected $type;
+    protected $title;
+    protected $description;
     
     protected $creationDate;
     protected $resourceName;
@@ -62,7 +64,9 @@ class Resource
             SELECT
                 creation_date,
                 resource_type,
-                resource_name
+                resource_name,
+                title,
+                description
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
@@ -74,6 +78,8 @@ class Resource
             $this->creationDate = $result[ 'creation_date' ];
             $this->type = $result[ 'resource_type' ];
             $this->resourceName = $result[ 'resource_name' ];
+            $this->title = $result[ 'title' ];
+            $this->description = $result[ 'description' ];
         }
         else
         {
@@ -88,6 +94,24 @@ class Resource
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * Getter for Title
+     * @return string $title
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+    
+    /**
+     * Getter for Description
+     * @return string description
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
     
     /**
@@ -149,6 +173,26 @@ class Resource
     }
     
     /**
+     * Setter for Title
+     * @param string $title
+     * @return boolean true on success
+     */
+    public function setTitle( $title )
+    {
+        return $this->title = $title;
+    }
+    
+    /**
+     * Setter for Description
+     * @param string $description
+     * @return boolena true on success
+     */
+    public function setDescription( $description )
+    {
+        return $this->description = $description;
+    }
+    
+    /**
      * Setter for creation date
      * @param string date
      * @return boolean true on success
@@ -177,7 +221,10 @@ class Resource
      */
     public function save()
     {
-        if ( ! $this->type || ! $this->resourceName || ! $this->creationDate )
+        if ( ! $this->type
+          || ! $this->resourceName
+          || ! $this->creationDate
+          || ! $this->title )
         {
             throw new Exception( 'Missing atributes' );
         }
@@ -188,7 +235,9 @@ class Resource
                 SET
                     resource_type = " . $this->database->quote( $this->type ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
-                    creation_date = " . $this->database->quote( $this->creationDate ) ) )
+                    creation_date = " . $this->database->quote( $this->creationDate ) . ",
+                    title = " . $this->database->quote( $this->title ) . ",
+                    description = " . $this->database->quote( $this->description ) ) )
         {
             return $this->id = $this->database->insertId();
         }

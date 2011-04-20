@@ -21,9 +21,7 @@ class Metadata
 {
     const KEYWORD = 'keyword';
     
-    protected static $defaultMetadataList = array( 'title',
-                                                   'author',
-                                                   'description',
+    protected static $defaultMetadataList = array( 'author',
                                                    'publication date',
                                                    'publisher' );
     
