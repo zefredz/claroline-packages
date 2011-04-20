@@ -20,18 +20,12 @@
 class Metadata
 {
     const KEYWORD = 'keyword';
-    const VARCHAR = 'varchar';
-    const TEXT = 'text';
-    const FILE = 'file';
-    const PICTURE = 'picture';
-    const SOUND = 'sound';
-    const URL = 'url';
     
-    protected static $defaultMetadataList = array( 'title' => self::VARCHAR,
-                                                   'author' => self::VARCHAR,
-                                                   'description' => self::TEXT,
-                                                   'publication date' => self::VARCHAR,
-                                                   'publisher' => self::VARCHAR );
+    protected static $defaultMetadataList = array( 'title',
+                                                   'author',
+                                                   'description',
+                                                   'publication date',
+                                                   'publisher' );
     
     protected $resourceId;
     protected $metadataList;

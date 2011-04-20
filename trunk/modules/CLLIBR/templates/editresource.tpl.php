@@ -73,17 +73,11 @@
         <!-- when adding a new resource -->
         <?php if ( $this->urlAction == 'exAddResource' ) : ?>
 
-            <?php foreach( $this->defaultMetadataList as $property => $type ) : ?>
+            <?php foreach( $this->defaultMetadataList as $property ) : ?>
 
                 <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
-                <?php if ( $type == 'varchar' ) : ?>
                 <dd><input type="text"
                name="metadata[<?php echo $property; ?>]" value="" /></dd>
-                <?php elseif ( $type == 'text' ) : ?>
-                <dd><textarea cols="40" rows="8" name="metadata[<?php echo $property; ?>]"></textarea></dd>
-                <?php else : ?>
-                NOT IMPLEMENTED YET
-                <?php endif; ?>
 
             <?php endforeach; ?>
 
