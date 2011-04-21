@@ -27,7 +27,8 @@ abstract class Search
     public function __construct( $database )
     {
         $this->database = $database;
-        $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );
+        $this->tbl = get_module_main_tbl( array( 'library_metadata'
+                                               , 'library_resource' ) );
     }
     
     abstract public function search( $searchString );

@@ -16,7 +16,9 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     resource_name VARCHAR(128) NOT NULL,
     title VARCHAR(256) NOT NULL,
     description TEXT,
-    PRIMARY KEY( id )
+    PRIMARY KEY( id ),
+    FULLTEXT KEY title (title),
+    FULLTEXT KEY description (description)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
@@ -25,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     name VARCHAR(128),
     value TEXT,
     PRIMARY KEY( id ),
-    FULLTEXT(name,value)
+    FULLTEXT KEY metadata (name,value)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_library`(
