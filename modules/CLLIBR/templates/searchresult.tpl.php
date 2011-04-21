@@ -28,7 +28,10 @@
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
                     <?php echo $datas[ 'title' ]; ?>
-                </a>
+                </a><br />
+                <?php if ( isset( $datas[ 'matches' ][ 'description' ] ) ): ?>
+                <small><?php echo $datas[ 'matches' ][ 'description' ]; ?></small>
+                <?php endif; ?>
             </td>
             <td>
                 <?php echo $score; ?>
