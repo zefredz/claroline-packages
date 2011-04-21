@@ -78,7 +78,7 @@ class FulltextSearch extends Search
             
             $id = $line[ 'id' ];
             $title = $line[ 'title' ];
-            $result[ $score ][ $id ] = array( 'title' => $title , 'matches' => $matches );
+            $result[ (string)$score ][ $id ] = array( 'title' => $title , 'matches' => $matches );
         }
         
         krsort( $result );
