@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -217,9 +217,34 @@ class Resource
     
     /**
      * Saves the datas in DB
-     * @return boolean true on success
+     * This method just calls insert() or update()
      */
     public function save()
+    {
+        $sql =  "\n   `{$this->tbl['library_resource']}`
+                SET
+                    resource_type = " . $this->database->quote( $this->type ) . ",
+                    resource_name = " . $this->database->quote( $this->resourceName ) . ",
+                    creation_date = " . $this->database->quote( $this->creationDate ) . ",
+                    title = " . $this->database->quote( $this->title ) . ",
+                    description = " . $this->database->quote( $this->description );
+        
+        if ( $this->id )
+        {
+            return $this->update( $sql );
+        }
+        else
+        {
+            return $this->insert( $sql );
+        }
+    }
+    
+    /**
+     * Inserts a new resource
+     * @param string $sql
+     * @return boolean true on success
+     */
+    private function insert( $sql )
     {
         if ( ! $this->type
           || ! $this->resourceName
@@ -230,17 +255,23 @@ class Resource
         }
         
         if ( $this->database->exec( "
-            INSERT INTO
-                `{$this->tbl['library_resource']}`
-                SET
-                    resource_type = " . $this->database->quote( $this->type ) . ",
-                    resource_name = " . $this->database->quote( $this->resourceName ) . ",
-                    creation_date = " . $this->database->quote( $this->creationDate ) . ",
-                    title = " . $this->database->quote( $this->title ) . ",
-                    description = " . $this->database->quote( $this->description ) ) )
+            INSERT INTO" . $sql ) )
         {
             return $this->id = $this->database->insertId();
         }
+    }
+    
+    /**
+     * Updates the resource
+     * @param string $sql
+     * @return boolena true on success
+     */
+    private function update( $sql )
+    {
+        return $this->database->exec( "
+            UPDATE" . $sql . "
+            WHERE
+                id = " . $this->database->escape( $this->id ) );
     }
     
     /**
