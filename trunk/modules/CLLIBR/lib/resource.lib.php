@@ -221,22 +221,29 @@ class Resource
      */
     public function save()
     {
-        $sql =  "\n   `{$this->tbl['library_resource']}`
+        if ( $this->id )
+        {
+            return $this->update();
+        }
+        else
+        {
+            return $this->insert();
+        }
+    }
+    
+    /**
+     * Generate string for insert() and update() methods
+     * @return string $sqlString
+     */
+    private function generateSqlString()
+    {
+        return "\n   `{$this->tbl['library_resource']}`
                 SET
                     resource_type = " . $this->database->quote( $this->type ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
                     creation_date = " . $this->database->quote( $this->creationDate ) . ",
                     title = " . $this->database->quote( $this->title ) . ",
                     description = " . $this->database->quote( $this->description );
-        
-        if ( $this->id )
-        {
-            return $this->update( $sql );
-        }
-        else
-        {
-            return $this->insert( $sql );
-        }
     }
     
     /**
@@ -244,7 +251,7 @@ class Resource
      * @param string $sql
      * @return boolean true on success
      */
-    private function insert( $sql )
+    private function insert()
     {
         if ( ! $this->type
           || ! $this->resourceName
@@ -255,7 +262,7 @@ class Resource
         }
         
         if ( $this->database->exec( "
-            INSERT INTO" . $sql ) )
+            INSERT INTO" . $this->generateSqlString() ) )
         {
             return $this->id = $this->database->insertId();
         }
@@ -266,10 +273,10 @@ class Resource
      * @param string $sql
      * @return boolena true on success
      */
-    private function update( $sql )
+    private function update()
     {
         return $this->database->exec( "
-            UPDATE" . $sql . "
+            UPDATE" . $this->generateSqlString() . "
             WHERE
                 id = " . $this->database->escape( $this->id ) );
     }
