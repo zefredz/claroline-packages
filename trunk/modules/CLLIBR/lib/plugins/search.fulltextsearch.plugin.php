@@ -19,6 +19,8 @@ class FulltextSearch extends Search
      */
     public function search( $searchString )
     {
+        $this->searchString = $searchString;
+        
         return $this->resultSet = $this->database->query( "
             SELECT
                 R.id,
@@ -42,6 +44,36 @@ class FulltextSearch extends Search
             OR
                 MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ")"
         );
+        
+        /*$this->result_main = $this->database->query( "
+            SELECT
+                id,
+                title,
+                description,
+                MATCH (title) AGAINST (" . $this->database->quote( $searchString ) . ") AS score1,
+                MATCH (description) AGAINST (" . $this->database->quote( $searchString ) . ") AS score2
+            FROM
+                `{$this->tbl['library_resource']}`
+            WHERE
+                MATCH (title) AGAINST (" . $this->database->quote( $searchString ) . ")
+            OR
+                MATCH (description) AGAINST (" . $this->database->quote( $searchString ) );
+        
+        $this->result_metadata = $this->database->query( "
+            SELECT
+                R.id,
+                R.title
+                M.name,
+                M.value,
+                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score3
+            FROM
+                `{$this->tbl['library_resource']}` AS R
+            INNER JOIN
+                `{$this->tbl['library_metadata']}` AS M
+            ON
+                R.id = M.resource_id
+            WHERE
+                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) );*/
     }
     
     /**
@@ -62,18 +94,19 @@ class FulltextSearch extends Search
             
             if ( $score1 )
             {
-                $matches[] = array( 'title' => $line[ 'title' ] );
+                $matches[ 'title' ] = $line[ 'title' ];
             }
             
             if ( $score2 )
             {
-                $matches[] = array( 'description' => $line[ 'description' ] );
+                $description = $line[ 'description' ];
+                $position = strrpos( $description , $this->searchString );
+                $matches[ 'description' ] = substr( $description , $position - 30 , 60 );
             }
             
             if ( $score3 )
             {
-                $matches[] = array( 'name' => $line[ 'name' ]
-                              , 'value' => $line[ 'value' ] );
+                $matches[ $line[ 'name' ] ] = $line[ 'value' ];
             }
             
             $id = $line[ 'id' ];
