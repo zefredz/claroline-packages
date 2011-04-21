@@ -16,9 +16,6 @@
                 <?php echo get_lang( 'Title'); ?>
             </th>
             <th>
-                <?php echo get_lang( 'Author(s)' ); ?>
-            </th>
-            <th>
                 <?php echo get_lang( 'Relevancy' ); ?>
             </th>
         </tr>
@@ -33,9 +30,6 @@
                     <?php echo $datas[ 'title' ]; ?>
                 </a>
             </td>
-            <td> 
-                <?php echo $datas[ 'author' ]; ?>
-            </td>
             <td>
                 <?php echo $score; ?>
             </td>
@@ -44,7 +38,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td class="empty" colspan="6"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+            <td class="empty" colspan="6"><?php echo get_lang( 'No result' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>

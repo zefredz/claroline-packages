@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.3 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,41 +21,27 @@ class FulltextSearch extends Search
     {
         return $this->resultSet = $this->database->query( "
             SELECT
-                T1.resource_id,
-                T1.name,
-                T1.value,
-                T2.value as title,
-                T3.value as author,
-                MATCH (T1.name,T1.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score
+                R.id,
+                R.title,
+                R.description,
+                M.name,
+                M.value,
+                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) . ") AS score1,
+                MATCH (R.description) AGAINST (" . $this->database->quote( $searchString ) . ") AS score2,
+                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score3
             FROM
-                `{$this->tbl['library_metadata']}` AS T1
+                `{$this->tbl['library_resource']}` AS R
             INNER JOIN
-                `{$this->tbl['library_metadata']}` AS T2
+                `{$this->tbl['library_metadata']}` AS M
             ON
-                T1.resource_id = T2.resource_id
-            AND
-                T2.name = 'author'
-            INNER JOIN
-                `{$this->tbl['library_metadata']}` AS T3
-            ON
-                T1.resource_id = T3.resource_id
-            AND
-                T3.name = 'title'
+                R.id = M.resource_id
             WHERE
-                MATCH (T1.name,T1.value) AGAINST (" . $this->database->quote( $searchString ) . ")"
+                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) . ")
+            OR
+                MATCH (R.description) AGAINST (" . $this->database->quote( $searchString ) . ")
+            OR
+                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ")"
         );
-        /*
-        return $this->resultSet = $this->database->query( "
-            SELECT
-                resource_id,
-                name,
-                value,
-                MATCH (name,value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score
-            FROM
-                `{$this->tbl['library_metadata']}`
-            WHERE
-                MATCH (name,value) AGAINST (" . $this->database->quote( $searchString ) . ")"
-        );*/
     }
     
     /**
@@ -67,19 +53,32 @@ class FulltextSearch extends Search
         
         foreach( $this->resultSet as $line )
         {
-            $id = $line[ 'resource_id' ];
-            $score = $line[ 'score' ];
-            $match = array( 'name' => $line[ 'name' ]
-                          , 'value' => $line[ 'value' ] );
-            /////// NOT SURE
-            $title = $line[ 'title' ];
-            $author = $line[ 'author' ];
-            ///////
-            $result[ $score ][ $id ] = array( 'title' => $title
-                                            , 'author' => $author
-                                            , 'match' => $match );
-            //$result[ $score ][ $id ] = $match;
+            $score1 = $line[ 'score1' ];
+            $score2 = $line[ 'score2' ];
+            $score3 = $line[ 'score3' ];
             
+            $matches = array();
+            $score = $score1 + $score2 + $score3;
+            
+            if ( $score1 )
+            {
+                $matches[] = array( 'title' => $line[ 'title' ] );
+            }
+            
+            if ( $score2 )
+            {
+                $matches[] = array( 'description' => $line[ 'description' ] );
+            }
+            
+            if ( $score3 )
+            {
+                $matches[] = array( 'name' => $line[ 'name' ]
+                              , 'value' => $line[ 'value' ] );
+            }
+            
+            $id = $line[ 'id' ];
+            $title = $line[ 'title' ];
+            $result[ $score ][ $id ] = array( 'title' => $title , 'matches' => $matches );
         }
         
         krsort( $result );
