@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -18,9 +18,6 @@
     <input type="hidden"
            name="resourceId"
            value="<?php echo $this->resourceId; ?>" />
-    <input type="hidden"
-           name="context"
-           value="<?php echo $this->context; ?>" />
     <input type="hidden"
            name="libraryId"
            value="<?php echo $this->libraryId; ?>" />
@@ -140,7 +137,7 @@
 
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
-        $_SERVER['PHP_SELF'].'?context=' . $this->context . '&' . $this->refName . '=' . $this->refId ) ); ?>">
+        $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $this->libraryId ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
 </form>
