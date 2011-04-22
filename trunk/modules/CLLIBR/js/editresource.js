@@ -49,6 +49,7 @@ $(document).ready(function(){
     $(".delMetadata").click(function(){
         var metadataId = $(this).attr("id").substr(3);
         $("#metadata"+metadataId).attr({name:"del["+metadataId+"]"});
-        $("#metadata"+metadataId).parent().hide();
+        $("#label"+metadataId).hide();
+        $("#value"+metadataId).hide();
     });
 });
