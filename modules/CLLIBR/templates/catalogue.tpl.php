@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -10,7 +10,7 @@
  */ ?>
 
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrarian&context=librarylist&libraryId=' . $this->libraryId ) ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrarian&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
         <?php echo get_lang( 'Manage librarians' ); ?>
     </a>
@@ -75,7 +75,7 @@
             </td>
             <td align="center">
                 <?php if ( $this->courseId && $this->is_allowed_to_edit ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId . '&courseId=' . $this->courseId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\' bibliography' ); ?>"/>
                 </a>
                 <?php endif; ?>

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -69,14 +69,11 @@ $is_platform_admin = claro_is_platform_admin();
 
 $userInput = Claro_UserInput::getInstance();
 
-$userInput->setValidator( 'context' ,
-    new Claro_Validator_AllowedList( array( 'librarylist'
-                                          , 'catalogue'
-                                          , 'bibliography'
-                                          , 'bookmark' )
-) );
 $userInput->setValidator( 'cmd' ,
-    new Claro_Validator_AllowedList( array( 'rqShowList'
+    new Claro_Validator_AllowedList( array( 'rqShowBookmark'
+                                          , 'rqShowBibliography'
+                                          , 'rqShowCatalogue'
+                                          , 'rqShowLibrarylist'
                                           , 'rqView'
                                           , 'rqDownload'
                                           , 'exBookmark'
@@ -105,11 +102,10 @@ $userInput->setValidator( 'cmd' ,
 
 
 // CONTROLLER
-$cmd = $userInput->get( 'cmd' , 'rqShowList' );
+$cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
 $libraryId = $userInput->get( 'libraryId' );
 $librarianId = $userInput->get( 'librarianId');
 $resourceId = $userInput->get( 'resourceId' );
-$context = $userInput->get( 'context' );
 
 $library = new Library( $database , $libraryId );
 $resource = new Resource( $database , $resourceId );
@@ -120,44 +116,43 @@ if ( $libraryId )
     $librarian = new Librarian( $database , $libraryId );
 }
 
-if ( ! $context )
-{
-    if ( $libraryId )
-    {
-        $context = 'catalogue';
-    }
-    elseif ( $courseId )
-    {
-        $context = 'bibliography';
-    }
-    elseif ( $userId )
-    {
-        $context = 'bookmark';
-    }
-    else
-    {
-        $context = 'librarylist';
-    }
-}
-
-if( $context != 'catalogue' && ! $userId ) claro_disp_auth_form( true );
+if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
 
 $refId = null;
 
-if ( $context == 'catalogue' )
+if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
 {
-    $refId = $libraryId;
-    $refName = 'libraryId';
+    $context = strtolower( substr( $cmd , 6 ) );
 }
-elseif( $context == 'bibliography' )
+elseif( $libraryId )
 {
-    $refId = $courseId;
-    $refName = 'courseId';
+    $context = 'catalogue';
+}
+elseif( $courseId )
+{
+    $context = 'bibliography';
+}
+elseif( $userId )
+{
+    $context = 'bookmark';
 }
 else
 {
+    $context = 'librarylist';
+}
+
+
+if ( $context == 'bibliography' )
+{
+    $refId = $courseId;
+}
+elseif( $context == 'bookmark' )
+{
     $refId = $userId;
-    $refName = 'userId';
+}
+elseif( $context == 'catalogue')
+{
+    $refId = $libraryId;
 }
 
 if ( $context == 'librarylist' )
@@ -173,7 +168,10 @@ $errorMsg = false;
 
 switch( $cmd )
 {
-    case 'rqShowList':
+    case 'rqShowBookmark':
+    case 'rqShowBibliography';
+    case 'rqShowCatalogue':
+    case 'rqShowLibrarylist':
     case 'rqDeleteLibrary':
     case 'rqView':
     case 'rqDownload':
@@ -439,10 +437,17 @@ CssLoader::getInstance()->load( 'cllibr' , 'screen' );
 $jsLoader = JavascriptLoader::getInstance();
 $jsLoader->load( 'editresource' );
 
-
 $dialogBox = new DialogBox();
 
-$pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $library->getTitle() : '' );
+if ( $resource->getId() )
+{
+    $pageTitle[ 'subTitle' ] = $resource->getTitle();
+}
+else
+{
+    $pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $library->getTitle() : '' );
+}
+
 $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/' . strtolower( $context ) . '.tpl.php' );
 $template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
 $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
@@ -453,7 +458,10 @@ $template->assign( 'icon' , get_icon_url( 'icon' ) );
 
 switch( $cmd )
 {
-    case 'rqShowList':
+    case 'rqShowBookmark':
+    case 'rqShowBibliography';
+    case 'rqShowCatalogue':
+    case 'rqShowLibrarylist':
     {
         break;
     }
@@ -469,7 +477,6 @@ switch( $cmd )
         $template->assign( 'metadataList' , $metadata->export() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );
-        $template->assign( 'context' , $context );
         break;
     }
     
@@ -541,9 +548,8 @@ switch( $cmd )
         $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
         $template->assign( 'userId' , $userId );
         $template->assign( 'libraryId' , $libraryId );
-        $template->assign( 'context' , $context );
-        $template->assign( 'refId' , $refId );
-        $template->assign( 'refName' , $refName );
+        $template->assign( 'refId' , $resourceId );
+        $template->assign( 'refName' , 'resourceId' );
         $template->assign( 'typeList' , $pluginList[ 'resource' ] );
         $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
         $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
@@ -610,7 +616,6 @@ if ( isset( $msg ) )
     $question->assign( 'urlAction' , $urlAction );
     $question->assign( 'urlCancel' , $urlCancel );
     $question->assign( 'xid' , $xid );
-    $question->assign( 'context' , $context );
     $dialogBox->question( $question->render() );
 }
 
@@ -620,8 +625,7 @@ if ( $resourceId && $cmd == 'rqView' )
     ClaroHeader::getInstance()->addHtmlHeader( $dcView->render() );
 }
 
-ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
-                                       , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?context=' . $context ) ) );
+ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
 Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
                                                         . $dialogBox->render()
                                                         . $template->render() );
