@@ -2,13 +2,14 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<?php if ( $this->is_allowed_to_edit ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrarian&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
@@ -21,6 +22,7 @@
         <?php echo get_lang( 'Add a resource' ); ?>
     </a>
 </span>
+<?php endif; ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add selection to bookmark' ); ?>" />

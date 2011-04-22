@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -69,7 +69,42 @@ $is_platform_admin = claro_is_platform_admin();
 
 $userInput = Claro_UserInput::getInstance();
 
-$userInput->setValidator( 'cmd' ,
+if ( $is_allowed_to_edit )
+{
+    $userInput->setValidator( 'cmd' ,
+        new Claro_Validator_AllowedList( array( 'rqShowBookmark'
+                                              , 'rqShowBibliography'
+                                              , 'rqShowCatalogue'
+                                              , 'rqShowLibrarylist'
+                                              , 'rqView'
+                                              , 'rqDownload'
+                                              , 'exBookmark'
+                                              , 'exAdd'
+                                              , 'rqRemove'
+                                              , 'exRemove'
+                                              , 'rqAddResource'
+                                              , 'rqEditResource'
+                                              , 'rqCreateLibrary'
+                                              , 'exCreateLibrary'
+                                              , 'rqEditLibrary'
+                                              , 'exEditLibrary'
+                                              , 'rqEditLibrarian'
+                                              , 'rqAddLibrarian'
+                                              , 'exAddLibrarian'
+                                              , 'rqRemoveLibrarian'
+                                              , 'exRemoveLibrarian'
+                                              , 'rqDeleteLibrary'
+                                              , 'exDeleteLibrary'
+                                              , 'exAddResource'
+                                              , 'exEditResource'
+                                              , 'rqDelete'
+                                              , 'exDelete'
+                                              , 'rqQSearch' )
+    ) );
+}
+else
+{
+    $userInput->setValidator( 'cmd' ,
     new Claro_Validator_AllowedList( array( 'rqShowBookmark'
                                           , 'rqShowBibliography'
                                           , 'rqShowCatalogue'
@@ -80,26 +115,9 @@ $userInput->setValidator( 'cmd' ,
                                           , 'exAdd'
                                           , 'rqRemove'
                                           , 'exRemove'
-                                          , 'rqAddResource'
-                                          , 'rqEditResource'
-                                          , 'rqCreateLibrary'
-                                          , 'exCreateLibrary'
-                                          , 'rqEditLibrary'
-                                          , 'exEditLibrary'
-                                          , 'rqEditLibrarian'
-                                          , 'rqAddLibrarian'
-                                          , 'exAddLibrarian'
-                                          , 'rqRemoveLibrarian'
-                                          , 'exRemoveLibrarian'
-                                          , 'rqDeleteLibrary'
-                                          , 'exDeleteLibrary'
-                                          , 'exAddResource'
-                                          , 'exEditResource'
-                                          , 'rqDelete'
-                                          , 'exDelete'
                                           , 'rqQSearch' )
-) );
-
+    ) );
+}
 
 // CONTROLLER
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
