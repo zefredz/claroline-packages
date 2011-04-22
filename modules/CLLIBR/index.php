@@ -258,6 +258,8 @@ switch( $cmd )
         $description = $userInput->get( 'description' );
         $storage = $userInput->get( 'storage' );
         $metadataList = $userInput->get( 'metadata' );
+        $newName = $userInput->get( 'name' );
+        $newValue = $userInput->get( 'value' );
         
         $resource = new $type( $database );
         
@@ -314,13 +316,25 @@ switch( $cmd )
         
         if ( ! $errorMsg
             && $resource->save()
-            && ! empty( $metadataList ) )
+            && ! empty( $metadataList )
+            || ! empty( $newMetadata ) )
         {
             $metadata = new Metadata( $database , $resource->getId() );
             
             foreach( $metadataList as $property => $value )
             {
                 $metadata->add( $property , $value );
+            }
+            
+            if ( ! empty( $newMetadata ) )
+            {
+                foreach( $newMetadata as $id => $name )
+                {
+                    if ( $name )
+                    {
+                        $metadata->add( $name , $newValue[ $id ] );
+                    }
+                }
             }
         }
         
@@ -334,6 +348,9 @@ switch( $cmd )
         $title = $userInput->get( 'title' );
         $description = $userInput->get( 'description' );
         $metadataList = $userInput->get( 'metadata' );
+        $toDelete = $userInput->get( 'del' );
+        $newMetadata = $userInput->get( 'name' );
+        $newValue = $userInput->get( 'value' );
         
         $resource->setTitle( $title );
         $resource->setDescription( $description );
@@ -343,6 +360,25 @@ switch( $cmd )
             foreach( $metadataList as $id => $value )
             {
                 $metadata->modify( $id , $value );
+            }
+        }
+        
+        if ( ! empty( $newMetadata ) )
+        {
+            foreach( $newMetadata as $id => $name )
+            {
+                if ( $name )
+                {
+                    $metadata->add( $name , $newValue[ $id ] );
+                }
+            }
+        }
+        
+        if ( ! empty( $toDelete ) )
+        {
+            foreach( array_keys( $toDelete ) as $id )
+            {
+                $metadata->remove( $id );
             }
         }
         

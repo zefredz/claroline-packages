@@ -102,13 +102,16 @@
                     foreach( $metadata as $id => $value ):
             ?>
 
-        <dt><label><?php echo get_lang( ucwords( $name ) ); ?> :</label></dt>
-        <dd>
-            <input type="text"
+        <dt id="label<?php echo $id; ?>">
+            <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
+        </dt>
+        <dd id="value<?php echo $id; ?>">
+            <input id="metadata<?php echo $id; ?>"
+                   type="text"
                    size="32"
                    name="metadata[<?php echo $id; ?>]"
                    value="<?php echo htmlspecialchars( $value ); ?>" />
-            <a id="del<?php echo $id; ?>" class="claroCmd" href="#metadata<?php echo $id; ?>">
+            <a id="del<?php echo $id; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $id; ?>">
                     <?php echo get_lang( 'Delete' ); ?>
             </a>
         </dd>

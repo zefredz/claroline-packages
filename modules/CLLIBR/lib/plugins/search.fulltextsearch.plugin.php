@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -101,7 +101,7 @@ class FulltextSearch extends Search
             {
                 $description = $line[ 'description' ];
                 $position = strrpos( $description , $this->searchString );
-                $matches[ 'description' ] = substr( $description , $position - 30 , 60 );
+                $matches[ 'description' ] = substr( $description , $position - 30 , 60 ); //TODO find a best way
             }
             
             if ( $score3 )
