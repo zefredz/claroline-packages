@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -30,30 +30,6 @@ class Librarian
         $this->tbl = get_module_main_tbl( array( 'library_librarian' ) );
         
         $this->libraryId = $libraryId;
-        $this->load();
-    }
-    
-    /**
-     * Loads datas
-     * This method is called by the constructor
-     */
-    public function load()
-    {
-        $result = $this->database->query( "
-            SELECT
-                user_id
-            FROM
-                `{$this->tbl['library_librarian']}`
-            WHERE
-                library_id = " . $this->database->escape( $this->libraryId )
-        );
-        
-        $this->librarianList = array();
-        
-        foreach( $result as $line )
-        {
-            $this->librarianList[ $line[ 'user_id' ] ] = $line[ 'user_id' ];
-        }
     }
     
     /**
@@ -72,7 +48,16 @@ class Librarian
      */
     public function isLibrarian( $userId )
     {
-        return in_array( $userId , $this->librarianList );
+        return $this->database->query( "
+            SELECT
+                user_id
+            FROM
+                `{$this->tbl['library_librarian']}`
+            WHERE
+                library_id = " . $this->database->escape( $this->libraryId ) . "
+            AND
+                user_id = " . $this->database->escape( $userId )
+        )->numRows();
     }
     
     /**
