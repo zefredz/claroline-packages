@@ -63,6 +63,7 @@ $pluginList = $pluginLoader->getPluginList();
 
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
+if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
 
 $is_allowed_to_edit = ( $courseId && claro_is_allowed_to_edit() ) || claro_is_allowed_to_create_course();
 $is_platform_admin = claro_is_platform_admin();
@@ -76,6 +77,7 @@ if ( $is_allowed_to_edit )
                                               , 'rqShowBibliography'
                                               , 'rqShowCatalogue'
                                               , 'rqShowLibrarylist'
+                                              , 'rqShowLibrarian'
                                               , 'rqView'
                                               , 'rqDownload'
                                               , 'exBookmark'
@@ -134,13 +136,15 @@ if ( $libraryId )
     $librarian = new Librarian( $database , $libraryId );
 }
 
-if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
-
 $refId = null;
 
 if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
 {
     $context = strtolower( substr( $cmd , 6 ) );
+}
+elseif( $librarianId )
+{
+    $context = 'librarian';
 }
 elseif( $libraryId )
 {
@@ -159,7 +163,6 @@ else
     $context = 'librarylist';
 }
 
-
 if ( $context == 'bibliography' )
 {
     $refId = $courseId;
@@ -173,7 +176,7 @@ elseif( $context == 'catalogue')
     $refId = $libraryId;
 }
 
-if ( $context == 'librarylist' )
+if ( $context == 'librarylist' || $context == 'librarian' )
 {
     $resourceSet = new LibraryList( $database , $userId );
 }
@@ -190,6 +193,7 @@ switch( $cmd )
     case 'rqShowBibliography';
     case 'rqShowCatalogue':
     case 'rqShowLibrarylist':
+    case 'rqShowLibrarian':
     case 'rqDeleteLibrary':
     case 'rqView':
     case 'rqDownload':
@@ -423,7 +427,7 @@ switch( $cmd )
     case 'exRemoveLibrarian':
     {
         if ( $librarian->isLibrarian( $librarianId )
-          && count( $librarian->getLibrarianList() ) == 1 )
+          && count( $resourceSet->getLibrarianList( $libraryId ) ) == 1 )
         {
             $errorMsg = get_lang( 'A library must have at least one librarian' );
         }
@@ -473,6 +477,10 @@ $template->assign( 'userId' , $userId );
 $template->assign( 'libraryId' , $libraryId );
 $template->assign( 'courseId' , $courseId );
 $template->assign( 'icon' , get_icon_url( 'icon' ) );
+if ( is_a( $resourceSet , 'LibraryList' ) && $libraryId )
+{
+    $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
+}
 
 switch( $cmd )
 {
@@ -480,6 +488,7 @@ switch( $cmd )
     case 'rqShowBibliography';
     case 'rqShowCatalogue':
     case 'rqShowLibrarylist':
+    case 'rqShowLibrarian':
     {
         break;
     }
@@ -545,14 +554,6 @@ switch( $cmd )
         break;
     }
     
-    case 'rqEditLibrarian':
-    {
-        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/librarian.tpl.php' );
-        $template->assign( 'libraryId' , $libraryId );
-        $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
-        break;
-    }
-    
     case 'rqAddResource':
     case 'rqEditResource':
     {
@@ -580,7 +581,7 @@ switch( $cmd )
     {
         $msg = get_lang( 'Do you really want to remove this resource?' );
         $urlAction = 'exRemove';
-        $urlCancel = 'rqShowList';
+        $urlCancel = 'rqShow' . $context;
         $xid = array( 'resourceId' => $resourceId );
         break;
     }
@@ -589,7 +590,7 @@ switch( $cmd )
     {
         $msg = get_lang( 'Do you really want to delete this library?' );
         $urlAction = 'exDeleteLibrary';
-        $urlCancel = 'rqShowList';
+        $urlCancel = 'rqShowLibrarylist';
         $xid = array( 'libraryId' => $libraryId );
         break;
     }
@@ -598,7 +599,7 @@ switch( $cmd )
     {
         $msg = get_lang( 'Do you really want to delete this resource?' );
         $urlAction = 'exDelete';
-        $urlCancel = 'rqShowList';
+        $urlCancel = 'rqShowCatalogue';
         $xid = array( 'resourceId' => $resourceId
                     , 'context' => 'catalogue'
                     , 'libraryId' => $libraryId );
@@ -609,7 +610,7 @@ switch( $cmd )
     {
         $msg = get_lang( 'Do you really want to remove this librarian?' );
         $urlAction = 'exRemoveLibrarian';
-        $urlCancel = 'rqShowList';
+        $urlCancel = 'rqShowLibrarian';
         $xid = array( 'librarianId' => $librarianId , 'libraryId' => $libraryId );
         break;
     }

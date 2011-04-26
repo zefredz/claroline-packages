@@ -11,7 +11,7 @@
 
 <?php if ( $this->is_allowed_to_edit ) : ?>
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrarian&libraryId=' . $this->libraryId ) ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
         <?php echo get_lang( 'Manage librarians' ); ?>
     </a>
