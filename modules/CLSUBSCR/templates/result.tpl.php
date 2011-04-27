@@ -1,4 +1,4 @@
-<?php // $Id$
+<!-- // $Id$
 
 /**
  * Subscription
@@ -9,9 +9,10 @@
  * @package     CLSUBSCR
  * @author      Dimitri Rambout <dim@claroline.net>
  */
+-->
 
-echo $this->menu;
-?>
+<?php echo $this->menu; ?>
+
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
    <thead>
        <tr class="headerX" align="center" valign="top">
@@ -21,47 +22,71 @@ echo $this->menu;
        </tr>
    </thead>
    <tbody>
-<?php
-foreach( $this->slots as $slot ):
-?>
-      <tr>
-         <td style="font-weight: bold;"><?php echo $slot['title']; ?></td>
-         <td style="font-weight: bold;"><?php echo $slot['description']; ?></td>
-         <td style="font-weight: bold; text-align: center;"><?php echo $slot['subscribersCount']; ?> / <?php echo $slot['availableSpace']; ?>
-      </tr>
-      <tr>
-         <td colspan="3">
-         <?php
-         if( isset( $this->usersChoices[ $slot['id'] ] ) ) :
-            foreach( $this->usersChoices[ $slot['id'] ] as $userSlot ) :
-            ?>
-            <div>
-            <?php
-               switch( $userSlot['type'] ) :
-                  case 'group' :
-                     echo $userSlot['subscriberData']['name'];
-                     break;
-                  case 'user' :
-                     echo $userSlot['subscriberData']['lastname'] . ' ' . $userSlot['subscriberData']['firstname'] . ( $userSlot['subscriberData']['email'] ? ' ('. $userSlot['subscriberData']['email'] .')' : '' ) . ' ';
-                     break;
-               endswitch;
-            ?>
-            </div>
-            <?php
-            endforeach;
-         else:
-         ?>
-         <em><?php echo get_lang( 'No subscriber in this slot.' ); ?></em>
-         <?php
-         endif;
-         ?>
-         </td>
-      </tr>
-<?php
-endforeach;
-?>
+    
+      <?php foreach( $this->slots as $slot ): ?>
+        <tr>
+            <td style="font-weight: bold;">
+                <?php echo $slot['title']; ?>
+            </td>
+            <td style="font-weight: bold;">
+                <?php echo $slot['description']; ?>
+            </td>
+            <td style="font-weight: bold; text-align: center;">
+                <?php echo $slot['subscribersCount']; ?> / <?php echo $slot['availableSpace']; ?>
+            </td>
+        </tr>
+      
+         <?php if( isset( $this->usersChoices[ $slot['id'] ] ) ) : ?>
+      
+            <?php foreach( $this->usersChoices[ $slot['id'] ] as $userSlot ) : ?>
+      
+        <tr>
+             <td colspan="2">
+                <?php
+                    pushClaroMessage(var_export($userSlot,true),'debug');
+                    switch( $userSlot['type'] ) :
+                        case 'group' :
+                            echo $userSlot['subscriberData']['name'];
+                            break;
+                        case 'user' :
+                            echo $userSlot['subscriberData']['lastname'] . ' ' . $userSlot['subscriberData']['firstname'] . ( $userSlot['subscriberData']['email'] ? ' ('. $userSlot['subscriberData']['email'] .')' : '' ) . ' ';
+                            break;
+                    endswitch;
+                ?>
+             </td>
+             <td style="text-align: right;">
+                 <!-- a href="<?php echo htmlspecialchars( 
+                     Url::Contextualize($_SERVER['PHP_SELF'] 
+                         . '?cmd=rqEditChoice&slotId=' . $slot['id']
+                         . '&subscriberId=' . $userSlot['subscriberId']
+                         . '&subscriptionId=' . $userSlot['subscriptionId'] ) ); ?>">
+                     <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>" />
+                 </a -->
+                 <a href="<?php echo htmlspecialchars( 
+                     Url::Contextualize($_SERVER['PHP_SELF'] 
+                         . '?cmd=rqRemoveChoice&slotId=' . $slot['id']
+                         . '&subscriberId=' . $userSlot['subscriberId']
+                         . '&subscriptionId=' . $userSlot['subscriptionId'] ) ); ?>">
+                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>" />
+                 </a>
+             </td>
+        </tr>
+    
+            <?php endforeach; ?>
+    
+        <?php else: ?>
+      
+        <tr>
+            <td colspan="3">
+                <em><?php echo get_lang( 'No subscriber in this slot.' ); ?></em>
+            </td>
+        </tr>
+        
+        <?php endif; ?>
+        
+<?php endforeach; ?>
+        
    </tbody>
 </table>
-<?php
-echo $this->menu;
-?>
+
+<?php echo $this->menu; ?>

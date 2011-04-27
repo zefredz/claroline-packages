@@ -67,7 +67,7 @@ class SubscriptionsRenderer {
         
         $out .= $tpl->render();
         
-        //use a connector
+        //use a plugin
         $tplName = 'chooseSlot' . ucfirst( $subscription->getType() ) . '.tpl.php';
         $tpl = new ModuleTemplate( 'CLSUBSCR', $tplName );
         
