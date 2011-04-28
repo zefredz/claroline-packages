@@ -90,7 +90,6 @@ if ( $is_allowed_to_edit )
                                               , 'exCreateLibrary'
                                               , 'rqEditLibrary'
                                               , 'exEditLibrary'
-                                              , 'rqEditLibrarian'
                                               , 'rqAddLibrarian'
                                               , 'exAddLibrarian'
                                               , 'rqRemoveLibrarian'
@@ -203,7 +202,6 @@ switch( $cmd )
     case 'rqRemove':
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
-    case 'rqEditLibrarian':
     case 'rqAddLibrarian':
     case 'rqRemoveLibrarian':
     {

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -81,36 +81,35 @@ class StoredResource
      */
     public static function getMimeType( $fileName )
     {
-        $mimeType = null;
         $fileExtension = strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) );
         $defaultMimeType = 'document/unknown';
         
         if( $fileExtension )
         {
             $mimeTypeList = array(
-                'aif'   => 'audio/x-aiff',
-                'avi'   => 'video/x-msvideo',
-                'bmp'   => 'image/bmp',
-                'css'   => 'text/css',
-                'doc'   => 'application/msword',
-                'fla'   => 'application/octet-stream',
-                'gif'   => 'image/gif',
-                'gz'    => 'application/x-gzip',
+                # Structured text
                 'htm'   => 'text/html',
                 'html'  => 'text/html',
-                'hqx'   => 'application/mac-binhex40',
-                'jpg'   => 'image/jpeg',
-                'jpeg'  => 'image/jpeg',
+                'url'   => 'text/html',
+                'xml'   => 'application/xml',
+                'css'   => 'text/css',
                 'js'    => 'text/javascript',
-                'm3u'   => 'audio/x-mpegurl',
-                'mid'   => 'audio/midi',
-                'mov'   => 'video/quicktime',
-                'mp3'   => 'audio/mpeg',
-                'mp4'   => 'video/mp4',
-                'mpg'   => 'video/mpeg',
-                'mpeg'  => 'video/mpeg',
-                'ogg'   => 'application/x-ogg',
-                
+                # Syndication
+                'ics'   => 'text/Calendar',
+                'xcs'   => 'text/Calendar',
+                'rdf'   => 'text/xml',
+                'rss'   => 'application/rss+xml',
+                'opml'  => 'text/x-opml',
+                # Editable text
+                'txt'   => 'text/plain',
+                'rtf'   => 'application/rtf',
+                'tex'   => 'application/x-tex',
+                # MS Office
+                'doc'   => 'application/msword',
+                'ppt'   => 'application/vnd.ms-powerpoint',
+                'pps'   => 'application/vnd.ms-powerpoint',
+                'xls'   => 'application/vnd.ms-excel',
+                'xsl'   => 'text/xml',
                 # Open Document Formats
                 'odt'   => 'application/vnd.oasis.opendocument.text',
                 'ott'   => 'application/vnd.oasis.opendocument.text-template',
@@ -126,21 +125,6 @@ class StoredResource
                 'odf'   => 'application/vnd.oasis.opendocument.formula',
                 'odb'   => 'application/vnd.oasis.opendocument.database',
                 'odi'   => 'application/vnd.oasis.opendocument.image',
-                
-                'pdf'   => 'application/pdf',
-                'png'   => 'image/png',
-                'ppt'   => 'application/vnd.ms-powerpoint',
-                'pps'   => 'application/vnd.ms-powerpoint',
-                'ps'    => 'application/postscript',
-                'ra'    => 'audio/x-realaudio',
-                'ram'   => 'audio/x-pn-realaudio',
-                'rm'    => 'audio/x-pn-realaudio',
-                'rpm'   => 'audio/x-pn-realaudio-plugin',
-                'rtf'   => 'application/rtf',
-                'sit'   => 'application/x-stuffit',
-                'svg'   => 'image/svg+xml',
-                'swf'   => 'application/x-shockwave-flash',
-                
                 # Star Office Documents
                 'sxw'   => 'application/vnd.sun.xml.writer',
                 'stw'   => 'application/vnd.sun.xml.writer.template',
@@ -152,29 +136,6 @@ class StoredResource
                 'sti'   => 'application/vnd.sun.xml.impress.template',
                 'sxg'   => 'application/vnd.sun.xml.writer.global',
                 'sxm'   => 'application/vnd.sun.xml.math',
-                
-                # Misc
-                'tar'   => 'application/x-tar',
-                'tex'   => 'application/x-tex',
-                'tgz'   => 'application/x-gzip',
-                'tif'   => 'image/tiff',
-                'tiff'  => 'image/tiff',
-                'txt'   => 'text/plain',
-                'url'   => 'text/html',
-                'wav'   => 'audio/x-wav',
-                'wmv'   => 'video/x-ms-wmv',
-                'xml'   => 'application/xml',
-                'xls'   => 'application/vnd.ms-excel',
-                'xsl'   => 'text/xml',
-                'zip'   => 'application/zip',
-                
-                # Syndication
-                'ics'   => 'text/Calendar',
-                'xcs'   => 'text/Calendar',
-                'rdf'   => 'text/xml',
-                'rss'   => 'application/rss+xml',
-                'opml'  => 'text/x-opml',
-                
                 # Microsoft Office 2007 (sucks)
                 'docm'  => 'application/vnd.ms-word.document.macroEnabled.12',
                 'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -192,19 +153,61 @@ class StoredResource
                 'xlsm'  => 'application/vnd.ms-excel.sheet.macroEnabled.12',
                 'xlsx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'xltm'  => 'application/vnd.ms-excel.template.macroEnabled.12',
-                'xltx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template'
+                'xltx'  => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
+                # Print
+                'pdf'   => 'application/pdf',
+                'ps'    => 'application/postscript',
+                # Image
+                'png'   => 'image/png',
+                'jpg'   => 'image/jpeg',
+                'jpeg'  => 'image/jpeg',
+                'gif'   => 'image/gif',
+                'tif'   => 'image/tiff',
+                'tiff'  => 'image/tiff',
+                'bmp'   => 'image/bmp',
+                # Vector graphics
+                'svg'   => 'image/svg+xml',
+                'swf'   => 'application/x-shockwave-flash',
+                # Sound
+                'wav'   => 'audio/x-wav',
+                'aif'   => 'audio/x-aiff',
+                'ogg'   => 'audio/ogg',
+                'flac'  => 'audio/flac',
+                'ape'   => 'audio/x-monkeys-audio',
+                'mid'   => 'audio/midi',
+                'mp3'   => 'audio/mpeg',
+                # Streaming
+                'm3u'   => 'audio/x-mpegurl',
+                'ra'    => 'audio/x-realaudio',
+                'ram'   => 'audio/x-pn-realaudio',
+                'rm'    => 'audio/x-pn-realaudio',
+                # Video
+                'ogv'   => 'video/ogg',
+                'avi'   => 'video/x-msvideo',
+                'wmv'   => 'video/x-ms-wmv',
+                'mov'   => 'video/quicktime',
+                'qt'    => 'video/quicktime',
+                'mp4'   => 'video/mp4',
+                'mpg'   => 'video/mpeg',
+                'mpeg'  => 'video/mpeg',
+                # Archive
+                'tar'   => 'application/x-tar',
+                'tgz'   => 'application/x-gzip',
+                'gz'    => 'application/x-gzip',
+                'zip'   => 'application/zip',
+                'rar'   => 'application/x-rar-compressed',
+                'sit'   => 'application/x-stuffit',
+                'hqx'   => 'application/mac-binhex40'
             );
             
-            $mimeType = array_key_exists( $fileExtension, $mimeTypeList )
+            return array_key_exists( $fileExtension, $mimeTypeList )
                 ? $mimeTypeList[$fileExtension]
                 : $defaultMimeType
                 ;
         }
         else
         {
-            $mimeType = $defaultMimeType;
+            return $defaultMimeType;
         }
-        
-        return $mimeType;
     }
 }
