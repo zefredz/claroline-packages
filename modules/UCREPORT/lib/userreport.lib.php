@@ -68,7 +68,7 @@ class UserReport
                                     : null;
                         
                         $this->userReportList[ $courseReport[ 'id' ] ] = array( 'title' => $courseReport[ 'title' ]
-                                                                        , 'course_code' => $course[ 'code' ]
+                                                                        , 'course_code' => $course[ 'sysCode' ]
                                                                         , 'course_title' => $course[ 'title' ]
                                                                         , 'final_score' => $finalScore
                                                                         , 'date' => $courseReport[ 'publication_date' ]
