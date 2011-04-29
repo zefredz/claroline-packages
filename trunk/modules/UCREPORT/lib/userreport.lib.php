@@ -37,25 +37,14 @@ class UserReport
      */
     private function load()
     {
-        $userCourseList = Claroline::getDatabase()->query( "
-            SELECT
-                C.code, C.intitule AS title
-            FROM
-                `{$this->tbl['cours']}`         AS C
-            INNER JOIN
-                `{$this->tbl['cours_user']}`    AS U
-            ON
-                C.code = U.code_cours
-            WHERE
-                U.user_id = " . Claroline::getDatabase()->escape( $this->userId )
-        );
+        $userCourseList = claro_get_user_course_list();
         
         foreach( $userCourseList as $course )
         {
-            $tbl = get_module_course_tbl( array( 'report_reports' ) , $course[ 'code' ] );
-            $weightFileUrl = '../../courses/' . claro_get_course_path( $course[ 'code' ] ) . '/' . Report::ASSIGNMENT_DATA_FILE;
+            $tbl = get_module_course_tbl( array( 'report_reports' ) , $course[ 'sysCode' ] );
+            $weightFileUrl = '../../courses/' . claro_get_course_path( $course[ 'sysCode' ] ) . '/' . Report::ASSIGNMENT_DATA_FILE;
             
-            if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'code' ] )
+            if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'sysCode' ] )
                  && file_exists( $weightFileUrl ) )
             {
                 $courseReportList = Claroline::getDatabase()->query( "
