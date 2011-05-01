@@ -26,8 +26,6 @@ class UserReport
     public function __construct( $userId )
     {
         $this->userId = $userId;
-        
-        $this->tbl = get_module_main_tbl( array( 'cours' , 'cours_user' ) );
         $this->load();
     }
     
@@ -37,7 +35,7 @@ class UserReport
      */
     private function load()
     {
-        $userCourseList = claro_get_user_course_list();
+        $userCourseList = claro_get_user_course_list( $this->userId );
         
         foreach( $userCourseList as $course )
         {
