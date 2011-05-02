@@ -72,7 +72,7 @@ try
                 'rqSlotDelete', 'exSlotDelete',
                 'rqSlotChoice', 'exSlotChoice',
                 'rqRemoveChoice', 'exRemoveChoice',
-                'rqEditChoice', 'exEditChoice',
+                // 'rqEditChoice', 'exEditChoice', // not implemented yet
                 'exSlotVisible'
             ) )
         );
@@ -181,7 +181,8 @@ try
                             slotId = {$slotId};" ) )
                     {
                         $dialogBox->success(get_lang("User choice deleted"));
-                        Console::info("User choice slot={$slotId}:subscription={$subscriptionId}:subscriber={$subscriberId} deleted by "
+                        
+                        Console::info("User choice slot={$slotId}:subscription={$subscriptionId}:context={$subscription->getContext()}:subscriber={$subscriberId} deleted by "
                             . claro_get_current_user_id() . ' in course ' . claro_get_current_course_id()
                         );
                     }
