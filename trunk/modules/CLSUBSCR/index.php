@@ -336,7 +336,19 @@ try
                     {
                         $subscriptionType = $subscription->getType();
                         
-                        From::Module( $tlabelReq )->loadPlugins( $subscriptionType );
+                        // 1.9.9+ and 1.10.5+
+                        if ( method_exists( From::Module( $tlabelReq ), 'loadPlugins' ) )
+                        {
+                            From::Module( $tlabelReq )->loadPlugins( $subscriptionType );
+                        }
+                        // previous versions
+                        else
+                        {
+                            From::Module( $tlabelReq )->uses('kernelfix.lib');
+                            $pluginLoader = new ModulePluginLoader( $tlabelReq );
+                            $pluginLoader->loadPlugins( $subscriptionType );
+                        }
+                        
                         
                         $className = 'slot' . ucfirst( $subscriptionType );
 
