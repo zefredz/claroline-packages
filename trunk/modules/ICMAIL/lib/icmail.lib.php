@@ -183,7 +183,7 @@ class ICMAIL
             
             $mail->Send();
             
-            $eamilSent++;
+            $emailSent++;
             
             $mail->ClearAddresses();
         }
