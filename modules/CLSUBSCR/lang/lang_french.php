@@ -75,3 +75,5 @@ $_lang['until %dateTo'] = 'jusqu\'au %dateTo';
 $_lang['places'] = 'places';
 $_lang['slots with'] = 'choix avec';
 $_lang['Show results'] = 'Afficher le résultat';
+$_lang['Are you sure you want to delete this user choice ?'] = 'Êtes-vous sûr de vouloir supprimer le choix de cette utilisateur ?';
+$_lang['You must be in a group to access this session'] = 'Vous devez être dans un groupe pour accéder à cette session';

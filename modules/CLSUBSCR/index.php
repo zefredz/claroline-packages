@@ -132,14 +132,15 @@ try
                     $subscriptionId = Claroline::getDatabase()->escape( $userInput->getMandatory('subscriptionId') );
                     $slotId = Claroline::getDatabase()->escape( $userInput->getMandatory('slotId') );
 
-                    $dialogBox->question( get_lang( "Are you sure you want to delete this user choice ?" ) );
-                    $dialogBox->question( '<a href="' 
+                    $dialogBox->question( '<p>' . get_lang( "Are you sure you want to delete this user choice ?" ) . '</p>'
+                        . '<a href="' 
                         . htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] 
                              . '?cmd=exRemoveChoice&slotId=' . $slotId
                              . '&subscriberId=' . $subscriberId
                              . '&subscriptionId=' . $subscriptionId ) ).'">'
                         . get_lang('Yes') 
-                        . '</a> '
+                        . '</a>'
+                        . '&nbsp;-&nbsp;'
                         . '<a href="'
                         . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) .'">'
                         . get_lang('No')
@@ -297,7 +298,14 @@ try
                     || ( $subscription->getContext() == 'user' && claro_is_in_a_group() ) )
                         && ! claro_is_allowed_to_edit() )
                 {
-                    $dialogBox->error( get_lang( 'Not in good context' ) );
+                    $dialogBox->error( 
+                        '<p>'
+                        . get_lang( 'Not in good context' )
+                        . '<br />'
+                        . get_lang( 'You must be in a group to access this session' )
+                        . '</p>'
+                    );
+                    
                     $out .= $dialogBox->render();
                 }
                 else
@@ -433,7 +441,14 @@ try
                         && claro_is_in_a_group() ) )
                         && ! claro_is_allowed_to_edit() )
                 {
-                    $dialogBox->error( get_lang( 'Not in good context' ) );
+                    $dialogBox->error( 
+                        '<p>'
+                        . get_lang( 'Not in good context' )
+                        . '<br />'
+                        . get_lang( 'You must be in a group to access this session' )
+                        . '</p>'
+                    );
+                    
                     $out .= $dialogBox->render();
                 }
                 else
