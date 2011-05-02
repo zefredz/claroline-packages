@@ -299,11 +299,7 @@ try
                         && ! claro_is_allowed_to_edit() )
                 {
                     $dialogBox->error( 
-                        '<p>'
-                        . get_lang( 'Not in good context' )
-                        . '<br />'
-                        . get_lang( 'You must be in a group to access this session' )
-                        . '</p>'
+                        get_lang( 'You must be in a group to access this session' )
                     );
                     
                     $out .= $dialogBox->render();
@@ -441,12 +437,18 @@ try
                         && claro_is_in_a_group() ) )
                         && ! claro_is_allowed_to_edit() )
                 {
+                    From::Module('CLSUBSCR')->uses('groupchooser.lib');
+                    
+                    $groupChooser = new UserGroupChooser(
+                        $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscrId,
+                        claro_get_current_user_id(),
+                        claro_get_current_course_id()
+                    );
+                    
                     $dialogBox->error( 
-                        '<p>'
-                        . get_lang( 'Not in good context' )
+                        get_lang( 'You must be in a group to access this session' )
                         . '<br />'
-                        . get_lang( 'You must be in a group to access this session' )
-                        . '</p>'
+                        . $groupChooser->render()
                     );
                     
                     $out .= $dialogBox->render();
