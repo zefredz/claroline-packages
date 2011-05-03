@@ -42,7 +42,7 @@ $(document).ready( function(){
     $("#getTitleFromFeed").click(
         function() {
             $.get(
-                './proxy.php',
+                '<?php echo get_module_url('ICPCRDR'); ?>/proxy.php',
                 {
                     url: $("#url").val()
                 },
