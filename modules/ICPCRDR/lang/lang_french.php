@@ -21,3 +21,5 @@ $_lang['The podcast has been added successfully'] = 'Le podcast à été ajouté ave
 $_lang['The podcast is now invisible'] = 'Ce podcast n\'est maintenant plus visible';
 $_lang['Unable to change the visibility of the podcast'] = 'Impossible de modifier la visibilité de ce podcast';
 $_lang['Video podcast reader'] = 'Lecteur de podcast vidéo';
+$_lang['The podcast is now visible'] = 'Ce podcast est maintenant visible';
+
