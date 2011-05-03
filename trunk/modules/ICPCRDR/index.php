@@ -46,7 +46,7 @@ $dialogBox = new DialogBox;
 try
 {
     // get the podcast collection using PodcastCollection from podcastcollection.lib
-    $collection = PodcastCollection::getInstance();
+    $collection = new PodcastCollection();
     
     // input validator from utils/input.lib and utils/validator.lib
     $userInput = Claro_UserInput::getInstance();
