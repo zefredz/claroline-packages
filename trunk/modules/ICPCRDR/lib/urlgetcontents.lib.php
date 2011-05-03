@@ -4,12 +4,19 @@
  * Get contents from a given URL using various PHP libs
  *
  * @version     1.0
- * @copyright   2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @author      Frederic Minne <frederic.minne@uclouvain.be>
  * @license     http://www.fsf.org/licensing/licenses/agpl-3.0.html
  *              GNU AFFERO GENERAL PUBLIC LICENSE version 3
  */
 
+/**
+ * Get a file from a remote url using several remote file access mechanism
+ * (file_get_contents, curl, or fsockopen)
+ * @param string $url
+ * @return string file contents 
+ * @throws Exception if no remote file access mechanism available
+ */
 function url_get_contents( $url )
 {
     if ( ini_get( 'allow_url_fopen' ) )
@@ -50,6 +57,11 @@ function url_get_contents( $url )
     }
 }
 
+/**
+ * Get remote file contents using fsockopen
+ * @param string $url
+ * @return string file contents
+ */
 function fsockopen_get_contents( $url )
 {
     // get the host name and url path
