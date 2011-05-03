@@ -9,12 +9,26 @@
     *              GNU GENERAL PUBLIC LICENSE version 2 or later
     * @package     ICPCRDR
 -->
-<form name="editPodcast" action="<?php echo $this->actionUrl; ?>" method="post">
+<form 
+    name="editPodcast" 
+    action="<?php
+        // use htmlspecialchars to protect url from XSS
+        // use Url::Contextualize to add context information (course, group...) 
+        // to the url
+        echo htmlspecialchars( Url::Contextualize( $this->actionUrl ) ); 
+    ?>" 
+    method="post">
+    
 <?php if(!is_null($this->id)) : ?>
+    
     <input type="hidden" name="podcastId" value="<?php echo $this->id; ?>" />
+    
 <?php endif; ?>
+    
     <fieldset>
+        
         <legend><?php echo get_lang('Edit information for the curent link'); ?></legend>
+        
         <dl>
             <dt><label for="url"><?php echo get_lang('Feed url'); ?>&nbsp;<span class="required">*</span>&nbsp;:</label></dt>
             <dd><input type="text" name="url" id="url" size="60" maxlength="200" value="<?php echo $this->url; ?>" /></dd>
@@ -31,12 +45,17 @@
                 <label for="visibility_invisible"><?php echo get_lang('Invisible'); ?>&nbsp;<img src="<?php echo get_icon_url('invisible'); ?>" alt="" /></label>
             </dd>
         </dl>
+        
     </fieldset>
+    
     <div style="text-align: center;">
+        
         <input type="submit" name="submit" value="<?php echo get_lang('Ok'); ?>" />&nbsp;&nbsp;
         <a href="<?php echo $_SERVER['PHP_SELF']; ?>"><input type="button" name="cancel" value="<?php echo get_lang('Cancel'); ?>" /></a>
+    
     </div>
 </form>
+
 <script type="text/javascript">
 $(document).ready( function(){
     $("#getTitleFromFeed").click(
