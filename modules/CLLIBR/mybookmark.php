@@ -9,6 +9,8 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
+$tlabelReq = 'CLLIBR';
+
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
 FromKernel::uses( 'utils/input.lib'
