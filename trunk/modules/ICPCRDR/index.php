@@ -195,15 +195,10 @@ try
 
         case 'rqEditPodcast':
             {
-                // use htmlspecialchars to escape dagerous characters in the url
-                // use Url::Contextualize to add the context (course, group...) 
-                // to the url
-                $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditPodcast' ) );
-                
                 // use a template to display edit podcast properties form
                 $form = new ModuleTemplate( 'ICPCRDR', 'podcastform.tpl.php' );
                 
-                $form->assign( 'actionUrl', $formUrl );
+                $form->assign( 'actionUrl', $_SERVER['PHP_SELF'].'?cmd=exEditPodcast' );
                 $form->assign( 'id', $id );
                 $form->assign( 'url', $url );
                 $form->assign( 'title', $title );
@@ -217,12 +212,10 @@ try
 
         case 'rqAddPodcast':
             {
-                $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddPodcast' ) );
-                
                 // use a template to display a HTML form
                 $form = new ModuleTemplate( 'ICPCRDR', 'podcastform.tpl.php' );
                 
-                $form->assign( 'actionUrl', $formUrl );
+                $form->assign( 'actionUrl', $_SERVER['PHP_SELF'].'?cmd=exAddPodcast' );
                 $form->assign( 'id', $id );
                 $form->assign( 'url', $url );
                 $form->assign( 'title', $title );
