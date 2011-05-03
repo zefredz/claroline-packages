@@ -111,17 +111,19 @@ class PodcastCollection
      * Change podcast visibility
      *
      * @author Dimitri Rambout <dimitri.rambout@uclouvain.be>
-     * @param $visibility visibility (visible or invisible)
+     * @author Frederic Minne <zefredz@claroline.net>
+     * @param int $id
+     * @param string $visibility 'visible' or 'invisible'
      * @return boolean
      */
-    public function changeVisibility( $linkId, $visibility )
+    public function changeVisibility( $id, $visibility )
     {
-        $sql = "UPDATE `{$this->tbl['icpcrdr_podcasts']}`
+        return Claroline::getDatabase()->exec( 
+            "UPDATE `{$this->tbl['icpcrdr_podcasts']}`
             SET
                 visibility = " . Claroline::getDatabase()->quote( $visibility ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape((int) $linkId);
-        
-        return Claroline::getDatabase()->exec( $sql );
+                id = " . Claroline::getDatabase()->escape((int) $id)
+        );
     }
 }
