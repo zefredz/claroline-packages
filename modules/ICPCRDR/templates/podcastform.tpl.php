@@ -2,12 +2,12 @@
     $Id$
     
     Podcast submission form template
-    * @version     1.9 $Revision$
-    * @copyright   2001-2009 Universite catholique de Louvain (UCL)
+    * @version     ICPCRDR 1.0 $Revision$ - Claroline 1.9
+    * @copyright   2001-2011 Universite catholique de Louvain (UCL)
     * @author      Frederic Minne <zefredz@claroline.net>
     * @license     http://www.gnu.org/copyleft/gpl.html
     *              GNU GENERAL PUBLIC LICENSE version 2 or later
-    * @package     icpcrdr
+    * @package     ICPCRDR
 -->
 <form name="editPodcast" action="<?php echo $this->actionUrl; ?>" method="post">
 <?php if(!is_null($this->id)) : ?>
