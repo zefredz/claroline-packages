@@ -86,6 +86,7 @@ try
     switch ( $cmd )
     {
         case 'list':
+            // nothing to do here
             break;
 
         case 'visit':
@@ -178,27 +179,37 @@ try
                 // use a template to display the podcast
                 // module templates are in module/MODULELABEL/templates folder
                 $videoList = new ModuleTemplate( 'ICPCRDR', 'podcastdisplay.tpl.php' );
+                
+                // assign internal variables to the template
+                // those variables are accessed from inside the template file 
+                // by using $this->variableName
                 $videoList->assign( 'channel', $parser->getChannelInfo() );
                 $videoList->assign( 'items', $parser->getItems() );
                 $videoList->assign( 'url', $url );
                 // $videoList->assign( 'title', $title );
                 
+                // append the template to the layout
                 $layout->appendToRight( $videoList->render() );
             }    
             break;
 
         case 'rqEditPodcast':
             {
+                // use htmlspecialchars to escape dagerous characters in the url
+                // use Url::Contextualize to add the context (course, group...) 
+                // to the url
                 $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exEditPodcast' ) );
                 
                 // use a template to display edit podcast properties form
                 $form = new ModuleTemplate( 'ICPCRDR', 'podcastform.tpl.php' );
+                
                 $form->assign( 'actionUrl', $formUrl );
                 $form->assign( 'id', $id );
                 $form->assign( 'url', $url );
                 $form->assign( 'title', $title );
                 $form->assign( 'visibility', $visibility );
                 
+                // append the template to the layout
                 $layout->appendToRight( $form->render() );
                 
             }
@@ -206,11 +217,11 @@ try
 
         case 'rqAddPodcast':
             {
-                
                 $formUrl = htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddPodcast' ) );
                 
                 // use a template to display a HTML form
                 $form = new ModuleTemplate( 'ICPCRDR', 'podcastform.tpl.php' );
+                
                 $form->assign( 'actionUrl', $formUrl );
                 $form->assign( 'id', $id );
                 $form->assign( 'url', $url );
@@ -306,7 +317,7 @@ try
             throw new Exception('Unknown command');
     }
     
-    // add the right pannel to the layout
+    // add the dialog box to the right pannel to the layout
     $layout->prependToRight( $dialogBox->render() );
     
     // prepare left menu for any cmd
