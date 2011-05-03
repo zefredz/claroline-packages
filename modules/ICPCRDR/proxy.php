@@ -1,10 +1,12 @@
 <?php // $Id$
 
 /**
- * Claroline Advanced Link Tool : Proxy
+ * Claroline Podcast Reader : Proxy to allow cross site XML file loading through 
+ *  AJAX. This proxy script is a lightweight script and so it does not use the 
+ *  Claroline kernel to avoid loading too much libraries.
  *
  * @version     ICPCRDR 1.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2010 Universite catholique de Louvain (UCL)
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICPCRDR
  * @author      Frederic Minne <frederic.minne@uclouvain.be>
@@ -12,6 +14,7 @@
 
 try
 {
+    // add some security : check the HTTP_REFERER
     if ( !isset($_SERVER['HTTP_REFERER']) )
     {
         throw new Exception('Not Allowed');
@@ -25,10 +28,12 @@ try
         }
     }
     
+    // get the wanted remote file url
     if ( !isset($_REQUEST['url']) || empty($_REQUEST['url']) ) {
         throw new Exception('Missing parameter');
     }
     
+    // load the library needed to load remote files
     require_once dirname(__FILE__) . '/lib/urlgetcontents.lib.php';
     
     if ( ! $content = url_get_contents($_REQUEST['url']) ) {
