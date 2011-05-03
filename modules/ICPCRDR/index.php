@@ -280,11 +280,11 @@ try
             {
                 if( $collection->changeVisibility( $id, 'visible' ) )
                 {
-                    $dialogBox->success('The podcast is now visible');
+                    $dialogBox->success( get_lang( 'The podcast is now visible' ) );
                 }
                 else
                 {
-                    $dialogBox->error('Unable to change the visibility of the podcast');
+                    $dialogBox->error( get_lang( 'Error: unable to change the visibility of the podcast' ) );
                 }
             }
             break;

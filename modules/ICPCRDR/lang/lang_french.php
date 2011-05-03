@@ -22,4 +22,5 @@ $_lang['The podcast is now invisible'] = 'Ce podcast n\'est maintenant plus visi
 $_lang['Unable to change the visibility of the podcast'] = 'Impossible de modifier la visibilité de ce podcast';
 $_lang['Video podcast reader'] = 'Lecteur de podcast vidéo';
 $_lang['The podcast is now visible'] = 'Ce podcast est maintenant visible';
+$_lang['Error: unable to change the visibility of the podcast'] = 'Erreur: impossible de rendre le podcast visible';
 
