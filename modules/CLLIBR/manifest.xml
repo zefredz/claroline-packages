@@ -21,10 +21,10 @@
     </author>
     <requirements>
         <claroline>
-            <version>1.9</version>
+            <version>1.9.9</version>
         </claroline>
         <claroline>
-            <version>1.10</version>
+            <version>1.10.5</version>
         </claroline>
     </requirements>
 </module>
