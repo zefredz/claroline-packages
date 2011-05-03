@@ -96,6 +96,7 @@ class PodcastItem
 {
     public $metadata;
     public $enclosure;
+    public $image;
     
     /**
         Converts from SimpleXMLElement to a normal user object
@@ -118,5 +119,18 @@ class PodcastItem
             'length'=>         (string) $enc_tmp->length,
             'type'=>         (string) $enc_tmp->type,
         );
+
+        if ( $xml_obj->image )
+        {
+            $this->image = array(
+                'url' => (string) $xml_obj->image->url,
+                'title' => (string) $xml_obj->image->title,
+                'link' => (string) $xml_obj->image->link,
+            );
+        }
+        else
+        {
+            $this->image = null;
+        }
     }
 }
