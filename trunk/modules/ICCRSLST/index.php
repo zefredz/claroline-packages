@@ -78,7 +78,40 @@ try
         
         if ( empty( $officialCode ) )
         {
-            throw new Exception( "Missing user" );
+            $username = trim( $userInput->get( 'username' ) );
+            
+            if ( empty( $username ) )
+            {
+                $userid = trim( $userInput->get( 'userid' ) );
+            
+                if ( empty( $userid ) )
+                {
+
+                    $email = trim( $userInput->get( 'email' ) );
+            
+                    if ( empty( $email ) )
+                    {
+
+                        throw new Exception( "Missing user" );
+                    }
+                    else
+                    {
+                        $user = "email = " . (int) Claroline::getDatabase()->quote( $email );
+                    }
+                }
+                else
+                {
+                    $user = "user_id = " . (int) Claroline::getDatabase()->escape( $userid );
+                }
+            }
+            else
+            {
+                $user = "username = " . Claroline::getDatabase()->quote( $username );
+            }
+        }
+        else
+        {
+            $user = "officialCode = " . Claroline::getDatabase()->quote( $officialCode );
         }
         
         $filter = $userInput->get( 'filter', 'both' );
@@ -119,11 +152,16 @@ try
         $tbl = claro_sql_get_main_tbl();
         
         $res = Claroline::getDatabase()->query(
-            "SELECT user_id AS id, officialCode AS officialCode,
-                nom AS lastname, prenom AS firstname, email AS email
-            FROM `{$tbl['user']}`
-            WHERE officialCode = " . Claroline::getDatabase()->quote( $officialCode ) . "
-            # AND authSource = 'ldap'
+            "SELECT 
+                user_id AS id, 
+                officialCode AS officialCode,
+                nom AS lastname, 
+                prenom AS firstname, 
+                email AS email
+            FROM 
+                `{$tbl['user']}`
+            WHERE 
+                {$user}
             ORDER BY id ASC
             LIMIT 1"
         );
@@ -147,7 +185,7 @@ try
             
             header("Content-type: text/xml; charset=utf-8");
             
-            $tpl = new PhpTemplate(dirname(__FILE__) . '/courselist.xml.php');   
+            $tpl = new ModuleTemplate( 'ICCRSLST', 'courselist.xml.php' );
             $tpl->assign( 'user', $user ); 
             $tpl->assign( 'courses', $courses );
             
