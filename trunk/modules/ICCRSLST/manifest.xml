@@ -1,24 +1,27 @@
 <module>
-<label>ICCRSLST</label>
-<name>Course List Service</name>
-<description><![CDATA[
-  Get course list web service
-  ]]></description>
-<version>1.0-$Revision$</version>
-<license>GPL</license>
-<icon>icon.png</icon>
-<type>admin</type>
-<entry>index.php</entry>
+    <label>ICCRSLST</label>
+    <name>Course List Service</name>
+    <description><![CDATA[
+Get course list web service
+]]></description>
+    <version>1.0-$Revision$</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>admin</type>
+    <entry>index.php</entry>
 
-<author>
-<name>Frederic Minne</name>
-<email>zefredz@claroline.net</email>
-<web>http://www.uclouvain.be/ipm</web>
-</author>
+    <author>
+        <name>Frederic Minne</name>
+        <email>zefredz@claroline.net</email>
+        <web>http://www.uclouvain.be/ipm</web>
+    </author>
 
-<requirements>
-<claroline>
-<version>1.9</version>
-</claroline>
-</requirements>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+        <module label="CLKRNG">
+            <version>1.1</version>
+        </module>
+    </requirements>
 </module>
