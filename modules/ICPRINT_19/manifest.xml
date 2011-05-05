@@ -1,23 +1,30 @@
 <module>
-<label>ICPRINT</label>
-<name>Services d'impression</name>
-<description><![CDATA[
-Envoi de document aux services d'impression
-]]></description>
-<version>1.0-alpha</version>
-<license>GPL</license>
-<icon>icon.png</icon>
-<type>tool</type>
-<!-- group>true</group -->
-<entry>index.php</entry>
-<author>
-<name>Frederic Minne</name>
-<email>zefredz@claroline.net</email>
-<web>http://www.claroline.net/wiki/CLVOC</web>
-</author>
-<requirements>
-<claroline>
-<version>1.9</version>
-</claroline>
-</requirements>
+    <label>ICPRINT</label>
+    <name>Services d'impression</name>
+    <description><![CDATA[
+    Envoi de document aux services d'impression
+    ]]></description>
+    <version>1.1</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    
+    <type>tool</type>
+    <context>course</context>
+    <context>platform</context>
+    
+    <entry>index.php</entry>
+    
+    <author>
+        <name>Frederic Minne</name>
+        <email>zefredz@claroline.net</email>
+        <web>http://www.uclouvain.be/ipm</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+        <module label="CLKRNG">
+            <version>1.1</version>
+        </module>
+    </requirements>
 </module>

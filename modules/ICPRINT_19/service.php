@@ -35,46 +35,10 @@ try
     
     $userInput = Claro_userInput::getInstance();
         
-    try
-    {
-        $serviceUser = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
-        $serviceKey = $userInput->getMandatory('serviceKey');
-        
-        $checked = false;
-        
-        if ( !empty( $serviceUser ) )
-        {
-            $checked = Keyring::checkKeyForHost( 'icprint', $serviceUser, $serviceKey );
-        }
+    // Check access
+    Keyring::checkForService('icprint');
     
-        if ( ! $checked )
-        {
-            header( 'Forbidden', true, 403 );
-            echo '<h1>Forbidden !</h1>';
-            echo '<p>Worng service key or host</p>';
-            if ( claro_debug_mode() )
-            {
-                var_dump( $serviceUser.'::'.$serviceKey );
-            }
-            exit();
-        }
-    }
-    catch ( Exception $e )
-    {
-        header( 'Forbidden', true, 403 );
-        echo '<h1>Forbidden !</h1>';
-        
-        if ( claro_debug_mode() )
-        {
-            echo '<pre>'.$e->__toString().'</pre>';
-        }
-        else
-        {
-            echo '<p>An exception occurs !</p>';
-        }        
-        
-        exit();
-    }
+    $serviceKey = $userInput->getMandatory('serviceKey');
     
     define ( 'APP_PATH', dirname(__FILE__).'/crud' );
     !defined( 'CLARO_DSN' ) && define ( 'CLARO_DSN', 'mysql://'.get_conf('dbLogin')
@@ -136,7 +100,7 @@ try
         }
         
         header("Content-type: text/xml; charset=utf-8");
-        $tpl = new PhpTemplate(dirname(__FILE__) . '/templates/list.xml.php');   
+        $tpl = new ModuleTemplate( 'ICPRINT', 'list.xml.php');   
         $tpl->assign( 'documents', $documents ); 
         $tpl->assign( 'actionMapper', $actionMapper );
         $tpl->assign( 'serviceKey', $serviceKey );
