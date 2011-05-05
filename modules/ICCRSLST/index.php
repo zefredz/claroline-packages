@@ -6,7 +6,7 @@
  * ICPRINT web service access point
  *
  * @version     1.9 $Revision$
- * @copyright   2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @author      Claroline Team <info@claroline.net>
  * @author      Frederic Minne <zefredz@claroline.net>
  * @license     http://www.gnu.org/copyleft/gpl.html
@@ -23,51 +23,9 @@ try
     From::Module('CLKRNG')->uses('keyring.lib');
     
     $userInput = Claro_userInput::getInstance();
-        
-    try
-    {
-        $serviceUser = isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : null;
-        $serviceKey = $userInput->getMandatory('serviceKey');
-        
-        $checked = false;
-        
-        if ( !empty( $serviceUser ) )
-        {
-            $checked = Keyring::checkKeyForHost( 'iccrslst', $serviceUser, $serviceKey );
-        }
     
-        if ( ! $checked )
-        {
-            header( 'Forbidden', true, 403 );
-            
-            echo '<h1>Forbidden !</h1>';
-            echo '<p>Worng service key or host</p>';
-            
-            if ( claro_debug_mode() )
-            {
-                var_dump( $serviceUser.'::'.$serviceKey );
-            }
-            
-            exit();
-        }
-    }
-    catch ( Exception $e )
-    {
-        header( 'Forbidden', true, 403 );
-        
-        echo '<h1>Forbidden !</h1>';
-        
-        if ( claro_debug_mode() )
-        {
-            echo '<pre>'.$e->__toString().'</pre>';
-        }
-        else
-        {
-            echo '<p>An exception occurs !</p>';
-        }        
-        
-        exit();
-    }
+    // Check access
+    Keyring::checkForService('iccrslst');
     
     $cmd = $userInput->get('cmd','list');
     
