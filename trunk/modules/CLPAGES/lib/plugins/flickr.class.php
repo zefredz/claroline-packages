@@ -54,7 +54,7 @@ class FlickrComponent extends Component
     {
         if( !empty($this->tag) )
         {
-            require_once get_path('incRepositorySys') . '/lib/lastRSS/lastRSS.php';
+            require_once get_path('incRepositorySys') . '/lib/thirdparty/lastRSS/lastRSS.lib.php';
 
             $out = '';
             $feed = $this->getFeed( 'http://www.flickr.com/services/feeds/photos_public.gne?tags='.urlencode($this->tag).'&format=rss_200' );
