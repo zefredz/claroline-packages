@@ -1,28 +1,31 @@
 <?php // $Id$
 
-if ( count( get_included_files() ) == 1 ) die( '---' );
 /**
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
  *
  */
-    // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
+
+// vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
 require_once dirname( __FILE__ ) . '/plugins/videoPlugins/videoPlugin.class.php';
 
+/**
+ * Viddeo plugin registry
+ */
 class videoPluginRegistry
 {
       
     //Class property  
-    private static $instance = false;
+    protected static $instance = false;
 
     //Video plugin property
-    private $videos;
+    protected $videos;
 
     /**
      * Constructor
@@ -177,5 +180,3 @@ class videoPluginRegistry
         $this->videos[$type]['category'] = strtolower($category);
     }
 }
-
-?>
