@@ -1,18 +1,16 @@
 <?php // $Id$
 
-if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
-
 /**
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
  *
- *This is not really a available video plugin
- *It just allow the automatic setting and send the specific 'automatic ' identifiers and parameters
+ * This is not really a available video plugin
+ * It just allow the automatic setting and send the specific 'automatic ' identifiers and parameters
  */
 
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:

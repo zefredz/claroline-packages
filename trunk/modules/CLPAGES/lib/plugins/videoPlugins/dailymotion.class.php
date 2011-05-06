@@ -1,12 +1,10 @@
 <?php // $Id$
 
-if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
-
-/**
+ /**
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
@@ -17,10 +15,10 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
 class VideoDailyMotion implements VideoPlugin
 {
      //video plugin properties
-     private $input;
-     private $inputType;
-     private $width;
-     private $height;
+     protected $input;
+     protected $inputType;
+     protected $width;
+     protected $height;
     
 //Interface methods implementation
     
@@ -176,7 +174,7 @@ class VideoDailyMotion implements VideoPlugin
     * @param string $url An Url
     * @return string 'videoUrl' for direct video url,'webPageUrl' for original DailyMotion url page or 'error' for unvalidated url
     */
-    private function defineUrlType($url)
+    protected function defineUrlType($url)
     {
         if (preg_match('/swf/',$url))
         {
@@ -198,7 +196,7 @@ class VideoDailyMotion implements VideoPlugin
     * 
     * @param string $sizes The wanted video sizes
     */
-    private function setSizes($sizes)
+    protected function setSizes($sizes)
     {
         $this->width = 380;
         $this->height = 320;
