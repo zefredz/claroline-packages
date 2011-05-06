@@ -49,9 +49,8 @@ try
 
     $pageId = (int) $userInput->get( 'pageId', null );    
 
-    $dialogBox = new DialogBox();
-
-
+    $dialogBox = new DialogBox();    
+    
     /*
      * Admin only commands
      */
@@ -59,7 +58,7 @@ try
     {
         $page = new page();
 
-        if( !is_null($pageId) )
+        if( $pageId )
         {
             if( !$page->load($pageId) )
             {
@@ -75,7 +74,7 @@ try
             $page->setDisplayMode($_REQUEST['displayMode']);
             
             // set author id if creation
-            if( is_null($pageId) )
+            if( !$pageId )
             {
                 $page->setAuthorId( claro_get_current_user_id() );
                 $page->setCreationTime( time() );
@@ -89,7 +88,7 @@ try
             {
                 if( $insertedId = $page->save() )
                 {
-                    if( is_null($pageId) )
+                    if( !$pageId )
                     {
                         $dialogBox->success( get_lang('Empty page successfully created') );
                         $pageId = $insertedId;
@@ -112,50 +111,20 @@ try
                 {
                     $dialogBox->error( get_lang('Field \'%name\' is required', array('%name' => get_lang('Title'))) );
                 }
+                
                 $cmd = 'rqEdit';
             }
         }
 
         if( $cmd == 'rqEdit' )
         {
+            
             // show form
-            $htmlEditForm = "\n\n";
+            $htmlEditForm = new ModuleTemplate( 'CLPAGES', 'editpageform.tpl.php' );
+            $htmlEditForm->assign( 'pageId', $pageId );
+            $htmlEditForm->assign( 'page', $page );
 
-            if( !is_null($pageId) )
-            {
-                $htmlEditForm .= '<strong>' . get_lang('Edit page settings') . '</strong>' . "\n";
-            }
-            else
-            {
-                $htmlEditForm .= '<strong>' . get_lang('Create a new page') . '</strong>' . "\n";
-            }
-
-            $htmlEditForm .= '<form action="' . $_SERVER['PHP_SELF'] . '?pageId='.$pageId.'" method="post">' . "\n"
-            .    claro_form_relay_context()
-            .     '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />' . "\n"
-            .     '<input type="hidden" name="cmd" value="exEdit" />' . "\n"
-
-            // title
-            .     '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-            .     '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($page->getTitle()).'" /><br />' . "\n"
-            // description
-            .     '<label for="description">' . get_lang('Description') . '</label><br />' . "\n"
-            .     '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($page->getDescription()).'</textarea><br />'
-            // display mode
-            .     get_lang('Display') . '&nbsp;<span class="required">*</span><br />' . "\n"
-            .     '<input type="radio" name="displayMode" id="displayModePage" value="PAGE" '.($page->getDisplayMode() == 'PAGE' ?'checked="checked"':'').'>'
-            .     '<label for="displayModePage">'.get_lang('One page').'</label><br />' . "\n"
-            .     '<input type="radio" name="displayMode" id="displayModeSlide" value="SLIDE" '.($page->getDisplayMode() == 'SLIDE' ?'checked="checked"':'').'>'
-            .     '<label for="displayModeSlide">'.get_lang('Slideshow').'</label>' . "\n"
-            .     '<br /><br />'
-            // end form
-            .     '<span class="required">*</span>&nbsp;'.get_lang('Denotes required fields') . '<br />' . "\n"
-            .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
-            .    claro_html_button($_SERVER['PHP_SELF'], get_lang('Cancel'))
-            .    '</form>' . "\n"
-            ;
-
-            $dialogBox->form($htmlEditForm);
+            $dialogBox->form($htmlEditForm->render());
         }
 
         if( $cmd == 'exDelete' )
@@ -203,7 +172,10 @@ try
     
     if(claro_is_allowed_to_edit())
     {
-        $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new page'));
+        $cmdMenu[] = claro_html_cmd_link( 
+            Url::contextualize( get_module_entry_url('CLPAGES') . '?cmd=rqEdit'),
+            get_lang('Create a new page')
+        );
     }
     
     $pageList->assign( 'cmdMenu', $cmdMenu );
