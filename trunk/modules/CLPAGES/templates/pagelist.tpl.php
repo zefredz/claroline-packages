@@ -14,7 +14,7 @@
 
             <?php if( claro_is_allowed_to_edit() ): ?>
             
-            <th><?php echo get_lang('Modify'); ?></th>
+            <th><?php echo get_lang('Edit properties'); ?></th>
             <th><?php echo get_lang('Delete'); ?></th>
             <th><?php echo get_lang('Visibility'); ?></th>
             
