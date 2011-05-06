@@ -22,5 +22,4 @@ $_lang['Small'] ='Petite';
 $_lang['Video identification'] ='Identifiant unique de la vidéo';
 $_lang['Video internet address'] ='Adresse internet de la vidéo';
 $_lang['YouTube'] ='YouTube';
-
-?>
+$_lang['Creation date'] = 'Date de création';
