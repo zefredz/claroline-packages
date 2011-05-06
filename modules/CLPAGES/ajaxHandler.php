@@ -3,15 +3,10 @@
  * CLAROLINE
  *
  * @version 0.1 $Revision$
- *
- * @copyright (c) 2001-2007 Universite catholique de Louvain (UCL)
- *
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- *
  * @package CLPAGES
- *
  * @author Sebastien Piraux
- *
  */
 
 $tlabelReq = 'CLPAGES';
@@ -357,5 +352,3 @@ if( $cmd == 'exEdit' )
     echo 'Component state unstable';
     return 'Component state unstable';
 }
-
-?>
