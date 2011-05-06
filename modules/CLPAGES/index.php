@@ -13,35 +13,41 @@
  * @author Claroline team <info@claroline.net>
  *
  */
+try
+{
     // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
     // load Claroline kernel
     $tlabelReq = 'CLPAGES';
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
-
-    require_once dirname( __FILE__ ) . '/lib/clpages.lib.php';
-    require_once dirname( __FILE__ ) . '/lib/pluginRegistry.lib.php';
-
-    /*
-     * init request vars
-     */
-    $acceptedCmdList = array(   'rqDelete', 'exDelete',
-                                'rqEdit', 'exEdit',
-                                'exVisible', 'exInvisible',
-                        );
-
-    if( isset($_REQUEST['cmd']) && in_array($_REQUEST['cmd'], $acceptedCmdList) )   $cmd = $_REQUEST['cmd'];
-    else                                                                            $cmd = null;
-
-    if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) )       $pageId = (int) $_REQUEST['pageId'];
-    else                                                                    $pageId = null;
-
-    /*
-     * Init other vars
-     */
+    
     claro_set_display_mode_available(true);
+    
+    FromKernel::uses(
+        'utils/input.lib',
+        'utils/validator.lib',
+        'display/layout.lib'
+    );
+    
+    From::Module('CLPAGES')->uses(
+        'clpages.lib',
+        'pluginRegistry.lib'
+    );
+    
+    $userInput = Claro_UserInput::getInstance();
+    
+    if ( claro_is_allowed_to_edit() )
+    {
+        $userInput->setValidator('cmd', new Claro_Validator_AllowedList( array(
+            'rqDelete', 'exDelete',
+            'rqEdit', 'exEdit',
+            'exVisible', 'exInvisible',
+        ) ) );
+    }
+    
+    $cmd = $userInput->get( 'cmd', null );
 
-    $is_allowedToEdit = claro_is_allowed_to_edit();
+    $pageId = (int) $userInput->get( 'pageId', null );    
 
     $dialogBox = new DialogBox();
 
@@ -49,7 +55,7 @@
     /*
      * Admin only commands
      */
-    if( $is_allowedToEdit )
+    if( claro_is_allowed_to_edit() )
     {
         $page = new page();
 
@@ -190,141 +196,61 @@
             $page->save();
         }
     }
-
-    /*
-     * Output
-     */
-
-    $cssLoader = CssLoader::getInstance();
-    $cssLoader->load( 'clpages', 'screen');
-
-    $out = '';
-    $htmlHeaders = '';
-
-    $claroline->display->header->addHtmlHeader($htmlHeaders);
-
-    $nameTools = get_lang('Pages');
-
-    $out .= claro_html_tool_title($nameTools);
-
-    $out .= $dialogBox->render();
+    
+    $pageList = new ModuleTemplate( 'CLPAGES', 'pagelist.tpl.php' );
 
     $cmdMenu = array();
-    if($is_allowedToEdit)
+    
+    if(claro_is_allowed_to_edit())
     {
         $cmdMenu[] = claro_html_cmd_link('index.php?cmd=rqEdit'. claro_url_relay_context('&amp;'),get_lang('Create a new page'));
     }
-
-    $out .= '<p>'
-    .    claro_html_menu_horizontal( $cmdMenu )
-    .    '</p>';
-
-    $out .= '<table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">' . "\n"
-    .    '<thead>' . "\n"
-    .    '<tr class="headerX" align="center" valign="top">' . "\n"
-    .     '<th>' . get_lang('Page') . '</th>' . "\n"
-    .     '<th>' . get_lang('Creation date') . '</th>' . "\n";
-
-    if( $is_allowedToEdit )
-    {
-        $out .= '<th>' . get_lang('Modify') . '</th>' . "\n"
-        .    '<th>' . get_lang('Delete') . '</th>' . "\n"
-        .    '<th>' . get_lang('Visibility') . '</th>' . "\n";
-    }
-
-    $out .= '</tr>' . "\n"
-    .    '</thead>' . "\n";
-
+    
+    $pageList->assign( 'cmdMenu', $cmdMenu );
 
     $listLoader = new pageList();
 
-    if( $is_allowedToEdit )
+    if( claro_is_allowed_to_edit() )
     {
         // all
-        $pageListAray = $listLoader->load(true);
+        $pageList->assign( 'pageList', $listLoader->load(true) );
     }
     else
     {
         // only visible
-        $pageListAray = $listLoader->load(false);
+        $pageList->assign( 'pageList', $listLoader->load(false) );
     }
 
+    CssLoader::getInstance()->load( 'clpages', 'screen');
+    
+    $nameTools = get_lang('Pages');
+    
+    Claroline::getDisplay()->header->setTitle( $nameTools );
+    ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools );
+    
+    Claroline::getDisplay()->body->appendContent( claro_html_tool_title($nameTools) );
+    Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
+    
+    Claroline::getDisplay()->body->appendContent( $pageList->render() );
 
-
-    if( !empty($pageListAray) && is_array($pageListAray) )
+}
+catch ( Exception $e )
+{
+    if ( claro_debug_mode() )
     {
-        $i = 0;
-        $lpCount = count($pageListAray);
-        $totalProgress = 0;
-
-        $out .= '<tbody>' . "\n";
-
-        foreach( $pageListAray as $aPage )
-        {
-            $i++;
-            $out .= '<tr>' . "\n";
-
-            // title
-            $out .= '<td>' . "\n"
-            .    '<a href="page.php?pageId='.$aPage['id'].'" title="'.htmlspecialchars(strip_tags($aPage['description'])).'">'
-            .    claro_html_icon('page') . '&nbsp;'
-            .    htmlspecialchars($aPage['title'])
-            .    '</a>' . "\n"
-            .    '</td>' . "\n"
-
-            .     '<td align="center">' . "\n"
-            .    $aPage['creationTime']
-            .    '</td>' . "\n";
-
-            if( $is_allowedToEdit )
-            {
-                $out .= '<td align="center">' . "\n"
-                .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqEdit&amp;pageId='.$aPage['id'].'">'
-                .    claro_html_icon('edit')
-                .    '</a>' . "\n"
-                .    '</td>' . "\n"
-
-                .     '<td align="center">' . "\n"
-                .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=rqDelete&amp;pageId='.$aPage['id'].'">'
-                .    claro_html_icon('delete')
-                .    '</a>' . "\n"
-                .    '</td>' . "\n";
-
-                if( $aPage['visibility'] == 'VISIBLE' )
-                {
-                    $out .= '<td align="center">' . "\n"
-                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exInvisible&amp;pageId='.$aPage['id'].'">'
-                    .    claro_html_icon('visible')
-                    .    '</a>' . "\n"
-                    .    '</td>' . "\n";
-                }
-                else
-                {
-                    $out .= '<td align="center">' . "\n"
-                    .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exVisible&amp;pageId='.$aPage['id'].'">'
-                    .    claro_html_icon('invisible')
-                    .    '</a>' . "\n"
-                    .    '</td>' . "\n";
-                }
-            }
-
-            $out .=  '</tr>' . "\n\n";
-        }
+        $dialogBox->error( '<pre>' . $e->__toString() . '</pre>' );
     }
     else
     {
-        $out .= '<tfoot>' . "\n"
-        .    '<tr>' . "\n"
-        .    '<td align="center" colspan="'.( $is_allowedToEdit ? '5' : '2').'">' . get_lang('No pages') . '</td>' . "\n"
-        .    '</tr>' . "\n"
-        .    '</tfoot>' . "\n";
+        $dialogBox->error( $e->getMessage() );
     }
+    
+    // add the title of the module to the claroline page
+    $nameTools = get_lang('Pages');
+    Claroline::getDisplay()->body->appendcontent( claro_html_tool_title( $nameTools ) );
 
-    $out .= '</table>' . "\n";
+    // add the error message to the claroline page
+    Claroline::getDisplay()->body->appendcontent( $dialogBox->render() );
+}
 
-
-
-    $claroline->display->body->appendContent($out);
-
-    echo $claroline->display->render();
-?>
+echo Claroline::getDisplay()->render();

@@ -1,7 +1,7 @@
 <module>
   <label>CLPAGES</label>
   <name>Pages</name>
-  <version>0.1</version>
+  <version>1.0-alpha</version>
   <license>GPL</license>
   <type>tool</type>
   <entry>index.php</entry>
@@ -19,7 +19,7 @@
 
   <requirements>
     <claroline>
-      <version>1.8</version>
+      <version>1.9</version>
     </claroline>
  </requirements>
 </module>
