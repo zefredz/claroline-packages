@@ -6,7 +6,7 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
@@ -22,18 +22,18 @@ $jsloader->load('videoComponent');
 class VideoComponent extends Component
 {
     //Properties
-    private $videoType;
-    private $videoInput;
-    private $videoInputType;
-    private $videoParameterList;
+    protected $videoType;
+    protected $videoInput;
+    protected $videoInputType;
+    protected $videoParameterList;
     
-    private $videoRegister;
+    protected $videoRegister;
     
-    private $videoDataList;
-    private $videoDefaultValueList;
-    private $videoHtmlCodeList;
+    protected $videoDataList;
+    protected $videoDefaultValueList;
+    protected $videoHtmlCodeList;
     
-    private $domIdList;
+    protected $domIdList;
     
     /**
      * Constructor
@@ -61,7 +61,7 @@ class VideoComponent extends Component
      * Initiate the domIdList property structure based on the registered videos
      * 
      */
-    private function initDomIdList()
+    protected function initDomIdList()
     {
         foreach ($this->videoRegister->getRegisteredVideoTypes() as $type)
         {
@@ -124,7 +124,7 @@ class VideoComponent extends Component
      * videoDefaultValueList => ['identifiers' => ['youtube' => ['Url'],'DailyMotion' => ['Id'], ...],
      *                           'parameters' => ['youtube' => [['Size'] => 'medium', ...] ]
      */
-    private function setVideoDefaultValueList()
+    protected function setVideoDefaultValueList()
     {
         
         foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
@@ -154,7 +154,7 @@ class VideoComponent extends Component
      *                                                                 'medium' => 'Medium',
      *                                                                 'large' => 'Large') ] ], ... ]
      */
-    private function setVideoDataList()
+    protected function setVideoDataList()
     {
 
         foreach($this->videoRegister->getRegisteredVideoTypes() as $videoType)
@@ -172,7 +172,7 @@ class VideoComponent extends Component
      * and save them in the videoHtmlCodeList property
      * videoHtmlCodeList is used to set specific video plugin form
      */
-    private function setVideoHtmlCodeList()
+    protected function setVideoHtmlCodeList()
     {
         
         foreach( $this->videoDataList as $videoType => $videoData)
@@ -189,7 +189,7 @@ class VideoComponent extends Component
      *
      * @return string The script sequence able to create the htmlCode Javascript variable
      */
-    private function setJSVideoHtmlCodeList()
+    protected function setJSVideoHtmlCodeList()
     {
         $script_js = 'var videoHtmlCode = new Array();';
 
@@ -222,7 +222,7 @@ class VideoComponent extends Component
      *
      * @return string The script sequence able to create the videoDataList Javascript variable
      */
-    private function setJSVideoDataList()
+    protected function setJSVideoDataList()
     {
         $script_js = 'var videoDataList = new Array();';
        
@@ -261,7 +261,7 @@ class VideoComponent extends Component
      * @param string $videoType A video type
      * @return string The specific video identifiers html code
      */
-    private function getIdentifiers($videoIdentifiers,$videoType)
+    protected function getIdentifiers($videoIdentifiers,$videoType)
     {
         $htmlCode = '';
         $identifierInputType ='radio';
@@ -290,7 +290,7 @@ class VideoComponent extends Component
      * @param string $videoType A video type
      * @return string The specific video parameters html code
      */
-    private function getParameters($videoParameters,$videoType)
+    protected function getParameters($videoParameters,$videoType)
     {
         $htmlCode ='';
         
@@ -316,7 +316,7 @@ class VideoComponent extends Component
      * @param string $videoType A video type
      * @return string The specified video identifier form sequence html code
      */
-    private function createIdentifierInput ($identifierInputType, $identifierName, $identifierDisplayName,$defaultIdentifier,$videoType)
+    protected function createIdentifierInput ($identifierInputType, $identifierName, $identifierDisplayName,$defaultIdentifier,$videoType)
     {
         $defaultValue = "";
         
@@ -344,7 +344,7 @@ class VideoComponent extends Component
      * @param string $identifierName A identifier name
      * @return string The checked attribute of an identifier radio input html element
      */
-    private function checkIdentifier($videoType,$identifierName)
+    protected function checkIdentifier($videoType,$identifierName)
     {
         if($videoType == $this->videoType)
         {
@@ -370,7 +370,7 @@ class VideoComponent extends Component
      * @param string $identifierValue A identifier input value
      * @return string The value attribute of an identifier hmtl element
      */
-    private function setIdentifierValue($videoType,$identifierName)
+    protected function setIdentifierValue($videoType,$identifierName)
     {
         if($videoType == $this->videoType)
         {
@@ -392,7 +392,7 @@ class VideoComponent extends Component
      * @param string $videoType A video type
      * @return string The specified video parameter form sequence html code
      */
-    private function createParameter($parameterInputType,$parameterName,$parameterDisplayName,$parameterDefaultValue,$parameterData,$videoType)
+    protected function createParameter($parameterInputType,$parameterName,$parameterDisplayName,$parameterDefaultValue,$parameterData,$videoType)
     {
         $htmlCode ='';
         
@@ -478,7 +478,7 @@ class VideoComponent extends Component
      * @param string $parameterValue A parameter value
      * @return string The checked attribute of a parameter radio input html element
      */
-    private function checkParameter($videoType,$parameterName,$parameterValue)
+    protected function checkParameter($videoType,$parameterName,$parameterValue)
     {
         if($videoType == $this->videoType && $videoType != 'automatic')
         {
@@ -509,7 +509,7 @@ class VideoComponent extends Component
      * @param string $parameterValue A parameter value
      * @return string The selected attribute of a parameter select option html element
      */
-     private function selectParameterOption($videoType,$parameterName,$selectOptionValue)
+     protected function selectParameterOption($videoType,$parameterName,$selectOptionValue)
     {
         if($videoType == $this->videoType)
         {
@@ -540,7 +540,7 @@ class VideoComponent extends Component
      * @param string $parameterName A identifier name
      * @return string The value attribute of an identifier hmtl element
      */
-    private function setParameterValue($videoType,$parameterName)
+    protected function setParameterValue($videoType,$parameterName)
     {
         if($videoType == $this->videoType)
         {
@@ -561,7 +561,7 @@ class VideoComponent extends Component
      *
      * @return string The option select form element html code
      */
-    private function getTypeOptions()
+    protected function getTypeOptions()
     {
         $options = '';
         
@@ -579,7 +579,7 @@ class VideoComponent extends Component
      * @param string $videoType A video type
      * @return string The selected attribute of a parameter select option html element
      */
-     private function selectVideoTypeOption($videoType)
+     protected function selectVideoTypeOption($videoType)
     {
         if($videoType == $this->videoType)
         {
@@ -601,7 +601,7 @@ class VideoComponent extends Component
     /**
      * Set the videoParameter property with the selected video parameters inputs after submition
      */
-    private function getVideoParameterList()
+    protected function getVideoParameterList()
     {
         $videoParameterList = array();
 

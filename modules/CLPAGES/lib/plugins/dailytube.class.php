@@ -1,12 +1,10 @@
 <?php // $Id$
 
-if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
-
 /**
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
@@ -17,13 +15,13 @@ if ( count( get_included_files() ) == 1 ) die( basename(__FILE__) );
 class DailyTubeComponent extends Component
 {
 
-    private $videoUrl= '';
-    private $videoId='';
+    protected $videoUrl= '';
+    protected $videoId='';
     
     //default
-    private $videoInputType = 'url';
-    private $videoSize = 'small';
-    private $videoIdType = 'YouTube';
+    protected $videoInputType = 'url';
+    protected $videoSize = 'small';
+    protected $videoIdType = 'YouTube';
     
     public function render()
     {
@@ -89,7 +87,7 @@ class DailyTubeComponent extends Component
      * Check if input equals correct and active YouTube url
      */
     
-    private function isYouTubeUrl($url)
+    protected function isYouTubeUrl($url)
     {
         if (preg_match('/youtube.com\/watch\?v=/',$url))
         {
@@ -105,7 +103,7 @@ class DailyTubeComponent extends Component
      * Check if input equals correct and active DailyMotion url 
      */
     
-    private function isDailyMotionUrl($url)
+    protected function isDailyMotionUrl($url)
     {
         if (preg_match('/dailymotion.com/',$url))
         {
@@ -121,7 +119,7 @@ class DailyTubeComponent extends Component
      * Check if input equals correct and active DailyMotion url 
      */
     
-    private function defineUrlType($url)
+    protected function defineUrlType($url)
     {
         if (preg_match('/swf/',$url))
         {
@@ -142,7 +140,7 @@ class DailyTubeComponent extends Component
      * Set YouTube web player from YouTube url or id
      */
     
-    private function setYouTubePlayer($input,$type,$width,$height)
+    protected function setYouTubePlayer($input,$type,$width,$height)
     {
         $id='';
         if('id' == $type)
@@ -167,7 +165,7 @@ class DailyTubeComponent extends Component
      * Set DailyMotion web player from correct DailyMotion id, webPage url or video url
      */
     
-    private function setDailyMotionPlayer($input, $type,$width,$height)
+    protected function setDailyMotionPlayer($input, $type,$width,$height)
     {
         $id ='';
         if ('id' == $type)
@@ -264,7 +262,7 @@ class DailyTubeComponent extends Component
     /**
      * @set the checked status if inputs equal
      */
-    private function check($var,$value)
+    protected function check($var,$value)
     { 
         if($var == $value)
         {
@@ -275,7 +273,7 @@ class DailyTubeComponent extends Component
     /**
      * @set the selected status if inputs equal
      */
-     private function select($var,$value)
+     protected function select($var,$value)
     {
         if($var == $value)
         {
@@ -286,7 +284,7 @@ class DailyTubeComponent extends Component
     /**
      * @set the disabled status if inputs equal
      */
-    private function initEnable($var,$value)
+    protected function initEnable($var,$value)
     {
         if($var == $value)
         {
