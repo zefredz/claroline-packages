@@ -1,15 +1,16 @@
-<?php
+<?php // $Id$
 
 /**
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2008 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
  *
  */
+
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
 interface VideoPlugin
@@ -73,4 +74,3 @@ interface VideoPlugin
     public function isValidUrl($url);
     
 }
-?>
