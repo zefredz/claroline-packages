@@ -1,10 +1,10 @@
-<?php
+<?php // $Id$
 
 /*
  * CLAROLINE
  *
  * $Revision$
- * @copyright (c) 2001-2009 Universite catholique de Louvain (UCL)
+ * @copyright (c) 2001-2011 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package CLPAGES
  * @author Claroline team <info@claroline.net>
@@ -150,5 +150,3 @@ if($componentId == 'all')
 $out .= $slides . $end;
 
 echo($out);
-?>
-
