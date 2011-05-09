@@ -50,6 +50,14 @@
                 <h2><?php echo get_lang('Claroline S5 viewer'); ?></h2>
             </div>
             
+            <?php else: ?>
+            
+            <div class="slide">
+                <h1><?php echo $this->page->getTitle(); ?></h1>
+                <h2><?php echo get_lang('Claroline S5 viewer'); ?></h2>
+                <h3><?php echo get_lang('Click to see your slide preview'); ?></h3>
+            </div>
+            
             <?php endif; ?>
             
             <?php foreach ( $this->page->getComponentList() as $component ): ?>
