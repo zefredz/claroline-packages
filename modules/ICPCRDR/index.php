@@ -367,4 +367,4 @@ if ( 'visit' == $cmd && isset( $parser ) )
 }
 
 // display the page and send it back to the user
-echo $claroline->display->render();
+echo Claroline::getDisplay()->render();
