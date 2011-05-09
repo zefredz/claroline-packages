@@ -18,45 +18,29 @@ try
 
     require_once dirname(__FILE__) . '/../../../../claroline/inc/claro_init_global.inc.php';
 
-    // load required class
-    require_once dirname( __FILE__ ) . '/../clpages.lib.php';
-    require_once dirname( __FILE__ ) . '/../pluginRegistry.lib.php';
-
-    if( isset($_REQUEST['pageId']) && is_numeric($_REQUEST['pageId']) )
-    {
-        $pageId = (int) $_REQUEST['pageId'];
-    }
-    else
-    {
-        $pageId = null;
-    }
-
-    if( isset($_REQUEST['componentId'])&& is_numeric($_REQUEST['pageId']))
-    {
-        $componentId = $_REQUEST['componentId'];
-    }
-    else
-    {
-        $componentId = 'all';
-    }
+    FromKernel::uses(
+        'utils/input.lib',
+        'utils/validator.lib'
+    );
+    
+    From::Module('CLPAGES')->uses(
+        'clpages.lib',
+        'pluginRegistry.lib'
+    );
+    
+    $userInput = Claro_UserInput::getInstance();
+    
+    $pageId = (int) $userInput->getMandatory( 'pageId');
+    $componentId = $userInput->get( 'componentId', 'all' );
 
     //Error redirections
-    if( is_null($pageId) ) 
-    {
-        header("Location: ./../../index.php");
-        exit();
-    }
-    else
-    {
-        $page = new Page();
+    $page = new Page();
 
         if( !$page->load($pageId) )
         {
             // required
-            header("Location: ./../../index.php");
-            exit();
+            throw new Exception( strip_tags( "Impossible to load page {$pageId}" ) );
         }
-    }
 
     $s5Template = new ModuleTemplate( 'CLPAGES', 's5slideshow.tpl.php' );
     
@@ -71,6 +55,11 @@ try
 }
 catch ( Exception $e )
 {
+    $nameTools = get_lang('Pages');
+    
+    Claroline::getDisplay()->header->setTitle( $nameTools );
+    ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools );
+    
     if (claro_debug_mode() )
     {
         claro_die( '<pre>' . $e->__toString() . '</pre>' );
