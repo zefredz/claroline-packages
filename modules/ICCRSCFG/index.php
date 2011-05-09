@@ -78,11 +78,11 @@ try
             $platformConfig = $configObj->getPlatformConfiguration();
             
             $configurationValuesSubmitted = array();
-            $configurationValuesSubmitted['maxFilledSpace_for_course'] = $userInput->get('maxFilledSpace_for_course');
-            $configurationValuesSubmitted['maxFilledSpace_for_groups'] = $userInput->get('maxFilledSpace_for_groups');
-            $configurationValuesSubmitted['openNewWindowForDoc'] = $userInput->get('openNewWindowForDoc') == 'true' ? true : false;
-            $configurationValuesSubmitted['max_file_size_per_works'] = $userInput->get('max_file_size_per_works');
-            $configurationValuesSubmitted['maxFilledSpace'] = $userInput->get('maxFilledSpace');
+            $configurationValuesSubmitted['maxFilledSpace_for_course'] = $userInput->getMandatory('maxFilledSpace_for_course');
+            $configurationValuesSubmitted['maxFilledSpace_for_groups'] = $userInput->getMandatory('maxFilledSpace_for_groups');
+            $configurationValuesSubmitted['openNewWindowForDoc'] = $userInput->getMandatory('openNewWindowForDoc') == 'true' ? true : false;
+            $configurationValuesSubmitted['max_file_size_per_works'] = $userInput->getMandatory('max_file_size_per_works');
+            $configurationValuesSubmitted['maxFilledSpace'] = $userInput->getMandatory('maxFilledSpace');
             
             // Claroline::getDisplay()->body->appendContent( '<pre>'.var_export($configurationValuesSubmitted,true).'</pre>' );
             
@@ -96,50 +96,77 @@ try
             // Claroline::getDisplay()->body->appendContent( '<pre>'.var_export($configurationResetSubmitted,true).'</pre>' );
             
             $configurationToWrite = array(
-                'CLDOC' => array(),
-                'CLWRK' => array(),
+                'CLDOC' => array(
+                    'maxFilledSpace_for_course' => $platformConfig['maxFilledSpace_for_course'],
+                    'maxFilledSpace_for_groups' => $platformConfig['maxFilledSpace_for_groups'],
+                    'openNewWindowForDoc' => $platformConfig['openNewWindowForDoc']
+                ),
+                'CLWRK' => array(
+                    'max_file_size_per_works' => $platformConfig['max_file_size_per_works'],
+                    'maxFilledSpace' => $platformConfig['maxFilledSpace']
+                ),
             );
             
             // CLDOC
             if ( ! $configurationResetSubmitted['reset_maxFilledSpace_for_course']
-                && !empty($configurationValuesSubmitted['maxFilledSpace_for_course'])
                 && $configurationValuesSubmitted['maxFilledSpace_for_course'] != $platformConfig['maxFilledSpace_for_course']
             )
             {
                 $configurationToWrite['CLDOC']['maxFilledSpace_for_course'] = $configurationValuesSubmitted['maxFilledSpace_for_course'];
             }
+            elseif ( $configurationResetSubmitted['reset_maxFilledSpace_for_course']
+                || $configurationValuesSubmitted['maxFilledSpace_for_course'] == $platformConfig['maxFilledSpace_for_course'] )
+            {
+                unset( $configurationToWrite['CLDOC']['maxFilledSpace_for_course'] );
+            }
             
             if ( ! $configurationResetSubmitted['reset_maxFilledSpace_for_groups']
-                && !empty($configurationValuesSubmitted['maxFilledSpace_for_groups'])
                 && $configurationValuesSubmitted['maxFilledSpace_for_groups'] != $platformConfig['maxFilledSpace_for_groups']
             )
             {
                 $configurationToWrite['CLDOC']['maxFilledSpace_for_groups'] = $configurationValuesSubmitted['maxFilledSpace_for_groups'];
             }
+            elseif ( $configurationResetSubmitted['reset_maxFilledSpace_for_groups'] 
+                || $configurationValuesSubmitted['maxFilledSpace_for_groups'] == $platformConfig['maxFilledSpace_for_groups'] )
+            {
+                unset( $configurationToWrite['CLDOC']['maxFilledSpace_for_groups'] );
+            }
             
             if ( ! $configurationResetSubmitted['reset_openNewWindowForDoc']
-                && !empty($configurationValuesSubmitted['openNewWindowForDoc'])
                 && $configurationValuesSubmitted['openNewWindowForDoc'] != $platformConfig['openNewWindowForDoc']
             )
             {
                 $configurationToWrite['CLDOC']['openNewWindowForDoc'] = $configurationValuesSubmitted['openNewWindowForDoc'];
             }
+            elseif ( $configurationResetSubmitted['reset_openNewWindowForDoc'] 
+                || $configurationValuesSubmitted['openNewWindowForDoc'] == $platformConfig['openNewWindowForDoc'] )
+            {
+                unset( $configurationToWrite['CLDOC']['openNewWindowForDoc'] );
+            }
             
             // CLWRK
             if ( ! $configurationResetSubmitted['reset_max_file_size_per_works']
-                && !empty($configurationValuesSubmitted['max_file_size_per_works'])
                 && $configurationValuesSubmitted['max_file_size_per_works'] != $platformConfig['max_file_size_per_works']
             )
             {
                 $configurationToWrite['CLWRK']['max_file_size_per_works'] = $configurationValuesSubmitted['max_file_size_per_works'];
             }
+            elseif ( $configurationResetSubmitted['reset_max_file_size_per_works']
+                || $configurationValuesSubmitted['max_file_size_per_works'] == $platformConfig['max_file_size_per_works'] )
+            {
+                unset( $configurationToWrite['CLWRK']['max_file_size_per_works'] );
+            }
             
             if ( ! $configurationResetSubmitted['reset_maxFilledSpace']
-                && !empty($configurationValuesSubmitted['maxFilledSpace'])
                 && $configurationValuesSubmitted['maxFilledSpace'] != $platformConfig['maxFilledSpace']
             )
             {
                 $configurationToWrite['CLWRK']['maxFilledSpace'] = $configurationValuesSubmitted['maxFilledSpace'];
+            }
+            elseif ( $configurationResetSubmitted['reset_maxFilledSpace'] 
+                || $configurationValuesSubmitted['maxFilledSpace'] == $platformConfig['maxFilledSpace'] )
+            {
+                unset( $configurationToWrite['CLWRK']['maxFilledSpace'] );
             }
             
             // Claroline::getDisplay()->body->appendContent( '<pre>'.var_export($configurationToWrite,true).'</pre>' );
