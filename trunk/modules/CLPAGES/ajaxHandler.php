@@ -199,8 +199,11 @@ if( $cmd == 'addComponent')
         $component->setType($itemType);
         $component->setInvisible();
         $component->save();
+        
+        $componentTemplate = new ModuleTemplate( 'CLPAGES', 'component.tpl.php' );
+        $componentTemplate->assign( 'component', $component );
 
-        echo claro_utf8_encode($component->renderBlock());
+        echo claro_utf8_encode( $componentTemplate->render() );
         return true;
     }
     return false;
@@ -218,7 +221,9 @@ if( $cmd == 'getComponent')
     {
         if( $component->load($itemId) )
         {
-            echo claro_utf8_encode($component->renderBlock());
+            $componentTemplate = new ModuleTemplate( 'CLPAGES', 'component.tpl.php' );
+            $componentTemplate->assign( 'component', $component );
+            echo claro_utf8_encode($componentTemplate->render());
             return true;
         }
         return false;
@@ -301,8 +306,11 @@ if( $cmd == 'getEditor' )
     {
         if( $component->load( $itemId ) )
         {
-            
-            echo claro_utf8_encode($component->renderEditor($errorMessage));
+            $componentEditorTemplate = new ModuleTemplate( 'CLPAGES', 'componenteditor.tpl.php' );
+            $componentEditorTemplate->assign( 'component', $component );
+            //$componentEditorTemplate->assign( 'errorMessage', $errorMessage );
+
+            echo claro_utf8_encode( $componentEditorTemplate->render() );
 
             return true;
         }
@@ -336,15 +344,18 @@ if( $cmd == 'exEdit' )
             $component->setTitle($title);
             
             $component->getEditorData();
+            
             if( 'true' == $component->validate())
             {
-            $component->save();
+                $component->save();
             }
             else
             {
                 echo $component->validate();
                 return $component->validate();
             }
+            
+            
             echo 'true';
             return true;
         }
