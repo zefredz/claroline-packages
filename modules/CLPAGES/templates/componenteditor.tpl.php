@@ -4,7 +4,9 @@
     
 <div id="errorMessage_<?php echo $this->component->getId(); ?>"></div>
 
-<form id="form_<?php echo $this->component->getId(); ?>" action="ajaxHandler.php" method="post">
+<form id="form_<?php echo $this->component->getId(); ?>" 
+      action="<?php echo htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES').'/ajaxHandler.php'));?>" 
+      method="post">
     
     <?php echo claro_form_relay_context(); ?>
     <input type="hidden" name="cmd" value="exEdit" />
