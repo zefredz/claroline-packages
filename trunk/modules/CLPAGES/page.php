@@ -178,7 +178,8 @@ try
     if ($page->getDisplayMode() == 'SLIDE')
     {
         $out .= '<span>
-        <a href="lib/s5/s5.php?pageId=' . $page->getId() . '" rel="popup">' 
+        <a href="'. htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES')
+            . '/lib/s5/s5.php?pageId='.$page->getId() ) ) . '" rel="popup">' 
             . claro_html_icon('slide') . '&nbsp;'
             . get_lang('Run the slides show') 
             . '</a>

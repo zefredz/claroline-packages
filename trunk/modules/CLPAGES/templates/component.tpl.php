@@ -36,7 +36,9 @@
             <?php if ($this->component->getPageDisplayMode() == 'SLIDE'): ?>
             
             <a rel="popup" 
-               href="lib/s5/s5.php?pageId=<?php echo $this->component->getPageId(); ?>&componentId=<?php echo $this->component->getId(); ?>" 
+               href="<?php echo htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES')
+                    . '/lib/s5/s5.php?pageId='.$this->component->getPageId()
+                    . '&componentId='. $this->component->getId())); ?>" 
                class="s5ViewerCmd">
                 <?php echo claro_html_icon('slide', null, get_lang('View')); ?>
             </a>
