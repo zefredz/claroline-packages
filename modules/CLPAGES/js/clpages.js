@@ -77,6 +77,15 @@
         $(this.parentNode.parentNode.parentNode).toggleEditor('');
         return false;
     }
+    
+    function buttonRqToggleEditor( id )
+    {
+        return function() { // this event is binded on a cmd link so we have to find its parent
+            // and to toggle editor on this parent
+            $('#component_'+id).toggleEditor('');
+            return false;
+        }
+    }
 
     /*
      * Toggle a component editor
@@ -114,7 +123,7 @@
                     success: function(response){
                         if( response != '' )
                         {   //add cancel button response
-                            $("#bCancel_" + id).livequery('click', rqToggleEditor);
+                            $("#bCancel_" + id).livequery('click', buttonRqToggleEditor(id));
                             // append response
                             $("#component_" + id + " .componentHeader").after(response);
                             // add tinymce on all textarea

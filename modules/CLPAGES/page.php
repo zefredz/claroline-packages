@@ -196,12 +196,14 @@ try
     }
     else
     {
+        $componentTemplate = new ModuleTemplate( 'CLPAGES', 'component.tpl.php' );
         // page view
         foreach ( $componentList as $component )
         {
             if ($component->isVisible() || claro_is_allowed_to_edit())
             {
-                $out .= $component->renderBlock();
+                $componentTemplate->assign( 'component', $component );
+                $out .= $componentTemplate->render();
             }
             else
             {
