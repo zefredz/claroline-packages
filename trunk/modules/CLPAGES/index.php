@@ -83,7 +83,9 @@ try
 
             if( $page->validate() )
             {
-                if( $insertedId = $page->save() )
+                $insertedId = $page->save();
+                    
+                if( $insertedId )
                 {
                     if( !$pageId )
                     {
