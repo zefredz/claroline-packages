@@ -57,6 +57,7 @@ try
     $cmd = $userInput->getMandatory('cmd');
     $pageId = (int) $userInput->get('pageId');
     $pageDisplayMode = $userInput->get('pageDisplayMode');
+    
     $itemId = (int) $userInput->get('itemId');
     $itemType = $userInput->get('itemType');
     $errorMessage = $userInput->get('errorMessage');
@@ -158,9 +159,12 @@ try
 
         if( $component )
         {
+            $page = new Page();
+            $page->load( $pageId );
+
+            $component->setPageDisplayMode($page->getDisplayMode());
             // save component as we need to have an id for it !
             $component->setPageId($pageId);
-            $component->setPageDisplayMode($pageDisplayMode);
             $component->setType($itemType);
             $component->setInvisible();
             $component->save();
@@ -177,7 +181,7 @@ try
     if( $cmd == 'getComponent')
     {
         if( is_null($pageId) || is_null($itemType) || is_null($itemId) ) return false;
-
+        
         $factory = new ComponentFactory();
 
         $component = $factory->createComponent( $itemType );
@@ -186,6 +190,11 @@ try
         {
             if( $component->load($itemId) )
             {
+                $page = new Page();
+                $page->load( $component->getPageId() );
+                
+                $component->setPageDisplayMode($page->getDisplayMode());
+                
                 $componentTemplate = new ModuleTemplate( 'CLPAGES', 'component.tpl.php' );
                 $componentTemplate->assign( 'component', $component );
                 echo claro_utf8_encode($componentTemplate->render());
@@ -271,6 +280,11 @@ try
         {
             if( $component->load( $itemId ) )
             {
+                $page = new Page();
+                $page->load( $component->getPageId() );
+                
+                $component->setPageDisplayMode($page->getDisplayMode());
+                
                 $componentEditorTemplate = new ModuleTemplate( 'CLPAGES', 'componenteditor.tpl.php' );
                 $componentEditorTemplate->assign( 'component', $component );
                 //$componentEditorTemplate->assign( 'errorMessage', $errorMessage );
@@ -307,6 +321,8 @@ try
                 }
 
                 $component->setTitle($title);
+                
+                $component->setPageDisplayMode( $pageDisplayMode );
 
                 $component->getEditorData();
 
