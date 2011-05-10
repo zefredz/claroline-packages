@@ -62,11 +62,18 @@
             
             <?php foreach ( $this->page->getComponentList() as $component ): ?>
             
-                <?php if ( $this->displayAllSlides || $this->componentId == $component->getId() ): ?>
+            <?php if ( $this->displayAllSlides || $this->componentId == $component->getId() ): ?>
             
-                <?php echo $component->s5RenderBlock(); ?>
+            <div class="slide">
+            <h1><?php echo htmlspecialchars( $component->getTitle() ); ?></h1>
             
-                <?php endif; ?>
+            <?php echo $component->render(); ?>
+            
+            <div class="handout">
+            </div>
+            </div>
+            
+            <?php endif; ?>
             
             <?php endforeach; ?>
         </div>
