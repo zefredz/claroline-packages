@@ -207,9 +207,13 @@ class DailyTubeComponent extends Component
                 }
                 else
                 {
+                    
                     $message = get_lang('Not a correct and valid video Url').' :  <br> '.htmlspecialchars($input) ;
-                    $errorMessage= $this->renderErrorMessage($message);
-                    return $errorMessage;
+                    
+                    $dialogBox = new DialogBox();
+                    $dialogBox->error($message);
+                    
+                    return $dialogBox->render();
                 }
             }
             else

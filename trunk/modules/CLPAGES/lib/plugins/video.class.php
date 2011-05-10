@@ -643,7 +643,11 @@ class VideoComponent extends Component
             else
             {
                 $errorMessage = get_lang('Not a correct available%videoType video web address : <br> %wrongInput',array("%videoType" => '', "%wrongInput" => htmlspecialchars($this->videoInput)));
-                return $this->renderErrorMessage($errorMessage);
+                
+                $dialogBox = new DialogBox();
+                $dialogBox->error($errorMessage);
+
+                return $dialogBox->render();
             }
         }
         else
@@ -661,8 +665,10 @@ class VideoComponent extends Component
         }
         else
         {
-            
-            return $this->renderErrorMessage($validation);
+            $dialogBox = new DialogBox();
+            $dialogBox->error($validation);
+
+            return $dialogBox->render();
         }
     }
     
