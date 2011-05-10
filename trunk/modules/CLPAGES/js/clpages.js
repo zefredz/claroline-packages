@@ -122,12 +122,13 @@
                     data: "cmd=getEditor&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id + "&errorMessage=" + message,
                     success: function(response){
                         if( response != '' )
-                        {   //add cancel button response
+                        {   
+                            //add cancel button response
                             $("#bCancel_" + id).livequery('click', buttonRqToggleEditor(id));
                             // append response
                             $("#component_" + id + " .componentHeader").after(response);
                             // add tinymce on all textarea
-                            $("#component_" + id + " textarea").tinymce()
+                            $( "#content_" + id ).tinymce();
                             
                                 $("#component_" + id + " form").submit(function() {
                                 // force push content of editors in their respective textarea BEFORE submission
@@ -192,8 +193,8 @@
 
                     // replace current component by its new content
                     $("#component_" + id)
-                        .after(response)
-                        .remove();
+                        .replaceWith(response);
+                        // .remove();
                     updateMoveCmdVisibility();
                 },
                 error: showErrorMessage,
