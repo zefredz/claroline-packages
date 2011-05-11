@@ -162,9 +162,9 @@ try
             $page = new Page();
             $page->load( $pageId );
 
-            $component->setPageDisplayMode($page->getDisplayMode());
+            $component->setPage( $page );
             // save component as we need to have an id for it !
-            $component->setPageId($pageId);
+            // $component->setPageId($pageId);
             $component->setType($itemType);
             $component->setInvisible();
             $component->save();
@@ -190,11 +190,7 @@ try
         {
             if( $component->load($itemId) )
             {
-                $page = new Page();
-                $page->load( $component->getPageId() );
-                
-                $component->setPageDisplayMode($page->getDisplayMode());
-                
+                $component->setPageId( $pageId );
                 $componentTemplate = new ModuleTemplate( 'CLPAGES', 'component.tpl.php' );
                 $componentTemplate->assign( 'component', $component );
                 echo claro_utf8_encode($componentTemplate->render());
@@ -280,10 +276,10 @@ try
         {
             if( $component->load( $itemId ) )
             {
-                $page = new Page();
-                $page->load( $component->getPageId() );
+                // $page = new Page();
+                // $page->load( $component->getPageId() );
                 
-                $component->setPageDisplayMode($page->getDisplayMode());
+                // $component->setPageDisplayMode($page->getDisplayMode());
                 
                 $componentEditorTemplate = new ModuleTemplate( 'CLPAGES', 'componenteditor.tpl.php' );
                 $componentEditorTemplate->assign( 'component', $component );
@@ -299,7 +295,8 @@ try
 
     if( $cmd == 'exEdit' )
     {
-        error_log('test');
+        // error_log('test');
+        
         $factory = new ComponentFactory();
 
         $component = $factory->createComponent( $itemType );
@@ -322,7 +319,7 @@ try
 
                 $component->setTitle($title);
                 
-                $component->setPageDisplayMode( $pageDisplayMode );
+                $component->setPageId( $pageId );
 
                 $component->getEditorData();
 
