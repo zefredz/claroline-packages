@@ -118,6 +118,11 @@ abstract class Component
     public function setPage( Page $page )
     {
         $this->page = $page;
+        
+        if ( $this->getPageId() === 0 )
+        {
+            $this->setPageId( $page->getId() );
+        }
     }
 
     // type
