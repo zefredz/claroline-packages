@@ -21,7 +21,7 @@ abstract class Component
 
     protected $id = 0;
     protected $pageId = 0;
-    protected $pageDisplayMode = 'PAGE';
+    protected $page = null;
     protected $title = '';
     protected $type = '';
     protected $visibility = 'VISIBLE';
@@ -102,16 +102,22 @@ abstract class Component
     {
         $this->pageId = (int) $pageId;
     }
-
-    // page display mode
-    public function getPageDisplayMode()
+    
+    public function getPage()
     {
-        return $this->pageDisplayMode;
+        if ( is_null( $this->page ) )
+        {
+            $page = new Page();
+            $page->load($this->getPageId());
+            $this->setPage( $page );
+        }
+        
+        return $this->page;
     }
-
-    public function setPageDisplayMode($pageDisplayMode)
+    
+    public function setPage( Page $page )
     {
-        $this->pageDisplayMode = $pageDisplayMode;
+        $this->page = $page;
     }
 
     // type
@@ -511,8 +517,8 @@ class Page
                 if ($component)
                 {
                     $component->setId($componentData['id']);
-                    $component->setPageId($componentData['pageId']);
-                    $component->setPageDisplayMode($this->getDisplayMode());
+                    $component->setPageId($this->getId());
+                    $component->setPage( $this );
                     $component->setTitle($componentData['title']);
                     $component->setType($componentData['type']);
                     $component->setVisibility($componentData['visibility']);

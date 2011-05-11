@@ -33,7 +33,7 @@
                 <?php echo claro_html_icon('edit'); ?></a>
             &nbsp;
 
-            <?php if ($this->component->getPageDisplayMode() == 'SLIDE'): ?>
+            <?php if ($this->component->getPage()->getDisplayMode() == 'SLIDE'): ?>
             
             <a rel="popup" 
                href="<?php echo htmlspecialchars(Url::Contextualize(get_module_url('CLPAGES')
