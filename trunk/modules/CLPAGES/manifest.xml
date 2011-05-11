@@ -1,15 +1,18 @@
 <module>
   <label>CLPAGES</label>
   <name>Pages</name>
-  <version>1.0-alpha</version>
-  <license>GPL</license>
+  <version>1.0-beta</version>
+  <license>AGPL3</license>
+  
   <type>tool</type>
+  <context>course</context>
+  
   <entry>index.php</entry>
   <icon>icon.png</icon>
 
-  <description>
-
-  </description>
+  <description><![CDATA[
+  Rich text authoring tool for Claroline
+]]></description>
 
   <author>
      <name>Claroline team</name>
