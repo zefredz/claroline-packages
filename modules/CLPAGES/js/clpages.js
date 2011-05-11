@@ -2,8 +2,7 @@
 
 var openedEditors = new Array();
 
-$(document).ready( function ()
-{
+$(document).ready( function () {
     // bind events
     // to cmd of each component (use livequery so that binding is automatically added on new DOM elements
     $('a.toggleEditorCmd').livequery('click', rqToggleEditor);
@@ -12,8 +11,7 @@ $(document).ready( function ()
     $('a.mkInvisibleCmd').livequery('click', mkInvisible);
     $('a.mkUpCmd').livequery('click', mkUp);
     $('a.mkDownCmd').livequery('click', mkDown);
-    $('A[rel="popup"]').click( function()
-    {
+    $('A[rel="popup"]').click( function() {
         window.open( $(this).attr('href') );
         return false;
     });
@@ -44,10 +42,8 @@ function addComponent( type )
 }
 
 
-function deleteComponent()
-{
-    if( confirm("Are you sure to delete ?") )
-    {
+function deleteComponent() {
+    if( confirm("Are you sure to delete ?") ) {
         // this.parentNode.parentNode.parentNode is the component
         var componentDiv = $(this.parentNode.parentNode.parentNode);
 
@@ -57,10 +53,9 @@ function deleteComponent()
         $.ajax({
             url: moduleUrl + "ajaxHandler.php",
             data: "cmd=deleteComponent&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
-            success: function(response){
+            success: function(response) {
                     
-                if( response == 'true' )
-                {
+                if( response == 'true' ) {
                     // delete was successfull so we can remove component from the DOM
                     $("#component_" + id).remove();
                     updateMoveCmdVisibility();
@@ -72,16 +67,14 @@ function deleteComponent()
     return false;
 }
 
-function rqToggleEditor()
-{
+function rqToggleEditor() {
     // this event is binded on a cmd link so we have to find its parent
     // and to toggle editor on this parent
     $(this.parentNode.parentNode.parentNode).toggleEditor('');
     return false;
 }
     
-function buttonRqToggleEditor( id )
-{
+function buttonRqToggleEditor( id ) {
     return function() { // this event is binded on a cmd link so we have to find its parent
         // and to toggle editor on this parent
         $('#component_'+id).toggleEditor('');
@@ -89,30 +82,31 @@ function buttonRqToggleEditor( id )
     }
 }
 
+function removeEditor( id ) {
+    tinyMCE.execCommand('mceFocus', false, 'content_'+id);                    
+    tinyMCE.execCommand('mceRemoveControl', false, 'content_'+id);
+
+    $("#component_" + id + " .componentEditor").remove();
+}
+
 /*
      * Toggle a component editor
      */
-$.fn.toggleEditor = function(message)
-{
-    return this.each(function(){
+$.fn.toggleEditor = function(message) {
+    return this.each( function() {
         // from here this is the object representing the DOM element so this.id is "component_X"
 
         var id = getIdFromComponent($(this));
             
         //("#component_" + id)
 
-        if( openedEditors[id] )
-        {
-            // remove tinyMCE if required
-            // close editor
-            // remove editor from the DOM as it seems to be already opened
-            $("#component_" + id + " .componentEditor").remove();
-
+        if( openedEditors[id] ) {
+            removeEditor ( id );
+            
             // mark editor as closed
             openedEditors[id] = false;
         }
-        else
-        {
+        else {
             // open editor
             var type = getTypeFromComponent($(this));
 
@@ -122,32 +116,36 @@ $.fn.toggleEditor = function(message)
             $.ajax({
                 url: moduleUrl + "ajaxHandler.php",
                 data: "cmd=getEditor&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id + "&errorMessage=" + message,
-                success: function(response){
-                    if( response != '' )
-                    {   
+                success: function(response) {
+                    
+                    if( response != '' ) {   
+                        
                         //add cancel button response
                         $("#bCancel_" + id).livequery('click', buttonRqToggleEditor(id));
                         // append response
                         $("#component_" + id + " .componentHeader").after(response);
                         // add tinymce on all textarea
                         $( "#content_" + id ).tinymce();
+                        // tinyMCE.execCommand('mceAddControl', false, 'content_'+id);
                             
-                        $("#component_" + id + " form").submit(function() {
+                        $("#component_" + id + " form").submit( function() {
+                            
                             // force push content of editors in their respective textarea BEFORE submission
                             $("#component_" + id + " textarea").tinymceTriggerSave();
                             // submit the form
 
                             $("#component_" + id + " form").ajaxSubmit({
+                                
                                 success: function(response){
-                                    if( response == 'true' )
-                                    {
+                                    
+                                    if( response == 'true' ) {
                                         $("#component_" + id).refreshComponent();
                                     }
-                                    else
-                                    {
+                                    else {
                                         $("#component_" + id).refreshForm(response);
                                     }
                                 },  // post-submit callback
+                                
                                 error : showErrorMessage
                             });
 
@@ -169,17 +167,15 @@ $.fn.toggleEditor = function(message)
     });
 }
 
-$.fn.refreshForm =    function(message)
-{
+$.fn.refreshForm = function(message) {
     var id = getIdFromComponent($(this));
     $("#errorMessage_" + id).empty();
     $("#errorMessage_" + id).prepend(message);
         
 }
 
-$.fn.refreshComponent =    function()
-{
-    return this.each(function(){
+$.fn.refreshComponent = function() {
+    return this.each( function() {
 
         var id = getIdFromComponent($(this));
         var type = getTypeFromComponent($(this));
@@ -191,7 +187,7 @@ $.fn.refreshComponent =    function()
         $.ajax({
             url: moduleUrl + "ajaxHandler.php",
             data: "cmd=getComponent&cidReq=" + cidReq + "&pageId=" + pageId + "&itemId=" + id + "&itemType=" + type,
-            success: function(response){
+            success: function(response) {
 
                 // replace current component by its new content
                 $("#component_" + id)
@@ -205,13 +201,11 @@ $.fn.refreshComponent =    function()
     });
 }
 
-function showErrorMessage()
-{
+function showErrorMessage() {
     alert('Cannot send form');
 }
 
-function mkVisible()
-{
+function mkVisible() {
     // this.parentNode.parentNode.parentNode is the component
     var componentDiv = $(this.parentNode.parentNode.parentNode);
 
@@ -223,8 +217,7 @@ function mkVisible()
         data: "cmd=mkVisible&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
         success: function(response){
             // switch eye
-            if( response == "true" )
-            {
+            if( response == "true" ) {
                 componentDiv.removeClass('invisible');
                 $('.mkVisibleCmd', componentDiv).hide();
                 $('.mkInvisibleCmd', componentDiv).show();
@@ -237,8 +230,7 @@ function mkVisible()
     return false;
 }
 
-function mkInvisible()
-{
+function mkInvisible() {
     // this.parentNode.parentNode.parentNode is the component
     var componentDiv = $(this.parentNode.parentNode.parentNode);
 
@@ -250,8 +242,7 @@ function mkInvisible()
         data: "cmd=mkInvisible&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
         success: function(response){
             // switch eye
-            if( response == "true" )
-            {
+            if( response == "true" ) {
                 componentDiv.addClass('invisible');
                 $('.mkInvisibleCmd', componentDiv).hide();
                 $('.mkVisibleCmd', componentDiv).show();
@@ -264,8 +255,7 @@ function mkInvisible()
     return false;
 }
 
-function mkUp()
-{
+function mkUp() {
     // this.parentNode.parentNode.parentNode is the component
     var componentDiv = $(this.parentNode.parentNode.parentNode);
 
@@ -275,10 +265,9 @@ function mkUp()
     $.ajax({
         url: moduleUrl + "ajaxHandler.php",
         data: "cmd=mkUp&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
-        success: function(response){
+        success: function(response) {
             // switch eye
-            if( response == "true" )
-            {
+            if( response == "true" ) {
                 // move component up : insert component to move before the one before him
                 $("#component_" + id )
                 .prev()
@@ -293,8 +282,7 @@ function mkUp()
     return false;
 }
 
-function mkDown()
-{
+function mkDown() {
     // this.parentNode.parentNode.parentNode is the component
     var componentDiv = $(this.parentNode.parentNode.parentNode);
 
@@ -306,8 +294,7 @@ function mkDown()
         data: "cmd=mkDown&cidReq="+ cidReq + "&pageId=" + pageId + "&itemType=" + type + "&itemId=" + id,
         success: function(response){
             // switch eye
-            if( response == "true" )
-            {
+            if( response == "true" ) {
                 // move component down : insert component_id after the component after him
                 $("#component_" + id )
                 .next()
@@ -336,13 +323,11 @@ function getTypeFromComponent( componentDiv )
     // find 'type_' position
     var typeClassPos = componentClass.indexOf('type_');
 
-    if( typeClassPos > -1 )
-    {
+    if( typeClassPos > -1 ) {
         // find first space after finded 'type_'
         var spacePos = componentClass.indexOf(' ', typeClassPos);
 
-        if( spacePos == -1 )
-        {
+        if( spacePos == -1 ) {
             // if no space 'type_X' is probably at the end of string
             spacePos = componentClass.length;
         }
@@ -350,37 +335,31 @@ function getTypeFromComponent( componentDiv )
         // return string between (end of) 'type_' and the space
         return componentClass.substring(typeClassPos + 5, spacePos);
     }
-    else
-    {
+    else {
         return '';
     }
 }
 
-function getComponentIdFromHtml( html )
-{
+function getComponentIdFromHtml( html ) {
     var componentStringStart = html.indexOf('component_');
 
-    if( componentStringStart > -1 )
-    {
+    if( componentStringStart > -1 ) {
         // find first space after finded 'component_'
         var endOfId = html.indexOf('"', componentStringStart);
 
-        if( endOfId == -1 )
-        {
+        if( endOfId == -1 ) {
             return false;
         }
 
         // return string between (end of) 'component_' and the closing "
         return html.substring(componentStringStart, endOfId);
     }
-    else
-    {
+    else {
         return '';
     }
 }
 
-function updateMoveCmdVisibility()
-{
+function updateMoveCmdVisibility() {
     // show all
     $('#componentsContainer .sortableComponent a.mkUpCmd').show();
     $('#componentsContainer .sortableComponent a.mkDownCmd').show();
@@ -390,31 +369,27 @@ function updateMoveCmdVisibility()
     $('#componentsContainer .sortableComponent:last-child a.mkDownCmd').hide();
 }
 
-$.fn.tinymce = function(options)
-{
-    return this.each(function(){
+$.fn.tinymce = function(options) {
+    return this.each(function() {
         try {
                 
             tinyMCE.execCommand('mceAddControl', false, this.id);
         }
-        catch(e)
-        {
+        catch(e) {
             alert(e.message);
         }
         return '';
     });
 }
 
-$.fn.tinymceTriggerSave = function(options)
-{
-    return this.each(function(){
+$.fn.tinymceTriggerSave = function(options) {
+    return this.each( function() {
         try {
 
             for ( var n in tinyMCE.instances) {
                 var inst = tinyMCE.getInstanceById(n);
 
-                if( inst.formTargetElementId == this.id )
-                {
+                if( inst.formTargetElementId == this.id ) {
                     inst.triggerSave(false,false);
                 }
             }
@@ -423,8 +398,7 @@ $.fn.tinymceTriggerSave = function(options)
             tinyMCE.execCommand('mceRemoveControl', false, this.id);
 
         }
-        catch(e)
-        {
+        catch(e) {
             alert(e.message);
         }
         return '';
