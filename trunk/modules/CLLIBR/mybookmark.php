@@ -31,7 +31,7 @@ $userId = claro_get_current_user_id();
 
 $myBookmark = new Collection( Claroline::getDatabase() , 'bookmark' , $userId );
 
-$portlet = new PhpTemplate( dirname( __FILE__ ) . '/templates/bookmark.tpl.php' );
+$portlet = new ModuleTemplate( 'CLLIBR' , 'bookmark.tpl.php' );
 $portlet->assign( 'resourceList' , $myBookmark->getResourceList() );
 $portlet->assign( 'userId' , $userId );
 $portlet->assign( 'icon' , get_path( 'rootWeb' ) . 'module/CLLIBR/icon.png' );

@@ -2,14 +2,18 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.5.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
+load_module_config( 'CLLIBR' );
+
+$cllibr_path = get_conf( 'CLLIBR_storage_directory' )
+             ? get_conf( 'CLLIBR_storage_directory' )
+             : get_path( 'rootSys' ) . 'cllibrary';
 
 if ( ! is_dir( $cllibr_path ) && ! claro_mkdir( $cllibr_path , CLARO_FILE_PERMISSIONS ) )
 {

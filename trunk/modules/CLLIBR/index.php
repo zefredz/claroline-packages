@@ -468,8 +468,8 @@ else
     $pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $library->getTitle() : '' );
 }
 
-$template = new PhpTemplate( dirname( __FILE__ ) . '/templates/' . strtolower( $context ) . '.tpl.php' );
-$template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
+$template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
+$template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit || $libraryId && $librarian->isLibrarian( $userId ) );
 $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
 $template->assign( 'userId' , $userId );
 $template->assign( 'libraryId' , $libraryId );
@@ -493,7 +493,7 @@ switch( $cmd )
     
     case 'rqView':
     {
-        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/resource.tpl.php' );
+        $template = new ModuleTemplate( 'CLLIBR' , 'resource.tpl.php' );
         $template->assign( 'resourceId' , $resourceId );
         $template->assign( 'storageType' , $resource->getType() );
         $template->assign( 'url' , $resource->getName() );
@@ -536,14 +536,14 @@ switch( $cmd )
     
     case 'rqAddLibrarian':
     {
-        $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/addlibrarian.tpl.php' );
+        $form = new ModuleTemplate( 'CLLIBR' , 'addlibrarian.tpl.php' );
         break;
     }
     
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
     {
-        $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/editlibrary.tpl.php' );
+        $form = new ModuleTemplate( 'CLLIBR' , 'editlibrary.tpl.php' );
         $form->assign( 'userId' , $userId );
         $form->assign( 'libraryId' , $libraryId );
         $form->assign( 'title' , $library->getTitle() );
@@ -558,7 +558,7 @@ switch( $cmd )
         $pageTitle[ 'subTitle' ] = $cmd == 'rqAddResource'
                                  ? get_lang( 'Add a resource' )
                                  : get_lang( 'Edit a resource' );
-        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/editresource.tpl.php' );
+        $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
         $template->assign( 'resourceId' , $resourceId );
         $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
         $template->assign( 'description' , $resourceId ? $resource->getDescription() : '' );
@@ -615,7 +615,7 @@ switch( $cmd )
     
     case 'rqQSearch':
     {
-        $template = new PhpTemplate( dirname( __FILE__ ) . '/templates/searchresult.tpl.php' );
+        $template = new ModuleTemplate( 'CLLIBR' , 'searchresult.tpl.php' );
         $template->assign( 'result' , $searchEngine->getResult() );
         break;
     }
@@ -628,7 +628,7 @@ switch( $cmd )
 
 if ( isset( $msg ) )
 {
-    $question = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
+    $question = new ModuleTemplate( 'CLLIBR' , 'question.tpl.php' );
     $question->assign( 'msg' , $msg );
     $question->assign( 'urlAction' , $urlAction );
     $question->assign( 'urlCancel' , $urlCancel );
