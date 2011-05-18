@@ -22,11 +22,11 @@ $conf_def['section']['main']['properties'] = array ( 'refreshTime' , 'displayTim
 $conf_def_property_list[ 'refreshTime' ] = 
  array ( 'label'       => 'Refresh time'
        , 'description' => 'Sets the frequency which the system seeks for new messages'
-       , 'default'     => '10'
+       , 'default'     => '60'
        , 'unit'        => 'seconds'
        , 'type'        => 'integer'
         ,'acceptedValue' => array ( 'min'=> 1
-                                  , 'max'=> 10)
+                                  , 'max'=> 3600)
        );
 
 $conf_def_property_list[ 'displayTime' ] = 
@@ -35,7 +35,7 @@ $conf_def_property_list[ 'displayTime' ] =
        , 'default'     => '20'
        , 'unit'        => 'seconds'
        , 'type'        => 'integer'
-        ,'acceptedValue' => array ( 'min'=> 10
+        ,'acceptedValue' => array ( 'min'=> 1
                                   , 'max'=> 60)
        );
 
