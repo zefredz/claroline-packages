@@ -15,5 +15,5 @@ $claro_buffer->append( '<script type="text/javascript">
     $( function(){ msgNotifier(); } );
 </script>');
 
-$claro_buffer->append( '<span id="newMsg"></span>' );
+$claro_buffer->append( '<div id="newMsg"></div>' );
 
