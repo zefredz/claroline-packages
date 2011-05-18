@@ -58,13 +58,13 @@ if ( claro_is_user_authenticated() )
                 MSG.send_time >" . Claroline::getDatabase()->quote( $timeTrigger ) . "
         ;")->fetch( Database_ResultSet::FETCH_VALUE );        
     }
-    
+
     if ( $newMsg )
     {
-        $text = '<a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
+        $text = '<p class="up"><a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
         $text .= ( $newMsg == 1 ) ?  get_lang( 'You have an unread message!' ) :
                                         get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) );
-        $text .='</a>';
+        $text .='</a></p>';
 
         $response = new Json_Response( array(
             'newMsg' => $newMsg,

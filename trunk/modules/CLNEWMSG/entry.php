@@ -21,8 +21,8 @@ if ( claro_is_user_authenticated() )
                 $.getJSON(
                     "' . get_module_url( 'CLNEWMSG' ) . '/index.php",
                     function( response ) {
-                        if ( response.type && response.type == "success" && response.body.newMsg > 0 ) { 
-                            $("#newMsg").html(response.body.text);
+                        if ( response.responseType && response.responseType == "success" && response.responseBody.newMsg > 0 ) { 
+                            $("#newMsg").html(response.responseBody.contents);
                         }
                     }
                 );
