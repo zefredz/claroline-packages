@@ -11,6 +11,8 @@
 
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
+$newMsg = 0;
+
 if ( claro_is_user_authenticated() )
 {
     $tbl_mdb_names = claro_sql_get_main_tbl();
@@ -32,13 +34,6 @@ if ( claro_is_user_authenticated() )
                 user_id =" . Claroline::getDatabase()->escape( claro_get_current_user_id() )
         )->fetch( Database_ResultSet::FETCH_VALUE );
         
-        if ( $newMsg )
-        {
-            $text = '<a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
-            $text .= ( $newMsg == 1 ) ?  get_lang( 'You have an unread message!' ) :
-                                        get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) );
-            $text .='</a>';
-        }
     }
     else
     {
@@ -61,16 +56,36 @@ if ( claro_is_user_authenticated() )
                 STATUS.is_deleted = 0
             WHERE
                 MSG.send_time >" . Claroline::getDatabase()->quote( $timeTrigger ) . "
-        ;")->fetch( Database_ResultSet::FETCH_VALUE );
-        
-        if ( $newMsg )
-        {
-            $text = '<a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
-            $text .= ( $newMsg == 1 ) ?  get_lang( 'You got a new message!' ) :
-                                        get_lang( 'You got %newMsg new messages!' , array( '%newMsg' => $newMsg ) );
-            $text .='</a>';
-        }
+        ;")->fetch( Database_ResultSet::FETCH_VALUE );        
     }
     
-    if ( isset( $text ) ) echo '<p class="up">' . $text . '</p>';
+    if ( $newMsg )
+    {
+        $text = '<a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
+        $text .= ( $newMsg == 1 ) ?  get_lang( 'You have an unread message!' ) :
+                                        get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) );
+        $text .='</a>';
+
+        $response = new Json_Response( array(
+            'newMsg' => $newMsg,
+            'contents' => $text 
+        ) );
+    }
+    else
+    {
+        $response = new Json_Response( array(
+            'newMsg' => 0
+        ) );
+
+    }
 }
+else
+{
+    $response = new Json_Response( array(
+        'newMsg' => 0
+    ) );
+
+}
+
+echo $response->toJSON();
+
