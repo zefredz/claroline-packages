@@ -75,6 +75,7 @@ if ( 'duplicate' == $cmd )
 // EXECUTE
 if ( 'duplicate' == $do )
 {
+    DUPSessionMgr::clearDupDataFromSession();
     DUPSessionMgr::setSourceCourseData( $sourceCourseData );
     claro_redirect( $backUrl . '?cmd='.DUPConstants::$DUP_STEP_DEFINE_TARGET);
     die;
@@ -123,7 +124,6 @@ foreach( $courseList as $numLine => $courseLine )
         $boldSearch = str_replace('*', '.*', $filterArray['search']);
         $courseLine['officialCode'] = preg_replace("/(".$boldSearch.")/i","<b>\\1</b>", $courseLine['officialCode']);
         $courseLine['intitule'] = preg_replace("/(".$boldSearch.")/i","<b>\\1</b>", $courseLine['intitule']);
-        $courseLine['faculte'] = preg_replace("/(".$boldSearch.")/i","<b>\\1</b>", $courseLine['faculte']);
     }
 
     // Official Code
@@ -133,9 +133,7 @@ foreach( $courseList as $numLine => $courseLine )
     $courseDataList[$numLine]['intitule'] =  '<a href="' . get_path('clarolineRepositoryWeb') . 'course/index.php?cid=' . htmlspecialchars($courseLine['sysCode']) . '">'
     .                                        $courseLine['intitule']
     .                                        '</a>';
-    // Category
-    $courseDataList[$numLine]['faculte'] = $courseLine['faculte'];
-
+    
     
     //Duplicate course     	
     $courseDataList[$numLine]['cmdDUP'] = 	'<a href="' . $_SERVER['PHP_SELF'] . '?cmd=duplicate&amp;dupCode=' . $courseLine['sysCode']. '" >'
@@ -152,13 +150,12 @@ $sortUrlList = $myPager->get_sort_url_list( $_SERVER['PHP_SELF'] );
 $courseDataGrid = new claro_datagrid( $courseDataList );
 
 $courseDataGrid->set_colTitleList(array ( 'officialCode' => '<a href="' . $sortUrlList['officialCode'] . '">' . get_lang('Course code') . '</a>'
-                                        , 'intitule'     => '<a href="' . $sortUrlList['intitule'    ] . '">' . get_lang('Course title'). '</a>'
-                                        , 'faculte'      => '<a href="' . $sortUrlList['faculte'     ] . '">' . get_lang('Category')    . '</a>'
+                                        , 'intitule'     => '<a href="' . $sortUrlList['intitule'    ] . '">' . get_lang('Course title'). '</a>'                                        
                                         , 'cmdDUP'    	=> get_lang('Duplicate')));
                                         
-$courseDataGrid->set_colAttributeList( array ( 'faculte'	=> array ('align' => 'center')
-                                             , 'cmdDUP' 	=> array ('align' => 'center')
-                                             ));
+$courseDataGrid->set_colAttributeList( array ( 'cmdDUP' 	=> array ('align' => 'center')
+                                             )
+                                    );
 
 
 $courseDataGrid->set_idLineType('none');
@@ -219,42 +216,41 @@ include get_path('incRepositorySys') . '/claro_init_footer.inc.php';
  * 
  * @return a String containing the SQL request for selecting `officialCode`, `intitule`,`faculte`,`sysCode`,`repository`
  * of the subset of wanted courses
+ * 
+ * @see claroline/admin/admin_courses.php#prepare_get_filtred_course_list()
  */
-function prepare_get_filtred_course_list($filter = array()) 
+function prepare_get_filtred_course_list($filter = array())
 {
     $tbl_mdb_names       = claro_sql_get_main_tbl();
 
     $sqlFilter = array();
     // Prepare filter deal with KEY WORDS classification call
-    if (isset($filter['search']))   $sqlFilter[]="(      C.`intitule`  LIKE '%". addslashes(pr_star_replace($filter['search'])) ."%'
-                                                                 OR C.`fake_code` LIKE '%". addslashes(pr_star_replace($filter['search'])) ."%'
-                                                                 OR C.`faculte`   LIKE '%". addslashes(pr_star_replace($filter['search'])) ."%'
-                                                             )";    
-
+    if (isset($filter['search']))
+        $sqlFilter[] = "(  co.`intitule`  LIKE '%". claro_sql_escape(pr_star_replace($filter['search'])) ."%'" . "\n"
+                     . "   OR co.`administrativeNumber` LIKE '%". claro_sql_escape(pr_star_replace($filter['search'])) ."%'" . "\n"
+                     . ")";
+    
+    
+    // Create the WHERE clauses
     $sqlFilter = sizeof($sqlFilter) ? "WHERE " . implode(" AND ",$sqlFilter)  : "";
     
+    // Build the complete SQL request
+    $sql = "SELECT co.`cours_id`      AS `id`, " . "\n"
+         . "co.`administrativeNumber` AS `officialCode`, " . "\n"
+         . "co.`intitule`             AS `intitule`, " . "\n"
+         . "co.`code`                 AS `sysCode`, " . "\n"
+         . "co.`sourceCourseId`       AS `sourceCourseId`, " . "\n"
+         . "co.`isSourceCourse`       AS `isSourceCourse`, " . "\n"
+         . "co.`visibility`           AS `visibility`, " . "\n"
+         . "co.`access`               AS `access`, " . "\n"
+         . "co.`registration`         AS `registration`, " . "\n"
+         . "co.`registrationKey`      AS `registrationKey`, " . "\n"
+         . "co.`directory`            AS `repository`, " . "\n"
+         . "co.`status`               AS `status` " . "\n"
+         . "FROM  `" . $tbl_mdb_names['course'] . "` AS co " . "\n"
+         . $sqlFilter ;
     
-
-
-    // Build the complete SQL
-    //1.8 fake_code 
-    //1.9 administrativeNumber
-    
-    $administrativeCodeColumnName = "administrativeNumber";
-    include get_path('rootSys') . '/platform/currentVersion.inc.php';
-    if ("1.8" == substr($clarolineVersion,0,3))
-	{
-		$administrativeCodeColumnName = "fake_code";
-	}
-    
-    $sql = "SELECT  C.`" . $administrativeCodeColumnName . "` AS `officialCode`,
-                    C.intitule    AS `intitule`,
-                    C.faculte     AS `faculte`,
-                    C.`code`      AS `sysCode`,
-                    C.`directory` AS `repository`
-                    FROM  `" . $tbl_mdb_names['course'] . "` C
-           " . $sqlFilter ;
-
     return $sql;
 }
+
 ?>
