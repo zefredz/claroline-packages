@@ -73,5 +73,5 @@ if ( claro_is_user_authenticated() )
     }
     
     if ( isset( $text ) ) echo '<span class="up">' . $text . '</span>';
-    else echo get_lang('No message');
+    else echo get_lang('No new message');
 }
