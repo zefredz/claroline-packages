@@ -68,11 +68,10 @@ class DUPSessionMgr{
 		
 		$res = new ClaroCourse();
 		$res->courseId 			= $array['sysCode'];
-        $res->title 			= $array['name'];
-        $res->officialCode 		= $array['officialCode'];
+                $res->title 			= $array['name'];
+                $res->officialCode 		= $array['officialCode'];
 		$res->titular 			= $array['titular'];
-		$res->email 			= $array['email'];
-		$res->category 			= $array['categoryCode'];
+		$res->email 			= $array['email'];		
 		$res->departmentName 	= $array['extLinkName'];		
 		$res->language 			= $array['language'];
 		
@@ -82,8 +81,9 @@ class DUPSessionMgr{
 			$res->enrolmentKey 		= $array['enrollmentKey'];
 			$res->departmentUrl 	= $array['extLinkUrl'];
 			$res->access 			= $array['visibility'];
+                        $res->category 			= $array['categoryCode'];
 		}
-		else //1.9
+		if ("1.9" == substr($clarolineVersion,0,3))
 		{
 			$res->registration       = $array['registrationAllowed'];
 			$res->registrationKey    = $array['registrationKey'];			
@@ -91,11 +91,33 @@ class DUPSessionMgr{
 			$res->access             = $array['access'];
 			$res->visibility         = $array['visibility'];
 			$res->publicationDate    = $array['publicationDate'];
-            $res->expirationDate     = $array['expirationDate'];
-            $res->status             = $array['status'];
-            $res->useExpirationDate  = ('NULL' != $array['expirationDate']);
-		}		
-			
+                        $res->category 			= $array['categoryCode'];
+                        $res->expirationDate     = $array['expirationDate'];
+                        $res->status             = $array['status'];
+                        $res->useExpirationDate  = ('NULL' != $array['expirationDate']);
+		}
+                if ("1.10" == substr($clarolineVersion,0,4))
+                {
+                    $res->registration       = $array['registrationAllowed'];
+                    $res->registrationKey    = $array['registrationKey'];			
+                    $res->extLinkUrl         = $array['extLinkUrl'];
+                    $res->access             = $array['access'];
+                    $res->visibility         = $array['visibility'];
+                    $res->publicationDate    = $array['publicationDate'];
+                    $res->expirationDate     = $array['expirationDate'];
+                    $res->status             = $array['status'];
+                    $res->useExpirationDate  = ('NULL' != $array['expirationDate']);
+                    
+                    $categories_data = $array['categories'];
+                    foreach($categories_data as $category_data)
+                    {
+                        $cat_id = $category_data['categoryId'];
+                        $category = new ClaroCategory();
+                        $category->load($cat_id);
+                        $res->categories[] = $category;
+                    }                    
+                }
+                			
 		return $res;
 	}
 	/**
@@ -111,7 +133,6 @@ class DUPSessionMgr{
 		$res['officialCode'] 		= $course->officialCode;
 		$res['titular'] 			= $course->titular;
 		$res['email'] 				= $course->email;
-		$res['categoryCode'] 		= $course->category;
 		$res['extLinkName'] 		= $course->departmentName;	
 		$res['language'] 			= $course->language;
 		
@@ -121,8 +142,9 @@ class DUPSessionMgr{
 			$res['enrollmentKey']			= $course->enrolmentKey;
 			$res['extLinkUrl'] 				= $course->departmentUrl;
 			$res['visibility'] 				= $course->access;
+                        $res['categoryCode'] 			= $course->category;
 		}
-		else //1.9
+		if ("1.9" == substr($clarolineVersion,0,3))
 		{
 			$res['registrationAllowed']  	= $course->registration;
 			$res['registrationKey']  		= $course->registration;			
@@ -130,11 +152,28 @@ class DUPSessionMgr{
 			$res['access']  				= $course->access;
 			$res['visibility']  			= $course->visibility;
 			$res['publicationDate']  		= $course->publicationDate;
-            $res['expirationDate']  		= isset($course->expirationDate) ? $course->expirationDate : 'NULL' ;
-            $res['status']  				= $course->status;
-		}	
-		
-		
+                        $res['expirationDate']  		= isset($course->expirationDate) ? $course->expirationDate : 'NULL' ;
+                        $res['status']  				= $course->status;
+                        $res['categoryCode'] 			= $course->category;
+		}
+                if ("1.10" == substr($clarolineVersion,0,4))
+                {
+                    $res['registrationAllowed']  	= $course->registration;
+                    $res['registrationKey']  		= $course->registration;			
+                    $res['extLinkUrl']  			= $course->extLinkUrl;
+                    $res['access']  				= $course->access;
+                    $res['visibility']  			= $course->visibility;
+                    $res['publicationDate']  		= $course->publicationDate;
+                    $res['expirationDate']  		= isset($course->expirationDate) ? $course->expirationDate : 'NULL' ;
+                    $res['status']  				= $course->status;
+                    
+                    $res['categories'] = array();
+                    foreach($course->categories as $category)
+                    {
+                        $res['categories'][] = array('categoryId' => $category->id);
+                    }
+                }
+                		
 		return $res;	
 	}
 	
