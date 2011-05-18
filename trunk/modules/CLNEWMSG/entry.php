@@ -10,10 +10,27 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
+CssLoader::getInstance()->load( 'bubble' , 'screen' );
 
-$claro_buffer->append( '<script type="text/javascript">
-    $( function(){ msgNotifier(); } );
-</script>');
+if ( claro_is_user_authenticated() )
+{
+    ClaroHeader::getInstance()->addHtmlHeader( '
+        <script type="text/javascript">
+            function msgNotifier()
+            {
+                $.getJSON(
+                    "' . get_module_url( 'CLNEWMSG' ) . '/index.php",
+                    function( response ) {
+                        if ( response.type && response.type == "success" && response.body.newMsg > 0 ) { 
+                            $("#newMsg").html(response.body.text);
+                        }
+                    }
+                );
+                setTimeout( msgNotifier, '. get_conf( 'refreshTime' ) * 1000 .' );
+            }
+            $( function(){ msgNotifier(); } );
+        </script>');
+}
 
 $claro_buffer->append( '<div id="newMsg"></div>' );
 
