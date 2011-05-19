@@ -1,10 +1,10 @@
 <?php // $Id$
 
 /**
- * Server Time?
+ * Server Time
  *
  * @version     UCSTIME 1.1.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCSTIME
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -18,11 +18,19 @@ $conf_def['config_name'] = 'Server Time';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'displaySeconds' );
+$conf_def['section']['main']['properties'] = array ( 'displaySeconds' , 'displayDate' );
 
 $conf_def_property_list[ 'displaySeconds' ] = 
  array ( 'label'       => 'Displays seconds'
        , 'description' => 'Do you want seconds to be shown?'
+       , 'default'     => FALSE
+       , 'type'        => 'boolean'
+       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
+       );
+
+$conf_def_property_list[ 'displayDate' ] = 
+ array ( 'label'       => 'Displays date'
+       , 'description' => 'Do you want the date to be shown?'
        , 'default'     => FALSE
        , 'type'        => 'boolean'
        ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
