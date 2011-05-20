@@ -12,12 +12,9 @@
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
 
-$string_displayed = get_conf( 'displaySeconds' ) ? 'HH:mm:ss' : 'HH:mm';
+$time_display = get_conf( 'displaySeconds' ) ? 'HH:mm:ss' : 'HH:mm';
+$date_display = get_conf( 'displayDate' ) ? claro_html_localised_date( get_locale( 'dateFormatLong' ) ) . ' ' : '';
 
-if ( get_conf( 'displayDate' ) )
-{
-    $string_displayed = 'yyyy-MM-dd ' . $string_displayed;
-}
 
 JavascriptLoader::getInstance()->load( 'datetime' );
 JavascriptLoader::getInstance()->load( 'Date' );
@@ -34,7 +31,7 @@ ClaroHeader::getInstance()->addHtmlHeader( '
             var localDate = new Date();
             var serverDate = new Date();
             serverDate.setTime( localDate.getTime() - timeShift );
-            $( "#serverTime" ).html( serverDate.format( "' . $string_displayed .'" ) );
+            $( "#serverTime" ).html( "' . $date_display . '" + serverDate.format( "' . $time_display .'" ) );
             setTimeout( serverTimeDisplay , 1000 );
         }
         $(function()
