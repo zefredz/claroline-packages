@@ -18,14 +18,14 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_polls`(
     status ENUM('open','closed') NOT NULL DEFAULT 'open',
     visibility ENUM('visible','invisible') NOT NULL DEFAULT 'invisible',
     PRIMARY KEY( id )
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_choices`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     poll_id INT(11) NOT NULL,
     label  VARCHAR(127),
     PRIMARY KEY( id )
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_votes`(
     poll_id INT(11) NOT NULL,
@@ -33,4 +33,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_votes`(
     user_id INT(11) NOT NULL,
     vote ENUM('checked','notchecked') NOT NULL DEFAULT 'notchecked',
     primary KEY ( choice_id , user_id )
-);
+) ENGINE=MyISAM;
