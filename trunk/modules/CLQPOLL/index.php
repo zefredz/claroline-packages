@@ -180,7 +180,7 @@ try
             case 'exDeleteVote':
             {
                 $vote_deleted = claro_is_allowed_to_edit() ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
-                                                          : false;
+                                                           : false;
                 break;
             }
             
@@ -593,7 +593,7 @@ catch ( Exception $e ) // exceptions handling
 // if $msg is defined, displays a question box containing a simple [OK]/[Cancel] form
 if ( isset( $msg ) )
 {
-    $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
+    $form = new ModuleTemplate( 'CLQPOLL' , 'question.tpl.php' );
     
     $form->assign( 'pollId' , $pollId );
     $form->assign( 'choiceId' , $choiceId );
@@ -608,7 +608,7 @@ if ( isset( $msg ) )
 // assigns parameters to the template
 if ( isset ( $template ) )
 {
-    $pollView = new PhpTemplate( dirname( __FILE__ ) . '/templates/' . $template . '.tpl.php' );
+    $pollView = new ModuleTemplate( 'CLQPOLL' , $template . '.tpl.php' );
     
     switch ( $template )
     {
