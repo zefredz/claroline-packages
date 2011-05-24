@@ -18,6 +18,12 @@ $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
 
+// If the new Claroline display is available, use it to mask the course title and tool list
+if ( method_exists( Claroline::getDisplay()->body, 'hideCourseTitleAndTools' ) )
+{
+    Claroline::getDisplay()->body->hideCourseTitleAndTools();
+}
+
 
 /*
  * Output
