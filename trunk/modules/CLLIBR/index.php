@@ -70,55 +70,35 @@ $is_platform_admin = claro_is_platform_admin();
 
 $userInput = Claro_UserInput::getInstance();
 
-if ( $is_course_creator )
-{
-    $userInput->setValidator( 'cmd' ,
-        new Claro_Validator_AllowedList( array( 'rqShowBookmark'
-                                              , 'rqShowBibliography'
-                                              , 'rqShowCatalogue'
-                                              , 'rqShowLibrarylist'
-                                              , 'rqShowLibrarian'
-                                              , 'rqView'
-                                              , 'rqDownload'
-                                              , 'exBookmark'
-                                              , 'exAdd'
-                                              , 'rqRemove'
-                                              , 'exRemove'
-                                              , 'rqAddResource'
-                                              , 'rqEditResource'
-                                              , 'rqCreateLibrary'
-                                              , 'exCreateLibrary'
-                                              , 'rqEditLibrary'
-                                              , 'exEditLibrary'
-                                              , 'rqAddLibrarian'
-                                              , 'exAddLibrarian'
-                                              , 'rqRemoveLibrarian'
-                                              , 'exRemoveLibrarian'
-                                              , 'rqDeleteLibrary'
-                                              , 'exDeleteLibrary'
-                                              , 'exAddResource'
-                                              , 'exEditResource'
-                                              , 'rqDelete'
-                                              , 'exDelete'
-                                              , 'rqQSearch' )
-    ) );
-}
-else
-{
-    $userInput->setValidator( 'cmd' ,
+$userInput->setValidator( 'cmd' ,
     new Claro_Validator_AllowedList( array( 'rqShowBookmark'
                                           , 'rqShowBibliography'
                                           , 'rqShowCatalogue'
                                           , 'rqShowLibrarylist'
+                                          , 'rqShowLibrarian'
                                           , 'rqView'
                                           , 'rqDownload'
                                           , 'exBookmark'
                                           , 'exAdd'
                                           , 'rqRemove'
                                           , 'exRemove'
-                                          , 'rqQSearch' )
-    ) );
-}
+                                          , 'rqAddResource'
+                                          , 'rqEditResource'
+                                          , 'rqDeleteResource'
+                                          , 'rqCreateLibrary'
+                                          , 'exCreateLibrary'
+                                          , 'rqEditLibrary'
+                                          , 'exEditLibrary'
+                                          , 'rqAddLibrarian'
+                                          , 'exAddLibrarian'
+                                          , 'rqRemoveLibrarian'
+                                          , 'exRemoveLibrarian'
+                                          , 'rqDeleteLibrary'
+                                          , 'exDeleteLibrary'
+                                          , 'exAddResource'
+                                          , 'exEditResource'
+                                          , 'exDeleteResource'
+                                          , 'rqQSearch' ) ) );
 
 // CONTROLLER
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
@@ -211,7 +191,7 @@ switch( $cmd )
     case 'rqDownload':
     case 'rqAddResource':
     case 'rqEditResource':
-    case 'rqDelete':
+    case 'rqDeleteResource':
     case 'rqRemove':
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
@@ -533,7 +513,7 @@ switch( $cmd )
     case 'exCreateLibrary':
     case 'exEditLibrary':
     case 'exDeleteLibrary':
-    case 'exDelete':
+    case 'exDeleteResource':
     case 'exRemoveLibrarian':
     {
         if ( $execution_ok )
@@ -606,7 +586,7 @@ switch( $cmd )
         break;
     }
     
-    case 'rqDelete':
+    case 'rqDeleteResource':
     {
         $msg = get_lang( 'Do you really want to delete this resource?' );
         $urlAction = 'exDelete';
