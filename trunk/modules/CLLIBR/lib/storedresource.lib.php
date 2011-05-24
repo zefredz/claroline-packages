@@ -174,6 +174,7 @@ class StoredResource
                 'ogg'   => 'audio/ogg',
                 'flac'  => 'audio/flac',
                 'ape'   => 'audio/x-monkeys-audio',
+                'mka'   => 'audio/x-matroska',
                 'mid'   => 'audio/midi',
                 'mp3'   => 'audio/mpeg',
                 # Streaming
@@ -190,6 +191,8 @@ class StoredResource
                 'mp4'   => 'video/mp4',
                 'mpg'   => 'video/mpeg',
                 'mpeg'  => 'video/mpeg',
+                'mkv'   => 'video/x-matroska',
+                'vp8'   => 'video/webm',
                 # Archive
                 'tar'   => 'application/x-tar',
                 'tgz'   => 'application/x-gzip',

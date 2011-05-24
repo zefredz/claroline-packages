@@ -65,12 +65,12 @@ $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
 if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
 
-$is_allowed_to_edit = ( $courseId && claro_is_allowed_to_edit() ) || claro_is_allowed_to_create_course();
+$is_course_creator = claro_is_allowed_to_create_course();
 $is_platform_admin = claro_is_platform_admin();
 
 $userInput = Claro_UserInput::getInstance();
 
-if ( $is_allowed_to_edit )
+if ( $is_course_creator )
 {
     $userInput->setValidator( 'cmd' ,
         new Claro_Validator_AllowedList( array( 'rqShowBookmark'
@@ -162,22 +162,35 @@ else
     $context = 'librarylist';
 }
 
+$access_allowed = $edit_allowed = $is_platform_admin;
+
 if ( $context == 'bibliography' )
 {
     $refId = $courseId;
+    $access_allowed = $access_allowed || claro_is_course_allowed();
+    $edit_allowed = $edit_allowed || claro_is_allowed_to_edit();
 }
 elseif( $context == 'bookmark' )
 {
     $refId = $userId;
+    $access_allowed = $access_allowed || (boolean)$refId;
+    $edit_allowed = $edit_allowed || (boolean)$refId;
 }
 elseif( $context == 'catalogue')
 {
     $refId = $libraryId;
+    $access_allowed = $access_allowed || $library->isPublic();
+    $edit_allowed = $edit_allowed || $librarian->isLibrarian( $userId );
+}
+else
+{
+    $access_allowed = $access_allowed || $is_course_creator;
+    $edit_allowed = $access_allowed;
 }
 
 if ( $context == 'librarylist' || $context == 'librarian' )
 {
-    $resourceSet = new LibraryList( $database , $userId );
+    $resourceSet = new LibraryList( $database , $userId , $is_platform_admin );
 }
 else
 {
@@ -221,7 +234,7 @@ switch( $cmd )
         }
         else
         {
-            $errorMsg = get_lang( 'not allowed' );
+            $errorMsg = get_lang( 'Not allowed' );
         }
         
         $execution_ok = ! $errorMsg
@@ -469,7 +482,7 @@ else
 }
 
 $template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
-$template->assign( 'is_allowed_to_edit' , $is_allowed_to_edit || $libraryId && $librarian->isLibrarian( $userId ) );
+$template->assign( 'edit_allowed' , $edit_allowed );
 $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
 $template->assign( 'userId' , $userId );
 $template->assign( 'libraryId' , $libraryId );
@@ -608,7 +621,7 @@ switch( $cmd )
     {
         $msg = get_lang( 'Do you really want to remove this librarian?' );
         $urlAction = 'exRemoveLibrarian';
-        $urlCancel = 'rqShowLibrarian';
+        $urlCancel = 'rqShowLibrarian&libraryId='.$libraryId;
         $xid = array( 'librarianId' => $librarianId , 'libraryId' => $libraryId );
         break;
     }

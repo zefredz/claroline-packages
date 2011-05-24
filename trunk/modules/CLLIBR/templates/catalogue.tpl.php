@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( $this->is_allowed_to_edit ) : ?>
+<?php if ( $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
@@ -29,7 +29,7 @@
         <?php echo get_lang( 'Add selection to my bookmark' ); ?>
     </a>
 </span>
-<?php if ( $this->courseId && $this->is_allowed_to_edit ) : ?>
+<?php if ( $this->courseId && $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add selection in bibliography' ); ?>" />
@@ -76,7 +76,7 @@
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
             <td align="center">
-                <?php if ( $this->courseId && $this->is_allowed_to_edit ) : ?>
+                <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\' bibliography' ); ?>"/>
                 </a>
@@ -87,7 +87,7 @@
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                 </a>
-        <?php if ( $this->is_allowed_to_edit ) : ?>
+        <?php if ( $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&libraryId=' . $this->libraryId . '&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>

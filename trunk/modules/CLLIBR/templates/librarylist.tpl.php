@@ -21,7 +21,7 @@
 </form>
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>
 <fieldset id="<?php echo $category; ?>Library">
-    <legend><?php echo get_lang( $category . ' libraries' ); ?></legend>
+    <legend><?php echo get_lang( ucwords( $category . ' libraries' ) ); ?></legend>
     <table class="claroTable emphaseLine" style=" width: 100%;">
         <thead>
             <tr class="headerX">
@@ -71,7 +71,7 @@
         <?php endforeach; ?>
     <?php else: ?>
             <tr>
-                <td class="empty" colspan="3"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+                <td class="empty" colspan="3"><?php echo get_lang( 'Empty list' ); ?></td>
             </tr>
     <?php endif; ?>
         </tbody>
