@@ -18,8 +18,9 @@
 class LibraryList
 {
     protected $userId;
+    protected $is_admin;
     protected $userLibraryList;
-    protected $publicLibraryList;
+    protected $allowedLibraryList;
     
     protected $database;
     
@@ -27,12 +28,13 @@ class LibraryList
      * Constructor
      * @param $userId
      */
-    public function __construct( $database , $userId )
+    public function __construct( $database , $userId , $is_admin = false )
     {
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_library' , 'library_librarian' , 'user' ) );
         
         $this->userId = $userId;
+        $this->is_admin = $is_admin;
         $this->load();
     }
     
@@ -66,6 +68,10 @@ class LibraryList
             $this->userLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
         }
         
+        $where = $this->is_admin
+               ? ""
+               : "\nWHERE LY.is_public = TRUE";
+        
         $publicLibraryList = $this->database->query( "
             SELECT
                 LY.id,
@@ -75,16 +81,14 @@ class LibraryList
             LEFT JOIN
                 `{$this->tbl['library_librarian']}` AS LN
             ON
-                LY.id = LN.library_id
-            WHERE
-                LY.is_public = TRUE"
+                LY.id = LN.library_id" . $where
         );
         
         foreach( $publicLibraryList as $library )
         {
             $id = $library[ 'id' ];
-            $this->publicLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
-            $this->publicLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
+            $this->allowedLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
+            $this->allowedLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
         }
     }
     
@@ -100,7 +104,7 @@ class LibraryList
         }
         
         return array( 'user' => $this->userLibraryList
-                    , 'public'  => $this->publicLibraryList );
+                    , $this->is_admin ? 'other' :'public'  => $this->allowedLibraryList );
     }
     
     /**

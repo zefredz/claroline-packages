@@ -65,7 +65,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td style="text-align: center; font-style: italic; color: silver;" colspan="6"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+            <td style="text-align: center; font-style: italic; color: silver;" colspan="6"><?php echo get_lang( 'Empty bookmark' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
