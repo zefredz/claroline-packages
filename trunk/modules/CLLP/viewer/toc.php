@@ -18,6 +18,8 @@ $tlabelReq = 'CLLP';
 
 require_once dirname( __FILE__ ) . '/../../../claroline/inc/claro_init_global.inc.php';
 
+Claroline::getInstance()->setDisplayType(Claroline::FRAME);
+
 if ( !claro_is_tool_allowed() )
 {
     if ( claro_is_in_a_course() )
