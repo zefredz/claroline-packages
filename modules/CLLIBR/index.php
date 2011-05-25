@@ -30,7 +30,8 @@ From::Module( 'CLLIBR' )->uses(
     'search.lib',
     'metadataview.lib',
     'pluginloader.lib',
-    'thirdparty/uuid.lib' );
+    'thirdparty/uuid.lib',
+    'tools.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
@@ -89,7 +90,6 @@ $userInput->setValidator( 'cmd' ,
                                           , 'exCreateLibrary'
                                           , 'rqEditLibrary'
                                           , 'exEditLibrary'
-                                          , 'rqAddLibrarian'
                                           , 'exAddLibrarian'
                                           , 'rqRemoveLibrarian'
                                           , 'exRemoveLibrarian'
@@ -102,8 +102,10 @@ $userInput->setValidator( 'cmd' ,
 
 // CONTROLLER
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
+$option = $userInput->get( 'option' );
+
 $libraryId = $userInput->get( 'libraryId' );
-$librarianId = $userInput->get( 'librarianId');
+$librarianId = $userInput->get( 'librarianId' );
 $resourceId = $userInput->get( 'resourceId' );
 
 $library = new Library( $database , $libraryId );
@@ -185,7 +187,6 @@ switch( $cmd )
     case 'rqShowBibliography';
     case 'rqShowCatalogue':
     case 'rqShowLibrarylist':
-    case 'rqShowLibrarian':
     case 'rqDeleteLibrary':
     case 'rqView':
     case 'rqDownload':
@@ -195,7 +196,6 @@ switch( $cmd )
     case 'rqRemove':
     case 'rqCreateLibrary':
     case 'rqEditLibrary':
-    case 'rqAddLibrarian':
     case 'rqRemoveLibrarian':
     {
         break;
@@ -428,6 +428,25 @@ switch( $cmd )
         break;
     }
     
+    case 'rqShowLibrarian':
+    {
+        $searchString = $userInput->get( 'searchString' );
+        $searchResult = array();
+        
+        if ( $option == 'add' && $searchString )
+        {
+            $searchResult = searchUser( $userInput->get( 'searchString' ) );
+        }
+        break;
+    }
+    
+    case 'exAddLibrarian':
+    {
+        $userToAdd = $userInput->get( 'userId' );
+        $execution_ok = $librarian->register( $userToAdd );
+        break;
+    }
+    
     case 'rqQSearch':
     {
         $searchString = $userInput->get( 'searchString' );
@@ -458,7 +477,8 @@ if ( $resource->getId() )
 }
 else
 {
-    $pageTitle[ 'subTitle' ] = get_lang( $context ) . ( $libraryId ? ' - ' . $library->getTitle() : '' );
+    $pageTitle[ 'subTitle' ] = ucwords( get_lang( $context ) )
+                             . ( $libraryId ? ' - ' . $library->getTitle() : '' );
 }
 
 $template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
@@ -514,6 +534,7 @@ switch( $cmd )
     case 'exEditLibrary':
     case 'exDeleteLibrary':
     case 'exDeleteResource':
+    case 'exAddLibrarian':
     case 'exRemoveLibrarian':
     {
         if ( $execution_ok )
@@ -524,12 +545,6 @@ switch( $cmd )
         {
             $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
         }
-        break;
-    }
-    
-    case 'rqAddLibrarian':
-    {
-        $form = new ModuleTemplate( 'CLLIBR' , 'addlibrarian.tpl.php' );
         break;
     }
     
@@ -617,6 +632,14 @@ switch( $cmd )
     {
         throw new Exception( 'bad command' );
     }
+}
+
+if ( $option == 'add' )
+{
+    $form = new ModuleTemplate( 'CLLIBR' , 'addlibrarian.tpl.php' );
+    $form->assign( 'libraryId' , $libraryId );
+    $form->assign( 'searchResult' , $searchResult );
+    $dialogBox->form( $form->render() );
 }
 
 if ( isset( $msg ) )
