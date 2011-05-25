@@ -24,6 +24,9 @@ if ( claro_is_user_authenticated() )
                         if ( response.responseType && response.responseType == "success" && response.responseBody.newMsg > 0 ) { 
                             $("#newMsg").html(response.responseBody.contents);
                         }
+                        else {
+                            $("#newMsg").empty();
+                        }
                     }
                 );
                 setTimeout( msgNotifier, '. get_conf( 'refreshTime' ) * 1000 .' );
