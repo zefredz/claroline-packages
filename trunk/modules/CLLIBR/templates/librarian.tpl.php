@@ -10,7 +10,7 @@
  */ ?>
 
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLibrarian&libraryId=' . $this->libraryId ) ); ?>">
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&option=add&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'New librarian' ); ?>" />
         <?php echo get_lang( 'Add a librarian' ); ?>
     </a>
