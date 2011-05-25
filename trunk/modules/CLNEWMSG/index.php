@@ -11,16 +11,23 @@
 
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
+load_module_config('CLNEWMSG');
+language::load_module_translation('CLNEWMSG');
+
 $newMsg = 0;
 
 if ( claro_is_user_authenticated() )
 {
+    $mode = 'new';
+    
     $tbl_mdb_names = claro_sql_get_main_tbl();
     $tbl_messages = $tbl_mdb_names[ 'im_message' ];
     $tbl_msg_status = $tbl_mdb_names[ 'im_message_status' ];
     
     if ( time() - (int)$_SESSION[ 'start_time' ] < get_conf( 'displayTime' ) )
     {
+        $mode = 'unread';
+        
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
                 COUNT(*)
@@ -62,8 +69,22 @@ if ( claro_is_user_authenticated() )
     if ( $newMsg )
     {
         $text = '<p class="up"><a href="' . htmlspecialchars( get_path( 'clarolineRepositoryWeb' ) . '/messaging/messagebox.php?box=inbox&cidReset=true' ) .'">';
-        $text .= ( $newMsg == 1 ) ?  get_lang( 'You have an unread message!' ) :
-                                        get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) );
+        
+        if ( $mode == 'unread' )
+        {
+            $text .= ( $newMsg == 1 ) 
+                ? get_lang( 'You have an unread message!' ) 
+                : get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) )
+                ;
+        }
+        else
+        {
+            $text .= ( $newMsg == 1 ) 
+                ? get_lang( 'You have a new message!' ) 
+                : get_lang( 'You have %newMsg new messages!' , array( '%newMsg' => $newMsg ) )
+                ;
+        }
+        
         $text .='</a></p>';
 
         $response = new Json_Response( array(
