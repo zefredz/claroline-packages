@@ -14,8 +14,6 @@ require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
-//include_once claro_get_conf_repository() . 'UCONLINE.conf.php'; 
-
 $tbl = claro_sql_get_tbl( 'user_online' , array( 'course' => null ) );
 
 $sql = "SELECT COUNT(`id`) AS `user_id` FROM `".$tbl[ 'user_online' ]."`";
