@@ -24,11 +24,11 @@ $pagerSortDir = $userInput->get( 'dir' , 'SORT_ASC' );
 
 $toolName = get_lang( 'User(s) online' );
 
-$userPerPage = get_conf( 'usersPerPage' );
+$userPerPage = get_conf( 'UCONLINE_usersPerPage' );
 
-$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'cours_user' , 'cours' ), array( 'course' => null ) );
+$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'rel_course_user' , 'cours' ), array( 'course' => null ) );
 
-$additionalRestriction = get_conf( 'privacy' ) == 2 ?
+$additionalRestriction = get_conf( 'UCONLINE_privacy' ) == 2 ?
     "INNER JOIN
         `{$tbl[ 'cours' ]}` AS CL
     ON
@@ -60,10 +60,10 @@ $sql = "SELECT DISTINCT
             ON
                 O.`user_id` = U.`user_id`";
 
-if ( ! claro_is_platform_admin() && get_conf( 'privacy' ) )
+if ( ! claro_is_platform_admin() && get_conf( 'UCONLINE_privacy' ) )
 {
     $sql .= "LEFT JOIN
-                `{$tbl[ 'cours_user' ]}` AS C
+                `{$tbl[ 'rel_course_user' ]}` AS C
             ON
                 C.`user_id` = U.`user_id`
             WHERE
@@ -71,7 +71,7 @@ if ( ! claro_is_platform_admin() && get_conf( 'privacy' ) )
                     SELECT
                         CU.`code_cours`
                     FROM
-                        `{$tbl[ 'cours_user' ]}` AS CU"
+                        `{$tbl[ 'rel_course_user' ]}` AS CU"
             . "\n" . $additionalRestriction . "\n" .
                         "CU.`user_id` = " . Claroline::getDatabase()->escape( (int)claro_get_current_user_id() ) . ")";
 }
@@ -81,7 +81,7 @@ $myPager->set_sort_key( $pagerSortKey , $pagerSortDir );
 
 $userList = $myPager->get_result_list();
 
-if ( get_conf( 'showUserPicture' ) )
+if ( get_conf( 'UCONLINE_showUserPicture' ) )
 {
     CssLoader::getInstance()->load( 'uconline' , 'screen' );
     

@@ -76,7 +76,7 @@ class LoginListener extends EventDriven
      */
     function refresh_login_DB()
     {
-        $refreshTime = get_conf( 'clonline_refreshTime' , 5 );
+        $refreshTime = get_conf( 'UCONLINE_refreshTime' , 5 );
         
         $someTimeAgo = date( 'Y-m-d H:i:s' , time() - ( $refreshTime * 60 ) );
         
