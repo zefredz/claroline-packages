@@ -18,9 +18,9 @@ $conf_def['config_name'] = 'Quick poll for Claroline';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'pagerLineNb' );
+$conf_def['section']['main']['properties'] = array ( 'CLQPOLL_pagerLineNb' );
 
-$conf_def_property_list[ 'pagerLineNb' ] = 
+$conf_def_property_list[ 'CLQPOLL_pagerLineNb' ] = 
  array ( 'label'       => 'Lines numbers per page in result'
        , 'description' => ''
        , 'default'     => '10'
