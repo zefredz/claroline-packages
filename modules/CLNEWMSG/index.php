@@ -24,7 +24,7 @@ if ( claro_is_user_authenticated() )
     $tbl_messages = $tbl_mdb_names[ 'im_message' ];
     $tbl_msg_status = $tbl_mdb_names[ 'im_message_status' ];
     
-    if ( time() - (int)$_SESSION[ 'start_time' ] < get_conf( 'displayTime' ) )
+    if ( time() - (int)$_SESSION[ 'start_time' ] < get_conf( 'CLNEWMSG_displayTime' ) )
     {
         $mode = 'unread';
         
@@ -44,7 +44,7 @@ if ( claro_is_user_authenticated() )
     }
     else
     {
-        $timeTrigger = date( 'Y-m-d H:i:s' , time() - get_conf( 'displayTime' ) );
+        $timeTrigger = date( 'Y-m-d H:i:s' , time() - get_conf( 'CLNEWMSG_displayTime' ) );
         
         $newMsg = Claroline::getDatabase()->query( "
             SELECT
@@ -74,15 +74,13 @@ if ( claro_is_user_authenticated() )
         {
             $text .= ( $newMsg == 1 ) 
                 ? get_lang( 'You have an unread message!' ) 
-                : get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) )
-                ;
+                : get_lang( 'You have %newMsg unread messages!' , array( '%newMsg' => $newMsg ) );
         }
         else
         {
             $text .= ( $newMsg == 1 ) 
                 ? get_lang( 'You have a new message!' ) 
-                : get_lang( 'You have %newMsg new messages!' , array( '%newMsg' => $newMsg ) )
-                ;
+                : get_lang( 'You have %newMsg new messages!' , array( '%newMsg' => $newMsg ) );
         }
         
         $text .='</a></p>';

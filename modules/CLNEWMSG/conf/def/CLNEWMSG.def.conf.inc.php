@@ -17,9 +17,9 @@ $conf_def['config_name'] = 'New message notifier';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'refreshTime' , 'displayTime' );
+$conf_def['section']['main']['properties'] = array ( 'CLNEWMSG_refreshTime' , 'CLNEWMSG_displayTime' );
 
-$conf_def_property_list[ 'refreshTime' ] = 
+$conf_def_property_list[ 'CLNEWMSG_refreshTime' ] = 
  array ( 'label'       => 'Refresh time'
        , 'description' => 'Sets the frequency which the system seeks for new messages'
        , 'default'     => '10'
@@ -29,7 +29,7 @@ $conf_def_property_list[ 'refreshTime' ] =
                                   , 'max'=> 3600)
        );
 
-$conf_def_property_list[ 'displayTime' ] = 
+$conf_def_property_list[ 'CLNEWMSG_displayTime' ] = 
  array ( 'label'       => 'Popup display time'
        , 'description' => 'Sets the time within the notifying popup is displayed'
        , 'default'     => '20'

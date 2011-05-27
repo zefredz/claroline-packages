@@ -29,7 +29,7 @@ if ( claro_is_user_authenticated() )
                         }
                     }
                 );
-                setTimeout( msgNotifier, '. get_conf( 'refreshTime' ) * 1000 .' );
+                setTimeout( msgNotifier, '. get_conf( 'CLNEWMSG_refreshTime' ) * 1000 .' );
             }
             $( function(){ msgNotifier(); } );
         </script>');
