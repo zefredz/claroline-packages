@@ -1,7 +1,7 @@
 <h3 class="claroToolTitle"><?php echo $this->toolName; ?></h3>
 
 <p><?php echo get_lang( 'List of active users for the last %time minutes :' , array( '%time' => $this->refreshTime ) ); ?></p>
-<?php if( get_conf( 'privacy' ) ) : ?>
+<?php if( get_conf( 'UCONLINE_privacy' ) ) : ?>
 <p>
     <strong><?php echo get_lang( 'Warning : the list below is currently restricted for security purposes' ) ?></strong>
 </p>
@@ -10,7 +10,7 @@
 <table style="text-align: center;" class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <thead>
         <tr class="headerX" align="center" valign="top">
-        <?php if( get_conf( 'showUserId' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showUserId' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'id' ]; ?>"><?php echo get_lang( 'No.' ); ?></a>
             </th>
@@ -21,32 +21,32 @@
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'firstname' ]; ?>"><?php echo get_lang( 'First name' ); ?></a>
             </th>
-        <?php if ( get_conf( 'showUserPicture' ) ) : ?>
+        <?php if ( get_conf( 'UCONLINE_showUserPicture' ) ) : ?>
             <th>
                 <img src="<?php echo get_icon( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
             </th>
         <?php endif; ?>
-        <?php if( get_conf( 'showSendMessage' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <th>
                 <img src="<?php echo get_icon( 'mail_close' ); ?>" alt="<?php echo get_lang( 'Send a message' ); ?>" />
             </th>
         <?php endif; ?>
-        <?php if( get_conf( 'showEmail' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showEmail' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'email' ]; ?>"><?php echo get_lang( 'Email' ); ?></a>
             </th>
         <?php endif; ?>
-        <?php if( get_conf( 'showSkypeStatus' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showSkypeStatus' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'skype_name' ]; ?>"><?php echo get_lang( 'Skype account' ); ?></a>
             </th>
         <?php endif; ?>
-        <?php if( get_conf( 'showLocalTime' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showLocalTime' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'time_offset' ]; ?>"><?php echo get_lang( 'Local Time' ); ?></a>
             </th>
         <?php endif; ?>
-        <?php if( get_conf( 'showStatus' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showStatus' ) ) : ?>
             <th>
                 <a href="<?php echo $this->sortUrlList[ 'isCourseCreator' ]; ?>"><?php echo get_lang( 'Status' ); ?></a>
             </th>
@@ -56,7 +56,7 @@
     <tbody>
     <?php foreach( $this->userList as $user ) : ?>
         <tr>
-        <?php if( get_conf( 'showUserId' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showUserId' ) ) : ?>
             <td align="center"><?php echo $user[ 'id' ]; ?></td>
         <?php endif; ?>
             <?php if ( claro_is_platform_admin() ) : ?>
@@ -65,7 +65,7 @@
             <td><?php echo $user[ 'lastname' ]; ?></td>
             <?php endif; ?>
             <td><?php echo $user[ 'firstname' ]; ?></td>
-        <?php if ( get_conf( 'showUserPicture' ) ) : ?>
+        <?php if ( get_conf( 'UCONLINE_showUserPicture' ) ) : ?>
             <td>
                 <a href="#" id="user<?php echo $user[ 'id' ]; ?>" class="userBlock">
                     <span>
@@ -77,14 +77,14 @@
                 </a>
             </td>
         <?php endif; ?>
-        <?php if( get_conf( 'showSendMessage' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
                     <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
                 </a>
             </td>
         <?php endif; ?>
-        <?php if( get_conf( 'showEmail' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showEmail' ) ) : ?>
             <td>
             <?php if( ! empty( $user[ 'email' ] ) ) : ?>
                 <a href="mailto:<?php echo $user[ 'email' ]; ?>"><?php echo $user[ 'email' ]; ?></a>
@@ -93,7 +93,7 @@
             <?php endif; ?>
             </td>
         <?php endif; ?>
-        <?php if( get_conf( 'showSkypeStatus' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showSkypeStatus' ) ) : ?>
             <td>
             <?php if ( $user[ 'id' ] == claro_get_current_user_id() ) : ?>
                 <a href="edit.php"><?php echo get_lang( 'Configure your Skype account' ); ?></a>
@@ -109,12 +109,12 @@
             <?php endif; ?>
             </td>
         <?php endif; ?>
-        <?php if( get_conf( 'showLocalTime' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showLocalTime' ) ) : ?>
             <td>
             <?php echo date( "H:i" , time() + $user[ 'time_offset' ] ); ?>
             </td>
         <?php endif; ?>
-        <?php if( get_conf( 'showStatus' ) ) : ?>
+        <?php if( get_conf( 'UCONLINE_showStatus' ) ) : ?>
             <td>
             <?php if ( $user[ 'isPlatformAdmin' ] ) : ?>
                 <?php echo get_lang( 'Platform administrator' ); ?>

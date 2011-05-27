@@ -22,15 +22,15 @@ $conf_def['section']['main']['properties'] = array ( 'UCONLINE_refreshTime' ,'UC
 
 $conf_def['section']['display']['label']      = 'Display';
 $conf_def['section']['display']['description']= '';
-$conf_def['section']['display']['properties'] = array ( 'showUserId'
-                                                      , 'showEmail'
-                                                      , 'showSendMessage'
-                                                      , 'showStatus'
-                                                      , 'showSkypeStatus'
-                                                      , 'showUserPicture'
-                                                      , 'showLocalTime'
-                                                      , 'privacy'
-                                                      , 'usersPerPage' );
+$conf_def['section']['display']['properties'] = array ( 'UCONLINE_showUserId'
+                                                      , 'UCONLINE_showEmail'
+                                                      , 'UCONLINE_showSendMessage'
+                                                      , 'UCONLINE_showStatus'
+                                                      , 'UCONLINE_showSkypeStatus'
+                                                      , 'UCONLINE_showUserPicture'
+                                                      , 'UCONLINE_showLocalTime'
+                                                      , 'UCONLINE_privacy'
+                                                      , 'UCONLINE_usersPerPage' );
 
 // MAIN
 $conf_def_property_list[ 'UCONLINE_refreshTime' ] = 
@@ -54,7 +54,7 @@ $conf_def_property_list[ 'UCONLINE_displayRefreshTime' ] =
        );
 
 // DISPLAY
-$conf_def_property_list[ 'showUserId' ] =
+$conf_def_property_list[ 'UCONLINE_showUserId' ] =
 array ( 'label'       => 'Show user id'
       , 'description' => ''
       , 'default'     => FALSE
@@ -64,7 +64,7 @@ array ( 'label'       => 'Show user id'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showSendMessage' ] =
+$conf_def_property_list[ 'UCONLINE_showSendMessage' ] =
 array ( 'label'       => 'Show a link to send a message'
       , 'description' => ''
       , 'default'     => FALSE
@@ -74,7 +74,7 @@ array ( 'label'       => 'Show a link to send a message'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showEmail' ] =
+$conf_def_property_list[ 'UCONLINE_showEmail' ] =
 array ( 'label'       => 'Show user email'
       , 'description' => ''
       , 'default'     => TRUE
@@ -84,7 +84,7 @@ array ( 'label'       => 'Show user email'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showStatus' ] =
+$conf_def_property_list[ 'UCONLINE_showStatus' ] =
 array ( 'label'       => 'Show user status'
       , 'description' => ''
       , 'default'     => TRUE
@@ -94,7 +94,7 @@ array ( 'label'       => 'Show user status'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showSkypeStatus' ] =
+$conf_def_property_list[ 'UCONLINE_showSkypeStatus' ] =
 array ( 'label'       => 'Show user\'s Skype account status'
       , 'description' => ''
       , 'default'     => FALSE
@@ -104,7 +104,7 @@ array ( 'label'       => 'Show user\'s Skype account status'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showUserPicture' ] =
+$conf_def_property_list[ 'UCONLINE_showUserPicture' ] =
 array ( 'label'       => 'Show user\'s picture'
       , 'description' => ''
       , 'default'     => FALSE
@@ -114,7 +114,7 @@ array ( 'label'       => 'Show user\'s picture'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'showLocalTime' ] =
+$conf_def_property_list[ 'UCONLINE_showLocalTime' ] =
 array ( 'label'       => 'Show the local time of each user'
       , 'description' => ''
       , 'default'     => FALSE
@@ -124,7 +124,7 @@ array ( 'label'       => 'Show the local time of each user'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-$conf_def_property_list[ 'privacy' ] =
+$conf_def_property_list[ 'UCONLINE_privacy' ] =
 array ( 'label'       => 'privacy/security level'
       , 'description' => 'The users can see...'
       , 'default'     => '0'
@@ -136,7 +136,7 @@ array ( 'label'       => 'privacy/security level'
                                , '2' => '... except the courses with open registration - security level : high' )
       );
 
-$conf_def_property_list[ 'usersPerPage' ] =
+$conf_def_property_list[ 'UCONLINE_usersPerPage' ] =
 array ( 'label'   => 'Number of users per page'
       , 'default' => '25'
       , 'unit'    => 'users'
