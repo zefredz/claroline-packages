@@ -205,8 +205,7 @@ class StoredResource
             
             return array_key_exists( $fileExtension, $mimeTypeList )
                 ? $mimeTypeList[$fileExtension]
-                : $defaultMimeType
-                ;
+                : $defaultMimeType;
         }
         else
         {

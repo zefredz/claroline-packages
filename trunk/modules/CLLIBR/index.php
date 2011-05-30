@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.5.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -103,7 +103,7 @@ $userInput = Claro_UserInput::getInstance();
 $userInput->setValidator( 'cmd' ,
     new Claro_Validator_AllowedList( array_merge( $actionList , $restrictedActionList ) ) );
 
-// CONTROLLER
+// OBJECTS INITIALISATION
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
 $option = $userInput->get( 'option' );
 
@@ -120,6 +120,7 @@ if ( $libraryId )
     $librarian = new Librarian( $database , $libraryId );
 }
 
+// SETTING CONTEXT
 $refId = null;
 
 if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
@@ -147,6 +148,7 @@ else
     $context = 'librarylist';
 }
 
+// RESOURCESET INITIALISATION & RIGHTS MANAGEMENT
 $access_allowed = $edit_allowed = $is_platform_admin;
 
 if ( $context == 'bibliography' )
@@ -191,8 +193,9 @@ $accessTicket = $accessControl
             && ( $access_allowed && in_array( $cmd , $actionList ) )
             || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) );
 
-if ( $accessTicket )
+if ( $accessTicket ) // AUTHORIZED ACTION
 {
+    // CONTROLLER
     switch( $cmd )
     {
         case 'rqShowBookmark':
@@ -262,8 +265,15 @@ if ( $accessTicket )
             
             $library->setTitle( $title );
             $library->setPublic( (boolean)$is_public );
-            $librarian = new Librarian( $database , $library->save() );
-            $execution_ok = $librarian->register( $userId );
+            if ( $cmd == 'exCreateLibrary' )
+            {
+                $librarian = new Librarian( $database , $library->save() );
+                $execution_ok = $librarian->register( $userId );
+            }
+            else
+            {
+                $execution_ok = $library->save();
+            }
             break;
         }
         
@@ -474,7 +484,6 @@ if ( $accessTicket )
         }
     }
     
-    
     // VIEW
     CssLoader::getInstance()->load( 'cllibr' , 'screen' );
     
@@ -675,7 +684,7 @@ if ( $accessTicket )
                                                             . $dialogBox->render()
                                                             . $template->render() );
 }
-else
+else // FORBIDDEN ACTION
 {
     $dialogBox = new DialogBox();
     $dialogBox->error( get_lang( 'Access denied' ) );
