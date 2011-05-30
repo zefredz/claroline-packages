@@ -62,7 +62,7 @@
     <?php foreach ( $this->resourceList as $resourceId => $objects ) : ?>
         <tr>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId . '&libraryId=' . $this->libraryId ) );?>">
                     <?php echo $objects[0]->getTitle(); ?>
                 </a>
             </td>
