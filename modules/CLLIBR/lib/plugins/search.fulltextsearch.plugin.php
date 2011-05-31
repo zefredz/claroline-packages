@@ -15,6 +15,7 @@
 class FulltextSearch extends Search
 {
     /**
+     * Performs the search
      * @param array $searchQuery
      */
     public function search( $searchString )
@@ -44,40 +45,11 @@ class FulltextSearch extends Search
             OR
                 MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ")"
         );
-        
-        /*$this->result_main = $this->database->query( "
-            SELECT
-                id,
-                title,
-                description,
-                MATCH (title) AGAINST (" . $this->database->quote( $searchString ) . ") AS score1,
-                MATCH (description) AGAINST (" . $this->database->quote( $searchString ) . ") AS score2
-            FROM
-                `{$this->tbl['library_resource']}`
-            WHERE
-                MATCH (title) AGAINST (" . $this->database->quote( $searchString ) . ")
-            OR
-                MATCH (description) AGAINST (" . $this->database->quote( $searchString ) );
-        
-        $this->result_metadata = $this->database->query( "
-            SELECT
-                R.id,
-                R.title
-                M.name,
-                M.value,
-                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score3
-            FROM
-                `{$this->tbl['library_resource']}` AS R
-            INNER JOIN
-                `{$this->tbl['library_metadata']}` AS M
-            ON
-                R.id = M.resource_id
-            WHERE
-                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) );*/
     }
     
     /**
-     *
+     * Bakes the search result
+     * @return array $result
      */
     public function bake()
     {
