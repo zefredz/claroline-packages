@@ -9,11 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-load_module_config( 'CLLIBR' );
-
-$cllibr_path = get_conf( 'CLLIBR_storage_directory' )
-             ? get_conf( 'CLLIBR_storage_directory' )
-             : get_path( 'rootSys' ) . 'cllibrary';
+$cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
 
 if ( file_exists( $cllibr_path ) )
 {
