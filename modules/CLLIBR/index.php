@@ -183,8 +183,6 @@ else
     $resourceSet = new Collection( $database , $context , $refId );
 }
 
-$errorMsg = false;
-
 $accessControl = $resourceId && ! $is_platform_admin
                ? $resourceSet->resourceExists( $resourceId )
                : true;
@@ -196,6 +194,8 @@ $accessTicket = $accessControl
 if ( $accessTicket ) // AUTHORIZED ACTION
 {
     // CONTROLLER
+    $errorMsg = false;
+    
     switch( $cmd )
     {
         case 'rqShowBookmark':

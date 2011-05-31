@@ -75,7 +75,8 @@ class LibraryList
         $publicLibraryList = $this->database->query( "
             SELECT
                 LY.id,
-                LY.title
+                LY.title,
+                LY.is_public
             FROM
                 `{$this->tbl['library_library']}` AS LY
             LEFT JOIN
@@ -89,6 +90,10 @@ class LibraryList
             $id = $library[ 'id' ];
             $this->allowedLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
             $this->allowedLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
+            if ( $this->is_admin )
+            {
+                $this->allowedLibraryList[ $id ][ 'is_public' ] = $library[ 'is_public' ];
+            }
         }
     }
     
