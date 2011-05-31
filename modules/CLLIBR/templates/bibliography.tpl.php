@@ -74,10 +74,6 @@
         <?php if ( $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
-                </a>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
-                </a>
         <?php endif; ?>
             </td>
         </tr>
