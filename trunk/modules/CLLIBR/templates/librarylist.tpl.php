@@ -31,7 +31,10 @@
                 <th>
                     <?php echo get_lang( 'Librarians' ); ?>
                 </th>
-    <?php if ($category == 'user') : ?>
+    <?php if ( $category == 'user' || $this->edit_allowed ) : ?>
+                <th>
+                    <?php echo get_lang( 'Status' ); ?>
+                </th>
                 <th>
                     <?php echo get_lang( 'Commands' ); ?>
                 </th>
@@ -57,7 +60,9 @@
                     -
             <?php endif; ?>
                 </td>
-            <?php if ($category == 'user') : ?>
+            <?php if ( $category == 'user' || $this->edit_allowed ) : ?>
+                <td align="center">
+                    <?php echo $library[ 'is_public' ] ? get_lang( 'Public' ) : get_lang( 'Private' ); ?>
                 <td align="center">
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
@@ -71,7 +76,7 @@
         <?php endforeach; ?>
     <?php else: ?>
             <tr>
-                <td class="empty" colspan="3"><?php echo get_lang( 'Empty list' ); ?></td>
+                <td class="empty" colspan="4"><?php echo get_lang( 'Empty list' ); ?></td>
             </tr>
     <?php endif; ?>
         </tbody>
