@@ -499,6 +499,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     $template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
     $template->assign( 'edit_allowed' , $edit_allowed );
+    $template->assign( 'is_platform_admin' , $is_platform_admin );
     $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
     $template->assign( 'userId' , $userId );
     $template->assign( 'libraryId' , $libraryId );

@@ -31,7 +31,7 @@
                 <th>
                     <?php echo get_lang( 'Librarians' ); ?>
                 </th>
-    <?php if ( $category == 'user' || $this->edit_allowed ) : ?>
+    <?php if ( $category == 'user' || $this->is_platform_admin ) : ?>
                 <th>
                     <?php echo get_lang( 'Status' ); ?>
                 </th>
@@ -60,7 +60,7 @@
                     -
             <?php endif; ?>
                 </td>
-            <?php if ( $category == 'user' || $this->edit_allowed ) : ?>
+            <?php if ( $category == 'user' || $this->is_platform_admin ) : ?>
                 <td align="center">
                     <?php echo $library[ 'is_public' ] ? get_lang( 'Public' ) : get_lang( 'Private' ); ?>
                 <td align="center">
