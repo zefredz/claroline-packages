@@ -190,7 +190,8 @@ $accessControl = $resourceId && ! $is_platform_admin
 
 $accessTicket = $accessControl
             && ( $access_allowed && in_array( $cmd , $actionList ) )
-            || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) );
+            || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) )
+            && ! ( substr( $cmd , 2 ) == 'EditResource' && $context != 'catalogue' );
 
 if ( $accessTicket ) // AUTHORIZED ACTION
 {
