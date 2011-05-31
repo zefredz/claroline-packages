@@ -9,11 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-load_module_config( 'CLLIBR' );
-
-$cllibr_path = get_conf( 'CLLIBR_storage_directory' )
-             ? get_conf( 'CLLIBR_storage_directory' )
-             : get_path( 'rootSys' ) . 'cllibrary';
+$cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
 
 if ( ! is_dir( $cllibr_path ) && ! claro_mkdir( $cllibr_path , CLARO_FILE_PERMISSIONS ) )
 {
