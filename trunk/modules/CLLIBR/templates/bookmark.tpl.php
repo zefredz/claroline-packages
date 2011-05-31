@@ -25,9 +25,6 @@
                 <?php echo get_lang( 'Author(s)' ); ?>
             </th>
             <th>
-                <?php echo get_lang( 'Collection(s)' ); ?>
-            </th>
-            <th>
                 <?php echo get_lang( 'Selected' ); ?>
             </th>
             <th>
@@ -47,9 +44,6 @@
             <td> 
                 <?php echo claro_utf8_encode( implode( ', ' , $objects[1]->get( 'author' ) ) ); ?>
             </td>
-            <td> 
-                <?php echo claro_utf8_encode( implode( ', ' , $objects[1]->get( 'collection' ) ) ); ?>
-            </td>
             <td align="center">
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
@@ -65,7 +59,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td style="text-align: center; font-style: italic; color: silver;" colspan="6"><?php echo get_lang( 'Empty bookmark' ); ?></td>
+            <td style="text-align: center; font-style: italic; color: silver;" colspan="5"><?php echo get_lang( 'Empty bookmark' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
