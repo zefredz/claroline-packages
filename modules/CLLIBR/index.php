@@ -536,6 +536,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'metadataList' , $metadata->export() );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
+            $template->assign( 'courseId' , $courseId );
+            $template->assign( 'edit_allowed' , $edit_allowed );
             break;
         }
         

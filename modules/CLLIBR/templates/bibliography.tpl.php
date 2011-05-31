@@ -16,8 +16,6 @@
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
 </span>
-<?php endif; ?>
-<?php if ( $this->userId ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowBookmark') ); ?>">
         <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
