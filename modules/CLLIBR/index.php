@@ -166,12 +166,13 @@ elseif( $context == 'bookmark' )
 elseif( $context == 'catalogue')
 {
     $refId = $libraryId;
-    $access_allowed = $access_allowed || $library->isPublic();
+    $access_allowed = $access_allowed || $librarian->isLibrarian( $userId ) || $library->isPublic();
     $edit_allowed = $edit_allowed || $librarian->isLibrarian( $userId );
 }
 else
 {
     $access_allowed = true;
+    $edit_allowed = $is_course_creator;
 }
 
 if ( $context == 'librarylist' || $context == 'librarian' )

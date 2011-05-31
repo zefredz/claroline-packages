@@ -90,10 +90,7 @@ class LibraryList
             $id = $library[ 'id' ];
             $this->allowedLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
             $this->allowedLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
-            if ( $this->is_admin )
-            {
-                $this->allowedLibraryList[ $id ][ 'is_public' ] = $library[ 'is_public' ];
-            }
+            $this->allowedLibraryList[ $id ][ 'is_public' ] = $library[ 'is_public' ];
         }
     }
     
