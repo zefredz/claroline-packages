@@ -544,29 +544,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
-        case 'exBookmark':
-        case 'exAdd':
-        case 'exRemove':
-        case 'exAddResource':
-        case 'exEditResource':
-        case 'exCreateLibrary':
-        case 'exEditLibrary':
-        case 'exDeleteLibrary':
-        case 'exDeleteResource':
-        case 'exAddLibrarian':
-        case 'exRemoveLibrarian':
-        {
-            if ( $execution_ok )
-            {
-                $dialogBox->success( get_lang( 'success' ) );
-            }
-            else
-            {
-                $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
-            }
-            break;
-        }
-        
         case 'rqCreateLibrary':
         case 'rqEditLibrary':
         {
@@ -644,6 +621,29 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $template = new ModuleTemplate( 'CLLIBR' , 'searchresult.tpl.php' );
             $template->assign( 'result' , $searchEngine->getResult() );
+            break;
+        }
+        
+        case 'exBookmark':
+        case 'exAdd':
+        case 'exRemove':
+        case 'exAddResource':
+        case 'exEditResource':
+        case 'exCreateLibrary':
+        case 'exEditLibrary':
+        case 'exDeleteLibrary':
+        case 'exDeleteResource':
+        case 'exAddLibrarian':
+        case 'exRemoveLibrarian':
+        {
+            if ( $execution_ok )
+            {
+                $dialogBox->success( get_lang( 'success' ) );
+            }
+            else
+            {
+                $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
+            }
             break;
         }
         
