@@ -267,15 +267,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             $library->setTitle( $title );
             $library->setPublic( (boolean)$is_public );
-            if ( $cmd == 'exCreateLibrary' )
-            {
-                $librarian = new Librarian( $database , $library->save() );
-                $execution_ok = $librarian->register( $userId );
-            }
-            else
-            {
-                $execution_ok = $library->save();
-            }
+            $librarian = new Librarian( $database , $library->save() );
+            $execution_ok = $librarian->isLibrarian( $userId ) || $librarian->register( $userId );
             break;
         }
         
