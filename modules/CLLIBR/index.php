@@ -185,7 +185,7 @@ else
 }
 
 $accessControl = $resourceId && ! $is_platform_admin
-               ? $resourceSet->resourceExists( $resourceId ) || $cmd == 'exAdd'
+               ? $resourceSet->resourceExists( $resourceId ) || $cmd == 'exAdd' || $cmd == 'exBookmark'
                : true;
 
 $accessTicket = $accessControl

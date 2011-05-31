@@ -34,9 +34,6 @@
                 <?php echo get_lang( 'Author(s)' ); ?>
             </th>
             <th>
-                <?php echo get_lang( 'Collection(s)' ); ?>
-            </th>
-            <th>
                 <?php echo get_lang( 'Selected' ); ?>
             </th>
             <th>
@@ -55,9 +52,6 @@
             </td>
             <td> 
                 <?php echo implode( ', ' , $objects[1]->get( 'author' ) ); ?>
-            </td>
-            <td> 
-                <?php echo implode( ', ' , $objects[1]->get( 'collection' ) ); ?>
             </td>
             <td align="center">
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
@@ -80,7 +74,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td class="empty" colspan="6"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+            <td class="empty" colspan="5"><?php echo get_lang( 'Empty bibliography' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
