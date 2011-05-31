@@ -100,7 +100,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td class="empty" colspan="6"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+            <td class="empty" colspan="6"><?php echo get_lang( 'Empty catalogue' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
