@@ -90,4 +90,17 @@ class FulltextSearch extends Search
         
         return $this->searchResult = $result;
     }
+    
+    /**
+     * Display the search form
+     */
+    public function render()
+    {
+        $html  = '<form id="searchForm" method="post" action="' . $this->cmd . '">' . "\n";
+        $html .= '    <input type="submit" value="' . get_lang( 'Quick search' ) . '" />' . "\n";
+        $html .= '    <input type="text" name="searchString" value="" />' . "\n";
+        $html .= '</form>';
+        
+        return $html;
+    }
 }

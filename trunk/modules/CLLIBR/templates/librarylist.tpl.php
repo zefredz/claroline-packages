@@ -15,7 +15,7 @@
         <?php echo get_lang( 'Create a new library' ); ?>
     </a>
 </span>
-<form id="searchForm" method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqQSearch') ); ?>">
+<form id="searchForm" method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch') ); ?>">
     <input type="submit" value="<?php echo get_lang( 'Quick search' ); ?>" />
     <input type="text" name="searchString" value="" />
 </form>

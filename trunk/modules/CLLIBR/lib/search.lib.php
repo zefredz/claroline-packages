@@ -31,6 +31,7 @@ abstract class Search
                                                , 'library_resource' ) );
     }
     
+    abstract public function render();
     abstract public function search( $searchString );
     abstract public function bake();
     
