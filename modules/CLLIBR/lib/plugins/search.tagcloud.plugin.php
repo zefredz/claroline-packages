@@ -12,7 +12,7 @@
 /**
  * A tag cloud
  */
-class TagCloud
+class TagCloud extends Search
 {
     protected $cloud;
     protected $nbMax;
@@ -23,8 +23,7 @@ class TagCloud
      */
     public function __construct( $database , $cmd = 'index.php?cmd=rqSearch' )
     {
-        $this->database = $database;
-        $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );
+        parent::__construct( $database );
         $this->cmd = $cmd;
         $this->load();
     }
@@ -37,12 +36,11 @@ class TagCloud
     {
         $result = $this->database->query( "
             SELECT
-                resource_id,
                 value
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                name = `keyword`" );
+                name = \"keyword\"" );
         
         $this->cloud = array();
         $this->nbMax = 0;
@@ -51,8 +49,7 @@ class TagCloud
         {
             $value = $line[ 'value' ];
             if ( ! isset( $this->cloud[ $value ] ) ) $this->cloud[ $value ] = 0;
-            $this->cloud[ $value ][ 'count' ]++;
-            $this->cloud[ $value ][ 'result' ][] = $line[ 'resource_id' ];
+            $this->cloud[ $value ]++;
         }
         
         ksort( $this->cloud );
@@ -67,10 +64,10 @@ class TagCloud
     {
         $html = '<div id="tagCloud">';
         
-        foreach( $this->cloud as $tag => $data )
+        foreach( $this->cloud as $tag => $count )
         {
-            $size = int( 20 * $data[ 'count' ] / $this->nbMax );
-            $html .= '<a href="' . $this->cmd .'&keyword=' . $tag . '" style="font-size: ' . $size . 'pt;">'
+            $size = round( 20 * $count / $this->nbMax );
+            $html .= '<a href="' . $this->cmd .'&keyword=' . $tag . '" style="font-size: ' . $size . 'pt; margin: 5px;">'
                    . $tag . '</a>';
         }
         
@@ -84,13 +81,47 @@ class TagCloud
      * @param string $keyword
      * @return array $result
      */
-    public function getResult( $keyword )
+    public function search( $keyword )
     {
         if ( ! array_key_exists( $keywords , $this->cloud ) )
         {
             throw new Exception( 'invalid keyword' );
         }
         
-        return $this->cloud[ $keyword ][ 'result' ];
+        return $this->resultSet = $this->database->query( "
+            SELECT
+                R.id
+                R.title
+                R.description
+                R.creation_date
+            FROM
+                `{$this->tbl['library_resource']}` AS R
+            INNER JOIN
+                `{$this->tbl['library_metadata']}` AS M
+            ON
+                R_id = M.resource_id
+            WHERE
+                M.name = \"keyword\"
+            AND
+                M.value = " . $this->database->quote( $keyword ) . "
+            ORDER BY
+                R.creation_date DESC" );
+    }
+    
+    /**
+     *
+     */
+    public function bake()
+    {
+        $result = array();
+        
+        foreach( $this->resultSet as $line )
+        {
+            $result[ $line[ 'id' ] ] = array( 'title' => $line[ 'title' ]
+                                            , 'description' => $line[ 'description' ]
+                                            , 'date' => $line[ 'creation_date' ] );
+        }
+        
+        return $this->searchResult = $result;
     }
 }
