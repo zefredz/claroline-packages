@@ -80,4 +80,12 @@ class MultiSearch extends Search
         
         return $this->searchResult = $searchResult;
     }
+    
+    /**
+     *
+     */
+    public function render()
+    {
+        return null; //Nothing there yet;
+    }
 }

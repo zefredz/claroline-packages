@@ -31,6 +31,7 @@ From::Module( 'CLLIBR' )->uses(
     'metadataview.lib',
     'pluginloader.lib',
     'thirdparty/uuid.lib',
+    'acl.lib',
     'tools.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
@@ -81,7 +82,7 @@ $actionList = array( 'rqShowBookmark'
                    , 'exAdd'
                    , 'rqRemove'
                    , 'exRemove'
-                   , 'rqQSearch' );
+                   , 'rqSearch' );
 
 $restrictedActionList = array( 'rqAddResource'
                              , 'rqEditResource'
@@ -98,7 +99,7 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
-                             , 'rqQSearch' );
+                             , 'rqSearch' );
 
 $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exRemove'          => 'rqShowBibliography'
@@ -198,8 +199,11 @@ else
     $resourceSet = new Collection( $database , $context , $refId );
 }
 
+$acl = new CLLIBR_ACL( $database , $userId , $is_course_creator , $is_platform_admin );
+
 $accessControl = $resourceId && ! $is_platform_admin
-               ? $resourceSet->resourceExists( $resourceId ) || $cmd == 'exAdd' || $cmd == 'exBookmark'
+               //? $resourceSet->resourceExists( $resourceId ) || $cmd == 'exAdd' || $cmd == 'exBookmark'
+               ? $acl->accessGranted( $resourceId )
                : true;
 
 $accessTicket = $accessControl
@@ -481,7 +485,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
-        case 'rqQSearch':
+        case 'rqSearch':
         {
             $searchString = $userInput->get( 'searchString' );
             $searchEngine = new FulltextSearch( $database );
@@ -647,7 +651,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
-        case 'rqQSearch':
+        case 'rqSearch':
         {
             $template = new ModuleTemplate( 'CLLIBR' , 'searchresult.tpl.php' );
             $template->assign( 'result' , $searchEngine->getResult() );
