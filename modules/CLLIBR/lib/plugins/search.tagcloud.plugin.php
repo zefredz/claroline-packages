@@ -42,7 +42,7 @@ class TagCloud
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                name = 'keyword'" );
+                name = `keyword`" );
         
         $this->cloud = array();
         $this->nbMax = 0;
