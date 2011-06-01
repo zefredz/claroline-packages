@@ -77,6 +77,7 @@ $actionList = array( 'rqShowBookmark'
                    , 'rqView'
                    , 'rqDownload'
                    , 'exBookmark'
+                   , 'exUnbookmark'
                    , 'exAdd'
                    , 'rqRemove'
                    , 'exRemove'
@@ -98,6 +99,19 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
                              , 'rqQSearch' );
+
+$redirectionList = array( 'exAdd'             => 'rqShowBibliography'
+                        , 'exRemove'          => 'rqShowBibliography'
+                        , 'exAddResource'     => 'rqShowCatalogue'
+                        , 'exDeleteResource'  => 'rqShowCatalogue'
+                        , 'exCreateLibrary'   => 'rqShowLibrarylist'
+                        , 'exEditLibrary'     => 'rqShowLibrarylist'
+                        , 'exDeleteLibrary'   => 'rqShowLibrarylist'
+                        , 'exAddLibrarian'    => 'rqShowLibrarian'
+                        , 'exRemoveLibrarian' => 'rqShowLibrarian'
+                        , 'exEditResource'    => 'rqView'
+                        , 'exBookmark'        => ''
+                        , 'exUnbookmark'      => '' );
 
 $userInput = Claro_UserInput::getInstance();
 $userInput->setValidator( 'cmd' ,
@@ -193,6 +207,8 @@ $accessTicket = $accessControl
             || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) )
             && ! ( substr( $cmd , 2 ) == 'EditResource' && $context != 'catalogue' );
 
+//$tagCloud = new TagCloud( $database );
+
 if ( $accessTicket ) // AUTHORIZED ACTION
 {
     // CONTROLLER
@@ -254,6 +270,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         }
         
         case 'exRemove':
+        case 'exUnbookmark':
         {
             $execution_ok = $resourceSet->remove( $resourceId );
             break;
@@ -510,6 +527,17 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
     }
     
+    if ( array_key_exists( $cmd , $redirectionList ) )
+    {
+        $cmd = $redirectionList[ $cmd ];
+    }
+    
+    if ( isset( $execution_ok ) )
+    {
+        $execution_ok ? $dialogBox->success( get_lang( 'success' ) )
+                      : $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
+    }
+    
     switch( $cmd )
     {
         case 'rqShowBookmark':
@@ -517,6 +545,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqShowCatalogue':
         case 'rqShowLibrarylist':
         case 'rqShowLibrarian':
+        case '';
+        //case 'exBookmark':
         {
             break;
         }
@@ -621,29 +651,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $template = new ModuleTemplate( 'CLLIBR' , 'searchresult.tpl.php' );
             $template->assign( 'result' , $searchEngine->getResult() );
-            break;
-        }
-        
-        case 'exBookmark':
-        case 'exAdd':
-        case 'exRemove':
-        case 'exAddResource':
-        case 'exEditResource':
-        case 'exCreateLibrary':
-        case 'exEditLibrary':
-        case 'exDeleteLibrary':
-        case 'exDeleteResource':
-        case 'exAddLibrarian':
-        case 'exRemoveLibrarian':
-        {
-            if ( $execution_ok )
-            {
-                $dialogBox->success( get_lang( 'success' ) );
-            }
-            else
-            {
-                $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
-            }
             break;
         }
         
