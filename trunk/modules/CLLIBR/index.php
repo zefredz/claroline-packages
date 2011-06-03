@@ -201,15 +201,14 @@ else
 
 $acl = new CLLIBR_ACL( $database , $userId , $is_course_creator , $is_platform_admin );
 
-$accessControl = $resourceId && ! $is_platform_admin
-               //? $resourceSet->resourceExists( $resourceId ) || $cmd == 'exAdd' || $cmd == 'exBookmark'
-               ? $acl->accessGranted( $resourceId )
-               : true;
+if ( $resourceId )
+{
+    $access_allowed = $access_allowed && $acl->accessGranted( $resourceId );
+    $edit_allowed = $edit_allowed && $acl->editGranted( $resourceId );
+}
 
-$accessTicket = $accessControl
-            && ( $access_allowed && in_array( $cmd , $actionList ) )
-            || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) )
-            && ! ( substr( $cmd , 2 ) == 'EditResource' && $context != 'catalogue' );
+$accessTicket = ( $access_allowed && in_array( $cmd , $actionList ) )
+             || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) );
 
 //$tagCloud = new TagCloud( $database );
 
@@ -602,7 +601,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'courseId' , $courseId );
-            $template->assign( 'edit_allowed' , $edit_allowed );
+            $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
             break;
         }
         
