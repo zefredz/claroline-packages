@@ -83,25 +83,32 @@ class TagCloud extends Search
      */
     public function search( $keyword )
     {
-        if ( ! array_key_exists( $keywords , $this->cloud ) )
+        if ( ! array_key_exists( $keyword , $this->cloud ) )
         {
             throw new Exception( 'invalid keyword' );
         }
         
         return $this->resultSet = $this->database->query( "
             SELECT
-                R.id
-                R.title
-                R.description
-                R.creation_date
+                R.id,
+                R.title,
+                R.description,
+                R.creation_date,
+                K.value
             FROM
                 `{$this->tbl['library_resource']}` AS R
             INNER JOIN
                 `{$this->tbl['library_metadata']}` AS M
             ON
-                R_id = M.resource_id
+                R.id = M.resource_id
+            INNER JOIN
+                `{$this->tbl['library_metadata']}` AS K
+            ON
+                R.id = K.resource_id
             WHERE
-                M.name = \"keyword\"
+                K.name = 'keyword'
+            AND
+                M.name = 'keyword'
             AND
                 M.value = " . $this->database->quote( $keyword ) . "
             ORDER BY
@@ -117,9 +124,20 @@ class TagCloud extends Search
         
         foreach( $this->resultSet as $line )
         {
-            $result[ $line[ 'id' ] ] = array( 'title' => $line[ 'title' ]
-                                            , 'description' => $line[ 'description' ]
-                                            , 'date' => $line[ 'creation_date' ] );
+            $id = $line[ 'id' ];
+            
+            if ( array_key_exists( $id , $result ) )
+            {
+                $result[ $id ][ 'keywords' ][] = $line[ 'value' ];
+            }
+            else
+            {
+                $result[ $id ] = array( 'id' => $id
+                                      , 'title' => $line[ 'title' ]
+                                      , 'description' => $line[ 'description' ]
+                                      , 'date' => $line[ 'creation_date' ]
+                                      , 'keywords' => array( $line[ 'value' ] ) );
+            }
         }
         
         return $this->searchResult = $result;
