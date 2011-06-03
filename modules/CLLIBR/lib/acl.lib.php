@@ -36,7 +36,9 @@ class CLLIBR_ACL
     }
     
     /**
-     *
+     * Controls if user is allowed to acess the specified resource
+     * @param int $resourceId
+     * @return boolean
      */
     public function accessGranted( $resourceId )
     {
@@ -97,5 +99,33 @@ class CLLIBR_ACL
             || $in_bookmark
             || $in_bibliography
             || $in_library;
+    }
+    
+    /**
+     * Controls if user is allowed to edit the specified resource
+     * @param int $resourceId
+     * @return boolean
+     */
+    public function editGranted( $resourceId )
+    {
+        $is_librarian = $this->database->query( "
+            SELECT
+                C.resource_id
+            FROM
+                `{$this->tbl['library_collection']}` AS C
+            INNER JOIN
+                `{$this->tbl['library_librarian']}` AS L
+            ON
+                C.ref_id = L.library_id
+            AND
+                L.user_id = " . $this->database->escape( $this->userId ) . "
+            WHERE
+                C.type = 'catalogue'
+            AND
+                C.resource_id = " . $this->database->escape( $resourceId )
+        )->numRows();
+        
+        return $this->is_platform_admin
+            || $is_librarian;
     }
 }

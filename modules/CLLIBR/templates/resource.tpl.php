@@ -9,11 +9,19 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( $this->courseId && $this->edit_allowed ) : ?>
+<?php if ( $this->edit_allowed ) : ?>
+    <?php if ( $this->courseId ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $this->resourceId ) ); ?>">
         <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Bibliography' ); ?>" />
         <?php echo get_lang( 'Add to the course\'s bibliography' ); ?>
+    </a>
+</span>
+    <?php endif; ?>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $this->resourceId ) );?>">
+        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
+        <?php echo get_lang( 'Edit resource\'s metadatas' ); ?>
     </a>
 </span>
 <?php endif; ?>
