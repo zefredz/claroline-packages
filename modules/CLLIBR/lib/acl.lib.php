@@ -67,7 +67,7 @@ class CLLIBR_ACL
             AND
                 U.user_id = " . $this->database->escape( $this->userId ) . "
             AND
-                resource_id = " . $this->database->escape( $resourceId )
+                C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
         
         $in_library = $this->database->query( "
@@ -90,7 +90,7 @@ class CLLIBR_ACL
             WHERE
                 C.type = 'catalogue'
             AND
-                resource_id = " . $this->database->escape( $resourceId )
+                C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
         
         return $this->is_platform_admin
