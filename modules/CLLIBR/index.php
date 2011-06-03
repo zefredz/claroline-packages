@@ -488,8 +488,25 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqSearch':
         {
             $searchString = $userInput->get( 'searchString' );
-            $searchEngine = new FulltextSearch( $database );
-            $searchEngine->search( $searchString );
+            $keyword = $userInput->get( 'keyword' );
+            $searchQuery = $userInput->get( 'searchQuery' );
+            
+            if ( $keyword )
+            {
+                $searchEngine = new TagCloud( $database );
+                $searchEngine->search( $keyword );
+            }
+            elseif ( $searchQuery )
+            {
+                $searchEngine = new MultiSearch( $database );
+                $searchEngine->search( $searchQuery );
+            }
+            else
+            {
+                $searchEngine = new FulltextSearch( $database );
+                $searchEngine->search( $searchString );
+            }
+            
             $searchEngine->bake();
             break;
         }
@@ -653,7 +670,10 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqSearch':
         {
-            $template = new ModuleTemplate( 'CLLIBR' , 'searchresult.tpl.php' );
+            $tpl = is_a( $searchEngine , 'TagCloud' )
+                 ? 'keyword.tpl.php'
+                 : 'searchresult.tpl.php';
+            $template = new ModuleTemplate( 'CLLIBR' , $tpl );
             $template->assign( 'result' , $searchEngine->getResult() );
             break;
         }

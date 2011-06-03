@@ -16,28 +16,27 @@
                 <?php echo get_lang( 'Title'); ?>
             </th>
             <th>
-                <?php echo get_lang( 'Relevancy' ); ?>
+                <?php echo get_lang( 'Associated keywords' ); ?>
             </th>
         </tr>
     </thead>
     <tbody>
 <?php if ( $this->result ) : ?>
-    <?php foreach ( $this->result as $score => $result ) : ?>
-        <?php foreach( $result as $resourceId => $datas ) : ?>
+    <?php foreach( $this->result as $resourceId => $datas ) : ?>
     <tr>
         <td>
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
                 <?php echo $datas[ 'title' ]; ?>
             </a><br />
-            <?php if ( isset( $datas[ 'matches' ][ 'description' ] ) ): ?>
-            <small><?php echo $datas[ 'matches' ][ 'description' ]; ?></small>
-            <?php endif; ?>
         </td>
         <td>
-            <?php echo $score; ?>
+        <?php foreach( $datas[ 'keywords' ] as $keyword ) : ?>
+            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
+                <?php echo $keyword; ?>
+            </a>&nbsp;
+        <?php endforeach; ?>
         </td>
     </tr>
-        <?php endforeach; ?>
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
