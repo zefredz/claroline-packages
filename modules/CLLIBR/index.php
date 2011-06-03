@@ -203,8 +203,8 @@ $acl = new CLLIBR_ACL( $database , $userId , $is_course_creator , $is_platform_a
 
 if ( $resourceId )
 {
-    $access_allowed = $access_allowed && $acl->accessGranted( $resourceId );
-    $edit_allowed = $edit_allowed && $acl->editGranted( $resourceId );
+    $access_allowed = $access_allowed || $acl->accessGranted( $resourceId );
+    $edit_allowed = $edit_allowed || $acl->editGranted( $resourceId );
 }
 
 $accessTicket = ( $access_allowed && in_array( $cmd , $actionList ) )
@@ -437,14 +437,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $metadata->add( 'keyword' , $keyword );
             }
             
-            if( ! empty( $keywords ) )
+            foreach( $keywords as $value )
             {
-                foreach( $keywords as $value )
+                if ( $value && ! $metadata->metadataExists( 'keyword' , $value ) )
                 {
-                    if ( ! $metadata->metadataExists( 'keyword' , $value ) )
-                    {
-                        $metadata->add( 'keyword' , $value );
-                    }
+                    $metadata->add( 'keyword' , $value );
                 }
             }
             
