@@ -29,8 +29,9 @@ class CLLIBR_ACL
         $this->tbl = get_module_main_tbl( array ( 'library_collection'
                                                 , 'library_library'
                                                 , 'library_librarian'
-                                                , 'rel_course_user' ) );
-        $this->userId = $userId;
+                                                , 'rel_course_user'
+                                                , 'cours' ) );
+        $this->userId = (int)$userId;
         $this->is_course_creator = $is_course_creator;
         $this->is_platform_admin = $is_platform_admin;
     }
@@ -61,13 +62,19 @@ class CLLIBR_ACL
             FROM
                 `{$this->tbl['library_collection']}` AS C
             INNER JOIN
+                `{$this->tbl['cours']}` AS P
+            ON
+                P.code = C.ref_id
+            INNER JOIN
                 `{$this->tbl['rel_course_user']}` AS U
             ON
-                C.ref_id = U.code_cours
+                U.code_cours = C.ref_id
             WHERE
                 C.type = 'bibliography'
             AND
-                U.user_id = " . $this->database->escape( $this->userId ) . "
+                ( P.access = 'public'
+            OR
+                U.user_id = " . $this->database->escape( $this->userId ) . ")
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
@@ -77,20 +84,20 @@ class CLLIBR_ACL
                 C.resource_id
             FROM
                 `{$this->tbl['library_collection']}` AS C
-            LEFT JOIN
+            INNER JOIN
                 `{$this->tbl['library_library']}` AS P
             ON
-                C.ref_id = P.id
-            AND
-                P.is_public = TRUE
-            RIGHT JOIN
+                P.id = C.ref_id
+            INNER JOIN
                 `{$this->tbl['library_librarian']}` AS L
             ON
-                C.ref_id = L.library_id
-            AND
-                L.user_id = " . $this->database->escape( $this->userId ) . "
+                L.library_id = C.ref_id
             WHERE
                 C.type = 'catalogue'
+            AND
+                ( P.is_public = TRUE
+            OR
+                L.user_id = " . $this->database->escape( $this->userId ) . ")
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
