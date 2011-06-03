@@ -219,6 +219,17 @@ class Metadata
         );
     }
     
+    /**
+     * Verifies if a metadate already exists
+     * @param string $name
+     * @param string $value
+     * @return boolean true if exists
+     */
+    public function metadataExists( $name , $value )
+    {
+        return in_array( array( 'name' => $name , 'value' => $value )
+                       , $this->metadataList );
+    }
     
     /**
      * @static Getter for self::$defaultMetadataList

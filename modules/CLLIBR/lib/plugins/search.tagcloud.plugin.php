@@ -77,6 +77,15 @@ class TagCloud extends Search
     }
     
     /**
+     * Gets all keywords
+     * @return array $keywordList
+     */
+    public function getAllKeywords()
+    {
+        return array_keys( $this->cloud );
+    }
+    
+    /**
      * Get the result for a specified keyword
      * @param string $keyword
      * @return array $result

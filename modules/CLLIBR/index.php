@@ -397,6 +397,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
             $metadataList = $userInput->get( 'metadata' );
+            $keyword = $userInput->get( 'keyword' );
+            $keywords = explode( ',' , $userInput->get( 'keywords' ) );
             $toDelete = $userInput->get( 'del' );
             $newMetadata = $userInput->get( 'name' );
             $newValue = $userInput->get( 'value' );
@@ -428,6 +430,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 foreach( array_keys( $toDelete ) as $id )
                 {
                     $metadata->remove( $id );
+                }
+            }
+            
+            if ( $keyword && ! $metadata->metadataExists( 'keyword' , $keyword ) )
+            {
+                $metadata->add( 'keyword' , $keyword );
+            }
+            
+            if( ! empty( $keywords ) )
+            {
+                foreach( $keywords as $value )
+                {
+                    if ( ! $metadata->metadataExists( 'keyword' , $value ) )
+                    {
+                        $metadata->add( 'keyword' , $value );
+                    }
                 }
             }
             
@@ -626,7 +644,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             $template->assign( 'propertyList' , $metadata->getAllProperties() );
-            $template->assign( 'keywordsList' , $metadata->getAllKeywords() );
+            $template->assign( 'keywordList' , $metadata->getAllKeywords() );
             break;
         }
         
@@ -711,6 +729,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
                                                             . $dialogBox->render()
+                                                            //. $tagCloud->render()
                                                             . $template->render() );
 }
 else // FORBIDDEN ACTION

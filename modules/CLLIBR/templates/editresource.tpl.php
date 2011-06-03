@@ -119,6 +119,27 @@
             ?>
 
         <?php endif; ?>
+        
+        <dt>
+            <a id="addKeyword" href="#claroBody">
+            <span class="claroCmd"><?php echo get_lang( 'Add a existing keyword' ); ?></span>
+            </a>
+        </dt>
+        <dd>
+            <select id="addKeyword" name="keyword">
+                <option selected="selected" value=""></option>
+            <?php foreach ( $this->keywordList as $keyword ) : ?>
+                <option value="<?php echo $keyword[ 'value' ]; ?>"><?php echo $keyword[ 'value' ]; ?></option>
+            <?php endforeach; ?>
+            </select>
+        <dd>
+        <dt>
+            <span class="claroCmd"><?php echo get_lang( '... or new ones (separated by a comma)' ); ?></span>
+        </dt>
+        <dd>
+            <input type="text" name="keywords" value="" />
+        </dd>
+        
         <dt>
             <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
