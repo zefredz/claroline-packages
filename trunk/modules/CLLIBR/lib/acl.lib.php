@@ -82,6 +82,10 @@ class CLLIBR_ACL
             WHERE
                 C.type = 'bibliography'
             AND
+                ( C.is_visible = TRUE
+            AND
+                U.isCourseManager = TRUE )
+            AND
                 ( P.access = 'public'
             OR
                 U.user_id = " . $this->database->escape( $this->userId ) . ")
