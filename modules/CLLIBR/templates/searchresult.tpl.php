@@ -22,8 +22,7 @@
     </thead>
     <tbody>
 <?php if ( $this->result ) : ?>
-    <?php foreach ( $this->result as $score => $result ) : ?>
-        <?php foreach( $result as $resourceId => $datas ) : ?>
+    <?php foreach ( $this->result as $resourceId => $datas ) : ?>
     <tr>
         <td>
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
@@ -34,10 +33,9 @@
             <?php endif; ?>
         </td>
         <td>
-            <?php echo $score; ?>
+            <?php echo $datas[ 'score' ]; ?>
         </td>
     </tr>
-        <?php endforeach; ?>
     <?php endforeach; ?>
 <?php else: ?>
         <tr>

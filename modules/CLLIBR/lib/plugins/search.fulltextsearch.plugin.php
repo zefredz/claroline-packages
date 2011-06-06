@@ -88,7 +88,22 @@ class FulltextSearch extends Search
         
         krsort( $result );
         
-        return $this->searchResult = $result;
+        $searchResult = array();
+        
+        foreach( $result as $score => $resources )
+        {
+            foreach( $resources as $id => $datas )
+            {
+                if ( ! array_key_exists( $id , $searchResult ) )
+                {
+                    $searchResult[ $id ] = $datas;
+                    $searchResult[ $id ][ 'score' ] = 0;
+                }
+                $searchResult[ $id ][ 'score' ] += $score;
+            }
+        }
+        
+        return $this->searchResult = $searchResult;
     }
     
     /**

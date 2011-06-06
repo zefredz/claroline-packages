@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -11,17 +11,22 @@
 
 /**
  * A class that represents a library
+ * @const LIB_PUBLIC
+ * @const LIB_RESTRICTED
+ * @const LIB_PRIVATE
  * @property int $id
- * @property int userId
  * @property string $title
-
- * @property boolean $is_public
+ * @property string $status
  */
 class Library
 {
+    const LIB_PUBLIC = 'public';
+    const LIB_RESTRICTED = 'restricted';
+    const LIB_PRIVATE = 'private';
+    
     protected $id;
     protected $title;
-    protected $is_public;
+    protected $status;
     
     protected $database;
     
@@ -52,7 +57,7 @@ class Library
         $resultSet = $this->database->query( "
             SELECT
                 title,
-                is_public
+                status
             FROM
                 `{$this->tbl['library_library']}`
             WHERE
@@ -65,7 +70,7 @@ class Library
         }
         
         $this->title = $resultSet[ 'title' ];
-        $this->is_public = (boolean)$resultSet[ 'is_public' ];
+        $this->status = $resultSet[ 'status' ];
     }
     
     /**
@@ -87,6 +92,15 @@ class Library
     }
     
     /**
+     * Getter for status
+     * @retrun string $this->status
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
+    /**
      * Setter for library title
      * @param string $title
      * @return boolean true on success
@@ -98,23 +112,19 @@ class Library
     
     /**
      * Setter for library status
-     * true -> public library
-     * false -> private library
-     * @param boolean $is_public
+     * @param string $status
      * @return boolean true on success
      */
-    public function setPublic( $isPublic = false )
+    public function setStatus( $status = self::LIB_PRIVATE )
     {
-        return $this->is_public = (boolean)$isPublic;
-    }
-    
-    /**
-     * Verifies if the library is public
-     * @retrun boolean true if public
-     */
-    public function isPublic()
-    {
-        return $this->is_public;
+        if ( $status != self::LIB_PUBLIC
+            && $status != self::LIB_RESTRICTED
+            && $status != self::LIB_PRIVATE )
+        {
+            throw new Exception( 'Invalid status' );
+        }
+        
+        return $this->status = $status;
     }
     
     /**
@@ -139,7 +149,7 @@ class Library
         $sql = "\n    `{$this->tbl['library_library']}`
                 SET
                     title = " . $this->database->quote( $this->title ) . ",
-                    is_public = " . $this->database->escape( (int)$this->is_public );
+                    status = " . $this->database->quote( $this->status );
         
         if ( $this->id )
         {

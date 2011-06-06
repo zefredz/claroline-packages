@@ -2,7 +2,7 @@
     <label>CLLIBR</label>
     <name>Online Library</name>
     <description><![CDATA[ Online Library for Claroline ]]></description>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>tool</type>

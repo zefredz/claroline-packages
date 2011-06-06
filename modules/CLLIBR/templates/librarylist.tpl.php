@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -62,7 +62,7 @@
                 </td>
             <?php if ( $category == 'user' || $this->is_platform_admin ) : ?>
                 <td align="center">
-                    <?php echo $library[ 'is_public' ] ? get_lang( 'Public' ) : get_lang( 'Private' ); ?>
+                    <?php echo get_lang( $library[ 'status' ] ); ?>
                 <td align="center">
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
