@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.5.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -141,11 +141,10 @@ class TagCloud extends Search
             }
             else
             {
-                $result[ $id ] = array( 'id' => $id
-                                      , 'title' => $line[ 'title' ]
-                                      , 'description' => $line[ 'description' ]
-                                      , 'date' => $line[ 'creation_date' ]
-                                      , 'keywords' => array( $line[ 'value' ] ) );
+                $result[ $id ] = array( 'title' => $line[ 'title' ]
+                                        , 'description' => $line[ 'description' ]
+                                        , 'date' => $line[ 'creation_date' ]
+                                        , 'keywords' => array( $line[ 'value' ] ) );
             }
         }
         

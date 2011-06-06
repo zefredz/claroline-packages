@@ -2,12 +2,16 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
+
+$_lang[ '_public' ] = '<strong>Publique</strong> : tous les utilisateurs de la plateforme ont accès à toutes les ressources';
+$_lang[ '_restricted' ] = '<strong>A accès restreint</strong> : tous les utilisateurs ont accès aux méta-données, mais pas aux documents';
+$_lang[ '_private' ] = '<strong>Privée</strong> : seuls les utilisateurs autorisés ont accès aux documents et à leur méta-données. Le moteur de recherche omettra cette bibliothèque de son résultat';
 
 $_lang[ 'book' ] = 'livre';
 $_lang[ 'picture' ] = 'image';

@@ -11,9 +11,19 @@
 
 /**
  * A class for access and right management
+ * @const ACCESS_EDIT
+ * @const ACCESS_READ
+ * @const ACCESS_SEARCH
+ * @property int $userId;
+ * @property boolean $is_platform_admin
+ * @property boolean $is_course_manager
  */
 class CLLIBR_ACL
 {
+    const ACCESS_EDIT = 'edit';
+    const ACCESS_READ = 'read';
+    const ACCESS_SEARCH = 'search';
+    
     protected $userId;
     protected $is_platform_admin;
     protected $is_course_creator;
@@ -41,7 +51,7 @@ class CLLIBR_ACL
      * @param int $resourceId
      * @return boolean
      */
-    public function accessGranted( $resourceId )
+    public function accessGranted( $resourceId , $access = self::ACCESS_SEARCH )
     {
         $in_bookmark = $this->database->query( "
             SELECT
@@ -79,6 +89,17 @@ class CLLIBR_ACL
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
         
+        $cond = $access == self::ACCESS_READ
+              ? " = 'public'"
+              : " != 'private'";
+        
+        $sql = $access != self::ACCESS_EDIT
+             ? "\nAND
+                ( P.status" . $cond . "
+            OR
+                L.user_id = " . $this->database->escape( $this->userId ) . ")"
+             : "";
+        
         $in_library = $this->database->query( "
             SELECT
                 C.resource_id
@@ -93,11 +114,7 @@ class CLLIBR_ACL
             ON
                 L.library_id = C.ref_id
             WHERE
-                C.type = 'catalogue'
-            AND
-                ( P.is_public = TRUE
-            OR
-                L.user_id = " . $this->database->escape( $this->userId ) . ")
+                C.type = 'catalogue'". $sql . "
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();

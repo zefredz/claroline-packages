@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -64,7 +64,8 @@ class Collection
         
         $resultSet = $this->database->query( "
             SELECT
-                resource_id
+                resource_id,
+                is_visible
             FROM
                 `{$this->tbl['library_collection']}`
             WHERE
@@ -77,7 +78,8 @@ class Collection
         {
             $resourceId = $line[ 'resource_id' ];
             $this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
-                                                      , new Metadata( $this->database , $resourceId ) );
+                                                      , new Metadata( $this->database , $resourceId )
+                                                      , 'is_visible' => (boolean)$line[ 'is_visible' ] );
         }
     }
     
@@ -124,6 +126,53 @@ class Collection
     }
     
     /**
+     * Sets the visibility of the resource
+     * @param int $resourceId
+     * @param boolean $is_visible
+     * @return boolean true on success
+     */
+    public function setVisibility( $resourceId , $is_visible = true )
+    {
+        return $this->database->exec( "
+            UPDATE
+                `{$this->tbl['library_collection']}`
+            SET
+                is_visible = " . $this->database->escape( $is_visible ? 'TRUE' : 'FALSE' ) . "
+            WHERE
+                resource_id = " . $this->database->escape( $resourceId ) . "
+            AND
+                ref_id = " . $this->database->quote( $this->refId ) . "
+            AND
+                type = " . $this->database->quote( $this->type ) );
+    }
+    
+    /**
+     * Gets the collection list in wich the specified resource is included
+     * @param int $resourceId
+     * @return array $collectionList
+     */
+    public function getCollectionList( $resourceId )
+    {
+        $collectionList = array();
+        
+        $result = $this->database->query( "
+            SELECT
+                type,
+                ref_id
+            FROM
+                `{$this->tbl['library_collection']}`
+            WHERE
+                resource_id =" . $this->database->escape( $resourceId ) );
+        
+        foreach( $result as $line )
+        {
+            $collectionList[ $line[ 'type' ] ][] = $line[ 'ref_id' ];
+        }
+        
+        return $collectionList;
+    }
+    
+    /**
      * Add a resource in the resource set
      * @param Resource $resource
      * @retrn boolean true on success
@@ -136,7 +185,8 @@ class Collection
             SET
                 type = " . $this->database->quote( $this->type ) . ",
                 ref_id = " . $this->database->quote( $this->refId ) . ",
-                resource_id = " . $this->database->escape( $resourceId ) ) )
+                resource_id = " . $this->database->escape( $resourceId ) ) . "
+                is_visible = TRUE" )
         {
             return $this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
                                                              , new Metadata( $this->database , $resourceId ) );

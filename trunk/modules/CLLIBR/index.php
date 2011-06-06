@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.5.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -99,6 +99,8 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
+                             , 'exVisible'
+                             , 'exInvisible'
                              , 'rqSearch' );
 
 $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
@@ -181,7 +183,9 @@ elseif( $context == 'bookmark' )
 elseif( $context == 'catalogue')
 {
     $refId = $libraryId;
-    $access_allowed = $access_allowed || $librarian->isLibrarian( $userId ) || $library->isPublic();
+    $access_allowed = $access_allowed
+                   || $librarian->isLibrarian( $userId )
+                   || $library->getStatus() != Library::LIB_PRIVATE;
     $edit_allowed = $edit_allowed || $librarian->isLibrarian( $userId );
 }
 else
@@ -203,8 +207,8 @@ $acl = new CLLIBR_ACL( $database , $userId , $is_course_creator , $is_platform_a
 
 if ( $resourceId )
 {
-    $access_allowed = $access_allowed || $acl->accessGranted( $resourceId );
-    $edit_allowed = $edit_allowed || $acl->editGranted( $resourceId );
+    $access_allowed = $acl->accessGranted( $resourceId );
+    $edit_allowed = $acl->editGranted( $resourceId );
 }
 
 $accessTicket = ( $access_allowed && in_array( $cmd , $actionList ) )
@@ -279,14 +283,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
+        case 'exVisible':
+        case 'exInvisible':
+        {
+            $execution_ok = $resourceSet->setVisibility( $resourceId
+                                                       , $cmd == 'exVisible' ? true : false );
+            break;
+        }
+        
         case 'exEditLibrary':
         case 'exCreateLibrary':
         {
             $title = $userInput->get( 'title' );
-            $is_public = $userInput->get( 'is_public' );
+            $status = $userInput->get( 'status' );
             
             $library->setTitle( $title );
-            $library->setPublic( (boolean)$is_public );
+            $library->setStatus( $status );
             $librarian = new Librarian( $database , $library->save() );
             $execution_ok = $librarian->isLibrarian( $userId ) || $librarian->register( $userId );
             break;
@@ -538,6 +550,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     $jsLoader->load( 'editresource' );
     
     $dialogBox = new DialogBox();
+    $warning = new DialogBox();
     
     if ( $resource->getId() )
     {
@@ -580,6 +593,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqShowCatalogue':
         case 'rqShowLibrarylist':
         case 'rqShowLibrarian':
+        case 'exVisible':
+        case 'exInvisible':
         case '';
         //case 'exBookmark':
         {
@@ -599,6 +614,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'courseId' , $courseId );
             $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
+            $template->assign( 'read_allowed' , $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_READ ) );
             break;
         }
         
@@ -616,7 +632,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $form->assign( 'userId' , $userId );
             $form->assign( 'libraryId' , $libraryId );
             $form->assign( 'title' , $library->getTitle() );
-            $form->assign( 'is_public' , $library->isPublic() );
+            $form->assign( 'status' , $library->getStatus() );
             $dialogBox->form( $form->render() );
             break;
         }
@@ -648,7 +664,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $msg = get_lang( 'Do you really want to remove this resource?' );
             $urlAction = 'exRemove';
-            $urlCancel = 'rqShow' . $context;
+            $urlCancel = 'rqShow' . ucwords( $context );
             $xid = array( 'resourceId' => $resourceId );
             break;
         }
@@ -664,6 +680,20 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqDeleteResource':
         {
+            $collectionList = $resourceSet->getCollectionList( $resourceId );
+            
+            if ( isset( $collectionList[ 'bibliography' ] ) || isset( $collectionList[ 'bookmark' ] ) )
+            {
+                $warningMsg = get_lang( '<strong>Warning : this resource is used :<br /><br />' );
+                $warningMsg .= isset( $collectionList[ 'bibliography' ] )
+                            ?'- ' . count( $collectionList[ 'bibliography' ] ) . ' ' . get_lang( 'bibliographies' ) . '<br />'
+                            : '';
+                $warningMsg .= isset( $collectionList[ 'bookmark' ] )
+                            ? '- ' . count( $collectionList[ 'bookmark' ] ) . ' ' . get_lang( 'bookmarks' ) . '<br />'
+                            : '';
+                $warningMsg .= '<br />' . 'It\'s not advised to remove this resource unless you are sure it will not cause problems!</strong>';
+            }
+            
             $msg = get_lang( 'Do you really want to delete this resource?' );
             $urlAction = 'exDelete';
             $urlCancel = 'rqShowCatalogue';
@@ -684,11 +714,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqSearch':
         {
+            $searchResult = $searchEngine->getResult();
+            
+            foreach( $searchResult as $resourceId => $datas )
+            {
+                if ( ! $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_SEARCH ) )
+                {
+                    unset( $searchResult[ $resourceId ] );
+                }
+            }
+            
             $tpl = is_a( $searchEngine , 'TagCloud' )
                  ? 'keyword.tpl.php'
                  : 'searchresult.tpl.php';
             $template = new ModuleTemplate( 'CLLIBR' , $tpl );
-            $template->assign( 'result' , $searchEngine->getResult() );
+            
+            $template->assign( 'result' , $searchResult );
             break;
         }
         
@@ -716,6 +757,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         $dialogBox->question( $question->render() );
     }
     
+    if ( isset( $warningMsg ) )
+    {
+        $warning->error( $warningMsg );
+    }
+    
     if ( $resourceId && $cmd == 'rqView' )
     {
         $dcView = new DublinCore( $metadata->export() );
@@ -724,6 +770,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
+                                                            . $warning->render()
                                                             . $dialogBox->render()
                                                             //. $tagCloud->render()
                                                             . $template->render() );

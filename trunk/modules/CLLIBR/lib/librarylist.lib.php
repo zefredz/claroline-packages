@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -49,7 +49,7 @@ class LibraryList
             SELECT
                 LY.id,
                 LY.title,
-                LY.is_public
+                LY.status
             FROM
                 `{$this->tbl['library_library']}` AS LY
             LEFT JOIN
@@ -64,19 +64,19 @@ class LibraryList
         {
             $id = $library[ 'id' ];
             $this->userLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
-            $this->userLibraryList[ $id ][ 'is_public' ] = $library[ 'is_public' ];
+            $this->userLibraryList[ $id ][ 'status' ] = $library[ 'status' ];
             $this->userLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
         }
         
         $where = $this->is_admin
                ? ""
-               : "\nWHERE LY.is_public = TRUE";
+               : "\nWHERE LY.status != " . $this->database->quote( Library::LIB_PRIVATE );
         
-        $publicLibraryList = $this->database->query( "
+        $allowedLibraryList = $this->database->query( "
             SELECT
                 LY.id,
                 LY.title,
-                LY.is_public
+                LY.status
             FROM
                 `{$this->tbl['library_library']}` AS LY
             LEFT JOIN
@@ -85,12 +85,12 @@ class LibraryList
                 LY.id = LN.library_id" . $where
         );
         
-        foreach( $publicLibraryList as $library )
+        foreach( $allowedLibraryList as $library )
         {
             $id = $library[ 'id' ];
             $this->allowedLibraryList[ $id ][ 'title' ] = $library[ 'title' ];
             $this->allowedLibraryList[ $id ][ 'librarianList' ] = $this->getLibrarianList( $id );
-            $this->allowedLibraryList[ $id ][ 'is_public' ] = $library[ 'is_public' ];
+            $this->allowedLibraryList[ $id ][ 'status' ] = $library[ 'status' ];
         }
     }
     
@@ -106,7 +106,7 @@ class LibraryList
         }
         
         return array( 'user' => $this->userLibraryList
-                    , $this->is_admin ? 'other' :'public'  => $this->allowedLibraryList );
+                    , $this->is_admin ? 'other' : 'allowed'  => $this->allowedLibraryList );
     }
     
     /**

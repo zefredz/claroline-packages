@@ -36,14 +36,18 @@
 
 <fieldset id="accessResource">
     <legend><?php echo get_lang('Resource'); ?></legend>
-<?php if ( $this->storageType == 'file' ) : ?>
+<?php if ( $this->read_allowed ) : ?>
+    <?php if ( $this->storageType == 'file' ) : ?>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
         <?php echo get_lang( 'Download' ); ?>
     </a>
-<?php else : ?>
+    <?php else : ?>
     <a class="claroCmd" href="<?php echo htmlspecialchars( $this->url ); ?>">
         <?php echo get_lang( 'Link' ); ?>
     </a>
+    <?php endif; ?>
+<?php else : ?>
+    <strong><?php echo get_lang( 'You are not allowed to access this resource!' ); ?></strong>
 <?php endif; ?>
 </fieldset>
 
