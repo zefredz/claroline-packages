@@ -39,14 +39,14 @@
             <textarea cols="60" rows="8" name="description"><?php echo $this->description; ?></textarea>
         </dd>
         <!-- when adding a new resource -->
-        <?php if ( $this->urlAction == 'exAddResource' ) : ?>
+        <?php if ( ! empty( $this->defaultMetadataList ) ) : ?>
 
             <?php foreach( $this->defaultMetadataList as $property ) : ?>
 
                 <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
                 <dd><input type="text"
                            size="32"
-                           name="metadata[<?php echo $property; ?>]" value="" /></dd>
+                           name="add[<?php echo $property; ?>]" value="" /></dd>
 
             <?php endforeach; ?>
 
