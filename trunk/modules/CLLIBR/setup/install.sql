@@ -12,7 +12,7 @@
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     creation_date DATETIME,
-    resource_type VARCHAR(32) NOT NULL,
+    resource_type VARCHAR(44) NOT NULL,
     resource_name VARCHAR(128) NOT NULL,
     title VARCHAR(256) NOT NULL,
     description TEXT,

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,19 +14,22 @@
  * A class that represents the stored resource
  * @property $location
  * @property $resource
+ * éproperty $keyword
  */
 class StoredResource
 {
     protected $location;
     protected $resource;
+    protected $keyword;
     
     /**
      * Constructor
      */
-    public function __construct( $location , $resource )
+    public function __construct( $location , $resource , $keyword = '' )
     {
         $this->location = $location;
         $this->resource = $resource;
+        $this->keyword = $keyword;
     }
     
     /**
@@ -36,10 +39,15 @@ class StoredResource
      */
     public function generateStoredName()
     {
-        return UUID::generate( UUID::UUID_NAME_MD5
+        /*return UUID::generate( UUID::UUID_NAME_MD5
                              , UUID::FMT_STRING
                              , $this->resource->getName() . $this->resource->getDate() );
-        //return md5( $this->resource->getName() . $this->resource->getDate() );
+        the line above is for use with uuid.lib.php */
+        return md5( $this->resource->getName()
+                  . $this->resource->getDate()
+                  . $this->keyword )
+             . '-'
+             . dechex( $this->resource->getId() );
     }
     
     /**
