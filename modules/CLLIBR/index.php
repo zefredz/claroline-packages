@@ -314,12 +314,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exAddResource':
         {
             $type = $userInput->get( 'type' );
+            $storage = $userInput->get( 'storage' );
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
-            $storage = $userInput->get( 'storage' );
-            $metadataList = $userInput->get( 'metadata' );
-            $newName = $userInput->get( 'name' );
-            $newValue = $userInput->get( 'value' );
             
             $resource = new $type( $database );
             
@@ -374,6 +371,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $errorMsg = get_lang( 'You must give a title' );
             }
             
+            /*
             if ( ! $errorMsg
                 && $resource->save()
                 && ! empty( $metadataList )
@@ -396,10 +394,10 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                         }
                     }
                 }
-            }
+            }*/
             
             $execution_ok = ! $errorMsg
-                           && $resourceSet->add( $resource->getId() );
+                           && $resourceSet->add( $resource->save() );
             break;
         }
         
@@ -638,11 +636,19 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         }
         
         case 'rqAddResource':
+        {
+            $pageTitle[ 'subTitle' ] = get_lang( 'Add a resource' );
+            $template = new ModuleTemplate( 'CLLIBR' , 'addresource.tpl.php' );
+            $template->assign( 'userId' , $userId );
+            $template->assign( 'libraryId' , $libraryId );
+            $template->assign( 'typeList' , $pluginList[ 'resource' ] );
+            $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
+            break;
+        }
+        
         case 'rqEditResource':
         {
-            $pageTitle[ 'subTitle' ] = $cmd == 'rqAddResource'
-                                     ? get_lang( 'Add a resource' )
-                                     : get_lang( 'Edit a resource' );
+            $pageTitle[ 'subTitle' ] = get_lang( 'Edit a resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
             $template->assign( 'resourceId' , $resourceId );
             $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
@@ -653,7 +659,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'refId' , $resourceId );
             $template->assign( 'refName' , 'resourceId' );
             $template->assign( 'typeList' , $pluginList[ 'resource' ] );
-            $template->assign( 'defaultMetadataList' , Metadata::getDefaultMetadataList() );
+            $template->assign( 'defaultMetadataList' , $resource->getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             $template->assign( 'propertyList' , $metadata->getAllProperties() );
             $template->assign( 'keywordList' , $metadata->getAllKeywords() );
