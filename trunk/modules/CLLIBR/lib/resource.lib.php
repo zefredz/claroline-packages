@@ -28,7 +28,7 @@ class Resource
     const TYPE_URL = 'url';
     
     protected $authorizedFileType;
-    protected $defaultMetadatList;
+    protected $defaultMetadataList;
     
     protected $id;
     protected $type;
