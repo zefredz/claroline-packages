@@ -79,9 +79,12 @@ class Metadata
     {
         $metadatas = array();
         
-        foreach( $this->metadataList as $id => $metadata )
+        if ( ! empty( $this->metadataList ) )
         {
-            $metadatas[ $metadata[ 'name' ] ][ $id ] = $metadata[ 'value' ];
+            foreach( $this->metadataList as $id => $metadata )
+            {
+                $metadatas[ $metadata[ 'name' ] ][ $id ] = $metadata[ 'value' ];
+            }
         }
         
         return $metadatas;

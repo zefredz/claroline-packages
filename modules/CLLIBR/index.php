@@ -105,7 +105,7 @@ $restrictedActionList = array( 'rqAddResource'
 
 $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exRemove'          => 'rqShowBibliography'
-                        , 'exAddResource'     => 'rqShowCatalogue'
+                        , 'exAddResource'     => 'rqEditResource'
                         , 'exDeleteResource'  => 'rqShowCatalogue'
                         , 'exCreateLibrary'   => 'rqShowLibrarylist'
                         , 'exEditLibrary'     => 'rqShowLibrarylist'
@@ -409,6 +409,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $keyword = $userInput->get( 'keyword' );
             $keywords = explode( ',' , $userInput->get( 'keywords' ) );
             $toDelete = $userInput->get( 'del' );
+            $toAdd = $userInput->get( 'add' );
             $newMetadata = $userInput->get( 'name' );
             $newValue = $userInput->get( 'value' );
             
@@ -420,6 +421,17 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 foreach( $metadataList as $id => $value )
                 {
                     $metadata->modify( $id , $value );
+                }
+            }
+            
+            if ( ! empty( $toAdd ) )
+            {
+                foreach( $toAdd as $name => $value )
+                {
+                    if ( $value )
+                    {
+                        $metadata->add( $name , $value );
+                    }
                 }
             }
             
@@ -459,15 +471,19 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
-        case 'exDelete':
+        case 'exDeleteResource':
         {
             $resource = new Resource( $database , $resourceId );
             $metadata = new Metadata( $database , $resourceId );
             $catalogue = new Collection( $database , 'catalogue' , $libraryId );
             
-            $execution_ok = $metadata->removeAll()
-                         && $catalogue->removeResource( $resourceId )
+            $execution_ok = $catalogue->removeResource( $resourceId )
                          && $resource->delete();
+            
+            if( $execution_ok )
+            {
+                $metadata->removeAll();
+            }
             
             if ( $execution_ok && $resource->getType() == 'file' )
             {
@@ -650,15 +666,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit a resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
-            $template->assign( 'resourceId' , $resourceId );
-            $template->assign( 'title' , $resourceId ? $resource->getTitle() : '' );
-            $template->assign( 'description' , $resourceId ? $resource->getDescription() : '' );
-            $template->assign( 'metadataList' , $resourceId ? $metadata->export() : array() );
+            $template->assign( 'resourceId' , $resource->getId() );
+            $template->assign( 'title' , $resource->getTitle() );
+            $template->assign( 'description' , $resource->getDescription() );
+            $template->assign( 'metadataList' , $metadata->export() );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
-            $template->assign( 'refId' , $resourceId );
+            $template->assign( 'refId' , $resource->getId() );
             $template->assign( 'refName' , 'resourceId' );
-            $template->assign( 'typeList' , $pluginList[ 'resource' ] );
             $template->assign( 'defaultMetadataList' , $resource->getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             $template->assign( 'propertyList' , $metadata->getAllProperties() );
@@ -701,7 +716,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             }
             
             $msg = get_lang( 'Do you really want to delete this resource?' );
-            $urlAction = 'exDelete';
+            $urlAction = 'exDeleteResource';
             $urlCancel = 'rqShowCatalogue';
             $xid = array( 'resourceId' => $resourceId
                         , 'context' => 'catalogue'

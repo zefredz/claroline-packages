@@ -153,7 +153,7 @@ class Resource
      */
     public function getDefaultMetadataList()
     {
-        return $this->defaultMetadatList;
+        return $this->defaultMetadataList;
     }
     
     /**
