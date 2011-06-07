@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,4 +12,7 @@
 class Book extends Resource
 {
     protected $authorizedFileType = array( 'pdf' , 'rtf' , 'odt' , 'doc' , 'txt' , 'htm' , 'html' );
+    protected $defaultMetadataList = array( 'author'
+                                          , 'publication date'
+                                          , 'publisher' );
 }

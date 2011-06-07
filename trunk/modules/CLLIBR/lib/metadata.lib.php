@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -13,17 +13,14 @@
  * A class that represents the metadatas
  * related to a specified resource
  * @const KEYWORD
- * @static array $defaultMetadataList
+ * @const COLLECTION
  * @property string $resourceUid
  * @property array $metaDataList
  */
 class Metadata
 {
     const KEYWORD = 'keyword';
-    
-    protected static $defaultMetadataList = array( 'author',
-                                                   'publication date',
-                                                   'publisher' );
+    const COLLECTION = 'collection';
     
     protected $resourceId;
     protected $metadataList;
@@ -205,9 +202,11 @@ class Metadata
     }
     
     /**
-     * Gets all existing keywords
+     * Gets all the values associated with the specified metadata
+     * @param string $name
+     * @return Resultset
      */
-    public function getAllKeywords()
+    public function getValues( $name )
     {
         return $this->database->query( "
             SELECT
@@ -215,8 +214,26 @@ class Metadata
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                name = " . $this->database->quote( self::KEYWORD )
+                name = " . $this->database->quote( $name )
         );
+    }
+    
+    /**
+     * Gets all existing keywords
+     * Helper for getValues( self::KEYWORD )
+     */
+    public function getAllKeywords()
+    {
+        return $this->getValues( self::KEYWORD );
+    }
+    
+    /**
+     * Gets the collection list the resource belongs to
+     * Helper for getValues( self::COLLECTION )
+     */
+    public function getAllCollections()
+    {
+        return $this->getValues( self::COLLECTION );
     }
     
     /**
@@ -229,13 +246,5 @@ class Metadata
     {
         return in_array( array( 'name' => $name , 'value' => $value )
                        , $this->metadataList );
-    }
-    
-    /**
-     * @static Getter for self::$defaultMetadataList
-     */
-    public static function getDefaultMetadataList()
-    {
-        return self::$defaultMetadataList;
     }
 }

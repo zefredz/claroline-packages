@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,47 +21,6 @@
     <input type="hidden"
            name="libraryId"
            value="<?php echo $this->libraryId; ?>" />
-
-    <!-- the following can be changed only when adding a new ressource -->
-    <?php if ( $this->urlAction == 'exAddResource' ): ?>
-    <fieldset id="resourseFile">
-        <legend><?php echo get_lang("Resource"); ?> : </legend>
-        <dl>
-            <dt>
-                <label for="resourceType"><?php echo get_lang( 'Resource type' ); ?> :</label>
-            </dt>
-            <dd>
-                <select id="resourceType" name="type">
-                <?php foreach( $this->typeList as $type ) : ?>
-                <option value="<?php echo $type; ?>">
-                    <?php echo get_lang( strtolower( $type ) ); ?>
-                </option>
-                <?php endforeach; ?>
-                </select>
-            </dd>
-            <dt>
-                <label for="resourceStorage"><?php echo get_lang( 'Storage type' ); ?> :</label>
-            </dt>
-            <dd>
-                <select id="resourceStorage" name="storage">
-                    <option value="file">
-                        <?php echo get_lang( 'Local storage of a file' ); ?>
-                    </option>
-                    <option value="url">
-                        <?php echo get_lang( 'External link' ); ?>
-                    </option>
-                </select>
-            </dd>
-            <dt>&nbsp;</dt>
-            <dd>
-                <span id="resourceSelect">
-                    <input type="file"
-                           name="uploadedFile" />
-                </span>
-            </dd>
-        </dl>
-    </fieldset>
-    <?php endif; ?>
 
     <fieldset>
     <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>

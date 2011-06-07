@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,6 +14,7 @@
  * @const TYPE_FILE
  * @const TYPE_URL
  * @property $authorizedFileType
+ * @property $defaultMetadataList
  * @property $id
  * @property $secretId
  * @property $title
@@ -27,6 +28,7 @@ class Resource
     const TYPE_URL = 'url';
     
     protected $authorizedFileType;
+    protected $defaultMetadatList;
     
     protected $id;
     protected $type;
@@ -143,6 +145,15 @@ class Resource
     public function getDate()
     {
         return $this->creationDate;
+    }
+    
+    /**
+     * Getter for $defaultMetadataList
+     * @return array $defaultMetadataList
+     */
+    public function getDefaultMetadataList()
+    {
+        return $this->defaultMetadatList;
     }
     
     /**
