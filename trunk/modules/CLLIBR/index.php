@@ -30,7 +30,6 @@ From::Module( 'CLLIBR' )->uses(
     'search.lib',
     'metadataview.lib',
     'pluginloader.lib',
-    'thirdparty/uuid.lib',
     'acl.lib',
     'tools.lib' );
 
