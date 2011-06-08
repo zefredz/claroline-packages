@@ -37,6 +37,9 @@
 <fieldset id="accessResource">
     <legend><?php echo get_lang('Resource'); ?></legend>
 <?php if ( $this->read_allowed ) : ?>
+    <?php if ( $this->viewer ) : ?>
+    <?php echo $this->viewer->render(); ?>
+    <?php endif; ?>
     <?php if ( $this->storageType == 'file' ) : ?>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
         <?php echo get_lang( 'Download' ); ?>

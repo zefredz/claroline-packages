@@ -12,6 +12,7 @@
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     creation_date DATETIME,
+    storage_type ENUM('file','link') NOT NULL DEFAULT 'file',
     resource_type VARCHAR(32) NOT NULL,
     resource_name VARCHAR(128) NOT NULL,
     title VARCHAR(256) NOT NULL,
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_library`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     title VARCHAR(128),
-    status ENUM('public','restricted','private') DEFAULT 'private',
+    status ENUM('public','restricted','private') NOT NULL DEFAULT 'private',
     PRIMARY KEY( id )
 ) ENGINE=MyISAM;
 
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_librarian`(
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     resource_id INT(11) NOT NULL,
-    type ENUM('catalogue','bibliography','bookmark'),
+    type ENUM('catalogue','bibliography','bookmark') NOT NULL,
     ref_id VARCHAR(16) NOT NULL,
     is_visible BOOLEAN DEFAULT TRUE
     PRIMARY KEY( resource_id, type, ref_id )
