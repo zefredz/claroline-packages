@@ -14,7 +14,7 @@
  * A class that represents the stored resource
  * @property $location
  * @property $resource
- * éproperty $keyword
+ * @property $keyword
  */
 class StoredResource
 {
