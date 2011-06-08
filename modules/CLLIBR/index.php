@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -30,6 +30,7 @@ From::Module( 'CLLIBR' )->uses(
     'search.lib',
     'metadataview.lib',
     'pluginloader.lib',
+    'resourceview.lib',
     'acl.lib',
     'tools.lib' );
 
@@ -319,7 +320,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             if ( $title )
             {
                 $resource->setTitle( $title );
-                $resource->setType( $storage );
+                $resource->setType( $type );
+                $resource->setStorageType( $storage );
                 $resource->setDate();
                 $resource->setDescription( $description );
                 
@@ -481,7 +483,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $metadata->removeAll();
             }
             
-            if ( $execution_ok && $resource->getType() == 'file' )
+            if ( $execution_ok && $resource->getStorageType() == 'file' )
             {
                 $storedResource = new StoredResource( $repository , $resource , $keyword );
                 $execution_ok = $storedResource->delete();
@@ -613,9 +615,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqView':
         {
+            $viewName = $resource->getType() . 'View';
+            $is_validated = false;
+            
+            if ( in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
+            {
+                $resourceViewer = new $viewName( new StoredResource( $repository
+                                                                   , $resource
+                                                                   , $keyword ) );
+                
+                $is_validated = $resourceViewer->validate( StoredResource::getFileExtension( $resource->getName() ) );
+            }
+            
             $template = new ModuleTemplate( 'CLLIBR' , 'resource.tpl.php' );
             $template->assign( 'resourceId' , $resourceId );
-            $template->assign( 'storageType' , $resource->getType() );
+            $template->assign( 'storageType' , $resource->getStorageType() );
+            $template->assign( 'resourceType' , $resource->getType() );
             $template->assign( 'url' , $resource->getName() );
             $template->assign( 'title' , $resource->getTitle() );
             $template->assign( 'description' , $resource->getDescription() );
@@ -625,6 +640,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'courseId' , $courseId );
             $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
             $template->assign( 'read_allowed' , $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_READ ) );
+            $template->assign( 'viewer' , $is_validated ? $resourceViewer : false );
             break;
         }
         

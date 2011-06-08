@@ -18,7 +18,8 @@
  * @property $id
  * @property $secretId
  * @property $title
- * @property $type
+ * @property $storageType
+ * @property $resourceType
  * @property $metaDataList
  * @property $creationDate
  */
@@ -31,7 +32,8 @@ class Resource
     protected $defaultMetadataList;
     
     protected $id;
-    protected $type;
+    protected $storageType;
+    protected $resourceType;
     protected $title;
     protected $description;
     
@@ -65,6 +67,7 @@ class Resource
         $result = $this->database->query( "
             SELECT
                 creation_date,
+                storage_type,
                 resource_type,
                 resource_name,
                 title,
@@ -78,7 +81,8 @@ class Resource
         if ( count( $result ) )
         {
             $this->creationDate = $result[ 'creation_date' ];
-            $this->type = $result[ 'resource_type' ];
+            $this->storageType = $result[ 'storage_type' ];
+            $this->resourceType = $result[ 'resource_type' ];
             $this->resourceName = $result[ 'resource_name' ];
             $this->title = $result[ 'title' ];
             $this->description = $result[ 'description' ];
@@ -135,7 +139,7 @@ class Resource
      */
     public function getType()
     {
-        return $this->type;
+        return $this->resourceType;
     }
     
     /**
@@ -145,6 +149,15 @@ class Resource
     public function getDate()
     {
         return $this->creationDate;
+    }
+    
+    /**
+     * Getter for Storage type
+     * @return string $storageType
+     */
+    public function getStorageType()
+    {
+        return $this->storageType;
     }
     
     /**
@@ -158,19 +171,29 @@ class Resource
     
     /**
      * Setter for the resource's type
+     * @param string $type
+     * @return boolean true on success
+     */
+    public function setType( $type )
+    {
+        return $this->resourceType = $type;
+    }
+    
+    /**
+     * Setter for the resource's storage type
      * self::TYPE_FILE for file
      * self::TYPE_URL for url
      * @param string $type
      * @return boolean true on success
      */
-    public function setType( $type )
+    public function setStorageType( $type )
     {
         if ( $type != self::TYPE_FILE && $type != self::TYPE_URL )
         {
             throw new Exception( 'invalid type' );
         }
         
-        return $this->type = $type;
+        return $this->storageType = $type;
     }
     
     /**
@@ -250,7 +273,8 @@ class Resource
     {
         return "\n   `{$this->tbl['library_resource']}`
                 SET
-                    resource_type = " . $this->database->quote( $this->type ) . ",
+                    storage_type = " . $this->database->quote( $this->storageType ) . ",
+                    resource_type = " . $this->database->quote( $this->resourceType ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
                     creation_date = " . $this->database->quote( $this->creationDate ) . ",
                     title = " . $this->database->quote( $this->title ) . ",
@@ -264,7 +288,8 @@ class Resource
      */
     private function insert()
     {
-        if ( ! $this->type
+        if ( ! $this->storageType
+          || ! $this->resourceType
           || ! $this->resourceName
           || ! $this->creationDate
           || ! $this->title )

@@ -64,7 +64,7 @@ class PluginLoader
                     {
                         require( $this->pluginDir . $fileName );
                         
-                        $pluginName = ucwords( $part[ 1 ] );
+                        $pluginName = $part[ 1 ];
                         $pluginType = $part[ 0 ];
                         
                         $this->pluginList[ $pluginType ][] = $pluginName;

@@ -12,12 +12,17 @@
 
 /**
  * A class that represents the stored resource
+ * @const DOWNLOAD_ACCESS
+ * @const RAW_ACCESS
  * @property $location
  * @property $resource
  * @property $keyword
  */
 class StoredResource
 {
+    const DOWNLOAD_ACCESS = 'download';
+    const RAW_ACCESS = 'direct';
+    
     protected $location;
     protected $resource;
     protected $keyword;
@@ -47,7 +52,7 @@ class StoredResource
                   . $this->resource->getDate()
                   . $this->keyword )
              . '-'
-             . dechex( $this->resource->getId() );
+             . md5( $this->resource->getDate() );
     }
     
     /**
@@ -65,11 +70,31 @@ class StoredResource
     /**
      * Gets the stored file (download)
      */
-    public function getFile()
+    public function getFile( $access = self::DOWNLOAD_ACCESS )
     {
-        header('Content-type: ' . self::getMimeType( $this->resource->getName() ) );
-        header('Content-Disposition: attachment; filename="' . $this->resource->getName() . '"');
-        readfile( $this->location . $this->generateStoredName() );
+        if ( $access == self::DOWNLOAD_ACCESS )
+        {
+            header('Content-type: ' . self::getMimeType( $this->resource->getName() ) );
+            header('Content-Disposition: attachment; filename="' . $this->resource->getName() . '"');
+            readfile( $this->location . $this->generateStoredName() );
+        }
+        elseif( $access == self::RAW_ACCESS )
+        {
+            return file_get_contents( $this->location . $this->generateStoredName() );
+        }
+        else
+        {
+            throw new Exception( 'Invalid argument' );
+        }
+    }
+    
+    /**
+     * Gets file name
+     * @return string $fileName
+     */
+    public function getFileName()
+    {
+        return $this->resource->getName();
     }
     
     /**
@@ -83,13 +108,23 @@ class StoredResource
     }
     
     /**
+     * Static method: gets file extension from file name
+     * @param string $fileName
+     * @return string $extension
+     */
+    public static function getFileExtension( $fileName )
+    {
+        return strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) );
+    }
+    
+    /**
      * Static mehod : Gets Mime type from file name
      * @param string $fileName
      * @return string $mimeType
      */
     public static function getMimeType( $fileName )
     {
-        $fileExtension = strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) );
+        $fileExtension = self::getFileExtension( $fileName);
         $defaultMimeType = 'document/unknown';
         
         if( $fileExtension )
