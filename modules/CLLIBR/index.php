@@ -41,7 +41,8 @@ load_module_language( 'CLLIBR' );
 $nameTools = get_lang( 'Online Library' );
 $pageTitle = array( 'mainTitle' => get_lang( 'Online Library' ) );
 
-$keyword = get_conf ( 'CLLIBR_keyword' );
+$secretKey = get_conf ( 'CLLIBR_encryption_key' );
+
 $repository = get_path( 'rootSys' ) . 'cllibrary/';
 
 $database = Claroline::getDatabase();
@@ -327,7 +328,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 
                 if ( $storage == 'file' )
                 {
-                    $storedResource = new StoredResource( $repository , $resource , $keyword );
+                    $storedResource = new StoredResource( $repository , $resource , $secretKey );
                     
                     if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
                     {
@@ -485,7 +486,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( $execution_ok && $resource->getStorageType() == 'file' )
             {
-                $storedResource = new StoredResource( $repository , $resource , $keyword );
+                $storedResource = new StoredResource( $repository , $resource , $secretKey );
                 $execution_ok = $storedResource->delete();
             }
             break;
@@ -622,7 +623,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             {
                 $resourceViewer = new $viewName( new StoredResource( $repository
                                                                    , $resource
-                                                                   , $keyword ) );
+                                                                   , $secretKey ) );
                 
                 $is_validated = $resourceViewer->validate( StoredResource::getFileExtension( $resource->getName() ) );
             }
@@ -646,7 +647,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqDownload':
         {
-            $storedResource = new StoredResource( $repository , $resource , $keyword );
+            $storedResource = new StoredResource( $repository , $resource , $secretKey );
             $storedResource->getFile();
             break;
         }
