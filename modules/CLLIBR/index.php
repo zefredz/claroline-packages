@@ -713,7 +713,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             $msg = get_lang( 'Do you really want to delete this resource?' );
             $urlAction = 'exDeleteResource';
-            $urlCancel = 'rqShowCatalogue';
+            $urlCancel = 'rqShowCatalogue&libraryId='.$libraryId;
             $xid = array( 'resourceId' => $resourceId
                         , 'context' => 'catalogue'
                         , 'libraryId' => $libraryId );
