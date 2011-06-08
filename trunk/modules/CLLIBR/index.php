@@ -40,11 +40,8 @@ load_module_language( 'CLLIBR' );
 $nameTools = get_lang( 'Online Library' );
 $pageTitle = array( 'mainTitle' => get_lang( 'Online Library' ) );
 
-$repository = get_conf( 'CLLIBR_storage_directory' );
-if ( substr( $repository , -1 ) != '/' )
-{
-    $repository = $repository . '/';
-}
+$keyword = get_conf ( 'CLLIBR_keyword' );
+$repository = get_path( 'rootSys' ) . 'cllibrary/';
 
 $database = Claroline::getDatabase();
 // for later -->
@@ -328,7 +325,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 
                 if ( $storage == 'file' )
                 {
-                    $storedResource = new StoredResource( $repository , $resource );
+                    $storedResource = new StoredResource( $repository , $resource , $keyword );
                     
                     if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
                     {
@@ -486,7 +483,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( $execution_ok && $resource->getType() == 'file' )
             {
-                $storedResource = new StoredResource( $repository , $resource );
+                $storedResource = new StoredResource( $repository , $resource , $keyword );
                 $execution_ok = $storedResource->delete();
             }
             break;
@@ -633,7 +630,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqDownload':
         {
-            $storedResource = new StoredResource( $repository , $resource );
+            $storedResource = new StoredResource( $repository , $resource , $keyword );
             $storedResource->getFile();
             break;
         }
