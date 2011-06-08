@@ -18,9 +18,9 @@ $conf_def['config_name'] = 'Online Library for Claroline';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'CLLIBR_keyword' );
+$conf_def['section']['main']['properties'] = array ( 'CLLIBR_encryption_key' );
 
-$conf_def_property_list[ 'CLLIBR_keyword' ] = array (
+$conf_def_property_list[ 'CLLIBR_encryption_key' ] = array (
          'label'       => 'Keyword'
        , 'description' => 'This keyword is used to encrypt the name of the files stored in repository.'
        , 'type'        => 'string'

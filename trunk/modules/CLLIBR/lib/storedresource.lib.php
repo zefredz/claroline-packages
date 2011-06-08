@@ -72,15 +72,17 @@ class StoredResource
      */
     public function getFile( $access = self::DOWNLOAD_ACCESS )
     {
+        $filePath = $this->location . $this->generateStoredName();
+        
         if ( $access == self::DOWNLOAD_ACCESS )
         {
             header('Content-type: ' . self::getMimeType( $this->resource->getName() ) );
             header('Content-Disposition: attachment; filename="' . $this->resource->getName() . '"');
-            readfile( $this->location . $this->generateStoredName() );
+            readfile( $filePath );
         }
         elseif( $access == self::RAW_ACCESS )
         {
-            return file_get_contents( $this->location . $this->generateStoredName() );
+            return file_get_contents( $filePath );
         }
         else
         {
