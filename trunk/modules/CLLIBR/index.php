@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -545,7 +545,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $searchString = $userInput->get( 'searchString' );
             $keyword = $userInput->get( 'keyword' );
             $searchQuery = $userInput->get( 'searchQuery' );
-            
             if ( $keyword )
             {
                 $searchEngine = new TagCloud( $database );
@@ -802,6 +801,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         $form = new ModuleTemplate( 'CLLIBR' , 'moveresource.tpl.php' );
         $form->assign( 'resourceId' , $resourceId );
         $form->assign( 'libraryList' , $libraryList->getResourceList() );
+        $dialogBox->form( $form->render() );
+    }
+    
+    if ( $option == 'multisearch' )
+    {
+        $form = new ModuleTemplate( 'CLLIBR' , 'multisearch.tpl.php' );
+        $form->assign( 'itemNb' , (int)$userInput->get( 'itemNb' ) );
         $dialogBox->form( $form->render() );
     }
     
