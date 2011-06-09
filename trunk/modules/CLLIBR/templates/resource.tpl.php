@@ -29,7 +29,7 @@
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $this->resourceId ) ); ?>">
         <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
-        <?php echo get_lang( 'Add to my bookmarks' ); ?>
+        <?php echo get_lang( 'Add to my bookmark' ); ?>
     </a>
 </span>
 <?php endif; ?>

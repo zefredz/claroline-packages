@@ -72,7 +72,7 @@
             <td align="center">
                 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\' bibliography' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\'s bibliography' ); ?>"/>
                 </a>
                 <?php endif; ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">

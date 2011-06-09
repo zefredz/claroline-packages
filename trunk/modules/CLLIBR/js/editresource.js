@@ -22,13 +22,6 @@ $(document).ready(function(){
         }
     });
     
-    $("#linkedResource").select(function(){
-        $("#resourceSelect").append("<strong><?php echo get_lang( '' ); ?></strong>"+
-                                        "<input type=\"text\""+
-                                                "name=\"resourceUrl\""+
-                                                "value=\"\"/>");
-    });
-    
     var nbToAdd=0;
     $("#addMetadata").click(function(){
         nbToAdd++;

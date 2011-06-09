@@ -20,7 +20,7 @@
            value="<?php echo $this->libraryId; ?>" />
 
     <fieldset id="resourseFile">
-        <legend><?php echo get_lang("Resource"); ?> : </legend>
+        <legend><?php echo get_lang( 'Resource' ); ?> : </legend>
         <dl>
             <dt>
                 <label for="resourceType"><?php echo get_lang( 'Resource type' ); ?> :</label>
