@@ -248,7 +248,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 
                 if ( $bookmark->resourceExists( $resourceId ) )
                 {
-                    $errorMsg = get_lang( 'The resource is already bookmarked' );
+                    $errorMsg = get_lang( 'This resource is already bookmarked' );
                 }
             }
             else
@@ -267,7 +267,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( $bibliography->resourceExists( $resourceId ) )
             {
-                $errorMsg = get_lang( 'The resource is already is added' );
+                $errorMsg = get_lang( 'This resource is already added' );
             }
             
             $execution_ok = ! $errorMsg
@@ -337,13 +337,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                     }
                     else
                     {
-                        $errorMsg = get_lang( 'file missing' );
+                        $errorMsg = get_lang( 'File missing' );
                     }
                     
                     if ( ! $errorMsg
                       && ! $resource->validate( $file['name'] ) )
                     {
-                        $errorMsg = get_lang( 'invalid file' );
+                        $errorMsg = get_lang( 'Invalid file' );
                     }
                     
                     if ( ! $errorMsg
@@ -362,7 +362,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                     }
                     else
                     {
-                        $errorMsg = get_lang( 'url missing' );
+                        $errorMsg = get_lang( 'Url missing' );
                     }
                 }
             }
@@ -610,8 +610,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     if ( isset( $execution_ok ) )
     {
-        $execution_ok ? $dialogBox->success( get_lang( 'success' ) )
-                      : $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'error' ) );
+        $execution_ok ? $dialogBox->success( get_lang( 'Success' ) )
+                      : $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'Error' ) );
     }
     
     switch( $cmd )
@@ -692,7 +692,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqEditResource':
         {
-            $pageTitle[ 'subTitle' ] = get_lang( 'Edit a resource' );
+            $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
             $template->assign( 'resourceId' , $resource->getId() );
             $template->assign( 'title' , $resource->getTitle() );
@@ -733,7 +733,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( isset( $collectionList[ 'bibliography' ] ) || isset( $collectionList[ 'bookmark' ] ) )
             {
-                $warningMsg = get_lang( '<strong>Warning : this resource is used :<br /><br />' );
+                $warningMsg = '<strong>' . get_lang( 'Warning : this resource is in use' ) . ': <br /><br />';
                 $warningMsg .= isset( $collectionList[ 'bibliography' ] )
                             ?'- ' . count( $collectionList[ 'bibliography' ] ) . ' ' . get_lang( 'bibliographies' ) . '<br />'
                             : '';

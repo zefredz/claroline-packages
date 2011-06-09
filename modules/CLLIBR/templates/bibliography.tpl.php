@@ -28,7 +28,7 @@
     <thead>
         <tr class="headerX">
             <th>
-                <?php echo get_lang( 'Title'); ?>
+                <?php echo get_lang( 'Title' ); ?>
             </th>
             <th>
                 <?php echo get_lang( 'Author(s)' ); ?>
@@ -65,7 +65,7 @@
             <td align="center">
             <?php if ( $this->userId ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add to my bookmarks' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
                 </a>
             <?php endif; ?>
                 <!--

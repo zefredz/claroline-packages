@@ -81,7 +81,7 @@
         
         <dt>
             <a id="addKeyword" href="#claroBody">
-            <span class="claroCmd"><?php echo get_lang( 'Add a existing keyword' ); ?></span>
+            <span class="claroCmd"><?php echo get_lang( 'Add an existing keyword' ); ?></span>
             </a>
         </dt>
         <dd>
