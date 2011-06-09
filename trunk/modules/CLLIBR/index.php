@@ -97,6 +97,7 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
+                             , 'exMoveResource'
                              , 'exVisible'
                              , 'exInvisible'
                              , 'rqSearch' );
@@ -105,6 +106,7 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exRemove'          => 'rqShowBibliography'
                         , 'exAddResource'     => 'rqEditResource'
                         , 'exDeleteResource'  => 'rqShowCatalogue'
+                        , 'exMoveResource'    => 'rqShowCatalogue'
                         , 'exCreateLibrary'   => 'rqShowLibrarylist'
                         , 'exEditLibrary'     => 'rqShowLibrarylist'
                         , 'exDeleteLibrary'   => 'rqShowLibrarylist'
@@ -223,7 +225,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     {
         case 'rqShowBookmark':
         case 'rqShowBibliography';
-        case 'rqShowCatalogue':
         case 'rqShowLibrarylist':
         case 'rqDeleteLibrary':
         case 'rqView':
@@ -470,6 +471,12 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
+        case 'exMoveResource':
+        {
+            $execution_ok = $resourceSet->moveResource( $resourceId , $libraryId );
+            break;
+        }
+        
         case 'exDeleteResource':
         {
             $resource = new Resource( $database , $resourceId );
@@ -513,6 +520,15 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             if ( $option == 'add' && $searchString )
             {
                 $searchResult = searchUser( $userInput->get( 'searchString' ) );
+            }
+            break;
+        }
+        
+        case 'rqShowCatalogue':
+        {
+            if ( $option == 'move' )
+            {
+                $libraryList = new LibraryList( $database , $userId , $edit_allowed );
             }
             break;
         }
@@ -778,6 +794,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         $form = new ModuleTemplate( 'CLLIBR' , 'addlibrarian.tpl.php' );
         $form->assign( 'libraryId' , $libraryId );
         $form->assign( 'searchResult' , $searchResult );
+        $dialogBox->form( $form->render() );
+    }
+    
+    if ( $option == 'move' )
+    {
+        $form = new ModuleTemplate( 'CLLIBR' , 'moveresource.tpl.php' );
+        $form->assign( 'resourceId' , $resourceId );
+        $form->assign( 'libraryList' , $libraryList->getResourceList() );
         $dialogBox->form( $form->render() );
     }
     
