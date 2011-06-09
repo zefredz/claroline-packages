@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.3 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -11,9 +11,21 @@
 
 /**
  * A class for multiple searches
+ * @const TYPE_EQUAL
+ * @const TYPE_LIKE
+ * @const OPERATOR_AND
+ * @const OPERATOR_OR
+ * @static array $itemList
  */
 class MultiSearch extends Search
 {
+    const OPERATOR_AND = 'AND';
+    const OPERATOR_OR = 'OR';
+    
+    public static $itemList = array( 'author'
+                                   , 'title'
+                                   , 'keyword' );
+    
     /**
      * Search query
      * @param array $searchQuery
@@ -24,10 +36,11 @@ class MultiSearch extends Search
         
         foreach( $searchQuery as $index => $item )
         {
-            $searchString .= $item[ 'name' ]
-                          . " = "
-                          . $this->database->quote( $item[ 'value' ] )
-                          . "\n";
+            $searchString .= "M.name = "
+                           . $this->database->quote( $item[ 'name' ] )
+                           . "AND M.value LIKE "
+                           . $this->database->quote( '%' . $item[ 'value' ] . '%' )
+                           . "\n";
             
             if ( $index )
             {
@@ -37,11 +50,16 @@ class MultiSearch extends Search
         
         return $this->resultSet = $this->database->query( "
             SELECT
-                resource_id,
-                name,
-                value
+                R.title,
+                R.id,
+                M.name,
+                M.value
             FROM
-                `{$this->tbl['library_metadata']}`
+                `{$this->tbl['library_metadata']}` AS M
+            INNER JOIN
+                `{$this->tbl['library_resource']}` AS R
+            ON
+                R.id = M.resource_id
             WHERE
                 " . $searchString );
     }
@@ -55,9 +73,9 @@ class MultiSearch extends Search
         
         foreach( $this->resultSet as $line )
         {
-            $id = $line[ 'resource_id' ];
+            $id = $line[ 'id' ];
             
-            if ( ! array_key_exists( $result[ $id ] ) )
+            if ( ! array_key_exists( $id , $result ) )
             {
                 $result[ $id ][ 'count' ] = 0;
             }
@@ -67,13 +85,15 @@ class MultiSearch extends Search
             
             $result[ $id ][ 'matches' ][] = $match;
             $result[ $id ][ 'count' ]++;
+            $result[ $id ][ 'title' ] = $line[ 'title' ];
         }
         
         $sortedResult = array();
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'count' ] ][ $id ] = $data[ 'matches' ];
+            $sortedResult[ $datas[ 'count' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
+                                                             , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );
