@@ -243,8 +243,28 @@ class Collection
             DELETE FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                resource_id = " . $this->database->quote( $resourceId ) );
+                resource_id = " . $this->database->escape( $resourceId ) );
         
         return $this->database->affectedRows();
+    }
+    
+    /**
+     * Moves a specified resource from a collection to another
+     * @param int $resourceId
+     * @param string $refId
+     * @param string $type
+     * @return boolean true on success
+     */
+    public function moveResource( $resourceId , $refId , $type = self::LIBRARY_COLLECTION )
+    {
+        return $this->database->exec( "
+            UPDATE
+                `{$this->tbl['library_collection']}`
+            SET
+                ref_id = " . $this->database->quote( $refId ) . "
+            WHERE
+                type = " . $this->database->quote( $type ) . "
+            AND
+                resource_id = " . $this->database->escape( $resourceId ) );
     }
 }
