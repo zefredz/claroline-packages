@@ -36,16 +36,17 @@ class MultiSearch extends Search
         
         foreach( $searchQuery as $index => $item )
         {
-            $searchString .= "M.name = "
-                           . $this->database->quote( $item[ 'name' ] )
-                           . "AND M.value LIKE "
-                           . $this->database->quote( '%' . $item[ 'value' ] . '%' )
-                           . "\n";
             
             if ( $index )
             {
                 $searchString .= $item[ 'operator' ] . " ";
             }
+            
+            $searchString .= "M.name = "
+                           . $this->database->quote( $item[ 'name' ] )
+                           . "AND M.value LIKE "
+                           . $this->database->quote( '%' . $item[ 'value' ] . '%' )
+                           . "\n";
         }
         
         return $this->resultSet = $this->database->query( "
