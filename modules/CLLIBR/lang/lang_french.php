@@ -25,16 +25,18 @@ $_lang[ 'OR' ] = 'OU';
 $_lang[ 'book' ] = 'livre';
 $_lang[ 'picture' ] = 'image';
 
+$_lang[ 'author' ] = 'auteur';
 $_lang[ 'bibliographies' ] = 'bibliographies';
 $_lang[ 'bookmarks' ] = 'Listes de lecture personnelles';
 $_lang[ 'librarians' ] = 'bibliothécaires';
+$_lang[ 'External link' ] = 'Lien externe';
+$_lang[ 'keyword' ] = 'mot-clé';
 
 $_lang[ 'Advanced search' ] = 'Recherche avancée';
 $_lang[ 'Associated keywords' ] = 'Mots-clés associés';
 $_lang[ 'Author(s)' ] = 'Auteur(s)';
 $_lang[ 'Bookmark' ] = 'Liste de lecture personnelle';
 $_lang[ 'Commands' ] = 'Commandes';
-$_lang[ 'External link' ] = 'Lien externe';
 $_lang[ 'Libraries' ] = 'Bibliothèques';
 $_lang[ 'Local storage of a file' ] = 'Stockage en local du fichier';
 $_lang[ 'Metadatas' ] = 'Méta-données';

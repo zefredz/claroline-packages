@@ -21,3 +21,8 @@
     display: block;
     text-align: right;
 }
+
+#items select, #items input
+{
+    margin: 3px;
+}
