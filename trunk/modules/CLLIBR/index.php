@@ -634,7 +634,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $viewName = $resource->getType() . 'View';
             $is_validated = false;
             
-            if ( in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
+            if ( array_key_exists( 'resourceview' , $pluginList )
+              && in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
             {
                 $resourceViewer = new $viewName( new StoredResource( $repository
                                                                    , $resource
@@ -807,7 +808,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     if ( $option == 'multisearch' )
     {
         $form = new ModuleTemplate( 'CLLIBR' , 'multisearch.tpl.php' );
-        $form->assign( 'itemNb' , (int)$userInput->get( 'itemNb' ) );
         $dialogBox->form( $form->render() );
     }
     
