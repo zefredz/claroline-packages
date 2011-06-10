@@ -23,12 +23,14 @@
     </a>
 </span>
 <?php endif; ?>
+<!--
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&libraryId=' . $this->libraryId ) ); ?>">
         <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add selection to bookmark' ); ?>" />
         <?php echo get_lang( 'Add selection to my bookmark' ); ?>
     </a>
 </span>
+-->
 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
@@ -46,9 +48,11 @@
             <th>
                 <?php echo get_lang( 'Author(s)' ); ?>
             </th>
+            <!--
             <th>
                 <?php echo get_lang( 'Selected' ); ?>
             </th>
+            -->
             <th>
                 <?php echo get_lang( 'Commands' ); ?>
             </th>
@@ -66,9 +70,11 @@
             <td> 
                 <?php echo implode( ', ' , $objects[1]->get( 'author' ) ); ?>
             </td>
+            <!--
             <td align="center">
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
+            -->
             <td align="center">
                 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">

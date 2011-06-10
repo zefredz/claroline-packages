@@ -33,9 +33,11 @@
             <th>
                 <?php echo get_lang( 'Author(s)' ); ?>
             </th>
+            <!--
             <th>
                 <?php echo get_lang( 'Selected' ); ?>
             </th>
+            -->
             <th>
                 <?php echo get_lang( 'Commands' ); ?>
             </th>
@@ -59,9 +61,11 @@
             <td> 
                 <?php echo implode( ', ' , $datas[1]->get( 'author' ) ); ?>
             </td>
+            <!--
             <td align="center">
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
+            -->
             <td align="center">
             <?php if ( $this->userId ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">

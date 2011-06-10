@@ -24,9 +24,11 @@
             <th>
                 <?php echo get_lang( 'Author(s)' ); ?>
             </th>
+            <!--
             <th>
                 <?php echo get_lang( 'Selected' ); ?>
             </th>
+            -->
             <th>
                 <?php echo get_lang( 'Commands' ); ?>
             </th>
@@ -44,9 +46,11 @@
             <td> 
                 <?php echo claro_utf8_encode( implode( ', ' , $objects[1]->get( 'author' ) ) ); ?>
             </td>
+            <!--
             <td align="center">
                 <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
             </td>
+            -->
             <td align="center">
                 <!--
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exExport&resourceId='. $resourceId ) );?>">
