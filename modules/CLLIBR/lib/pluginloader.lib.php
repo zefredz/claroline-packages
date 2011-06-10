@@ -58,7 +58,7 @@ class PluginLoader
                 $fileName = $plugin->getFileName();
                 $part = explode( '.' , $fileName );
                 
-                if ( $part[ 2 ] == 'plugin' && $part[ 3 ] == 'php' )
+                if ( count( $part ) == 4 && $part[ 2 ] == 'plugin' && $part[ 3 ] == 'php' )
                 {
                     try
                     {
