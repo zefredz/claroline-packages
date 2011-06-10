@@ -25,9 +25,11 @@ $_lang[ 'OR' ] = 'OR';
 $_lang[ 'book' ] = 'book';
 $_lang[ 'picture' ] = 'picture';
 
+$_lang[ 'author' ] = 'author';
 $_lang[ 'bibliographies' ] = 'bibliographies';
 $_lang[ 'bookmarks' ] = 'bookmarks';
 $_lang[ 'librarians' ] = 'librarians';
+$_lang[ 'keyword' ] = 'keyword';
 
 $_lang[ 'Advanced search' ] = 'Advanced search';
 $_lang[ 'Associated keywords' ] = 'Associated keywords';

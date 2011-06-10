@@ -24,7 +24,8 @@ class MultiSearch extends Search
     
     public static $itemList = array( 'author'
                                    , 'title'
-                                   , 'keyword' );
+                                   , 'keyword'
+                                   , 'description' );
     
     /**
      * Search query
