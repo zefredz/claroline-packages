@@ -19,7 +19,7 @@ if ( file_exists( $cllibr_path ) )
     {
         if ( ! $file->isDot() )
         {
-            unlink( $cllibr_path . $file->getFileName() );
+            unlink( $cllibr_path . '/' . $file->getFileName() );
         }
     }
     
