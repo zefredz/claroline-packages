@@ -48,6 +48,6 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     resource_id INT(11) NOT NULL,
     type ENUM('catalogue','bibliography','bookmark') NOT NULL,
     ref_id VARCHAR(16) NOT NULL,
-    is_visible BOOLEAN DEFAULT TRUE
+    is_visible BOOLEAN DEFAULT TRUE,
     PRIMARY KEY( resource_id, type, ref_id )
 ) ENGINE=MyISAM;
