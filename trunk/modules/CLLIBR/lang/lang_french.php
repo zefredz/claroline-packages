@@ -37,6 +37,7 @@ $_lang[ 'Associated keywords' ] = 'Mots-clés associés';
 $_lang[ 'Author(s)' ] = 'Auteur(s)';
 $_lang[ 'Bookmark' ] = 'Liste de lecture personnelle';
 $_lang[ 'Commands' ] = 'Commandes';
+$_lang[ 'Keywords' ] = 'Mots-clés';
 $_lang[ 'Libraries' ] = 'Bibliothèques';
 $_lang[ 'Local storage of a file' ] = 'Stockage en local du fichier';
 $_lang[ 'Metadatas' ] = 'Méta-données';

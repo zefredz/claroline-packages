@@ -70,12 +70,12 @@
             <?php echo $this->description; ?>
         </dd>
     <?php foreach( $this->metadataList as $name => $values ): ?>
+        <?php if ( $name == 'keyword' ) : ?>
         <dt>
             <label>
-                <?php echo get_lang( ucwords( $name ) ); ?> :
+                <?php echo get_lang( 'Keywords' ); ?> :
             </label>
         </dt>
-        <?php if ( $name == 'keyword' ) : ?>
         <dd>
             <?php foreach( $values as $keyword ) : ?>
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
@@ -84,6 +84,11 @@
             <?php endforeach; ?>
         </dd>
         <?php else : ?>
+        <dt>
+            <label>
+                <?php echo get_lang( ucwords( $name ) ); ?> :
+            </label>
+        </dt>
         <dd>
             <?php echo htmlspecialchars( implode( ', ' , $values ) ); ?>
         </dd>
