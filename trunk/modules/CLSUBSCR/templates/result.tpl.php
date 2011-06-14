@@ -54,7 +54,7 @@
                     endswitch;
                 ?>
              </td>
-             <td style="text-align: right;">
+             <td style="text-align: center;">
                  <!-- a href="<?php echo htmlspecialchars( 
                      Url::Contextualize($_SERVER['PHP_SELF'] 
                          . '?cmd=rqEditChoice&slotId=' . $slot['id']
@@ -89,4 +89,3 @@
    </tbody>
 </table>
 
-<?php echo $this->menu; ?>
