@@ -78,13 +78,10 @@
                 </a>
                 -->
             <?php if ( $this->edit_allowed ) : ?>
-                <?php endif; ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resourceId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
-            <?php endif; ?>
             </td>
-            <?php if ( $this->edit_allowed ) : ?>
             <td align="center">
                 <?php if ( $datas[ 'is_visible' ] ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resourceId ) );?>">
@@ -98,6 +95,7 @@
             </td>
             <?php endif; ?>
         </tr>
+        <?php endif; ?>
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
