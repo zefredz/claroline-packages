@@ -103,6 +103,7 @@ $_lang[ 'Empty catalogue' ] = 'Cette bibliothèque est vide';
 $_lang[ 'Error' ] = 'Une erreur est survenue';
 $_lang[ 'File missing' ] = 'Vous n\'avez pas soumis de fichier';
 $_lang[ 'Invalid file' ] = 'Le fichier que vous avez soumis n\'est pas dans le bon format';
+$_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'Il est déconseillé de supprimer cette ressource avant de s\'assurer que cela ne causera pas de problèmes!';
 $_lang[ 'No result' ] = 'Aucun résultat';
 $_lang[ 'Not allowed' ] = 'Cette opération ne vous est pas permise';
 $_lang[ 'Select the library' ] = 'Sélectionez la bibliothèque';

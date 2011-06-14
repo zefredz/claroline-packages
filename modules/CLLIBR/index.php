@@ -742,7 +742,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $warningMsg .= isset( $collectionList[ 'bookmark' ] )
                             ? '- ' . count( $collectionList[ 'bookmark' ] ) . ' ' . get_lang( 'bookmarks' ) . '<br />'
                             : '';
-                $warningMsg .= '<br />' . 'It\'s not advised to remove this resource unless you are sure it will not cause problems!</strong>';
+                $warningMsg .= '<br />'
+                            .  get_lang( 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' )
+                            .  '</strong>';
             }
             
             $msg = get_lang( 'Do you really want to delete this resource?' );
