@@ -77,9 +77,6 @@ $actionList = array( 'rqShowBookmark'
                    , 'rqDownload'
                    , 'exBookmark'
                    , 'exUnbookmark'
-                   , 'exAdd'
-                   , 'rqRemove'
-                   , 'exRemove'
                    , 'rqSearch' );
 
 $restrictedActionList = array( 'rqAddResource'
@@ -98,6 +95,9 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
                              , 'exMoveResource'
+                             , 'exAdd'
+                             , 'rqRemove'
+                             , 'exRemove'
                              , 'exVisible'
                              , 'exInvisible'
                              , 'rqSearch' );
@@ -278,8 +278,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exRemove':
         case 'exUnbookmark':
         {
-            $execution_ok = $edit_allowed
-                         && $resourceSet->remove( $resourceId );
+            $execution_ok = $resourceSet->remove( $resourceId );
             break;
         }
         
