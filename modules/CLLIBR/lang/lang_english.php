@@ -36,6 +36,7 @@ $_lang[ 'Associated keywords' ] = 'Associated keywords';
 $_lang[ 'Author(s)' ] = 'Author(s)';
 $_lang[ 'Bookmark' ] = 'Bookmark';
 $_lang[ 'Commands' ] = 'Commands';
+$_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'External link' ] = 'External link';
 $_lang[ 'Libraries' ] = 'Libraries';
 $_lang[ 'Local storage of a file' ] = 'Local storage of a file';
