@@ -278,7 +278,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exRemove':
         case 'exUnbookmark':
         {
-            $execution_ok = $resourceSet->remove( $resourceId );
+            $execution_ok = $edit_allowed
+                         && $resourceSet->remove( $resourceId );
             break;
         }
         
