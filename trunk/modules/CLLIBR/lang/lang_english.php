@@ -103,6 +103,7 @@ $_lang[ 'Empty catalogue' ] = 'Empty catalogue';
 $_lang[ 'Error' ] = 'Error';
 $_lang[ 'File missing' ] = 'File missing';
 $_lang[ 'Invalid file' ] = 'Invalid file';
+$_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'It\'s not advised to remove this resource unless you are sure it will not cause problems!';
 $_lang[ 'No result' ] = 'No result';
 $_lang[ 'Not allowed' ] = 'Not allowed';
 $_lang[ 'Select the library' ] = 'Select the library';
