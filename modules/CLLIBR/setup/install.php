@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
+$cllibr_path = get_path( 'rootSys' ) . 'cllibrary/';
 
 if ( ! is_dir( $cllibr_path ) && ! claro_mkdir( $cllibr_path , CLARO_FILE_PERMISSIONS ) )
 {
@@ -17,7 +17,7 @@ if ( ! is_dir( $cllibr_path ) && ! claro_mkdir( $cllibr_path , CLARO_FILE_PERMIS
     exit();
 }
 
-$htaccess_path = $cllibr_path . '/.htaccess';
+$htaccess_path = $cllibr_path . '.htaccess';
 
 if( ! file_exists( $htaccess_path ) )
 {
