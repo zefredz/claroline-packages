@@ -14,8 +14,8 @@
  * related to a specified resource
  * @const KEYWORD
  * @const COLLECTION
- * @property string $resourceUid
- * @property array $metaDataList
+ * @property string $resourceId
+ * @property array $metadataList
  */
 class Metadata
 {

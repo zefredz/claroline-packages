@@ -12,7 +12,7 @@
 /**
  * A class that loads "plugged in" resources
  * Plugins names must be something like "{plugintype}.{pluginname}.plugin.php"
- * @cprotected string $pluginDir
+ * @protected string $pluginDir
  * @protected array $pluginList
  */
 class PluginLoader

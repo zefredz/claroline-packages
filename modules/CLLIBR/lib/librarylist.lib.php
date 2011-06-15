@@ -11,9 +11,10 @@
 
 /**
  * A class for library managment
- * @property $userId
- * @property $userLibraryList  the list of libraries which the user is librarian
- * @property $publicLibraryList  the list of public libraries
+ * @property int $userId
+ * @property boolean $is_admin
+ * @property array $userLibraryList  the list of libraries which the user is librarian
+ * @property array $allowedLibraryList  the list of public libraries
  */
 class LibraryList
 {
@@ -27,6 +28,7 @@ class LibraryList
     /**
      * Constructor
      * @param $userId
+     * @param boolean $is_admin
      */
     public function __construct( $database , $userId , $is_admin = false )
     {
@@ -96,6 +98,7 @@ class LibraryList
     
     /**
      * Getter for the two library list in an array
+     * @param boolean $force
      * @return array $resourceList
      */
     public function getResourceList( $force = false )
@@ -111,6 +114,7 @@ class LibraryList
     
     /**
      * Gets librarian list
+     * @param int $libraryId
      * @return array $librarianList
      */
     public function getLibrarianList( $libraryId )

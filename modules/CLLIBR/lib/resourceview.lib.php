@@ -11,8 +11,8 @@
 
 /**
  * An abstract class for resource view
- * @property StoredResource $storedResource
- * @abstract render();
+ * @property StoredResource object $storedResource
+ * @abstract render()
  */
 abstract class ResourceView
 {
@@ -35,6 +35,7 @@ abstract class ResourceView
     /**
      * Verifies the validity on the file name,
      * and if valid, sets the resource name
+     * @param string $fileName
      * @return boolean true on success
      */
     public function validate( $fileName )

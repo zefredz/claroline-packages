@@ -11,8 +11,8 @@
 
 /**
  * An abstract class for search engines
- * @param Object $database
- * @param string $table
+ * @param ResultSet $resultSet
+ * @param array $searchResult
  */
 abstract class Search
 {
