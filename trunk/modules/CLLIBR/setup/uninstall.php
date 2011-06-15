@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$cllibr_path = get_path( 'rootSys' ) . 'cllibrary';
+$cllibr_path = get_path( 'rootSys' ) . 'cllibrary/';
 
 if ( file_exists( $cllibr_path ) )
 {
@@ -19,7 +19,7 @@ if ( file_exists( $cllibr_path ) )
     {
         if ( ! $file->isDot() )
         {
-            unlink( $cllibr_path . '/' . $file->getFileName() );
+            unlink( $cllibr_path . $file->getFileName() );
         }
     }
     

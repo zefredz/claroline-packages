@@ -14,6 +14,7 @@
  * related to a specified resource
  * @property array $propertyList
  * @property array $translator
+ * @property array $metadatas
  */
 class MetadataView
 {
