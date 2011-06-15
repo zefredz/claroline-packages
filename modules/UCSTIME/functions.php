@@ -12,8 +12,8 @@
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
 
-$time_display = get_conf( 'displaySeconds' ) ? 'HH:mm:ss' : 'HH:mm';
-$date_display = get_conf( 'displayDate' ) ? claro_html_localised_date( get_locale( 'dateFormatLong' ) ) . ' ' : '';
+$time_display = get_conf( 'UCSTIME_displaySeconds' ) ? 'HH:mm:ss' : 'HH:mm';
+$date_display = get_conf( 'UCSTIME_displayDate' ) ? claro_html_localised_date( get_locale( 'dateFormatLong' ) ) . ' ' : '';
 
 
 JavascriptLoader::getInstance()->load( 'datetime' );
