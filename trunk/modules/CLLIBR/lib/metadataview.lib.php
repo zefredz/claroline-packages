@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -15,7 +15,7 @@
  * @property array $propertyList
  * @property array $translator
  */
-abstract class MetadataView
+class MetadataView
 {
     protected $propertyList;
     protected $translator;
@@ -30,8 +30,6 @@ abstract class MetadataView
     {
         $this->metadatas = $this->translate( $metadatas);
     }
-    
-    abstract public function render();
     
     /**
      * Getter for $propertyList
@@ -65,4 +63,20 @@ abstract class MetadataView
         
         return $translatedMetadatas;
     }
+}
+
+/**
+ * Interface for metadatas that can be rendered
+ */
+interface Renderable
+{
+    public function render();
+}
+
+/**
+ * Interface for metadatas that can be exported
+ */
+interface Exportable
+{
+    public function export();
 }
