@@ -14,5 +14,7 @@ class Book extends Resource
     protected $authorizedFileType = array( 'pdf' , 'rtf' , 'odt' , 'doc' , 'txt' , 'htm' , 'html' );
     protected $defaultMetadataList = array( 'author'
                                           , 'publication date'
-                                          , 'publisher' );
+                                          , 'publisher'
+                                          , 'collection'
+                                          , 'isbn' );
 }

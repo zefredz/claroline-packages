@@ -11,7 +11,8 @@
 
 /**
  * A class that represents a librarian
- * @property int $userId
+ * @property int $libraryId
+ * @property array $librarianList
  */
 class Librarian
 {
@@ -23,6 +24,7 @@ class Librarian
     /**
      * Constructor
      * @param int $userId
+     * @param int $libraryId
      */
     public function __construct( $database , $libraryId )
     {
@@ -43,7 +45,7 @@ class Librarian
     
     /**
      * Verifies if the user is librarian of the specified library
-     * @param int $libraryId
+     * @param int $userId
      * @return boolean true if is librarian
      */
     public function isLibrarian( $userId )
@@ -62,7 +64,7 @@ class Librarian
     
     /**
      * Registers the specified user as librarian
-     * @param int $luserId
+     * @param int $userId
      * @return boolean true on success
      */
     public function register( $userId )

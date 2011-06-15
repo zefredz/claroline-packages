@@ -14,9 +14,9 @@
  * A class that represents the stored resource
  * @const DOWNLOAD_ACCESS
  * @const RAW_ACCESS
- * @property $location
- * @property $resource
- * @property $keyword
+ * @property string $location
+ * @property Resource object $resource
+ * @property string $keyword
  */
 class StoredResource
 {

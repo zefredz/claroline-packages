@@ -12,6 +12,8 @@
 /**
  * A class that represents the metadatas
  * related to a specified resource
+ * @property array $propertyList
+ * @property array $translator
  */
 abstract class MetadataView
 {
@@ -20,6 +22,10 @@ abstract class MetadataView
     
     protected $metadatas;
     
+    /**
+     * Constructor
+     * @param array $metadatas
+     */
     public function __construct( $metadatas )
     {
         $this->metadatas = $this->translate( $metadatas);
@@ -27,11 +33,20 @@ abstract class MetadataView
     
     abstract public function render();
     
+    /**
+     * Getter for $propertyList
+     * @return array $propertyList
+     */
     public function getPropertyList()
     {
         return $this->propertyList;
     }
     
+    /**
+     * Translates the received metadatas into self-defined property names
+     * @param array $metadatas
+     * @return array $translatedMetadatas
+     */
     public function translate( $metadatas )
     {
         $translatedMetadatas = array();

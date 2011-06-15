@@ -15,9 +15,9 @@
  * @const LIBRARY_COLLECTION
  * @const COURSE_COLLECTION
  * @const USER_COLLECTION
- * @property $type
- * @property $refId;
- * @property $resourceList;
+ * @property string $type
+ * @property string $refId;
+ * @property array $resourceList;
  */
 class Collection
 {
@@ -94,6 +94,7 @@ class Collection
     
     /**
      * Getter for resource list
+     * @param boolean $force
      * @return array $resourceList
      */
     public function getResourceList( $force = false )
@@ -117,7 +118,7 @@ class Collection
     
     /**
      * Verifies if specified resource is in the resource set
-     * @param $ResourceId
+     * @param int $resourceId
      * @return boolean true if exists
      */
     public function resourceExists( $resourceId )
@@ -174,7 +175,7 @@ class Collection
     
     /**
      * Add a resource in the resource set
-     * @param Resource $resource
+     * @param int $resourceId
      * @retrn boolean true on success
      */
     public function add( $resourceId )

@@ -13,15 +13,15 @@
  * A Class that represents a resource
  * @const TYPE_FILE
  * @const TYPE_URL
- * @property $authorizedFileType
- * @property $defaultMetadataList
- * @property $id
- * @property $secretId
- * @property $title
- * @property $storageType
- * @property $resourceType
- * @property $metaDataList
- * @property $creationDate
+ * @property array $authorizedFileType
+ * @property array $defaultMetadataList
+ * @property int $id
+ * @property string $storageType
+ * @property string $resourceType
+ * @property string $title
+ * @property string $description
+ * @property string $creationDate
+ * @property string $resourceName
  */
 class Resource
 {
@@ -228,7 +228,7 @@ class Resource
     
     /**
      * Setter for creation date
-     * @param string date
+     * @param string $date
      * @return boolean true on success
      */
     public function setDate( $date = null )
@@ -320,6 +320,7 @@ class Resource
     /**
      * Verifies the validity on the file name,
      * and if valid, sets the resource name
+     * @param string $fileName
      * @return boolean true on success
      */
     public function validate( $fileName )

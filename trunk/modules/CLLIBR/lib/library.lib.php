@@ -33,7 +33,7 @@ class Library
     /**
      * Contructor
      * @param int $userId
-     * @param int id
+     * @param int $id
      */
     public function __construct( $database , $id = null )
     {
@@ -75,7 +75,7 @@ class Library
     
     /**
      * Getter for library id
-     * @return $libraryId
+     * @return int $libraryId
      */
     public function getId()
     {
@@ -84,7 +84,7 @@ class Library
     
     /**
      * Getter for library title
-     * @return string $this->Title
+     * @return string $title
      */
     public function getTitle()
     {
@@ -93,7 +93,7 @@ class Library
     
     /**
      * Getter for status
-     * @retrun string $this->status
+     * @return string $status
      */
     public function getStatus()
     {

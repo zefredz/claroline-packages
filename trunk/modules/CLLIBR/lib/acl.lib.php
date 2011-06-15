@@ -49,6 +49,7 @@ class CLLIBR_ACL
     /**
      * Controls if user is allowed to acess the specified resource
      * @param int $resourceId
+     * @param string $access
      * @return boolean
      */
     public function accessGranted( $resourceId , $access = self::ACCESS_SEARCH )
