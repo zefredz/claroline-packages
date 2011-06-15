@@ -18,9 +18,9 @@ $conf_def['config_name'] = 'Server Time';
 
 $conf_def['section']['main']['label']      = 'Main';
 $conf_def['section']['main']['description']= '';
-$conf_def['section']['main']['properties'] = array ( 'displaySeconds' , 'displayDate' );
+$conf_def['section']['main']['properties'] = array ( 'UCSTIME_displaySeconds' , 'UCSTIME_displayDate' );
 
-$conf_def_property_list[ 'displaySeconds' ] = 
+$conf_def_property_list[ 'UCSTIME_displaySeconds' ] = 
  array ( 'label'       => 'Displays seconds'
        , 'description' => 'Do you want seconds to be shown?'
        , 'default'     => FALSE
@@ -28,7 +28,7 @@ $conf_def_property_list[ 'displaySeconds' ] =
        ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
        );
 
-$conf_def_property_list[ 'displayDate' ] = 
+$conf_def_property_list[ 'UCSTIME_displayDate' ] = 
  array ( 'label'       => 'Displays date'
        , 'description' => 'Do you want the date to be shown?'
        , 'default'     => FALSE
