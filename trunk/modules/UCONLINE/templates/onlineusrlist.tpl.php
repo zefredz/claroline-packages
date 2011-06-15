@@ -60,7 +60,7 @@
             <td align="center"><?php echo $user[ 'id' ]; ?></td>
         <?php endif; ?>
             <?php if ( claro_is_platform_admin() ) : ?>
-            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/admin/adminprofile.php?uidToEdit=' . $user[ 'id' ] ) ); ?>"><?php echo $user[ 'lastname' ]; ?></a></td>
+            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/admin/admin_profile.php?uidToEdit=' . $user[ 'id' ] ) ); ?>"><?php echo $user[ 'lastname' ]; ?></a></td>
             <?php else : ?>
             <td><?php echo $user[ 'lastname' ]; ?></td>
             <?php endif; ?>
