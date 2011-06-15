@@ -50,7 +50,7 @@ class SkypeAccount
                 FROM
                     `{$this->tbl[ 'user_property' ]}`
                 WHERE
-                    `propertyId` = 'skypeName'
+                    `propertyId` = 'skype'
                 AND
                     `userId` = " . Claroline::getDatabase()->escape( $this->userId )
         )->fetch( Database_ResultSet::FETCH_VALUE );
@@ -67,7 +67,7 @@ class SkypeAccount
             INSERT INTO
                 `{$this->tbl[ 'user_property' ]}`
             SET `userId` = ". Claroline::getDatabase()->escape( $this->userId ) . ",
-                `propertyId` = 'skypeName',
+                `propertyId` = 'skype',
                 `propertyValue` = ". Claroline::getDatabase()->quote( $this->skypeName )
         );
     }
@@ -83,7 +83,7 @@ class SkypeAccount
             SET
                 `propertyValue` = " . Claroline::getDatabase()->quote( $this->skypeName ) ."
             WHERE
-                `propertyId` = 'skypeName'
+                `propertyId` = 'skype'
             AND
                 `userId` = " . Claroline::getDatabase()->escape( $this->userId ) . "
             AND

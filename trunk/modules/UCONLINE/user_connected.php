@@ -54,7 +54,7 @@ $sql = "SELECT DISTINCT
             ON
                 S.`userId` = U.`user_id`
             AND
-                S.`propertyId` = 'skypeName'
+                S.`propertyId` = 'skype'
         INNER JOIN
             `{$tbl[ 'user_online' ]}` AS O
             ON
