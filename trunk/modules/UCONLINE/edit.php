@@ -57,7 +57,7 @@ if ( $dialogBox )
     claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
 }
 
-$skypeEditView = new PhpTemplate( dirname( __FILE__ ) . '/templates/skypeedit.tpl.php' );
+$skypeEditView = new ModuleTemplate( 'UCONLINE' , 'skypeedit.tpl.php' );
 
 $skypeEditView->assign( 'skypeName' , $skypeAccount->getSkypeName() );
 
