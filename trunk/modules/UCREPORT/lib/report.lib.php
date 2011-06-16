@@ -63,8 +63,7 @@ class Report
     {
         $this->courseId = $courseId ? $courseId : claro_get_current_course_id();
         
-        $this->tbl_names = get_module_main_tbl( array( 'user'
-                                                     , 'cours_user' ) );
+        $this->tbl_names = get_module_main_tbl( array( 'user' ) );
         $this->tbl = get_module_course_tbl ( array ( 'wrk_assignment'
                                                    , 'wrk_submission'
                                                    , 'group_team'
@@ -134,24 +133,12 @@ class Report
             }
         }
         
-        if ( ! isset( $this->userQueryResult ) )
+        if ( ! isset( $this->courseUserList ) )
         {
-            $this->userQueryResult = Claroline::getDatabase()->query( "
-                SELECT
-                    U.user_id, U.prenom, U.nom
-                FROM
-                    `{$this->tbl_names['user']}` AS U
-                INNER JOIN
-                    `{$this->tbl_names['cours_user']}` AS C
-                ON
-                    U.user_id = C.user_id
-                WHERE
-                    C.code_cours = " . Claroline::getDatabase()->quote( $this->courseId ) . "
-                ORDER BY U.prenom, U.nom ASC"
-                );
+            $this->courseUserList = claro_get_course_user_list();
         }
         
-        foreach( $this->userQueryResult as $line )
+        foreach( $this->courseUserList as $line )
         {
             $this->userList[ $line[ 'user_id' ] ][ 'firstname' ] = $line[ 'prenom' ];
             $this->userList[ $line[ 'user_id' ] ][ 'lastname' ] = $line[ 'nom' ];

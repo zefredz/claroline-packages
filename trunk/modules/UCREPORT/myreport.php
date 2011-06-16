@@ -11,6 +11,7 @@
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
+FromKernel::uses( 'course_user.lib' );
 From::Module( 'UCREPORT' )->uses( 'report.lib' , 'userreport.lib' );
 CssLoader::getInstance()->load( 'report' , 'screen' );
 language::load_module_translation( 'UCREPORT' );
