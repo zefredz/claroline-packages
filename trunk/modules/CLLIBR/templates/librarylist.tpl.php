@@ -79,7 +79,7 @@
         <?php endforeach; ?>
     <?php else: ?>
             <tr>
-                <td class="empty" colspan="4"><?php echo get_lang( 'Empty list' ); ?></td>
+                <td class="empty" colspan="4"><?php echo get_lang( 'No libraries' ); ?></td>
             </tr>
     <?php endif; ?>
         </tbody>
