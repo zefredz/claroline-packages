@@ -40,11 +40,11 @@
         <tr>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqView&resourceId='. $resourceId ) );?>">
-                    <?php echo claro_utf8_encode( $objects[0]->getTitle() ); ?>
+                    <?php echo $objects[0]->getTitle(); ?>
                 </a>
             </td>
             <td> 
-                <?php echo claro_utf8_encode( implode( ', ' , $objects[1]->get( 'author' ) ) ); ?>
+                <?php echo implode( ', ' , $objects[1]->get( 'author' ) ); ?>
             </td>
             <!--
             <td align="center">

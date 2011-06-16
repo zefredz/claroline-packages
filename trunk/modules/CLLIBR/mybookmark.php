@@ -34,4 +34,4 @@ $portlet->assign( 'resourceList' , $myBookmark->getResourceList() );
 $portlet->assign( 'userId' , $userId );
 $portlet->assign( 'icon' , get_path( 'rootWeb' ) . 'module/CLLIBR/icon.png' );
 
-echo $portlet->render();
+echo claro_utf8_encode( $portlet->render() );
