@@ -33,37 +33,45 @@ class MultiSearch extends Search
      */
     public function search( $searchQuery )
     {
-        $searchString = "";
+        $sqlString1 = "SELECT\n"
+                   . "    R.title,\n"
+                   . "    R.id,\n"
+                   . "    M.name,\n"
+                   . "    M.value\n"
+                   . "FROM\n"
+                   . "    `{$this->tbl['library_metadata']}` AS M,\n"
+                   . "    `{$this->tbl['library_resource']}` AS R\n";
+        
+        $sqlString2 = "WHERE\n";
         
         foreach( $searchQuery as $index => $item )
         {
+            $operator = array_key_exists( 'operator' , $item )
+                      ? $item[ 'operator' ]
+                      : self::OPERATOR_AND;
             
-            if ( $index )
-            {
-                $searchString .= $item[ 'operator' ] . " ";
-            }
+            $sqlString1 .= $operator == self::OPERATOR_AND
+                        ? "INNER JOIN\n"
+                        : "LEFT JOIN\n";
+                        
+            $sqlString1 .= "    `{$this->tbl['library_metadata']}` AS M"
+                        . $index . "\n"
+                        . "ON\n"
+                        . "    R.id = M" . $index . ".resource_id\n";
             
-            $searchString .= "M.name = "
-                           . $this->database->quote( $item[ 'name' ] )
-                           . "AND M.value LIKE "
-                           . $this->database->quote( '%' . $item[ 'value' ] . '%' )
-                           . "\n";
+            $sqlString2 .= $index
+                        ? $operator
+                        : "";
+                        
+            $sqlString2 .= "  M" . $index . ".name = " . $this->database->quote( $item[ 'name' ] ) . "\n"
+                        . "AND\n"
+                        . "   M" . $index . ".value LIKE " . $this->database->quote( '%' . $item[ 'value' ] . '%' )
+                        . "\n";
         }
         
-        return $this->resultSet = $this->database->query( "
-            SELECT
-                R.title,
-                R.id,
-                M.name,
-                M.value
-            FROM
-                `{$this->tbl['library_metadata']}` AS M
-            INNER JOIN
-                `{$this->tbl['library_resource']}` AS R
-            ON
-                R.id = M.resource_id
-            WHERE
-                " . $searchString );
+        $sqlString = $sqlString1 . $sqlString2;
+        
+        return $this->resultSet = $this->database->query( $sqlString );
     }
     
     /**
