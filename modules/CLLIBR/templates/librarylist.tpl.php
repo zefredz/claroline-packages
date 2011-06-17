@@ -19,7 +19,7 @@
     <input type="submit" value="<?php echo get_lang( 'Quick search' ); ?>" />
     <input type="text" name="searchString" value="" />
     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?option=multisearch') ); ?>">
-        <img src="<?php echo get_icon_url( 'search' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
+        <img src="<?php echo get_icon_url( 'plus' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
     </a>
 </form>
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>

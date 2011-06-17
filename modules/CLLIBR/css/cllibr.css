@@ -20,6 +20,13 @@
 {
     display: block;
     text-align: right;
+    margin-top: -20px;
+}
+
+#searchForm a img
+{
+    position: relative;
+    top: 3px;
 }
 
 #items select, #items input
