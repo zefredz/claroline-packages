@@ -16,6 +16,11 @@
     color: silver;
 }
 
+.searchResult small strong
+{
+    color: red;
+}
+
 #searchForm
 {
     display: block;

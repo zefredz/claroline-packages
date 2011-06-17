@@ -45,6 +45,10 @@ class Library
             $this->id = $id;
             $this->load();
         }
+        else
+        {
+            $this->setStatus();
+        }
     }
     
     /**
