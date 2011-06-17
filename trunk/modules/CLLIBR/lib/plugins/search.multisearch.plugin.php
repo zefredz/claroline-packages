@@ -119,7 +119,7 @@ class MultiSearch extends Search
                     $searchResult[ $id ] = $datas;
                     $searchResult[ $id ][ 'score' ] = 0;
                 }
-                $searchResult[ $id ][ 'score' ] += $score;
+                $searchResult[ $id ][ 'score' ] += $score / 100;
             }
         }
         

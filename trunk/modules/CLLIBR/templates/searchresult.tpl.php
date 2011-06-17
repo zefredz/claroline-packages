@@ -24,7 +24,7 @@
 <?php if ( $this->result ) : ?>
     <?php foreach ( $this->result as $resourceId => $datas ) : ?>
     <tr>
-        <td>
+        <td class="searchResult">
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
                 <?php echo $datas[ 'title' ]; ?>
             </a><br />
@@ -32,8 +32,11 @@
             <small><?php echo $datas[ 'matches' ][ 'description' ]; ?></small>
             <?php endif; ?>
         </td>
-        <td>
-            <?php echo $datas[ 'score' ]; ?>
+        <td align="center">
+            <?php $nbStar = $datas[ 'score' ] < 6 ? ceil( $datas[ 'score' ] ) : 6; ?>
+            <?php for( $i = 0; $i < $nbStar; $i++ ) : ?>
+            <img src="<?php echo get_icon_url( 'star' ); ?>" alt="+"/>
+            <?php endfor; ?>
         </td>
     </tr>
     <?php endforeach; ?>

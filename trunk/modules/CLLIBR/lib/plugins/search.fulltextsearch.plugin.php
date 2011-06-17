@@ -71,9 +71,14 @@ class FulltextSearch extends Search
             
             if ( $score2 )
             {
+                /*
                 $description = $line[ 'description' ];
                 $position = strrpos( $description , $this->searchString );
-                $matches[ 'description' ] = substr( $description , $position - 30 , 60 ); //TODO find a best way
+                $matches[ 'description' ] = substr( $description , $position - 30 , 60 );
+                */
+                $matches[ 'description' ] = str_ireplace( $this->searchString
+                                                        , '<strong>' . $this->searchString . '</strong>'
+                                                        , $line[ 'description' ] );
             }
             
             if ( $score3 )
