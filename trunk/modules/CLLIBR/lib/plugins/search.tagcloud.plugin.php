@@ -43,7 +43,6 @@ class TagCloud extends Search
                 name = \"keyword\"" );
         
         $this->cloud = array();
-        $this->nbMax = 0;
         
         foreach( $result as $line )
         {
@@ -53,7 +52,9 @@ class TagCloud extends Search
         }
         
         ksort( $this->cloud );
-        $this->nbMax = max( $this->cloud );
+        $this->nbMax = ! empty( $this->cloud )
+                     ? max( $this->cloud )
+                     : 0;
     }
     
     /**
@@ -62,16 +63,21 @@ class TagCloud extends Search
      */
     public function render()
     {
-        $html = '<div id="tagCloud">';
+        $html = '';
         
-        foreach( $this->cloud as $tag => $count )
+        if ( ! empty( $this->cloud ) )
         {
-            $size = round( 20 * $count / $this->nbMax );
-            $html .= '<a href="' . htmlspecialchars( $this->cmd .'&keyword=' . $tag ) . '" style="font-size: ' . $size . 'pt;">'
-                   . $tag . '</a>' . "\n";
+            $html = '<div id="tagCloud">';
+            
+            foreach( $this->cloud as $tag => $count )
+            {
+                $size = round( 20 * $count / $this->nbMax );
+                $html .= '<a href="' . htmlspecialchars( $this->cmd .'&keyword=' . $tag ) . '" style="font-size: ' . $size . 'pt;">'
+                       . $tag . '</a>' . "\n";
+            }
+            
+            $html .= '</div>';
         }
-        
-        $html .= '</div>';
         
         return $html;
     }

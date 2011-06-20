@@ -9,6 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<?php if( $this->tagCloud ) : ?>
 <script type="text/javascript">
     $(document).ready(function(){
         $("#tagCloud").hide();
@@ -18,6 +19,7 @@
         });
     });
 </script>
+<?php endif; ?>
 
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreateLibrary') ); ?>">
@@ -31,9 +33,11 @@
     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?option=multisearch') ); ?>">
         <img src="<?php echo get_icon_url( 'plus' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
     </a>
+<?php if ( $this->tagCloud ) : ?>
     <a id="showTagCloud" href="#claroBody">
         <img src="<?php echo get_icon_url( 'tagcloud' ); ?>" alt="<?php echo get_lang( 'Show tagcloud' ); ?>" />
     </a>
+<?php endif; ?>
 </form>
 
 <?php echo $this->tagCloud; ?>
