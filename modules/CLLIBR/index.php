@@ -836,7 +836,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
                                                             . $warning->render()
                                                             . $dialogBox->render()
-                                                            //. $tagCloud->render()
                                                             . $template->render() );
 }
 else // FORBIDDEN ACTION
