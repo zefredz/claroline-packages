@@ -13,7 +13,7 @@
     <?php if ( $this->courseId ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $this->resourceId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Bibliography' ); ?>" />
+        <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Bibliography' ); ?>" />
         <?php echo get_lang( 'Add to the course\'s bibliography' ); ?>
     </a>
 </span>
@@ -28,7 +28,7 @@
 <?php if ( $this->userId ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $this->resourceId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
+        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
         <?php echo get_lang( 'Add to my bookmark' ); ?>
     </a>
 </span>
