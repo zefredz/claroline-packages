@@ -90,6 +90,7 @@ $_lang[ 'Edit resource\'s metadatas' ] = 'Modifier les méta-données de la ressou
 $_lang[ 'Manage librarians' ] = 'Gérer mes bibliothécaires';
 $_lang[ '... or new ones (separated by a comma)' ] = '... ou des nouveaux mots-clés (séparés par des virgules)';
 $_lang[ 'Quick search' ] = 'Recherche rapide';
+$_lang[ 'Show tagcloud' ] = 'Afficher le nuage de tags';
 
 // Messages
 $_lang[ 'Access denied' ] = 'Accès non autorisé';

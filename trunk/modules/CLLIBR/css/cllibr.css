@@ -39,11 +39,6 @@
     margin: 3px;
 }
 
-#libraryList
-{
-    margin-right: 240px;
-}
-
 #tagCloud
 {
     border: 1px solid #EEEEEE;
@@ -55,4 +50,9 @@
 #tagCloud a
 {
     margin: 5px;
+}
+
+.galant
+{
+    margin-right: 240px;
 }

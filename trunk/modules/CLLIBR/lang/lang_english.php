@@ -90,6 +90,7 @@ $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
 $_lang[ 'Manage librarians' ] = 'Manage librarians';
 $_lang[ '... or new ones (separated by a comma)' ] = '... or new ones (separated by a comma)';
 $_lang[ 'Quick search' ] = 'Quick search';
+$_lang[ 'Show tagcloud' ] = 'Show tagcloud';
 
 // Messages
 $_lang[ 'Access denied' ] = 'Access denied';

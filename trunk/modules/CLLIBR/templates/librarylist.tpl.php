@@ -9,6 +9,16 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#tagCloud").hide();
+        $("#showTagCloud").click(function(){
+            $("#tagCloud").toggle();
+            $("#libraryList").toggleClass( 'galant' );
+        });
+    });
+</script>
+
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreateLibrary') ); ?>">
         <img src="<?php echo get_icon_url( 'courseadd' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
@@ -20,6 +30,9 @@
     <input type="text" name="searchString" value="" />
     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?option=multisearch') ); ?>">
         <img src="<?php echo get_icon_url( 'plus' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
+    </a>
+    <a id="showTagCloud" href="#claroBody">
+        <img src="<?php echo get_icon_url( 'tagcloud' ); ?>" alt="<?php echo get_lang( 'Show tagcloud' ); ?>" />
     </a>
 </form>
 
