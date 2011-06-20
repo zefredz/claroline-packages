@@ -31,6 +31,10 @@ $_lang[ 'bookmarks' ] = 'bookmarks';
 $_lang[ 'librarians' ] = 'librarians';
 $_lang[ 'keyword' ] = 'keyword';
 
+$_lang[ 'Restricted' ] = 'Restricted access';
+$_lang[ 'Private' ] = 'Private';
+$_lang[ 'Public' ] = 'Public';
+
 $_lang[ 'Advanced search' ] = 'Advanced search';
 $_lang[ 'Associated keywords' ] = 'Associated keywords';
 $_lang[ 'Author(s)' ] = 'Author(s)';

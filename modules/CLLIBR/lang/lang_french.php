@@ -32,6 +32,10 @@ $_lang[ 'librarians' ] = 'bibliothécaires';
 $_lang[ 'External link' ] = 'Lien externe';
 $_lang[ 'keyword' ] = 'mot-clé';
 
+$_lang[ 'Restricted' ] = 'Accès restreint';
+$_lang[ 'Private' ] = 'Privée';
+$_lang[ 'Public' ] = 'Publique';
+
 $_lang[ 'Advanced search' ] = 'Recherche avancée';
 $_lang[ 'Associated keywords' ] = 'Mots-clés associés';
 $_lang[ 'Author(s)' ] = 'Auteur(s)';
