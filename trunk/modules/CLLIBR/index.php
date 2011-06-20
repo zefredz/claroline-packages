@@ -214,7 +214,7 @@ if ( $resourceId )
 $accessTicket = ( $access_allowed && in_array( $cmd , $actionList ) )
              || ( $edit_allowed && in_array( $cmd , $restrictedActionList ) );
 
-//$tagCloud = new TagCloud( $database );
+$tagCloud = new TagCloud( $database );
 
 if ( $accessTicket ) // AUTHORIZED ACTION
 {
@@ -595,6 +595,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     $template->assign( 'libraryId' , $libraryId );
     $template->assign( 'courseId' , $courseId );
     $template->assign( 'icon' , get_icon_url( 'icon' ) );
+    $template->assign( 'tagCloud' , $tagCloud->render() );
     if ( is_a( $resourceSet , 'LibraryList' ) && $libraryId )
     {
         $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );

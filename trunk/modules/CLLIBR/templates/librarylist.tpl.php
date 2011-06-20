@@ -22,6 +22,10 @@
         <img src="<?php echo get_icon_url( 'plus' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
     </a>
 </form>
+
+<?php echo $this->tagCloud; ?>
+
+<div id="libraryList">
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>
 <fieldset id="<?php echo $category; ?>Library">
     <legend><?php echo get_lang( ucwords( $category . ' libraries' ) ); ?></legend>
@@ -86,3 +90,4 @@
     </table>
 </fieldset>
 <?php endforeach; ?>
+</div>

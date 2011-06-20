@@ -38,3 +38,21 @@
 {
     margin: 3px;
 }
+
+#libraryList
+{
+    margin-right: 240px;
+}
+
+#tagCloud
+{
+    border: 1px solid #EEEEEE;
+    float: right;
+    width: 240px;
+    margin: 7px;
+}
+
+#tagCloud a
+{
+    margin: 5px;
+}

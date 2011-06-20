@@ -67,8 +67,8 @@ class TagCloud extends Search
         foreach( $this->cloud as $tag => $count )
         {
             $size = round( 20 * $count / $this->nbMax );
-            $html .= '<a href="' . $this->cmd .'&keyword=' . $tag . '" style="font-size: ' . $size . 'pt; margin: 5px;">'
-                   . $tag . '</a>';
+            $html .= '<a href="' . htmlspecialchars( $this->cmd .'&keyword=' . $tag ) . '" style="font-size: ' . $size . 'pt;">'
+                   . $tag . '</a>' . "\n";
         }
         
         $html .= '</div>';
