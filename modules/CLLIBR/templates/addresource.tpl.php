@@ -9,6 +9,24 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#resourceStorage").change(function(){
+            var storageType = $(this).val();
+            $("#resourceSelect").empty();
+            $("#storageType").empty();
+            if ( storageType == 'file' ){
+                $("#storageType").append('<?php echo get_lang( 'File' ); ?> :');
+                $("#resourceSelect").append('<input type="file" name="uploadedFile" value=""/>');
+            }
+            else if ( storageType == 'url' ){
+                $("#storageType").append('<?php echo get_lang( 'Url' ); ?> :');
+                $("#resourceSelect").append('<input type="text" name="resourceUrl" value=""/>');
+            }
+        });
+    });
+</script>
+
 <form class="msform" method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $this->urlAction ) ); ?>" >
@@ -47,7 +65,13 @@
                     </option>
                 </select>
             </dd>
-            <dt>&nbsp;</dt>
+            <dt>
+                    <label for="resourceSelect">
+                        <span id="storageType">
+                            <?php echo get_lang( 'File' ); ?> :
+                        </span>
+                    </label>
+            </dt>
             <dd>
                 <span id="resourceSelect">
                     <input type="file"
