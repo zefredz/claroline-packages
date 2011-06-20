@@ -9,6 +9,35 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".invisible").hide();
+        var nbToAdd=0;
+        $("#addMetadata").click(function(){
+            nbToAdd++;
+            var content="<dt><input id=\"name"+nbToAdd+"\" type=\"text\" name=\"name["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
+                        "<dd><input id=\"value"+nbToAdd+"\" type=\"text\" name=\"value["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dd>"+
+                        "<a id=\"delx"+nbToAdd+"\" class=\"claroCmd\" href=\"#delx"+nbToAdd+"\">"+
+                        "<\/a>"+
+                        "<script>"+
+                        "    $(\"#delx"+nbToAdd+"\").click(function(){'"+
+                        "    $(this).parent().remove();'"+
+                        "    });"+
+                        "<\/script>";
+            
+            $(".invisible").show();
+            $("#metadataList").append(content);
+        });
+        
+        $(".delMetadata").click(function(){
+            var metadataId = $(this).attr("id").substr(3);
+            $("#metadata"+metadataId).attr({name:"del["+metadataId+"]"});
+            $("#label"+metadataId).hide();
+            $("#value"+metadataId).hide();
+        });
+    });
+</script>
+
 <form class="msform" method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $this->urlAction ) ); ?>" >

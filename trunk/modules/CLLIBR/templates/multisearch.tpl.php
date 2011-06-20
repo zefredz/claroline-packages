@@ -8,28 +8,28 @@
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-<script type='text/javascript'>
-$(document).ready(function(){
-    var itemNb=0;
-    $("#addItem").click(function(){
-        itemNb++;
-        var content='<select id="operator'+itemNb+'" name="searchQuery['+itemNb+'][operator]" >'+
-                    '    <option value="AND"><?php echo get_lang( 'AND' ); ?></option>'+
-                    '    <option value="OR"><?php echo get_lang( 'OR' ); ?></option>'+
-                    '</select><br />'+
-                    '<select id="item'+itemNb+'" name="searchQuery['+itemNb+'][name]" >'+
-<?php foreach( MultiSearch::$itemList as $name ) : ?>
-                    '    <option value="<?php echo $name; ?>">'+
-                    '        <?php echo get_lang( $name ); ?>'+
-                    '    </option>'+
-<?php endforeach; ?>
-                    '</select>'+
-                    '<span> = </span>'+
-                    '<input type="text" name="searchQuery['+itemNb+'][value]" value="" />';
-        
-        $("#items").append(content);
+<script type="text/javascript">
+    $(document).ready(function(){
+        var itemNb=0;
+        $("#addItem").click(function(){
+            itemNb++;
+            var content='<select id="operator'+itemNb+'" name="searchQuery['+itemNb+'][operator]" >'+
+                        '    <option value="AND"><?php echo get_lang( 'AND' ); ?></option>'+
+                        '    <option value="OR"><?php echo get_lang( 'OR' ); ?></option>'+
+                        '</select><br />'+
+                        '<select id="item'+itemNb+'" name="searchQuery['+itemNb+'][name]" >'+
+    <?php foreach( MultiSearch::$itemList as $name ) : ?>
+                        '    <option value="<?php echo $name; ?>">'+
+                        '        <?php echo get_lang( $name ); ?>'+
+                        '    </option>'+
+    <?php endforeach; ?>
+                        '</select>'+
+                        '<span> = </span>'+
+                        '<input type="text" name="searchQuery['+itemNb+'][value]" value="" />';
+            
+            $("#items").append(content);
+        });
     });
-});
 </script>
 <strong><?php echo get_lang( 'Advanced search' ); ?>:</strong><br />
 <form id="multiSearch" class="multisearch"

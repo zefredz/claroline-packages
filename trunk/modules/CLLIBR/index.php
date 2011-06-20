@@ -574,9 +574,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     // VIEW
     CssLoader::getInstance()->load( 'cllibr' , 'screen' );
     
-    $jsLoader = JavascriptLoader::getInstance();
-    $jsLoader->load( 'editresource' );
-    
     $dialogBox = new DialogBox();
     $warning = new DialogBox();
     
