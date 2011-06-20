@@ -18,7 +18,7 @@
 </span>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddResource&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'courseadd' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
+        <img src="<?php echo get_icon_url( 'new_book' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
         <?php echo get_lang( 'Add a resource' ); ?>
     </a>
 </span>
@@ -26,7 +26,7 @@
 <!--
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add selection to bookmark' ); ?>" />
+        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add selection to bookmark' ); ?>" />
         <?php echo get_lang( 'Add selection to my bookmark' ); ?>
     </a>
 </span>
@@ -34,7 +34,7 @@
 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add selection in bibliography' ); ?>" />
+        <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Add selection in bibliography' ); ?>" />
         <?php echo get_lang( 'Add selection in course\'s bibliography' ); ?>
     </a>
 </span>
@@ -78,11 +78,11 @@
             <td align="center">
                 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'course' ); ?>" alt="<?php echo get_lang( 'Add to the course\'s bibliography' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Add to the course\'s bibliography' ); ?>"/>
                 </a>
                 <?php endif; ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'mycourses' ); ?>" alt="<?php echo get_lang( 'Add to my bookmarks' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmarks' ); ?>"/>
                 </a>
                 <!--
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resourceId ) );?>">
