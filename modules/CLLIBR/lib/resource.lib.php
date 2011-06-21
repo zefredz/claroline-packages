@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -18,8 +18,6 @@
  * @property int $id
  * @property string $storageType
  * @property string $resourceType
- * @property string $title
- * @property string $description
  * @property string $creationDate
  * @property string $resourceName
  */
@@ -34,8 +32,6 @@ class Resource
     protected $id;
     protected $storageType;
     protected $resourceType;
-    protected $title;
-    protected $description;
     
     protected $creationDate;
     protected $resourceName;
@@ -69,9 +65,7 @@ class Resource
                 creation_date,
                 storage_type,
                 resource_type,
-                resource_name,
-                title,
-                description
+                resource_name
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
@@ -84,8 +78,6 @@ class Resource
             $this->storageType = $result[ 'storage_type' ];
             $this->resourceType = $result[ 'resource_type' ];
             $this->resourceName = $result[ 'resource_name' ];
-            $this->title = $result[ 'title' ];
-            $this->description = $result[ 'description' ];
         }
         else
         {
@@ -100,24 +92,6 @@ class Resource
     public function getId()
     {
         return $this->id;
-    }
-    
-    /**
-     * Getter for Title
-     * @return string $title
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-    
-    /**
-     * Getter for Description
-     * @return string description
-     */
-    public function getDescription()
-    {
-        return $this->description;
     }
     
     /**
@@ -207,26 +181,6 @@ class Resource
     }
     
     /**
-     * Setter for Title
-     * @param string $title
-     * @return boolean true on success
-     */
-    public function setTitle( $title )
-    {
-        return $this->title = $title;
-    }
-    
-    /**
-     * Setter for Description
-     * @param string $description
-     * @return boolena true on success
-     */
-    public function setDescription( $description )
-    {
-        return $this->description = $description;
-    }
-    
-    /**
      * Setter for creation date
      * @param string $date
      * @return boolean true on success
@@ -276,9 +230,7 @@ class Resource
                     storage_type = " . $this->database->quote( $this->storageType ) . ",
                     resource_type = " . $this->database->quote( $this->resourceType ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",
-                    creation_date = " . $this->database->quote( $this->creationDate ) . ",
-                    title = " . $this->database->quote( $this->title ) . ",
-                    description = " . $this->database->quote( $this->description );
+                    creation_date = " . $this->database->quote( $this->creationDate );
     }
     
     /**
@@ -290,9 +242,7 @@ class Resource
     {
         if ( ! $this->storageType
           || ! $this->resourceType
-          || ! $this->resourceName
-          || ! $this->creationDate
-          || ! $this->title )
+          || ! $this->resourceName )
         {
             throw new Exception( 'Missing atributes' );
         }

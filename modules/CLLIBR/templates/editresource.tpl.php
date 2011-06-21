@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -52,82 +52,50 @@
            value="<?php echo $this->libraryId; ?>" />
 
     <fieldset>
-    <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
-
-    <dl id="metadataList">
-        <dt>
-            <?php echo get_lang( 'Title' ); ?> :
-        </dt>
-        <dd>
-            <input type="text" size="48" name="title" value="<?php echo $this->title; ?>" />
-        </dd>
-        <dt>
-            <?php echo get_lang( 'Description' ); ?> :
-        </dt>
-        <dd>
-            <textarea cols="60" rows="8" name="description"><?php echo $this->description; ?></textarea>
-        </dd>
-        <!-- when adding a new resource -->
-        <?php if ( ! empty( $this->defaultMetadataList ) ) : ?>
-
-            <?php foreach( $this->defaultMetadataList as $property ) : ?>
-
-                <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
-                <dd><input type="text"
-                           size="32"
-                           name="add[<?php echo $property; ?>]" value="" /></dd>
-
-            <?php endforeach; ?>
-
-        <!-- when editing an existing resource -->
-        <?php else : ?>
-
-            <?php 
-                foreach( $this->metadataList as $name => $metadata ):
-                    foreach( $metadata as $id => $value ):
-            ?>
-
-        <dt id="label<?php echo $id; ?>">
-            <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
-        </dt>
-        <dd id="value<?php echo $id; ?>">
-            <input id="metadata<?php echo $id; ?>"
-                   type="text"
-                   size="32"
-                   name="metadata[<?php echo $id; ?>]"
-                   value="<?php echo htmlspecialchars( $value ); ?>" />
-            <a id="del<?php echo $id; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $id; ?>">
-                    <?php echo get_lang( 'Delete' ); ?>
-            </a>
-        </dd>
-
-            <?php
-                    endforeach;
-                endforeach;
-            ?>
-
+        <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
+        <dl id="metadataList">
+            <dt>
+                <?php echo get_lang( 'Title' ); ?> :
+            </dt>
+            <dd>
+                <?php var_dump( $this->resourceId ); ?>
+                <input type="text" size="48" name="title" value="<?php echo $this->metadataList[ 'title' ]; ?>" />
+            </dd>
+            <dt>
+                <?php echo get_lang( 'Description' ); ?> :
+            </dt>
+            <dd>
+                <textarea cols="60" rows="8" name="description"><?php echo $this->metadataList[ 'description' ]; ?></textarea>
+            </dd>
+            
+            <!-- when adding a new resource -->
+<?php if ( ! empty( $this->defaultMetadataList ) ) : ?>
+    <?php foreach( $this->defaultMetadataList as $property ) : ?>
+                    <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
+                    <dd><input type="text"
+                               size="32"
+                               name="add[<?php echo $property; ?>]" value="" /></dd>
+    <?php endforeach; ?>
+            <!-- when editing an existing resource -->
+<?php else : ?>
+    <?php foreach( $this->metadataList as $name => $value ): ?>
+        <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
+            <dt id="label<?php echo ucwords( $name ); ?>">
+                <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
+            </dt>
+            <dd id="value<?php echo ucwords( $name ); ?>">
+                <input id="metadata<?php echo ucwords( $name ); ?>"
+                       type="text"
+                       size="32"
+                       name="metadata[<?php echo $name; ?>]"
+                       value="<?php echo htmlspecialchars( $value ); ?>" />
+                <a id="del<?php echo ucwords( $name ); ?>" class="delMetadata claroCmd" href="#metadata<?php echo ucwords( $name ); ?>">
+                        <?php echo get_lang( 'Delete' ); ?>
+                </a>
+            </dd>
         <?php endif; ?>
-        
-        <dt>
-            <a id="addKeyword" href="#claroBody">
-            <span class="claroCmd"><?php echo get_lang( 'Add an existing keyword' ); ?></span>
-            </a>
-        </dt>
-        <dd>
-            <select id="addKeyword" name="keyword">
-                <option selected="selected" value=""></option>
-            <?php foreach ( $this->keywordList as $keyword ) : ?>
-                <option value="<?php echo $keyword[ 'value' ]; ?>"><?php echo $keyword[ 'value' ]; ?></option>
-            <?php endforeach; ?>
-            </select>
-        <dd>
-        <dt>
-            <span class="claroCmd"><?php echo get_lang( '... or new ones (separated by a comma)' ); ?></span>
-        </dt>
-        <dd>
-            <input type="text" name="keywords" value="" />
-        </dd>
-        
+    <?php endforeach; ?>
+<?php endif; ?>
         <dt>
             <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
@@ -139,9 +107,46 @@
         <dd class="invisible">
             <strong><?php echo get_lang( 'Metadata\'s content' ); ?></strong>
         </dd>
-
     </dl>
-
+    </fieldset>
+    
+    <fieldset>
+    <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
+    <dl>
+<?php if ( array_key_exists( Metadata::KEYWORD , $this->metadataList ) ) : ?>
+        <dt>
+            <?php echo get_lang( 'Keywords' ); ?>
+        </dt>
+    <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
+        <dd id="keyword<?php echo ucwords( $keyword ); ?>">
+            <input id="keyword<?php echo ucwords( $keyword ); ?>"
+                   type="text"
+                   size="32"
+                   name="keyword[<?php echo $keyword; ?>]"
+                   value="<?php echo htmlspecialchars( $keyword ); ?>" />
+            <a id="del<?php echo ucwords( $keyword ); ?>" class="delMetadata claroCmd" href="#metadata<?php echo ucwords( $keyword ); ?>">
+                    <?php echo get_lang( 'Delete' ); ?>
+            </a>
+        </dd>
+    <?php endforeach; ?>
+<?php endif; ?>
+    <?php if ( $this->tagCloud ) : ?>
+        <dt>
+            <span class="claroCmd"><?php echo get_lang( 'Add an existing keyword' ); ?></span>
+        </dt>
+        <dd id="tagCloudAdd">
+            <?php echo $this->tagCloud; ?>
+        <dd>
+    <?php endif; ?>
+        <dt>
+            <span class="claroCmd"><?php echo get_lang( 'Add new keywords (separated by commas)' ); ?></span>
+        </dt>
+        <dd>
+            <input type="text"
+                   size="60"
+                   name="keywords" value="" />
+        </dd>
+    </dl>
     </fieldset>
 
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />

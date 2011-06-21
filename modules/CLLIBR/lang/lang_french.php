@@ -81,6 +81,7 @@ $_lang[ 'type' ] = 'type';
 $_lang[ 'Add a librarian' ] = 'Nommer un nouveau bibliothécaire';
 $_lang[ 'Add an existing keyword' ] = 'Assigner un mot-clé existant';
 $_lang[ 'Add an item' ] = 'Ajouter un critère';
+$_lang[ 'Add new keywords (separated by commas)' ] = 'Ajouter des nouveaux mots-clés (séparés par des virgules)';
 $_lang[ 'Add a new metadata' ] = 'Ajouter une nouvelle méta-donnée (libre)';
 $_lang[ 'Add a resource' ] = 'Ajouter une ressource';
 $_lang[ 'Add an user to this library' ] ='Ajouter un bibliothécaire';
@@ -92,7 +93,6 @@ $_lang[ 'Create a new library' ] = 'Créer une nouvelle bibliothèque';
 $_lang[ 'Edit resource' ] = 'Editer la ressource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Modifier les méta-données de la ressource';
 $_lang[ 'Manage librarians' ] = 'Gérer mes bibliothécaires';
-$_lang[ '... or new ones (separated by a comma)' ] = '... ou des nouveaux mots-clés (séparés par des virgules)';
 $_lang[ 'Quick search' ] = 'Recherche rapide';
 $_lang[ 'Show tagcloud' ] = 'Afficher le nuage de tags';
 

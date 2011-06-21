@@ -38,7 +38,7 @@ class DublinCore extends MetaDataView implements Renderable
         {
             if ( in_array( $name , $this->propertyList ) )
             {
-                $render .= '<meta name="DC.' . $name . '" content = "' . implode( ", " , $values ) . '" />' . "\n";
+                $render .= '<meta name="DC.' . $name . '" content = "' . $values . '" />' . "\n";
             }
         }
         

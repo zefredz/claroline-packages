@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -40,11 +40,11 @@
         <tr>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqView&resourceId='. $resourceId ) );?>">
-                    <?php echo $objects[0]->getTitle(); ?>
+                    <?php echo $objects[1]->get( Metadata::TITLE ); ?>
                 </a>
             </td>
             <td> 
-                <?php echo implode( ', ' , $objects[1]->get( 'author' ) ); ?>
+                <?php echo $objects[1]->get( 'author' ); ?>
             </td>
             <!--
             <td align="center">

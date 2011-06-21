@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,6 +14,8 @@
  * related to a specified resource
  * @const KEYWORD
  * @const COLLECTION
+ * @const TITLE
+ * @const DESCRIPTION
  * @property string $resourceId
  * @property array $metadataList
  */
@@ -21,9 +23,11 @@ class Metadata
 {
     const KEYWORD = 'keyword';
     const COLLECTION = 'collection';
+    const TITLE = 'title';
+    const DESCRIPTION = 'description';
     
     protected $resourceId;
-    protected $metadataList;
+    protected $metadataList = array();
     
     protected $database;
     
@@ -53,7 +57,6 @@ class Metadata
         
         $result = $this->database->query( "
             SELECT
-                id,
                 name,
                 value
             FROM
@@ -66,28 +69,57 @@ class Metadata
         
         foreach( $result as $line )
         {
-            $this->metadataList[ $line[ 'id' ] ] = array( 'name' => $line[ 'name' ]
-                                                       , 'value' => $line[ 'value' ] );
+            $name = $line[ 'name' ];
+            $value = $line[ 'value' ];
+            
+            if ( $name == self::COLLECTION || $name == self::KEYWORD )
+            {
+                $this->metadataList[ $name ][] = $value;
+            }
+            else
+            {
+                $this->metadataList[ $name ] = $value;
+            }
         }
     }
     
     /**
-     * Export metadatas
-     * @return array $metadatas
+     * Getter for metadataList
+     * @return array $metadataList
      */
-    public function export()
+    public function getMetadataList( $force = false )
     {
-        $metadatas = array();
-        
-        if ( ! empty( $this->metadataList ) )
+        if ( $force )
         {
-            foreach( $this->metadataList as $id => $metadata )
-            {
-                $metadatas[ $metadata[ 'name' ] ][ $id ] = $metadata[ 'value' ];
-            }
+            $this->load();
         }
         
-        return $metadatas;
+        return $this->metadataList;
+    }
+    
+    /**
+     * Getter for resource id
+     * @return int $resourceid
+     */
+    public function getresourceId()
+    {
+        return $this->resourceId;
+    }
+    
+    /**
+     * Setter for resource id
+     * @param $int $resourceId
+     * @return int $resourceId if did not exist
+     */
+    public function setResourceId( $resourceId )
+    {
+        if ( ! $this->resourceId )
+        {
+            $this->resourceId = $resourceId;
+            $this->load();
+            
+            return $resourceId;
+        }
     }
     
     /**
@@ -106,10 +138,62 @@ class Metadata
                     name = " . $this->database->quote( $name ) . ",
                     value = " . $this->database->quote( $value ) ) )
         {
-            
-            return $this->metadataList[ $this->database->insertId() ] = array( 'name' => $name
-                                                                             , 'value' => $value );
+            if ( $name == self::COLLECTION || $name == self::KEYWORD )
+            {
+                return $this->metadataList[ $name ][] = $value;
+            }
+            else
+            {
+                return $this->metadataList[ $name ] = $value;
+            }
         }
+    }
+    
+    /**
+     * Helper to add a keyword
+     * @param string $keyword
+     */
+    public function addKeyword( $keyword )
+    {
+        return $this->add( self::KEYWORD , $keyword );
+    }
+    
+    /**
+     * Helper to set a metadata
+     * @param string $name
+     * @param string $value
+     * @return boolean true on success
+     */
+    public function set( $name , $value )
+    {
+        if ( $this->get( $name ) )
+        {
+            return $this->modify( $name , $value );
+        }
+        else
+        {
+            return $this->add( $name , $value );
+        }
+    }
+    
+    /**
+     * Helper to set title
+     * @param string title
+     * @return boolean true on success
+     */
+    public function setTitle( $title )
+    {
+        return $this->set( self::TITLE , $title );
+    }
+    
+    /**
+     * Helper to set description
+     * @param string description
+     * @return boolean true on success
+     */
+    public function setDescription( $description )
+    {
+        return $this->set( self::DESCRIPTION , $description );
     }
     
     /**
@@ -119,35 +203,26 @@ class Metadata
      */
     public function get( $name )
     {
-        $values = array();
-        
-        foreach( $this->metadataList as $metadata )
+        if ( array_key_exists( $name , $this->metadataList ) )
         {
-            if ( $metadata[ 'name' ] == $name )
-            {
-                $values[] = $metadata[ 'value' ];
-            }
+            return $this->metadataList[ $name ];;
         }
-        
-        return $values;
     }
     
     /**
      * Removes a metadata
-     * @param int $id
+     * @param string $name
      * @return boolean true on success
      */
-    public function remove( $id )
+    public function remove( $name )
     {
         if ( $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_id = " . $this->database->quote( $this->resourceId ) . "
-            AND
-                id = " . $this->database->escape( $id ) ) )
+                resource_id = " . $this->database->quote( $this->resourceId ) ) )
         {
-            unset( $this->metadataList[ $id ] );
+            unset( $this->metadataList[ $name ] );
         }
         
         return $this->database->affectedRows();
@@ -165,29 +240,36 @@ class Metadata
             WHERE
                 resource_id = " . $this->database->quote( $this->resourceId ) ) )
         {
-            unset( $this->metadataList );
+            $this->metadataList = array();
         }
         
         return $this->database->affectedRows();
     }
     
     /**
-     * Modifies a specified metadata
-     * @param int $id
+     * Modifies a metadata
+     * @param string $name
      * @param string $value
      * @return boolean true on success
      */
-    public function modify( $id , $value )
+    public function modify( $name , $value )
     {
+        if ( $name == self::COLLECTION || $name == self::KEYWORD )
+        {
+            throw new Exception( 'Not modifiable property');
+        }
+        
         if ( $this->database->exec( "
             UPDATE
                 `{$this->tbl['library_metadata']}`
             SET
                 value = " . $this->database->quote( $value ) . "
             WHERE
-                id = " . $this->database->escape( $id ) ) )
+                name = " . $this->database->quote( $name ) . "
+            AND
+                resource_id = " . $this->database->escape( $this->resourceId ) ) )
         {
-            return $this->metadataList[ $id ][ 'value' ] = $value;
+            return $this->metadataList[ $name ] = $value;
         }
     }
     
@@ -209,7 +291,7 @@ class Metadata
      * @param string $name
      * @return Resultset
      */
-    public function getValues( $name )
+    public function getValue( $name )
     {
         return $this->database->query( "
             SELECT
@@ -227,7 +309,7 @@ class Metadata
      */
     public function getAllKeywords()
     {
-        return $this->getValues( self::KEYWORD );
+        return $this->getValue( self::KEYWORD );
     }
     
     /**
@@ -236,18 +318,6 @@ class Metadata
      */
     public function getAllCollections()
     {
-        return $this->getValues( self::COLLECTION );
-    }
-    
-    /**
-     * Verifies if a metadate already exists
-     * @param string $name
-     * @param string $value
-     * @return boolean true if exists
-     */
-    public function metadataExists( $name , $value )
-    {
-        return in_array( array( 'name' => $name , 'value' => $value )
-                       , $this->metadataList );
+        return $this->getValue( self::COLLECTION );
     }
 }
