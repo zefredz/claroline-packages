@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -37,7 +37,6 @@ class LibraryList
         
         $this->userId = $userId;
         $this->is_admin = $is_admin;
-        $this->load();
     }
     
     /**
@@ -141,5 +140,30 @@ class LibraryList
         }
         
         return $librarianList;
+    }
+    
+    /**
+     * Verifies if the specified library exists
+     * @param int $libraryId
+     * @return boolean true if exists
+     */
+    public function libraryExists( $libraryId )
+    {
+        return $this->database->query( "
+            SELECT
+                id
+            FROM
+                `{$this->tbl['library_library']}`
+            WHERE
+                id = " . $this->database->escape( $libraryId )
+        )->numRows();
+    }
+    
+    /**
+     * Alias for libraryExist()
+     */
+    public function resourceExists( $libraryId )
+    {
+        return $this->libraryExists( $libraryId );
     }
 }

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.5 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -61,38 +61,39 @@
             <?php echo get_lang( 'Title' ); ?> :
         </dt>
         <dd>
-            <?php echo $this->title; ?>
+            <?php echo $this->metadataList[ Metadata::TITLE ]; ?>
         </dd>
         <dt>
             <?php echo get_lang( 'Description' ); ?> :
         </dt>
         <dd>
-            <?php echo $this->description; ?>
+            <?php echo $this->metadataList[ Metadata::DESCRIPTION ]; ?>
         </dd>
-    <?php foreach( $this->metadataList as $name => $values ): ?>
-        <?php if ( $name == 'keyword' ) : ?>
-        <dt>
-            <label>
-                <?php echo get_lang( 'Keywords' ); ?> :
-            </label>
-        </dt>
-        <dd>
-            <?php foreach( $values as $keyword ) : ?>
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
-                <?php echo $keyword; ?>
-            </a>&nbsp;
-            <?php endforeach; ?>
-        </dd>
-        <?php else : ?>
+<?php foreach( $this->metadataList as $name => $values ): ?>
+    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD ) : ?>
         <dt>
             <label>
                 <?php echo get_lang( ucwords( $name ) ); ?> :
             </label>
         </dt>
         <dd>
-            <?php echo htmlspecialchars( implode( ', ' , $values ) ); ?>
+            <?php echo htmlspecialchars( $values ); ?>
         </dd>
-        <?php endif; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
+<?php if ( array_key_exists( Metadata::KEYWORD , $this->metadataList ) ) : ?>
+        <dt>
+            <label>
+                <?php echo get_lang( 'Keywords' ); ?> :
+            </label>
+        </dt>
+        <dd>
+    <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
+            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
+                <?php echo $keyword; ?>
+            </a>&nbsp;
     <?php endforeach; ?>
+        </dd>
+<?php endif; ?>
     </dl>
 </fieldset>

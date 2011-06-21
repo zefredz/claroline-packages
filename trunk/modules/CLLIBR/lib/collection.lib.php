@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -51,7 +51,10 @@ class Collection
         $this->type = $type;
         $this->refId = $refId;
         
-        $this->load();
+        if ( $refId )
+        {
+            $this->load();
+        }
     }
     
     /**
@@ -123,7 +126,18 @@ class Collection
      */
     public function resourceExists( $resourceId )
     {
-        return array_key_exists( $resourceId , $this->resourceList );
+        return $this->database->query( "
+            SELECT
+                resource_id
+            FROM
+                `{$this->tbl['library_collection']}`
+            WHERE
+                resource_id = " . $this->database->escape( $resourceId ) ."
+            AND
+                type = " . $this->database->quote( $this->type ) ."
+            AND
+                ref_id = " . $this->database->quote( $this->refId )
+        )->numRows();
     }
     
     /**

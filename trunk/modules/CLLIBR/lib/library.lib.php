@@ -68,13 +68,16 @@ class Library
                 id = " . $this->database->escape( $this->id )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
         
-        if ( empty( $resultSet ) )
+        if ( ! empty( $resultSet ) )
         {
-            throw new Exception( 'These library does not exist' );
+            $this->title = $resultSet[ 'title' ];
+            $this->status = $resultSet[ 'status' ];
+        }
+        else
+        {
+            $this->id = null;
         }
         
-        $this->title = $resultSet[ 'title' ];
-        $this->status = $resultSet[ 'status' ];
     }
     
     /**

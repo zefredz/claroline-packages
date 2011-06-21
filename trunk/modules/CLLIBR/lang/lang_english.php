@@ -81,6 +81,7 @@ $_lang[ 'type' ] = 'type';
 $_lang[ 'Add a librarian' ] = 'Add a librarian';
 $_lang[ 'Add an existing keyword' ] = 'Add a existing keyword';
 $_lang[ 'Add an item' ] = 'Add an item';
+$_lang[ 'Add new keywords (separated by commas)' ] = 'Add new keywords (separated by commas)';
 $_lang[ 'Add a new metadata' ] = 'Add a new metadata';
 $_lang[ 'Add a resource' ] = 'Add a resource';
 $_lang[ 'Add an user to this library' ] ='Add an user to this library';
@@ -92,7 +93,6 @@ $_lang[ 'Create a new library' ] = 'Create a new library';
 $_lang[ 'Edit a resource' ] = 'Edit a resource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
 $_lang[ 'Manage librarians' ] = 'Manage librarians';
-$_lang[ '... or new ones (separated by a comma)' ] = '... or new ones (separated by a comma)';
 $_lang[ 'Quick search' ] = 'Quick search';
 $_lang[ 'Show tagcloud' ] = 'Show tagcloud';
 

@@ -7,7 +7,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
- * @author      Frederic Minne <frederic.minne@uclouvain.be>
  */
 
 /**

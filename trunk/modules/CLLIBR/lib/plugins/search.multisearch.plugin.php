@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -34,13 +34,13 @@ class MultiSearch extends Search
     public function search( $searchQuery )
     {
         $sqlString1 = "SELECT\n"
-                   . "    R.title,\n"
-                   . "    R.id,\n"
+                   . "    T.resource_id AS id,\n"
+                   . "    T.value AS title,\n"
                    . "    M.name,\n"
                    . "    M.value\n"
                    . "FROM\n"
                    . "    `{$this->tbl['library_metadata']}` AS M,\n"
-                   . "    `{$this->tbl['library_resource']}` AS R\n";
+                   . "    `{$this->tbl['library_resource']}` AS T\n";
         
         $sqlString2 = "WHERE\n";
         
@@ -57,7 +57,7 @@ class MultiSearch extends Search
             $sqlString1 .= "    `{$this->tbl['library_metadata']}` AS M"
                         . $index . "\n"
                         . "ON\n"
-                        . "    R.id = M" . $index . ".resource_id\n";
+                        . "    T.id = M" . $index . ".resource_id\n";
             
             $sqlString2 .= $index
                         ? $operator
@@ -93,44 +93,28 @@ class MultiSearch extends Search
             $match = array( 'name' => $line[ 'name' ]
                           , 'value' => $line[ 'value' ] );
             
-            $result[ $id ][ 'matches' ][] = $match;
-            $result[ $id ][ 'count' ]++;
             $result[ $id ][ 'title' ] = $line[ 'title' ];
+            $result[ $id ][ 'matches' ][] = $match;
+            //$result[ $id ][ 'count' ]++;
+            $result[ $id ][ 'score' ] += 0.01;
         }
         
         $sortedResult = array();
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'count' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
-                                                             , 'matches' => $datas[ 'matches' ] );
+            $sortedResult[ $datas[ 'score' ] ][] = $id;
         }
         
         krsort( $sortedResult );
         
         $searchResult = array();
         
-        foreach( $sortedResult as $score => $resources )
+        foreach ( $sortedResult as $score => $ids )
         {
-            foreach( $resources as $id => $datas )
-            {
-                if ( ! array_key_exists( $id , $searchResult ) )
-                {
-                    $searchResult[ $id ] = $datas;
-                    $searchResult[ $id ][ 'score' ] = 0;
-                }
-                $searchResult[ $id ][ 'score' ] += $score / 100;
-            }
+            $searcResult = array_merge( $searchResult , $id );
         }
         
         return $this->searchResult = $searchResult;
-    }
-    
-    /**
-     *
-     */
-    public function render()
-    {
-        return null; //Nothing there yet;
     }
 }

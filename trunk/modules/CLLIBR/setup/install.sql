@@ -2,7 +2,7 @@
  * $Id$
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -15,17 +15,13 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     storage_type ENUM('file','link') NOT NULL DEFAULT 'file',
     resource_type VARCHAR(32) NOT NULL,
     resource_name VARCHAR(128) NOT NULL,
-    title VARCHAR(256) NOT NULL,
-    description TEXT,
-    PRIMARY KEY( id ),
-    FULLTEXT KEY title (title),
-    FULLTEXT KEY description (description)
+    PRIMARY KEY( id )
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
-    id INT(11) NOT NULL AUTO_INCREMENT,
     resource_id INT(11) NOT NULL,
     name VARCHAR(128),
+    metadata_type ENUM('short','long') NOT NULL DEFAULT 'short',
     value TEXT,
     PRIMARY KEY( id ),
     FULLTEXT KEY metadata (name,value)

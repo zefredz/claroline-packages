@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -32,6 +32,7 @@ From::Module( 'CLLIBR' )->uses(
     'pluginloader.lib',
     'resourceview.lib',
     'acl.lib',
+    'tagcloud.lib',
     'tools.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
@@ -107,7 +108,7 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exAddResource'     => 'rqEditResource'
                         , 'exDeleteResource'  => 'rqShowCatalogue'
                         , 'exMoveResource'    => 'rqShowCatalogue'
-                        , 'exCreateLibrary'   => 'rqShowLibrarylist'
+                        , 'exCreateLibrary'   => 'rqShowCatalogue'
                         , 'exEditLibrary'     => 'rqShowLibrarylist'
                         , 'exDeleteLibrary'   => 'rqShowLibrarylist'
                         , 'exAddLibrarian'    => 'rqShowLibrarian'
@@ -194,13 +195,13 @@ else
     $edit_allowed = $is_course_creator;
 }
 
-if ( $context == 'librarylist' || $context == 'librarian' )
+if ( $refId )
 {
-    $resourceSet = new LibraryList( $database , $userId , $is_platform_admin );
+    $resourceSet = new Collection( $database , $context , $refId );
 }
 else
 {
-    $resourceSet = new Collection( $database , $context , $refId );
+    $resourceSet = new LibraryList( $database , $userId , $is_platform_admin );
 }
 
 $acl = new CLLIBR_ACL( $database , $userId , $is_course_creator , $is_platform_admin );
@@ -299,14 +300,20 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $library->setTitle( $title );
             $library->setStatus( $status );
             $librarian = new Librarian( $database , $library->save() );
-            $execution_ok = $librarian->isLibrarian( $userId ) || $librarian->register( $userId );
+            $resourceSet = new LibraryList( $database , $userId , $is_platform_admin );
+            $context = 'librarylist';
+            $execution_ok = $librarian->isLibrarian( $userId )
+                         || $librarian->register( $userId );
             break;
         }
         
         case 'exDeleteLibrary':
         {
             $library = new Library( $database , $libraryId );
-            $execution_ok = $library->delete();
+            $resourceSet = new LibraryList( $database , $userId , $is_platform_admin );
+            $context = 'librarylist';
+            $execution_ok = $resourceSet->resourceExists( $libraryId )
+                         && $library->delete();
             break;
         }
         
@@ -321,11 +328,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( $title )
             {
-                $resource->setTitle( $title );
                 $resource->setType( $type );
                 $resource->setStorageType( $storage );
                 $resource->setDate();
-                $resource->setDescription( $description );
                 
                 if ( $storage == 'file' )
                 {
@@ -371,33 +376,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $errorMsg = get_lang( 'You must give a title' );
             }
             
-            /*
-            if ( ! $errorMsg
-                && $resource->save()
-                && ! empty( $metadataList )
-                || ! empty( $newMetadata ) )
-            {
-                $metadata = new Metadata( $database , $resource->getId() );
-                
-                foreach( $metadataList as $property => $value )
-                {
-                    $metadata->add( $property , $value );
-                }
-                
-                if ( ! empty( $newMetadata ) )
-                {
-                    foreach( $newMetadata as $id => $name )
-                    {
-                        if ( $name )
-                        {
-                            $metadata->add( $name , $newValue[ $id ] );
-                        }
-                    }
-                }
-            }*/
-            
             $execution_ok = ! $errorMsg
-                           && $resourceSet->add( $resource->save() );
+                           && $resourceSet->add( $resource->save() )
+                           && $metadata->setResourceId( $resource->getId() )
+                           && $metadata->setTitle( $title )
+                           && $metadata->setDescription( $description );
             break;
         }
         
@@ -413,8 +396,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $newMetadata = $userInput->get( 'name' );
             $newValue = $userInput->get( 'value' );
             
-            $resource->setTitle( $title );
-            $resource->setDescription( $description );
+            $metadata->setTitle( $title );
+            $metadata->setDescription( $description );
             
             if ( ! empty( $metadataList ) )
             {
@@ -454,17 +437,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( $keyword && ! $metadata->metadataExists( 'keyword' , $keyword ) )
+            if ( $keyword && ! $metadata->get( 'keyword' , $keyword ) )
             {
                 $metadata->add( 'keyword' , $keyword );
             }
             
             foreach( $keywords as $value )
             {
-                if ( $value && ! $metadata->metadataExists( 'keyword' , $value ) )
-                {
-                    $metadata->add( 'keyword' , $value );
-                }
+                $metadata->addKeyword( $value );
             }
             
             $execution_ok = $resource->save();
@@ -547,7 +527,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $searchQuery = $userInput->get( 'searchQuery' );
             if ( $keyword )
             {
-                $searchEngine = new TagCloud( $database );
+                $searchEngine = new KeywordSearch( $database );
                 $searchEngine->search( $keyword );
             }
             elseif ( $searchQuery )
@@ -577,9 +557,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     $dialogBox = new DialogBox();
     $warning = new DialogBox();
     
-    if ( $resource->getId() )
+    if ( $metadata->getResourceId() )
     {
-        $pageTitle[ 'subTitle' ] = $resource->getTitle();
+        $pageTitle[ 'subTitle' ] = $metadata->get( Metadata::TITLE );
     }
     else
     {
@@ -622,7 +602,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exVisible':
         case 'exInvisible':
         case '';
-        //case 'exBookmark':
         {
             break;
         }
@@ -647,9 +626,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'storageType' , $resource->getStorageType() );
             $template->assign( 'resourceType' , $resource->getType() );
             $template->assign( 'url' , $resource->getName() );
-            $template->assign( 'title' , $resource->getTitle() );
-            $template->assign( 'description' , $resource->getDescription() );
-            $template->assign( 'metadataList' , $metadata->export() );
+            $template->assign( 'metadataList' , $metadata->getMetadataList() );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'courseId' , $courseId );
@@ -691,12 +668,12 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqEditResource':
         {
+            $tagCloud = new TagCloud( $database
+                                    , 'index.php?cmd=rqEditResource&resourceId=' . $resource->getId() );
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
             $template->assign( 'resourceId' , $resource->getId() );
-            $template->assign( 'title' , $resource->getTitle() );
-            $template->assign( 'description' , $resource->getDescription() );
-            $template->assign( 'metadataList' , $metadata->export() );
+            $template->assign( 'metadataList' , $metadata->getMetadataList() );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'refId' , $resource->getId() );
@@ -704,7 +681,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'defaultMetadataList' , $resource->getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             $template->assign( 'propertyList' , $metadata->getAllProperties() );
-            $template->assign( 'keywordList' , $metadata->getAllKeywords() );
+            $template->assign( 'tagCloud' , $tagCloud->render() );
             break;
         }
         
@@ -774,7 +751,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            $tpl = is_a( $searchEngine , 'TagCloud' )
+            $tpl = is_a( $searchEngine , 'KeywordSearch' )
                  ? 'keyword.tpl.php'
                  : 'searchresult.tpl.php';
             $template = new ModuleTemplate( 'CLLIBR' , $tpl );
@@ -828,7 +805,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     if ( $resourceId && $cmd == 'rqView' )
     {
-        $dcView = new DublinCore( $metadata->export() );
+        $dcView = new DublinCore( $metadata->getMetadataList() );
         ClaroHeader::getInstance()->addHtmlHeader( $dcView->render() );
     }
     

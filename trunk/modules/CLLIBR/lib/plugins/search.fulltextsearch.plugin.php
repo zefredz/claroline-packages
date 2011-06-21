@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.4.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -22,27 +22,20 @@ class FulltextSearch extends Search
     {
         $this->searchString = $searchString;
         
-        return $this->resultSet = $this->database->query( "
+                return $this->resultSet = $this->database->query( "
             SELECT
-                R.id,
-                R.title,
-                R.description,
+                T.resource_id AS id,
+                T.value AS title,
                 M.name,
                 M.value,
-                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) . ") AS score1,
-                MATCH (R.description) AGAINST (" . $this->database->quote( $searchString ) . ") AS score2,
-                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score3
+                MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ") AS score
             FROM
-                `{$this->tbl['library_resource']}` AS R
+                `{$this->tbl['library_metadata']}` AS T
             INNER JOIN
                 `{$this->tbl['library_metadata']}` AS M
             ON
-                R.id = M.resource_id
+                T.resource_id = M.resource_id
             WHERE
-                MATCH (R.title) AGAINST (" . $this->database->quote( $searchString ) . ")
-            OR
-                MATCH (R.description) AGAINST (" . $this->database->quote( $searchString ) . ")
-            OR
                 MATCH (M.name,M.value) AGAINST (" . $this->database->quote( $searchString ) . ")"
         );
     }
@@ -57,70 +50,41 @@ class FulltextSearch extends Search
         
         foreach( $this->resultSet as $line )
         {
-            $score1 = $line[ 'score1' ];
-            $score2 = $line[ 'score2' ];
-            $score3 = $line[ 'score3' ];
-            
-            $matches = array();
-            $score = $score1 + $score2 + $score3;
-            
-            if ( $score1 )
-            {
-                $matches[ 'title' ] = $line[ 'title' ];
-            }
-            
-            if ( $score2 )
-            {
-                /*
-                $description = $line[ 'description' ];
-                $position = strrpos( $description , $this->searchString );
-                $matches[ 'description' ] = substr( $description , $position - 30 , 60 );
-                */
-                $matches[ 'description' ] = str_ireplace( $this->searchString
-                                                        , '<strong>' . $this->searchString . '</strong>'
-                                                        , $line[ 'description' ] );
-            }
-            
-            if ( $score3 )
-            {
-                $matches[ $line[ 'name' ] ] = $line[ 'value' ];
-            }
-            
             $id = $line[ 'id' ];
             $title = $line[ 'title' ];
-            $result[ (string)$score ][ $id ] = array( 'title' => $title , 'matches' => $matches );
+            $score = $line[ 'score' ];
+            $value = str_ireplace( $this->searchString
+                                 , '<strong>' . $this->searchString . '</strong>'
+                                 , $line[ 'value' ] );
+            $match = array( 'name' => $line[ 'name' ]
+                          , 'value' => $value );
+            
+            if ( ! array_key_exists( $id , $result ) )
+            {
+                $result[ $id ][ 'score' ] = 0;
+            }
+            
+            $result[ $id ][ 'title' ] = $title;
+            $result[ $id ][ 'matches' ][] = $match;
+            $result[ $id ][ 'score' ] += $score;
         }
         
-        krsort( $result );
+        $sortedResult = array();
+        
+        foreach( $result as $id => $datas )
+        {
+            $sortedResult[ $datas[ 'score' ] ][] = $id;
+        }
+        
+        krsort( $sortedResult );
         
         $searchResult = array();
         
-        foreach( $result as $score => $resources )
+        foreach ( $sortedResult as $score => $ids )
         {
-            foreach( $resources as $id => $datas )
-            {
-                if ( ! array_key_exists( $id , $searchResult ) )
-                {
-                    $searchResult[ $id ] = $datas;
-                    $searchResult[ $id ][ 'score' ] = 0;
-                }
-                $searchResult[ $id ][ 'score' ] += $score;
-            }
+            $searcResult = array_merge( $searchResult , $id );
         }
         
         return $this->searchResult = $searchResult;
-    }
-    
-    /**
-     * Display the search form
-     */
-    public function render()
-    {
-        $html  = '<form id="searchForm" method="post" action="' . $this->cmd . '">' . "\n";
-        $html .= '    <input type="submit" value="' . get_lang( 'Quick search' ) . '" />' . "\n";
-        $html .= '    <input type="text" name="searchString" value="" />' . "\n";
-        $html .= '</form>';
-        
-        return $html;
     }
 }
