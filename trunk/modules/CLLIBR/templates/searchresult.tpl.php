@@ -22,10 +22,10 @@
     </thead>
     <tbody>
 <?php if ( $this->result ) : ?>
-    <?php foreach ( $this->result as $resourceId => $datas ) : ?>
+    <?php foreach ( $this->result as $score => $datas ) : ?>
     <tr>
         <td class="searchResult">
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
+            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $datas[ 'id' ] ) );?>">
                 <?php echo $datas[ 'title' ]; ?>
             </a><br />
             <?php if ( isset( $datas[ 'matches' ][ 'description' ] ) ): ?>
@@ -33,8 +33,8 @@
             <?php endif; ?>
         </td>
         <td align="center">
-            <?php $nbStar = $datas[ 'score' ] < 6 ? ceil( $datas[ 'score' ] ) : 6; ?>
-            <?php for( $i = 0; $i < $nbStar; $i++ ) : ?>
+            <?php $nbStar = $score < 60 ? ceil( $score ) : 60; ?>
+            <?php for( $i = 0; $i < $nbStar; $i+=10 ) : ?>
             <img src="<?php echo get_icon_url( 'star' ); ?>" alt="+"/>
             <?php endfor; ?>
         </td>

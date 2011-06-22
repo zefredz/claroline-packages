@@ -58,13 +58,13 @@
                 <?php echo get_lang( 'Title' ); ?> :
             </dt>
             <dd>
-                <input type="text" size="48" name="title" value="<?php echo $this->metadataList[ 'title' ]; ?>" />
+                <input type="text" size="48" name="title" value="<?php echo isset( $this->metadataList[ 'title' ] ) ? $this->metadataList[ 'title' ] : '' ; ?>" />
             </dd>
             <dt>
                 <?php echo get_lang( 'Description' ); ?> :
             </dt>
             <dd>
-                <textarea cols="60" rows="8" name="description"><?php echo $this->metadataList[ 'description' ]; ?></textarea>
+                <textarea cols="60" rows="8" name="description"><?php echo isset( $this->metadataList[ 'description' ] ) ? $this->metadataList[ 'description' ] : ''; ?></textarea>
             </dd>
             
             <!-- when adding a new resource -->
@@ -79,16 +79,16 @@
 <?php else : ?>
     <?php foreach( $this->metadataList as $name => $value ): ?>
         <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
-            <dt id="label<?php echo ucwords( $name ); ?>">
+            <dt id="label<?php echo $name; ?>">
                 <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
             </dt>
-            <dd id="value<?php echo ucwords( $name ); ?>">
-                <input id="metadata<?php echo ucwords( $name ); ?>"
+            <dd id="value<?php echo $name; ?>">
+                <input id="metadata<?php echo $name; ?>"
                        type="text"
                        size="32"
                        name="metadata[<?php echo $name; ?>]"
                        value="<?php echo htmlspecialchars( $value ); ?>" />
-                <a id="del<?php echo ucwords( $name ); ?>" class="delMetadata claroCmd" href="#metadata<?php echo ucwords( $name ); ?>">
+                <a id="del<?php echo $name; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $name; ?>">
                         <?php echo get_lang( 'Delete' ); ?>
                 </a>
             </dd>
@@ -116,8 +116,11 @@
         <dt>
             <?php echo get_lang( 'Keywords' ); ?>
         </dt>
+
+        <dd>
+
     <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
-        <dd id="keyword<?php echo ucwords( $keyword ); ?>">
+        <div class="keyword">
             <input id="keyword<?php echo ucwords( $keyword ); ?>"
                    type="text"
                    size="32"
@@ -126,8 +129,10 @@
             <a id="del<?php echo ucwords( $keyword ); ?>" class="delMetadata claroCmd" href="#metadata<?php echo ucwords( $keyword ); ?>">
                     <?php echo get_lang( 'Delete' ); ?>
             </a>
-        </dd>
+        </div>
     <?php endforeach; ?>
+        </dd>
+
 <?php endif; ?>
     <?php if ( $this->tagCloud ) : ?>
         <dt>
@@ -149,8 +154,15 @@
     </fieldset>
 
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
+    <?php if ( $this->libraryId ) : ?>
     <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
-        $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $this->libraryId ) ); ?>">
+        $_SERVER['PHP_SELF'] . '?cmd=rqShowCatalogue&libraryId='. $this->libraryId ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
+    <?php else : ?>
+    <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+        $_SERVER['PHP_SELF'] . '?cmd=rqView&resourceId=' . $this->resourceId ) ); ?>">
+        <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
+    </a>
+    <?php endif; ?>
 </form>

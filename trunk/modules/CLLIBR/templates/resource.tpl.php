@@ -61,13 +61,13 @@
             <?php echo get_lang( 'Title' ); ?> :
         </dt>
         <dd>
-            <?php echo $this->metadataList[ Metadata::TITLE ]; ?>
+            <?php echo isset( $this->metadataList[ 'title' ] ) ? $this->metadataList[ 'title' ] : ''; ?>
         </dd>
         <dt>
             <?php echo get_lang( 'Description' ); ?> :
         </dt>
         <dd>
-            <?php echo $this->metadataList[ Metadata::DESCRIPTION ]; ?>
+            <?php echo isset( $this->metadataList[ 'description' ] ) ? $this->metadataList[ 'description' ] : ''; ?>
         </dd>
 <?php foreach( $this->metadataList as $name => $values ): ?>
     <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD ) : ?>
