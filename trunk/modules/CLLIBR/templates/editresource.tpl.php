@@ -58,7 +58,6 @@
                 <?php echo get_lang( 'Title' ); ?> :
             </dt>
             <dd>
-                <?php var_dump( $this->resourceId ); ?>
                 <input type="text" size="48" name="title" value="<?php echo $this->metadataList[ 'title' ]; ?>" />
             </dd>
             <dt>

@@ -62,9 +62,7 @@ class Metadata
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_id = " . $this->database->escape( $this->resourceId ) . "
-            ORDER BY
-                id ASC"
+                resource_id = " . $this->database->escape( $this->resourceId )
         );
         
         foreach( $result as $line )
