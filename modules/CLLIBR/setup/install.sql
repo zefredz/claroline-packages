@@ -12,7 +12,7 @@
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     creation_date DATETIME,
-    storage_type ENUM('file','link') NOT NULL DEFAULT 'file',
+    storage_type ENUM('file','url') NOT NULL DEFAULT 'file',
     resource_type VARCHAR(32) NOT NULL,
     resource_name VARCHAR(128) NOT NULL,
     PRIMARY KEY(id)

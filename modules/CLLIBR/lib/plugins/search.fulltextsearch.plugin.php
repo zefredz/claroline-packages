@@ -75,18 +75,13 @@ class FulltextSearch extends Search
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'score' ] ][] = $id;
+            $sortedResult[ $datas[ 'score' ] ] = array( 'id' => $id
+                                                       ,'title' => $datas[ 'title' ]
+                                                       , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );
         
-        $searchResult = array();
-        
-        foreach ( $sortedResult as $score => $ids )
-        {
-            $searcResult = array_merge( $searchResult , $id );
-        }
-        
-        return $this->searchResult = $searchResult;
+        return $this->searchResult = $sortedResult;
     }
 }

@@ -75,7 +75,7 @@ class TagCloud
                 $html .= '<a href="'
                        . htmlspecialchars( $this->cmd .'&keyword=' . $tag )
                        . '" style="font-size: ' . $size . 'pt; margin: 5px;">'
-                       . $tag . '</a>';
+                       . $tag . '</a>' . "\n";
             }
         }
         

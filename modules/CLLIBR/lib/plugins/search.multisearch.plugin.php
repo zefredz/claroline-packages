@@ -57,7 +57,7 @@ class MultiSearch extends Search
             $sqlString1 .= "    `{$this->tbl['library_metadata']}` AS M"
                         . $index . "\n"
                         . "ON\n"
-                        . "    T.id = M" . $index . ".resource_id\n";
+                        . "    T.resource_id = M" . $index . ".resource_id\n";
             
             $sqlString2 .= $index
                         ? $operator
@@ -97,26 +97,20 @@ class MultiSearch extends Search
             
             $result[ $id ][ 'title' ] = $line[ 'title' ];
             $result[ $id ][ 'matches' ][] = $match;
-            //$result[ $id ][ 'count' ]++;
-            $result[ $id ][ 'score' ] += 0.01;
+            $result[ $id ][ 'count' ]++;
         }
         
         $sortedResult = array();
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'score' ] ][] = $id;
+            $sortedResult[ $datas[ 'count' ] ] = array( 'id' => $id
+                                                      , 'title' => $datas[ 'title' ]
+                                                      , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );
         
-        $searchResult = array();
-        
-        foreach ( $sortedResult as $score => $ids )
-        {
-            $searcResult = array_merge( $searchResult , $id );
-        }
-        
-        return $this->searchResult = $searchResult;
+        return $this->searchResult = $sortedResult;
     }
 }

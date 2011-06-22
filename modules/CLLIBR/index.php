@@ -401,9 +401,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( ! empty( $metadataList ) )
             {
-                foreach( $metadataList as $id => $value )
+                foreach( $metadataList as $name => $value )
                 {
-                    $metadata->modify( $id , $value );
+                    $metadata->modify( $name , $value );
                 }
             }
             
@@ -437,14 +437,17 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( $keyword && ! $metadata->get( 'keyword' , $keyword ) )
+            if ( $keyword && ! $metadata->get( Metadata::KEYWORD , $keyword ) )
             {
                 $metadata->add( 'keyword' , $keyword );
             }
             
             foreach( $keywords as $value )
             {
-                $metadata->addKeyword( $value );
+                if ( $value )
+                {
+                    $metadata->addKeyword( trim( $value ) );
+                }
             }
             
             $execution_ok = $resource->save();
@@ -669,7 +672,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqEditResource':
         {
             $tagCloud = new TagCloud( $database
-                                    , 'index.php?cmd=rqEditResource&resourceId=' . $resource->getId() );
+                                    , 'index.php?cmd=exEditResource&resourceId=' . $resource->getId() );
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
             $template->assign( 'resourceId' , $resource->getId() );

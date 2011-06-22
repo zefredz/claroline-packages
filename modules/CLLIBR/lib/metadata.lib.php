@@ -208,22 +208,53 @@ class Metadata
     }
     
     /**
+     * Verifies if the specified keyword exists
+     * @param $string keyword
+     * @return boolean true if exist
+     */
+    public function keywordExists( $keyword )
+    {
+        return $this->get( self::KEYWORD )
+            && in_array( $keyword , $this->get( self::KEYWORD ) );
+    }
+    
+    /**
      * Removes a metadata
      * @param string $name
+     * @param string $value
      * @return boolean true on success
      */
-    public function remove( $name )
+    public function remove( $name , $value = null )
     {
+        if ( $value )
+        {
+            $sql = "\n
+                AND
+                    metadata_value = " . $this->database->quote( $value );
+        }
+        
         if ( $this->database->exec( "
             DELETE FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                resource_id = " . $this->database->quote( $this->resourceId ) ) )
+                resource_id = " . $this->database->quote( $this->resourceId ) . "
+            AND
+                $name = " . $this->database->quote( $name) . $sql ) )
         {
             unset( $this->metadataList[ $name ] );
         }
         
         return $this->database->affectedRows();
+    }
+    
+    /**
+     * Helper for removing a keyword
+     * @param $string keyword
+     * @return boolean true on success
+     */
+    public function removeKeyword( $keyword )
+    {
+        return $this->remove( self::KEYWORD , $keyword );
     }
     
     /**
@@ -289,7 +320,7 @@ class Metadata
      * @param string $name
      * @return Resultset
      */
-    public function getValue( $name )
+    public function getAllValues( $name )
     {
         return $this->database->query( "
             SELECT
@@ -307,7 +338,7 @@ class Metadata
      */
     public function getAllKeywords()
     {
-        return $this->getValue( self::KEYWORD );
+        return $this->getAllValues( self::KEYWORD );
     }
     
     /**
@@ -316,6 +347,6 @@ class Metadata
      */
     public function getAllCollections()
     {
-        return $this->getValue( self::COLLECTION );
+        return $this->getAllValues( self::COLLECTION );
     }
 }

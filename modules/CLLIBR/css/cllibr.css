@@ -41,6 +41,7 @@
 
 #tagCloud
 {
+    text-align: center;
     border: 1px solid #EEEEEE;
     float: right;
     width: 240px;
@@ -49,6 +50,7 @@
 
 #tagCloudAdd
 {
+    text-align: center;
     border: 1px solid #AAAAAA;
     width: 268px;
 }
@@ -61,4 +63,9 @@
 .galant
 {
     margin-right: 240px;
+}
+
+.keyword
+{
+    margin-top: 3px;
 }
