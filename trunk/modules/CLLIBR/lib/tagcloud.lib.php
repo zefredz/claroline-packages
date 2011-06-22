@@ -38,11 +38,11 @@ class TagCloud
     {
         $result = $this->database->query( "
             SELECT
-                value as keyword
+                metadata_value as keyword
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                name = " . $this->database->quote( Metadata::KEYWORD ) );
+                metadata_name = " . $this->database->quote( Metadata::KEYWORD ) );
         
         $this->cloud = array();
         

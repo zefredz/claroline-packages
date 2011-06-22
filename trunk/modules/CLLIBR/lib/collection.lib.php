@@ -72,7 +72,7 @@ class Collection
             FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                type = " . $this->database->quote( $this->type ) . "
+                collection_type = " . $this->database->quote( $this->type ) . "
             AND
                 ref_id = " . $this->database->quote( $this->refId )
         );
@@ -134,7 +134,7 @@ class Collection
             WHERE
                 resource_id = " . $this->database->escape( $resourceId ) ."
             AND
-                type = " . $this->database->quote( $this->type ) ."
+                collection_type = " . $this->database->quote( $this->type ) ."
             AND
                 ref_id = " . $this->database->quote( $this->refId )
         )->numRows();
@@ -158,7 +158,7 @@ class Collection
             AND
                 ref_id = " . $this->database->quote( $this->refId ) . "
             AND
-                type = " . $this->database->quote( $this->type ) );
+                collection_type = " . $this->database->quote( $this->type ) );
     }
     
     /**
@@ -172,7 +172,7 @@ class Collection
         
         $result = $this->database->query( "
             SELECT
-                type,
+                collection_type AS type,
                 ref_id
             FROM
                 `{$this->tbl['library_collection']}`
@@ -198,7 +198,7 @@ class Collection
             INSERT INTO
                 `{$this->tbl['library_collection']}`
             SET
-                type = " . $this->database->quote( $this->type ) . ",
+                collection_type = " . $this->database->quote( $this->type ) . ",
                 ref_id = " . $this->database->quote( $this->refId ) . ",
                 resource_id = " . $this->database->escape( $resourceId ) ) . "
                 is_visible = TRUE" )
@@ -221,7 +221,7 @@ class Collection
             DELETE FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                type = " . $this->database->quote( $this->type ) . "
+                collection_type = " . $this->database->quote( $this->type ) . "
             AND
                 ref_id = " . $this->database->quote( $this->refId ) . "
             AND
@@ -240,7 +240,7 @@ class Collection
             DELETE FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                type = " . $this->database->quote( $this->type ) . "
+                collection_type = " . $this->database->quote( $this->type ) . "
             AND
                 ref_id = " . $this->database->quote( $this->refId ) );
         
@@ -278,7 +278,7 @@ class Collection
             SET
                 ref_id = " . $this->database->quote( $refId ) . "
             WHERE
-                type = " . $this->database->quote( $type ) . "
+                collection_type = " . $this->database->quote( $type ) . "
             AND
                 resource_id = " . $this->database->escape( $resourceId ) );
     }

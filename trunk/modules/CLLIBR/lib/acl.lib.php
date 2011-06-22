@@ -60,7 +60,7 @@ class CLLIBR_ACL
             FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                type = 'bookmark'
+                collection_type = 'bookmark'
             AND
                 ref_id = " . $this->database->escape( $this->userId ) . "
             AND
@@ -81,7 +81,7 @@ class CLLIBR_ACL
             ON
                 U.code_cours = C.ref_id
             WHERE
-                C.type = 'bibliography'
+                C.collection_type = 'bibliography'
             AND
                 ( C.is_visible = TRUE
             AND
@@ -119,7 +119,7 @@ class CLLIBR_ACL
             ON
                 L.library_id = C.ref_id
             WHERE
-                C.type = 'catalogue'". $sql . "
+                C.collection_type = 'catalogue'". $sql . "
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
@@ -149,7 +149,7 @@ class CLLIBR_ACL
             AND
                 L.user_id = " . $this->database->escape( $this->userId ) . "
             WHERE
-                C.type = 'catalogue'
+                C.collection_type = 'catalogue'
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();

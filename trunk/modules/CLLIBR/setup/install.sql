@@ -15,35 +15,35 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
     storage_type ENUM('file','link') NOT NULL DEFAULT 'file',
     resource_type VARCHAR(32) NOT NULL,
     resource_name VARCHAR(128) NOT NULL,
-    PRIMARY KEY( id )
+    PRIMARY KEY(id)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     resource_id INT(11) NOT NULL,
-    name VARCHAR(128),
+    metadata_name VARCHAR(128),
     metadata_type ENUM('short','long') NOT NULL DEFAULT 'short',
-    value TEXT,
-    PRIMARY KEY( id ),
-    FULLTEXT KEY metadata (name,value)
+    metadata_value TEXT,
+    FULLTEXT KEY metadata (metadata_name,metadata_value),
+    KEY(resource_id,metadata_name)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_library`(
     id INT(11) NOT NULL AUTO_INCREMENT,
     title VARCHAR(128),
     status ENUM('public','restricted','private') NOT NULL DEFAULT 'private',
-    PRIMARY KEY( id )
+    PRIMARY KEY(id)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_librarian`(
     user_id  INT(11),
     library_id INT(11),
-    PRIMARY KEY( user_id, library_id )
+    PRIMARY KEY(user_id,library_id)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     resource_id INT(11) NOT NULL,
-    type ENUM('catalogue','bibliography','bookmark') NOT NULL,
+    collection_type ENUM('catalogue','bibliography','bookmark') NOT NULL,
     ref_id VARCHAR(16) NOT NULL,
     is_visible BOOLEAN DEFAULT TRUE,
-    PRIMARY KEY( resource_id, type, ref_id )
+    PRIMARY KEY(resource_id,collection_type,ref_id)
 ) ENGINE=MyISAM;

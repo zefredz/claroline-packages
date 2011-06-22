@@ -57,8 +57,8 @@ class Metadata
         
         $result = $this->database->query( "
             SELECT
-                name,
-                value
+                metadata_name AS name,
+                metadata_value AS value
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
@@ -135,8 +135,8 @@ class Metadata
                     `{$this->tbl['library_metadata']}`
                 SET
                     resource_id = " . $this->database->quote( $this->resourceId ) . ",
-                    name = " . $this->database->quote( $name ) . ",
-                    value = " . $this->database->quote( $value ) ) )
+                    metadata_name = " . $this->database->quote( $name ) . ",
+                    metadata_value = " . $this->database->quote( $value ) ) )
         {
             if ( $name == self::COLLECTION || $name == self::KEYWORD )
             {
@@ -263,9 +263,9 @@ class Metadata
             UPDATE
                 `{$this->tbl['library_metadata']}`
             SET
-                value = " . $this->database->quote( $value ) . "
+                metadata_value = " . $this->database->quote( $value ) . "
             WHERE
-                name = " . $this->database->quote( $name ) . "
+                metadata_name = " . $this->database->quote( $name ) . "
             AND
                 resource_id = " . $this->database->escape( $this->resourceId ) ) )
         {
@@ -280,7 +280,7 @@ class Metadata
     {
         return $this->database->query( "
             SELECT
-                DISTINCT name
+                DISTINCT metadata_name AS name
             FROM
                 `{$this->tbl['library_metadata']}`"
         );
@@ -295,11 +295,11 @@ class Metadata
     {
         return $this->database->query( "
             SELECT
-                DISTINCT value
+                DISTINCT metadata_value AS value
             FROM
                 `{$this->tbl['library_metadata']}`
             WHERE
-                name = " . $this->database->quote( $name )
+                metadata_name = " . $this->database->quote( $name )
         );
     }
     
