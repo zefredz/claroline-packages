@@ -11,7 +11,7 @@
 
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&option=add&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'New librarian' ); ?>" />
+        <img src="<?php echo get_icon_url( 'add_librarian' ); ?>" alt="<?php echo get_lang( 'enroll' ); ?>" />
         <?php echo get_lang( 'Add a librarian' ); ?>
     </a>
 </span>

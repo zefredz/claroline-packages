@@ -12,7 +12,7 @@
 <?php if ( $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
+        <img src="<?php echo get_icon_url( 'librarian' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
         <?php echo get_lang( 'Manage librarians' ); ?>
     </a>
 </span>
