@@ -25,7 +25,7 @@
     <?php foreach( $this->searchResult as $line ) : ?>
     <?php echo $line[ 'firstName' ] . ' ' . $line[ 'lastName' ]; ?>
     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrarian&libraryId=' . $this->libraryId . '&userId='. $line[ 'userId' ] ) );?>">
-        <img src="<?php echo get_icon_url( 'enroll' ); ?>" alt="<?php echo get_lang( 'enroll' ); ?>"/>
+        <img src="<?php echo get_icon_url( 'add_librarian' ); ?>" alt="<?php echo get_lang( 'enroll' ); ?>"/>
     </a>
     <?php endforeach; ?>
 </div>

@@ -48,11 +48,14 @@ $_lang[ 'Local storage of a file' ] = 'Local storage of a file';
 $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
 $_lang[ 'Metadata\'s name' ] = 'Metadata\'s name';
+$_lang[ 'Other Libraries'] = 'Other libraries';
+$_lang[ 'Public Libraries'] = 'Public libraries';
 $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
 $_lang[ 'Selected' ] = 'Selected';
 $_lang[ 'Storage type' ] = 'Storage type';
+$_lang[ 'User Libraries'] = 'Your libraries';
 
 // Metadatas : general
 $_lang[ 'Author' ] = 'Author';

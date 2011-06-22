@@ -80,7 +80,7 @@
             <?php if ( ! empty( $library[ 'librarianList' ] ) ) : ?>
                 <?php echo implode( ', ' , $library[ 'librarianList' ] ); ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId='. $libraryId ) );?>">
-                    <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'Manage librarians' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'librarian' ); ?>" alt="<?php echo get_lang( 'Manage librarians' ); ?>"/>
                 </a>
             <?php else : ?>
                     -
