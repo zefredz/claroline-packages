@@ -23,18 +23,18 @@ class KeywordSearch extends Search
     {
         return $this->resultSet = $this->database->query( "
             SELECT
-                T.resource_id AS id,
-                T.value AS title,
-                K.value AS keyword
+                T.resource_id    AS id,
+                T.metadata_value AS title,
+                K.metadata_value AS keyword
             FROM
                 `{$this->tbl['library_metadata']}` AS T,
                 `{$this->tbl['library_metadata']}` AS K
             WHERE
                 T.id = K.resource_id
             AND
-                K.name = " . $this->database->quote( Metadata::KEYWORD ) . "
+                K.metadata_name = " . $this->database->quote( Metadata::KEYWORD ) . "
             AND
-                K.value = " . $this->database->quote( $keyword ) );
+                K.metadata_value = " . $this->database->quote( $keyword ) );
     }
     
     /**

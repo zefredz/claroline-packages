@@ -34,13 +34,13 @@ class MultiSearch extends Search
     public function search( $searchQuery )
     {
         $sqlString1 = "SELECT\n"
-                   . "    T.resource_id AS id,\n"
-                   . "    T.value AS title,\n"
-                   . "    M.name,\n"
-                   . "    M.value\n"
+                   . "    T.resource_id    AS id,\n"
+                   . "    T.metadata_value AS title,\n"
+                   . "    M.metadata_name  AS name,\n"
+                   . "    M.metadata_value AS value\n"
                    . "FROM\n"
                    . "    `{$this->tbl['library_metadata']}` AS M,\n"
-                   . "    `{$this->tbl['library_resource']}` AS T\n";
+                   . "    `{$this->tbl['library_metadata']}` AS T\n";
         
         $sqlString2 = "WHERE\n";
         
@@ -63,9 +63,11 @@ class MultiSearch extends Search
                         ? $operator
                         : "";
                         
-            $sqlString2 .= "  M" . $index . ".name = " . $this->database->quote( $item[ 'name' ] ) . "\n"
+            $sqlString2 .= "  M" . $index . ".metadata_name = "
+                        . $this->database->quote( $item[ 'name' ] ) . "\n"
                         . "AND\n"
-                        . "   M" . $index . ".value LIKE " . $this->database->quote( '%' . $item[ 'value' ] . '%' )
+                        . "   M" . $index . ".metadata_value LIKE "
+                        . $this->database->quote( '%' . $item[ 'value' ] . '%' )
                         . "\n";
         }
         
@@ -90,7 +92,7 @@ class MultiSearch extends Search
                 $result[ $id ][ 'count' ] = 0;
             }
             
-            $match = array( 'name' => $line[ 'name' ]
+            $match = array( 'name'  => $line[ 'name' ]
                           , 'value' => $line[ 'value' ] );
             
             $result[ $id ][ 'title' ] = $line[ 'title' ];
