@@ -388,61 +388,72 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
-            $metadataList = $userInput->get( 'metadata' );
-            $keyword = $userInput->get( 'keyword' );
-            $keywords = explode( ',' , $userInput->get( 'keywords' ) );
+            $names = $userInput->get( 'name' );
+            $values = $userInput->get( 'metadata' );
             $toDelete = $userInput->get( 'del' );
-            $toAdd = $userInput->get( 'add' );
-            $newMetadata = $userInput->get( 'name' );
-            $newValue = $userInput->get( 'value' );
+            $newNames = $userInput->get( 'newName' );
+            $newValues = $userInput->get( 'value' );
+            $keywords = $userInput->get( 'keyword' );
+            $newKeywords = explode( ',' , $userInput->get( 'keywords' ) );
+            $kToDelete = $userInput->get( 'kdel' );
             
             $metadata->setTitle( $title );
             $metadata->setDescription( $description );
             
-            if ( ! empty( $metadataList ) )
+            if ( ! empty( $values ) )
             {
-                foreach( $metadataList as $name => $value )
-                {
-                    $metadata->modify( $name , $value );
-                }
-            }
-            
-            if ( ! empty( $toAdd ) )
-            {
-                foreach( $toAdd as $name => $value )
+                foreach( $values as $id => $value )
                 {
                     if ( $value )
                     {
-                        $metadata->add( $name , $value );
+                        $metadata->modify( $names[ $id ] , $value );
+                    }
+                    else
+                    {
+                        $metadata->remove( $names[ $id ] );
                     }
                 }
             }
             
-            if ( ! empty( $newMetadata ) )
+            if ( ! empty( $newValues ) )
             {
-                foreach( $newMetadata as $id => $name )
+                foreach( $newValues as $id => $value )
                 {
-                    if ( $name )
+                    if ( $value )
                     {
-                        $metadata->add( $name , $newValue[ $id ] );
+                        $metadata->add( $newNames[ $id ] , $value );
                     }
                 }
             }
             
             if ( ! empty( $toDelete ) )
             {
-                foreach( array_keys( $toDelete ) as $id )
+                foreach( $toDelete as $name )
                 {
-                    $metadata->remove( $id );
+                    $metadata->remove( $name );
                 }
             }
             
-            if ( $keyword && ! $metadata->get( Metadata::KEYWORD , $keyword ) )
+            if ( ! empty( $keywords ) )
             {
-                $metadata->add( 'keyword' , $keyword );
+                foreach( $keywords as $keyword )
+                {
+                    if ( ! $metadata->keywordExists( $keyword ) )
+                    {
+                        $metadata->addKeyword( $keyword );
+                    }
+                }
             }
             
-            foreach( $keywords as $value )
+            if ( ! empty( $kToDelete ) )
+            {
+                foreach( $kToDelete as $value )
+                {
+                    $metadata->removeKeyword( $value );
+                }
+            }
+            
+            foreach( $newKeywords as $value )
             {
                 if ( $value )
                 {
@@ -629,7 +640,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'storageType' , $resource->getStorageType() );
             $template->assign( 'resourceType' , $resource->getType() );
             $template->assign( 'url' , $resource->getName() );
-            $template->assign( 'metadataList' , $metadata->getMetadataList() );
+            $template->assign( 'metadataList' , $metadata->getMetadataList( true ) );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'courseId' , $courseId );
@@ -676,7 +687,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
             $template->assign( 'resourceId' , $resource->getId() );
-            $template->assign( 'metadataList' , $metadata->getMetadataList() );
+            $template->assign( 'metadataList' , $metadata->getMetadataList( true ) );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'refId' , $resource->getId() );

@@ -226,12 +226,11 @@ class Metadata
      */
     public function remove( $name , $value = null )
     {
-        if ( $value )
-        {
-            $sql = "\n
-                AND
-                    metadata_value = " . $this->database->quote( $value );
-        }
+        $sql = $value
+             ? "\n
+            AND
+                metadata_value = " . $this->database->quote( $value )
+             : '';
         
         if ( $this->database->exec( "
             DELETE FROM
@@ -239,7 +238,7 @@ class Metadata
             WHERE
                 resource_id = " . $this->database->quote( $this->resourceId ) . "
             AND
-                $name = " . $this->database->quote( $name) . $sql ) )
+                metadata_name = " . $this->database->quote( $name) . $sql ) )
         {
             unset( $this->metadataList[ $name ] );
         }

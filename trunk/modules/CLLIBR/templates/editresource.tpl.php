@@ -15,7 +15,7 @@
         var nbToAdd=0;
         $("#addMetadata").click(function(){
             nbToAdd++;
-            var content="<dt><input id=\"name"+nbToAdd+"\" type=\"text\" name=\"name["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
+            var content="<dt><input id=\"newName"+nbToAdd+"\" type=\"text\" name=\"newName["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
                         "<dd><input id=\"value"+nbToAdd+"\" type=\"text\" name=\"value["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dd>"+
                         "<a id=\"delx"+nbToAdd+"\" class=\"claroCmd\" href=\"#delx"+nbToAdd+"\">"+
                         "<\/a>"+
@@ -34,6 +34,12 @@
             $("#metadata"+metadataId).attr({name:"del["+metadataId+"]"});
             $("#label"+metadataId).hide();
             $("#value"+metadataId).hide();
+        });
+        
+        $(".delKeyword").click(function(){
+            var keywordId = $(this).attr("id").substr(4);
+            $("#keyword"+keywordId).attr({name:"kdel["+keywordId+"]"});
+            $("#kvalue"+keywordId).hide();
         });
     });
 </script>
@@ -77,21 +83,24 @@
     <?php endforeach; ?>
             <!-- when editing an existing resource -->
 <?php else : ?>
+    <?php $index = 0; ?>
     <?php foreach( $this->metadataList as $name => $value ): ?>
         <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
-            <dt id="label<?php echo $name; ?>">
+            <dt id="label<?php echo $index; ?>">
                 <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
+                <input id="metadata<?php echo $index; ?>"
+                       type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
             </dt>
-            <dd id="value<?php echo $name; ?>">
-                <input id="metadata<?php echo $name; ?>"
-                       type="text"
+            <dd id="value<?php echo $index; ?>">
+                <input type="text"
                        size="32"
-                       name="metadata[<?php echo $name; ?>]"
+                       name="metadata[<?php echo $index; ?>]"
                        value="<?php echo htmlspecialchars( $value ); ?>" />
-                <a id="del<?php echo $name; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $name; ?>">
+                <a id="del<?php echo $index; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $index; ?>">
                         <?php echo get_lang( 'Delete' ); ?>
                 </a>
             </dd>
+        <?php $index++ ?>
         <?php endif; ?>
     <?php endforeach; ?>
 <?php endif; ?>
@@ -118,18 +127,19 @@
         </dt>
 
         <dd>
-
+    <?php $index = 0; ?>
     <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
-        <div class="keyword">
-            <input id="keyword<?php echo ucwords( $keyword ); ?>"
+        <div id="kvalue<?php echo $index; ?>" class="keyword">
+            <input id="keyword<?php echo $index; ?>"
                    type="text"
                    size="32"
-                   name="keyword[<?php echo $keyword; ?>]"
+                   name="keyword[<?php echo $index; ?>]"
                    value="<?php echo htmlspecialchars( $keyword ); ?>" />
-            <a id="del<?php echo ucwords( $keyword ); ?>" class="delMetadata claroCmd" href="#metadata<?php echo ucwords( $keyword ); ?>">
+            <a id="kdel<?php echo $index; ?>" class="delKeyword claroCmd" href="#keyword<?php echo $index; ?>">
                     <?php echo get_lang( 'Delete' ); ?>
             </a>
         </div>
+        <?php $index++; ?>
     <?php endforeach; ?>
         </dd>
 
