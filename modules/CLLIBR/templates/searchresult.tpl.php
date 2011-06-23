@@ -10,6 +10,7 @@
  */ ?>
 
 <?php include( dirname(__FILE__) . '/searchform.tpl.php' ); ?>
+
 <div id="mainContent">
     <table class="claroTable emphaseLine" style=" width: 100%;">
         <thead>
@@ -24,10 +25,11 @@
         </thead>
         <tbody>
     <?php if ( $this->result ) : ?>
-        <?php foreach ( $this->result as $score => $datas ) : ?>
+        <?php foreach ( $this->result as $score => $lines ) : ?>
+            <?php foreach( $lines as $id => $datas ) : ?>
         <tr>
             <td class="searchResult">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $datas[ 'id' ] ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $id ) );?>">
                     <?php echo $datas[ 'title' ]; ?>
                 </a><br />
                 <?php if ( isset( $datas[ 'matches' ][ 'description' ] ) ): ?>
@@ -41,6 +43,7 @@
                 <?php endfor; ?>
             </td>
         </tr>
+            <?php endforeach; ?>
         <?php endforeach; ?>
     <?php else: ?>
             <tr>

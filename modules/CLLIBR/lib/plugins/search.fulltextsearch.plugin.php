@@ -74,9 +74,8 @@ class FulltextSearch extends Search
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'score' ] ] = array( 'id' => $id
-                                                       ,'title' => $datas[ 'title' ]
-                                                       , 'matches' => $datas[ 'matches' ] );
+            $sortedResult[ $datas[ 'score' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
+                                                             , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );

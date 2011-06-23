@@ -37,6 +37,7 @@ $_lang[ 'Private' ] = 'Privée';
 $_lang[ 'Public' ] = 'Publique';
 
 $_lang[ 'Advanced search' ] = 'Recherche avancée';
+$_lang[ 'Allowed Libraries'] = 'Bibliothèques publiques';
 $_lang[ 'Associated keywords' ] = 'Mots-clés associés';
 $_lang[ 'Author(s)' ] = 'Auteur(s)';
 $_lang[ 'Bookmark' ] = 'Liste de lecture personnelle';
@@ -49,18 +50,18 @@ $_lang[ 'Metadatas' ] = 'Méta-données';
 $_lang[ 'Metadata\'s content' ] = 'Valeur de la méta-donnée';
 $_lang[ 'Metadata\'s name' ] = 'Nom de la méta-donnée';
 $_lang[ 'Other Libraries'] = 'Autres bibliothèques';
-$_lang[ 'Public Libraries'] = 'Bibliothèque publique';
 $_lang[ 'Relevancy' ] = 'Pertinence';
 $_lang[ 'Resource' ] = 'Ressource';
 $_lang[ 'Resource type' ] = 'Type de ressource';
 $_lang[ 'Selected' ] = 'Sélectionné';
 $_lang[ 'Storage type' ] = 'Stockage';
-$_lang[ 'User Libraries'] = 'Les bibliothèques dont vous êtes gestionnaire';
+$_lang[ 'User Libraries'] = 'Bibliothèques dont vous êtes gestionnaire';
 
 // Metadatas : general
 $_lang[ 'Author' ] = 'Auteur';
 $_lang[ 'Date' ] = 'Date';
 $_lang[ 'Description' ] = 'Description';
+$_lang[ 'Publication Date' ] = 'Date de publication';
 $_lang[ 'Publisher' ] = 'Editeur';
 
 // Metadatas : DublinCore

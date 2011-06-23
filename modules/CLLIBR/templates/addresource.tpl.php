@@ -21,7 +21,7 @@
             }
             else if ( storageType == 'url' ){
                 $("#storageType").append('<?php echo get_lang( 'Url' ); ?> :');
-                $("#resourceSelect").append('<input type="text" name="resourceUrl" value=""/>');
+                $("#resourceSelect").append('<input type="text" size="60" name="resourceUrl" value=""/>');
             }
         });
     });

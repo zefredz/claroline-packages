@@ -400,28 +400,28 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $metadata->setTitle( $title );
             $metadata->setDescription( $description );
             
-            if ( ! empty( $values ) )
+            if ( ! empty( $names ) )
             {
-                foreach( $values as $id => $value )
+                foreach( $names as $id => $name )
                 {
-                    if ( $value )
+                    if ( $values[ $id ] )
                     {
-                        $metadata->modify( $names[ $id ] , $value );
+                        $metadata->set( $name , $values[ $id ] );
                     }
                     else
                     {
-                        $metadata->remove( $names[ $id ] );
+                        $metadata->remove( $name );
                     }
                 }
             }
             
-            if ( ! empty( $newValues ) )
+            if ( ! empty( $newNames ) )
             {
-                foreach( $newValues as $id => $value )
+                foreach( $newNames as $id => $newName )
                 {
-                    if ( $value )
+                    if ( $newValues[ $id ] )
                     {
-                        $metadata->add( $newNames[ $id ] , $value );
+                        $metadata->add( $newName , $newValues[ $id ] );
                     }
                 }
             }
@@ -682,15 +682,19 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqEditResource':
         {
+            $resourceId = $resource->getId();
             $tagCloud = new TagCloud( $database
-                                    , 'index.php?cmd=exEditResource&resourceId=' . $resource->getId() );
+                                    , 'index.php?cmd=exEditResource&resourceId=' . $resourceId );
+            $type = $resource->getType();
+            $resource = new $type( $database , $resourceId );
+            
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
-            $template->assign( 'resourceId' , $resource->getId() );
+            $template->assign( 'resourceId' , $resourceId );
             $template->assign( 'metadataList' , $metadata->getMetadataList( true ) );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
-            $template->assign( 'refId' , $resource->getId() );
+            $template->assign( 'refId' , $resourceId );
             $template->assign( 'refName' , 'resourceId' );
             $template->assign( 'defaultMetadataList' , $resource->getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
@@ -757,11 +761,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $searchResult = $searchEngine->getResult();
             
-            foreach( $searchResult as $resourceId => $datas )
+            foreach( $searchResult as $score => $results )
             {
-                if ( ! $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_SEARCH ) )
+                foreach( $results as $id => $result )
                 {
-                    unset( $searchResult[ $resourceId ] );
+                    if ( ! $acl->accessGranted( $id , CLLIBR_ACL::ACCESS_SEARCH ) )
+                    {
+                        unset( $searchResult[ $score ][ $id ] );
+                    }
                 }
             }
             

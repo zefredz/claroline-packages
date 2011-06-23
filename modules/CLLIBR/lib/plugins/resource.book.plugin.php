@@ -16,5 +16,5 @@ class Book extends Resource
                                           , 'publication date'
                                           , 'publisher'
                                           , 'collection'
-                                          , 'isbn' );
+                                          , 'ISBN' );
 }
