@@ -36,6 +36,7 @@ $_lang[ 'Private' ] = 'Private';
 $_lang[ 'Public' ] = 'Public';
 
 $_lang[ 'Advanced search' ] = 'Advanced search';
+$_lang[ 'Allowed Libraries'] = 'Public libraries';
 $_lang[ 'Associated keywords' ] = 'Associated keywords';
 $_lang[ 'Author(s)' ] = 'Author(s)';
 $_lang[ 'Bookmark' ] = 'Bookmark';
@@ -49,7 +50,8 @@ $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
 $_lang[ 'Metadata\'s name' ] = 'Metadata\'s name';
 $_lang[ 'Other Libraries'] = 'Other libraries';
-$_lang[ 'Public Libraries'] = 'Public libraries';
+
+
 $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
@@ -61,6 +63,7 @@ $_lang[ 'User Libraries'] = 'Your libraries';
 $_lang[ 'Author' ] = 'Author';
 $_lang[ 'Date' ] = 'Date';
 $_lang[ 'Description' ] = 'Description';
+$_lang[ 'Publication Date' ] = 'Publication date';
 $_lang[ 'Publisher' ] = 'Publisher';
 
 // Metadatas : DublinCore

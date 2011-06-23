@@ -59,6 +59,6 @@ class KeywordSearch extends Search
             $result[ $line[ 'id' ] ][ 'keywords' ][] = $line[ 'keyword' ];
         }
         
-        return $this->searchResult = $result;
+        return $this->searchResult = array( $result );
     }
 }

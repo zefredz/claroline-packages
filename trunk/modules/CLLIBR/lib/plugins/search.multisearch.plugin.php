@@ -101,9 +101,8 @@ class MultiSearch extends Search
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'count' ] ] = array( 'id' => $id
-                                                      , 'title' => $datas[ 'title' ]
-                                                      , 'matches' => $datas[ 'matches' ] );
+            $sortedResult[ $datas[ 'count' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
+                                                             , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );

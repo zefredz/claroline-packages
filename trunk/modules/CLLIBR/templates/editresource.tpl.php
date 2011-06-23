@@ -72,38 +72,45 @@
             <dd>
                 <textarea cols="60" rows="8" name="description"><?php echo isset( $this->metadataList[ 'description' ] ) ? $this->metadataList[ 'description' ] : ''; ?></textarea>
             </dd>
-            
-            <!-- when adding a new resource -->
-<?php if ( ! empty( $this->defaultMetadataList ) ) : ?>
-    <?php foreach( $this->defaultMetadataList as $property ) : ?>
-                    <dt><?php echo get_lang( ucwords( $property ) ); ?> :</dt>
-                    <dd><input type="text"
-                               size="32"
-                               name="add[<?php echo $property; ?>]" value="" /></dd>
-    <?php endforeach; ?>
-            <!-- when editing an existing resource -->
-<?php else : ?>
-    <?php $index = 0; ?>
-    <?php foreach( $this->metadataList as $name => $value ): ?>
-        <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
-            <dt id="label<?php echo $index; ?>">
-                <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
-                <input id="metadata<?php echo $index; ?>"
-                       type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
-            </dt>
-            <dd id="value<?php echo $index; ?>">
-                <input type="text"
-                       size="32"
-                       name="metadata[<?php echo $index; ?>]"
-                       value="<?php echo htmlspecialchars( $value ); ?>" />
-                <a id="del<?php echo $index; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $index; ?>">
-                        <?php echo get_lang( 'Delete' ); ?>
-                </a>
-            </dd>
-        <?php $index++ ?>
-        <?php endif; ?>
-    <?php endforeach; ?>
-<?php endif; ?>
+
+<?php $index = 0; ?>
+
+<?php foreach( $this->metadataList as $name => $value ): ?>
+    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
+        <dt id="label<?php echo $index; ?>">
+            <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
+            <input id="metadata<?php echo $index; ?>"
+                   type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
+        </dt>
+        <dd id="value<?php echo $index; ?>">
+            <input type="text"
+                   size="32"
+                   name="metadata[<?php echo $index; ?>]"
+                   value="<?php echo htmlspecialchars( $value ); ?>" />
+            <a id="del<?php echo $index; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $index; ?>">
+                    <?php echo get_lang( 'Delete' ); ?>
+            </a>
+        </dd>
+    <?php $index++ ?>
+    <?php endif; ?>
+<?php endforeach; ?>
+
+<?php foreach( $this->defaultMetadataList as $name ) : ?>
+    <?php if( ! array_key_exists( $name , $this->metadataList ) ) : ?>
+        <dt id="label<?php echo $index; ?>">
+            <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
+            <input id="metadata<?php echo $index; ?>"
+                   type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
+        </dt>
+        <dd id="value<?php echo $index; ?>">
+            <input type="text"
+                   size="32"
+                   name="metadata[<?php echo $index; ?>]" value="" />
+        </dd>
+    <?php $index++; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
+
         <dt>
             <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
@@ -125,9 +132,10 @@
         <dt>
             <?php echo get_lang( 'Keywords' ); ?>
         </dt>
-
         <dd>
+
     <?php $index = 0; ?>
+
     <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
         <div id="kvalue<?php echo $index; ?>" class="keyword">
             <input id="keyword<?php echo $index; ?>"
