@@ -55,11 +55,10 @@ class FulltextSearch extends Search
             $id = $line[ 'id' ];
             $title = $line[ 'title' ];
             $score = $line[ 'score' ];
+            $name = $line[ 'name' ];
             $value = str_ireplace( $this->searchString
                                  , '<strong>' . $this->searchString . '</strong>'
                                  , $line[ 'value' ] );
-            $match = array( 'name' => $line[ 'name' ]
-                          , 'value' => $value );
             
             if ( ! array_key_exists( $id , $result ) )
             {
@@ -67,7 +66,7 @@ class FulltextSearch extends Search
             }
             
             $result[ $id ][ 'title' ] = $title;
-            $result[ $id ][ 'matches' ][] = $match;
+            $result[ $id ][ 'matches' ][ $name ] = $value;
             $result[ $id ][ 'score' ] += $score;
         }
         
