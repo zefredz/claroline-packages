@@ -92,11 +92,8 @@ class MultiSearch extends Search
                 $result[ $id ][ 'count' ] = 0;
             }
             
-            $match = array( 'name'  => $line[ 'name' ]
-                          , 'value' => $line[ 'value' ] );
-            
             $result[ $id ][ 'title' ] = $line[ 'title' ];
-            $result[ $id ][ 'matches' ][] = $match;
+            $result[ $id ][ 'matches' ][ $line[ 'name' ] ] = $line[ 'value' ];
             $result[ $id ][ 'count' ]++;
         }
         
