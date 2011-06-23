@@ -9,42 +9,16 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( $this->tagCloud ) : ?>
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#tagCloud").hide();
-        $("#showTagCloud").click(function(){
-            $("#tagCloud").toggle();
-            $("#libraryList").toggleClass( 'galant' );
-        });
-    });
-</script>
-<?php endif; ?>
-
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreateLibrary') ); ?>">
         <img src="<?php echo get_icon_url( 'new_book' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
         <?php echo get_lang( 'Create a new library' ); ?>
     </a>
 </span>
-<form id="searchForm" method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch') ); ?>">
-    <input type="submit" value="<?php echo get_lang( 'Quick search' ); ?>" />
-    <input type="text" name="searchString" value="" />
-    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?option=multisearch') ); ?>">
-        <img src="<?php echo get_icon_url( 'plus' ); ?>" alt="<?php echo get_lang( 'Advanced search' ); ?>" />
-    </a>
-<?php if ( $this->tagCloud ) : ?>
-    <a id="showTagCloud" href="#claroBody">
-        <img src="<?php echo get_icon_url( 'tagcloud' ); ?>" alt="<?php echo get_lang( 'Show tagcloud' ); ?>" />
-    </a>
-<?php endif; ?>
-</form>
 
-<?php if ( $this->tagCloud ) : ?>
-<div id="tagCloud"><?php echo $this->tagCloud; ?></div>
-<?php endif; ?>
+<?php include( dirname(__FILE__) . '/searchform.tpl.php' ); ?>
 
-<div id="libraryList">
+<div id="mainContent">
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>
 <fieldset id="<?php echo $category; ?>Library">
     <legend><?php echo get_lang( ucwords( $category . ' libraries' ) ); ?></legend>
