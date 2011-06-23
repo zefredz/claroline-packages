@@ -771,6 +771,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template = new ModuleTemplate( 'CLLIBR' , $tpl );
             
             $template->assign( 'result' , $searchResult );
+            $template->assign( 'tagCloud' , $tagCloud->render() );
             break;
         }
         
