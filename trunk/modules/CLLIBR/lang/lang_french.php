@@ -25,6 +25,12 @@ $_lang[ 'OR' ] = 'OU';
 $_lang[ 'book' ] = 'livre';
 $_lang[ 'picture' ] = 'image';
 
+$_lang[ 'author' ] = 'auteur';
+$_lang[ 'collection' ] = 'collection';
+$_lang[ 'description' ] = 'description';
+$_lang[ 'keyword' ] = 'mot-clé';
+$_lang[ 'title' ] = 'titre';
+
 $_lang[ 'bibliographies' ] = 'Bibliographies';
 $_lang[ 'bookmark' ] = 'Liste de lecture personnelles';
 $_lang[ 'catalogue' ] = 'Catalogue';
