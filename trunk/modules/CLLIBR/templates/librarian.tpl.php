@@ -28,7 +28,7 @@
             <td>
             <?php echo $librarian; ?>
             </td>
-            <td>
+            <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemoveLibrarian&libraryId='. $this->libraryId . '&librarianId=' . $librarianId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
