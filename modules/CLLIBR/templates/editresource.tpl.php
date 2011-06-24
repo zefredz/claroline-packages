@@ -130,7 +130,7 @@
     <dl>
 <?php if ( array_key_exists( Metadata::KEYWORD , $this->metadataList ) ) : ?>
         <dt>
-            <?php echo get_lang( 'Keywords' ); ?>
+            <?php echo get_lang( 'Keywords' ); ?> :
         </dt>
         <dd>
 
@@ -154,14 +154,14 @@
 <?php endif; ?>
     <?php if ( $this->tagCloud ) : ?>
         <dt>
-            <span class="claroCmd"><?php echo get_lang( 'Add an existing keyword' ); ?></span>
+            <span class="claroCmd"><?php echo get_lang( 'Add an existing keyword' ); ?></span> :
         </dt>
         <dd id="tagCloudAdd">
             <?php echo $this->tagCloud; ?>
         <dd>
     <?php endif; ?>
         <dt>
-            <span class="claroCmd"><?php echo get_lang( 'Add new keywords (separated by commas)' ); ?></span>
+            <span class="claroCmd"><?php echo get_lang( 'Add new keywords (separated by commas)' ); ?></span> :
         </dt>
         <dd>
             <input type="text"

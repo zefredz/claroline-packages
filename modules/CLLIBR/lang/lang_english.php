@@ -25,11 +25,11 @@ $_lang[ 'OR' ] = 'OR';
 $_lang[ 'book' ] = 'book';
 $_lang[ 'picture' ] = 'picture';
 
-$_lang[ 'author' ] = 'author';
-$_lang[ 'bibliographies' ] = 'bibliographies';
-$_lang[ 'bookmarks' ] = 'bookmarks';
-$_lang[ 'librarians' ] = 'librarians';
-$_lang[ 'keyword' ] = 'keyword';
+$_lang[ 'bibliography' ] = 'Bibliographies';
+$_lang[ 'bookmark' ] = 'Bookmark';
+$_lang[ 'catalogue' ] = 'Catalogue';
+$_lang[ 'librarian' ] = 'Librarians';
+$_lang[ 'librarylist' ] = 'Library List';
 
 $_lang[ 'Restricted' ] = 'Restricted access';
 $_lang[ 'Private' ] = 'Private';
@@ -41,18 +41,15 @@ $_lang[ 'Associated keywords' ] = 'Associated keywords';
 $_lang[ 'Author(s)' ] = 'Author(s)';
 $_lang[ 'Bookmark' ] = 'Bookmark';
 $_lang[ 'Commands' ] = 'Commands';
-$_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'External link' ] = 'External link';
+$_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'Librarians' ] = 'Librarians';
 $_lang[ 'Libraries' ] = 'Libraries';
-$_lang[ 'Librarylist' ] = 'Library list';
 $_lang[ 'Local storage of a file' ] = 'Local storage of a file';
 $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
 $_lang[ 'Metadata\'s name' ] = 'Metadata\'s name';
 $_lang[ 'Other Libraries'] = 'Other libraries';
-
-
 $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
@@ -88,7 +85,7 @@ $_lang[ 'type' ] = 'type';
 $_lang[ 'Add a librarian' ] = 'Add a librarian';
 $_lang[ 'Add an existing keyword' ] = 'Add a existing keyword';
 $_lang[ 'Add an item' ] = 'Add an item';
-$_lang[ 'Add new keywords (separated by commas)' ] = 'Add new keywords (separated by commas)';
+$_lang[ 'Add new keywords (separated by commas)' ] = 'Add new keywords <br />(separated by commas)';
 $_lang[ 'Add a new metadata' ] = 'Add a new metadata';
 $_lang[ 'Add a resource' ] = 'Add a resource';
 $_lang[ 'Add an user to this library' ] ='Add an user to this library';

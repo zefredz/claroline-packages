@@ -577,7 +577,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     }
     else
     {
-        $pageTitle[ 'subTitle' ] = ucwords( get_lang( $context ) )
+        $pageTitle[ 'subTitle' ] = get_lang( $context )
                                  . ( $libraryId ? ' - ' . $library->getTitle() : '' );
     }
     

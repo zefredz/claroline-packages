@@ -18,7 +18,7 @@
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' );?>" />
     </a>
 </form>
-
+<br />
 <?php if ( ! empty( $this->searchResult ) ): ?>
 <strong><?php echo get_lang( 'Result' ); ?>:</strong>
 <div>
