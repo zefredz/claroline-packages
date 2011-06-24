@@ -575,6 +575,10 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     {
         $pageTitle[ 'subTitle' ] = $metadata->get( Metadata::TITLE );
     }
+    elseif ( $cmd == 'rqSearch' )
+    {
+        $pageTitle[ 'subTitle' ] = get_lang( 'Search result' );
+    }
     else
     {
         $pageTitle[ 'subTitle' ] = get_lang( $context )

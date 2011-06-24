@@ -59,6 +59,7 @@ $_lang[ 'Other Libraries'] = 'Other libraries';
 $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
+$_lang[ 'Search result' ] = 'Search result';
 $_lang[ 'Selected' ] = 'Selected';
 $_lang[ 'Storage type' ] = 'Storage type';
 $_lang[ 'User Libraries'] = 'Your libraries';

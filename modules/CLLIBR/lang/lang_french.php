@@ -59,6 +59,7 @@ $_lang[ 'Other Libraries'] = 'Autres bibliothèques';
 $_lang[ 'Relevancy' ] = 'Pertinence';
 $_lang[ 'Resource' ] = 'Ressource';
 $_lang[ 'Resource type' ] = 'Type de ressource';
+$_lang[ 'Search result' ] = 'Résultat de la recherche';
 $_lang[ 'Selected' ] = 'Sélectionné';
 $_lang[ 'Storage type' ] = 'Stockage';
 $_lang[ 'User Libraries'] = 'Bibliothèques dont vous êtes gestionnaire';
