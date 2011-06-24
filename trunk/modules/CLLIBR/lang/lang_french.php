@@ -45,6 +45,7 @@ $_lang[ 'Commands' ] = 'Commandes';
 $_lang[ 'Keywords' ] = 'Mots-clés';
 $_lang[ 'Libraries' ] = 'Bibliothèques';
 $_lang[ 'Librarians' ] = 'Bibliothécaires';
+$_lang[ 'Librarylist' ] = 'Liste des bibliothèques';
 $_lang[ 'Local storage of a file' ] = 'Stockage en local du fichier';
 $_lang[ 'Metadatas' ] = 'Méta-données';
 $_lang[ 'Metadata\'s content' ] = 'Valeur de la méta-donnée';
