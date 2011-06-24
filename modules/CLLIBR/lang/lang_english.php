@@ -45,6 +45,7 @@ $_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'External link' ] = 'External link';
 $_lang[ 'Librarians' ] = 'Librarians';
 $_lang[ 'Libraries' ] = 'Libraries';
+$_lang[ 'Librarylist' ] = 'Library list';
 $_lang[ 'Local storage of a file' ] = 'Local storage of a file';
 $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
