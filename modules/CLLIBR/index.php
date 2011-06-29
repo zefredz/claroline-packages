@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -393,14 +393,24 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $toDelete = $userInput->get( 'del' );
             $newNames = $userInput->get( 'newName' );
             $newValues = $userInput->get( 'value' );
-            $keywords = $userInput->get( 'keyword' );
-            $newKeywords = explode( ',' , $userInput->get( 'keywords' ) );
+            $keyword = $userInput->get( 'keyword' );
+            $newKeyword = $userInput->get( 'keywords' );
             $kToDelete = $userInput->get( 'kdel' );
             
-            $metadata->setTitle( $title );
-            $metadata->setDescription( $description );
+            $keywords = is_array( $keyword ) ? $keyword : array( $keyword );
+            $newKeywords = explode( ',' , $newKeyword );
             
-            if ( ! empty( $names ) )
+            if ( $title )
+            {
+                $metadata->setTitle( $title );
+            }
+            
+            if ( $description )
+            {
+                $metadata->setDescription( $description );
+            }
+            
+            if ( is_array( $names ) && ! empty( $names ) )
             {
                 foreach( $names as $id => $name )
                 {
@@ -415,7 +425,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( ! empty( $newNames ) )
+            if ( is_array( $newNames ) && ! empty( $newNames ) )
             {
                 foreach( $newNames as $id => $newName )
                 {
@@ -426,7 +436,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( ! empty( $toDelete ) )
+            if ( is_array( $toDelete) && ! empty( $toDelete ) )
             {
                 foreach( $toDelete as $name )
                 {
@@ -434,7 +444,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( ! empty( $keywords ) )
+            if ( is_array( $keywords ) && ! empty( $keywords ) )
             {
                 foreach( $keywords as $keyword )
                 {
@@ -445,7 +455,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( ! empty( $kToDelete ) )
+            if ( is_array( $kToDelete ) && ! empty( $kToDelete ) )
             {
                 foreach( $kToDelete as $value )
                 {
@@ -453,11 +463,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            foreach( $newKeywords as $value )
+            if( is_array( $newKeywords ) && ! empty( $newKeywords ) )
             {
-                if ( $value )
+                foreach( $newKeywords as $value )
                 {
-                    $metadata->addKeyword( trim( $value ) );
+                    if ( $value )
+                    {
+                        $metadata->addKeyword( trim( $value ) );
+                    }
                 }
             }
             
