@@ -22,7 +22,9 @@ $_lang[ 'AND' ] = 'AND';
 $_lang[ 'OR' ] = 'OR';
 
 // Usual words
+$_lang[ 'article' ] = 'article';
 $_lang[ 'book' ] = 'book';
+$_lang[ 'bookexcerpt' ] = 'book excerpt';
 $_lang[ 'picture' ] = 'picture';
 
 $_lang[ 'author' ] = 'author';
