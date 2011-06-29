@@ -26,9 +26,13 @@ $_lang[ 'book' ] = 'livre';
 $_lang[ 'picture' ] = 'image';
 
 $_lang[ 'author' ] = 'auteur';
+$_lang[ 'book title' ] = 'titre du livre';
+$_lang[ 'chapter' ] = 'chapitre';
 $_lang[ 'collection' ] = 'collection';
 $_lang[ 'description' ] = 'description';
 $_lang[ 'keyword' ] = 'mot-clé';
+$_lang[ 'issue' ] = 'numéro';
+$_lang[ 'pages' ] = 'pages';
 $_lang[ 'title' ] = 'titre';
 
 $_lang[ 'bibliographies' ] = 'Bibliographies';
