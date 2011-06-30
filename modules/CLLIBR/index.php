@@ -410,7 +410,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 $metadata->setDescription( $description );
             }
             
-            if ( is_array( $names ) && ! empty( $names ) )
+            if ( is_array( $names ) )
             {
                 foreach( $names as $id => $name )
                 {
@@ -425,7 +425,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( is_array( $newNames ) && ! empty( $newNames ) )
+            if ( is_array( $newNames ) )
             {
                 foreach( $newNames as $id => $newName )
                 {
@@ -436,7 +436,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( is_array( $toDelete) && ! empty( $toDelete ) )
+            if ( is_array( $toDelete ) )
             {
                 foreach( $toDelete as $name )
                 {
@@ -444,18 +444,18 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if ( is_array( $keywords ) && ! empty( $keywords ) )
+            if ( is_array( $keywords ) )
             {
-                foreach( $keywords as $keyword )
+                foreach( $keywords as $value )
                 {
-                    if ( ! $metadata->keywordExists( $keyword ) )
+                    if ( $value && ! $metadata->keywordExists( $value ) )
                     {
-                        $metadata->addKeyword( $keyword );
+                        $metadata->addKeyword( $value );
                     }
                 }
             }
             
-            if ( is_array( $kToDelete ) && ! empty( $kToDelete ) )
+            if ( is_array( $kToDelete ) )
             {
                 foreach( $kToDelete as $value )
                 {
@@ -463,7 +463,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
-            if( is_array( $newKeywords ) && ! empty( $newKeywords ) )
+            if( is_array( $newKeywords ) )
             {
                 foreach( $newKeywords as $value )
                 {
