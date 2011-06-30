@@ -9,12 +9,14 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<?php if ( $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreateLibrary') ); ?>">
         <img src="<?php echo get_icon_url( 'new_book' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
         <?php echo get_lang( 'Create a new library' ); ?>
     </a>
 </span>
+<?php endif; ?>
 
 <?php include( dirname(__FILE__) . '/searchform.tpl.php' ); ?>
 

@@ -145,6 +145,10 @@ if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
 {
     $context = strtolower( substr( $cmd , 6 ) );
 }
+elseif( $cmd == 'exUnbookmark' )
+{
+    $context = 'bookmark';
+}
 elseif( $librarianId )
 {
     $context = 'librarian';
@@ -156,10 +160,6 @@ elseif( $libraryId )
 elseif( $courseId )
 {
     $context = 'bibliography';
-}
-elseif( $userId )
-{
-    $context = 'bookmark';
 }
 else
 {
