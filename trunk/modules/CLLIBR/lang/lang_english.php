@@ -16,7 +16,7 @@ $_lang[ 'Online Library'] = 'Online Library';
 // Localisable variables
 $_lang[ '_public' ] = '<strong>Public</strong> : all users can access to resources';
 $_lang[ '_restricted' ] = '<strong>Restricted</strong> : all users can access to metadatas';
-$_lang[ '_private' ] = '<strong>Private</strong> : only allowed users can access to resources and/or metadatas. The search engine will this library from its result';
+$_lang[ '_private' ] = '<strong>Private</strong> : only allowed users can access to resources and/or metadatas.';
 
 $_lang[ 'AND' ] = 'AND';
 $_lang[ 'OR' ] = 'OR';

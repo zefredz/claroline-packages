@@ -37,7 +37,7 @@ class LibraryList
         
         $this->userId = $userId;
         $this->is_admin = $is_admin;
-        $this->load( true );
+        //$this->load( true );
     }
     
     /**

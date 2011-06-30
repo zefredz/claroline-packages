@@ -16,7 +16,7 @@ $_lang[ 'Online Library'] = 'Bibliothèque en Ligne';
 // Localisable variables
 $_lang[ '_public' ] = '<strong>Publique</strong> : tous les utilisateurs de la plateforme ont accès à toutes les ressources';
 $_lang[ '_restricted' ] = '<strong>A accès restreint</strong> : tous les utilisateurs ont accès aux méta-données, mais pas aux documents';
-$_lang[ '_private' ] = '<strong>Privée</strong> : seuls les utilisateurs autorisés ont accès aux documents et à leur méta-données. Le moteur de recherche omettra cette bibliothèque de son résultat';
+$_lang[ '_private' ] = '<strong>Privée</strong> : seuls les utilisateurs autorisés ont accès aux documents et à leur méta-données.';
 
 $_lang[ 'AND' ] = 'ET';
 $_lang[ 'OR' ] = 'OU';
@@ -68,7 +68,7 @@ $_lang[ 'Resource type' ] = 'Type de ressource';
 $_lang[ 'Search result' ] = 'Résultat de la recherche';
 $_lang[ 'Selected' ] = 'Sélectionné';
 $_lang[ 'Storage type' ] = 'Stockage';
-$_lang[ 'User Libraries'] = 'Bibliothèques dont vous êtes gestionnaire';
+$_lang[ 'User Libraries'] = 'Vos bibliothèques (dont vous êtes bibliothécaire)';
 
 // Metadatas : general
 $_lang[ 'Author' ] = 'Auteur';

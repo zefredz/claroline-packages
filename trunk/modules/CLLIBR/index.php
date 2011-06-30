@@ -817,7 +817,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     {
         $form = new ModuleTemplate( 'CLLIBR' , 'moveresource.tpl.php' );
         $form->assign( 'resourceId' , $resourceId );
-        $form->assign( 'libraryList' , $libraryList->getResourceList() );
+        $form->assign( 'libraryList' , $libraryList->getResourceList( true ) );
         $dialogBox->form( $form->render() );
     }
     
