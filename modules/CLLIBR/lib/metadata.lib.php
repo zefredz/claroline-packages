@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -93,6 +93,20 @@ class Metadata
         }
         
         return $this->metadataList;
+    }
+    
+    /**
+     * Helper for getting resource's keywords
+     * @return array $keywordList
+     */
+    public function getKeywordList( $force = false )
+    {
+        $this->getMetadataList( $force );
+        
+        if ( array_key_exists( 'keyword' , $this->metadataList ) )
+        {
+            return $this->metadataList[ 'keyword' ];
+        }
     }
     
     /**

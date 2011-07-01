@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -136,5 +136,5 @@ $_lang[ 'This resource is already added' ] = 'Cette ressource avait déjà été ajo
 $_lang[ 'This resource is already bookmarked' ] = 'Vous aviez déjà mis cette ressource dans votre liste de lecture';
 $_lang[ 'Url missing' ] = 'Vous avez oublié de spécifier l\'Url';
 $_lang[ 'Warning : this resource is in use' ] = 'ATTENTION: cette ressource est utilisée ailleurs';
-$_lang[ 'You must give a title' ] = 'Vous devez obligatoirement fournir un titre';
+$_lang[ 'You must give a title and a description' ] = 'Vous devez obligatoirement fournir un titre et une description';
 $_lang[ 'You are not allowed to access this resource!' ] = 'Vous n\'êtes pas autorisé à accéder à cette ressource!';
