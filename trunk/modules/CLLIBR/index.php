@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.7.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -326,7 +326,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             $resource = new $type( $database );
             
-            if ( $title )
+            if ( $title && $description )
             {
                 $resource->setType( $type );
                 $resource->setStorageType( $storage );
@@ -373,7 +373,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             }
             else
             {
-                $errorMsg = get_lang( 'You must give a title' );
+                $errorMsg = get_lang( 'You must give a title and a description' );
+                $cmd = 'rqAddResource';
             }
             
             $execution_ok = ! $errorMsg
@@ -441,6 +442,17 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 foreach( $toDelete as $name )
                 {
                     $metadata->remove( $name );
+                }
+            }
+            
+            if ( is_array( $keyword ) )
+            {
+                foreach( $metadata->getKeywordList( true ) as $value )
+                {
+                    if ( is_array( $keywords ) && ! array_key_exists( $value , $keywords ) )
+                    {
+                        $metadata->removeKeyword( $value );
+                    }
                 }
             }
             
