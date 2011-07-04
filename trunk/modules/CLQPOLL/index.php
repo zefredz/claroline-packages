@@ -660,7 +660,10 @@ if ( isset ( $template ) )
             break;
         
         case 'pollview':
-            $pollPager = new Pager( $poll->getAllVoteList( true ) , get_conf( 'CLQPOLL_pagerLineNb' ) );
+            $nbOfLines = get_conf( 'CLQPOLL_pagerLineNb' )
+                       ? get_conf( 'CLQPOLL_pagerLineNb' )
+                       : 20;
+            $pollPager = new Pager( $poll->getAllVoteList( true ) , $nbOfLines );
             if ( $pageNb >= $pollPager->getPageCount() ) $pageNb = $pollPager->getPageCount() - 1;
             $pollView->assign( 'voteList' , $pollPager );
             $pollView->assign( 'pageNb' , $pageNb );
