@@ -71,10 +71,10 @@ $sqlUpdatePostsData = "	UPDATE `" . $targetTableList['bb_forums'] . "` AS F
 						  								)
 						  	; ";
 
-       
-claro_sql_query($sqlDropCat);            
-claro_sql_query($sqlCreateCat);            
-claro_sql_query($sqlInsertCat);
+// Don't remove categories forum (Main, Group)       
+//claro_sql_query($sqlDropCat);            
+//claro_sql_query($sqlCreateCat);            
+//claro_sql_query($sqlInsertCat);
 
 claro_sql_query($sqlDropForum);            
 claro_sql_query($sqlCreateForum);            
