@@ -773,7 +773,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqRemoveLibrary':
         {
-            $msg = get_lang( 'Are you sure?' );
+            $msg = get_lang( 'Do you really want to remove this library?' );
             $urlAction = "exRemoveLibrary";
             $urlCancel = 'rqShowBibliography';
             $xid = array( 'libraryId' => $libraryId );
