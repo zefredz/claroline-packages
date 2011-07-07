@@ -96,6 +96,7 @@ $_lang[ 'type' ] = 'type';
 
 // Commands
 $_lang[ 'Add a librarian' ] = 'Nommer un nouveau bibliothécaire';
+$_lang[ 'Add a library' ] = 'Créer un lien vers une bibliothèque';
 $_lang[ 'Add an existing keyword' ] = 'Assigner un mot-clé existant';
 $_lang[ 'Add an item' ] = 'Ajouter un critère';
 $_lang[ 'Add new keywords (separated by commas)' ] = 'Ajouter des nouveaux mots-clés <br />(séparés par des virgules)';
