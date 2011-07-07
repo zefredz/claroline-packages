@@ -120,6 +120,7 @@ $_lang[ 'A library must have at least one librarian' ] ='Une bibliothèque doit a
 $_lang[ 'Do you really want to delete this library?' ] = 'Voulez-vous réellement suprimer cette bibliothèque?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Voulez-vous réellement supprimer cette ressource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Voulez-vous réellement congédier ce bibliothécaire?';
+$_lang[ 'Do you really want to remove this library?' ] = 'Voulez-vous réellement retirer le line vers cette bibliothèque?';
 $_lang[ 'Do you really want to remove this resource?' ] = 'Voulez-vous réellement retirer cette ressource?';
 $_lang[ 'Empty bibliography' ] = 'La bibliographie est vide';
 $_lang[ 'Empty bookmark' ] = 'Votre liste de lecture est vide';

@@ -120,6 +120,7 @@ $_lang[ 'A library must have at least one librarian' ] ='A library must have at 
 $_lang[ 'Do you really want to delete this library?' ] = 'Do you really want to delete this library?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Do you really want to delete this resource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Do you really want to remove this librarian?';
+$_lang[ 'Do you really want to remove this library?' ] = 'Do you really want to remove this library?';
 $_lang[ 'Do you really want to remove this resource?' ] = 'Do you really want to remove this resource?';
 $_lang[ 'Empty bibliography' ] = 'Empty bibliography';
 $_lang[ 'Empty bookmark' ] = 'Empty bookmark';
