@@ -111,6 +111,7 @@ $_lang[ 'Create a new library' ] = 'Créer une nouvelle bibliothèque';
 $_lang[ 'Edit resource' ] = 'Editer la ressource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Modifier les méta-données de la ressource';
 $_lang[ 'Manage librarians' ] = 'Gérer mes bibliothécaires';
+$_lang[ 'My bookmark' ] = 'Mes lectures';
 $_lang[ 'Quick search' ] = 'Recherche rapide';
 $_lang[ 'Show tagcloud' ] = 'Afficher le nuage de tags';
 
