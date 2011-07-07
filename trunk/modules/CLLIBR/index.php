@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -24,6 +24,7 @@ From::Module( 'CLLIBR' )->uses(
     'collection.lib',
     'storedresource.lib',
     'librarylist.lib',
+    'courselibrary.lib',
     'library.lib',
     'librarian.lib',
     'metadata.lib',
@@ -92,6 +93,11 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exRemoveLibrarian'
                              , 'rqDeleteLibrary'
                              , 'exDeleteLibrary'
+                             , 'rqAddLibrary'
+                             , 'exAddLibrary'
+                             , 'rqRemoveLibrary'
+                             , 'rqRemoveLibrary'
+                             , 'exRemoveLibrary'
                              , 'exAddResource'
                              , 'exEditResource'
                              , 'exDeleteResource'
@@ -105,6 +111,8 @@ $restrictedActionList = array( 'rqAddResource'
 
 $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exRemove'          => 'rqShowBibliography'
+                        , 'exAddLibrary'      => 'rqShowBibliography'
+                        , 'exRemoveLibrary'   => 'rqShowBibliography'
                         , 'exAddResource'     => 'rqEditResource'
                         , 'exDeleteResource'  => 'rqShowCatalogue'
                         , 'exMoveResource'    => 'rqShowCatalogue'
@@ -136,6 +144,11 @@ $metadata = new Metadata( $database , $resourceId );
 if ( $libraryId )
 {
     $librarian = new Librarian( $database , $libraryId );
+}
+
+if ( $courseId )
+{
+    $courseLibraryList = new CourseLibrary( $database , $courseId );
 }
 
 // SETTING CONTEXT
@@ -237,6 +250,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqCreateLibrary':
         case 'rqEditLibrary':
         case 'rqRemoveLibrarian':
+        case 'rqRemoveLibrary':
         {
             break;
         }
@@ -559,6 +573,18 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
+        case 'exAddLibrary':
+        {
+            $execution_ok = $courseLibraryList->add( $libraryId );
+            break;
+        }
+        
+        case 'exRemoveLibrary':
+        {
+            $execution_ok = $courseLibraryList->remove( $libraryId );
+            break;
+        }
+        
         case 'rqSearch':
         {
             $searchString = $userInput->get( 'searchString' );
@@ -622,6 +648,10 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     if ( is_a( $resourceSet , 'LibraryList' ) && $libraryId )
     {
         $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
+    }
+    if ( $courseId )
+    {
+        $template->assign( 'courseLibraryList' , $courseLibraryList->getLibraryList() );
     }
     
     if ( array_key_exists( $cmd , $redirectionList ) )
@@ -738,6 +768,15 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $urlAction = 'exRemove';
             $urlCancel = 'rqShow' . ucwords( $context );
             $xid = array( 'resourceId' => $resourceId );
+            break;
+        }
+        
+        case 'rqRemoveLibrary':
+        {
+            $msg = get_lang( 'Are you sure?' );
+            $urlAction = "exRemoveLibrary";
+            $urlCancel = 'rqShowBibliography';
+            $xid = array( 'libraryId' => $libraryId );
             break;
         }
         

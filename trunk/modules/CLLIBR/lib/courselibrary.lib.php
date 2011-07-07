@@ -1,0 +1,132 @@
+<?php // $Id$
+/**
+ * Online library for Claroline
+ *
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
+ * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     CLLIBR
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
+/**
+ * A class to manage the library entries within a course's bibliography
+ * @property string $courseId
+ * @property array $libraryList
+ */
+class CourseLibrary
+{
+    protected $courseId;
+    protected $libraryList;
+    
+    protected $database;
+    
+    /**
+     * Constructor
+     * @param string courseId
+     */
+    public function __construct( $database , $courseId )
+    {
+        $this->database = $database;
+        $this->tbl = get_module_main_tbl( array( 'library_course_library'
+                                               , 'library_library' ) );
+        
+        $this->courseId = $courseId;
+        $this->load();
+    }
+    
+    /**
+     * Loads the library list
+     * This method is called by the constructor
+     */
+    public function load()
+    {
+        $this->libraryList = array();
+        
+        $result = $this->database->query( "
+            SELECT
+                L.id,
+                L.title
+            FROM
+                `{$this->tbl['library_library']}` AS L
+            INNER JOIN
+                `{$this->tbl['library_course_library']}` AS C
+            ON
+                L.id = C.library_id
+            WHERE
+                C.course_id = " . $this->database->quote( $this->courseId )
+        );
+        
+        foreach( $result as $line )
+        {
+            $this->libraryList[ $line[ 'id' ] ] = $line[ 'title' ];
+        }
+    }
+    
+    /**
+     * Gets the library list
+     * @return array $libraryList
+     */
+    public function getLibraryList( $force = false )
+    {
+        if ( $force )
+        {
+            $this->load();
+        }
+        
+        return $this->libraryList;
+    }
+    
+    /**
+     * Controls if the specified entry exists
+     * @param int $libraryId
+     * @return boolean true if exists
+     */
+    public function libraryExists( $libraryId )
+    {
+        return $this->database->query( "
+            SELECT
+                library_id
+            FROM
+                `{$this->tbl['library_course_library']}`
+            WHERE
+                library_id = " . $this->database->escape( $libraryId ) . "
+            AND
+                course_id = " . $this->database->quote( $this->courseId )
+        )->numRows();
+    }
+    
+    /**
+     * Adds a new entry
+     * @param int $libraryId
+     * @return boolean true on success
+     */
+    public function add( $libraryId )
+    {
+        if ( ! $this->libraryExists( $libraryId ) )
+        {
+            return $this->database->exec( "
+                INSERT INTO
+                    `{$this->tbl['library_course_library']}`
+                SET
+                    library_id = " . $this->database->escape( $libraryId ) . ",
+                    course_id = " . $this->database->quote( $this->courseId ) );
+        }
+    }
+    
+    /**
+     * Removes an existing entry
+     * @param int $libraryId
+     * @return boolean true on success
+     */
+    public function remove( $libraryId )
+    {
+        return $this->database->exec( "
+            DELETE FROM
+                `{$this->tbl['library_course_library']}`
+            WHERE
+                library_id = " . $this->database->escape( $libraryId ) . "
+            AND
+                course_id = " . $this->database->quote( $this->courseId ) );
+    }
+}

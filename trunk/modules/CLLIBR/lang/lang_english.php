@@ -96,6 +96,7 @@ $_lang[ 'type' ] = 'type';
 
 // Commands
 $_lang[ 'Add a librarian' ] = 'Add a librarian';
+$_lang[ 'Add a library' ] = 'Add a library';
 $_lang[ 'Add an existing keyword' ] = 'Add a existing keyword';
 $_lang[ 'Add an item' ] = 'Add an item';
 $_lang[ 'Add new keywords (separated by commas)' ] = 'Add new keywords <br />(separated by commas)';

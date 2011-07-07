@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -15,7 +15,7 @@
  * @const RAW_ACCESS
  * @property string $location
  * @property Resource object $resource
- * @property string $keyword
+ * @property string $encryptionKey
  */
 class StoredResource
 {
@@ -24,16 +24,16 @@ class StoredResource
     
     protected $location;
     protected $resource;
-    protected $keyword;
+    protected $encryptionKey;
     
     /**
      * Constructor
      */
-    public function __construct( $location , $resource , $keyword = '' )
+    public function __construct( $location , $resource , $encryptionKey = '' )
     {
         $this->location = $location;
         $this->resource = $resource;
-        $this->keyword = $keyword;
+        $this->encryptionKey = $encryptionKey;
     }
     
     /**
@@ -43,13 +43,9 @@ class StoredResource
      */
     public function generateStoredName()
     {
-        /*return UUID::generate( UUID::UUID_NAME_MD5
-                             , UUID::FMT_STRING
-                             , $this->resource->getName() . $this->resource->getDate() );
-        the line above is for use with uuid.lib.php */
         return md5( $this->resource->getName()
                   . $this->resource->getDate()
-                  . $this->keyword )
+                  . $this->encryptionKey )
              . '-'
              . md5( $this->resource->getDate() );
     }

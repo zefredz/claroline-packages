@@ -67,7 +67,13 @@
             <?php if ( $category == 'user' || $this->is_platform_admin ) : ?>
                 <td align="center">
                     <?php echo get_lang( ucwords( $library[ 'status' ] ) ); ?>
+                </td>
                 <td align="center">
+                <?php if ( $this->courseId ) : ?>
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrary&libraryId='. $libraryId ) );?>">
+                        <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'add library' ); ?>"/>
+                    </a>
+                <?php endif; ?>
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                     </a>
