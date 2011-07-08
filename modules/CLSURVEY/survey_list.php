@@ -25,6 +25,7 @@ $gidReset  = true;
  */
 
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
 
 $context = array( CLARO_CONTEXT_COURSE=> claro_get_current_course_id());
 
@@ -52,8 +53,10 @@ $displayList = FALSE;
  *                    COMMANDS SECTION (COURSE MANAGER ONLY)
  */
 
-$idSurvey  = isset($_REQUEST['surveyId'])  ? (int) $_REQUEST['surveyId']   : 0;
-$cmd = isset($_REQUEST['cmd']) ? $cmd = $_REQUEST['cmd'] : '';
+$userInput = Claro_UserInput::getInstance();
+
+$idSurvey   = $userInput->get( 'surveyId' ) ? (int) $userInput->get( 'surveyId' )   : 0;
+$cmd        = $userInput->get( 'cmd' )      ? $userInput->get( 'cmd' )              : '';
 
 if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
 {
@@ -283,20 +286,15 @@ $dgSurvey->set_colAttributeList($cmdColAttrList);
 
 $nameTools = get_lang('List of surveys');
 
-// Display header
-include get_path('includePath') . '/claro_init_header.inc.php' ;
-
-echo claro_html_tool_title($nameTools )
-.    claro_html_msg_list($msgList)
-.    claro_html_menu_horizontal($cmdMenu,'CLSURVEYgeneralMenu')
-.    $dgSurvey->render()
-;
+$out = claro_html_tool_title($nameTools )
+     . claro_html_msg_list($msgList)
+     . claro_html_menu_horizontal($cmdMenu,'CLSURVEYgeneralMenu')
+     . $dgSurvey->render();
 
 if (count($surveyList) < 1)
 {
-    echo '<br /><blockquote>' . get_lang('No survey') . '</blockquote>' . "\n";
+    $out .= '<br /><blockquote>' . get_lang('No survey') . '</blockquote>' . "\n";
 }
 
-include get_path('includePath') . '/claro_init_footer.inc.php';
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();

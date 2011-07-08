@@ -22,6 +22,3 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
     $claro_notifier->addListener( 'update',       "survey_added");
     $claro_notifier->addListener( 'delete_notif', "survey_deleted");
     $claro_notifier->addListener( 'delete_notif', "survey_invisible");
-
-
-?>

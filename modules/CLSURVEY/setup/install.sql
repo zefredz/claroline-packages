@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS __CL_MAIN__survey_answer (
   `id_survey` int(11) NOT NULL default '0',
   `id_question` int(11) NOT NULL default '0',
   `cid` varchar(40) NOT NULL default '',
-  `answer` varchar(255) NOT NULL default '',
+  `answer` TEXT NOT NULL default '',
    PRIMARY KEY  (`id_answer`),
    INDEX ( `id_survey` , `id_question` , `cid` )
 ) ;

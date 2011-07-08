@@ -40,6 +40,8 @@ $mode = SURVEY_VOTE_MODE;
  */
 
 require '../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
+
 $context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
 
 add_module_lang_array($tlabelReq);
@@ -65,11 +67,12 @@ $displayList = FALSE;
  *                    COMMANDS SECTION (COURSE MANAGER ONLY)
  */
 
-$surveyId  	= isset($_REQUEST['surveyId'])         ? (int) $_REQUEST['surveyId']   : null;
-$questionId = isset($_REQUEST['questionId']) ? $_REQUEST['questionId'] : 0;
-$cmd 		= isset($_REQUEST['cmd'])        ? $cmd = $_REQUEST['cmd'] : '';
-$switchMode = isset($_REQUEST['switchMode'])
-? $_REQUEST['switchMode'] : 'rqVote';
+$userInput = Claro_UserInput::getInstance();
+
+$surveyId   = $userInput->get( 'surveyId' )   ? (int)$userInput->get( 'surveyId' )  : null;
+$questionId = $userInput->get( 'questionId' ) ? $userInput->get( 'questionId' )     : 0;
+$cmd        = $userInput->get( 'cmd' )        ? $cmd = $userInput->get( 'cmd' )     : '';
+$switchMode = $userInput->get( 'switchMode' ) ? $userInput->get( 'switchMode' )     : 'rqVote';
 
 $mode       = ($is_allowedToEdit && ($switchMode == 'rqEdit' ))
 ? SURVEY_EDIT_MODE : SURVEY_VOTE_MODE;
@@ -117,7 +120,7 @@ if ( !empty($cmd) ) // check teacher status
         else
         {
             $surveyQuestionQty = survey_count_question_in_survey($surveyId) ;
-            $answer = isset($_REQUEST['answer']) ? $_REQUEST['answer'] 	: array();
+            $answer = $userInput->get( 'answer' ) ? $userInput->get( 'answer' ) : array();
             if (count($answer) > 0)
             {
                 if (survey_save_user_answer( (int) $surveyId, $answer))
@@ -171,35 +174,30 @@ $surveyQty = count($survey) ;
  *  DISPLAY SECTION
  */
 // prepare
-if ( $mode == SURVEY_EDIT_MODE )
-{
-    $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
-    '<img src="' . get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Add question'));
-}
-else
+if ( $mode != SURVEY_EDIT_MODE )
 {
     $msgList['info'][] = get_lang('This survey is anonymous.  We only save your answer not your identification.');
+    /*$cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqVote&amp;surveyId=' . $surveyId,
+        '<img src="' .get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Vote for this survey'));*/
 }
 
 if ( $is_allowedToEdit )
 {
-    if ( $mode == SURVEY_EDIT_MODE  )
+    if ( $mode == SURVEY_EDIT_MODE )
     {
-        $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqVote&amp;surveyId=' . $surveyId,
-        '<img src="' .get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Vote for this survey'));
+    $cmdMenu[] = claro_html_cmd_link('edit_question.php?cmd=rqCreate&amp;surveyId=' . $surveyId,
+    '<img src="' . get_icon_url( 'survey' , 'CLSURVEY' ) . '" alt="" /> ' . get_lang('Add question'));
     }
     else
     {
         $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?switchMode=rqEdit&amp;surveyId=' . $surveyId,
         '<img src="' . get_icon_url( 'edit' ) . ' alt="" /> ' . get_lang('Edit this survey'));
+        $cmdMenu[] = claro_html_cmd_link('survey_result.php?switchMode=rqEdit&amp;surveyId=' . $surveyId
+            , '<img src="' . get_icon_url( 'statistics' ) . '" '
+            . 'alt="' . get_lang('Results') . '" />'
+            . get_lang('Results'));
     }
-
-    $cmdMenu[] = claro_html_cmd_link('survey_result.php?switchMode=rqEdit&amp;surveyId=' . $surveyId
-                                    , '<img src="' . get_icon_url( 'statistics' ) . '" '
-                                    . 'alt="' . get_lang('Results') . '" />'
-                                    . get_lang('Results'));
 }
-
 
 $interbredcrump[]= array ('url' => './survey_list.php', 'name' => get_lang('Surveys'));
 
@@ -207,19 +205,15 @@ $nameTools = $survey['title'];
 $noPHP_SELF=true;
 // Start output
 
-// Display header
-include get_path('includePath') . '/claro_init_header.inc.php' ;
+$out = claro_html_tool_title($nameTools)
+     . '<p>' . claro_html_menu_horizontal($cmdMenu) . '</p>'
+     . claro_html_msg_list($msgList);
 
-echo claro_html_tool_title($nameTools)
-.    '<p>' . claro_html_menu_horizontal($cmdMenu) . '</p>'
-.    claro_html_msg_list($msgList)
-;
-
-echo '<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">';
+$out .= '<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">';
 
 if ($mode == SURVEY_EDIT_MODE)
 {
-    echo '<tr class="headerX">' . "\n"
+    $out .= '<tr class="headerX">' . "\n"
     .    '<th>' . "\n"
     .    '<span style="float:right" >'
     .    '<img src="' . get_icon_url( 'textzone' ) .'" alt="' . get_lang('Textzone') . '" border="0" />'
@@ -232,7 +226,7 @@ if ($mode == SURVEY_EDIT_MODE)
     ;
 }
 
-echo '<tr>' . "\n"
+$out .= '<tr>' . "\n"
 .    '<td>' . "\n"
 .    $survey['description']
 .    '</td>' . "\n"
@@ -241,7 +235,7 @@ echo '<tr>' . "\n"
 
 if (count($surveyItemList) == 0)
 {
-    echo '<tr>' . "\n"
+    $out .= '<tr>' . "\n"
     .    '<td>' . "\n"
     .    '<blockquote>' . get_lang('No question') . '</blockquote>' . "\n"
     .    '</td>' . "\n"
@@ -250,7 +244,7 @@ if (count($surveyItemList) == 0)
 }
 elseif ($displayList)
 {
-    echo ($mode == SURVEY_VOTE_MODE
+    $out .= ($mode == SURVEY_VOTE_MODE
     ?    '<form method="get" action="survey.php">'
     .    form_input_hidden('surveyId',$surveyId)
     .    form_input_hidden('cmd','exSave')
@@ -297,8 +291,8 @@ elseif ($displayList)
             .      '</a>' . "\n"
             ;
         }
-        echo form_input_hidden('questionId['.$iterator.']',$thisSurveyQuestion['questionId']). "\n";
-        echo '<tr class="headerX">' . "\n"
+        $out .= form_input_hidden('questionId['.$iterator.']',$thisSurveyQuestion['questionId']). "\n";
+        $out .= '<tr class="headerX">' . "\n"
         .    '<th>'
 
         .    ($mode == SURVEY_EDIT_MODE ? '<span style="float:right" >' . "\n"
@@ -315,7 +309,7 @@ elseif ($displayList)
 
         if (strip_tags($thisSurveyQuestion['description'])<>'')
         {
-            echo '<tr>' . "\n"
+            $out .= '<tr>' . "\n"
             .    '<td>' . "\n"
             .    $thisSurveyQuestion['description'] . "\n"
             .    '</td>' . "\n"
@@ -329,20 +323,20 @@ elseif ($displayList)
         switch ($thisSurveyQuestion['type'])
         {
             case 'radioH':
-                echo '<tr>'. "\n"
+                $out .= '<tr>'. "\n"
                 .	 '<td>' . "\n"
                 .    '<table width="100%">'. "\n"
                 .	 '<tr>'. "\n"
                 ;
                 for ($i=0; $i<=$fin; $i++)
                 {
-                    echo '<td>'. "\n"
+                    $out .= '<td>'. "\n"
                     .    '<input id="q' . $questionId . $i . '" type="radio" name="answer['.$questionId.']" value="'.$options[$i].'">'
                     .	 '<label for="q' . $questionId . $i . '">' . $options[$i].'</label>'. "\n"
                     .	 '</td>'
                     ;
                 }
-                echo '</tr>'. "\n"
+                $out .= '</tr>'. "\n"
                 .	 '</table>'. "\n"
                 .    '</td>'. "\n"
                 .	 '</tr>'
@@ -352,7 +346,7 @@ elseif ($displayList)
             case 'radioV':
                 for ($i=0; $i<=$fin; $i++)
                 {
-                    echo '<tr>'. "\n"
+                    $out .= '<tr>'. "\n"
                     .	 '<td>'. "\n"
                     .    '<input  id="q' . $questionId.$i . '" type="radio" name="answer[' . $questionId . ']" value="' . $options[$i] . '">'. "\n"
                     .	 '<label for="q' . $questionId.$i . '">' . $options[$i] . '</label>'. "\n"
@@ -363,7 +357,7 @@ elseif ($displayList)
                 break;
 
             case 'input':
-                echo '<tr>'. "\n"
+                $out .= '<tr>'. "\n"
                 .	 '<td>' . "\n"
                 .    '<textarea name="answer['.$questionId.']" cols="60">'
                 .	 '</textarea>'
@@ -376,16 +370,14 @@ elseif ($displayList)
     }    // end foreach ( $surveyList as $thisSurveyQuestion)
 
     if ($mode == SURVEY_VOTE_MODE)
-    echo '<tr>' . "\n"
+    $out .= '<tr>' . "\n"
     .	 '<td>'. "\n"
     .	 '<input type="submit" value="' . get_lang('Finish') . '" />' . "\n"
     .	 '</form>'
     ;
 }
 
-echo '</table>' . "\n"
-;
+$out .= '</table>' . "\n";
 
-include get_path('includePath') . '/claro_init_footer.inc.php';
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();

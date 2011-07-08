@@ -19,4 +19,3 @@
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
 $claro_buffer->append('<a href="' . get_module_url('CLSURVEY') . '/survey_list.php">') ;
-?>

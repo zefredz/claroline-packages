@@ -63,26 +63,12 @@ else
         
         case 'exImport':
         {
-            $mimetypes = array(); //array used with supported mimetype for CSV files
-            $mimetypes[] = 'text/comma-separated-values';
-            $mimetypes[] = 'text/csv';
-            $mimetypes[] = 'text/plain';
-            $mimetypes[] = 'application/csv';
-            $mimetypes[] = 'application/excel';
-            $mimetypes[] = 'application/vnd.ms-excel';
-            $mimetypes[] = 'application/vnd.msexcel';
-            $mimetypes[] = 'text/anytext';
-            
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
             
             if( !isset( $_FILES['CSVfile'] ) || empty( $_FILES['CSVfile']['name'] ) || $_FILES['CSVfile']['size'] == 0 )
             {
                 $dialogBox->error( get_lang( 'You must select a file' ) );
-            }
-            elseif( !in_array( $_FILES['CSVfile']['type'], $mimetypes ) )
-            {
-                $dialogBox->error( get_lang( 'CSV file is in the bad format' ) );
             }
             elseif( createSurvey( $title , $description , importSurvey( $_FILES['CSVfile']['tmp_name'] ) ) )
             {
