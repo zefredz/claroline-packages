@@ -23,6 +23,8 @@ $gidReset = array();
  */
 
 require '../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
+
 $context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
 
 if ( ! get_init('in_course_context')  || ! get_init('is_courseAllowed') ) claro_disp_auth_form(true);
@@ -57,13 +59,17 @@ include_once get_path('includePath') . '/lib/form.lib.php';
 
 $tbl = claro_sql_get_tbl('survey_list', $context );
 
+$userInput = Claro_UserInput::getInstance();
+
 /*
 * Execute commands
 */
-$cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : '';
-$title = isset($_REQUEST['title']) ? $_REQUEST['title'] : '';
-$surveyId = (int) isset($_REQUEST['surveyId']) ? $_REQUEST['surveyId'] : null;
-$description = isset($_REQUEST['description']) ? $_REQUEST['description'] : '';
+$cmd = $userInput->get( 'cmd' ) ? $userInput->get( 'cmd' ) : '';
+$surveyId = $userInput->get( 'surveyId' ) ? (int)$userInput->get( 'surveyId' ) : null;
+$surveyData = get_survey_data( $surveyId );
+$title = $userInput->get( 'title' ) ? $userInput->get( 'title' ) : $surveyData[ 'title' ];
+$description = $userInput->get( 'description' ) ? $userInput->get( 'description' ) : $surveyData[ 'description' ];
+
 
 if ($cmd == 'exCreate')
 {
@@ -155,11 +161,8 @@ else
     //$toolTitle['subTitle'] = ;
 }
 
-include(get_path('includePath') . '/claro_init_header.inc.php');
-
-echo claro_html_tool_title($toolTitle)
-.    claro_html_msg_list($msgList)
-;
+$out = claro_html_tool_title($toolTitle)
+     . claro_html_msg_list($msgList);
 
 /*--------------------------------------------------------------------
 FORM SECTION
@@ -169,14 +172,14 @@ if( $displayForm )
 {
     if ($survey['date_created'] != '')
     {
-        echo '<p>'
+        $out .= '<p>'
         .    get_lang( 'Date of creation : %date ',
                        array ( '%date'=> $survey['date_created']))
         .    '</p>'
         ;
     }
 
-    echo '<form method="post" action="./edit_survey.php" >' . "\n\n"
+    /*$out .= '<form method="post" action="./edit_survey.php" >' . "\n\n"
     .    ( is_null($surveyId)
     ?    '<input type="hidden" name="cmd" value="exCreate" />' . "\n"
     :    '<input type="hidden" name="surveyId" value="' . (int) $surveyId . '" />' . "\n"
@@ -212,15 +215,32 @@ if( $displayForm )
     .    '<tr>' . "\n"
     .	 '<td colspan="3">'
     .	 '<input type="submit" value="'.get_lang('Finish').'" />' . "\n"
-    .	 '</form>'
     .	 '</td>' . "\n"
     .	 '</tr>' . "\n\n"
-
+    .	 '</form>'
     .    '</tbody>' . "\n\n"
     .	 '</table>' . "\n\n"
-    ;
+    .    '<td>' . get_lang( '<span class="required">*</span> denotes required field' ) . '</td>' . "\n"
+    ;*/
+
+    if ( $cmd == 'rqCreate' ) $cmd = 'exCreate';
+    if ( $cmd == 'rqEdit' ) $cmd = 'exEdit';
+    
+    $out .= '<form id="importSurveyForm" action="'
+            . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) )
+            . '" enctype="multipart/form-data" method="post">'  . "\n"
+            . '    <input type="hidden" name="cmd" value="'. $cmd . '" />' . "\n"
+            . '    <input type="hidden" name="surveyId" value="' . $surveyId . '" />' . "\n"
+            . '    <h4>' . get_lang( 'Title' ) . '</h4>'
+            . '    <input id="surveyTitle" type="text" name="title" style="width: 330px;" value="' . $title . '"/><br />'
+            . '    <h4>' . get_lang( 'Description ') . '</h4>'
+            . '    <textarea id="surveyDescription" name="description" rows="8" cols="40">' . $description . '</textarea><br />'
+            . '    <input type="submit" name="submitCSV" value="' . get_lang( 'Submit' ) . '" />' . "\n"
+            .      claro_html_button( htmlspecialchars( Url::Contextualize( 'survey_list.php' ) ) , get_lang( 'Cancel' ) )  . "\n"
+            . '</form>';
+            
+    //$dialogBox->form( $form );
 }
 
-include(get_path('includePath').'/claro_init_footer.inc.php');
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();

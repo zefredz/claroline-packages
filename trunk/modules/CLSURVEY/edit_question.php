@@ -24,6 +24,8 @@ $gidReset=1;
  */
 
 require '../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
+
 $context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
 
 /**
@@ -62,13 +64,15 @@ $form['option'] = '';
 /*
 * Execute commands
 */
-$idSurvey  	    = isset($_REQUEST['surveyId'])  			? (int) $_REQUEST['surveyId']   			: 0;
-$questionId 	= isset($_REQUEST['questionId'])  	? (int) $_REQUEST['questionId']  	: 0;
-$cmd 			= isset($_REQUEST['cmd']) 			? $cmd = $_REQUEST['cmd'] 			: '';
-$title 			= isset($_REQUEST['title']) 		? $_REQUEST['title'] 				: '';
-$option 		= isset($_REQUEST['option']) 		? $_REQUEST['option'] 				: '';
-$description 	= isset($_REQUEST['description']) 	? $_REQUEST['description'] 			: '';
-$type 			= isset($_REQUEST['type']) 			? $_REQUEST['type'] 				: '';
+$userInput = Claro_UserInput::getInstance();
+
+$idSurvey       = $userInput->get( 'surveyId' )     ? (int) $userInput->get( 'surveyId' )    : 0;
+$questionId     = $userInput->get( 'questionId' )   ? (int) $userInput->get( 'questionId' )  : 0;
+$cmd            = $userInput->get( 'cmd' )          ? $userInput->get( 'cmd' )               : '';
+$title          = $userInput->get( 'title' )        ? $userInput->get( 'title' )             : '';
+$option         = $userInput->get( 'option' )       ? $userInput->get( 'option' )            : '';
+$description    = $userInput->get( 'description' )  ? $userInput->get( 'description' )       : '';
+$type           = $userInput->get( 'type' )         ? $userInput->get( 'type' )              : '';
 
 $listType		= array( get_lang('Multiple choice - horizontal answer')=>'radioH'
                        , get_lang('Multiple choice - vertical answer')=>'radioV'
@@ -181,12 +185,8 @@ else
     //$toolTitle['subTitle'] = );
 }
 
-
-include get_path('includePath') . '/claro_init_header.inc.php';
-
-echo claro_html_tool_title($toolTitle)
-.    claro_html_msg_list($msgList)
-;
+$out = claro_html_tool_title($toolTitle)
+     . claro_html_msg_list($msgList);
 
 /*--------------------------------------------------------------------
 FORM SECTION
@@ -194,7 +194,7 @@ FORM SECTION
 
 if( $displayForm )
 {
-    echo '<form method="post" action="./edit_question.php" >' . "\n\n"
+    $out .= '<form method="post" action="./edit_question.php" >' . "\n\n"
     .    form_input_hidden('questionId',$questionId) . "\n"
     .    form_input_hidden('surveyId',$idSurvey)  . "\n"
     .    form_input_hidden('cmd','exEdit')  . "\n"
@@ -214,7 +214,7 @@ if( $displayForm )
 
 
     // description
-    /*echo '<tr>' . "\n"
+    /*$out .= '<tr>' . "\n"
     .	 '<td valign="top"><label for="description">'.get_lang('Commentar').'&nbsp;:</label></td>' . "\n"
     .	 '<td>'.claro_html_textarea_editor('description',htmlspecialchars($form['description'])).'</td>' . "\n"
     .	 '</tr>' . "\n\n"; */
@@ -253,8 +253,6 @@ if( $displayForm )
     ;
 }
 
-include get_path('includePath') . '/claro_init_footer.inc.php';
-
 /**
  * Update proprerties of a question in a survey
  *
@@ -280,5 +278,5 @@ function survey_update_question($questionId, $title, $description, $option, $typ
     return claro_sql_query_affected_rows($sql);
 }
 
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();

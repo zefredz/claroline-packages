@@ -718,7 +718,8 @@ function exportSurvey( $surveyId )
             id_survey = " . Claroline::getDatabase()->escape( $surveyId )
         )->fetch( Database_ResultSet::FETCH_ASSOC );
     
-    $csvFileName = $result[ 'title' ] . '_survey';
+    $csvFileName = 'survey_import';
+   // $csvFileName = $result[ 'title' ] . '_survey';
     
     //$csv = '/*' . $result[ 'description' ] . '*/' . "\n" . '"title","description","type","option"' . "\n";
     $csv = 'title#description#type#option' . "\n";

@@ -24,6 +24,8 @@ $msgList=array();
  */
 
 require '../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
+
 $context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
 
 if ( ! get_init('in_course_context')  || ! get_init('is_courseAllowed') ) claro_disp_auth_form(true);
@@ -57,9 +59,11 @@ $displayList = FALSE;
  *                    COMMANDS SECTION (COURSE MANAGER ONLY)
  */
 
-$idSurvey  	= isset($_REQUEST['surveyId'])         ? (int) $_REQUEST['surveyId']         : 0;
-$questionId = isset($_REQUEST['questionId']) ? (int) $_REQUEST['questionId'] : 0;
-$cmd 		= isset($_REQUEST['cmd'])        ? $cmd = $_REQUEST['cmd']       : '';
+$userInput = Claro_UserInput::getInstance();
+
+$idSurvey   = $userInput->get( 'surveyId' )   ? (int)$userInput->get( 'surveyId' )    : 0;
+$questionId = $userInput->get( 'questionId' ) ? (int) $userInput->get( 'questionId' ) : 0;
+$cmd        = $userInput->get( 'cmd' )        ? $cmd = $userInput->get( 'cmd' )       : '';
 
 $cmdMenu=array();
 
@@ -113,8 +117,8 @@ if ( !empty($cmd) ) // check teacher status
 
         for ($i=1; $i<=$surveyQuestionQty; $i++)
         {
-            $answer[$i]     = isset($_REQUEST['answer'.$i]) ? $answer[$i] = $_REQUEST['answer'.$i] 	: '';
-            $questionId[$i] = isset($_REQUEST['questionId'.$i]) ? (int) $_REQUEST['questionId'.$i] : 0;
+            $answer[$i]     = $userInput->get( 'answer'.$i )     ? $userInput->get( 'answer'.$i )          : '';
+            $questionId[$i] = $userInput->get( 'questionId'.$i ) ? (int)$userInput->get( 'questionId'.$i ) : 0;
 
             $sql = "INSERT INTO  `" . $tbl['survey_answer'] . "`
 			        SET `id_survey` = " . (int) $idSurvey . " ,
@@ -201,13 +205,9 @@ $nameTools = $survey['title'];
 
 // Start output
 
-// Display header
-include get_path('includePath') . '/claro_init_header.inc.php' ;
-
-echo claro_html_tool_title($nameTools)
-.    claro_html_msg_list($msgList)
-.    claro_html_menu_horizontal($cmdMenu)
-;
+$out = claro_html_tool_title($nameTools)
+     . claro_html_msg_list($msgList)
+     . claro_html_menu_horizontal($cmdMenu);
 
 /*----------------------------------------------------------------------------
 LIST OF SURVEYS
@@ -215,22 +215,22 @@ LIST OF SURVEYS
 
 if ($surveyQuestionQty == 0)
 {
-    echo '<br /><blockquote>' . get_lang('No question') . '</blockquote>' . "\n";
+    $out .= '<br /><blockquote>' . get_lang('No question') . '</blockquote>' . "\n";
 }
 
 elseif ($displayList)
 {
-    echo '<p>' . get_lang('This survey is anonymous.  We only save your answer not your identification.') . '</p>';
+    $out .= '<p>' . get_lang('This survey is anonymous.  We only save your answer not your identification.') . '</p>';
 
     if (strip_tags($survey['description']<>''))
     {
-        echo '<p>' . $survey['description'] . '</p>';
+        $out .= '<p>' . $survey['description'] . '</p>';
     }
-    echo '<form method="get" action="survey.php">';
-    echo form_input_hidden('surveyId',$idSurvey);
-    echo form_input_hidden('cmd','exSave');
+    $out .= '<form method="get" action="survey.php">';
+    $out .= form_input_hidden('surveyId',$idSurvey);
+    $out .= form_input_hidden('cmd','exSave');
 
-    echo '<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">'  . "\n";
+    $out .= '<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">'  . "\n";
     $iterator = 0;
 
     foreach ( $surveyQuestionList as $thisSurveyQuestion)
@@ -238,9 +238,9 @@ elseif ($displayList)
 
         $iterator ++ ;
         $questionId = $thisSurveyQuestion['questionId'];
-        echo form_input_hidden('questionId'.$iterator,$thisSurveyQuestion['questionId']). "\n";
+        $out .= form_input_hidden('questionId'.$iterator,$thisSurveyQuestion['questionId']). "\n";
 
-        echo '<tr class="headerX">' . "\n"
+        $out .= '<tr class="headerX">' . "\n"
         .    '<th>'
         .    $thisSurveyQuestion['title'] . "\n"
         ;
@@ -248,7 +248,7 @@ elseif ($displayList)
         if ($is_allowedToEdit)
         {
             // EDIT Request LINK
-            echo '<a href="edit_question.php?cmd=rqEdit&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey . '">'
+            $out .= '<a href="edit_question.php?cmd=rqEdit&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey . '">'
             .    '<img src="' . get_icon_url( 'edit' ) . ' alt="' . get_lang('Modify') . '" />'
             .    '</a>' . "\n"
 
@@ -262,7 +262,7 @@ elseif ($displayList)
             // DISPLAY MOVE UP COMMAND only if it is not the top
             if ($iterator != 1)
             {
-                echo   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
+                $out .=   '<a href="'.$_SERVER['PHP_SELF'].'?cmd=exMoveUp&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
                 .      '<img src="'.get_icon_url( 'move_up' ) . '" alt= "'. get_lang('Move up') . '" border="0" />'."\n"
                 .      '</a>'."\n";
             }
@@ -270,7 +270,7 @@ elseif ($displayList)
             // DISPLAY MOVE DOWN COMMAND only if it is not the bottom
             if ($iterator < $surveyQuestionQty)
             {
-                echo   '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
+                $out .=   '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exMoveDown&amp;questionId=' . $questionId . '&amp;surveyId=' . $idSurvey .'">'."\n"
                 .      '<img src="' . get_icon_url( 'move_down' ) . '" alt="' . get_lang('Move down') . '" border="0" />'."\n"
                 .      '</a>' . "\n"
                 ;
@@ -280,7 +280,7 @@ elseif ($displayList)
 
         if (strip_tags($thisSurveyQuestion['description'])<>'')
         {
-            echo
+            $out .=
             '</th></tr>'
             .	'<tr><td>' . "\n"
             .   $thisSurveyQuestion['description'] . "\n"
@@ -291,27 +291,27 @@ elseif ($displayList)
         $fin = substr_count($thisSurveyQuestion['option'],';');
         $options = explode(';',$thisSurveyQuestion['option']);
 
-        echo '<tr>'. "\n"
+        $out .= '<tr>'. "\n"
         .	 '<td>'
         ;
 
         switch ($thisSurveyQuestion['type'])
         {
             case 'radioH':
-                echo '<table width="100%"><tr><td>';
+                $out .= '<table width="100%"><tr><td>';
                 for ($i=0; $i<=$fin; $i++)
                 {
-                    echo '<input id="q' . $questionId.$i . '" type="radio" name="answer'.$iterator.'" value="'.$options[$i].'">'
+                    $out .= '<input id="q' . $questionId.$i . '" type="radio" name="answer'.$iterator.'" value="'.$options[$i].'">'
                     .	 '<label for="q' . $questionId.$i . '">' . $options[$i].'</label></td><td>'
                     ;
                 }
-                echo '</td></tr></table>';
+                $out .= '</td></tr></table>';
                 break;
 
             case 'radioV':
                 for ($i=0; $i<=$fin; $i++)
                 {
-                    echo '<input  id="q' . $questionId.$i . '" type="radio" name="answer' . $iterator . '" value="' . $options[$i] . '">'. "\n"
+                    $out .= '<input  id="q' . $questionId.$i . '" type="radio" name="answer' . $iterator . '" value="' . $options[$i] . '">'. "\n"
                     .	 '<label for="q' . $questionId.$i . '">' . $options[$i] . '</label>'. "\n"
                     .	 '<td>'. "\n"
                     .	 '<tr>'. "\n"
@@ -321,16 +321,16 @@ elseif ($displayList)
                 break;
 
             case 'input':
-                echo '<textarea name="answer'.$iterator.'" cols="60">'
+                $out .= '<textarea name="answer'.$iterator.'" cols="60">'
                 .	 '</textarea>'
                 ;
                 break;
         }
-        echo '</td></tr>';
+        $out .= '</td></tr>';
 
     }    // end foreach ( $surveyList as $thisSurveyQuestion)
 
-    echo '<tr>' . "\n"
+    $out .= '<tr>' . "\n"
     .	 '<td>'
     .	 '<input type="submit" value="' . get_lang('Finish') . '" />' . "\n"
     .	 '</form>'
@@ -340,7 +340,5 @@ elseif ($displayList)
     ;
 }
 
-include get_path('includePath') . '/claro_init_footer.inc.php';
-
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();

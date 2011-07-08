@@ -25,6 +25,7 @@ $gidReset=1;
  */
 
 require '../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses( 'utils/input.lib' );
 $context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
 
 // local librairies
@@ -49,9 +50,11 @@ if( !$is_allowedToEdit )
  *                    COMMANDS SECTION (COURSE MANAGER ONLY)
  */
 
-$surveyId 	= isset($_REQUEST['surveyId'])   ? (int) $_REQUEST['surveyId']   : null;
-$questionId = isset($_REQUEST['questionId']) ? (int) $_REQUEST['questionId'] : 0;
-$cmd 		= isset($_REQUEST['cmd'])        ? $cmd = $_REQUEST['cmd']       : '';
+$userInput = Claro_UserInput::getInstance();
+
+$surveyId   = $userInput->get( 'surveyId' )   ? (int)$userInput->get( 'surveyId' )      : null;
+$questionId = $userInput->get( 'questionId' ) ? (int) $userInput->get( 'questionId' )   : 0;
+$cmd        = $userInput->get( 'cmd' )        ? $userInput->get( 'cmd' )                : '';
 
 $cmdMenu = array();
 
@@ -182,13 +185,9 @@ $interbredcrump[]= array ('url' => './survey.php?surveyId=' . $surveyId, 'name' 
 
 $nameTools = get_lang('results');
 
-// Display header
-include get_path('includePath') . '/claro_init_header.inc.php' ;
-
-echo claro_html_tool_title($nameTools)
-.    claro_html_msg_list($msgList)
-.    claro_html_menu_horizontal($cmdMenu)
-;
+$out = claro_html_tool_title($nameTools)
+     . claro_html_msg_list($msgList)
+     . claro_html_menu_horizontal($cmdMenu);
 
 /*----------------------------------------------------------------------------
 LIST OF SURVEYS
@@ -200,10 +199,10 @@ if ($displayList && (count($surveyQuestionList) > 0) )
 
     if (strip_tags($survey['description'] != ''))
 	{
-        echo '<p>' . $survey['description'] . '</p>';
+        $out .= '<p>' . $survey['description'] . '</p>';
 	}
 
-	echo  	'<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">'  . "\n";
+	$out .=  	'<table class="claroTable emphaseLine" border="0" align="center" cellpadding="2" cellspacing="2" width="100%">'  . "\n";
 	$iterator = 0;
 
 	foreach ( $surveyQuestionList as $thisSurveyQuestion)
@@ -212,7 +211,7 @@ if ($displayList && (count($surveyQuestionList) > 0) )
 		$iterator ++ ;
 		$questionId = $thisSurveyQuestion['questionId'];
 
-        echo '<tr class="superHeader">'
+        $out .= '<tr class="superHeader">'
         .    '<th colspan="3">'
 		.   $thisSurveyQuestion['title'] . "\n"
 		.	'</th>'
@@ -220,7 +219,7 @@ if ($displayList && (count($surveyQuestionList) > 0) )
 
 	    if (strip_tags($thisSurveyQuestion['description'])<>'')
 		{
-			echo '</td></tr>'
+			$out .= '</td></tr>'
             .    '<tr ><td colspan="3">' . "\n"
 			.    $thisSurveyQuestion['description'] . "\n"
 			.    '</td></tr>' . "\n"
@@ -260,14 +259,14 @@ mais conservé pour info
 
 				if ($total == 0)
 				{
-                    echo '<tr>' . "\n"
+                    $out .= '<tr>' . "\n"
                     .    '<td colspan="3">' . get_lang('No result available') . '</td>' . "\n"
                     .    '</tr>'
                     ;
 				}
 				else
 				{
-                    echo '<tr class="headerX">' . "\n"
+                    $out .= '<tr class="headerX">' . "\n"
                     .    '<th>' . get_lang('Answer') . '</th>' . "\n"
                     .	 '<th>' . get_lang('Number of answer/Total') . $total. '</th>' . "\n"
                     .	 '<th>' . get_lang('Percentage') . '</th>' . "\n"
@@ -281,7 +280,7 @@ mais conservé pour info
 							$answer = get_lang('No answer');
 						}
 						$percent = number_format(($qty/$total) * 100,2);
-                        echo '<tr>' . "\n"
+                        $out .= '<tr>' . "\n"
                         .    '<td>' . $answer.'</td>' . "\n"
                         .    '<td>' . $qty . '</td>' . "\n"
                         .    '<td>'.claro_html_progress_bar($percent,1).' '.$percent.' %</td>'
@@ -303,20 +302,20 @@ mais conservé pour info
 
 				if ($total == 0)
 				{
-                    echo '<tr>' . "\n"
+                    $out .= '<tr>' . "\n"
                     .    '<td colspan="3"> ' . get_lang('No result available') . '</td>' . "\n"
                     .    '</tr>'
                     ;
 				}
 				else
 				{
-                    echo '<tr class="headerX">' . "\n"
+                    $out .= '<tr class="headerX">' . "\n"
                     .    '<th colspan="3">' . get_lang('Answer') . '</th>' . "\n"
                     ;
 
 					foreach ($results as $thisresult )
 					{
-                        echo '<tr>'
+                        $out .= '<tr>'
                         .    '<td colspan="3">' . $thisresult['answer'] . '</td>'
                         .    '</tr>'
 						;
@@ -327,9 +326,8 @@ mais conservé pour info
 
     }    // end foreach ( $surveyList as $thisSurveyQuestion)
 
-    echo '</table>' . "\n"	;
+    $out .= '</table>' . "\n"	;
 }
 
-include get_path('includePath') . '/claro_init_footer.inc.php';
-
-?>
+Claroline::getInstance()->display->body->appendContent( $out );
+echo Claroline::getInstance()->display->render();
