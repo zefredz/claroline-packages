@@ -132,11 +132,13 @@
                         <?php echo $title; ?>
                     </a>
                 </td>
+        <?php if( $this->edit_allowed ) : ?>
                 <td align="center">
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemoveLibrary&libraryId='. $id ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                     </a>
                 </td>
+        <?php endif; ?>
             </tr>
     <?php endforeach; ?>
         </tbody>

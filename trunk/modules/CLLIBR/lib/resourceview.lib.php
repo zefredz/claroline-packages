@@ -31,7 +31,6 @@ abstract class ResourceView
      */
     abstract public function render();
     
-
     /**
      * Verifies the validity on the file name,
      * and if valid, sets the resource name
@@ -42,5 +41,4 @@ abstract class ResourceView
     {
         return in_array( $fileName , $this->acceptedFileList );
     }
-
 }
