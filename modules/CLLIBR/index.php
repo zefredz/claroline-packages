@@ -198,9 +198,10 @@ elseif( $context == 'catalogue')
 {
     $refId = $libraryId;
     $access_allowed = $access_allowed
-                   || $librarian->isLibrarian( $userId )
-                   || $library->getStatus() != Library::LIB_PRIVATE;
-    $edit_allowed = $edit_allowed || $librarian->isLibrarian( $userId );
+                   || $librarian->isLibrarian( (int)$userId )
+                   || $library->getStatus() != Library::LIB_PRIVATE
+                   || $courseLibraryList->libraryExists( $libraryId );
+    $edit_allowed = $edit_allowed || $librarian->isLibrarian( (int)$userId );
 }
 else
 {
