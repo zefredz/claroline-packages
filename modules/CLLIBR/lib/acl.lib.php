@@ -39,6 +39,7 @@ class CLLIBR_ACL
         $this->tbl = get_module_main_tbl( array ( 'library_collection'
                                                 , 'library_library'
                                                 , 'library_librarian'
+                                                , 'library_course_library'
                                                 , 'rel_course_user'
                                                 , 'cours' ) );
         $this->userId = (int)$userId;
@@ -94,6 +95,27 @@ class CLLIBR_ACL
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
         
+        $in_course_library = $this->database->query( "
+            SELECT
+                C.resource_id
+            FROM
+                `{$this->tbl['library_collection']}` AS C
+            INNER JOIN
+                `{$this->tbl['library_course_library']}` AS L
+            ON
+                L.library_id = C.ref_id
+            INNER JOIN
+                `{$this->tbl['rel_course_user']}` AS U
+            ON
+                U.code_cours = L.course_id
+            WHERE
+                C.collection_type = 'catalogue'
+            AND
+                U.user_id = " . $this->database->escape( $this->userId ) . "
+            AND
+                C.resource_id = " . $this->database->escape( $resourceId )
+        )->numRows();
+        
         $cond = $access == self::ACCESS_READ
               ? " = 'public'"
               : " != 'private'";
@@ -127,7 +149,8 @@ class CLLIBR_ACL
         return $this->is_platform_admin
             || $in_bookmark
             || $in_bibliography
-            || $in_library;
+            || $in_library
+            || $in_course_library;
     }
     
     /**
