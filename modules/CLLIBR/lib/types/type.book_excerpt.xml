@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <documentType>
-    <name>book</name>
+    <name>book excerpt</name>
     <authorizedFileList>
         <extension>pdf</extension>
         <extension>rtf</extension>

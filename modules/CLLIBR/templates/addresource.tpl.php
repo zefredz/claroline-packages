@@ -47,7 +47,7 @@
                 <select id="resourceType" name="type">
                 <?php foreach( $this->typeList as $type ) : ?>
                 <option value="<?php echo $type; ?>">
-                    <?php echo get_lang( strtolower( $type ) ); ?>
+                    <?php echo get_lang( str_replace( '_' , ' ' , $type ) ); ?>
                 </option>
                 <?php endforeach; ?>
                 </select>

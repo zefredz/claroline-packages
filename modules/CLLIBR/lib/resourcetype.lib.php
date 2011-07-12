@@ -167,7 +167,7 @@ class ResourceType
     {
         $xml  = '<?xml version="1.0"?>' . "\n";
         $xml .= '<documentType>' . "\n";
-        $xml .= '    <name>' . $this->name . '</name>' . "\n";
+        $xml .= '    <name>' . str_replace( ' ' , '_' , $this->name ) . '</name>' . "\n";
         $xml .= '    <authorizedFileList>' . "\n";
         
         foreach( $this->authorizedFileList as $extension )

@@ -24,7 +24,7 @@ $_lang[ 'OR' ] = 'OU';
 // Usual words
 $_lang[ 'article' ] = 'article';
 $_lang[ 'book' ] = 'livre';
-$_lang[ 'bookexcerpt' ] = 'extrait de livre';
+$_lang[ 'book excerpt' ] = 'extrait de livre';
 $_lang[ 'picture' ] = 'image';
 
 $_lang[ 'author' ] = 'auteur';
