@@ -14,6 +14,7 @@
  * @const DOWNLOAD_ACCESS
  * @const RAW_ACCESS
  * @property string $location
+ * @property $authorizedFileList
  * @property Resource object $resource
  * @property string $encryptionKey
  */
@@ -23,15 +24,17 @@ class StoredResource
     const RAW_ACCESS = 'direct';
     
     protected $location;
+    protected $authorizedFileList;
     protected $resource;
     protected $encryptionKey;
     
     /**
      * Constructor
      */
-    public function __construct( $location , $resource , $encryptionKey = '' )
+    public function __construct( $location , $authorizedFileList , $resource , $encryptionKey = '' )
     {
         $this->location = $location;
+        $this->authorizedFileList = $authorizedFileList;
         $this->resource = $resource;
         $this->encryptionKey = $encryptionKey;
     }
@@ -102,6 +105,17 @@ class StoredResource
     {
         return file_exists( $this->location . $this->generateStoredName() )
             && unlink( $this->location . $this->generateStoredName() );
+    }
+    
+    /**
+     * Verifies the validity on the file name
+     * @param string $fileName
+     * @return boolean true if is valid
+     */
+    public function validate( $fileName )
+    {
+        return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
+                        , $this->authorizedFileType );
     }
     
     /**

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -13,8 +13,6 @@
  * A Class that represents a resource
  * @const TYPE_FILE
  * @const TYPE_URL
- * @property array $authorizedFileType
- * @property array $defaultMetadataList
  * @property int $id
  * @property string $storageType
  * @property string $resourceType
@@ -25,9 +23,6 @@ class Resource
 {
     const TYPE_FILE = 'file';
     const TYPE_URL = 'url';
-    
-    protected $authorizedFileType;
-    protected $defaultMetadataList;
     
     protected $id;
     protected $storageType;
@@ -132,15 +127,6 @@ class Resource
     public function getStorageType()
     {
         return $this->storageType;
-    }
-    
-    /**
-     * Getter for $defaultMetadataList
-     * @return array $defaultMetadataList
-     */
-    public function getDefaultMetadataList()
-    {
-        return $this->defaultMetadataList;
     }
     
     /**
@@ -265,18 +251,5 @@ class Resource
             UPDATE" . $this->generateSqlString() . "
             WHERE
                 id = " . $this->database->escape( $this->id ) );
-    }
-    
-    /**
-     * Verifies the validity on the file name,
-     * and if valid, sets the resource name
-     * @param string $fileName
-     * @return boolean true on success
-     */
-    public function validate( $fileName )
-    {
-        return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
-                        , $this->authorizedFileType )
-               && $this->resourceName = $fileName;
     }
 }

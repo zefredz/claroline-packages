@@ -21,6 +21,8 @@ FromKernel::uses(
 
 From::Module( 'CLLIBR' )->uses(
     'resource.lib',
+    'resourcetype.lib',
+    'resourcetypelist.lib',
     'collection.lib',
     'storedresource.lib',
     'librarylist.lib',
@@ -42,11 +44,9 @@ load_module_language( 'CLLIBR' );
 
 $nameTools = get_lang( 'Online Library' );
 $pageTitle = array( 'mainTitle' => get_lang( 'Online Library' ) );
-
 $secretKey = get_conf ( 'CLLIBR_encryption_key' );
-
 $repository = get_path( 'rootSys' ) . 'cllibrary/';
-
+$typeRepository = get_module_path( 'CLLIBR' ) . '/lib/types/';
 $database = Claroline::getDatabase();
 // for later -->
 $tableList = get_module_main_tbl( array( 'library_resource'
@@ -62,6 +62,8 @@ $tableList = get_module_main_tbl( array( 'library_resource'
 $pluginLoader = new PluginLoader( 'lib/plugins/' );
 $pluginLoader->loadPlugins();
 $pluginList = $pluginLoader->getPluginList();
+
+$resourceTypeList = new ResourceTypeList( $typeRepository );
 
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
@@ -334,12 +336,16 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'exAddResource':
         {
-            $type = $userInput->get( 'type' );
+            $type = $userInput->get( 'type' , 'book' );
             $storage = $userInput->get( 'storage' );
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
             
-            $resource = new $type( $database );
+            $resourceType = $resourceTypeList->get( $type );
+            $authorizedFileList = $resourceType->getAuthorizedFileList();
+            
+            $resource = new Resource( $database );
+            $metadata = new Metadata( $database );
             
             if ( $title && $description )
             {
@@ -349,7 +355,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 
                 if ( $storage == 'file' )
                 {
-                    $storedResource = new StoredResource( $repository , $resource , $secretKey );
+                    $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
                     
                     if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
                     {
@@ -361,7 +367,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                     }
                     
                     if ( ! $errorMsg
-                      && ! $resource->validate( $file['name'] ) )
+                      && $resource->validate( $file[ 'name' ] ) )
+                    {
+                        $resource->setName( $file[ 'name' ] );
+                    }
+                    else
                     {
                         $errorMsg = get_lang( 'Invalid file' );
                     }
@@ -735,7 +745,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template = new ModuleTemplate( 'CLLIBR' , 'addresource.tpl.php' );
             $template->assign( 'userId' , $userId );
             $template->assign( 'libraryId' , $libraryId );
-            $template->assign( 'typeList' , $pluginList[ 'resource' ] );
+            $template->assign( 'typeList' , $resourceTypeList->getResourceTypeList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             break;
         }
@@ -746,7 +756,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $tagCloud = new TagCloud( $database
                                     , 'index.php?cmd=exEditResource&resourceId=' . $resourceId );
             $type = $resource->getType();
-            $resource = new $type( $database , $resourceId );
+            $resource = new Resource( $database , $resourceId );
+            //$metadata->setDefault( $resource->getType() );
             
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );
@@ -756,7 +767,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'libraryId' , $libraryId );
             $template->assign( 'refId' , $resourceId );
             $template->assign( 'refName' , 'resourceId' );
-            $template->assign( 'defaultMetadataList' , $resource->getDefaultMetadataList() );
+            $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )->getDefaultMetadataList() );
             $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
             $template->assign( 'propertyList' , $metadata->getAllProperties() );
             $template->assign( 'tagCloud' , $tagCloud->render() );

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<documentType>
+    <name>article</name>
+    <authorizedFileList>
+        <extension>pdf</extension>
+        <extension>rtf</extension>
+        <extension>odt</extension>
+        <extension>doc</extension>
+        <extension>txt</extension>
+        <extension>htm</extension>
+        <extension>html</extension>
+    </authorizedFileList>
+    <defaultMetadataList>
+        <metadata>
+            <name>author</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>publication</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>issue</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>pages</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>publication date</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>publisher</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>ISSN</name>
+            <type>short</type>
+        </metadata>
+    </defaultMetadataList>
+</documentType>
