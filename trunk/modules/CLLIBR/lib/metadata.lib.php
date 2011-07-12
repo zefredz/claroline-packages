@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -35,7 +35,7 @@ class Metadata
      * Constructor
      * @param int $resourceId
      */
-    public function __construct( $database , $resourceId )
+    public function __construct( $database , $resourceId = null )
     {
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_metadata' ) );

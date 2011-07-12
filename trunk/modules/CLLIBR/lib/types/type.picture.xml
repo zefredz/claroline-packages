@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<documentType>
+    <name>picture</name>
+    <authorizedFileList>
+        <extension>png</extension>
+        <extension>jpg</extension>
+        <extension>jpeg</extension>
+        <extension>gif</extension>
+    </authorizedFileList>
+    <defaultMetadataList>
+        <metadata>
+            <name>author</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>photographer</name>
+            <type>short</type>
+        </metadata>
+        <metadata>
+            <name>location</name>
+            <type>short</type>
+        </metadata>
+    </defaultMetadataList>
+</documentType>

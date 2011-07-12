@@ -95,7 +95,7 @@
     <?php endif; ?>
 <?php endforeach; ?>
 
-<?php foreach( $this->defaultMetadataList as $name ) : ?>
+<?php foreach( $this->defaultMetadataList as $name => $type ) : ?>
     <?php if( ! array_key_exists( $name , $this->metadataList ) ) : ?>
         <dt id="label<?php echo $index; ?>">
             <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
