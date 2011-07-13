@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -33,6 +33,7 @@ class MultiSearch extends Search
      */
     public function search( $searchQuery )
     {
+        /** this code is from version 0.7.0. It works, but with big performance issue
         $sqlString1 = "SELECT\n"
                    . "    T.resource_id    AS id,\n"
                    . "    T.metadata_value AS title,\n"
@@ -73,7 +74,62 @@ class MultiSearch extends Search
         
         $sqlString = $sqlString1 . $sqlString2;
         
-        return $this->resultSet = $this->database->query( $sqlString );
+        return $this->searchResult = $this->database->query( $sqlString );*/
+        
+        $result = array();
+        $matches = array();
+        
+        foreach( $searchQuery as $index => $item )
+        {
+            $resultSet = $this->database->query( "
+                SELECT
+                    T.resource_id    AS id,
+                    T.metadata_value AS title,
+                    M.metadata_name  AS name,
+                    M.metadata_value AS value
+                FROM
+                    `{$this->tbl['library_metadata']}` AS M
+                INNER JOIN
+                    `{$this->tbl['library_metadata']}` AS T
+                ON
+                    M.resource_id = T.resource_id
+                WHERE
+                    T.metadata_name = 'title'
+                AND
+                    M.metadata_name = " . $this->database->quote( $item[ 'name' ] ) . "
+                AND
+                    M.metadata_value LIKE " . $this->database->quote( '%' . $item[ 'value' ] . '%' ) );
+            
+            $itemResult = array();
+            
+            foreach( $resultSet as $line )
+            {
+                $id = 'resource' . $line[ 'id' ];
+                $itemResult[ $id ][ 'id' ] = $line[ 'id' ];
+                $itemResult[ $id ][ 'title' ] = $line[ 'title' ];
+                $matches[ $id ][ $line[ 'name' ] ] = $line[ 'value' ];
+            }
+            
+            $operator = $index
+                      ? $item[ 'operator' ]
+                      : self::OPERATOR_OR;
+            
+            if ( $operator == self::OPERATOR_OR )
+            {
+                $result = array_merge( $result , $itemResult );
+            }
+            else
+            {
+                $result = array_intersect( $result , $itemResult );
+            }
+        }
+        
+        foreach( array_keys( $result ) as $id )
+        {
+            $result[ $id ][ 'matches' ] = $matches[ $id ];
+        }
+        
+        return $this->searchResult = $result;
     }
     
     /**
@@ -83,30 +139,32 @@ class MultiSearch extends Search
     {
         $result = array();
         
-        foreach( $this->resultSet as $line )
+        foreach( $this->searchResult as $line )
         {
             $id = $line[ 'id' ];
             
-            if ( ! array_key_exists( $id , $result ) )
+            /*if ( ! array_key_exists( $id , $result ) )
             {
                 $result[ $id ][ 'count' ] = 0;
-            }
+            }*/
             
             $result[ $id ][ 'title' ] = $line[ 'title' ];
-            $result[ $id ][ 'matches' ][ $line[ 'name' ] ] = $line[ 'value' ];
-            $result[ $id ][ 'count' ]++;
+            //$result[ $id ][ 'matches' ][ $line[ 'name' ] ] = $line[ 'value' ];
+            //$result[ $id ][ 'count' ]++;
+            $result[ $id ][ 'matches' ] =  $line[ 'matches' ];
+            $result[ $id ][ 'score' ] = count( $line[ 'matches' ] ) * 10;
         }
         
         $sortedResult = array();
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'count' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
+            $sortedResult[ $datas[ 'score' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
                                                              , 'matches' => $datas[ 'matches' ] );
         }
         
         krsort( $sortedResult );
         
-        return $this->searchResult = $sortedResult;
+        return $this->bakedResult = $sortedResult;
     }
 }
