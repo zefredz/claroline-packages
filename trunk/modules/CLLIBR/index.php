@@ -537,7 +537,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if ( $execution_ok && $resource->getStorageType() == 'file' )
             {
-                $storedResource = new StoredResource( $repository , $resource , $secretKey );
+                $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
                 $execution_ok = $storedResource->delete();
             }
             break;
@@ -699,6 +699,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
               && in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
             {
                 $resourceViewer = new $viewName( new StoredResource( $repository
+                                                                   , null
                                                                    , $resource
                                                                    , $secretKey ) );
                 
