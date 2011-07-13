@@ -15,6 +15,8 @@ if( isset( $this->subscription ) ) :
         claro_die( get_lang( 'Not allowed' ) );
     endif;*/
     
+    // var_dump($this->subscription);
+    
     $subscription = $this->subscription;
     if( $this->subscription['lock'] == 'close' ) :
 ?>
@@ -31,7 +33,7 @@ endif;
     ?>
     <div style="float: right;">
         <?php
-        if( ! $subscription['isVisible'] ) :
+        if( ! $subscription['isAvailable'] ) :
         ?>
         <span style="font-weight: bold; color: red;">
         <?php
@@ -63,13 +65,14 @@ endif;
     <?php
     endif;
     ?>
+    <div>
     <?php if ( $subscription['context'] == 'group' ) : ?>
     <img src="<?php echo get_icon_url( 'group' ); ?>" alt="<?php echo get_lang( 'Group' ); ?>" />
     <?php else: ?>
     <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'User' ); ?>" />
     <?php endif; ?>
     <span class="msgTitle"><?php echo $subscription['title']; ?></span>
-    <div style="clear: both;"></div>
+    </div>
     <div style="margin: 1px; padding: 0 5px 0 5px ; border: 1px #CCC solid;">
         <?php echo $subscription['description']; ?>
     </div>
@@ -84,36 +87,51 @@ endif;
         endif;
         ?>
     </div>
-    <?php
-    if( isset( $this->displayChoice ) && $this->displayChoice == true ) :
-    ?>
+    
+    <?php if( isset( $this->displayChoice ) && $this->displayChoice == true ) : ?>
+    
     <div style="padding-top: 3px;">
-        <?php
-        if( isset( $this->userChoices[ $subscription['id'] ] ) ) :
-            echo get_lang( 'My choice :') . ' ';
-            foreach( $this->userChoices[ $subscription['id'] ] as $slot ) :
-                echo $slot['title'];
-            endforeach;
-        ?>
-        <?php if ( $subscription['modifiable'] == 'modifiable' || claro_is_allowed_to_edit() ) : ?>
-        (<a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><?php echo get_lang( 'Modify' ); ?></a>)
-        <?php endif; ?>
-        <?php
-        else :
-        ?>
-        <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><img src="<?php echo get_icon_url( 'enroll' ); ?>" alt="" /> <?php echo get_lang( 'Make a choice' ); ?></a>
-        <?php
-        endif;
         
-        if( claro_is_allowed_to_edit() ) :
-        ?>
+        <?php if( isset( $this->userChoices[ $subscription['id'] ] ) ) : ?>
+        
+            <?php echo get_lang( 'My choice :') . ' '; ?>
+        
+            <?php foreach( $this->userChoices[ $subscription['id'] ] as $slot ) : ?>
+        
+                <?php echo $slot['title']; ?>
+        
+            <?php endforeach; ?>
+        
+            <?php if ( ( $subscription['isAvailable'] &&  $subscription['modifiable'] == 'modifiable' ) 
+                || claro_is_allowed_to_edit() ) : ?>
+                    (<a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><?php echo get_lang( 'Modify' ); ?></a>)
+            <?php endif; ?>
+        
+        <?php else : ?>
+        
+            <?php if ( $subscription['isAvailable'] || claro_is_allowed_to_edit() ): ?>
+                <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><img src="<?php echo get_icon_url( 'enroll' ); ?>" alt="" /> <?php echo get_lang( 'Make a choice' ); ?></a>
+            <?php else: ?>
+                <span style="font-weight: bold; color: red;">
+                <?php
+                    echo get_lang( 'This session is only available' );
+                ?>
+                <?php
+                    echo availability_date( $subscription['visibilityFrom'] , $subscription[ 'visibilityTo' ] );
+                ?>
+                </span>
+            <?php endif; ?>
+            
+        <?php endif; ?>
+        
+        
+        <?php if( claro_is_allowed_to_edit() ) : ?>
         | <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqSlotChoice&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><?php echo get_lang( 'Edit proposed slots' ); ?></a>
         | <a href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'] . '?cmd=rqResult&subscrId=' . $subscription['id'] . claro_url_relay_context( '&' ) ); ?>"><img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="" /> <?php echo get_lang( 'Show results' ); ?></a>
-        <?php
-        endif;
-        ?>
+        <?php endif; ?>
+        
+        
     </div>
-    <?php
-    endif;
-    ?>
+    
+    <?php endif; ?>
 </div>
