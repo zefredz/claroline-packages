@@ -300,7 +300,8 @@ class subscription
     $subscription['visibility'] = $this->visibility;
     $subscription['visibilityFrom'] = $this->visibilityFrom;
     $subscription['visibilityTo'] = $this->visibilityTo;
-    $subscription['isVisible'] = isSubscriptionVisible( $this->visibility, $this->visibilityFrom, $this->visibilityTo );
+    $subscription['isVisible'] = isSubscriptionVisible( $this->visibility );
+    $subscription['isAvailable'] = isSubscriptionAvailable( $this->visibilityFrom, $this->visibilityTo );
     $subscription['lock'] = $this->lock;
     $subscription['slotsAvailable'] = $this->slotsAvailable;
     $subscription['totalSlotsAvailable'] = $this->totalSlotsAvailable;
@@ -713,7 +714,8 @@ class subscriptionsCollection
         
         foreach( $collection as $i => $c )
         {
-            $collection[ $i ]['isVisible'] = isSubscriptionVisible( $c['visibility'], $c['visibilityFrom'], $c['visibilityTo'] );
+            $collection[ $i ]['isVisible'] = isSubscriptionVisible( $c['visibility'] );
+            $collection[ $i ]['isAvailable'] = isSubscriptionAvailable( $c['visibilityFrom'], $c['visibilityTo'] );
             
             
             $slotsAvailable = $slotsCollection->getAvailableSlots( $c['id'] );
@@ -1226,7 +1228,7 @@ function checkRequestSubscription( &$subscription, & $dialogBox )
  * @param int $to Ending date
  * @return boolean
  */
-function isSubscriptionVisible( $visibility, $from, $to )
+function isSubscriptionVisible( $visibility )
 {
     if( $visibility == 'invisible' )
     {
@@ -1234,27 +1236,33 @@ function isSubscriptionVisible( $visibility, $from, $to )
     }
     else
     {
-        $now = claro_time();
-        
-        if( ! is_null( $from ) && $from > $now )
-        {
-            return false;
-        }
-        if( ! is_null( $to ) && $to < $now )
-        {
-            return false;
-        }
         return true;   
     }
 }
 
-if(false === function_exists('lcfirst'))
+function isSubscriptionAvailable( $from, $to )
+{
+    $now = claro_time();
+        
+    if( (! is_null( $from ) && $from > $now ) 
+        || ( ! is_null( $to ) && $to < $now ) )
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+if( ! function_exists( 'lcfirst' ) )
 {
     /**
      * Make a string's first character lowercase
      *
      * @param string $str
      * @return string the resulting string.
+     * @version PHP 5.3.0+
      */
     function lcfirst( $str ) {
         
@@ -1262,4 +1270,4 @@ if(false === function_exists('lcfirst'))
         
         return (string) $str;
     }
-}?>
+}
