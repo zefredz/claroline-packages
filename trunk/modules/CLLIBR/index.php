@@ -723,7 +723,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqDownload':
         {
-            $storedResource = new StoredResource( $repository , $resource , $secretKey );
+            $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
             $storedResource->getFile();
             break;
         }
