@@ -161,6 +161,16 @@ class ResourceType
     }
     
     /**
+     * Deletes the resource type definition file
+     * @return true on success
+     */
+    public function delete()
+    {
+        return file_exists( $this->fileName )
+            && unlink( $this->fileName );
+    }
+    
+    /**
      * Saves the resource type definition in a xml file
      */
     public function save()
