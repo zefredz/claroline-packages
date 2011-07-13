@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,7 +21,7 @@ class KeywordSearch extends Search
      */
     public function search( $keyword )
     {
-        return $this->resultSet = $this->database->query( "
+        return $this->searchResult = $this->database->query( "
             SELECT
                 T.resource_id AS id,
                 T.metadata_value       AS title,
@@ -53,12 +53,12 @@ class KeywordSearch extends Search
     {
         $result = array();
         
-        foreach( $this->resultSet as $line )
+        foreach( $this->searchResult as $line )
         {
             $result[ $line[ 'id' ] ][ 'title' ] = $line[ 'title' ];
             $result[ $line[ 'id' ] ][ 'keywords' ][] = $line[ 'keyword' ];
         }
         
-        return $this->searchResult = array( $result );
+        return $this->bakedResult = array( $result );
     }
 }
