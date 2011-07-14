@@ -30,7 +30,6 @@
         <?php echo get_lang( 'Add selection to my bookmark' ); ?>
     </a>
 </span>
--->
 <?php if ( $this->courseId && $this->edit_allowed ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
@@ -39,6 +38,7 @@
     </a>
 </span>
 <?php endif; ?>
+-->
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
