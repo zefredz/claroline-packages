@@ -9,12 +9,14 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<span>
+<?php if ( ! isset( $this->courseId  ) ) : ?>
+<span> 
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowLibrarylist' ) ); ?>">
         <img src="<?php echo $this->icon; ?>" alt="<?php echo get_lang( 'Libraries' ); ?>" />
         <?php echo get_lang( 'Libraries' ); ?>
     </a>
 </span>
+<?php endif; ?>
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">

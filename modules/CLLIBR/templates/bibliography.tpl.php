@@ -9,21 +9,6 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( $this->userId ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarylist'); ?>">
-        <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="<?php echo get_lang( 'Libraries' ); ?>" />
-        <?php echo get_lang( 'Libraries' ); ?>
-    </a>
-</span>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowBookmark') ); ?>">
-        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
-        <?php echo get_lang( 'My bookmark' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-
 <fieldset id="bibliography">
     <legend><?php echo get_lang( 'Documents' ); ?></legend>
     <table class="claroTable emphaseLine" style=" width: 100%;">

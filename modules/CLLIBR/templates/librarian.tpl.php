@@ -9,18 +9,6 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'back' ); ?>" alt="<?php echo get_lang( 'back' ); ?>" />
-        <?php echo get_lang( 'Back to the catalogue' ); ?>
-    </a>
-</span>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&option=add&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'add_librarian' ); ?>" alt="<?php echo get_lang( 'enroll' ); ?>" />
-        <?php echo get_lang( 'Add a librarian' ); ?>
-    </a>
-</span>
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
