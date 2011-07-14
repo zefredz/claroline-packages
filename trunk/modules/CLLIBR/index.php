@@ -674,17 +674,100 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                       : $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'Error' ) );
     }
     
+    $cmdList = array();
+    
     switch( $cmd )
     {
-        case 'rqShowBookmark':
-        case 'rqShowBibliography';
-        case 'rqShowCatalogue':
-        case 'rqShowLibrarylist':
-        case 'rqShowLibrarian':
         case 'exVisible':
         case 'exInvisible':
         case '';
         {
+            break;
+        }
+        
+        case 'rqShowBookmark':
+        {
+            $cmdList[] = array( 'img'  => 'icon',
+                                'name' => get_lang( 'Libraries' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=rqShowLibrarylist' ) ) );
+            break;
+        }
+        
+        case 'rqShowBibliography';
+        {
+            if ( $userId )
+            {
+                $cmdList[] = array( 'img'  => 'icon',
+                                    'name' => get_lang( 'Libraries' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqShowLibrarylist' ) ) );
+                $cmdList[] = array( 'img'  => 'bookmark',
+                                    'name' => get_lang( 'My bookmark' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqShowBookmark') ) );
+            }
+            break;
+        }
+        
+        case 'rqShowCatalogue':
+        {
+            if ( $edit_allowed )
+            {
+                $cmdList[] = array( 'img'  => 'librarian',
+                                    'name' => get_lang( 'Manage librarians' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqShowLibrarian&libraryId='
+                                              . $libraryId ) ) );
+                $cmdList[] = array( 'img'  => 'new_book',
+                                    'name' => get_lang( 'Add a resource' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqAddResource&libraryId='
+                                              . $libraryId ) ) );
+                $cmdList[] = array( 'img'  => 'new_book',
+                                    'name' => get_lang( 'Add a resource' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqAddResource&libraryId='
+                                              . $libraryId ) ) );
+            }
+            
+            /** For later : still unused commands
+            $cmdList[] = array( 'img'  => 'book',
+                                'name' => get_lang( 'Add selection to my bookmark' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=exBookmark&libraryId='
+                                          . $libraryId ) ) );
+            $cmdList[] = array( 'img'  => 'bookmark',
+                                'name' => get_lang( 'Add selection in course\'s bibliography' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=exAdd&libraryId='
+                                          . $libraryId ) ) );
+            */
+            break;
+        }
+        
+        case 'rqShowLibrarylist':
+        {
+            if ( $edit_allowed )
+            {
+                $cmdList[] = array( 'img'  => 'new_book',
+                                    'name' => get_lang( 'Create a new library' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqCreateLibrary' ) ) );
+            }
+            break;
+        }
+        
+        case 'rqShowLibrarian':
+        {
+            $cmdList[] = array( 'img'  => 'back',
+                                'name' => get_lang( 'Back to the catalogue' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) );
+            $cmdList[] = array( 'img'  => 'add_librarian',
+                                'name' => get_lang( 'Add a librarian' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=rqShowLibrarian&option=add&libraryId=' . $libraryId ) ) );
             break;
         }
         
@@ -716,6 +799,34 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
             $template->assign( 'read_allowed' , $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_READ ) );
             $template->assign( 'viewer' , $is_validated ? $resourceViewer : false );
+            
+            if ( $libraryId )
+            {
+                $cmdList[] = array( 'img'  => 'back',
+                                    'name' => get_lang( 'Back to the catalogue' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) );
+            }
+            
+            if ( $edit_allowed )
+            {
+                $cmdList[] = array( 'img'  => 'book',
+                                    'name' => get_lang( 'Add to the course\'s bibliography' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=exAdd&resourceId=' . $resourceId ) ) );
+                $cmdList[] = array( 'img'  => 'edit',
+                                    'name' => get_lang( 'Edit resource\'s metadatas' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqEditResource&resourceId=' . $resourceId ) ) );
+            }
+            
+            if ( $userId )
+            {
+                $cmdList[] = array( 'img'  => 'bookmark',
+                                    'name' => get_lang( 'Add to my bookmark' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=exBookmark&resourceId=' . $resourceId ) ) );
+            }
             break;
         }
         
@@ -911,7 +1022,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     }
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList )
                                                             . $warning->render()
                                                             . $dialogBox->render()
                                                             . $template->render() );

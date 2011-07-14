@@ -9,36 +9,6 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( $this->edit_allowed ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'librarian' ); ?>" alt="<?php echo get_lang( 'librarians' ); ?>" />
-        <?php echo get_lang( 'Manage librarians' ); ?>
-    </a>
-</span>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddResource&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'new_book' ); ?>" alt="<?php echo get_lang( 'Add' ); ?>" />
-        <?php echo get_lang( 'Add a resource' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-<!--
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add selection to bookmark' ); ?>" />
-        <?php echo get_lang( 'Add selection to my bookmark' ); ?>
-    </a>
-</span>
-<?php if ( $this->courseId && $this->edit_allowed ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Add selection in bibliography' ); ?>" />
-        <?php echo get_lang( 'Add selection in course\'s bibliography' ); ?>
-    </a>
-</span>
-<?php endif; ?>
--->
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">

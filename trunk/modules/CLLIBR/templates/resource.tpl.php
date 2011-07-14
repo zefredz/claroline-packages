@@ -9,39 +9,6 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php if ( isset( $this->libraryId ) ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId=' . $this->libraryId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'back' ); ?>" alt="<?php echo get_lang( 'back' ); ?>" />
-        <?php echo get_lang( 'Back to the catalogue' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-<?php if ( $this->edit_allowed ) : ?>
-    <?php if ( $this->courseId ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $this->resourceId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Bibliography' ); ?>" />
-        <?php echo get_lang( 'Add to the course\'s bibliography' ); ?>
-    </a>
-</span>
-    <?php endif; ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $this->resourceId ) );?>">
-        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
-        <?php echo get_lang( 'Edit resource\'s metadatas' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-<?php if ( $this->userId ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $this->resourceId ) ); ?>">
-        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Bookmark' ); ?>" />
-        <?php echo get_lang( 'Add to my bookmark' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-
 <fieldset id="accessResource">
     <legend><?php echo get_lang('Resource'); ?></legend>
 <?php if ( $this->read_allowed ) : ?>
