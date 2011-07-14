@@ -2,13 +2,21 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<?php if ( isset( $this->libraryId ) ) : ?>
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId=' . $this->libraryId ) ); ?>">
+        <img src="<?php echo get_icon_url( 'back' ); ?>" alt="<?php echo get_lang( 'back' ); ?>" />
+        <?php echo get_lang( 'Back to the catalogue' ); ?>
+    </a>
+</span>
+<?php endif; ?>
 <?php if ( $this->edit_allowed ) : ?>
     <?php if ( $this->courseId ) : ?>
 <span>
