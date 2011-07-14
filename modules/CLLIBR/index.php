@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -47,6 +47,7 @@ $pageTitle = array( 'mainTitle' => get_lang( 'Online Library' ) );
 $secretKey = get_conf ( 'CLLIBR_encryption_key' );
 $repository = get_path( 'rootSys' ) . 'cllibrary/';
 $typeRepository = get_module_path( 'CLLIBR' ) . '/lib/types/';
+$pluginRepository = get_module_path( 'CLLIBR' ) . '/lib/plugins/';
 $database = Claroline::getDatabase();
 // for later -->
 $tableList = get_module_main_tbl( array( 'library_resource'
@@ -59,7 +60,7 @@ $tableList = get_module_main_tbl( array( 'library_resource'
   $class = new ClassName( $DBTable , ... ); */
 // <-- for later
 
-$pluginLoader = new PluginLoader( 'lib/plugins/' );
+$pluginLoader = new PluginLoader( $pluginRepository );
 $pluginLoader->loadPlugins();
 $pluginList = $pluginLoader->getPluginList();
 
@@ -67,6 +68,7 @@ $resourceTypeList = new ResourceTypeList( $typeRepository );
 
 $courseId = claro_get_current_course_id();
 $userId = claro_get_current_user_id();
+
 if( ! $courseId && ! $userId ) claro_disp_auth_form( true );
 
 $is_course_creator = claro_is_allowed_to_create_course();
@@ -127,14 +129,10 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exBookmark'        => ''
                         , 'exUnbookmark'      => '' );
 
-$userInput = Claro_UserInput::getInstance();
-$userInput->setValidator( 'cmd' ,
-    new Claro_Validator_AllowedList( array_merge( $actionList , $restrictedActionList ) ) );
-
 // OBJECTS INITIALISATION
+$userInput = Claro_UserInput::getInstance();
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
 $option = $userInput->get( 'option' );
-
 $libraryId = $userInput->get( 'libraryId' );
 $librarianId = $userInput->get( 'librarianId' );
 $resourceId = $userInput->get( 'resourceId' );
@@ -164,7 +162,7 @@ elseif( $cmd == 'exUnbookmark' )
 {
     $context = 'bookmark';
 }
-elseif( $librarianId )
+elseif( $librarianId || $cmd == 'exAddLibrarian' )
 {
     $context = 'librarian';
 }
@@ -367,7 +365,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                     }
                     
                     if ( ! $errorMsg
-                      && $resource->validate( $file[ 'name' ] ) )
+                      && $storedResource->validate( $file[ 'name' ] ) )
                     {
                         $resource->setName( $file[ 'name' ] );
                     }

@@ -115,7 +115,7 @@ class StoredResource
     public function validate( $fileName )
     {
         return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
-                        , $this->authorizedFileType );
+                        , $this->authorizedFileList );
     }
     
     /**
