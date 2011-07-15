@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -16,6 +16,7 @@
  * @const OPERATOR_AND
  * @const OPERATOR_OR
  * @static array $itemList
+ * @property int $queryCount;
  */
 class MultiSearch extends Search
 {
@@ -27,54 +28,15 @@ class MultiSearch extends Search
                                    , 'keyword'
                                    , 'description' );
     
+    protected $queryCount;
+    
     /**
      * Search query
      * @param array $searchQuery
      */
     public function search( $searchQuery )
     {
-        /** this code is from version 0.7.0. It works, but with big performance issue
-        $sqlString1 = "SELECT\n"
-                   . "    T.resource_id    AS id,\n"
-                   . "    T.metadata_value AS title,\n"
-                   . "    M.metadata_name  AS name,\n"
-                   . "    M.metadata_value AS value\n"
-                   . "FROM\n"
-                   . "    `{$this->tbl['library_metadata']}` AS M,\n"
-                   . "    `{$this->tbl['library_metadata']}` AS T\n";
-        
-        $sqlString2 = "WHERE\n";
-        
-        foreach( $searchQuery as $index => $item )
-        {
-            $operator = array_key_exists( 'operator' , $item )
-                      ? $item[ 'operator' ]
-                      : self::OPERATOR_AND;
-            
-            $sqlString1 .= $operator == self::OPERATOR_AND
-                        ? "INNER JOIN\n"
-                        : "LEFT JOIN\n";
-                        
-            $sqlString1 .= "    `{$this->tbl['library_metadata']}` AS M"
-                        . $index . "\n"
-                        . "ON\n"
-                        . "    T.resource_id = M" . $index . ".resource_id\n";
-            
-            $sqlString2 .= $index
-                        ? $operator
-                        : "";
-                        
-            $sqlString2 .= "  M" . $index . ".metadata_name = "
-                        . $this->database->quote( $item[ 'name' ] ) . "\n"
-                        . "AND\n"
-                        . "   M" . $index . ".metadata_value LIKE "
-                        . $this->database->quote( '%' . $item[ 'value' ] . '%' )
-                        . "\n";
-        }
-        
-        $sqlString = $sqlString1 . $sqlString2;
-        
-        return $this->searchResult = $this->database->query( $sqlString );*/
+        $this->queryCount = count( $searchQuery );
         
         $result = array();
         $matches = array();
@@ -107,7 +69,7 @@ class MultiSearch extends Search
                 $id = 'resource' . $line[ 'id' ];
                 $itemResult[ $id ][ 'id' ] = $line[ 'id' ];
                 $itemResult[ $id ][ 'title' ] = $line[ 'title' ];
-                $matches[ $id ][ $line[ 'name' ] ] = $line[ 'value' ];
+                $matches[ $id ][ $line[ 'name' ] ] = self::highlight( $item[ 'value' ] , $line[ 'value' ] );
             }
             
             $operator = $index
@@ -143,16 +105,9 @@ class MultiSearch extends Search
         {
             $id = $line[ 'id' ];
             
-            /*if ( ! array_key_exists( $id , $result ) )
-            {
-                $result[ $id ][ 'count' ] = 0;
-            }*/
-            
             $result[ $id ][ 'title' ] = $line[ 'title' ];
-            //$result[ $id ][ 'matches' ][ $line[ 'name' ] ] = $line[ 'value' ];
-            //$result[ $id ][ 'count' ]++;
             $result[ $id ][ 'matches' ] =  $line[ 'matches' ];
-            $result[ $id ][ 'score' ] = count( $line[ 'matches' ] ) * 10;
+            $result[ $id ][ 'score' ] = count( $line[ 'matches' ] ) * 60 / $this->queryCount;
         }
         
         $sortedResult = array();

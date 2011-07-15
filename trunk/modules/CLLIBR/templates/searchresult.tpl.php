@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -31,10 +31,14 @@
             <td class="searchResult">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $id ) );?>">
                     <?php echo $datas[ 'title' ]; ?>
-                </a><br />
-                <?php if ( isset( $datas[ 'matches' ][ 'description' ] ) ): ?>
-                <small><?php echo $datas[ 'matches' ][ 'description' ]; ?></small>
-                <?php endif; ?>
+                </a>
+                <ul class="matches">
+                <?php foreach( $datas[ 'matches' ] as $match => $value ) : ?>
+                    <li>
+                        <strong><?php echo get_lang( $match ); ?>: </strong><span class="match"><?php echo $value; ?></span>
+                    </li>
+                <?php endforeach; ?>
+                </ul>
             </td>
             <td align="center">
                 <?php $nbStar = $score < 60 ? ceil( $score ) : 60; ?>

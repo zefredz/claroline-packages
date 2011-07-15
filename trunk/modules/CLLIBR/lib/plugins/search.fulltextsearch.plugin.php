@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -56,9 +56,7 @@ class FulltextSearch extends Search
             $title = $line[ 'title' ];
             $score = $line[ 'score' ];
             $name = $line[ 'name' ];
-            $value = str_ireplace( $this->searchString
-                                 , '<strong>' . $this->searchString . '</strong>'
-                                 , $line[ 'value' ] );
+            $value = self::highlight( $this->searchString , $line[ 'value' ] );
             
             if ( ! array_key_exists( $id , $result ) )
             {
