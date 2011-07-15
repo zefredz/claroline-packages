@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -41,5 +41,19 @@ abstract class Search
     public function getResult()
     {
         return $this->bakedResult;
+    }
+    
+    /**
+     * Static method
+     * Highlight a part of a given text
+     * @param string $highlight
+     * @param string $phrase
+     * @return string $highlightedPhrase
+     */
+    public static function highlight( $highlight , $phrase )
+    {
+        return str_ireplace( $highlight
+                            , '<strong>' . $highlight . '</strong>'
+                            , $phrase );
     }
 }

@@ -2,7 +2,7 @@
  * $Id$
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -68,4 +68,16 @@
 .keyword
 {
     margin-top: 3px;
+}
+
+.matches
+{
+    list-style: none;
+    font-size: 90%;
+    margin: 0px;
+}
+
+.match strong
+{
+    color: red;
 }
