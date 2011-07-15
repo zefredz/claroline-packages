@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -166,7 +166,7 @@ elseif( $librarianId || $cmd == 'exAddLibrarian' )
 {
     $context = 'librarian';
 }
-elseif( $libraryId )
+elseif( $libraryId && $cmd != 'exAddLibrary' && $cmd != 'exRemoveLibrary' )
 {
     $context = 'catalogue';
 }
@@ -660,7 +660,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     }
     if ( $courseId )
     {
-        $template->assign( 'courseLibraryList' , $courseLibraryList->getLibraryList() );
+        $template->assign( 'courseLibraryList' , $courseLibraryList->getLibraryList( true ) );
     }
     
     if ( array_key_exists( $cmd , $redirectionList ) )
@@ -731,16 +731,27 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                               . $libraryId ) ) );
             }
             
+            if ( $edit_allowed && $courseId && ! $courseLibraryList->libraryExists( $libraryId ) )
+            {
+                $cmdList[] = array( 'img'  => 'add',
+                                    'name' => get_lang( 'Link this library to your course\'s bibliography' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=exAddLibrary&libraryId='
+                                              . $libraryId ) ) );
+                /** For later : still unused commands
+                $cmdList[] = array( 'img'  => 'bookmark',
+                                    'name' => get_lang( 'Add selection in course\'s bibliography' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=exAdd&libraryId='
+                                              . $libraryId ) ) );
+                */
+            }
+            
             /** For later : still unused commands
             $cmdList[] = array( 'img'  => 'book',
                                 'name' => get_lang( 'Add selection to my bookmark' ),
                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=exBookmark&libraryId='
-                                          . $libraryId ) ) );
-            $cmdList[] = array( 'img'  => 'bookmark',
-                                'name' => get_lang( 'Add selection in course\'s bibliography' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                          .'/index.php?cmd=exAdd&libraryId='
                                           . $libraryId ) ) );
             */
             break;
