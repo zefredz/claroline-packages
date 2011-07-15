@@ -26,7 +26,7 @@
                 </th>
                 -->
                 <th>
-                    <?php echo get_lang( 'Commands' ); ?>
+                    <?php echo get_lang( 'Actions' ); ?>
                 </th>
     <?php if ( $this->edit_allowed ) : ?>
                 <th>
@@ -55,7 +55,7 @@
                 -->
                 <td align="center">
                 <?php if ( $this->userId ) : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
+                    <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
                         <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
                     </a>
                 <?php endif; ?>
@@ -65,8 +65,8 @@
                     </a>
                     -->
                 <?php if ( $this->edit_allowed ) : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resourceId ) );?>">
-                        <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
+                    <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resourceId ) );?>">
+                        <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
                     </a>
                 </td>
                 <td align="center">
