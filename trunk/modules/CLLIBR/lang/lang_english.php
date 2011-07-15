@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -132,6 +132,7 @@ $_lang[ 'Error' ] = 'Error';
 $_lang[ 'File missing' ] = 'File missing';
 $_lang[ 'Invalid file' ] = 'Invalid file';
 $_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'It\'s not advised to remove this resource unless you are sure it will not cause problems!';
+$_lang[ 'Link this library to your course\'s bibliography' ] = 'Link this library to your course\'s bibliography';
 $_lang[ 'No result' ] = 'No result';
 $_lang[ 'Not allowed' ] = 'Not allowed';
 $_lang[ 'Select the library' ] = 'Select the library';

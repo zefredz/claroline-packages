@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.3 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -122,7 +122,7 @@ $_lang[ 'A library must have at least one librarian' ] ='Une bibliothèque doit a
 $_lang[ 'Do you really want to delete this library?' ] = 'Voulez-vous réellement suprimer cette bibliothèque?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Voulez-vous réellement supprimer cette ressource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Voulez-vous réellement congédier ce bibliothécaire?';
-$_lang[ 'Do you really want to remove this library?' ] = 'Voulez-vous réellement retirer le line vers cette bibliothèque?';
+$_lang[ 'Do you really want to remove this library?' ] = 'Voulez-vous réellement retirer le lien vers cette bibliothèque?';
 $_lang[ 'Do you really want to remove this resource?' ] = 'Voulez-vous réellement retirer cette ressource?';
 $_lang[ 'Empty bibliography' ] = 'La bibliographie est vide';
 $_lang[ 'Empty bookmark' ] = 'Votre liste de lecture est vide';
@@ -132,6 +132,7 @@ $_lang[ 'Error' ] = 'Une erreur est survenue';
 $_lang[ 'File missing' ] = 'Vous n\'avez pas soumis de fichier';
 $_lang[ 'Invalid file' ] = 'Le fichier que vous avez soumis n\'est pas dans le bon format';
 $_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'Il est déconseillé de supprimer cette ressource avant de s\'assurer que cela ne causera pas de problèmes!';
+$_lang[ 'Link this library to your course\'s bibliography' ] = 'Créer un lien vers cette bibliothèque dans la bibliographie du cours';
 $_lang[ 'No result' ] = 'Aucun résultat';
 $_lang[ 'Not allowed' ] = 'Cette opération ne vous est pas permise';
 $_lang[ 'Select the library' ] = 'Sélectionez la bibliothèque';

@@ -61,9 +61,13 @@
                 </td>
                 <td align="center">
                 <?php if ( $this->courseId ) : ?>
+                    <?php if ( isset( $this->courseLibraryList[ $libraryId ] ) ) : ?>
+                    <img src="<?php echo get_icon_url( 'add_disabled' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
+                    <?php else : ?>
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrary&libraryId='. $libraryId ) );?>">
-                        <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'add library' ); ?>"/>
+                        <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     </a>
+                    <?php endif; ?>
                 <?php endif; ?>
                     <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
