@@ -140,6 +140,7 @@ $_lang[ 'Success' ] = 'Success';
 $_lang[ 'This resource is already added' ] = 'This resource is already added';
 $_lang[ 'This resource is already bookmarked' ] = 'This resource is already bookmarked';
 $_lang[ 'Url missing' ] = 'Url missing';
+$_lang[ 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' ] = 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!';
 $_lang[ 'Warning : this resource is in use' ] = 'Warning : this resource is in use';
 $_lang[ 'You must give a title and a description' ] = 'You must give a title and a description';
 $_lang[ 'You are not allowed to access this resource!' ] = 'You are not allowed to access this resource!';
