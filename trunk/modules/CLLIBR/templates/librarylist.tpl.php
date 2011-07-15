@@ -29,7 +29,7 @@
                     <?php echo get_lang( 'Status' ); ?>
                 </th>
                 <th>
-                    <?php echo get_lang( 'Commands' ); ?>
+                    <?php echo get_lang( 'Actions' ); ?>
                 </th>
     <?php endif; ?>
             </tr>
@@ -64,15 +64,15 @@
                     <?php if ( isset( $this->courseLibraryList[ $libraryId ] ) ) : ?>
                     <img src="<?php echo get_icon_url( 'add_disabled' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     <?php else : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Add a library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     </a>
                     <?php endif; ?>
                 <?php endif; ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Delete this library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                     </a>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Edit' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                     </a>
                 </td>

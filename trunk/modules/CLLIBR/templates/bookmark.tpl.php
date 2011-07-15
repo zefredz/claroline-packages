@@ -32,7 +32,7 @@
             </th>
             -->
             <th>
-                <?php echo get_lang( 'Commands' ); ?>
+                <?php echo get_lang( 'Actions' ); ?>
             </th>
         </tr>
     </thead>
@@ -59,8 +59,8 @@
                     <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                 </a>
                 -->
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exUnbookmark&resourceId='. $resourceId ) );?>">
-                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
+                <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exUnbookmark&resourceId='. $resourceId ) );?>">
+                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
                 </a>
             </td>
         </tr>
