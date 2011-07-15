@@ -45,6 +45,7 @@
             </dt>
             <dd>
                 <select id="resourceType" name="type">
+                <option value="_none_">------</option>
                 <?php foreach( $this->typeList as $type ) : ?>
                 <option value="<?php echo $type; ?>">
                     <?php echo get_lang( str_replace( '_' , ' ' , $type ) ); ?>

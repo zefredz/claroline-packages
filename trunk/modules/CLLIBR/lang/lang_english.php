@@ -142,5 +142,5 @@ $_lang[ 'This resource is already bookmarked' ] = 'This resource is already book
 $_lang[ 'Url missing' ] = 'Url missing';
 $_lang[ 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' ] = 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!';
 $_lang[ 'Warning : this resource is in use' ] = 'Warning : this resource is in use';
-$_lang[ 'You must give a title and a description' ] = 'You must give a title and a description';
+$_lang[ 'You must fill all the fields' ] = 'You must fill all the fields';
 $_lang[ 'You are not allowed to access this resource!' ] = 'You are not allowed to access this resource!';

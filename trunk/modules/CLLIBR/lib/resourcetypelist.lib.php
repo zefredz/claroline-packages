@@ -92,10 +92,6 @@ class ResourceTypeList
         {
             return $this->resourceTypeList[ $name ];
         }
-        else
-        {
-            return array();
-        }
     }
     /**
      * Adds a new type
