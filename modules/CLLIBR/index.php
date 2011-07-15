@@ -334,19 +334,19 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'exAddResource':
         {
-            $type = $userInput->get( 'type' , 'book' );
+            $type = $userInput->get( 'type' );
             $storage = $userInput->get( 'storage' );
             $title = $userInput->get( 'title' );
             $description = $userInput->get( 'description' );
             
             $resourceType = $resourceTypeList->get( $type );
-            $authorizedFileList = $resourceType->getAuthorizedFileList();
             
-            $resource = new Resource( $database );
-            $metadata = new Metadata( $database );
-            
-            if ( $title && $description )
+            if ( $resourceType && $title && $description )
             {
+                $authorizedFileList = $resourceType->getAuthorizedFileList();
+                $resource = new Resource( $database );
+                $metadata = new Metadata( $database );
+                
                 $resource->setType( $type );
                 $resource->setStorageType( $storage );
                 $resource->setDate();
@@ -396,7 +396,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             }
             else
             {
-                $errorMsg = get_lang( 'You must give a title and a description' );
+                $errorMsg = get_lang( 'You must fill all the fields' );
                 $cmd = 'rqAddResource';
             }
             
