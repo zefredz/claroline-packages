@@ -47,7 +47,7 @@
             <?php if ( ! empty( $library[ 'librarianList' ] ) ) : ?>
                 <?php echo implode( ', ' , $library[ 'librarianList' ] ); ?>
                 <?php if ( $this->is_platform_admin ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId='. $libraryId ) );?>">
+                <a title="<?php echo get_lang( 'Manage librarians' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId='. $libraryId ) );?>">
                     <img src="<?php echo get_icon_url( 'librarian' ); ?>" alt="<?php echo get_lang( 'Manage librarians' ); ?>"/>
                 </a>
                 <?php endif; ?>
