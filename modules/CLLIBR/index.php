@@ -170,7 +170,7 @@ elseif( $libraryId && $cmd != 'exAddLibrary' && $cmd != 'exRemoveLibrary' )
 {
     $context = 'catalogue';
 }
-elseif( $courseId )
+elseif( $courseId && $cmd != 'rqCreateLibrary' )
 {
     $context = 'bibliography';
 }
@@ -724,11 +724,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                               .'/index.php?cmd=rqAddResource&libraryId='
                                               . $libraryId ) ) );
-                $cmdList[] = array( 'img'  => 'new_book',
-                                    'name' => get_lang( 'Add a resource' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=rqAddResource&libraryId='
-                                              . $libraryId ) ) );
             }
             
             if ( $edit_allowed && $courseId && ! $courseLibraryList->libraryExists( $libraryId ) )
@@ -915,6 +910,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqDeleteLibrary':
         {
+            if ( $resourceSet->getResourceList() )
+            {
+                $warningMsg = '<strong>'
+                            . get_lang( 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' )
+                            .  '</strong>';
+            }
+            
             $msg = get_lang( 'Do you really want to delete this library?' );
             $urlAction = 'exDeleteLibrary';
             $urlCancel = 'rqShowLibrarylist';
