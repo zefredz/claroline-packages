@@ -65,6 +65,11 @@
     float: right;
 }
 
+#onSelected .claroCmd
+{
+    font-size: 100%;
+}
+
 .galant
 {
     margin-right: 250px;
