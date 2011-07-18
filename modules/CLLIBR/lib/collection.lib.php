@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,6 +12,8 @@
 /**
  * A class that represents a resource collection
  * belonging to libraries, bibliography or bookmarks
+ * @const SORT_TITLE
+ * @const SORT_AUTHOR
  * @const LIBRARY_COLLECTION
  * @const COURSE_COLLECTION
  * @const USER_COLLECTION
@@ -21,6 +23,8 @@
  */
 class Collection
 {
+    const SORT_TITLE = 'title';
+    const SORT_AUTHOR = 'author';
     const LIBRARY_COLLECTION = 'catalogue';
     const COURSE_COLLECTION = 'bibliography';
     const USER_COLLECTION = 'bookmark';
@@ -80,8 +84,13 @@ class Collection
         foreach( $resultSet as $line )
         {
             $resourceId = $line[ 'resource_id' ];
-            $this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
+            /*$this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
                                                       , new Metadata( $this->database , $resourceId )
+                                                      , 'is_visible' => (boolean)$line[ 'is_visible' ] );*/
+            $metadata = new Metadata( $this->database , $resourceId );
+            $this->resourceList[ $resourceId ] = array( 'id' => $resourceId
+                                                      , 'title' => $metadata->get( 'title' )
+                                                      , 'author' => $metadata->get( 'author' )
                                                       , 'is_visible' => (boolean)$line[ 'is_visible' ] );
         }
     }
@@ -100,11 +109,16 @@ class Collection
      * @param boolean $force
      * @return array $resourceList
      */
-    public function getResourceList( $force = false )
+    public function getResourceList( $force = false , $sort = null )
     {
         if ( $force )
         {
             $this->load();
+        }
+        
+        if ( $sort )
+        {
+            $this->sort( $sort );
         }
         
         return $this->resourceList;
@@ -281,5 +295,28 @@ class Collection
                 collection_type = " . $this->database->quote( $type ) . "
             AND
                 resource_id = " . $this->database->escape( $resourceId ) );
+    }
+    
+    /**
+     * Sorts the resource list
+     */
+    private function sort( $sort )
+    {
+        if ( $sort != self::SORT_TITLE
+          && $sort != self::SORT_AUTHOR )
+        {
+            throw new Exception( 'Invalid argument' );
+        }
+        
+        $sortedList = array();
+        
+        foreach( $this->resourceList as $datas )
+        {
+            $sortedList[ $datas[ $sort ] ] = $datas;
+        }
+        
+        ksort( $sortedList );
+        
+        $this->resourceList = $sortedList;
     }
 }

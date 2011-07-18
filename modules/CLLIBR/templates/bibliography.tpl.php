@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -15,10 +15,14 @@
         <thead>
             <tr class="headerX">
                 <th>
-                    <?php echo get_lang( 'Title' ); ?>
+                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&libraryId=' . $this->libraryId ) ); ?>">
+                    <?php echo get_lang( 'Title'); ?>
+                    </a>
                 </th>
                 <th>
+                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&sort=author' . $this->libraryId ) ); ?>">
                     <?php echo get_lang( 'Author(s)' ); ?>
+                    </a>
                 </th>
                 <!--
                 <th>
@@ -37,45 +41,45 @@
         </thead>
         <tbody>
     <?php if ( ! empty( $this->resourceList ) ) : ?>
-        <?php foreach ( $this->resourceList as $resourceId => $datas ) : ?>
-            <?php if ( $datas[ 'is_visible' ] || $this->edit_allowed ) : ?>
+        <?php foreach ( $this->resourceList as $resource ) : ?>
+            <?php if ( $resource[ 'is_visible' ] || $this->edit_allowed ) : ?>
             <tr>
                 <td>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resourceId ) );?>">
-                        <?php echo $datas[1]->get( Metadata::TITLE ); ?>
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resource[ 'id' ] ) );?>">
+                        <?php echo $resource[ 'title' ]; ?>
                     </a>
                 </td>
                 <td> 
-                    <?php echo $datas[1]->get( 'author' ); ?>
+                    <?php echo $resource[ 'author' ]; ?>
                 </td>
                 <!--
                 <td align="center">
-                    <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
+                    <input type="checkbox" name="select[<?php echo $resource[ 'id' ]; ?>]" />
                 </td>
                 -->
                 <td align="center">
                 <?php if ( $this->userId ) : ?>
-                    <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resourceId ) );?>">
+                    <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resource[ 'id' ] ) );?>">
                         <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
                     </a>
                 <?php endif; ?>
                     <!--
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resourceId ) );?>">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
                         <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                     </a>
                     -->
                 <?php if ( $this->edit_allowed ) : ?>
-                    <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resourceId ) );?>">
+                    <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resource[ 'id' ] ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
                     </a>
                 </td>
                 <td align="center">
-                    <?php if ( $datas[ 'is_visible' ] ) : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resourceId ) );?>">
+                    <?php if ( $resource[ 'is_visible' ] ) : ?>
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resource[ 'id' ] ) );?>">
                         <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'visible' ); ?>"/>
                     </a>
                     <?php else : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resourceId ) );?>">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resource[ 'id' ] ) );?>">
                         <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'invisible' ); ?>"/>
                     </a>
                     <?php endif; ?>

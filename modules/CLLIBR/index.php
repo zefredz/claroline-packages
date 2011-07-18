@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.3 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -133,6 +133,7 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
 $userInput = Claro_UserInput::getInstance();
 $cmd = $userInput->get( 'cmd' , $courseId ? 'rqShowBibliography' : 'rqShowLibrarylist' );
 $option = $userInput->get( 'option' );
+$sort = $userInput->get( 'sort' , 'title' );
 $libraryId = $userInput->get( 'libraryId' );
 $librarianId = $userInput->get( 'librarianId' );
 $resourceId = $userInput->get( 'resourceId' );
@@ -648,7 +649,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     $template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
     $template->assign( 'edit_allowed' , $edit_allowed );
     $template->assign( 'is_platform_admin' , $is_platform_admin );
-    $template->assign( 'resourceList' , $resourceSet->getResourceList( true ) );
+    $template->assign( 'resourceList' , $resourceSet->getResourceList( true , $sort ) );
     $template->assign( 'userId' , $userId );
     $template->assign( 'libraryId' , $libraryId );
     $template->assign( 'courseId' , $courseId );
@@ -676,37 +677,26 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     $cmdList = array();
     
+    if ( $userId )
+    {
+        $cmdList[] = array( 'img'  => 'icon',
+                            'name' => get_lang( 'Libraries' ),
+                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                      .'/index.php?cmd=rqShowLibrarylist' ) ) );
+        $cmdList[] = array( 'img'  => 'bookmark',
+                            'name' => get_lang( 'My bookmark' ),
+                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                      .'/index.php?cmd=rqShowBookmark') ) );
+    }
+    
     switch( $cmd )
     {
+        case 'rqShowBibliography';
+        case 'rqShowBookmark':
         case 'exVisible':
         case 'exInvisible':
         case '';
         {
-            break;
-        }
-        
-        case 'rqShowBookmark':
-        {
-            $cmdList[] = array( 'img'  => 'icon',
-                                'name' => get_lang( 'Libraries' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                          .'/index.php?cmd=rqShowLibrarylist' ) ) );
-            break;
-        }
-        
-        case 'rqShowBibliography';
-        {
-            if ( $userId )
-            {
-                $cmdList[] = array( 'img'  => 'icon',
-                                    'name' => get_lang( 'Libraries' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=rqShowLibrarylist' ) ) );
-                $cmdList[] = array( 'img'  => 'bookmark',
-                                    'name' => get_lang( 'My bookmark' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=rqShowBookmark') ) );
-            }
             break;
         }
         

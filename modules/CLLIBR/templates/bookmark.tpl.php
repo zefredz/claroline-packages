@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -21,10 +21,14 @@
     <thead>
         <tr class="headerX">
             <th>
+                <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBookmark' ) ); ?>">
                 <?php echo get_lang( 'Title'); ?>
+                </a>
             </th>
             <th>
+                <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBookmark&sort=author' ) ); ?>">
                 <?php echo get_lang( 'Author(s)' ); ?>
+                </a>
             </th>
             <!--
             <th>
@@ -38,28 +42,28 @@
     </thead>
     <tbody>
 <?php if ( ! empty( $this->resourceList ) ) : ?>
-    <?php foreach ( $this->resourceList as $resourceId => $objects ) : ?>
+    <?php foreach ( $this->resourceList as $resource ) : ?>
         <tr>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqView&resourceId='. $resourceId ) );?>">
-                    <?php echo $objects[1]->get( Metadata::TITLE ); ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqView&resourceId='. $resource[ 'id' ] ) );?>">
+                    <?php echo $resource[ 'title' ]; ?>
                 </a>
             </td>
             <td> 
-                <?php echo $objects[1]->get( 'author' ); ?>
+                <?php echo $resource[ 'author' ]; ?>
             </td>
             <!--
             <td align="center">
-                <input type="checkbox" name="select[<?php echo $resourceId; ?>]" />
+                <input type="checkbox" name="select[<?php echo $resource[ 'id' ]; ?>]" />
             </td>
             -->
             <td align="center">
                 <!--
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exExport&resourceId='. $resourceId ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
                     <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                 </a>
                 -->
-                <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exUnbookmark&resourceId='. $resourceId ) );?>">
+                <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exUnbookmark&resourceId='. $resource[ 'id' ] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
                 </a>
             </td>
