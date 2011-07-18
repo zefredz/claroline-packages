@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -137,6 +137,9 @@ $sort = $userInput->get( 'sort' , 'title' );
 $libraryId = $userInput->get( 'libraryId' );
 $librarianId = $userInput->get( 'librarianId' );
 $resourceId = $userInput->get( 'resourceId' );
+$resourceList = $resourceId
+              ? array( $resourceId => 'on' )
+              : $userInput->get( 'resource' );
 
 $library = new Library( $database , $libraryId );
 $resource = new Resource( $database , $resourceId );
@@ -159,7 +162,7 @@ if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
 {
     $context = strtolower( substr( $cmd , 6 ) );
 }
-elseif( $cmd == 'exUnbookmark' )
+elseif( $cmd == 'exUnbookmark' || $cmd == 'exBookmark' )
 {
     $context = 'bookmark';
 }
@@ -259,22 +262,23 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'exBookmark':
         {
-            if ( $userId )
+            $bookmark = new Collection( $database , 'bookmark' , $userId );
+            
+            foreach( array_keys( $resourceList ) as $resourceId )
             {
-                $bookmark = new Collection( $database , 'bookmark' , $userId );
-                
-                if ( $bookmark->resourceExists( $resourceId ) )
+                if ( ! $bookmark->resourceExists( $resourceId ) )
                 {
-                    $errorMsg = get_lang( 'This resource is already bookmarked' );
+                    $bookmark->add( $resourceId );
+                }
+                else
+                {
+                    $errorMsg = count( $resourceList ) == 1
+                              ? get_lang( 'This resource is already bookmarked' )
+                              : get_lang( 'Some of your selected resources were already bookmarked' );
                 }
             }
-            else
-            {
-                $errorMsg = get_lang( 'Not allowed' );
-            }
             
-            $execution_ok = ! $errorMsg
-                           && $bookmark->add( $resourceId );
+            $execution_ok = ! $errorMsg;
             break;
         }
         
@@ -282,28 +286,48 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         {
             $bibliography = new Collection( $database , 'bibliography' , $courseId );
             
-            if ( $bibliography->resourceExists( $resourceId ) )
+            foreach( array_keys( $resourceList ) as $resourceId )
             {
-                $errorMsg = get_lang( 'This resource is already added' );
+                if ( ! $bibliography->resourceExists( $resourceId ) )
+                {
+                    $bibliography->add( $resourceId );
+                }
+                else
+                {
+                    $errorMsg = count( $resourceList ) == 1
+                              ? get_lang( 'This resource is already added' )
+                              : get_lang( 'Some of your selected resources were already added' );
+                }
             }
             
-            $execution_ok = ! $errorMsg
-                           && $bibliography->add( $resourceId );
+            $execution_ok = ! $errorMsg;
             break;
         }
         
         case 'exRemove':
         case 'exUnbookmark':
         {
-            $execution_ok = $resourceSet->remove( $resourceId );
+            $execution_ok = true;
+            
+            foreach( array_keys( $resourceList ) as $resourceId )
+            {
+                $execution_ok = $execution_ok
+                            && $resourceSet->remove( $resourceId );
+            }
             break;
         }
         
         case 'exVisible':
         case 'exInvisible':
         {
-            $execution_ok = $resourceSet->setVisibility( $resourceId
-                                                       , $cmd == 'exVisible' ? true : false );
+            $execution_ok = true;
+            
+            foreach( array_keys( $resourceList ) as $resourceId )
+            {
+                $execution_ok = $execution_ok
+                             && $resourceSet->setVisibility( $resourceId
+                                                           , $cmd == 'exVisible' ? true : false );
+            }
             break;
         }
         
@@ -511,12 +535,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             }
             
             $execution_ok = $resource->save();
-            break;
-        }
-        
-        case 'exMoveResource':
-        {
-            $execution_ok = $resourceSet->moveResource( $resourceId , $libraryId );
             break;
         }
         
