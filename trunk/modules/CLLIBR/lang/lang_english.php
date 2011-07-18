@@ -116,6 +116,7 @@ $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
 $_lang[ 'Manage librarians' ] = 'Manage librarians';
 $_lang[ 'Move this resource to another library' ] = 'Move this resource to another library';
 $_lang[ 'My bookmark' ] = 'My bookmark';
+$_lang[ 'On selected items' ] = 'On selected items';
 $_lang[ 'Quick search' ] = 'Quick search';
 $_lang[ 'Show tagcloud' ] = 'Show tagcloud';
 

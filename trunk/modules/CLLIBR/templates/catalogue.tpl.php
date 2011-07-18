@@ -38,7 +38,7 @@
                 </th>
             <?php endif; ?>
                 <th>
-                    <?php echo get_lang( 'Actions' ); ?>
+                    <span class="claroCmd"><?php echo get_lang( 'Actions' ); ?></span>
                 </th>
             </tr>
         </thead>
