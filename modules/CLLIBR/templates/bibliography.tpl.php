@@ -2,100 +2,121 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<fieldset id="bibliography">
-    <legend><?php echo get_lang( 'Documents' ); ?></legend>
-    <table class="claroTable emphaseLine" style=" width: 100%;">
-        <thead>
-            <tr class="headerX">
-                <th>
-                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&libraryId=' . $this->libraryId ) ); ?>">
-                    <?php echo get_lang( 'Title'); ?>
-                    </a>
-                </th>
-                <th>
-                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&sort=author' . $this->libraryId ) ); ?>">
-                    <?php echo get_lang( 'Author(s)' ); ?>
-                    </a>
-                </th>
-                <!--
-                <th>
-                    <?php echo get_lang( 'Selected' ); ?>
-                </th>
-                -->
-                <th>
-                    <?php echo get_lang( 'Actions' ); ?>
-                </th>
-    <?php if ( $this->edit_allowed ) : ?>
-                <th>
-                    <?php echo get_lang( 'Visibility' ); ?>
-                </th>
-    <?php endif; ?>
-            </tr>
-        </thead>
-        <tbody>
-    <?php if ( ! empty( $this->resourceList ) ) : ?>
-        <?php foreach ( $this->resourceList as $resource ) : ?>
-            <?php if ( $resource[ 'is_visible' ] || $this->edit_allowed ) : ?>
-            <tr>
-                <td>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resource[ 'id' ] ) );?>">
-                        <?php echo $resource[ 'title' ]; ?>
-                    </a>
-                </td>
-                <td> 
-                    <?php echo $resource[ 'author' ]; ?>
-                </td>
-                <!--
-                <td align="center">
-                    <input type="checkbox" name="select[<?php echo $resource[ 'id' ]; ?>]" />
-                </td>
-                -->
-                <td align="center">
-                <?php if ( $this->userId ) : ?>
-                    <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resource[ 'id' ] ) );?>">
-                        <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
-                    </a>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#selectAll" ).click(function(){
+            var is_checked=$(this).attr('checked');
+            $(".resourceSelect").attr('checked',is_checked);
+        });
+    });
+</script>
+
+<form method="post"
+      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) );?>">
+    <fieldset id="bibliography">
+        <legend><?php echo get_lang( 'Documents' ); ?></legend>
+        <table class="claroTable emphaseLine" style=" width: 100%;">
+            <thead>
+                <tr class="headerX">
+                    <th>
+                        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&libraryId=' . $this->libraryId ) ); ?>">
+                        <?php echo get_lang( 'Title'); ?>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&sort=author' . $this->libraryId ) ); ?>">
+                        <?php echo get_lang( 'Author(s)' ); ?>
+                        </a>
+                    </th>
+                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                    <th>
+                        <input id="selectAll" type="checkbox" />
+                    </th>
                 <?php endif; ?>
-                    <!--
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
-                        <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
-                    </a>
-                    -->
-                <?php if ( $this->edit_allowed ) : ?>
-                    <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resource[ 'id' ] ) );?>">
-                        <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
-                    </a>
-                </td>
-                <td align="center">
-                    <?php if ( $resource[ 'is_visible' ] ) : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resource[ 'id' ] ) );?>">
-                        <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'visible' ); ?>"/>
-                    </a>
-                    <?php else : ?>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resource[ 'id' ] ) );?>">
-                        <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'invisible' ); ?>"/>
-                    </a>
+                    <th>
+                        <span class="claroCmd"><?php echo get_lang( 'Actions' ); ?><span>
+                    </th>
+        <?php if ( $this->edit_allowed ) : ?>
+                    <th>
+                        <span class="claroCmd"><?php echo get_lang( 'Visibility' ); ?></span>
+                    </th>
+        <?php endif; ?>
+                </tr>
+            </thead>
+            <tbody>
+        <?php if ( ! empty( $this->resourceList ) ) : ?>
+            <?php foreach ( $this->resourceList as $resource ) : ?>
+                <?php if ( $resource[ 'is_visible' ] || $this->edit_allowed ) : ?>
+                <tr>
+                    <td>
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $resource[ 'id' ] ) );?>">
+                            <?php echo $resource[ 'title' ]; ?>
+                        </a>
+                    </td>
+                    <td> 
+                        <?php echo $resource[ 'author' ]; ?>
+                    </td>
+                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                    <td align="center">
+                        <input class="resourceSelect" type="checkbox" name="resource[<?php echo $resource[ 'id' ]; ?>]" />
+                    </td>
+                <?php endif; ?>
+                    <td align="center">
+                    <?php if ( $this->userId ) : ?>
+                        <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resource[ 'id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
+                        </a>
                     <?php endif; ?>
-                </td>
+                        <!--
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
+                        </a>
+                        -->
+                    <?php if ( $this->edit_allowed ) : ?>
+                        <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resource[ 'id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
+                        </a>
+                    </td>
+                    <td align="center">
+                        <?php if ( $resource[ 'is_visible' ] ) : ?>
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resource[ 'id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'visible' ); ?>"/>
+                        </a>
+                        <?php else : ?>
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resource[ 'id' ] ) );?>">
+                            <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'invisible' ); ?>"/>
+                        </a>
+                        <?php endif; ?>
+                    </td>
+                    <?php endif; ?>
+                </tr>
                 <?php endif; ?>
-            </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+                <tr>
+                    <td class="empty" colspan="5"><?php echo get_lang( 'Empty bibliography' ); ?></td>
+                </tr>
+        <?php endif; ?>
+            </tbody>
+        </table>
+        <div id="onSelected">
+            <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
+            <select name="cmd">
+            <?php if ( $this->userId ) : ?>
+                <option value="exBookmark"><?php echo get_lang( 'Add to my bookmark' ); ?></option>
             <?php endif; ?>
-        <?php endforeach; ?>
-    <?php else: ?>
-            <tr>
-                <td class="empty" colspan="5"><?php echo get_lang( 'Empty bibliography' ); ?></td>
-            </tr>
-    <?php endif; ?>
-        </tbody>
-    </table>
-</fieldset>
+            </select>
+            <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
+        </div>
+    </fieldset>
+</form>
 
 <?php if ( ! empty( $this->courseLibraryList ) ) : ?>
 <fieldset id="courseLibrary">
@@ -104,11 +125,11 @@
         <thead>
             <tr class="headerX">
                 <th>
-                    <?php echo get_lang( 'Libraries'); ?>
+                    <span class="claroCmd"><?php echo get_lang( 'Libraries'); ?></span>
                 </th>
     <?php if ( $this->edit_allowed ) : ?>
                 <th>
-                    <?php echo get_lang( 'Commands' ); ?>
+                    <span class="claroCmd"><?php echo get_lang( 'Commands' ); ?></span>
                 </th>
     <?php endif; ?>
             </tr>
