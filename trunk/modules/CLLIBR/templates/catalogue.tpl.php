@@ -17,6 +17,7 @@
         });
     });
 </script>
+
 <form method="post"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) );?>">
     <table class="claroTable emphaseLine" style=" width: 100%;">
