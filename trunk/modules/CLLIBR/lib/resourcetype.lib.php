@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -106,7 +106,7 @@ class ResourceType
     {
         if ( ! in_array( $extension , $this->authorizedFileList ) )
         {
-            $this->addAuthorizedFile[] = $extension;
+            $this->authorizedFileList[] = $extension;
         }
     }
     
@@ -132,7 +132,7 @@ class ResourceType
      */
     public function addMetadata( $name , $type = self::TYPE_SHORT )
     {
-        if ( array_key_exists( $name , $this->defaultMetadataList ) )
+        if ( ! array_key_exists( $name , $this->defaultMetadataList ) )
         {
             $this->defaultMetadataList[ $name ] = $type;
         }
@@ -173,8 +173,13 @@ class ResourceType
     /**
      * Saves the resource type definition in a xml file
      */
-    public function save()
+    public function save( $fileName = null )
     {
+        if ( ! $this->fileName && ! $fileName )
+        {
+            throw new Exception( 'You must give a file name' );
+        }
+        
         $xml  = '<?xml version="1.0"?>' . "\n";
         $xml .= '<documentType>' . "\n";
         $xml .= '    <name>' . str_replace( ' ' , '_' , $this->name ) . '</name>' . "\n";
@@ -199,7 +204,7 @@ class ResourceType
         $xml .= '    </defaultMetadataList>' . "\n";
         $xml .= '</documentType>';
         
-        $xmlElement = new SimpleXMLElement;
-        $xmlElement->asXML( $this->fileName );
+        $xmlElement = new SimpleXMLElement( $xml );
+        $xmlElement->asXML( $fileName ? $fileName : $this->fileName );
     }
 }
