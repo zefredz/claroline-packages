@@ -26,12 +26,12 @@
             <thead>
                 <tr class="headerX">
                     <th>
-                        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&libraryId=' . $this->libraryId ) ); ?>">
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&libraryId=' . $this->libraryId ) ); ?>">
                         <?php echo get_lang( 'Title'); ?>
                         </a>
                     </th>
                     <th>
-                        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&sort=author' . $this->libraryId ) ); ?>">
+                        <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowBibliography&sort=author' . $this->libraryId ) ); ?>">
                         <?php echo get_lang( 'Author(s)' ); ?>
                         </a>
                     </th>
@@ -41,11 +41,11 @@
                     </th>
                 <?php endif; ?>
                     <th>
-                        <span class="claroCmd"><?php echo get_lang( 'Actions' ); ?><span>
+                        <?php echo get_lang( 'Actions' ); ?>
                     </th>
         <?php if ( $this->edit_allowed ) : ?>
                     <th>
-                        <span class="claroCmd"><?php echo get_lang( 'Visibility' ); ?></span>
+                        <?php echo get_lang( 'Visibility' ); ?>
                     </th>
         <?php endif; ?>
                 </tr>
@@ -125,11 +125,11 @@
         <thead>
             <tr class="headerX">
                 <th>
-                    <span class="claroCmd"><?php echo get_lang( 'Libraries'); ?></span>
+                    <?php echo get_lang( 'Libraries'); ?>
                 </th>
     <?php if ( $this->edit_allowed ) : ?>
                 <th>
-                    <span class="claroCmd"><?php echo get_lang( 'Commands' ); ?></span>
+                    <?php echo get_lang( 'Commands' ); ?>
                 </th>
     <?php endif; ?>
             </tr>
