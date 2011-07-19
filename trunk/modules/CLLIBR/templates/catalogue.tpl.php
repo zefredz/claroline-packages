@@ -24,12 +24,12 @@
         <thead>
             <tr class="headerX">
                 <th>
-                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowCatalogue&libraryId=' . $this->libraryId ) ); ?>">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowCatalogue&libraryId=' . $this->libraryId ) ); ?>">
                     <?php echo get_lang( 'Title'); ?>
                     </a>
                 </th>
                 <th>
-                    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowCatalogue&sort=author&libraryId=' . $this->libraryId ) ); ?>">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowCatalogue&sort=author&libraryId=' . $this->libraryId ) ); ?>">
                     <?php echo get_lang( 'Author(s)' ); ?>
                     </a>
                 </th>
@@ -39,7 +39,7 @@
                 </th>
             <?php endif; ?>
                 <th>
-                    <span class="claroCmd"><?php echo get_lang( 'Actions' ); ?></span>
+                    <?php echo get_lang( 'Actions' ); ?>
                 </th>
             </tr>
         </thead>
