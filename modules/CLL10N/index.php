@@ -24,7 +24,7 @@ if ( ! claro_is_platform_admin() ) claro_die(get_lang('Not allowed'));
 FromKernel::uses('utils/input.lib','utils/validator.lib','user.lib');
 From::Module('CLL10N')->uses('translationmanage.lib','translationrenderer.lib');
 
-require_once (get_path('incRepositorySys') . '/../admin/xtra/sdk/lang/language.lib.php');
+require_once ('./lib/language.lib.php');
 
 ClaroBreadCrumbs::getInstance()->prepend( get_lang('Administration'), get_path('rootAdminWeb') );
 
@@ -268,7 +268,7 @@ try {
       break;
   }
   
-  Claroline::getDisplay()->body->appendcontent( $out ); 
+  Claroline::getDisplay()->body->appendcontent( $out );
 }
 catch(Exception $e )
 {
