@@ -362,11 +362,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $type = $userInput->get( 'type' );
             $storage = $userInput->get( 'storage' );
             $title = $userInput->get( 'title' );
-            $description = $userInput->get( 'description' );
+            $description = $userInput->get( 'description' )
+                         ? $userInput->get( 'description' )
+                         : get_lang( 'no description' );
             
             $resourceType = $resourceTypeList->get( $type );
             
-            if ( $resourceType && $title && $description )
+            if ( $resourceType && $title )
             {
                 $authorizedFileList = $resourceType->getAuthorizedFileList();
                 $resource = new Resource( $database );
