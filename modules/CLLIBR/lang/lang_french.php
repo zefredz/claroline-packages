@@ -137,6 +137,7 @@ $_lang[ 'File missing' ] = 'Vous n\'avez pas soumis de fichier';
 $_lang[ 'Invalid file' ] = 'Le fichier que vous avez soumis n\'est pas dans le bon format';
 $_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'Il est déconseillé de supprimer cette ressource avant de s\'assurer que cela ne causera pas de problèmes!';
 $_lang[ 'Link this library to your course\'s bibliography' ] = 'Créer un lien vers cette bibliothèque dans la bibliographie du cours';
+$_lang[ 'no description' ] = '<span style="font-style: italic; color: grey;">--aucune description--</span>';
 $_lang[ 'No result' ] = 'Aucun résultat';
 $_lang[ 'Not allowed' ] = 'Cette opération ne vous est pas permise';
 $_lang[ 'Select the library' ] = 'Sélectionez la bibliothèque';

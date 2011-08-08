@@ -137,6 +137,7 @@ $_lang[ 'File missing' ] = 'File missing';
 $_lang[ 'Invalid file' ] = 'Invalid file';
 $_lang[ 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' ] = 'It\'s not advised to remove this resource unless you are sure it will not cause problems!';
 $_lang[ 'Link this library to your course\'s bibliography' ] = 'Link this library to your course\'s bibliography';
+$_lang[ 'no description' ] = '<span style="font-style: italic; color: grey;">--no description--</span>';
 $_lang[ 'No result' ] = 'No result';
 $_lang[ 'Not allowed' ] = 'Not allowed';
 $_lang[ 'Select the library' ] = 'Select the library';
