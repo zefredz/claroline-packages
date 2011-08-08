@@ -118,6 +118,8 @@ $_lang[ 'Move this resource to another library' ] = 'Move this resource to anoth
 $_lang[ 'My bookmark' ] = 'My bookmark';
 $_lang[ 'On selected items' ] = 'On selected items';
 $_lang[ 'Quick search' ] = 'Quick search';
+$_lang[ 'Remove from bibliography' ] = 'Remove from bibliography';
+$_lang[ 'Remove from my bookmark' ] = 'Remove from my bookmark';
 $_lang[ 'Show tagcloud' ] = 'Show tagcloud';
 
 // Messages

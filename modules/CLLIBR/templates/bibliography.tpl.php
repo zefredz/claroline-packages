@@ -99,15 +99,18 @@
         <?php endif; ?>
             </tbody>
         </table>
+        <?php if ( $this->userId ) : ?>
         <div id="onSelected">
             <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
             <select name="cmd">
-            <?php if ( $this->userId ) : ?>
                 <option value="exBookmark"><?php echo get_lang( 'Add to my bookmark' ); ?></option>
+            <?php if ( $this->edit_allowed ) : ?>
+                <option value="exRemove"><?php echo get_lang( 'Remove from bibliography' ); ?></option>
             <?php endif; ?>
             </select>
             <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
         </div>
+        <?php endif; ?>
     </fieldset>
 </form>
 

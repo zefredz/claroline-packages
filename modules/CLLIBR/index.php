@@ -743,22 +743,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                               .'/index.php?cmd=exAddLibrary&libraryId='
                                               . $libraryId ) ) );
-                /** For later : still unused commands
-                $cmdList[] = array( 'img'  => 'bookmark',
-                                    'name' => get_lang( 'Add selection in course\'s bibliography' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=exAdd&libraryId='
-                                              . $libraryId ) ) );
-                */
             }
-            
-            /** For later : still unused commands
-            $cmdList[] = array( 'img'  => 'book',
-                                'name' => get_lang( 'Add selection to my bookmark' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                          .'/index.php?cmd=exBookmark&libraryId='
-                                          . $libraryId ) ) );
-            */
             break;
         }
         
