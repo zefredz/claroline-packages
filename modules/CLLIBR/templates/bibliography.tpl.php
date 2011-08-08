@@ -9,14 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<script type="text/javascript">
-    $(document).ready(function(){
-        $("#selectAll" ).click(function(){
-            var is_checked=$(this).attr('checked');
-            $(".resourceSelect").attr('checked',is_checked);
-        });
-    });
-</script>
+<?php include( 'selector.tpl.php' ); ?>
 
 <form method="post"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) );?>">

@@ -30,11 +30,6 @@
                 <?php echo get_lang( 'Author(s)' ); ?>
                 </a>
             </th>
-            <!--
-            <th>
-                <?php echo get_lang( 'Selected' ); ?>
-            </th>
-            -->
             <th>
                 <?php echo get_lang( 'Actions' ); ?>
             </th>
@@ -52,11 +47,6 @@
             <td> 
                 <?php echo $resource[ 'author' ]; ?>
             </td>
-            <!--
-            <td align="center">
-                <input type="checkbox" name="select[<?php echo $resource[ 'id' ]; ?>]" />
-            </td>
-            -->
             <td align="center">
                 <!--
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
