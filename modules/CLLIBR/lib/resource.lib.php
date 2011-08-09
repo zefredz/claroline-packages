@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,6 +14,7 @@
  * @const TYPE_FILE
  * @const TYPE_URL
  * @property int $id
+ * @property boolean $is_deleted
  * @property string $storageType
  * @property string $resourceType
  * @property string $creationDate
@@ -31,6 +32,7 @@ class Resource
     protected $creationDate;
     protected $resourceName;
     
+    protected $is_deleted = false;
     protected $database;
     
     /**
@@ -76,10 +78,19 @@ class Resource
         }
         else
         {
-            throw new Exception( 'resource does not exists' );
+            $this->is_deleted = true;
         }
     }
-        
+    
+    /**
+     * Controls if the resource is deleted
+     * @return boolean true if deleted
+     */
+    public function isDeleted()
+    {
+        return $this->is_deleted;
+    }
+    
     /**
      * Getter for ID
      * @return string $id

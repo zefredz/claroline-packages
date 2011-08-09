@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -36,7 +36,8 @@ From::Module( 'CLLIBR' )->uses(
     'resourceview.lib',
     'acl.lib',
     'tagcloud.lib',
-    'tools.lib' );
+    'tools.lib',
+    'usernote.lib' );
 
 $claroline->currentModuleLabel( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
@@ -83,6 +84,7 @@ $actionList = array( 'rqShowBookmark'
                    , 'rqDownload'
                    , 'exBookmark'
                    , 'exUnbookmark'
+                   , 'exNote'
                    , 'rqSearch' );
 
 $restrictedActionList = array( 'rqAddResource'
@@ -126,6 +128,7 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exAddLibrarian'    => 'rqShowLibrarian'
                         , 'exRemoveLibrarian' => 'rqShowLibrarian'
                         , 'exEditResource'    => 'rqView'
+                        , 'exNote'            => 'rqView'
                         , 'exBookmark'        => ''
                         , 'exUnbookmark'      => '' );
 
@@ -155,7 +158,13 @@ if ( $courseId )
     $courseLibraryList = new CourseLibrary( $database , $courseId );
 }
 
+if ( $userId && $resourceId )
+{
+    $userNote = new UserNote( $database , $userId , $resourceId );
+}
+
 // SETTING CONTEXT
+$is_deleted = $resource->isDeleted();
 $refId = null;
 
 if ( substr( $cmd , 0 , 6 ) == 'rqShow' )
@@ -269,6 +278,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 if ( ! $bookmark->resourceExists( $resourceId ) )
                 {
                     $bookmark->add( $resourceId );
+                    $userNote = new UserNote( $database , $userId , $resourceId );
+                    $userNote->create();
                 }
                 else
                 {
@@ -279,6 +290,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             }
             
             $execution_ok = ! $errorMsg;
+            break;
+        }
+        
+        case 'exNote':
+        {
+            $content = $userInput->get( 'content' );
+            $userNote = new UserNote( $database , $userId , $resourceId );
+            $userNote->set( $content );
             break;
         }
         
@@ -313,6 +332,12 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             {
                 $execution_ok = $execution_ok
                             && $resourceSet->remove( $resourceId );
+            }
+            
+            if ( $resourceSet->getType() == Collection::USER_COLLECTION )
+            {
+                $userNote = new UserNote( $database , $userId , $resourceId );
+                $userNote->delete();
             }
             break;
         }
@@ -543,16 +568,18 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exDeleteResource':
         {
             $resource = new Resource( $database , $resourceId );
-            $metadata = new Metadata( $database , $resourceId );
+            //$metadata = new Metadata( $database , $resourceId );
             $catalogue = new Collection( $database , 'catalogue' , $libraryId );
             
             $execution_ok = $catalogue->removeResource( $resourceId )
                          && $resource->delete();
             
+            /* commented for user's note implementation
             if( $execution_ok )
             {
                 $metadata->removeAll();
             }
+            */
             
             if ( $execution_ok && $resource->getStorageType() == 'file' )
             {
@@ -774,18 +801,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqView':
         {
-            $viewName = $resource->getType() . 'View';
             $is_validated = false;
             
-            if ( array_key_exists( 'resourceview' , $pluginList )
-              && in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
+            if ( ! $is_deleted )
             {
-                $resourceViewer = new $viewName( new StoredResource( $repository
-                                                                   , null
-                                                                   , $resource
-                                                                   , $secretKey ) );
+                $viewName = $resource->getType() . 'View';
                 
-                $is_validated = $resourceViewer->validate( StoredResource::getFileExtension( $resource->getName() ) );
+                if ( array_key_exists( 'resourceview' , $pluginList )
+                  && in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
+                {
+                    $resourceViewer = new $viewName( new StoredResource( $repository
+                                                                       , null
+                                                                       , $resource
+                                                                       , $secretKey ) );
+                    
+                    $is_validated = $resourceViewer->validate( StoredResource::getFileExtension( $resource->getName() ) );
+                }
             }
             
             $template = new ModuleTemplate( 'CLLIBR' , 'resource.tpl.php' );
@@ -800,6 +831,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
             $template->assign( 'read_allowed' , $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_READ ) );
             $template->assign( 'viewer' , $is_validated ? $resourceViewer : false );
+            $template->assign( 'userNote' , $userNote->noteExists() ? $userNote->getContent() : null );
+            $template->assign( 'is_deleted' , $is_deleted );
             
             if ( $libraryId )
             {
@@ -868,7 +901,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                     , 'index.php?cmd=exEditResource&resourceId=' . $resourceId );
             $type = $resource->getType();
             $resource = new Resource( $database , $resourceId );
-            //$metadata->setDefault( $resource->getType() );
             
             $pageTitle[ 'subTitle' ] = get_lang( 'Edit resource' );
             $template = new ModuleTemplate( 'CLLIBR' , 'editresource.tpl.php' );

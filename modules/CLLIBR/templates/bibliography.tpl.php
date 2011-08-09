@@ -99,7 +99,7 @@
         <?php endif; ?>
             </tbody>
         </table>
-        <?php if ( $this->userId ) : ?>
+        <?php if ( $this->userId && count( $this->resourceList ) > 1 ) : ?>
         <div id="onSelected">
             <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
             <select name="cmd">

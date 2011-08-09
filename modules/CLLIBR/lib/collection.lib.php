@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -84,9 +84,6 @@ class Collection
         foreach( $resultSet as $line )
         {
             $resourceId = $line[ 'resource_id' ];
-            /*$this->resourceList[ $resourceId ] = array( new Resource( $this->database , $resourceId )
-                                                      , new Metadata( $this->database , $resourceId )
-                                                      , 'is_visible' => (boolean)$line[ 'is_visible' ] );*/
             $metadata = new Metadata( $this->database , $resourceId );
             $this->resourceList[ $resourceId ] = array( 'id' => $resourceId
                                                       , 'title' => $metadata->get( 'title' )
@@ -272,7 +269,9 @@ class Collection
             DELETE FROM
                 `{$this->tbl['library_collection']}`
             WHERE
-                resource_id = " . $this->database->escape( $resourceId ) );
+                resource_id = " . $this->database->escape( $resourceId ) . "
+            AND
+                type != " . $this->database->quote( self::USER_COLLECTION ) );
         
         return $this->database->affectedRows();
     }
