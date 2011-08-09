@@ -150,6 +150,7 @@ $_lang[ 'Success' ] = 'Success';
 $_lang[ 'This resource has been deleted' ] = 'This resource has been deleted';
 $_lang[ 'This resource is already added' ] = 'This resource is already added';
 $_lang[ 'This resource is already bookmarked' ] = 'This resource is already bookmarked';
+$_lang[ 'Uploading file' ] = 'Uploading file';
 $_lang[ 'Url missing' ] = 'Url missing';
 $_lang[ 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' ] = 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!';
 $_lang[ 'Warning : this resource is in use' ] = 'Warning : this resource is in use';

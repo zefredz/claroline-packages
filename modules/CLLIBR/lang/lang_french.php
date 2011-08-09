@@ -150,6 +150,7 @@ $_lang[ 'Success' ] = 'L\'opération s\'est déroulée avec succès';
 $_lang[ 'This resource has been deleted' ] = 'Cette ressource a été supprimée!';
 $_lang[ 'This resource is already added' ] = 'Cette ressource avait déjà été ajoutée';
 $_lang[ 'This resource is already bookmarked' ] = 'Vous aviez déjà mis cette ressource dans votre liste de lecture';
+$_lang[ 'Uploading file' ] = 'Transfert du fichier: veuillez patentiez!';
 $_lang[ 'Url missing' ] = 'Vous avez oublié de spécifier l\'Url';
 $_lang[ 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' ] = 'ATTENTION: cette bibliothèque n\'est pas vide! Ceci supprimera également toutes ses ressources, ainsi que tous les liens vers celles-ci dans les bibliographies et les listes de lectures!';
 $_lang[ 'Warning : this resource is in use' ] = 'ATTENTION: cette ressource est utilisée ailleurs';
