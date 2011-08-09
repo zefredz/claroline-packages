@@ -2,7 +2,7 @@
  * $Id$
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -45,11 +45,18 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_course_library`(
     library_id INT(11) NOT NULL,
     PRIMARY KEY(course_id,library_id)
 ) ENGINE=MyISAM;
-    
+
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_collection`(
     resource_id INT(11) NOT NULL,
     collection_type ENUM('catalogue','bibliography','bookmark') NOT NULL,
     ref_id VARCHAR(16) NOT NULL,
     is_visible BOOLEAN DEFAULT TRUE,
     PRIMARY KEY(resource_id,collection_type,ref_id)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_user_note`(
+    user_id INT(11) NOT NULL,
+    resource_id INT(11) NOT NULL,
+    content TEXT,
+    PRIMARY KEY(user_id,resource_id)
 ) ENGINE=MyISAM;

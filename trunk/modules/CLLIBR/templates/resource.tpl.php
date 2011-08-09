@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -11,7 +11,9 @@
 
 <fieldset id="accessResource">
     <legend><?php echo get_lang('Resource'); ?></legend>
-<?php if ( $this->read_allowed ) : ?>
+<?php if ( $this->is_deleted ) : ?>
+    <span class="empty"><?php echo get_lang( 'This resource has been deleted' ); ?></span>
+<?php elseif ( $this->read_allowed ) : ?>
     <?php if ( $this->viewer ) : ?>
     <?php echo $this->viewer->render(); ?>
     <?php endif; ?>
@@ -29,8 +31,8 @@
 <?php endif; ?>
 </fieldset>
 
-<fieldset>
-    <legend><?php echo get_lang( 'Metadatas' ); ?> :</legend>
+<fieldset id="metadatas">
+    <legend><?php echo get_lang( 'Metadatas' ); ?></legend>
     <dl id="metadataList">
         <dt>
             <?php echo get_lang( 'Title' ); ?> :
@@ -47,9 +49,7 @@
 <?php foreach( $this->metadataList as $name => $values ): ?>
     <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD ) : ?>
         <dt>
-            <label>
-                <?php echo get_lang( ucwords( $name ) ); ?> :
-            </label>
+            <?php echo get_lang( ucwords( $name ) ); ?> :
         </dt>
         <dd>
             <?php echo htmlspecialchars( $values ); ?>
@@ -72,3 +72,23 @@
 <?php endif; ?>
     </dl>
 </fieldset>
+
+<?php if ( ! is_null( $this->userNote ) ) : ?>
+<fieldset id="userNote">
+    <legend><?php echo get_lang( 'My personnal notes' ); ?></legend>
+    <form method="post"
+          action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exNote' ) ); ?>" >
+        <input type="hidden"
+               name="userId"
+               value="<?php echo $this->userId; ?>" />
+        <input type="hidden"
+               name="resourceId"
+               value="<?php echo $this->resourceId; ?>" />
+        <textarea rows="20" name="content">
+            <?php echo $this->userNote; ?>
+        </textarea>
+        <br />
+        <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Save' ); ?>" />
+    </form>
+</fieldset>
+<?php endif; ?>

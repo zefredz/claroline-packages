@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.3 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -61,6 +61,7 @@ $_lang[ 'Local storage of a file' ] = 'Stockage en local du fichier';
 $_lang[ 'Metadatas' ] = 'Méta-données';
 $_lang[ 'Metadata\'s content' ] = 'Valeur de la méta-donnée';
 $_lang[ 'Metadata\'s name' ] = 'Nom de la méta-donnée';
+$_lang[ 'My personnal notes' ] = 'Mes notes personnelles';
 $_lang[ 'Other Libraries'] = 'Autres bibliothèques';
 $_lang[ 'Relevancy' ] = 'Pertinence';
 $_lang[ 'Resource' ] = 'Ressource';
@@ -146,6 +147,7 @@ $_lang[ 'Select the library' ] = 'Sélectionez la bibliothèque';
 $_lang[ 'Some of your selected resources were already added' ] = 'Certaines de ces ressources apparaissaient déjà dans ce cours';
 $_lang[ 'Some of your selected resources were already bookmarked' ] = 'Certaines de ces ressources figuraient déjà dans votre liste de lecture';
 $_lang[ 'Success' ] = 'L\'opération s\'est déroulée avec succès';
+$_lang[ 'This resource has been deleted' ] = 'Cette ressource a été supprimée!';
 $_lang[ 'This resource is already added' ] = 'Cette ressource avait déjà été ajoutée';
 $_lang[ 'This resource is already bookmarked' ] = 'Vous aviez déjà mis cette ressource dans votre liste de lecture';
 $_lang[ 'Url missing' ] = 'Vous avez oublié de spécifier l\'Url';

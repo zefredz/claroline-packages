@@ -80,6 +80,7 @@
     <?php endif; ?>
         </tbody>
     </table>
+    <?php if ( count( $this->resourceList ) > 1 ) : ?>
     <div id="onSelected">
         <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
         <select name="cmd">
@@ -89,4 +90,5 @@
         </select>
         <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     </div>
+    <?php endif; ?>
 </form>
