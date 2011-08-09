@@ -271,7 +271,7 @@ class Collection
             WHERE
                 resource_id = " . $this->database->escape( $resourceId ) . "
             AND
-                type != " . $this->database->quote( self::USER_COLLECTION ) );
+                collection_type != " . $this->database->quote( self::USER_COLLECTION ) );
         
         return $this->database->affectedRows();
     }
