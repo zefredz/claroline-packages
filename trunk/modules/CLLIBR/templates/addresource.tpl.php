@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -24,10 +24,17 @@
                 $("#resourceSelect").append('<input type="text" size="60" name="resourceUrl" value=""/>');
             }
         });
+        
+        $("#newResource").submit(function(){
+            $("#upload").empty();
+            $("#upload").append('<span class="uploading"><img src="<?php echo get_icon_url( 'loading' ); ?>" alt="uploading" /> <?php echo get_lang( 'Uploading file' ); ?></span>');
+        });
     });
 </script>
 
-<form class="msform" method="post"
+<form id="newResource"
+      class="msform"
+      method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $this->urlAction ) ); ?>" >
     <input type="hidden"
@@ -80,7 +87,7 @@
                 </span>
             </dd>
         </dl>
-        
+    
     <dl>
         <dt>
             <?php echo get_lang( 'Title' ); ?> :
@@ -97,9 +104,11 @@
     </dl>
     </fieldset>
     
-    <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
-    <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
-        $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $this->libraryId ) ); ?>">
-        <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
-    </a>
+    <div id="upload">
+        <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
+        <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+            $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $this->libraryId ) ); ?>">
+            <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
+        </a>
+    </div>
 </form>
