@@ -830,7 +830,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'edit_allowed' , $acl->editGranted( $resourceId ) );
             $template->assign( 'read_allowed' , $acl->accessGranted( $resourceId , CLLIBR_ACL::ACCESS_READ ) );
             $template->assign( 'viewer' , $is_validated ? $resourceViewer : false );
-            $template->assign( 'userNote' , $userNote->noteExists() ? $userNote->getContent() : null );
+            $template->assign( 'userNote' , isset( $userNote ) && $userNote->noteExists() ? $userNote->getContent() : null );
             $template->assign( 'is_deleted' , $is_deleted );
             
             if ( $libraryId )
