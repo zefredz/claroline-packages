@@ -574,12 +574,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $execution_ok = $catalogue->removeResource( $resourceId )
                          && $resource->delete();
             
-            /* commented for user's note implementation
             if( $execution_ok )
             {
-                $metadata->removeAll();
+                //$metadata->removeAll(); line commented for user's note implementation
+                $metadata->remove( Metadata::KEYWORD );
             }
-            */
             
             if ( $execution_ok && $resource->getStorageType() == 'file' )
             {

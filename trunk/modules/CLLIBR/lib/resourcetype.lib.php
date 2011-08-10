@@ -120,7 +120,7 @@ class ResourceType
         {
             if ( $extension == $ext )
             {
-                unset( $this->addAuthorizedFile[ $index ] );
+                unset( $this->authorizedFileList[ $index ] );
             }
         }
     }
