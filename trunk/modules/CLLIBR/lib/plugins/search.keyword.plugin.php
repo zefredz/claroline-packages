@@ -23,7 +23,7 @@ class KeywordSearch extends Search
     {
         return $this->searchResult = $this->database->query( "
             SELECT
-                T.resource_id AS id,
+                T.resource_id          AS id,
                 T.metadata_value       AS title,
                 K.metadata_value       AS keyword
             FROM

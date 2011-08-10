@@ -24,19 +24,22 @@ class FulltextSearch extends Search
         
         return $this->searchResult = $this->database->query( "
             SELECT
-                T.resource_id    AS id,
+                R.id             AS id,
                 T.metadata_value AS title,
                 M.metadata_name  AS name,
                 M.metadata_value AS value,
                 MATCH (M.metadata_name,M.metadata_value) AGAINST ("
                 . $this->database->quote( $searchString ) . ") AS score
             FROM
+                `{$this->tbl['library_resource']}` AS R,
                 `{$this->tbl['library_metadata']}` AS T
             INNER JOIN
                 `{$this->tbl['library_metadata']}` AS M
             ON
                 T.resource_id = M.resource_id
             WHERE
+                T.resource_id = R.id
+            AND
                 MATCH (M.metadata_name,M.metadata_value) AGAINST ("
                 . $this->database->quote( $searchString ) . ")"
         );

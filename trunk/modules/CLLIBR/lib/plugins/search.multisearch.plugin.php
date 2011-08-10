@@ -45,17 +45,20 @@ class MultiSearch extends Search
         {
             $resultSet = $this->database->query( "
                 SELECT
-                    T.resource_id    AS id,
+                    R.id             AS id,
                     T.metadata_value AS title,
                     M.metadata_name  AS name,
                     M.metadata_value AS value
                 FROM
+                    `{$this->tbl['library_resource']}` AS R,
                     `{$this->tbl['library_metadata']}` AS M
                 INNER JOIN
                     `{$this->tbl['library_metadata']}` AS T
                 ON
                     M.resource_id = T.resource_id
                 WHERE
+                    T.resource_id = R.id
+                AND
                     T.metadata_name = 'title'
                 AND
                     M.metadata_name = " . $this->database->quote( $item[ 'name' ] ) . "
@@ -114,7 +117,7 @@ class MultiSearch extends Search
         
         foreach( $result as $id => $datas )
         {
-            $sortedResult[ $datas[ 'score' ] ][ $id ] = array( 'title' => $datas[ 'title' ]
+            $sortedResult[ $datas[ 'score' ] ][ $id ] = array( 'title'   => $datas[ 'title' ]
                                                              , 'matches' => $datas[ 'matches' ] );
         }
         
