@@ -10,6 +10,7 @@
  */ ?>
 
 <?php include( 'selector.tpl.php' ); ?>
+<?php include( dirname(__FILE__) . '/searchform.tpl.php' ); ?>
 
 <form method="post"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) );?>">
