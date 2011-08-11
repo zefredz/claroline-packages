@@ -46,12 +46,18 @@
     padding: 5px;
 }
 
-.exam
+.toolName
 {
+    font-weight: bold;
     background-color: mistyRose;
 }
 
 .noscore
 {
     background-color: linen;
+}
+
+.rightSubmit
+{
+    float: right;
 }

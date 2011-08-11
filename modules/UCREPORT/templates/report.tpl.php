@@ -2,28 +2,27 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-<?php if ( count( $this->reportDataList ) ) : ?>
+
+<?php if ( count( $this->datas ) ) : ?>
 <?php include dirname( __FILE__ ) . '/menu.tpl.php'; ?>
 <table id="report" class="claroTable emphaseLine" style="width: 100%;">
     <thead>
         <tr class="headerX">
             <th><?php echo get_lang( 'User'); ?></th>
-            <?php if ( ! $this->reportId ) : ?>
+            <?php if ( ! $this->id ) : ?>
             <th><?php echo get_lang( 'Activate' ) ; ?></th>
             <?php endif; ?>
-            <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
-                <?php if ( $assignment[ 'active' ] ) : ?>
+            <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
             <th>
-            <?php echo $assignment[ 'title' ]; ?><br />
-            <em>[<?php echo get_lang( 'weight' ) . ' : ' . 100 * $assignment[ 'proportional_weight' ]; ?> % ]</em>
+            <?php echo $item[ 'title' ]; ?><br />
+            <em>[<?php echo get_lang( 'weight' ) . ' : ' . 100 * $item[ 'proportional_weight' ]; ?> % ]</em>
             </th>
-                <?php endif; ?>
             <?php endforeach; ?>
             <th>
                 <?php echo get_lang( 'Weighted global score' ); ?>
@@ -35,38 +34,36 @@
         <td class="cell">
             <?php echo get_lang( 'Average' ); ?>
         </td>
-        <?php if ( ! $this->reportId ) : ?>
+        <?php if ( ! $this->id ) : ?>
         <td class="cell">
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exResetActiveList' ) );?>">
+            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exReset' ) );?>">
                 [<?php echo get_lang( 'Reset' ); ?>]
             </a>
         </td>
         <?php endif; ?>
-        <?php foreach( $this->assignmentDataList as $assignment ) : ?>
-            <?php if ( $assignment[ 'active' ] ) : ?>
+        <?php foreach( $this->datas[ 'items' ] as $item ) : ?>
         <td class="cell">
-                <?php if ( isset( $assignment[ 'average'] ) ) : ?>
-                <?php echo $assignment[ 'average' ]; ?>
+                <?php if ( isset( $item[ 'average' ] ) ) : ?>
+                <?php echo $item[ 'average' ]; ?>
                 <?php else :?>
             <span class="empty"><?php echo get_lang( 'empty' ); ?></span>
                 <?php endif; ?>
         </td>
-            <?php endif; ?>
         <?php endforeach; ?>
         <td class="cell">
-            <?php echo $this->averageScore; ?>
+            <?php echo $this->datas[ 'average' ]; ?>
         </td>
     </tr>
-    <?php foreach( $this->reportDataList as $userId => $userReport ) : ?>
+    <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
         <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() ) : ?>
         <tr>
             <td>
-                <?php echo $this->userList[ $userId ][ 'lastname' ] . ' ' . $this->userList[ $userId ][ 'firstname' ]; ?>
+                <?php echo $this->datas[ 'users' ][ $userId ][ 'lastname' ] . ' ' . $this->datas[ 'users' ][ $userId ][ 'firstname' ]; ?>
             </td>
-            <?php if ( ! $this->reportId ) : ?>
+            <?php if ( ! $this->id ) : ?>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivateUser&userId='. $userId . '&active=' . ! $this->userList[ $userId ][ 'active' ] ) );?>">
-                    <?php if ( $this->userList[ $userId ][ 'active' ] ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&userId='. $userId . '&active=' . ! $this->datas[ 'users' ][ $userId ][ 'active' ] ) );?>">
+                    <?php if ( $this->datas[ 'users' ][ $userId ][ 'active' ] ) : ?>
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                     <?php else: ?>
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
@@ -74,8 +71,7 @@
                 </a>
             </td>
             <?php endif; ?>
-            <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
-                <?php if ( $assignment[ 'active' ] ) : ?>
+            <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
             <td class="cell">
                     <?php if ( isset( $userReport[ $id ] ) ) : ?>
                     <?php echo $userReport[ $id ]; ?>
@@ -83,11 +79,10 @@
                 <span class="empty"><?php echo get_lang( 'empty' ); ?></span>
                     <?php endif; ?>
             </td>
-                <?php endif; ?>
             <?php endforeach; ?>
             <td class="cell final">
-                <?php if ( isset( $this->userList[ $userId ][ 'final_score' ] ) ) : ?>
-                <?php echo $this->userList[ $userId ][ 'final_score' ]; ?>
+                <?php if ( isset( $this->datas[ 'users' ][ $userId ][ 'final_score' ] ) ) : ?>
+                <?php echo $this->datas[ 'users' ][ $userId ][ 'final_score' ]; ?>
                 <?php else : ?>
                 <span class="empty"><?php echo get_lang( 'incomplete' ); ?></span>
                     <?php endif; ?>
@@ -97,11 +92,14 @@
     <?php endforeach; ?>
     </tbody>
 </table>
-    <?php if ( ! isset( $this->reportDataList[ claro_get_current_user_id() ] ) && ! claro_is_allowed_to_edit() ) : ?>
+    <?php if ( ! isset( $this->datas[ 'report' ][ claro_get_current_user_id() ] ) && ! claro_is_allowed_to_edit() ) : ?>
 <p class="noscore"><?php echo get_lang( 'You don\'t have score in this report' ); ?></p>
     <?php endif; ?>
-    <?php if ( $this->comment ) :?>
-<p class="exam"><strong><?php echo get_lang( 'Comment' ); ?> :</strong> <?php echo $this->comment; ?></p>
+    <?php if( ! empty( $this->commentList ) ) : ?>
+    <h3><?php echo get_lang( 'Comments' ); ?></h3>
+        <?php foreach( $this->commentList  as $itemId => $comment ) : ?>
+<p class="exam"><strong><?php echo get_lang( 'Comment for ' ) . $this->itemList[ $itemId ][ 'title' ]; ?> :</strong> <?php echo $comment; ?></p>
+        <?php endforeach; ?>
     <?php endif; ?>
 <?php else : ?>
 <p class="empty"><?php echo get_lang( 'No result at this time' ); ?></p>

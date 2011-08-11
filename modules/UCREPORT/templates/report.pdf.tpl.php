@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -12,18 +12,18 @@
     <?php echo $this->courseData[ 'name' ] . ' (' . $this->courseData[ 'sysCode' ] . ')'; ?>
 </h1>
 <h2>
-    <?php echo get_lang( 'Student report'); ?>
+    <?php echo get_lang( 'Student Report'); ?>
 </h2>
 
 <table class="claroTable emphaseLine" style="width: 100%;">
     <thead>
         <tr class="headerX">
             <th><?php echo get_lang( 'User'); ?></th>
-            <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
-                <?php if ( $assignment[ 'active' ] ) : ?>
+            <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
+                <?php if ( $item[ 'selected' ] ) : ?>
             <th>
-            <?php echo $assignment[ 'title' ]; ?><br />
-            <em>[<?php echo get_lang( 'wt.' ) . ' : ' . 100 * $assignment[ 'proportional_weight' ]; ?> % ]</em>
+            <?php echo $item[ 'title' ]; ?><br />
+            <em>[<?php echo get_lang( 'wt.' ) . ' : ' . 100 * $item[ 'proportional_weight' ]; ?> % ]</em>
             </th>
                 <?php endif; ?>
             <?php endforeach; ?>
@@ -37,11 +37,11 @@
         <td>
             <strong><?php echo get_lang( 'Average' ); ?></strong>
         </td>
-        <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
-            <?php if ( $assignment[ 'active' ] ) : ?>
+        <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
+            <?php if ( $item[ 'selected' ] ) : ?>
         <td>
-                <?php if ( isset( $this->assignmentDataList[ $id ][ 'average'] ) ) : ?>
-            <strong><?php echo $this->assignmentDataList[ $id ][ 'average']; ?></strong>
+                <?php if ( isset( $this->datas[ 'items' ][ $id ][ 'average'] ) ) : ?>
+            <strong><?php echo $this->datas[ 'items' ][ $id ][ 'average']; ?></strong>
                 <?php else :?>
             <span style="color: silver; font-style: italic;"><?php echo get_lang( 'empty' ); ?></span>
                 <?php endif; ?>
@@ -49,21 +49,21 @@
             <?php endif; ?>
         <?php endforeach; ?>
         <td>
-            <strong><?php echo $this->averageScore; ?></strong>
+            <strong><?php echo $this->datas[ 'average' ]; ?></strong>
         </td>
     </tr>
-    <?php foreach( $this->reportDataList as $userId => $userReport ) : ?>
+    <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
         <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() ) : ?>
         <tr>
             <td>
             <?php if ( $userId ) : ?>
-                <?php echo $this->userList[ $userId ][ 'lastname' ] . ' ' . $this->userList[ $userId ][ 'firstname' ]; ?>
+                <?php echo $this->datas[ 'users' ][ $userId ][ 'lastname' ] . ' ' . $this->datas[ 'users' ][ $userId ][ 'firstname' ]; ?>
             <?php else : ?>
                 <strong><?php echo get_lang( 'Average score' ); ?></strong>
             <?php endif; ?>
             </td>
-            <?php foreach( $this->assignmentDataList as $id  => $assignment ) : ?>
-                <?php if ( $assignment[ 'active' ] ) : ?>
+            <?php foreach( $this->datas[ 'items' ] as $id  => $item ) : ?>
+                <?php if ( $item[ 'selected' ] ) : ?>
             <td>
                     <?php if ( isset( $userReport[ $id ] ) ) : ?>
                 <?php echo $userReport[ $id ]; ?>
@@ -74,8 +74,8 @@
                 <?php endif; ?>
             <?php endforeach; ?>
             <td>
-                <?php if ( isset( $this->userList[ $userId ][ 'final_score' ] ) ) : ?>
-                <strong><?php echo $this->userList[ $userId ][ 'final_score' ]; ?></strong>
+                <?php if ( isset( $this->datas[ 'users' ][ $userId ][ 'final_score' ] ) ) : ?>
+                <strong><?php echo $this->datas[ 'users' ][ $userId ][ 'final_score' ]; ?></strong>
                 <?php else : ?>
                 <span style="color: silver; font-style: italic;"><?php echo get_lang( 'incomplete' ); ?></span>
                 <?php endif; ?>
@@ -85,6 +85,9 @@
     <?php endforeach; ?>
     </tbody>
 </table>
-    <?php if ( $this->comment ) :?>
-<p class="exam"><?php echo $this->comment; ?></p>
+    <?php if( ! empty( $this->commentList ) ) : ?>
+    <h3><?php echo get_lang( 'Comments' ); ?></h3>
+        <?php foreach( $this->commentList  as $itemId => $comment ) : ?>
+<p class="exam"><strong><?php echo get_lang( 'Comment for ' ) . $this->datas[ 'items' ][ $itemId ][ 'title' ]; ?> :</strong> <?php echo $comment; ?></p>
+        <?php endforeach; ?>
     <?php endif; ?>

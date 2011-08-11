@@ -2,13 +2,13 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-<?php $nb = count( $this->assignmentDataList );
+<?php $nb = count( $this->datas[ 'items' ] );
       $row = 1; ?>
 <?php echo '<?xml version="1.0"?>' . "\n" . '<?mso-application progid="Excel.Sheet"?>' . "\n"; ?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
@@ -60,9 +60,9 @@
                ss:ExpandedRowCount="20" x:FullColumns="1"
                x:FullRows="1" ss:StyleID="s21">
             <Column ss:StyleID="s21" ss:Width="140.0"/>
-    <?php foreach( $this->assignmentDataList as $assignment ) : ?>
-        <?php if ( $assignment[ 'active' ] ) : ?>
-            <Column ss:StyleID="s21" ss:Width="<?php echo strlen( $assignment[ 'title' ] ) * 8; ?>"/>
+    <?php foreach( $this->datas[ 'items' ] as $item ) : ?>
+        <?php if ( $item[ 'selected' ] ) : ?>
+            <Column ss:StyleID="s21" ss:Width="<?php echo strlen( $item[ 'title' ] ) * 8; ?>"/>
         <?php endif; ?>
     <?php endforeach; ?>
             <Column ss:StyleID="s21" ss:Width="160.0"/>
@@ -70,10 +70,10 @@
                 <Cell ss:StyleID="s28">
                     <Data ss:Type="String"><?php echo get_lang( 'Name' ); ?></Data>
                 </Cell>
-    <?php foreach( $this->assignmentDataList as $assignment ) : ?>
-        <?php if ( $assignment[ 'active' ] ) : ?>
+    <?php foreach( $this->datas[ 'items' ] as $item ) : ?>
+        <?php if ( $item[ 'selected' ] ) : ?>
                 <Cell ss:StyleID="s28">
-                    <Data ss:Type="String"><?php echo $assignment[ 'title' ]; ?></Data>
+                    <Data ss:Type="String"><?php echo $item[ 'title' ]; ?></Data>
                 </Cell>
         <?php endif; ?>
     <?php endforeach; ?>
@@ -85,10 +85,10 @@
                 <Cell ss:StyleID="s29">
                     <Data ss:Type="String"><?php echo get_lang( 'Weight' ); ?></Data>
                 </Cell>
-    <?php foreach( $this->assignmentDataList as $assignment ) : ?>
-        <?php if ( $assignment[ 'active' ] ) : ?>
+    <?php foreach( $this->datas[ 'items' ] as $item ) : ?>
+        <?php if ( $item[ 'selected' ] ) : ?>
                 <Cell ss:StyleID="s29">
-                    <Data ss:Type="Number"><?php echo $assignment[ 'proportional_weight' ]; ?></Data>
+                    <Data ss:Type="Number"><?php echo $item[ 'proportional_weight' ]; ?></Data>
                 </Cell>
         <?php endif; ?>
     <?php endforeach; ?>
@@ -101,9 +101,9 @@
                 <Cell ss:StyleID="s29">
                     <Data ss:Type="String"><?php echo get_lang( 'Average' ); ?></Data>
                 </Cell>
-    <?php foreach( $this->assignmentDataList as $assignment ) : ?>
-        <?php if ( $assignment[ 'active' ] ) : ?>
-                <Cell ss:Formula="=AVERAGE(R[1]C:R[<?php echo count( $this->userList ); ?>]C)"
+    <?php foreach( $this->datas[ 'items' ] as $item ) : ?>
+        <?php if ( $item[ 'selected' ] ) : ?>
+                <Cell ss:Formula="=AVERAGE(R[1]C:R[<?php echo count( $this->datas[ 'users' ] ); ?>]C)"
                       ss:StyleID="s29">
                     <Data ss:Type="Number" />
                 </Cell>
@@ -114,14 +114,14 @@
                     <Data ss:Type="Number" />
                 </Cell>
             </Row>
-    <?php foreach( $this->reportDataList as $userId => $userReport ) : ?>
+    <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
         <?php $row++; ?>
             <Row ss:AutoFitHeight="0" ss:Height="12.0">
                 <Cell>
-                    <Data ss:Type="String"><?php echo $this->userList[ $userId ][ 'lastname' ] . ' ' . $this->userList[ $userId ][ 'firstname' ]; ?></Data>
+                    <Data ss:Type="String"><?php echo $this->datas[ 'users' ][ $userId ][ 'lastname' ] . ' ' . $this->datas[ 'users' ][ $userId ][ 'firstname' ]; ?></Data>
                 </Cell>
-        <?php foreach( $this->assignmentDataList as $id => $assignment ) : ?>
-            <?php if ( $assignment[ 'active' ] ) : ?>
+        <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
+            <?php if ( $item[ 'selected' ] ) : ?>
                 <Cell>
                 <?php if ( isset( $userReport[ $id ] ) ) : ?>
                     <Data ss:Type="Number"><?php echo $userReport[ $id ]; ?></Data>

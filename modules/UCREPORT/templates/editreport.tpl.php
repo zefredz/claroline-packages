@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.8.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -11,18 +11,16 @@
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowReport') ); ?>">
-        <img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="current results" />
+        <img src="<?php echo get_icon( 'statistics' ); ?>" alt="current results" />
         <?php echo get_lang( 'Generate the preview' ); ?>
     </a>
 </span>
-<?php if ( $this->assignmentDataList[ Report::EXAMINATION_ID ][ 'active' ] ) : ?>
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditScores') ); ?>">
-        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="edit" />
-        <?php echo get_lang( 'Edit examination scores' ); ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddExam') ); ?>">
+        <img src="<?php echo get_icon( 'new_item' ); ?>" alt="new item" />
+        <?php echo get_lang( 'Add a mark' ); ?>
     </a>
 </span>
-<?php endif; ?>
 <form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEditReport' ) ); ?>" >
     <table class="claroTable emphaseLine" style="width: 100%;">
         <thead>
@@ -31,23 +29,45 @@
                 <th><?php echo get_lang( 'Activated' ); ?></th>
                 <th><?php echo get_lang( 'Weight' ); ?></th>
                 <th><?php echo get_lang( 'Proportional weight' ); ?></th>
+                <th><?php echo get_lang( 'Edit' ); ?></th>
+                <th><?php echo get_lang( 'Delete' ); ?></th>
             </tr>
         </thead>
         <tbody>
-    <?php foreach( $this->assignmentDataList as $assignmentId => $assignment ) : ?>
-            <tr <?php if ( $assignmentId == Report::EXAMINATION_ID ) echo 'class="exam"'; ?>>
+    <?php foreach( $this->itemDataList as $itemId => $item ) : ?>
+            <tr <?php if ( is_string( $itemId ) ) echo 'class="exam"'; ?>>
                 <td>
-                    <?php echo $assignment[ 'title' ]; ?>
+                    <?php if ( is_string( $itemId ) ) echo get_lang( 'Additional mark' ) . ' : '; ?>
+                    <?php echo $item[ 'title' ]; ?>
+                </td>
+                <td align="center">
+                    <input type="checkbox" name="active[<?php echo $itemId; ?>]" <?php if ( $item[ 'active' ] ) echo 'checked="checked"'; ?> />
                 </td>
                 <td>
-                    <input type="checkbox" name="active[<?php echo $assignmentId; ?>]" <?php if ( $assignment[ 'active' ] ) echo 'checked="checked"'; ?> />
+                    <input type="text" size="2" name="weight[<?php echo $itemId; ?>]" value="<?php echo $item[ 'weight' ]; ?>" />
                 </td>
                 <td>
-                    <input type="text" size="2" name="weight[<?php echo $assignmentId; ?>]" value="<?php echo $assignment[ 'weight' ]; ?>" />
+                    <?php echo 100 * $item[ 'proportional_weight' ]; ?> %
                 </td>
-                <td>
-                    <?php echo 100 * $assignment[ 'proportional_weight' ]; ?> %
+            <?php if ( is_string( $itemId ) ) : ?>
+                <td align="center">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditScores&examinationId=' . $itemId ) ); ?>">
+                        <img src="<?php echo get_icon( 'edit' ); ?>" alt="edit" />
+                    </a>
                 </td>
+                <td align="center">
+                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteExam&examinationId=' . $itemId ) ); ?>">
+                        <img src="<?php echo get_icon( 'delete' ); ?>" alt="edit" />
+                    </a>
+                </td>
+            <?php else : ?>
+                <td align="center">
+                    <img src="<?php echo get_icon( 'edit_disabled' ); ?>" alt="edit disabled" />
+                </td>
+                <td align="center">
+                    <img src="<?php echo get_icon( 'delete_disabled' ); ?>" alt="delete disabled" />
+                </td>
+            <?php endif; ?>
             </tr>
     <?php endforeach; ?>
         </tbody>

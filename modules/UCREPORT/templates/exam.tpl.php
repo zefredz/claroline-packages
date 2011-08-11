@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -29,9 +29,9 @@
             <td >
                 <?php echo $this->userList[ $userId ][ 'firstname' ] . ' ' . $this->userList[ $userId ][ 'lastname' ]; ?>
             </td>
-    <?php if ( isset( $scoreList[ Report::EXAMINATION_ID ] ) ) : ?>
+    <?php if ( isset( $scoreList[ $this->examinationId ] ) ) : ?>
             <td class="cell">
-                <?php echo $scoreList[ Report::EXAMINATION_ID ]; ?>
+                <?php echo $scoreList[ $this->examinationId ]; ?>
             </td>
         <?php if ( isset( $this->userList[ $userId ][ 'comment' ] ) ) : ?>
             <td>

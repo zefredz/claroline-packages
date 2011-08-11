@@ -9,5 +9,12 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-header('Location:./report.php');
-exit();
+class ExaminationList extends AssetList
+{
+    public function __construct()
+    {
+        $tbl = get_module_course_tbl( array( 'examination_session' ) );
+        
+        parent::__construct( $tbl[ 'examination_session' ] , 'max_score' );
+    }
+}

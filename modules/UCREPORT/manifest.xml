@@ -1,8 +1,8 @@
 <module>
     <label>UCREPORT</label>
     <name>Student Report</name>
-    <description><![CDATA[ Student report ]]></description>
-    <version>1.0.5</version>
+    <description><![CDATA[ Student Report ]]></description>
+    <version>2.1.0</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>tool</type>
@@ -15,7 +15,10 @@
     </author>
     <requirements>
         <claroline>
-            <version>1.9</version>
+            <version>1.9.9</version>
+        </claroline>
+        <claroline>
+            <version>1.10.5</version>
         </claroline>
     </requirements>
 </module>
