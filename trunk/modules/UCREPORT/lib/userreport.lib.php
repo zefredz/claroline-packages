@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 0.9.4 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -26,6 +26,8 @@ class UserReport
     public function __construct( $userId )
     {
         $this->userId = $userId;
+        
+        $this->tbl = get_module_main_tbl( array( 'cours' ) );
         $this->load();
     }
     
@@ -35,23 +37,21 @@ class UserReport
      */
     private function load()
     {
-        $userCourseList = claro_get_user_course_list( $this->userId );
+        $userCourseList = claro_get_user_course_list();
         
         foreach( $userCourseList as $course )
         {
-            $tbl = get_module_course_tbl( array( 'report_reports' ) , $course[ 'sysCode' ] );
-            $weightFileUrl = '../../courses/' . claro_get_course_path( $course[ 'sysCode' ] ) . '/' . Report::ASSIGNMENT_DATA_FILE;
+            $tbl = get_module_course_tbl( array( 'report_report' ) , $course[ 'sysCode' ] );
             
-            if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'sysCode' ] )
-                 && file_exists( $weightFileUrl ) )
+            if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'sysCode' ] ) )
             {
                 $courseReportList = Claroline::getDatabase()->query( "
                         SELECT
                             id, title, publication_date, datas
                         FROM
-                            `{$tbl['report_reports']}`
+                            `{$tbl['report_report']}`
                         WHERE
-                            visibility = " . Claroline::getDatabase()->quote( Report::VISIBLE ) . "
+                            visibility = " . Claroline::getDatabase()->quote( AssetList::VISIBLE ) . "
                         ORDER BY
                             publication_date ASC"
                 );

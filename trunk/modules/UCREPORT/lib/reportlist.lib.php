@@ -9,5 +9,12 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-header('Location:./report.php');
-exit();
+class ReportList extends AssetList
+{
+    public function __construct()
+    {
+        $tbl = get_module_course_tbl( array( 'report_report' ) );
+        
+        parent::__construct( $tbl[ 'report_report' ] , 'datas' );
+    }
+}
