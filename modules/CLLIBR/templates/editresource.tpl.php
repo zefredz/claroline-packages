@@ -83,10 +83,16 @@
                    type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
         </dt>
         <dd id="value<?php echo $index; ?>">
+            <?php if ( isset( $this->defaultMetadataList[ $name ] ) && $this->defaultMetadataList[ $name ] == ResourceType::TYPE_LONG ) : ?>
+            <textarea cols="60"
+                      rows="8"
+                      name="metadata[<?php echo $index; ?>]"><?php echo htmlspecialchars( $value ); ?></textarea>
+            <?php else : ?>
             <input type="text"
                    size="32"
                    name="metadata[<?php echo $index; ?>]"
                    value="<?php echo htmlspecialchars( $value ); ?>" />
+            <?php endif; ?>
             <a id="del<?php echo $index; ?>" class="delMetadata claroCmd" href="#metadata<?php echo $index; ?>">
                     <?php echo get_lang( 'Delete' ); ?>
             </a>
@@ -103,9 +109,15 @@
                    type="hidden" name="name[<?php echo $index; ?>]" value="<?php echo $name; ?>" />
         </dt>
         <dd id="value<?php echo $index; ?>">
+        <?php if ( $type == ResourceType::TYPE_LONG ) : ?>
+            <textarea cols="60"
+                      rows="8"
+                      name="metadata[<?php echo $index; ?>]"></textarea>
+        <?php else : ?>
             <input type="text"
                    size="32"
                    name="metadata[<?php echo $index; ?>]" value="" />
+        <?php endif; ?>
         </dd>
     <?php $index++; ?>
     <?php endif; ?>
