@@ -10,11 +10,17 @@
  */ ?>
 
 <span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
+    <a class="claroCmd" href="<?php echo 'report.php'; ?>">
         <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
         <?php echo get_lang( 'Back to the report list' ); ?>
     </a>
 </span>
+<?php if ( $this->has_result ) : ?>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqResult') ); ?>">
+        <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="<?php echo get_lang( 'result' ); ?>"/>
+        <?php echo get_lang( 'See my examination result details' ); ?>
+    </a>
+<?php endif; ?>
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ); ?>">
@@ -46,7 +52,6 @@
     <tbody>
 <?php if ( $this->examinationList->numRows() ) : ?>
     <?php foreach ( $this->examinationList as $session ) : ?>
-    
         <?php if ( $session['visibility'] == AssetList::VISIBLE || claro_is_allowed_to_edit() == true ) : ?>
         <tr>
             <td>
@@ -66,13 +71,15 @@
                 </a>
             </td>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exChgVisibility&tpl=list&sessionId='. $session['id'] ) );?>">
                     <?php if ( $session['visibility'] == AssetList::VISIBLE ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
-                    <?php else: ?>
-                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
-                    <?php endif; ?>
                 </a>
+                    <?php else: ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&sessionId='. $session['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                </a>
+                    <?php endif; ?>
             </td>
                 <?php endif; ?>
         </tr>

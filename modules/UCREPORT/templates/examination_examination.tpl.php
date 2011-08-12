@@ -26,7 +26,7 @@
             </tr>
         </thead>
         <tbody>
-    <?php foreach( $this->markList as $userId => $mark ) : ?>
+    <?php foreach( $this->examination->getScoreList() as $userId => $mark ) : ?>
             <tr>
                 <td>
                     <?php echo $mark[ 'lastName' ] . ' ' . $mark[ 'firstName' ]; ?>

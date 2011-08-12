@@ -19,7 +19,8 @@ FromKernel::uses( 'utils/input.lib'
                 , 'display/layout.lib' );
 From::Module( 'UCREPORT' )->uses( 'assetlist.lib'
                                 , 'examination.lib'
-                                , 'examinationlist.lib' );
+                                , 'examinationlist.lib'
+                                , 'userexamination.lib' );
 
 $dialogBox = new DialogBox();
 $pageTitle = array( 'mainTitle' => get_lang( 'Examination Report' ) );
@@ -30,6 +31,7 @@ if ( claro_is_allowed_to_edit() )
 {
     $userInput->setValidator( 'cmd'
         , new Claro_Validator_AllowedList( array( 'rqShowList'
+                                                , 'rqResult'
                                                 , 'rqShow'
                                                 , 'rqCreate'
                                                 , 'rqEdit'
@@ -42,7 +44,8 @@ if ( claro_is_allowed_to_edit() )
                                                 , 'exModifyMark'
                                                 , 'exDeleteMark'
                                                 , 'exReset'
-                                                , 'exChgVisibility' ) ) );
+                                                , 'exMkVisible'
+                                                , 'exMkInvisible' ) ) );
 }
 else
 {
@@ -59,7 +62,16 @@ try
     $currentUserId = claro_get_current_user_id();
     $is_allowedToEdit = claro_is_allowed_to_edit();
     
-    $examination = $sessionId ? new Examination( $sessionId ) : false;
+    if ( $sessionId && $cmd != 'exDelete' )
+    {
+        $examination = new Examination( $sessionId );
+    }
+    else
+    {
+        $myResult = new UserExamination( $currentUserId );
+    }
+    
+    //$examination = $sessionId ? new Examination( $sessionId ) : false;
     
     $tbl = get_module_course_tbl( array( 'examination_session' , 'examination_score' ) );
     $examinationList = new ExaminationList(  $tbl[ 'examination_session' ] , 'max_score' );
@@ -72,6 +84,7 @@ try
     switch( $cmd )
     {
         case 'rqShowList':
+        case 'rqResult':
         case 'rqShow':
         case 'rqCreate':
         case 'rqEdit':
@@ -128,10 +141,11 @@ try
             break;
         }
         
-        case 'exChgVisibility':
+        case 'exMkVisible':
+        case 'exMkInvisible':
         {
-            $visibility = $examinationList->isVisible( $sessionId );
-            $examinationList->setVisibility( $sessionId , ! $visibility );
+            $is_visible = $cmd == 'exMkVisible';
+            $examinationList->setVisibility( $sessionId , $is_visible );
             break;
         }
         
@@ -141,7 +155,7 @@ try
         }
     }
     
-    if ( $examination )
+    if ( isset( $examination ) )
     {
         $examination_updated = $examination->save();
         $markList = $examination ? $examination->getScoreList( true ) : false;
@@ -154,13 +168,21 @@ try
     {
         case 'rqShowList':
         {
-            $template = 'list';
+            $template = $is_allowedToEdit
+                      ? 'list'
+                      : 'result';
             break;
         }
         
         case 'rqShow':
         {
             $template = 'examination';
+            break;
+        }
+        
+        case 'rqResult':
+        {
+            $template = 'result';
             break;
         }
         
@@ -210,7 +232,8 @@ try
         {
             if ( $examination )
             {
-                $dialogBox->success( get_lang( 'The examination has been created' ) );
+                $dialogBox->success( get_lang( 'The examination %title has been created'
+                                              , array( 'title' => $title ) ) );
             }
             else
             {
@@ -225,7 +248,7 @@ try
         {
             if ( $examination_updated )
             {
-                $dialogBox->success( get_lang( 'The examination has been modified' ) );
+                $dialogBox->success( get_lang( 'The changes has been recorded' ) );
             }
             else
             {
@@ -272,12 +295,8 @@ try
             break;
         }
         
-        case 'exChgVisibility':
-        {
-            $template = 'list';
-            break;
-        }
-        
+        case 'exMkVisible':
+        case 'exMkInvisible':
         case 'exDelete':
         {
             $template = 'list';
@@ -295,7 +314,7 @@ try
     {
         $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/question.tpl.php' );
         
-        $form->assign( 'msg' , $msg );
+        $form->assign( 'message' , $msg );
         $form->assign( 'xid' , $xid );
         $form->assign( 'urlAction' , $urlAction );
         $form->assign( 'urlCancel' , '' );
@@ -310,6 +329,8 @@ try
     {
         case 'list':
             $pageTitle[ 'subTitle' ] = get_lang( 'Examination list' );
+            $examinationView->assign( 'examinationList' , $examinationList->getList( true ) );
+            $examinationView->assign( 'has_result' , $myResult->hasResult() );
             break;
         
         case 'edit':
@@ -318,17 +339,16 @@ try
         
         case 'examination':
             $pageTitle[ 'subTitle' ] = $examination->getTitle();
+            $examinationView->assign( 'examination' , $examination );
+            break;
+        
+        case 'result':
+            $pageTitle[ 'subTitle' ] = get_lang( 'My examination results and comments' );
+            $examinationView->assign( 'result' , $myResult->getResultList() );
             break;
     }
     
     $examinationView->assign( 'currentUserId' , $currentUserId );
-    $examinationView->assign( 'examinationList' , $examinationList->getList( $is_allowedToEdit ) );
-    
-    if ( $examination )
-    {
-        $examinationView->assign( 'examination' , $examination );
-        $examinationView->assign( 'markList' , $examination->getScoreList() );
-    }
     
     ClaroBreadCrumbs::getInstance()->append( get_lang( 'Session list' )
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );

@@ -15,13 +15,14 @@
         <?php echo get_lang( 'Create a new report' ); ?>
     </a>
 </span>
+<?php endif; ?>
 <span>
     <a class="claroCmd" href="<?php echo 'examination.php'; ?>">
         <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="examinations" />
         <?php echo get_lang( 'Examinations' ); ?>
     </a>
 </span>
-<?php endif; ?>
+
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
