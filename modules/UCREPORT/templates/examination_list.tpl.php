@@ -9,6 +9,12 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
+        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
+        <?php echo get_lang( 'Back to the report list' ); ?>
+    </a>
+</span>
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ); ?>">

@@ -9,6 +9,13 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */?>
 
+<span>
+    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
+        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
+        <?php echo get_lang( 'Back to the report list' ); ?>
+    </a>
+</span>
+
 <form id="itemSelection"
       method="post"
       action="<?php echo htmlspecialchars( 'report.php?cmd=exGenerate' ); ?>">
@@ -16,7 +23,7 @@
         <thead>
             <tr class="headerX">
                 <th><?php echo get_lang( 'Title' ); ?></th>
-                <th><?php echo get_lang( 'Submission count' ); ?></th>
+                <th><?php echo get_lang( 'Number of marks' ); ?></th>
                 <th><?php echo get_lang( 'Weight' ); ?></th>
                 <th><?php echo get_lang( 'Select' ); ?></th>
             </tr>
@@ -50,7 +57,7 @@
         </tbody>
     </table>
     <div class="rightSubmit">
-        <input type="submit" name="" value="<?php echo get_lang( 'Generate' ); ?>" />
+        <input type="submit" name="" value="<?php echo get_lang( 'Import' ); ?>" />
         <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
     </div>
 </form>

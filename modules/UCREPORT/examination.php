@@ -309,7 +309,7 @@ try
     switch ( $template )
     {
         case 'list':
-            $pageTitle[ 'subTitle' ] = get_lang( 'examination List' );
+            $pageTitle[ 'subTitle' ] = get_lang( 'Examination list' );
             break;
         
         case 'edit':
