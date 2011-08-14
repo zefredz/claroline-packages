@@ -12,22 +12,22 @@
 $_lang['Activate'] = 'Activer';
 $_lang['Add a mark'] = 'Ajouter une note';
 $_lang['Additional mark'] = 'Note additionnelle';
-$_lang['An error occured: the report has not been created!'] = 'Une erreur est survenue: le bulletin n\' a pu ï¿½tre crï¿½ï¿½!';
-$_lang['An error occured: the report has not been deleted!'] = 'Une erreur est survenue: le bulletin n\' a  pu ï¿½tre supprimï¿½!';
-$_lang['An error occured: the visibility change failed!'] = 'Une erreur est survenue: la visibilitï¿½ n\'a pu ï¿½tre changï¿½e!';
-$_lang['Access denied'] = 'Accï¿½s non autorisï¿½!';
+$_lang['An error occured: the report has not been created!'] = 'Une erreur est survenue: le bulletin n\' a pu être créé!';
+$_lang['An error occured: the report has not been deleted!'] = 'Une erreur est survenue: le bulletin n\' a  pu être supprimé!';
+$_lang['An error occured: the visibility change failed!'] = 'Une erreur est survenue: la visibilité n\'a pu être changée!';
+$_lang['Access denied'] = 'Accès non autorisé!';
 $_lang['Average'] = 'Moyenne';
 $_lang['Average score'] = 'Moyenne';
-$_lang['Back to the examination list'] = 'retour ï¿½ la liste des examens';
+$_lang['Back to the examination list'] = 'retour à la liste des examens';
 $_lang['Back to the report'] = 'Retour au bulletin';
-$_lang['Back to the report list'] = 'Retour ï¿½ la liste des bulletins';
+$_lang['Back to the report list'] = 'Retour à la liste des bulletins';
 $_lang['Choose a title'] = 'Choisissez un titre';
 $_lang['Comment for'] = 'Commentaire pour';
 $_lang['Comments'] = 'Commentaires';
-$_lang['Create a new report'] = 'Crï¿½er un nouveau bulletin';
-$_lang['Create a new session'] = 'Crï¿½er un nouvel examen';
-$_lang['Gathering datas'] = 'Rï¿½cupï¿½ration des donnï¿½es';
-$_lang['Do you really want to delete this report?'] = 'Etes-vous sï¿½r de vouloir supprimer ce bulletin?';
+$_lang['Create a new report'] = 'Créer un nouveau bulletin';
+$_lang['Create a new session'] = 'Créer un nouvel examen';
+$_lang['Gathering datas'] = 'Récupération des données';
+$_lang['Do you really want to delete this report?'] = 'Etes-vous sûr de vouloir supprimer ce bulletin?';
 $_lang['empty'] = 'vide';
 $_lang['Edit examination scores'] = 'Modifier les notes d\'examen';
 $_lang['Error while saving the modifications'] = 'Une erreur s\'est produite durant l\'enregistrement de vos modifications';
@@ -39,135 +39,135 @@ $_lang['Examination scores'] = 'Notes d\'examen';
 $_lang['Export to csv'] = 'Exporter vers csv';
 $_lang['Export to MS-Excel xlsx file'] = 'Exporter vers MS-Excel xlm ( *.xlsx)';
 $_lang['Export to pdf'] = 'Exporter en pdf';
-$_lang['Generate the preview'] = 'Gï¿½nï¿½rer l\'aperï¿½u';
+$_lang['Generate the preview'] = 'Générer l\'aperçu';
 $_lang['incomplete'] = 'incomplet';
-$_lang['Items selection'] = 'Sï¿½lection des items ï¿½ importer';
+$_lang['Items selection'] = 'Sélection des items à importer';
 $_lang['Max value'] = 'Note maximale';
-$_lang['My examination results and comments'] = 'Les rï¿½sultats commentï¿½s de mes examens';
+$_lang['My examination results and comments'] = 'Les résultats commentés de mes examens';
 $_lang['My report'] = 'Mon bulletin';
 $_lang['No report available'] = 'Aucun bulletin disponible';
-$_lang['No result at this time'] = 'Pas de rï¿½sultats pour le moment';
-$_lang['Number of marks'] = 'Nombre de notes attribuï¿½es';
-$_lang['Proportional weight'] = 'Pondï¿½ration relative';
+$_lang['No result at this time'] = 'Pas de résultats pour le moment';
+$_lang['Number of marks'] = 'Nombre de notes attribuées';
+$_lang['Proportional weight'] = 'Pondération relative';
 $_lang['Publication date'] = 'Date de publication';
 $_lang['Publish the report'] = 'Publier le bulletin';
 $_lang['Report'] = 'Bulletin';
 $_lang['Report list'] = 'Liste des bulletins';
-$_lang['Report settings'] = 'Paramï¿½tres du bulletin';
-$_lang['Reset'] = 'Rï¿½tablir';
-$_lang['Reset scores'] = 'Tout remettre ï¿½ zï¿½ro';
-$_lang['See my examination result details'] = 'Voir les commentaires de mes rï¿½sultats';
-$_lang['Select'] = 'Sï¿½lectionner';
+$_lang['Report settings'] = 'Paramètres du bulletin';
+$_lang['Reset'] = 'Rétablir';
+$_lang['Reset scores'] = 'Tout remettre à zéro';
+$_lang['See my examination result details'] = 'Voir les commentaires de mes résultats';
+$_lang['Select'] = 'Sélectionner';
 $_lang['Student Report'] = 'Bulletin';
-$_lang['The changes has been recorded'] = 'Les changements ont ï¿½tï¿½ ï¿½ffectuï¿½s avec succï¿½s';
-$_lang['The examination could not be created'] = 'L\'examen n\'a pas pu ï¿½tre crï¿½e';
-$_lang['The examination could not be deleted'] = 'L\'examen n\'a pas pu ï¿½tre supprimï¿½';
-$_lang['The examination %title has been created'] = 'L\'examen %title a ï¿½tï¿½ crï¿½e';
-$_lang['The examination has been reseted'] = 'Les notes ont ï¿½tï¿½s rï¿½initialisï¿½es avec succï¿½s';
-$_lang['The examination have been successfully deleted!'] = 'L\'examen a ï¿½tï¿½ supprimï¿½';
-$_lang['The report has been successfully created!'] = 'Le bulletin a ï¿½tï¿½ crï¿½ï¿½ avec succï¿½s!';
-$_lang['The report has beeen successfully deleted!'] = 'Le bulletin a ï¿½tï¿½ supprimï¿½!';
+$_lang['The changes has been recorded'] = 'Les changements ont été éffectués avec succès';
+$_lang['The examination could not be created'] = 'L\'examen n\'a pas pu être crée';
+$_lang['The examination could not be deleted'] = 'L\'examen n\'a pas pu être supprimé';
+$_lang['The examination %title has been created'] = 'L\'examen %title a été crée';
+$_lang['The examination has been reseted'] = 'Les notes ont étés réinitialisées avec succès';
+$_lang['The examination have been successfully deleted!'] = 'L\'examen a été supprimé';
+$_lang['The report has been successfully created!'] = 'Le bulletin a été créé avec succès!';
+$_lang['The report has beeen successfully deleted!'] = 'Le bulletin a été supprimé!';
 $_lang['To import from'] = 'A importer de l\'outil';
-$_lang['Weight'] = 'Pondï¿½ration';
-$_lang['weight'] = 'pondï¿½ration';
+$_lang['Weight'] = 'Pondération';
+$_lang['weight'] = 'pondération';
 $_lang['wt.'] = 'pond.';
-$_lang['Weighted global score'] = 'Moyenne globale pondï¿½rï¿½e';
+$_lang['Weighted global score'] = 'Moyenne globale pondérée';
 $_lang['You don\'t have score in this report'] = 'Vous n\'avez pas de note pour ce bulletin';
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
-$_lang['Your modifications have been successfully saved!'] = 'Vos modifications ont ï¿½tï¿½ enregistrï¿½es avec succï¿½s';
+$_lang['Your modifications have been successfully saved!'] = 'Vos modifications ont été enregistrées avec succès';
 
 $_lang['blockReportHelp'] = '<h2>Aide de l\'outil "Bulletin"</h2>
 <h3>Description succincte:</h3>
 <h4>Cet outil:</h4>
 <ul>
-    <li>agrï¿½ge les notes en provenance de l\'outil "travaux"</li>
-    <li>permet de sï¿½lectionner les travaux que l\'on veut voir figurer dans le bulletin</li>
-    <li>permet d\'ajouter (si on le dï¿½sire) une note d\'examen, ainsi qu\'un commentaire</li>
-    <li>permet d\'assigner des pondï¿½rations aux travaux (ainsi qu\'ï¿½ l\'examen)</li>
-    <li>calcule les moyennes (moyennes des ï¿½tudiants dans chaque travail, moyenne pondï¿½rï¿½e de chaque ï¿½tudiant, moyenne globale)</li>
+    <li>agrège les notes en provenance de l\'outil "travaux"</li>
+    <li>permet de sélectionner les travaux que l\'on veut voir figurer dans le bulletin</li>
+    <li>permet d\'ajouter (si on le désire) une note d\'examen, ainsi qu\'un commentaire</li>
+    <li>permet d\'assigner des pondérations aux travaux (ainsi qu\'à l\'examen)</li>
+    <li>calcule les moyennes (moyennes des étudiants dans chaque travail, moyenne pondérée de chaque étudiant, moyenne globale)</li>
     <li>permet l\'export en MS-XML (lisible avec MS-Office >= 2003 et OpenOffice), csv et pdf</li>
-    <li>permet de gï¿½nï¿½rer plusieurs bulletins "officiels" (cï¿½d que l\'on veut rendre accessibles aux ï¿½tudiants)</li>
+    <li>permet de générer plusieurs bulletins "officiels" (càd que l\'on veut rendre accessibles aux étudiants)</li>
 </ul>
 
-<h4>Les bulletins gï¿½nï¿½rï¿½s:</h4>
+<h4>Les bulletins générés:</h4>
 <ul>
-    <li>sont accessibles aux ï¿½tudiants via les sites de cours ET via leurs bureaux respectifs</li>
-    <li>ne permettent aux ï¿½tudiants que l\'accï¿½s ï¿½ leur propres notes</li>
-    <li>peuvent ï¿½tre ï¿½galement exportï¿½s</li>
-    <li>peuvent ï¿½tre rendus "invisibles" (cï¿½d non accessibles aux ï¿½tudiants)</li>
+    <li>sont accessibles aux étudiants via les sites de cours ET via leurs bureaux respectifs</li>
+    <li>ne permettent aux étudiants que l\'accès à leur propres notes</li>
+    <li>peuvent être également exportés</li>
+    <li>peuvent être rendus "invisibles" (càd non accessibles aux étudiants)</li>
 </ul>
 
 <h3>Usage:</h3>
 
 <h4>Pour "publier" un bulletin:</h4>
 
-<p><strong>1.</strong>. Lorsque l\'on clique sur l\'icï¿½ne de l\'outil bulletin (Student Report), on arrive sur la liste des bulletins publiï¿½s.<br />
-Au dï¿½but, cette liste est vide.</p>
+<p><strong>1.</strong>. Lorsque l\'on clique sur l\'icône de l\'outil bulletin (Student Report), on arrive sur la liste des bulletins publiés.<br />
+Au début, cette liste est vide.</p>
 
-<p><strong>2.</strong>. Cliquez sur "Crï¿½er un nouveau bulletin/Create a new report".</p>
+<p><strong>2.</strong>. Cliquez sur "Créer un nouveau bulletin/Create a new report".</p>
 
-<p><strong>3.</strong> Vous arrivez ï¿½ la liste des travaux prï¿½sents dans le cours.<br />
+<p><strong>3.</strong> Vous arrivez à la liste des travaux présents dans le cours.<br />
     C\'est ici que vous choisissez les travaux que vous voulez faire figurer dans le bulletin.<br />
-    Par dï¿½faut, seuls les travaux "visibles" sont activï¿½s.<br />
-    Il y a aussi une ligne (en rose) correspondant ï¿½ l\'examen: activez-lï¿½ si vous voulez ajouter une note d\'examen ï¿½ votre bulletin.<br />
-    C\'est aussi ici que vous dï¿½terminez les pondï¿½rations des diffï¿½rents travaux:</p>
+    Par défaut, seuls les travaux "visibles" sont activés.<br />
+    Il y a aussi une ligne (en rose) correspondant à l\'examen: activez-là si vous voulez ajouter une note d\'examen à votre bulletin.<br />
+    C\'est aussi ici que vous déterminez les pondérations des différents travaux:</p>
     <ul>
-       <li>vous constaterez que toutes les valeurs de la colonne "pondï¿½ration" sont ï¿½ 100 par dï¿½faut.</li>
+       <li>vous constaterez que toutes les valeurs de la colonne "pondération" sont à 100 par défaut.</li>
        <li>vous pouvez modifier cette valeur proportionnellement au poids que vous voulez lui assigner</li>
-       <li>la pondï¿½ration exprimï¿½e en % est automatiquement calculï¿½e dans la colonne "pondï¿½ration relative" (il faut cliquer sur "OK" pour cela).</li>
+       <li>la pondération exprimée en % est automatiquement calculée dans la colonne "pondération relative" (il faut cliquer sur "OK" pour cela).</li>
     </ul>
 
-<p><strong>4.</strong> Cet outil vous permet d\'ajouter ï¿½galement des notes supplï¿½mentaires ï¿½ votre bulletin. Par exemple, une note d\'examen...<br />
-    Pour ce faire, cliquez sur "ajouter une note supplï¿½mentaire". Un petit formulaire vous demandant de choisir un titre pour cette nouvelle note apparaï¿½tra alors...<br />
-    Une fois le titre validï¿½, une nouvelle ligne, surlignï¿½e en rose, d\affichera dans la liste des travaux.<br />
-    Vous pourrez encoder (et modifier) ces notes en cliquant sur le petit crayon correspondant : cela donne accï¿½s ï¿½ un formulaire permettant d\'assigner une note d\'examen ï¿½ chaque ï¿½tudiant.<br />
+<p><strong>4.</strong> Cet outil vous permet d\'ajouter également des notes supplémentaires à votre bulletin. Par exemple, une note d\'examen...<br />
+    Pour ce faire, cliquez sur "ajouter une note supplémentaire". Un petit formulaire vous demandant de choisir un titre pour cette nouvelle note apparaîtra alors...<br />
+    Une fois le titre validé, une nouvelle ligne, surlignée en rose, d\affichera dans la liste des travaux.<br />
+    Vous pourrez encoder (et modifier) ces notes en cliquant sur le petit crayon correspondant : cela donne accès à un formulaire permettant d\'assigner une note d\'examen à chaque étudiant.<br />
     Vous pouvez aussi ajouter un commentaire.<br />
-    Le bouton "Tout remettre ï¿½ zï¿½ro/Reset scores" rï¿½initialise le formulaire. Vous perdez alors tout ce que vous y avez inscrit. Mais rassurez-vous, les donnï¿½es contenues dans les bulletins dï¿½jï¿½ publiï¿½s seront conservï¿½es.<br />
-    La commande "Paramï¿½tres du bulletin/Report settings" permet de revenir ï¿½ la page dï¿½crite en 3<br />
+    Le bouton "Tout remettre à zéro/Reset scores" réinitialise le formulaire. Vous perdez alors tout ce que vous y avez inscrit. Mais rassurez-vous, les données contenues dans les bulletins déjà publiés seront conservées.<br />
+    La commande "Paramètres du bulletin/Report settings" permet de revenir à la page décrite en 3<br />
     Si vous voulez supprimer une note, cliquer sur la pettie croix rouge...<br />
 </p>
 
-<p><strong>5.</strong> Une fois cela fait, vous pouvez cliquer sur "gï¿½nï¿½rer l\'aperï¿½u/Generate the preview" pour que l\'outil rapatrie les donnï¿½es de l\'outil "travaux" et calcule les moyennes.<br />
-    L\'aperï¿½u se prï¿½sente comme un tableau: chaque travail correspond ï¿½ une colonne, chaque rangï¿½e ï¿½ un ï¿½tudiant.<br />
-    L\'entï¿½te du tableau comporte donc le nom des travaux et un rappel de leur pondï¿½rations respectives.<br />
-    La rangï¿½e qui suit affiche les moyennes pour chaque travail.<br />
-    Les cases pour lesquelles il manque des notes sont marquï¿½es "vide/empty".<br />
-    La derniï¿½re colonne affiche les moyennes globales pondï¿½rï¿½s.<br />
-    La moyenne globale n\'est calculï¿½e que s\'il y a une note pour chaque travail.<br />
+<p><strong>5.</strong> Une fois cela fait, vous pouvez cliquer sur "générer l\'aperçu/Generate the preview" pour que l\'outil rapatrie les données de l\'outil "travaux" et calcule les moyennes.<br />
+    L\'aperçu se présente comme un tableau: chaque travail correspond à une colonne, chaque rangée à un étudiant.<br />
+    L\'entête du tableau comporte donc le nom des travaux et un rappel de leur pondérations respectives.<br />
+    La rangée qui suit affiche les moyennes pour chaque travail.<br />
+    Les cases pour lesquelles il manque des notes sont marquées "vide/empty".<br />
+    La dernière colonne affiche les moyennes globales pondérés.<br />
+    La moyenne globale n\'est calculée que s\'il y a une note pour chaque travail.<br />
 </p>
 
-<p><strong>5bis.</strong> La colonne "activer" permet de dï¿½terminer quels ï¿½tudiants verront ses notes publiï¿½es.<br />
-    Par dï¿½faut, il s\'agit des ï¿½tudiants pour lesquels les notes ont ï¿½tï¿½ attribuï¿½es pour chaque colonne.<br />
-    Pour "activer" ou "dï¿½sactiver" un ï¿½tudiant, il suffit de cliquer sur le petit oeil correspondant<br />
-    En "activant" un ï¿½tudiant, les notes inexistantes sont automatiquement converties en 0 (zï¿½ro)<br />
+<p><strong>5bis.</strong> La colonne "activer" permet de déterminer quels étudiants verront ses notes publiées.<br />
+    Par défaut, il s\'agit des étudiants pour lesquels les notes ont été attribuées pour chaque colonne.<br />
+    Pour "activer" ou "désactiver" un étudiant, il suffit de cliquer sur le petit oeil correspondant<br />
+    En "activant" un étudiant, les notes inexistantes sont automatiquement converties en 0 (zéro)<br />
 </p>
 
-<p><strong>5ter.</strong> A ce stade vous pouvez exporter le rï¿½sultats dans trois formats diffï¿½rents: MS-XML, csv et pdf.<br />
-    Il suffit pour cela de cliquer sur les trois derniï¿½res icï¿½nes situï¿½es dans la barre des commandes juste au dessus du tableau.<br />
-    Les exports csv et pdf sont bien connus au sein de Claroline mais le format MS-XML mï¿½rite quelques explications:</p>
+<p><strong>5ter.</strong> A ce stade vous pouvez exporter le résultats dans trois formats différents: MS-XML, csv et pdf.<br />
+    Il suffit pour cela de cliquer sur les trois dernières icônes situées dans la barre des commandes juste au dessus du tableau.<br />
+    Les exports csv et pdf sont bien connus au sein de Claroline mais le format MS-XML mérite quelques explications:</p>
     <ul>
         <li>Il s\'agit d\'un format introduit par Microsoft pour la suite Office 2003</li>
-        <li>Ce format n\'est donc lisible que pour les versions 2003 ET supï¿½rieures de MS-Office</li>
-        <li>Il est ï¿½galement lisible par OpenOffice (toutes versions)</li>
-        <li>L\'avantage de ce format sur le csv est que les relations entre les cellules sont sauvegardï¿½es: vous pouvez donc modifier le fichier au sein de votre tableur favori, les moyennes seront automatiquement recalculï¿½es.</li>
+        <li>Ce format n\'est donc lisible que pour les versions 2003 ET supérieures de MS-Office</li>
+        <li>Il est également lisible par OpenOffice (toutes versions)</li>
+        <li>L\'avantage de ce format sur le csv est que les relations entre les cellules sont sauvegardées: vous pouvez donc modifier le fichier au sein de votre tableur favori, les moyennes seront automatiquement recalculées.</li>
     </ul>
 
-<p><strong>6.</strong> Si vous ï¿½tes satisfait du rï¿½sultat, vous pouvez "publier" votre bulletin en cliquant sur "Gï¿½nï¿½rer le bulletin".<br />
+<p><strong>6.</strong> Si vous êtes satisfait du résultat, vous pouvez "publier" votre bulletin en cliquant sur "Générer le bulletin".<br />
     Un petit formulaire s\'affiche alors vous demandant de lui donner un nom.<br />
-    Sinon, vous pouvez revenir ï¿½ l\'ï¿½tape 3 en cliquant sur "paramï¿½tres du bulletin/report settings".<br />
-    Si vous avez activï¿½ les notes d\'examen vous pouvez aussi les modifier en cliquant sur "Modifier les notes d\'examen".<br />
+    Sinon, vous pouvez revenir à l\'étape 3 en cliquant sur "paramètres du bulletin/report settings".<br />
+    Si vous avez activé les notes d\'examen vous pouvez aussi les modifier en cliquant sur "Modifier les notes d\'examen".<br />
 </p>
 
-<p><strong>7.</strong> Si tout ce passe bien, une boï¿½te de dialogue vous signale que votre bulletin a ï¿½tï¿½ crï¿½ï¿½.<br />
-    Cliquez alors sur "Retour ï¿½ la liste des bulletins/Back to report list" pour vï¿½rifier qu\'il est bien lï¿½.<br />
-    Vous pouvez crï¿½er autant de bulletins que vous voulez.<br />
+<p><strong>7.</strong> Si tout ce passe bien, une boîte de dialogue vous signale que votre bulletin a été créé.<br />
+    Cliquez alors sur "Retour à la liste des bulletins/Back to report list" pour vérifier qu\'il est bien là.<br />
+    Vous pouvez créer autant de bulletins que vous voulez.<br />
     Vous pouvez les supprimer<br />
-    Vous pouvez changer leur visibilitï¿½ (par dï¿½faut ils sont visibles)<br />
-    Si vous cliquez sur le bulletin, vous verrez que celui-ci n\'affiche que les ï¿½tudiants qui ont reï¿½u une note partout. Cela permet de rï¿½server la publication de tel ou tel bulletin ï¿½ tel ou tel ï¿½tudiant.<br />
-    Les donnï¿½es d\'un bulletin publiï¿½ peuvent ï¿½galement ï¿½tre exportï¿½es dans les trois formats dï¿½crits plus haut, mais elles ne peuvent pas ï¿½tre modifiï¿½es.<br />
-    Dans leurs sites de cours, les ï¿½tudiants peuvent accï¿½der ï¿½ leurs notes en cliquant sur "Student Report".<br />
-    Ils sont ï¿½galement avertis de la disponibilitï¿½ des bulletins via leurs bureaux.<br />
-    Le connecteur du bureau affiche le lien vers les diffï¿½rents bulletins, mais affiche ï¿½galement leur moyennes pondï¿½rï¿½es.<br />
-    Les ï¿½tudiants n\'ont accï¿½s qu\'ï¿½ leur propres notes, et ï¿½ elles seules.<br />
-    Les ï¿½tudiant peuvent exporter leur note en pdf uniquement.
+    Vous pouvez changer leur visibilité (par défaut ils sont visibles)<br />
+    Si vous cliquez sur le bulletin, vous verrez que celui-ci n\'affiche que les étudiants qui ont reçu une note partout. Cela permet de réserver la publication de tel ou tel bulletin à tel ou tel étudiant.<br />
+    Les données d\'un bulletin publié peuvent également être exportées dans les trois formats décrits plus haut, mais elles ne peuvent pas être modifiées.<br />
+    Dans leurs sites de cours, les étudiants peuvent accéder à leurs notes en cliquant sur "Student Report".<br />
+    Ils sont également avertis de la disponibilité des bulletins via leurs bureaux.<br />
+    Le connecteur du bureau affiche le lien vers les différents bulletins, mais affiche également leur moyennes pondérées.<br />
+    Les étudiants n\'ont accès qu\'à leur propres notes, et à elles seules.<br />
+    Les étudiant peuvent exporter leur note en pdf uniquement.
 </p>';
