@@ -46,8 +46,8 @@ else
                     : '<span style="color: #888888; text-align: center; font-style: italic;">' . get_lang( 'incomplete' ) . '</span>';
         $output .= '        <tr>' . "\n"
                 .  '            <td>' . $report[ 'course_code' ] . '</td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/index.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/index.php?cmd=rqShowReport&cidReq=' . $report[ 'course_code' ] . '&reportId=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
+                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
+                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqShowReport&cidReq=' . $report[ 'course_code' ] . '&reportId=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
                 .  '            <td>'. $report[ 'date' ] . '</td>' . "\n"
                 .  '            <td>'. $finalScore . '</td>' . "\n"
                 .  '        </tr>' . "\n";

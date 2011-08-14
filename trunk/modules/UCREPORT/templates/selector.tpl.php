@@ -31,7 +31,7 @@
         <tbody>
 <?php foreach( $this->itemList as $toolLabel => $datas ) : ?>
         <tr>
-            <td class="toolName" colspan="4"><?php echo get_lang( 'From' ) . ': ' . get_lang( $datas[ 'name' ] ); ?></td>
+            <td class="toolName" colspan="4"><?php echo get_lang( 'To import from' ) . ': ' . get_lang( $datas[ 'name' ] ); ?></td>
         </tr>
     <?php if ( isset( $datas[ 'item' ] ) ) : ?>
         <?php foreach ( $datas[ 'item' ] as $itemId => $itemDatas ) : ?>
