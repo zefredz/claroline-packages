@@ -338,6 +338,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             {
                 $userNote = new UserNote( $database , $userId , $resourceId );
                 $userNote->delete();
+                
+                $collectionList = $resourceSet->getCollectionList( $resourceId );
+                
+                if ( ! isset( $collectionList[ Collection::USER_COLLECTION ] ) )
+                {
+                    $metadata->removeAll();
+                }
             }
             break;
         }
@@ -568,7 +575,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'exDeleteResource':
         {
             $resource = new Resource( $database , $resourceId );
-            //$metadata = new Metadata( $database , $resourceId );
             $catalogue = new Collection( $database , 'catalogue' , $libraryId );
             
             $execution_ok = $catalogue->removeResource( $resourceId )
@@ -576,8 +582,16 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             if( $execution_ok )
             {
-                //$metadata->removeAll(); line commented for user's note implementation
-                $metadata->remove( Metadata::KEYWORD );
+                $collectionList = $resourceSet->getCollectionList( $resourceId );
+                
+                if ( isset( $collectionList[ Collection::USER_COLLECTION ] ) )
+                {
+                    $metadata->remove( Metadata::KEYWORD );
+                }
+                else
+                {
+                    $metadata->removeAll();
+                }
             }
             
             if ( $execution_ok && $resource->getStorageType() == 'file' )
