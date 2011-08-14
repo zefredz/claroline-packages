@@ -62,16 +62,14 @@ try
     $currentUserId = claro_get_current_user_id();
     $is_allowedToEdit = claro_is_allowed_to_edit();
     
-    if ( $sessionId && $cmd != 'exDelete' )
+    if ( $sessionId && $cmd != 'exDelete'
+                    && $cmd != 'exMkVisible'
+                    && $cmd != 'exMkInvisible' )
     {
         $examination = new Examination( $sessionId );
     }
-    else
-    {
-        $myResult = new UserExamination( $currentUserId );
-    }
     
-    //$examination = $sessionId ? new Examination( $sessionId ) : false;
+    $myResult = new UserExamination( $currentUserId );
     
     $tbl = get_module_course_tbl( array( 'examination_session' , 'examination_score' ) );
     $examinationList = new ExaminationList(  $tbl[ 'examination_session' ] , 'max_score' );
