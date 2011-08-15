@@ -50,16 +50,16 @@ $repository = get_path( 'rootSys' ) . 'cllibrary/';
 $typeRepository = get_module_path( 'CLLIBR' ) . '/lib/types/';
 $pluginRepository = get_module_path( 'CLLIBR' ) . '/lib/plugins/';
 $database = Claroline::getDatabase();
-// for later -->
+/* for later -->
 $tableList = get_module_main_tbl( array( 'library_resource'
                                        , 'library_metadata'
                                        , 'library_library'
                                        , 'library_librarian'
                                        , 'library_collection' ) );
-/* for use with:
+  for use with:
   $DBTable = new DatabaseTable( $database , $tableList[ 'library_' . $className ] );
-  $class = new ClassName( $DBTable , ... ); */
-// <-- for later
+  $class = new ClassName( $DBTable , ... );
+<-- for later */
 
 $pluginLoader = new PluginLoader( $pluginRepository );
 $pluginLoader->loadPlugins();
@@ -85,6 +85,7 @@ $actionList = array( 'rqShowBookmark'
                    , 'exBookmark'
                    , 'exUnbookmark'
                    , 'exNote'
+                   , 'exExport'
                    , 'rqSearch' );
 
 $restrictedActionList = array( 'rqAddResource'
@@ -680,6 +681,18 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
+        case 'exExport':
+        {
+            $exporter = new DublinCore( $metadata->getMetadataList() );
+            $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                 . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
+            $fileName = 'RDF_metadata_resource_' . $resourceId . '.rdf';
+            header("Content-type: application/xml");
+            header('Content-Disposition: attachment; filename="' . $fileName );
+            echo claro_utf8_encode( $exporter->export( $url ) );
+            exit();
+        }
+        
         default:
         {
             throw new Exception( 'bad command' );
@@ -813,6 +826,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         }
         
         case 'rqView':
+        case 'exExport':
         {
             $is_validated = false;
             
@@ -874,6 +888,11 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                               .'/index.php?cmd=exBookmark&resourceId=' . $resourceId ) ) );
             }
+            
+            $cmdList[] = array( 'img'  => 'export',
+                                'name' => get_lang( 'Export metadatas in RDF format' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                          .'/index.php?cmd=exExport&resourceId=' . $resourceId ) ) );
             break;
         }
         

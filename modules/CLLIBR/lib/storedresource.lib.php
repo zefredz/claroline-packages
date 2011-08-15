@@ -115,7 +115,7 @@ class StoredResource
     public function validate( $fileName )
     {
         return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
-                        , $this->authorizedFileList );
+                       , $this->authorizedFileList );
     }
     
     /**
@@ -190,7 +190,7 @@ class StoredResource
                 'sti'   => 'application/vnd.sun.xml.impress.template',
                 'sxg'   => 'application/vnd.sun.xml.writer.global',
                 'sxm'   => 'application/vnd.sun.xml.math',
-                # Microsoft Office 2007 (sucks)
+                # Microsoft Office 2007
                 'docm'  => 'application/vnd.ms-word.document.macroEnabled.12',
                 'docx'  => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                 'dotm'  => 'application/vnd.ms-word.template.macroEnabled.12',
@@ -258,8 +258,8 @@ class StoredResource
             );
             
             return array_key_exists( $fileExtension, $mimeTypeList )
-                ? $mimeTypeList[$fileExtension]
-                : $defaultMimeType;
+                 ? $mimeTypeList[$fileExtension]
+                 : $defaultMimeType;
         }
         else
         {
