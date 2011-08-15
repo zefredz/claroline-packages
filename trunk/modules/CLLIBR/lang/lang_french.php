@@ -114,6 +114,7 @@ $_lang[ 'Delete this library' ] = 'Supprimer cette bibliothèque';
 $_lang[ 'Delete this resource' ] = 'Supprimer cette ressource';
 $_lang[ 'Edit resource' ] = 'Editer la ressource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Modifier les méta-données de la ressource';
+$_lang[ 'Export metadatas in RDF format' ] = 'Exporter les méta-données';
 $_lang[ 'Manage librarians' ] = 'Gérer mes bibliothécaires';
 $_lang[ 'Move this resource to another library' ] = 'Déplacer cette ressource vers une autre bibliothèque';
 $_lang[ 'My bookmark' ] = 'Mes lectures';

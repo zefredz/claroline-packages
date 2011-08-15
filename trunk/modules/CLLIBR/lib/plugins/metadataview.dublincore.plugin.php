@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class DublinCore extends MetaDataView implements Renderable
+class DublinCore extends MetaDataView implements Renderable, Exportable
 {
     protected $propertyList = array( 'title'
                                    , 'creator'
@@ -28,20 +28,45 @@ class DublinCore extends MetaDataView implements Renderable
                                    , 'rights' );
     
     protected $translator = array( 'author' => 'creator'
-                                 , 'publication date' => 'date' );
+                                 , 'publication date' => 'date'
+                                 , 'ISBN' => 'identifier'
+                                 , 'ISSN' => 'identifier' );
     
     public function render()
     {
         $render = '';
         
-        foreach( $this->metadatas as $name => $values )
+        foreach( $this->metadatas as $name => $value )
         {
             if ( in_array( $name , $this->propertyList ) )
             {
-                $render .= '<meta name="DC.' . $name . '" content = "' . $values . '" />' . "\n";
+                $render .= '<meta name="DC.' . $name . '" content = "' . $value . '" />' . "\n";
             }
         }
         
         return $render;
+    }
+    
+    public function Export( $url )
+    {
+        $xml  = '<?xml version="1.0"?>' . "\n";
+        $xml .= '<!DOCTYPE rdf:RDF PUBLIC "-//DUBLIN CORE//DCMES DTD 2002/07/31//EN"
+                "http://dublincore.org/documents/2002/07/31/dcmes-xml/dcmes-xml-dtd.dtd">' . "\n";
+        $xml .= '<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+                xmlns:dc ="http://purl.org/dc/elements/1.1/">' . "\n";
+        $xml .= '    <rdf:Description rdf:about="' . $url . '">' . "\n";
+        
+        foreach( $this->metadatas as $name => $value )
+        {
+            if ( in_array( $name , $this->propertyList ) )
+            {
+                $xml .= '        <dc:' . $name . '>' . $value . '</dc:' . $name . '>' . "\n";
+            }
+        }
+        
+        $xml .= '    </rdf:Description>' . "\n";
+        $xml .= '</rdf:RDF>';
+        
+        return( $xml );
     }
 }
