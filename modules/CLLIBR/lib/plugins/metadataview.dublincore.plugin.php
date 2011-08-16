@@ -66,7 +66,7 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
         
         foreach( $this->metadatas as $name => $values )
         {
-            if ( ! is_array( $values) )
+            if ( ! is_array( $values ) )
             {
                 $values = array( $values );
             }

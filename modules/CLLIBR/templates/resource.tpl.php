@@ -52,7 +52,7 @@
             <?php echo get_lang( ucwords( $name ) ); ?> :
         </dt>
         <dd>
-            <?php echo htmlspecialchars( $values ); ?>
+            <?php echo htmlspecialchars( is_array( $values ) ? implode( ',' , $values ) : $values ); ?>
         </dd>
     <?php endif; ?>
 <?php endforeach; ?>
