@@ -40,7 +40,7 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
         {
             if ( ! is_array( $values) )
             {
-                $values = array( $value );
+                $values = array( $values );
             }
             
             if ( in_array( $name , $this->propertyList ) )
@@ -68,7 +68,7 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
         {
             if ( ! is_array( $values) )
             {
-                $values = array( $value );
+                $values = array( $values );
             }
             
             if ( in_array( $name , $this->propertyList ) )
