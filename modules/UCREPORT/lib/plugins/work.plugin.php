@@ -80,7 +80,7 @@ class WorkPlugin extends ReportPlugin
                 SELECT
                     S1.id,
                     S1.user_id,
-                    S1.assignment_id,
+                    S1.assignment_id as item_id,
                     A.title,
                     S2.score,
                     S2.creation_date
