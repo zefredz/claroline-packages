@@ -36,11 +36,19 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
     {
         $render = '';
         
-        foreach( $this->metadatas as $name => $value )
+        foreach( $this->metadatas as $name => $values )
         {
+            if ( ! is_array( $values) )
+            {
+                $values = array( $value );
+            }
+            
             if ( in_array( $name , $this->propertyList ) )
             {
-                $render .= '<meta name="DC.' . $name . '" content = "' . $value . '" />' . "\n";
+                foreach( $values as $value )
+                {
+                    $render .= '<meta name="DC.' . $name . '" content = "' . $value . '" />' . "\n";
+                }
             }
         }
         
@@ -56,11 +64,19 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
                 xmlns:dc ="http://purl.org/dc/elements/1.1/">' . "\n";
         $xml .= '    <rdf:Description rdf:about="' . $url . '">' . "\n";
         
-        foreach( $this->metadatas as $name => $value )
+        foreach( $this->metadatas as $name => $values )
         {
+            if ( ! is_array( $values) )
+            {
+                $values = array( $value );
+            }
+            
             if ( in_array( $name , $this->propertyList ) )
             {
-                $xml .= '        <dc:' . $name . '>' . $value . '</dc:' . $name . '>' . "\n";
+                foreach( $values as $value )
+                {
+                    $xml .= '        <dc:' . $name . '>' . $value . '</dc:' . $name . '>' . "\n";
+                }
             }
         }
         
