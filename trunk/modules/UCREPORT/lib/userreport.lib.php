@@ -43,7 +43,10 @@ class UserReport
         {
             $tbl = get_module_course_tbl( array( 'report_report' ) , $course[ 'sysCode' ] );
             
-            if ( claro_is_tool_activated( get_tool_id_from_module_label( 'UCREPORT' ) , $course[ 'sysCode' ] ) )
+            $tblExists = Claroline::getDatabase()->query( "
+                SHOW TABLES LIKE " . Claroline::getDatabase()->quote( $tbl['report_report'] ) )->numRows();
+            
+            if ( $tblExists )
             {
                 $courseReportList = Claroline::getDatabase()->query( "
                         SELECT
