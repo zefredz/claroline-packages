@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -47,6 +47,7 @@ $_lang['My examination results and comments'] = 'Les résultats commentés de mes 
 $_lang['My report'] = 'Mon bulletin';
 $_lang['No report available'] = 'Aucun bulletin disponible';
 $_lang['No result at this time'] = 'Pas de résultats pour le moment';
+$_lang['No session for this course yet'] = 'Aucune session d\'examen définie pour l\'instant';
 $_lang['Number of marks'] = 'Nombre de notes attribuées';
 $_lang['Proportional weight'] = 'Pondération relative';
 $_lang['Publication date'] = 'Date de publication';

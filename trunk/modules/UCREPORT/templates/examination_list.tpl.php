@@ -2,33 +2,12 @@
 /**
  * Examination report
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-
-<span>
-    <a class="claroCmd" href="<?php echo 'report.php'; ?>">
-        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
-        <?php echo get_lang( 'Back to the report list' ); ?>
-    </a>
-</span>
-<?php if ( $this->has_result ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqResult') ); ?>">
-        <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="<?php echo get_lang( 'result' ); ?>"/>
-        <?php echo get_lang( 'See my examination result details' ); ?>
-    </a>
-<?php endif; ?>
-<?php if ( claro_is_allowed_to_edit() ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ); ?>">
-        <img src="<?php echo get_icon_url( 'new_exam' ); ?>" alt="<?php echo get_lang( 'create a new session' ); ?>"/>
-        <?php echo get_lang( 'Create a new session' ); ?>
-    </a>
-</span>
-<?php endif; ?>
 
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>

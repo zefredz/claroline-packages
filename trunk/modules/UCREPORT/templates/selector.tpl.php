@@ -2,19 +2,12 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */?>
-
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
-        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
-        <?php echo get_lang( 'Back to the report list' ); ?>
-    </a>
-</span>
 
 <form id="itemSelection"
       method="post"

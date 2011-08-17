@@ -2,19 +2,12 @@
 /**
  * Examination report
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2009 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-
-<span>
-    <a class="claroCmd" href="report.php">
-        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
-        <?php echo get_lang( 'Back to the report list' ); ?>
-    </a>
-</span>
 
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>

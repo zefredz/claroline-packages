@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
@@ -24,10 +24,10 @@ From::Module( 'UCREPORT' )->uses( 'assetlist.lib'
 
 $dialogBox = new DialogBox();
 $pageTitle = array( 'mainTitle' => get_lang( 'Examination Report' ) );
-
+$is_allowed_to_edit = claro_is_allowed_to_edit();
 $userInput = Claro_UserInput::getInstance();
 
-if ( claro_is_allowed_to_edit() )
+if ( $is_allowed_to_edit )
 {
     $userInput->setValidator( 'cmd'
         , new Claro_Validator_AllowedList( array( 'rqShowList'
@@ -60,7 +60,6 @@ try
     
     $courseId = claro_get_current_course_id();
     $currentUserId = claro_get_current_user_id();
-    $is_allowedToEdit = claro_is_allowed_to_edit();
     
     if ( $sessionId && $cmd != 'exDelete'
                     && $cmd != 'exMkVisible'
@@ -166,7 +165,7 @@ try
     {
         case 'rqShowList':
         {
-            $template = $is_allowedToEdit
+            $template = $is_allowed_to_edit
                       ? 'list'
                       : 'result';
             break;
@@ -186,24 +185,22 @@ try
         
         case 'rqCreate':
         {
+            $template = 'list';
             $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/examination_edit.tpl.php' );
             $dialogBox->question( $form->render() );
-            
-            $template = 'list';
-            $urlAction = "exCreate";
+            $urlAction = 'exCreate';
             break;
         }
         
         case 'rqEdit':
         {
+            $template = 'examination';
             $form = new PhpTemplate( dirname( __FILE__ ) . '/templates/examination_edit.tpl.php' );
             $form->assign( 'sessionId' , $examination->getSessionId() );
             $form->assign( 'title' , $examination->getTitle() );
             $form->assign( 'maxValue' , $examination->getMaxScore() );
             $form->assign( 'is_visible' , $examinationList->isVisible( $examination->getSessionId() ) );
             $dialogBox->question( $form->render() );
-            
-            $template = 'examination';
             $urlAction = 'exEdit';
             break;
         }
@@ -322,27 +319,49 @@ try
     
     // assigns parameters to the template
     $examinationView = new PhpTemplate( dirname( __FILE__ ) . '/templates/examination_' . $template . '.tpl.php' );
+    $cmdList = array();
     
     switch ( $template )
     {
         case 'list':
             $pageTitle[ 'subTitle' ] = get_lang( 'Examination list' );
             $examinationView->assign( 'examinationList' , $examinationList->getList( true ) );
-            $examinationView->assign( 'has_result' , $myResult->hasResult() );
-            break;
-        
-        case 'edit':
-            $pageTitle[ 'subTitle' ] = get_lang( 'Edit examination');
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                                'name' => get_lang( 'Back to the report list' ),
+                                'url'  => 'report.php' );
+            
+            if ( $myResult->hasResult() )
+            {
+                $cmdList[] = array( 'img'  => 'icon',
+                                    'name' => get_lang( 'See my examination result details' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqResult') ) );
+            }
+            
+            if ( $is_allowed_to_edit )
+            {
+                $cmdList[] = array( 'img'  => 'new_exam',
+                                    'name' => get_lang( 'Create a new session' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ) );
+            }
             break;
         
         case 'examination':
             $pageTitle[ 'subTitle' ] = $examination->getTitle();
             $examinationView->assign( 'examination' , $examination );
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                                'name' => get_lang( 'Back to the examination list' ),
+                                'url'  => 'examination.php' );
             break;
         
         case 'result':
             $pageTitle[ 'subTitle' ] = get_lang( 'My examination results and comments' );
             $examinationView->assign( 'result' , $myResult->getResultList() );
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                                'name' => get_lang( 'Back to the report list' ),
+                                'url'  => 'report.php' );
             break;
     }
     
@@ -350,7 +369,7 @@ try
     
     ClaroBreadCrumbs::getInstance()->append( get_lang( 'Session list' )
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList )
                                                           . $dialogBox->render()
                                                           . $examinationView->render() );
 }

@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -10,7 +10,6 @@
  */ ?>
 
 <?php if ( count( $this->datas ) ) : ?>
-<?php include dirname( __FILE__ ) . '/menu.tpl.php'; ?>
 <table id="report" class="claroTable emphaseLine" style="width: 100%;">
     <thead>
         <tr class="headerX">
