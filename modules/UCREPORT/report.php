@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -37,8 +37,9 @@ $nameTools = get_lang( 'Student Report' );
 if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form( true );
 
 $userInput = Claro_UserInput::getInstance();
+$is_allowed_to_edit = claro_is_allowed_to_edit();
 
-if ( claro_is_allowed_to_edit() )
+if ( $is_allowed_to_edit )
 {
     $userInput->setValidator( 'cmd' ,
         new Claro_Validator_AllowedList( array( 'rqShowList',
@@ -197,6 +198,7 @@ try
     $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
              ? $userList[ claro_get_current_user_id() ][ 'comment' ]
              : false;
+    $cmdList = array();
     
     switch( $cmd )
     {
@@ -211,6 +213,7 @@ try
             
             $reportView = new ModuleTemplate( 'UCREPORT' , 'reportlist.tpl.php' );
             $reportView->assign( 'reportList' , $reportList->getList() );
+            $reportView->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
             
             if ( $cmd == 'rqDelete' )
             {
@@ -234,6 +237,17 @@ try
                 $message = $execution_ok ? get_lang( 'The report has been successfully created!' )
                                          : '<strong>' . get_lang( 'An error occured: the report has not been created!' ) . '</strong>';
             }
+            
+            if ( $is_allowed_to_edit )
+            {
+                $cmdList[] = array( 'img'  => 'new_exam',
+                                    'name' => get_lang( 'Create a new report' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ) );
+            }
+            
+            $cmdList[] = array( 'img'  => 'exam',
+                    'name' => get_lang( 'Examinations' ),
+                    'url'  => 'examination.php' );
             break;
         }
         
@@ -242,6 +256,10 @@ try
             $pageTitle[ 'subTitle' ] = get_lang( 'Items selection' );
             $reportView = new ModuleTemplate( 'UCREPORT' , 'selector.tpl.php' );
             $reportView->assign( 'itemList' , $selector->getItemList() );
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                    'name' => get_lang( 'Back to the report list' ),
+                    'url'  => 'report.php' );
             break;
         }
         
@@ -272,6 +290,32 @@ try
                 $urlCancel = 'exGenerate';
                 $xid = array( 'title' => 'text' );
             }
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                    'name' => get_lang( 'Back to the report list' ),
+                    'url'  => 'report.php' );
+            
+            if ( $is_allowed_to_edit )
+            {
+                if ( ! $id )
+                {
+                    $cmdList[] = array( 'img'  => 'export_list',
+                                        'name' => get_lang( 'Publish the report' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPublish') ) );
+                }
+                
+                $cmdList[] = array( 'img'  => 'export',
+                                    'name' => get_lang( 'Export to MS-Excel xlsx file' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2xml&id=' . $id ) ) );
+                
+                $cmdList[] = array( 'img'  => 'export',
+                                    'name' => get_lang( 'Export to csv' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2csv&id=' . $id ) ) );
+            }
+            
+            $cmdList[] = array( 'img'  => 'export',
+                                'name' => get_lang( 'Export to pdf' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2pdf&id=' . $id ) ) );
             break;
         }
         
@@ -305,7 +349,6 @@ try
             $reportPdf = new ModuleTemplate( 'UCREPORT' , 'report.pdf.tpl.php' );
             $reportPdf->assign( 'datas' , $report->export() );
             $reportPdf->assign( 'courseData' , claro_get_current_course_data() );
-            //$reportPdf->assign( 'comment' , $comment );
             
             $pdf = new TCPDF( 'L' , 'mm' , 'A4' , true , 'UTF-8' , false);
             $pdf->setTitle( claro_utf8_encode( 'Report_' . claro_get_current_course_id() ) );
@@ -350,7 +393,7 @@ try
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help.php' )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help.php' , $cmdList )
                                                           . $dialogBox->render()
                                                           . $reportView->render() );
 }

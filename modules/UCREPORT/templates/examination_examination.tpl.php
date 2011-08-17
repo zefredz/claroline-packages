@@ -9,12 +9,6 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
-        <img src="<?php echo get_icon_url( 'go_left' ); ?>" alt="back" />
-        <?php echo get_lang( 'Back to the examination list' ); ?>
-    </a>
-</span>
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exModifyMark&sessionId=' . $this->examination->getSessionId() ) ); ?>" >
     <table class="claroTable emphaseLine" style="width: 100%;">

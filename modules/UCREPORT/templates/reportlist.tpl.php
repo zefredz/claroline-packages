@@ -2,26 +2,12 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-<?php if ( claro_is_allowed_to_edit() ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ); ?>">
-        <img src="<?php echo get_icon_url( 'export_list' ); ?>" alt="current results" />
-        <?php echo get_lang( 'Create a new report' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-<span>
-    <a class="claroCmd" href="<?php echo 'examination.php'; ?>">
-        <img src="<?php echo get_icon_url( 'exam' ); ?>" alt="examinations" />
-        <?php echo get_lang( 'Examinations' ); ?>
-    </a>
-</span>
 
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
@@ -32,7 +18,7 @@
             <th>
                 <?php echo get_lang( 'Publication date' ); ?>
             </th>
-<?php if ( claro_is_allowed_to_edit() ) : ?>
+<?php if ( $this->is_allowed_to_edit ) : ?>
             <th>
                 <?php echo get_lang( 'Delete' ); ?>
             </th>
@@ -45,7 +31,7 @@
     <tbody>
 <?php if ( $this->reportList->numRows() ) : ?>
     <?php foreach ( $this->reportList as $report ) : ?>
-        <?php if ( $report['visibility'] == AssetList::VISIBLE || claro_is_allowed_to_edit() ) : ?>
+        <?php if ( $report['visibility'] == AssetList::VISIBLE || $this->is_allowed_to_edit ) : ?>
         <tr>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&id='. $report['id'] ) );?>">
@@ -55,7 +41,7 @@
             <td>
                     <?php echo $report[ 'publication_date' ]; ?>
             </td>
-                <?php if ( claro_is_allowed_to_edit() ) : ?>
+                <?php if ( $this->is_allowed_to_edit ) : ?>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
@@ -78,7 +64,7 @@
     <?php endforeach; ?>
 <?php else: ?>
         <tr>
-            <td class="empty" colspan="<?php echo claro_is_allowed_to_edit() ? 6 : 2; ?>"><?php echo get_lang( 'No report available' ); ?></td>
+            <td class="empty" colspan="<?php echo $this->is_allowed_to_edit ? 6 : 2; ?>"><?php echo get_lang( 'No report available' ); ?></td>
         </tr>
 <?php endif; ?>
     </tbody>
