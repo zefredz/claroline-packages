@@ -18,7 +18,7 @@
 <?php endif; ?>
 <span>
     <a class="claroCmd" href="<?php echo 'examination.php'; ?>">
-        <img src="<?php echo get_icon_url( 'icon' ); ?>" alt="examinations" />
+        <img src="<?php echo get_icon_url( 'exam' ); ?>" alt="examinations" />
         <?php echo get_lang( 'Examinations' ); ?>
     </a>
 </span>

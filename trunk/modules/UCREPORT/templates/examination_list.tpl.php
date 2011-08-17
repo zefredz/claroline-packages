@@ -24,7 +24,7 @@
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 <span>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ); ?>">
-        <img src="<?php echo get_icon_url( 'new' ); ?>" alt="<?php echo get_lang( 'create a new session' ); ?>"/>
+        <img src="<?php echo get_icon_url( 'new_exam' ); ?>" alt="<?php echo get_lang( 'create a new session' ); ?>"/>
         <?php echo get_lang( 'Create a new session' ); ?>
     </a>
 </span>
