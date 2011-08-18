@@ -273,7 +273,7 @@ class Agregator
             }
             
             $averageScore = $activeCount
-                          ? $totalScore / $activeCount
+                          ? round( $totalScore / $activeCount , 2 )
                           : 0;
             $this->itemList[ $itemId ][ 'average' ] = $averageScore;
         }
