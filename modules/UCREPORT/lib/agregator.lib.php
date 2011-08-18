@@ -83,7 +83,7 @@ class Agregator
                 if ( isset( $itemList[ $itemId ][ 'selected' ] ) )
                 {
                     $this->itemList[ $itemId ] = $datas;
-                    $this->itemList[ $itemId ][ 'weight' ] = $datas[ 'weight' ];
+                    $this->itemList[ $itemId ][ 'weight' ] = $itemList[ $itemId ][ 'weight' ];
                 }
             }
             

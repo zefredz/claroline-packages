@@ -211,7 +211,7 @@ try
         {
             $pageTitle[ 'subTitle' ] = get_lang( 'Report list' );
             
-            $reportView = new ModuleTemplate( 'UCREPORT' , 'reportlist.tpl.php' );
+            $reportView = new ModuleTemplate( 'UCREPORT' , 'report_list.tpl.php' );
             $reportView->assign( 'reportList' , $reportList->getList() );
             $reportView->assign( 'is_allowed_to_edit' , $is_allowed_to_edit );
             
