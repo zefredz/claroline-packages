@@ -17,6 +17,10 @@ $_lang[ 'Online Library'] = 'Online Library';
 $_lang[ '_public' ] = '<strong>Public</strong> : all users can access to resources';
 $_lang[ '_restricted' ] = '<strong>Restricted</strong> : all users can access to metadatas';
 $_lang[ '_private' ] = '<strong>Private</strong> : only allowed users can access to resources and/or metadatas.';
+$_lang[ 'type_long' ] = 'text field';
+$_lang[ 'type_short' ] = 'characters string';
+$_lang[ 'type_image' ] = 'image file url';
+$_lang[ 'type_url' ] = 'url';
 
 $_lang[ 'AND' ] = 'AND';
 $_lang[ 'OR' ] = 'OR';

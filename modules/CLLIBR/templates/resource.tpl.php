@@ -46,13 +46,19 @@
         <dd>
             <?php echo isset( $this->metadataList[ 'description' ] ) ? $this->metadataList[ 'description' ] : ''; ?>
         </dd>
-<?php foreach( $this->metadataList as $name => $values ): ?>
+<?php foreach( $this->metadataList as $name => $value ): ?>
     <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD ) : ?>
         <dt>
             <?php echo get_lang( ucwords( $name ) ); ?> :
         </dt>
         <dd>
-            <?php echo htmlspecialchars( is_array( $values ) ? implode( ',' , $values ) : $values ); ?>
+        <?php if ( isset( $this->defaultmetadataList[ $name ] ) && $this->defaultMetadataList[ $name ] == ResourceType::TYPE_IMAGE ) : ?>
+            <img src="<?php echo $value; ?>" alt="<?php echo $name; ?>" />
+        <?php elseif ( isset( $this->defaultmetadataList[ $name ] ) && $this->defaultMetadataList[ $name ] == ResourceType::TYPE_URL ) : ?>
+            <a href="<?php echo $value; ?>"><?php echo $value; ?></a>
+        <?php else : ?>
+            <?php echo htmlspecialchars( is_array( $value ) ? implode( ',' , $value ) : $value ); ?>
+        <?php endif; ?>
         </dd>
     <?php endif; ?>
 <?php endforeach; ?>

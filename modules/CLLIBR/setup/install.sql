@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_resource`(
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_metadata`(
     resource_id INT(11) NOT NULL,
     metadata_name VARCHAR(128),
-    metadata_type ENUM('short','long') NOT NULL DEFAULT 'short',
+    metadata_type ENUM('short','long','image','url') NOT NULL DEFAULT 'short',
     metadata_value TEXT,
     FULLTEXT KEY metadata (metadata_name,metadata_value),
     KEY(resource_id,metadata_name)

@@ -17,6 +17,10 @@ $_lang[ 'Online Library'] = 'Bibliothèque en Ligne';
 $_lang[ '_public' ] = '<strong>Publique</strong> : tous les utilisateurs de la plateforme ont accès à toutes les ressources';
 $_lang[ '_restricted' ] = '<strong>A accès restreint</strong> : tous les utilisateurs ont accès aux méta-données, mais pas aux documents';
 $_lang[ '_private' ] = '<strong>Privée</strong> : seuls les utilisateurs autorisés ont accès aux documents et à leur méta-données.';
+$_lang[ 'type_long' ] = 'champ de texte';
+$_lang[ 'type_short' ] = 'chaîne de caractères';
+$_lang[ 'type_image' ] = 'lien vers une image';
+$_lang[ 'type_url' ] = 'lien';
 
 $_lang[ 'AND' ] = 'ET';
 $_lang[ 'OR' ] = 'OU';
