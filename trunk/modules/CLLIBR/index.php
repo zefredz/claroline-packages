@@ -975,14 +975,17 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             if ( $resourceSet->getResourceList() )
             {
                 $warningMsg = '<strong>'
-                            . get_lang( 'Warning : this library is not empty! This will delete all its resources, along with the associated links in bookmarks and bibliographies!' )
+                            . get_lang( 'Warning : this library is not empty! First, you must delete or move all the resource within' )
                             .  '</strong>';
             }
+            else
+            {
+                $msg = get_lang( 'Do you really want to delete this library?' );
+                $urlAction = 'exDeleteLibrary';
+                $urlCancel = 'rqShowLibrarylist';
+                $xid = array( 'libraryId' => $libraryId );
+            }
             
-            $msg = get_lang( 'Do you really want to delete this library?' );
-            $urlAction = 'exDeleteLibrary';
-            $urlCancel = 'rqShowLibrarylist';
-            $xid = array( 'libraryId' => $libraryId );
             break;
         }
         
