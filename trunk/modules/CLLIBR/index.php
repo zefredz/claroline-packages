@@ -846,10 +846,13 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 }
             }
             
+            $type = $resource->getType();
+            
             $template = new ModuleTemplate( 'CLLIBR' , 'resource.tpl.php' );
             $template->assign( 'resourceId' , $resourceId );
             $template->assign( 'storageType' , $resource->getStorageType() );
-            $template->assign( 'resourceType' , $resource->getType() );
+            $template->assign( 'resourceType' , $type );
+            $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )->getDefaultMetadataList() );
             $template->assign( 'url' , $resource->getName() );
             $template->assign( 'metadataList' , $metadata->getMetadataList( true ) );
             $template->assign( 'userId' , $userId );

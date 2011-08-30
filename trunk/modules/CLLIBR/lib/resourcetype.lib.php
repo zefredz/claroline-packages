@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -13,6 +13,8 @@
  * A class that represents a resource type definition
  * @const TYPE_SHORT
  * @const TYPE_LONG
+ * @const TYPE_IMAGE
+ * @const TYPE_URL
  * @protected string $fileName
  * @protected string $name
  * @protected array $authorizedFileList
@@ -22,6 +24,8 @@ class ResourceType
 {
     const TYPE_SHORT = 'short';
     const TYPE_LONG  = 'long';
+    const TYPE_IMAGE = 'image';
+    const TYPE_URL   = 'url';
     
     protected $fileName;
     protected $name;

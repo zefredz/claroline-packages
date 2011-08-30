@@ -117,6 +117,7 @@
             <input type="text"
                    size="32"
                    name="metadata[<?php echo $index; ?>]" value="" />
+            <span class="typeDescription">[<?php echo get_lang( 'type_' . $type ); ?>]</span>
         <?php endif; ?>
         </dd>
     <?php $index++; ?>
