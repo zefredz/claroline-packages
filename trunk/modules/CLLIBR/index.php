@@ -100,9 +100,7 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exRemoveLibrarian'
                              , 'rqDeleteLibrary'
                              , 'exDeleteLibrary'
-                             , 'rqAddLibrary'
                              , 'exAddLibrary'
-                             , 'rqRemoveLibrary'
                              , 'rqRemoveLibrary'
                              , 'exRemoveLibrary'
                              , 'exAddResource'
@@ -981,7 +979,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             if ( $resourceSet->getResourceList() )
             {
                 $warningMsg = '<strong>'
-                            . get_lang( 'Warning : this library is not empty! First, you must delete or move all the resource within' )
+                            . get_lang( 'Warning : this library is not empty! First, you must delete or move all the resources within' )
                             .  '</strong>';
             }
             else
