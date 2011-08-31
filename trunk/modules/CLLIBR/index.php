@@ -573,6 +573,12 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             break;
         }
         
+        case 'exMoveResource':
+        {
+            $execution_ok = $resourceSet->moveResource( $resourceId , $libraryId );
+            break;
+        }
+        
         case 'exDeleteResource':
         {
             $resource = new Resource( $database , $resourceId );
