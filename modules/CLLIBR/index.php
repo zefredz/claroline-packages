@@ -340,7 +340,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                 
                 $collectionList = $resourceSet->getCollectionList( $resourceId );
                 
-                if ( ! isset( $collectionList[ Collection::USER_COLLECTION ] ) )
+                if ( empty( $collectionList ) )
                 {
                     $metadata->removeAll();
                 }
