@@ -19,7 +19,7 @@ $tlabelReq = 'CLBKMRK';
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
-uses(
+FromKernel::uses(
     'utils/datagrid.lib',
     'utils/input.lib',
     'utils/validator.lib',
