@@ -12,7 +12,9 @@ require_once dirname(__FILE__) . '/lib/datagrid.lib.php';
 $tiny = new TinyUrl;
 $dispAddForm = false;
 $dispDeleteForm = false;
-$message = '';
+//$message = '';
+
+$dialogBox = new DialogBox();
 
 $allowedActionList = array( 'get' );
 
@@ -85,7 +87,7 @@ else
     {
         if ( empty ( $url ) )
         {
-            $message = 'Missing url !';
+            $dialogBox->error( 'Missing url !' );
         }
         else
         {
@@ -98,15 +100,14 @@ else
                     . '?tinyId='.rawurlencode($tinyId)
                     ;
 
-                $message = 'Url added ! The tiny url for the document is : '
+                $dialogBox->success( 'Url added ! The tiny url for the document is : '
                     . '<a href="'.htmlspecialchars($tinyUrl).'">'
-                    .htmlspecialchars($tinyUrl).'</a>'
-                    ;
+                    .htmlspecialchars($tinyUrl).'</a>' );
 
             }
             else
             {
-                $message = 'Cannot add url !';
+                $dialogBox->error( 'Cannot add url !' );
             }
         }
     }
@@ -114,18 +115,18 @@ else
     {
         if ( empty ( $tinyId ) )
         {
-            $message = 'Missing id !';
+            $dialogBox->error( 'Missing id !' );
         }
         else
         {
             if ( false !== ( $tiny->remove( $tinyId ) ) )
             {
-                $message = 'Url removed !';
+                $dialogBox->success( 'Url removed !' );
 
             }
             else
             {
-                $message = 'Cannot remove url !';
+                $dialogBox->error( 'Cannot remove url !' );
             }
         }
     }
@@ -135,7 +136,7 @@ else
     else
     {
         // impossible to go here
-        trigger_error( 'Fatal Error invalid action', E_USER_ERROR );
+        claro_die( 'Fatal Error invalid action', E_USER_ERROR );
     }
 
     $list = $tiny->listAll();
@@ -143,7 +144,7 @@ else
 
 if ( $dispAddForm )
 {
-    $message .= '<h1>Add an Url</h1>'."\n"
+    $dialogBox->form( '<h1>Add an Url</h1>'."\n"
         . '<form method="post" action="'
         . $_SERVER['PHP_SELF'] . '">'."\n"
         . '<input type="hidden" name="action" value="exAdd" />' . "\n"
@@ -151,14 +152,14 @@ if ( $dispAddForm )
         . '<input type="text" name="url" value="" />' . "\n"
         . '<input type="submit" name="submit" value="Submit" />'
         . '</form>' . "\n"
-        ;
+        );
 }
 elseif ( $dispDeleteForm )
 {
     if ( !empty( $tinyId )
         &&  ( false !== ( $url = $tiny->getUrl ( $tinyId ) ) ) )
     {
-        $message .= '<form method="post" action="'
+        $dialogBox->form( '<form method="post" action="'
             . $_SERVER['PHP_SELF'] . '">'."\n"
             . '<input type="hidden" name="action" value="exDelete" />' . "\n"
             . '<input type="hidden" name="tinyId" value="'.$tinyId.'" />' . "\n"
@@ -166,33 +167,31 @@ elseif ( $dispDeleteForm )
             . '<input type="submit" name="submit" value="Yes" />'
             . '<a href="'.$_SERVER['PHP_SELF'].'?action=list"><input type="button" name="cancel" value="No" /></a>'
             . '</form>'
-            ;
+            );
     }
     else
     {
-        $message .= 'Missing or invalid id';
+        $dialogBox->error( 'Missing or invalid id' );
     }
 }
 
 if ( !empty( $message ) )
 {
-    $claroline->display->body->appendContent(claro_html_message_box( $message ));
+    $claroline->display->body->appendContent(claro_html_message_box( $dialogBox->render() ));
 }
 
 $table = new HTML_Datagrid_Table;
 
 $table->setTitle( get_lang('Tiny Urls') );
 
-$dataFields = array(
+$table->setDataFields( array(
     'tinyId' => 'TinyId',
     'url' => 'Original Url'
-);
-
-$table->setDataFields( $dataFields );
+) );
 
 $pathInfo = parse_url( get_path('rootWeb') );
 
-$dataUrls = array(
+$table->setDataUrls( array(
     'tinyId' => '<a href="'
         . $pathInfo['scheme'] . '://' . $pathInfo['host']
         . $_SERVER['PHP_SELF']
@@ -200,18 +199,14 @@ $dataUrls = array(
         . '">%tinyId%'
         . '</a>'
 
-);
+) );
 
-$table->setDataUrls( $dataUrls );
-
-$actionFields = array(
+$table->setActionFields( array(
     'tinyUrl' => 'Tiny Url',
     'delete' => get_lang( 'Delete' )
-);
+) );
 
-$table->setActionFields( $actionFields );
-
-$actionUrls = array(
+$table->setActionUrls( array(
     'tinyUrl' => '<a href="'
         . $pathInfo['scheme'] . '://' . $pathInfo['host']
         . $_SERVER['PHP_SELF']
@@ -227,19 +222,15 @@ $actionUrls = array(
         . '%uu(tinyId)%">'
         . '<img src="'.get_icon('delete.gif').'" alt="['
         . get_lang( 'Delete' ) . ']"/></a>'
-);
+));
 
-$table->setActionUrls( $actionUrls );
-
-$footer = '<a class="claroCmd" href="'
+$table->setFooter( '<a class="claroCmd" href="'
     . $_SERVER['PHP_SELF']
     . '?action=rqAdd" " title="'.get_lang('Click here to add a new Url').'">'
     . '<img src="'.get_icon('new.gif').'" alt="'
     . get_lang('New url').'" />'
     . '&nbsp;'.get_lang('Add a new Url').'</a>'
-    ;
-
-$table->setFooter( $footer );
+    );
 
 $table->setData( $list );
 
