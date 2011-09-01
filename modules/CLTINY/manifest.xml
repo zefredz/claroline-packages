@@ -4,7 +4,7 @@
 <description><![CDATA[
 Tiny Url tools
 ]]></description>
-<version>1.0</version>
+<version>1.1</version>
 <license>GPL</license>
 <icon>icon.gif</icon>
 <type>admin</type>
@@ -12,11 +12,11 @@ Tiny Url tools
 <author>
 <name>Frederic Minne</name>
 <email>zefredz@claroline.net</email>
-<web>http://www.claroline.net/wiki/CLVOC</web>
+<web>http://www.claroline.net/</web>
 </author>
 <requirements>
 <claroline>
-<version>1.8</version>
+<version>1.9</version>
 </claroline>
 </requirements>
 </module>
