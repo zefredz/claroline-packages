@@ -30,6 +30,10 @@ if ( array_key_exists( 'action', $_REQUEST ) )
         : 'get'
         ;
 }
+elseif( claro_is_platform_admin() )
+{
+    $action = 'list';
+}
 else
 {
     $action = 'get';
