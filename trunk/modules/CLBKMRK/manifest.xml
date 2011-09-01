@@ -3,7 +3,7 @@
   <name>Bookmarks</name>
   <version>1.0-test</version> 
   <license>GPL</license>
-  <type>applet</type>
+  <type>admin</type>
   <icon>icon.png</icon>
    
   <description>
