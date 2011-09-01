@@ -175,10 +175,7 @@ elseif ( $dispDeleteForm )
     }
 }
 
-if ( !empty( $message ) )
-{
-    $claroline->display->body->appendContent(claro_html_message_box( $dialogBox->render() ));
-}
+$claroline->display->body->appendContent(claro_html_message_box( $dialogBox->render() ));
 
 $table = new HTML_Datagrid_Table;
 
