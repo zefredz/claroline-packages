@@ -7,7 +7,7 @@ Tiny Url tools
 <version>1.0</version>
 <license>GPL</license>
 <icon>icon.gif</icon>
-<type>applet</type>
+<type>admin</type>
 <entry>index.php</entry>
 <author>
 <name>Frederic Minne</name>
