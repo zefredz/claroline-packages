@@ -10,12 +10,14 @@
  *
  * @package CLCHAT
  *
- * @author Sébastien Piraux
+ * @author Sï¿½bastien Piraux
  *
  */
     $tlabelReq = 'CLCHAT';
     
     require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
+    
+    if( !claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form( true );
 
     /*
      * init request vars
