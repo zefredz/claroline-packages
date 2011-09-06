@@ -13,7 +13,7 @@ require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.p
 
 if ( ! claro_is_user_authenticated() ) claro_die( get_lang( 'Not allowed' ) );
 
-FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' , 'embed.lib' );
+FromKernel::uses( 'utils/input.lib' , 'utils/validator.lib' , 'display/layout.lib' );
 From::Module( 'UCONLINE' )->uses( 'skype.account.class' );
 
 $skypeAccount = new SkypeAccount( claro_get_current_user_id() );
