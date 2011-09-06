@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -46,17 +46,20 @@ $_lang[ 'bookmark' ] = 'Bookmark';
 $_lang[ 'catalogue' ] = 'Catalogue';
 $_lang[ 'librarian' ] = 'Librarians';
 $_lang[ 'librarylist' ] = 'Library List';
+$_lang[ 'resourcetype' ] = 'resource type definitions';
 
 $_lang[ 'Restricted' ] = 'Restricted access';
 $_lang[ 'Private' ] = 'Private';
 $_lang[ 'Public' ] = 'Public';
 
+$_lang[ 'Accepted extensions' ] = 'Accepted extensions';
 $_lang[ 'Advanced search' ] = 'Advanced search';
 $_lang[ 'Allowed Libraries'] = 'Public libraries';
 $_lang[ 'Associated keywords' ] = 'Associated keywords';
 $_lang[ 'Author(s)' ] = 'Author(s)';
 $_lang[ 'Bookmark' ] = 'Bookmark';
 $_lang[ 'Commands' ] = 'Commands';
+$_lang[ 'Default metadata fields' ] = 'Default metadata fields';
 $_lang[ 'External link' ] = 'External link';
 $_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'Librarians' ] = 'Librarians';
@@ -66,10 +69,12 @@ $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
 $_lang[ 'Metadata\'s name' ] = 'Metadata\'s name';
 $_lang[ 'My personnal notes' ] = 'My personnal notes';
+$_lang[ 'New resource type' ] = 'New resource type';
 $_lang[ 'Other Libraries'] = 'Other libraries';
 $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
+$_lang[ 'Resource type definitions' ] = 'Resource type definitions';
 $_lang[ 'Search result' ] = 'Search result';
 $_lang[ 'Selected' ] = 'Selected';
 $_lang[ 'Storage type' ] = 'Storage type';
@@ -79,6 +84,7 @@ $_lang[ 'User Libraries'] = 'Your libraries';
 $_lang[ 'Author' ] = 'Author';
 $_lang[ 'Date' ] = 'Date';
 $_lang[ 'Description' ] = 'Description';
+$_lang[ 'Issue' ] = 'Issue';
 $_lang[ 'Publication Date' ] = 'Publication date';
 $_lang[ 'Publisher' ] = 'Publisher';
 
@@ -106,6 +112,7 @@ $_lang[ 'Add an existing keyword' ] = 'Add a existing keyword';
 $_lang[ 'Add an item' ] = 'Add an item';
 $_lang[ 'Add new keywords (separated by commas)' ] = 'Add new keywords <br />(separated by commas)';
 $_lang[ 'Add a new metadata' ] = 'Add a new metadata';
+$_lang[ 'Add a new type' ] = 'Add a new type';
 $_lang[ 'Add a resource' ] = 'Add a resource';
 $_lang[ 'Add an user to this library' ] ='Add an user to this library';
 $_lang[ 'Add to my bookmark' ] = 'Add to my bookmark';
@@ -113,11 +120,15 @@ $_lang[ 'Add to the course\'s bibliography' ] = 'Add to the course\'s bibliograp
 $_lang[ 'Add selection in course\'s bibliography' ] = 'Add selection in course\'s bibliography';
 $_lang[ 'Add selection to my bookmark' ] = 'Add selection to my bookmark';
 $_lang[ 'Back to the catalogue' ] = 'Back to the catalogue';
+$_lang[ 'Back to the resource type list' ] = 'Back to the resource type list';
 $_lang[ 'Create a new library' ] = 'Create a new library';
+$_lang[ 'Define a new metadata' ] = 'Define a new metadata';
 $_lang[ 'Delete this library' ] = 'Delete this library';
 $_lang[ 'Delete this resource' ] = 'Delete this resource';
+$_lang[ 'Delete this resource type' ] = 'Delete this resource type';
 $_lang[ 'Edit a resource' ] = 'Edit a resource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
+$_lang[ 'Edit resource type definition' ] = 'Edit resource type definition';
 $_lang[ 'Export metadatas in RDF format' ] = 'Export metadatas in RDF format';
 $_lang[ 'Manage librarians' ] = 'Manage librarians';
 $_lang[ 'Move this resource to another library' ] = 'Move this resource to another library';
@@ -136,6 +147,7 @@ $_lang[ 'Do you really want to delete this resource?' ] = 'Do you really want to
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Do you really want to remove this librarian?';
 $_lang[ 'Do you really want to remove this library?' ] = 'Do you really want to remove this library?';
 $_lang[ 'Do you really want to remove this resource?' ] = 'Do you really want to remove this resource?';
+$_lang[ 'Do you really want to remove this type definition?' ] = 'Do you really want to remove this type definition?';
 $_lang[ 'Empty bibliography' ] = 'Empty bibliography';
 $_lang[ 'Empty bookmark' ] = 'Empty bookmark';
 $_lang[ 'Empty catalogue' ] = 'Empty catalogue';

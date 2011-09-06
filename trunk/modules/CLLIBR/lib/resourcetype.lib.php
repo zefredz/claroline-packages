@@ -165,6 +165,15 @@ class ResourceType
     }
     
     /**
+     * Wipes all the resource type definition
+     */
+    public function wipe()
+    {
+        $this->authorizedFileList = array();
+        $this->defaultMetadataList = array();
+    }
+    
+    /**
      * Deletes the resource type definition file
      * @return true on success
      */

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -112,7 +112,12 @@ $restrictedActionList = array( 'rqAddResource'
                              , 'exRemove'
                              , 'exVisible'
                              , 'exInvisible'
-                             , 'rqSearch' );
+                             , 'rqShowResourceType'
+                             , 'rqAddResourceType'
+                             , 'rqEditResourceType'
+                             , 'exEditResourceType'
+                             , 'rqDeleteResourceType'
+                             , 'exDeleteResourceType' );
 
 $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exRemove'          => 'rqShowBibliography'
@@ -129,7 +134,9 @@ $redirectionList = array( 'exAdd'             => 'rqShowBibliography'
                         , 'exEditResource'    => 'rqView'
                         , 'exNote'            => 'rqView'
                         , 'exBookmark'        => ''
-                        , 'exUnbookmark'      => '' );
+                        , 'exUnbookmark'      => ''
+                        , 'exEditResourceType' => 'rqShowResourceType'
+                        , 'exDeleteResourceType' => 'rqShowResourceType' );
 
 // OBJECTS INITIALISATION
 $userInput = Claro_UserInput::getInstance();
@@ -142,6 +149,9 @@ $resourceId = $userInput->get( 'resourceId' );
 $resourceList = $resourceId
               ? array( $resourceId => 'on' )
               : $userInput->get( 'resource' );
+$typeName = $userInput->get( 'typeName' );
+
+$resourceType = $typeName ? $resourceTypeList->get( $typeName ) : false;
 
 $library = new Library( $database , $libraryId );
 $resource = new Resource( $database , $resourceId );
@@ -185,6 +195,10 @@ elseif( $libraryId && $cmd != 'exAddLibrary' && $cmd != 'exRemoveLibrary' )
 elseif( $courseId && $cmd != 'rqCreateLibrary' )
 {
     $context = 'bibliography';
+}
+elseif( $typeName || $cmd == 'rqAddResourceType' )
+{
+    $context = 'resourcetype';
 }
 else
 {
@@ -264,6 +278,9 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         case 'rqEditLibrary':
         case 'rqRemoveLibrarian':
         case 'rqRemoveLibrary':
+        case 'rqShowResourceType':
+        case 'rqEditResourceType':
+        case 'rqDeleteResourceType':
         {
             break;
         }
@@ -697,6 +714,51 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             exit();
         }
         
+        case 'rqAddResourceType':
+        {
+            $resourceType = new ResourceType();
+            break;
+        }
+        
+        case 'exEditResourceType':
+        {
+            $extensionList = explode( ',' , $userInput->get( 'extensions' ) );
+            $nameList = $userInput->get( 'name' );
+            $typeList = $userInput->get( 'type' );
+            
+            $fileName = $typeRepository . 'type.' . $typeName . '.xml';
+            
+            $resourceType = new ResourceType( $resourceTypeList->get( $typeName ) ? $fileName : null );
+            
+            $resourceType->delete();
+            $resourceType->wipe();
+            
+            $resourceType->setName( $typeName );
+            
+            foreach( $extensionList as $extension )
+            {
+                $resourceType->addAuthorizedFile( trim( $extension ) );
+            }
+            
+            foreach( $nameList as $index => $name )
+            {
+                $resourceType->addMetadata( $name , $typeList[ $index ] );
+            }
+            
+            $execution_ok = $resourceType->save( $fileName );
+            break;
+        }
+        
+        case 'exDeleteResourceType':
+        {
+            if ( $execution_ok = $resourceType->delete() )
+            {
+                $resourceTypeList->remove( $typeName );
+                $resourceType =$typeName = false;
+            }
+            break;
+        }
+        
         default:
         {
             throw new Exception( 'bad command' );
@@ -705,7 +767,7 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     
     // VIEW
     CssLoader::getInstance()->load( 'cllibr' , 'screen' );
-    
+    $cmdList = array();
     $dialogBox = new DialogBox();
     $warning = new DialogBox();
     
@@ -726,16 +788,33 @@ if ( $accessTicket ) // AUTHORIZED ACTION
     $template = new ModuleTemplate( 'CLLIBR' , strtolower( $context ) . '.tpl.php' );
     $template->assign( 'edit_allowed' , $edit_allowed );
     $template->assign( 'is_platform_admin' , $is_platform_admin );
-    $template->assign( 'resourceList' , $resourceSet->getResourceList( true , $sort ) );
     $template->assign( 'userId' , $userId );
     $template->assign( 'libraryId' , $libraryId );
     $template->assign( 'courseId' , $courseId );
     $template->assign( 'icon' , get_icon_url( 'icon' ) );
     $template->assign( 'tagCloud' , $tagCloud->render() );
+    
+    if ( $context == 'resourcetype' )
+    {
+        $template->assign( 'resourceTypeList' , $resourceTypeList->getResourceTypeList() );
+        $template->assign( 'typeName' , $typeName );
+        $template->assign( 'edit' , false );
+        
+        $cmdList[] = array( 'img'  => 'new_xml',
+                            'name' => get_lang( 'Add a new type' ),
+                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                      .'/index.php?cmd=rqAddResourceType' ) ) );
+    }
+    else
+    {
+        $template->assign( 'resourceList' , $resourceSet->getResourceList( true , $sort ) );
+    }
+    
     if ( is_a( $resourceSet , 'LibraryList' ) && $libraryId )
     {
         $template->assign( 'librarianList' , $resourceSet->getLibrarianList( $libraryId ) );
     }
+    
     if ( $courseId )
     {
         $template->assign( 'courseLibraryList' , $courseLibraryList->getLibraryList( true ) );
@@ -752,8 +831,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                       : $dialogBox->error( $errorMsg ? $errorMsg : get_lang( 'Error' ) );
     }
     
-    $cmdList = array();
-    
     if ( $userId )
     {
         $cmdList[] = array( 'img'  => 'icon',
@@ -766,10 +843,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                       .'/index.php?cmd=rqShowBookmark') ) );
     }
     
+    if ( $resourceType )
+    {
+        $template->assign( 'authorizedFileList' , $resourceType->getAuthorizedFileList() );
+        $template->assign( 'defaultMetadataList' , $resourceType->getDefaultMetadataList() );
+        
+        array_unshift( $cmdList , array( 'img'  => 'back',
+                                         'name' => get_lang( 'Back to the resource type list' ),
+                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                   .'/index.php?cmd=rqShowResourceType' ) ) ) );
+    }
+    
     switch( $cmd )
     {
         case 'rqShowBibliography';
         case 'rqShowBookmark':
+        case 'rqShowResourceType':
         case 'exVisible':
         case 'exInvisible':
         case '';
@@ -801,6 +890,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                               .'/index.php?cmd=exAddLibrary&libraryId='
                                               . $libraryId ) ) );
             }
+            
+            if ( $is_course_creator )
+            {
+                $cmdList[] = array( 'img'  => 'xml',
+                                    'name' => get_lang( 'Resource type definitions' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                              .'/index.php?cmd=rqShowResourceType' ) ) );
+            }
             break;
         }
         
@@ -818,14 +915,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
         
         case 'rqShowLibrarian':
         {
-            $cmdList[] = array( 'img'  => 'back',
-                                'name' => get_lang( 'Back to the catalogue' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                          .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) );
             $cmdList[] = array( 'img'  => 'add_librarian',
                                 'name' => get_lang( 'Add a librarian' ),
                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=rqShowLibrarian&option=add&libraryId=' . $libraryId ) ) );
+            array_unshift( $cmdList , array( 'img'  => 'back',
+                                             'name' => get_lang( 'Back to the catalogue' ),
+                                             'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                       .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
             break;
         }
         
@@ -868,14 +965,6 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $template->assign( 'userNote' , isset( $userNote ) && $userNote->noteExists() ? $userNote->getContent() : null );
             $template->assign( 'is_deleted' , $is_deleted );
             
-            if ( $libraryId )
-            {
-                $cmdList[] = array( 'img'  => 'back',
-                                    'name' => get_lang( 'Back to the catalogue' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) );
-            }
-            
             if ( $edit_allowed )
             {
                 $cmdList[] = array( 'img'  => 'book',
@@ -900,6 +989,14 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                 'name' => get_lang( 'Export metadatas in RDF format' ),
                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=exExport&resourceId=' . $resourceId ) ) );
+            
+            if ( $libraryId )
+            {
+                array_unshift( $cmdList , array( 'img'  => 'back',
+                                                 'name' => get_lang( 'Back to the catalogue' ),
+                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                           .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
+            }
             break;
         }
         
@@ -1051,6 +1148,22 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             
             $template->assign( 'result' , $searchResult );
             $template->assign( 'tagCloud' , $tagCloud->render() );
+            break;
+        }
+        
+        case 'rqAddResourceType':
+        case 'rqEditResourceType':
+        {
+            $template->assign( 'edit' , true );
+            break;
+        }
+        
+        case 'rqDeleteResourceType':
+        {
+            $msg = get_lang( 'Do you really want to remove this type definition?' );
+            $urlAction = 'exDeleteResourceType';
+            $urlCancel = 'rqShowResourceType';
+            $xid = array( 'typeName' => $typeName );
             break;
         }
         
