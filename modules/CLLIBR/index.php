@@ -726,8 +726,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
             $extensionList = explode( ',' , $userInput->get( 'extensions' ) );
             $nameList = $userInput->get( 'name' );
             $typeList = $userInput->get( 'type' );
-            
-            $fileName = $typeRepository . 'type.' . $typeName . '.xml';
+        
+            $fileName = $typeRepository . 'type.' . preg_replace( '/ /' , '_' , $typeName ) . '.xml';
             
             $resourceType = new ResourceType( $resourceTypeList->get( $typeName ) ? $fileName : null );
             
