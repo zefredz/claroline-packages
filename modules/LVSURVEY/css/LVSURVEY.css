@@ -9,6 +9,10 @@
 	padding : 0px;
 	overflow : auto;
 }
+
+.LVSURVEYQuestion{
+    padding : 5px;
+}
 	
 .LVSURVEYLineTitle, .LVSURVEYQuestionTitle, .LVSURVEYParticipationTitle, .LVSURVEYBlocTitle {
 	list-style-type : decimal;
