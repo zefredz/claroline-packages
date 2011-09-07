@@ -3,81 +3,13 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 1.0.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @version     CLQPOLL 1.2.1 $Revision$ - Claroline 1.9
+ * @copyright   2001-2011 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
-<?php echo claro_html_tool_title( get_lang( 'Poll' ) ); ?>
-
-<!-- BEGIN ToolBar -->
-<?php if ( $this->userRights[ 'edit' ]) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPoll&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit poll'); ?>"/>
-        <?php echo get_lang( 'Edit poll' ); ?>
-    </a>
-</span>
-
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPurgePoll&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'sweep' ); ?>" alt="<?php echo get_lang( 'Purge poll'); ?>"/>
-        <?php echo get_lang( 'Purge this poll' ); ?>
-    </a>
-</span>
-
-<span>
-    <?php if ( $this->poll->getStatus() == Poll::OPEN_VOTE ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exClose&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open'); ?>"/>
-        <?php echo get_lang( 'Close poll' ); ?>
-    </a>
-    <?php else: ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exOpen&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Closed'); ?>"/>
-        <?php echo get_lang( 'Open poll' ); ?>
-    </a>
-    <?php endif; ?>
-</span>
-
-<span>
-    <?php if ( $this->poll->isVisible() ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
-        <?php echo get_lang( 'Make invisible' ); ?>
-    </a>
-    <?php else : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&tpl=pollview&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
-        <?php echo get_lang( 'Make visible' ); ?>
-    </a>
-    <?php endif; ?>
-</span>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=export&pollId=' . $this->poll->getId() ) ); ?>">
-        <img src="<?php echo get_icon_url( 'export' ); ?>" alt="export" />
-        <?php echo get_lang( 'Export to csv' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-
-<?php if ( $this->userRights[ 'see_stats' ] ) : ?>
-<span>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewStats&pollId='. $this->poll->getId() ) );?>">
-        <img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="<?php echo get_lang( 'View stats'); ?>"/>
-        <?php echo get_lang( 'Statistics' ); ?>
-    </a>
-</span>
-<?php endif; ?>
-<!-- END Toolbar -->
-
-<!-- BEGIN Dialog box -->
-<?php echo $this->dialogBox->render(); ?>
-<!-- END Dialog box -->
-
-<!-- BEGIN Container for the poll datas display -->
 <div id="poll">
     <!-- BEGIN Displays poll title and question -->
     <h2>
@@ -202,7 +134,7 @@
                 <?php endif; ?>
             <?php else : ?>
             <tr>
-                <td class="novote" colspan="<?php echo count( $this->poll->getChoiceList() ) + 1; ?>">No vote</td>
+                <td class="novote" colspan="<?php echo count( $this->poll->getChoiceList() ) + 1; ?>"><?php echo get_lang( 'No vote' ); ?></td>
             </tr>
             <?php endif; ?>
             <!-- END Displays the poll votes -->
@@ -241,8 +173,6 @@
         </span>
     </div>
     <?php endif; ?>
-    
-<!-- END Container for the poll datas display -->
 
 <?php else: ?>
 <h3><?php echo get_lang( 'No option for this poll yet' ); ?></h3>

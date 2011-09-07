@@ -3,8 +3,8 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 1.2.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @version     CLQPOLL 1.2.1 $Revision$ - Claroline 1.9
+ * @copyright   2001-2011 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -28,11 +28,15 @@ CssLoader::getInstance()->load( 'poll' , 'screen' , 'print' );
 $dialogBox = new DialogBox();
 $pageTitle = array( 'mainTitle' => $nameTools );
 
+$is_platform_admin = claro_is_platform_admin();
+$is_allowed_to_edit = claro_is_allowed_to_edit();
+$is_course_member = claro_is_course_member();
+
 try
 {
     $userInput = Claro_UserInput::getInstance();
     
-    if ( claro_is_allowed_to_edit() )
+    if ( $is_allowed_to_edit )
     {
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
             'rqShowList', 'rqViewPoll',
@@ -46,7 +50,7 @@ try
             'exOpen', 'exClose', 'export'
         ) ) );
     }
-    elseif ( claro_is_course_member() )
+    elseif ( $is_course_member )
     {
         $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( array(
             'rqShowList', 'rqViewPoll', 'rqViewStats',
@@ -94,7 +98,7 @@ try
             && ! $poll->isOpen() ) $userRights[ 'see_stats' ] = true;
     }
     
-    if ( claro_is_course_member() )
+    if ( $is_course_member )
     {
         if ( $poll->isOpen()
             && $userVote
@@ -102,7 +106,7 @@ try
             || $poll->getOption( '_revote' ) == '_allowed' ) ) $userRights[ 'vote' ] = true;
     }
     
-    if ( claro_is_allowed_to_edit() )
+    if ( $is_allowed_to_edit )
     {
         $userRights[ 'vote' ]        = true;
         $userRights[ 'edit' ]        = true;
@@ -110,7 +114,7 @@ try
         if ( $poll->getOption( '_privacy' ) != '_anonymous' ) $userRights[ 'see_names' ] = true;
     }
     
-    if ( claro_is_platform_admin() )
+    if ( $is_allowed_to_edit )
     {
         $userRights[ 'see_names' ] = true;
     }
@@ -122,7 +126,7 @@ try
                              '_stat_access' => true,
                              '_revote' => true );
     
-    if ( $poll->getAllVoteList() && ! claro_is_platform_admin() )
+    if ( $poll->getAllVoteList() && ! $is_allowed_to_edit )
     {
         $change_allowed[ '_type' ] = false;
         $change_allowed[ '_answer' ] = false;
@@ -171,7 +175,7 @@ try
                                 
                     $userRights[ 'vote'] = $poll->getOption( '_revote' ) == '_allowed'
                                             ||
-                                            claro_is_allowed_to_edit()
+                                            $is_allowed_to_edit
                                             ? true : false;
                 }
                 break;
@@ -179,7 +183,7 @@ try
             
             case 'exDeleteVote':
             {
-                $vote_deleted = claro_is_allowed_to_edit() ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
+                $vote_deleted = $is_allowed_to_edit ? UserVote::deleteUserVote( $poll , (int)$userInput->get( 'userId' ) )
                                                            : false;
                 break;
             }
@@ -310,7 +314,7 @@ try
             
             case 'rqViewPoll':
             {
-                if ( ! claro_is_course_member() )
+                if ( ! $is_course_member )
                 {
                     $dialogBox->info( get_lang( 'Vote only granted to course registered users!' ) );
                 }
@@ -605,6 +609,7 @@ if ( isset( $msg ) )
     $dialogBox->question( $form->render() );
 }
 
+$cmdList = array();
 // assigns parameters to the template
 if ( isset ( $template ) )
 {
@@ -614,6 +619,13 @@ if ( isset ( $template ) )
     {
         case 'polllist':
             $pageTitle[ 'subTitle' ] = get_lang( 'Poll list' );
+            
+            if ( $is_allowed_to_edit )
+            {
+                $cmdList[] = array( 'img'  => 'poll_new',
+                                    'name' => get_lang( 'Create a new poll' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqCreatePoll') ) );
+            }
             break;
         
         case 'polledit':
@@ -647,9 +659,38 @@ if ( isset ( $template ) )
                 -->
                 </script>';
                 
-            if ( ! $poll->getAllVoteList() || claro_is_allowed_to_edit() )
+            if ( ! $poll->getAllVoteList() || $is_allowed_to_edit )
             {
                 ClaroHeader::getInstance()->addHtmlHeader( $scriptContent );
+            }
+            
+            if ( $poll->getId() )
+            {
+                $cmdList[] = array( 'img'  => 'poll',
+                                    'name' => get_lang( 'View poll' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=rqViewPoll&pollId='
+                                                                                  . $poll->getId() ) ) );
+                
+                if( $poll->getAllVoteList() )
+                {
+                    $cmdList[] = array( 'img'  => 'sweep',
+                                        'name' => get_lang( 'Purge this poll' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=rqPurgePoll&pollId='
+                                                                                      . $poll->getId() ) ) );
+                    $cmdList[] = array( 'img'  => 'statistics',
+                                        'name' => get_lang( 'View stats' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=rqViewStats&pollId='
+                                                                                      . $poll->getId() ) ) );
+                }
+                
+                $cmdList[] = array( 'img'  => 'delete',
+                                    'name' => get_lang( 'Delete this poll' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=rqDeletePoll&pollId='
+                                                                                  . $poll->getId() ) ) );
             }
             
             $pollView->assign( 'change_allowed' , $change_allowed );
@@ -657,9 +698,16 @@ if ( isset ( $template ) )
         
         case 'pollstat':
             $pageTitle[ 'subTitle' ] = get_lang( 'Poll statistics' );
+            
+            $cmdList[] = array( 'img'  => 'poll',
+                                'name' => get_lang( 'View poll' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                              . '?cmd=rqViewPoll&pollId='
+                                                                              . $poll->getId() ) ) );
             break;
         
         case 'pollview':
+            $pageTitle[ 'subTitle' ] = $poll->getTitle();
             $nbOfLines = get_conf( 'CLQPOLL_pagerLineNb' )
                        ? get_conf( 'CLQPOLL_pagerLineNb' )
                        : 20;
@@ -667,19 +715,82 @@ if ( isset ( $template ) )
             if ( $pageNb >= $pollPager->getPageCount() ) $pageNb = $pollPager->getPageCount() - 1;
             $pollView->assign( 'voteList' , $pollPager );
             $pollView->assign( 'pageNb' , $pageNb );
+            
+            if ( $userRights[ 'edit' ] )
+            {
+                $cmdList[] = array( 'img'  => 'edit',
+                                    'name' => get_lang( 'Edit poll' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=rqEditPoll&pollId='
+                                                                                  . $poll->getId() ) ) );
+                $cmdList[] = array( 'img'  => 'sweep',
+                                    'name' => get_lang( 'Purge this poll' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=rqPurgePoll&pollId='
+                                                                                  . $poll->getId() ) ) );
+                
+                if ( $poll->getStatus() == Poll::OPEN_VOTE )
+                {
+                    $cmdList[] = array( 'img'  => 'unlock',
+                                        'name' => get_lang( 'Close poll' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=exClose&tpl=pollview&pollId='
+                                                                                      . $poll->getId() ) ) );
+                }
+                else
+                {
+                    $cmdList[] = array( 'img'  => 'locked',
+                                        'name' => get_lang( 'Open poll' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=exOpen&tpl=pollview&pollId='
+                                                                                      . $poll->getId() ) ) );
+                }
+                
+                if ( $poll->isVisible() )
+                {
+                    $cmdList[] = array( 'img'  => 'visible',
+                                        'name' => get_lang( 'Make invisible' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=exMkInvisible&tpl=pollview&pollId='
+                                                                                      . $poll->getId() ) ) );
+                }
+                else
+                {
+                    $cmdList[] = array( 'img'  => 'invisible',
+                                        'name' => get_lang( 'Make visible' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                      . '?cmd=exMkVisible&tpl=pollview&pollId='
+                                                                                      . $poll->getId() ) ) );
+                }
+                
+                $cmdList[] = array( 'img'  => 'export',
+                                    'name' => get_lang( 'Export to csv' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=export&pollId='
+                                                                                  . $poll->getId() ) ) );
+            }
+            
+            if ( $userRights[ 'see_stats' ] )
+            {
+                $cmdList[] = array( 'img'  => 'statistics',
+                                    'name' => get_lang( 'View stats' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                                                                  . '?cmd=rqViewStats&pollId='
+                                                                                  . $poll->getId() ) ) );
+            }
             break;
     }
     
-    $pollView->assign( 'pollList'   , $pollList->getPollList( claro_is_allowed_to_edit() , true ) );
+    $pollView->assign( 'pollList'   , $pollList->getPollList( $is_allowed_to_edit , true ) );
     $pollView->assign( 'poll'       , $poll );
     $pollView->assign( 'userVote'   , $userVote );
     $pollView->assign( 'userId'     , $userId );
     $pollView->assign( 'userRights' , $userRights );
     $pollView->assign( 'pollStat'   , $pollStat );
-    $pollView->assign( 'dialogBox'  , $dialogBox );
-    $pollView->assign( 'pageTitle'  , $pageTitle );
     
-    Claroline::getInstance()->display->body->appendContent( $pollView->render() );
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList )
+                                                            . $dialogBox->render()
+                                                            . $pollView->render() );
 }
 else
 {
@@ -687,7 +798,7 @@ else
 }
 
 // generates breadcrumbs
-ClaroBreadCrumbs::getInstance()->append( get_lang( 'Poll list' ) , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
+ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
 if ( isset( $crumb ) )
 {
     ClaroBreadCrumbs::getInstance()->append( $crumb );
