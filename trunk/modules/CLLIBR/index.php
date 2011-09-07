@@ -232,7 +232,8 @@ elseif( $context == 'catalogue')
 else
 {
     $access_allowed = true;
-    $edit_allowed = $is_course_creator;
+    //$edit_allowed = $is_course_creator;
+    $edit_allowed = $is_platform_admin;
 }
 
 if ( $refId )
