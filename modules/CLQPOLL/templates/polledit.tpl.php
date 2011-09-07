@@ -3,47 +3,12 @@
 /**
  * Claroline Poll Tool
  *
- * @version     CLQPOLL 1.0.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2009 Universite Catholique de Louvain (UCL)
+ * @version     CLQPOLL 1.2.1 $Revision$ - Claroline 1.9
+ * @copyright   2001-2011 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
-
-<?php echo claro_html_tool_title( $this->pageTitle ); ?>
-
-<?php if ( $this->poll->getId() ) : ?>
-    <span>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pollId=' . $this->poll->getId() ) ); ?>">
-            <img src="<?php echo get_icon_url( 'poll' ); ?>" alt="<?php echo get_lang( 'View poll'); ?>"/>
-            <?php echo get_lang( 'View poll' ); ?>
-        </a>
-    </span>
-    <?php if ( $this->poll->getAllVoteList() ) : ?>
-    <span>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPurgePoll&pollId=' . $this->poll->getId() ) ); ?>">
-            <img src="<?php echo get_icon_url( 'sweep' ); ?>" alt="<?php echo get_lang( 'Purge this poll'); ?>"/>
-            <?php echo get_lang( 'Purge this poll' ); ?>
-        </a>
-    </span>
-    <?php endif; ?>
-    <span>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePoll&pollId=' . $this->poll->getId() ) ); ?>">
-            <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete this poll'); ?>"/>
-        <?php echo get_lang( 'Delete this poll' ); ?>
-        </a>
-    </span>
-    <?php if ( $this->poll->getAllVoteList() ) : ?>
-    <span>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewStats&pollId=' . $this->poll->getId() ) ); ?>">
-            <img src="<?php echo get_icon_url( 'statistics' ); ?>" alt="<?php echo get_lang( 'View stats'); ?>"/>
-            <?php echo get_lang( 'View stats' ); ?>
-        </a>
-    </span>
-    <?php endif; ?>
-<?php endif; ?>
-
-<?php echo $this->dialogBox->render(); ?>
 
 <?php $cmd = $this->poll->getId() ? 'exEditPoll' : 'exCreatePoll'; ?>
 <form   method="post"
