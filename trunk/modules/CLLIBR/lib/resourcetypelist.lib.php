@@ -68,7 +68,15 @@ class ResourceTypeList
      */
     public function getResourceTypeList()
     {
-        return array_keys( $this->resourceTypeList );
+        //return array_keys( $this->resourceTypeList );
+        $resourceTypeList = array();
+        
+        foreach( $this->resourceTypeList as $type => $resourceType )
+        {
+            $resourceTypeList[ $type ] = $resourceType->getName();
+        }
+        
+        return $resourceTypeList;
     }
     
     /**
@@ -88,9 +96,18 @@ class ResourceTypeList
      */
     public function get( $name )
     {
+        /*
         if ( array_key_exists( $name , $this->resourceTypeList ) )
         {
             return $this->resourceTypeList[ $name ];
+        }*/
+        
+        foreach( $this->getResourceTypeList() as $type => $typeName )
+        {
+            if ( $name == $typeName )
+            {
+                return $this->resourceTypeList[ $type ];
+            }
         }
     }
     /**

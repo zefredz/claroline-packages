@@ -53,7 +53,7 @@ class ResourceType
     {
         $xmlElement = simplexml_load_file( $this->fileName );
         
-        $this->name = $xmlElement->name;
+        $this->name = (string)$xmlElement->name;
         
         foreach( $xmlElement->authorizedFileList[0] as $extension )
         {
