@@ -111,7 +111,14 @@
 <?php elseif ( $this->typeName ) : ?>
 
 <fieldset>
-    <legend><?php echo ucwords( $this->typeName ); ?></legend>
+    <legend>
+        <?php echo ucwords( get_lang( $this->typeName ) ); ?>
+    <?php if ( $this->edit_allowed ) : ?>
+        <a title="<?php echo get_lang( 'Edit resource type definition' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResourceType&typeName='. $this->typeName ) );?>">
+            <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
+        </a>
+    <?php endif; ?>
+        </legend>
     <dl>
         <dt><?php echo get_lang( 'Accepted extensions' ); ?></dt>
         <dd><?php echo implode( ', ' , $this->authorizedFileList ); ?></dd>
