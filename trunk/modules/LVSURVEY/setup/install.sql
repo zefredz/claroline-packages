@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_separator` (
   `id` 					INTEGER 										NOT NULL,
   `title`				VARCHAR(255)									NOT NULL,
-  `description`				TEXT											NOT NULL DEFAULT '',
+  `description`				TEXT                                        NOT NULL,
   PRIMARY KEY  (`id`)
 );
 
