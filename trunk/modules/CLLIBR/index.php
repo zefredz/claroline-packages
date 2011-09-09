@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -229,10 +229,14 @@ elseif( $context == 'catalogue')
                    || $courseLibraryList->libraryExists( $libraryId );
     $edit_allowed = $edit_allowed || $librarian->isLibrarian( (int)$userId );
 }
+elseif( $context == 'librarylist' )
+{
+    $access_allowed = true;
+    $edit_allowed = $is_course_creator;
+}
 else
 {
     $access_allowed = true;
-    //$edit_allowed = $is_course_creator;
     $edit_allowed = $is_platform_admin;
 }
 
@@ -892,7 +896,8 @@ if ( $accessTicket ) // AUTHORIZED ACTION
                                               . $libraryId ) ) );
             }
             
-            if ( $is_course_creator )
+            
+            if ( $is_platform_admin )
             {
                 $cmdList[] = array( 'img'  => 'xml',
                                     'name' => get_lang( 'Resource type definitions' ),
