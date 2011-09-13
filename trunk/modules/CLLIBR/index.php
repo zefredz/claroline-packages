@@ -182,6 +182,10 @@ try
     {
         $context = strtolower( substr( $cmd , 6 ) );
     }
+    elseif( $typeName || $cmd == 'rqAddResourceType' )
+    {
+        $context = 'resourcetype';
+    }
     elseif( $cmd == 'exUnbookmark' || $cmd == 'exBookmark' )
     {
         $context = 'bookmark';
@@ -197,10 +201,6 @@ try
     elseif( $courseId && $cmd != 'rqCreateLibrary' )
     {
         $context = 'bibliography';
-    }
-    elseif( $typeName || $cmd == 'rqAddResourceType' )
-    {
-        $context = 'resourcetype';
     }
     else
     {
