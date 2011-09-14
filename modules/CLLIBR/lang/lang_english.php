@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,6 +12,7 @@
 // Titles
 $_lang[ 'My Bookmark' ] = 'My Bookmark';
 $_lang[ 'Online Library'] = 'Online Library';
+$_lang[ 'Online Library for Claroline' ] = 'Online Library for Claroline';
 
 // Localisable variables
 $_lang[ '_public' ] = '<strong>Public</strong> : all users can access to resources';
@@ -41,18 +42,22 @@ $_lang[ 'issue' ] = 'issue';
 $_lang[ 'pages' ] = 'pages';
 $_lang[ 'title' ] = 'title';
 
-$_lang[ 'bibliography' ] = 'Bibliographies';
+$_lang[ 'bibliography' ] = 'Bibliography';
 $_lang[ 'bookmark' ] = 'Bookmark';
 $_lang[ 'catalogue' ] = 'Catalogue';
 $_lang[ 'librarian' ] = 'Librarians';
 $_lang[ 'librarylist' ] = 'Library List';
 $_lang[ 'resourcetype' ] = 'resource type definitions';
 
+$_lang[ 'bibliographies' ] = 'bibliographies';
+$_lang[ 'bookmarks' ] = 'bookmarks';
+
 $_lang[ 'Restricted' ] = 'Restricted access';
 $_lang[ 'Private' ] = 'Private';
 $_lang[ 'Public' ] = 'Public';
 
 $_lang[ 'Accepted extensions' ] = 'Accepted extensions';
+$_lang[ 'Actions' ] = 'Actions';
 $_lang[ 'Advanced search' ] = 'Advanced search';
 $_lang[ 'Allowed Libraries'] = 'Public libraries';
 $_lang[ 'Associated keywords' ] = 'Associated keywords';
@@ -60,10 +65,13 @@ $_lang[ 'Author(s)' ] = 'Author(s)';
 $_lang[ 'Bookmark' ] = 'Bookmark';
 $_lang[ 'Commands' ] = 'Commands';
 $_lang[ 'Default metadata fields' ] = 'Default metadata fields';
+$_lang[ 'Edition' ] = 'Edition';
+$_lang[ 'Encryption key' ] = 'Encryption key';
 $_lang[ 'External link' ] = 'External link';
 $_lang[ 'Keywords' ] = 'Keywords';
 $_lang[ 'Librarians' ] = 'Librarians';
 $_lang[ 'Libraries' ] = 'Libraries';
+$_lang[ 'Link' ] = 'Link';
 $_lang[ 'Local storage of a file' ] = 'Local storage of a file';
 $_lang[ 'Metadatas' ] = 'Metadatas';
 $_lang[ 'Metadata\'s content' ] = 'Metadata\'s content';
@@ -78,6 +86,7 @@ $_lang[ 'Resource type definitions' ] = 'Resource type definitions';
 $_lang[ 'Search result' ] = 'Search result';
 $_lang[ 'Selected' ] = 'Selected';
 $_lang[ 'Storage type' ] = 'Storage type';
+$_lang[ 'Url' ] = 'Url';
 $_lang[ 'User Libraries'] = 'Your libraries';
 
 // Metadatas : general
@@ -126,7 +135,7 @@ $_lang[ 'Define a new metadata' ] = 'Define a new metadata';
 $_lang[ 'Delete this library' ] = 'Delete this library';
 $_lang[ 'Delete this resource' ] = 'Delete this resource';
 $_lang[ 'Delete this resource type' ] = 'Delete this resource type';
-$_lang[ 'Edit a resource' ] = 'Edit a resource';
+$_lang[ 'Edit resource' ] = 'Edit resource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
 $_lang[ 'Edit resource type definition' ] = 'Edit resource type definition';
 $_lang[ 'Export metadatas in RDF format' ] = 'Export metadatas in RDF format';
@@ -164,6 +173,7 @@ $_lang[ 'Select the library' ] = 'Select the library';
 $_lang[ 'Some of your selected resources were already added' ] = 'Some of your selected resources were already added';
 $_lang[ 'Some of your selected resources were already bookmarked' ] = 'Some of your selected resources were already bookmarked';
 $_lang[ 'Success' ] = 'Success';
+$_lang[ 'This keyword is used to encrypt the name of the files stored in repository.' ] = 'This keyword is used to encrypt the name of the files stored in repository.';
 $_lang[ 'This resource has been deleted' ] = 'This resource has been deleted';
 $_lang[ 'This resource is already added' ] = 'This resource is already added';
 $_lang[ 'This resource is already bookmarked' ] = 'This resource is already bookmarked';

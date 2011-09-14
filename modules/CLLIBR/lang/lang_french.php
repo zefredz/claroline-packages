@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,6 +12,7 @@
 // Titles
 $_lang[ 'My Bookmark' ] = 'Mes Lectures';
 $_lang[ 'Online Library'] = 'Bibliothèque en Ligne';
+$_lang[ 'Online Library for Claroline' ] = 'Bibliothèque en ligne pour Claroline';
 
 // Localisable variables
 $_lang[ '_public' ] = '<strong>Publique</strong> : tous les utilisateurs de la plateforme ont accès à toutes les ressources';
@@ -41,18 +42,22 @@ $_lang[ 'issue' ] = 'numéro';
 $_lang[ 'pages' ] = 'pages';
 $_lang[ 'title' ] = 'titre';
 
-$_lang[ 'bibliographies' ] = 'Bibliographies';
+$_lang[ 'bibliography' ] = 'Bibliographie';
 $_lang[ 'bookmark' ] = 'Liste de lecture personnelles';
 $_lang[ 'catalogue' ] = 'Catalogue';
 $_lang[ 'librarian' ] = 'Liste des bibliothécaires';
 $_lang[ 'librarylist' ] = 'Liste des bibliothèques';
 $_lang[ 'resourcetype' ] = 'Définitions des profils de méta-données (types de ressource)';
 
+$_lang[ 'bibliographies' ] = 'bibliographies';
+$_lang[ 'bookmarks' ] = 'listes de lectures';
+
 $_lang[ 'Restricted' ] = 'Accès restreint';
 $_lang[ 'Private' ] = 'Privée';
 $_lang[ 'Public' ] = 'Publique';
 
 $_lang[ 'Accepted extensions' ] = 'Extensions de fichier acceptées';
+$_lang[ 'Actions' ] = 'Actions';
 $_lang[ 'Advanced search' ] = 'Recherche avancée';
 $_lang[ 'Allowed Libraries'] = 'Bibliothèques publiques';
 $_lang[ 'Associated keywords' ] = 'Mots-clés associés';
@@ -60,10 +65,13 @@ $_lang[ 'Author(s)' ] = 'Auteur(s)';
 $_lang[ 'Bookmark' ] = 'Liste de lecture personnelle';
 $_lang[ 'Commands' ] = 'Commandes';
 $_lang[ 'Default metadata fields' ] = 'Champs de méta-données par défaut';
+$_lang[ 'Edition' ] = 'Modification';
+$_lang[ 'Encryption key' ] = 'Clef de cryptage';
 $_lang[ 'External link' ] = 'Lien externe';
 $_lang[ 'Keywords' ] = 'Mots-clés';
 $_lang[ 'Libraries' ] = 'Bibliothèques';
 $_lang[ 'Librarians' ] = 'Bibliothécaires';
+$_lang[ 'Link' ] = 'Lien';
 $_lang[ 'Local storage of a file' ] = 'Stockage en local du fichier';
 $_lang[ 'Metadatas' ] = 'Méta-données';
 $_lang[ 'Metadata\'s content' ] = 'Valeur de la méta-donnée';
@@ -78,6 +86,7 @@ $_lang[ 'Resource type definitions' ] = 'Types de ressources';
 $_lang[ 'Search result' ] = 'Résultat de la recherche';
 $_lang[ 'Selected' ] = 'Sélectionné';
 $_lang[ 'Storage type' ] = 'Stockage';
+$_lang[ 'Url' ] = 'Url';
 $_lang[ 'User Libraries'] = 'Vos bibliothèques (dont vous êtes bibliothécaire)';
 
 // Metadatas : general
@@ -164,6 +173,7 @@ $_lang[ 'Select the library' ] = 'Sélectionez la bibliothèque';
 $_lang[ 'Some of your selected resources were already added' ] = 'Certaines de ces ressources apparaissaient déjà dans ce cours';
 $_lang[ 'Some of your selected resources were already bookmarked' ] = 'Certaines de ces ressources figuraient déjà dans votre liste de lecture';
 $_lang[ 'Success' ] = 'L\'opération s\'est déroulée avec succès';
+$_lang[ 'This keyword is used to encrypt the name of the files stored in repository' ] = 'Cette clef est utilisée dans le cryptage des fichiers stockés en local';
 $_lang[ 'This resource has been deleted' ] = 'Cette ressource a été supprimée!';
 $_lang[ 'This resource is already added' ] = 'Cette ressource avait déjà été ajoutée';
 $_lang[ 'This resource is already bookmarked' ] = 'Vous aviez déjà mis cette ressource dans votre liste de lecture';
