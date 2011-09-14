@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -328,7 +328,7 @@ try
             $reportXml->assign( 'userData' , claro_get_current_user_data() );
             $reportXml->assign( 'date' , $report->getDate() );
             header("Content-type: application/xml");
-            header('Content-Disposition: attachment; filename="report'
+            header('Content-Disposition: attachment; filename="report_'
                    . claro_get_current_course_id()
                    . '.xlsx"');
             echo claro_utf8_encode( $reportXml->render() );
@@ -339,7 +339,7 @@ try
         case 'exReport2csv' :
         {
             $csv = new CsvReportView( $report , $userId , $is_allowed_to_edit , ',' );
-            $csv->export( get_lang( 'report' ) . '_' . claro_get_current_course_id() . '.csv' );
+            $csv->export( 'report_' . claro_get_current_course_id() . '.csv' );
             exit;
         }
         
@@ -357,7 +357,7 @@ try
             $pdf->AddPage();
             $pdf->writeHTML( claro_utf8_encode( $reportPdf->render() ) );
             
-            $pdf->Output( 'Report_' . claro_get_current_course_id() . '.pdf' , 'D' );
+            $pdf->Output( 'report_' . claro_get_current_course_id() . '.pdf' , 'D' );
             exit;
         }
         
