@@ -2,13 +2,14 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
+$_lang['Action failed'] = 'L\'opération a échoué';
 $_lang['Activate'] = 'Activer';
 $_lang['Add a mark'] = 'Ajouter une note';
 $_lang['Additional mark'] = 'Note additionnelle';
@@ -27,9 +28,11 @@ $_lang['Comments'] = 'Commentaires';
 $_lang['Create a new report'] = 'Créer un nouveau bulletin';
 $_lang['Create a new session'] = 'Créer un nouvel examen';
 $_lang['Gathering datas'] = 'Récupération des données';
+$_lang['Delete the examination?'] = 'Supprimer cet examen?';
 $_lang['Do you really want to delete this report?'] = 'Etes-vous sûr de vouloir supprimer ce bulletin?';
 $_lang['empty'] = 'vide';
 $_lang['Edit examination scores'] = 'Modifier les notes d\'examen';
+$_lang['Error'] = 'Erreur';
 $_lang['Error while saving the modifications'] = 'Une erreur s\'est produite durant l\'enregistrement de vos modifications';
 $_lang['Examination'] = 'Note d\'examen';
 $_lang['Examinations'] = 'Notes d\'examen';
@@ -42,6 +45,7 @@ $_lang['Export to pdf'] = 'Exporter en pdf';
 $_lang['Generate the preview'] = 'Générer l\'aperçu';
 $_lang['incomplete'] = 'incomplet';
 $_lang['Items selection'] = 'Sélection des items à importer';
+$_lang['Mark'] = 'Note';
 $_lang['Max value'] = 'Note maximale';
 $_lang['My examination results and comments'] = 'Les résultats commentés de mes examens';
 $_lang['My report'] = 'Mon bulletin';
@@ -57,9 +61,14 @@ $_lang['Report list'] = 'Liste des bulletins';
 $_lang['Report settings'] = 'Paramètres du bulletin';
 $_lang['Reset'] = 'Rétablir';
 $_lang['Reset scores'] = 'Tout remettre à zéro';
+$_lang['Reset the examination?'] = 'Réinitialiser cet examen?';
 $_lang['See my examination result details'] = 'Voir les commentaires de mes résultats';
 $_lang['Select'] = 'Sélectionner';
+$_lang['Session'] = 'Session';
+$_lang['Session list'] = 'Liste des sessions';
 $_lang['Student Report'] = 'Bulletin';
+$_lang['Student\'s name'] = 'Nom de l\'étudiant';
+$_lang['Success'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['The changes has been recorded'] = 'Les changements ont été éffectués avec succès';
 $_lang['The examination could not be created'] = 'L\'examen n\'a pas pu être crée';
 $_lang['The examination could not be deleted'] = 'L\'examen n\'a pas pu être supprimé';
@@ -73,7 +82,9 @@ $_lang['Weight'] = 'Pondération';
 $_lang['weight'] = 'pondération';
 $_lang['wt.'] = 'pond.';
 $_lang['Weighted global score'] = 'Moyenne globale pondérée';
+$_lang['You are not a course member'] = 'Vous n\'êtes pas inscrit à ce cours';
 $_lang['You don\'t have score in this report'] = 'Vous n\'avez pas de note pour ce bulletin';
+$_lang['You have no mark yet for this session'] = 'Vous n\'avez pas encore de note pour cet examen';
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 $_lang['Your modifications have been successfully saved!'] = 'Vos modifications ont été enregistrées avec succès';
 
