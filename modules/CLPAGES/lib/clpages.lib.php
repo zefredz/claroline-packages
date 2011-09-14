@@ -312,7 +312,7 @@ abstract class Component
 
         // use max instead of count to handle suppressed attempts
         $sql = "SELECT MAX(`rank`)
-                FROM " . $tblList['clpages_contents'] . "
+                FROM `" . $tblList['clpages_contents'] . "`
                 WHERE `pageId` = " . (int) $this->pageId;
 
         $higherRank = claro_sql_query_get_single_value($sql);
