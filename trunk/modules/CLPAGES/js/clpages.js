@@ -83,9 +83,11 @@ function buttonRqToggleEditor( id ) {
 }
 
 function removeEditor( id ) {
-    tinyMCE.execCommand('mceFocus', false, 'content_'+id);                    
-    tinyMCE.execCommand('mceRemoveControl', false, 'content_'+id);
-
+    if ( $("#component_" + id + " textarea").length > 0 ) {
+        tinyMCE.execCommand('mceFocus', false, 'content_'+id);                    
+        tinyMCE.execCommand('mceRemoveControl', false, 'content_'+id);
+    }
+    
     $("#component_" + id + " .componentEditor").remove();
 }
 
