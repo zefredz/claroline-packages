@@ -80,11 +80,11 @@
                     <td align="center">
                         <?php if ( $resource[ 'is_visible' ] ) : ?>
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resource[ 'id' ] ) );?>">
-                            <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'visible' ); ?>"/>
+                            <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible' ); ?>"/>
                         </a>
                         <?php else : ?>
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resource[ 'id' ] ) );?>">
-                            <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'invisible' ); ?>"/>
+                            <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>"/>
                         </a>
                         <?php endif; ?>
                     </td>
