@@ -130,7 +130,7 @@ try
         {
             if( $page->delete() )
             {
-                $dialogBox->success( get_lang('Page succesfully deleted') );
+                $dialogBox->success( get_lang('Page successfully deleted') );
             }
             else
             {

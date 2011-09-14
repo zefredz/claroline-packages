@@ -139,7 +139,7 @@ class FlickrComponent extends Component
         // use content in textarea
         return '<label for="tag_'.$this->getId().'">' . get_lang('Tag') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
         .	 '<input type="text" name="tag_'.$this->getId().'" id="tag_'.$this->getId().'" maxlength="255" value="'.htmlspecialchars($this->tag).'" /><br />' . "\n"
-        .	 '<label for="limit_'.$this->getId().'">' . get_lang('Number of displayed items ') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
+        .	 '<label for="limit_'.$this->getId().'">' . get_lang('Number of displayed items') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
         .	 '<input type="text" name="limit_'.$this->getId().'" id="limit_'.$this->getId().'" size="5" maxlength="10" value="'.htmlspecialchars($this->limit).'" /><br />' . "\n"
         ;
     }
