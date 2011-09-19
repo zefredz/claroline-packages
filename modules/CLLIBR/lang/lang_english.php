@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -139,6 +139,7 @@ $_lang[ 'Edit resource' ] = 'Edit resource';
 $_lang[ 'Edit resource\'s metadatas' ] = 'Edit resource\'s metadatas';
 $_lang[ 'Edit resource type definition' ] = 'Edit resource type definition';
 $_lang[ 'Export metadatas in RDF format' ] = 'Export metadatas in RDF format';
+$_lang[ 'Generate a bibliographic citation' ] = 'Generate a bibliographic citation';
 $_lang[ 'Manage librarians' ] = 'Manage librarians';
 $_lang[ 'Move this resource to another library' ] = 'Move this resource to another library';
 $_lang[ 'My bookmark' ] = 'My bookmark';
@@ -181,5 +182,6 @@ $_lang[ 'Uploading file' ] = 'Uploading file';
 $_lang[ 'Url missing' ] = 'Url missing';
 $_lang[ 'Warning : this library is not empty! First, you must delete or move all the resources within' ] = 'Warning : this library is not empty! First, you must delete or move all the resources within';
 $_lang[ 'Warning : this resource is in use' ] = 'Warning : this resource is in use';
+$_lang[ 'You can copy/paste this line into you word processing software' ] = 'You can copy/paste this line into you word processing software';
 $_lang[ 'You must fill all the fields' ] = 'You must fill all the fields';
 $_lang[ 'You are not allowed to access this resource!' ] = 'You are not allowed to access this resource!';

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -88,6 +88,7 @@ try
                        , 'exUnbookmark'
                        , 'exNote'
                        , 'exExport'
+                       , 'exCite'
                        , 'rqSearch' );
     
     $restrictedActionList = array( 'rqAddResource'
@@ -721,6 +722,13 @@ try
                 exit();
             }
             
+            case 'exCite' :
+            {
+                $exporter = new Bibliography( $metadata->getMetadataList() );
+                $cite = $exporter->export( $resource->getType() );
+                break;
+            }
+            
             case 'rqAddResourceType':
             {
                 $resourceType = new ResourceType();
@@ -936,6 +944,7 @@ try
             
             case 'rqView':
             case 'exExport':
+            case 'exCite' :
             {
                 $is_validated = false;
                 
@@ -997,6 +1006,20 @@ try
                                     'name' => get_lang( 'Export metadatas in RDF format' ),
                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                               .'/index.php?cmd=exExport&resourceId=' . $resourceId ) ) );
+                
+                if ( $cmd == 'exCite' )
+                {
+                    $out = get_lang( 'You can copy/paste this line into you word processing software' ) . ' :<br /><br />'
+                         . $cite;
+                    $dialogBox->info( $out );
+                }
+                else
+                {
+                    $cmdList[] = array( 'img'  => 'biblio',
+                                        'name' => get_lang( 'Generate a bibliographic citation' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                  .'/index.php?cmd=exCite&resourceId=' . $resourceId ) ) );
+                }
                 
                 if ( $libraryId )
                 {
