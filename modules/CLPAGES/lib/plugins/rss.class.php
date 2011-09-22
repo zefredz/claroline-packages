@@ -40,19 +40,40 @@ class RssComponent extends Component
                 $limit = $this->limit;
                 $i = 0;
                 
-                foreach ( $xml->item as $item )
+                if ( $xml->item )
                 {
-                    if ($i < $limit)
+                    foreach ( $xml->item as $item )
                     {
-                        $out .= '<div class="componentRssItem">'
-                            . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
-                            . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode((string)$item->description)) . '</div>' . "\n"
-                            . '</div>' . "\n";
-                        $i++;
+                        if ($i < $limit)
+                        {
+                            $out .= '<div class="componentRssItem">'
+                                . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
+                                . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode((string)$item->description)) . '</div>' . "\n"
+                                . '</div>' . "\n";
+                            $i++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
+                }
+                elseif ( $xml->entry )
+                {
+                    foreach ( $xml->entry as $item )
                     {
-                        break;
+                        if ($i < $limit)
+                        {
+                            $out .= '<div class="componentRssItem">'
+                                . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link->href) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
+                                . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode((string)$item->content)) . '</div>' . "\n"
+                                . '</div>' . "\n";
+                            $i++;
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                 }
 
