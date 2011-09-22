@@ -245,6 +245,8 @@ try
 }
 catch (Exception $e)
 {
+    $dialogBox = new DialogBox();
+    
     if (claro_debug_mode())
     {
         $dialogBox->error('<pre>' . $e->__toString() . '</pre>');
