@@ -65,7 +65,7 @@ class RssComponent extends Component
                         if ($i < $limit)
                         {
                             $out .= '<div class="componentRssItem">'
-                                . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link->href) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
+                                . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link['href']) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
                                 . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode((string)$item->content)) . '</div>' . "\n"
                                 . '</div>' . "\n";
                             $i++;
