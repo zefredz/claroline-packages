@@ -178,7 +178,7 @@ class FlickrComponent extends Component
     protected function getFeed($rss_url) {
 
         // configure parser
-        $cache_dir = get_path('rootSys') . '/tmp/cache/';
+        /*$cache_dir = get_path('rootSys') . '/tmp/cache/';
         $cache_time = 3600;
 
         // If CACHE ENABLED
@@ -202,26 +202,22 @@ class FlickrComponent extends Component
             }
         }
         // If CACHE DISABLED >> load and parse the file directly
-        else {
+        else {*/
             $result = $this->parseFeed($rss_url);
             if ($result) $result['cached'] = 0;
-        }
+        /* } */
         // return result
         return $result;
     }
 
     protected function parseFeed($rss_url)
     {
-        if ($f = @fopen($rss_url, 'r'))
+        
+        $rss_content = file_get_contents($rss_url);
+        
+        if ( $rss_content )
         {
-            $rss_content = '';
-            while (!feof($f))
-            {
-                $rss_content .= fgets($f, 4096);
-            }
-            fclose($f);
-
-            $content = xmlize($rss_content);
+            $content = xmlize( $rss_content );
 
             if( is_array($content) )
             {
