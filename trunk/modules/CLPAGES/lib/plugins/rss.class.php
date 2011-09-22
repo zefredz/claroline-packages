@@ -27,30 +27,26 @@ class RssComponent extends Component
     {
         if (!empty($this->url))
         {
-            require_once get_path('incRepositorySys') . '/lib/thirdparty/lastRSS/lastRSS.lib.php';
-
-            $rss = new lastRSS;
-
-            // configure parser
-            $rss->cache_dir = get_path('rootSys') . '/tmp/cache/';
-            $rss->cache_time = 3600;
-            $rss->stripHTML = FALSE;
+            $rss_content = file_get_contents($this->url);
 
             $out = '';
 
-            if (false !== $rs = $rss->get($this->url))
+            if ( $rss_content )
             {
+                $xml = simplexml_load_string($rss_content);
+                
                 $out .= '<p>' . "\n";
 
                 $limit = $this->limit;
                 $i = 0;
-                foreach ($rs['items'] as $item)
+                
+                foreach ( $xml->item as $item )
                 {
                     if ($i < $limit)
                     {
                         $out .= '<div class="componentRssItem">'
-                            . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode($item['link']) . '">' . claro_utf8_decode($item['title']) . '</a></div>' . "\n"
-                            . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode($item['description'])) . '</div>' . "\n"
+                            . '<div class="componentRssItemHeader"><a href="' . claro_utf8_decode((string) $item->link) . '">' . claro_utf8_decode((string)$item->title) . '</a></div>' . "\n"
+                            . '<div  class="componentRssItemContent">' . "\n" . html_entity_decode(claro_utf8_decode((string)$item->description)) . '</div>' . "\n"
                             . '</div>' . "\n";
                         $i++;
                     }
