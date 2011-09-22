@@ -204,7 +204,7 @@ class FlickrComponent extends Component
         // If CACHE DISABLED >> load and parse the file directly
         else {*/
             $result = $this->parseFeed($rss_url);
-            if ($result) $result['cached'] = 0;
+            // if ($result) $result['cached'] = 0;
         /* } */
         // return result
         return $result;
