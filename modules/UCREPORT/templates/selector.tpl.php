@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -37,7 +37,7 @@
                                       size="3" />
             </td>
             <td align="center">
-                <input class="resourceSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" checked="<?php echo $itemDatas['selected']; ?>" />
+                <input class="resourceSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" <?php echo $itemDatas['selected'] ? 'checked="yes"' : ''; ?>" />
             </td>
         </tr>
         <?php endforeach; ?>

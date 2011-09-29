@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 1.3.0 $Revision$ - Claroline 1.11
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -10,15 +10,15 @@
  */
 
 /**
- * Report plugins for "Examination" tool
+ * Report plugins for "Exercice" tool
  * These plugins allow to send datas from Claroline tools to the Report object
  * @const TOOL_NAME
  * @const TOOL_LABEL
  */
-class ExaminationPlugin extends ReportPlugin
+class ExercisePlugin extends ReportPlugin
 {
-    const TOOL_NAME  = 'Examination Report';
-    const TOOL_LABEL = 'UCEXAM';
+    const TOOL_NAME  = 'Exercises';
+    const TOOL_LABEL = 'CLQWZ';
     
     /**
      * contructor
@@ -28,7 +28,7 @@ class ExaminationPlugin extends ReportPlugin
         $this->toolName  = self::TOOL_NAME;
         $this->toolLabel = self::TOOL_LABEL;
         
-        $this->tbl = get_module_course_tbl ( array ( 'examination_session' , 'examination_score' ) );
+        $this->tbl = get_module_course_tbl ( array ( 'qwz_exercise' , 'qwz_tracking' ) );
     }
     
     /**
@@ -40,17 +40,17 @@ class ExaminationPlugin extends ReportPlugin
             SELECT
                 id, title, visibility
             FROM
-                `{$this->tbl['examination_session']}`" );
+                `{$this->tbl['qwz_exercise']}`" );
         
         $this->dataQueryResult = array( Claroline::getDatabase()->query( "
             SELECT
-                M.user_id,
-                M.session_id AS item_id,
-                ROUND( " . self::DEFAULT_MAX_SCORE . " * ( M.score / S.max_score ) ) AS score
+                T.user_id,
+                T.exo_id AS item_id,
+                T.result AS score
             FROM
-                `{$this->tbl['examination_score']}` AS M,
-                `{$this->tbl['examination_session']}` AS S
+                `{$this->tbl['qwz_tracking']}` AS T,
+                `{$this->tbl['qwz_exercise']}` AS E
             WHERE
-                M.session_id = S.id" ) );
+                T.exo_id = E.id" ) );
     }
 }
