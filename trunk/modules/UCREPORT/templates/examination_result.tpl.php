@@ -15,11 +15,9 @@
             <th>
                 <?php echo get_lang( 'Session' ); ?>
             </th>
-            <!--
             <th>
                 <?php echo get_lang( 'Date' ); ?>
             </th>
-            -->
             <th>
                 <?php echo get_lang( 'Score' ); ?>
             </th>
@@ -35,11 +33,9 @@
             <td>
                 <?php echo $session[ 'title' ]; ?>
             </td>
-            <!--
             <td>
                 <?php echo $session[ 'date' ]; ?>
             </td>
-            -->
             <td>
                 <?php echo $session[ 'score' ]; ?>
             </td>

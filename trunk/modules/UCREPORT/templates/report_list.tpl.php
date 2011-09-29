@@ -22,6 +22,11 @@
             <th>
                 <?php echo get_lang( 'Delete' ); ?>
             </th>
+    <?php if ( get_conf( 'UCREPORT_public_allowed' ) ) : ?>
+            <th>
+                <?php echo get_lang( 'Public / private' ); ?>
+            </th>
+    <?php endif; ?>
             <th>
                 <?php echo get_lang( 'Visibility' ); ?>
             </th>
@@ -47,6 +52,19 @@
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
                 </a>
             </td>
+                    <?php if ( get_conf( 'UCREPORT_public_allowed' ) ) : ?>
+            <td align="center">
+                        <?php if ( $report['confidentiality'] == AssetList::ACCESS_PRIVATE ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPublic&id='. $report['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'Private : click to open' ); ?>"/>
+                </a>
+                        <?php else: ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPrivate&id='. $report['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'group' ); ?>" alt="<?php echo get_lang( 'Public : click to close' ); ?>"/>
+                </a>
+                        <?php endif; ?>
+            </td>
+                    <?php endif; ?>
             <td align="center">
                     <?php if ( $report['visibility'] == AssetList::VISIBLE ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&id='. $report['id'] ) );?>">

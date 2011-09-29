@@ -2,7 +2,7 @@
  * $Id$
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__report_report`(
     title VARCHAR(127),
     datas TEXT,
     publication_date DATETIME,
+    confidentiality ENUM('PUBLIC','PRIVATE') NOT NULL DEFAULT 'PRIVATE',
     visibility ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
     PRIMARY KEY(id)
 );
@@ -35,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__examination_session`(
     title VARCHAR(255),
     max_score TINYINT NOT NULL DEFAULT 20,
     publication_date DATETIME,
+    confidentiality ENUM('PUBLIC','PRIVATE') NOT NULL DEFAULT 'PRIVATE',
     visibility ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE ',
     PRIMARY KEY(id)
 )

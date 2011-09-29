@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.10
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
@@ -29,29 +29,29 @@ $userInput = Claro_UserInput::getInstance();
 
 if ( $is_allowed_to_edit )
 {
-    $userInput->setValidator( 'cmd'
-        , new Claro_Validator_AllowedList( array( 'rqShowList'
-                                                , 'rqResult'
-                                                , 'rqShow'
-                                                , 'rqCreate'
-                                                , 'rqEdit'
-                                                , 'rqDelete'
-                                                , 'rqReset'
-                                                , 'exCreate'
-                                                , 'exEdit'
-                                                , 'exDelete'
-                                                , 'exReset'
-                                                , 'exModifyMark'
-                                                , 'exDeleteMark'
-                                                , 'exReset'
-                                                , 'exMkVisible'
-                                                , 'exMkInvisible' ) ) );
+    $actionList = array(  'rqShowList'
+                        , 'rqResult'
+                        , 'rqShow'
+                        , 'rqCreate'
+                        , 'rqEdit'
+                        , 'rqDelete'
+                        , 'rqReset'
+                        , 'exCreate'
+                        , 'exEdit'
+                        , 'exDelete'
+                        , 'exReset'
+                        , 'exModifyMark'
+                        , 'exDeleteMark'
+                        , 'exReset'
+                        , 'exMkVisible'
+                        , 'exMkInvisible' );
 }
 else
 {
-    $userInput->setValidator( 'cmd'
-        , new Claro_Validator_AllowedList( array( 'rqShowList', 'rqShow' ) ) );
+    $actionList = array( 'rqShowList', 'rqShow' );
 }
+
+$userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
 
 try
 {
@@ -112,7 +112,7 @@ try
             
             foreach( array_keys( $mark ) as $userId )
             {
-                if ( $mark[ $userId ] !='' || $comment[ $userId ] != '' )
+                if ( $mark[ $userId ] != '' )
                 {
                     $examination->setScore( $userId , $mark[ $userId ] , $comment[ $userId ] );
                 }
@@ -278,6 +278,15 @@ try
             else
             {
                 $dialogBox->error( get_lang( 'Error' ) );
+            }
+            
+            foreach( array_keys( $comment ) as $userId )
+            {
+                if ( $mark[ $userId ] == '' )
+                {
+                    $dialogBox->info( '<strong>' . get_lang( 'Comments without marks has been ignored!' ) . '</strong>' );
+                    break;
+                }
             }
             
             $template = 'examination';

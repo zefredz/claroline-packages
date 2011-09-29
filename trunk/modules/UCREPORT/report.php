@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.10
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -38,41 +38,57 @@ if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_f
 
 $userInput = Claro_UserInput::getInstance();
 $is_allowed_to_edit = claro_is_allowed_to_edit();
+$is_platform_admin = claro_is_platform_admin();
+
+$actionList = array( 'rqShowList' );
+
+if ( claro_is_course_member() || $is_platform_admin )
+{
+    $actionList = array_merge( $actionList
+                               , array( 'rqView',
+                                        'exReport2pdf' ) );
+}
 
 if ( $is_allowed_to_edit )
 {
-    $userInput->setValidator( 'cmd' ,
-        new Claro_Validator_AllowedList( array( 'rqShowList',
-                                                'rqView',
-                                                'rqCreate',
-                                                'exGenerate',
-                                                'exActivate',
-                                                'exReset',
-                                                'rqPublish',
-                                                'exPublish',
-                                                'rqDelete',
-                                                'exDelete',
-                                                'exMkVisible',
-                                                'exMkInvisible',
-                                                'exExport2xml',
-                                                'exExport2csv',
-                                                'exExport2pdf',
-                                                'exReport2xml',
-                                                'exReport2csv',
-                                                'exReport2pdf' ) ) );
+    $actionList = array_merge( $actionList
+                               , array( 'rqCreate',
+                                        'exGenerate',
+                                        'exActivate',
+                                        'exReset',
+                                        'rqPublish',
+                                        'exPublish',
+                                        'rqDelete',
+                                        'exDelete',
+                                        'exMkVisible',
+                                        'exMkInvisible',
+                                        'exMkPublic',
+                                        'exMkPrivate',
+                                        'exExport2xml',
+                                        'exExport2csv',
+                                        'exExport2pdf',
+                                        'exReport2xml',
+                                        'exReport2csv' ) );
 }
-elseif ( claro_is_course_member() )
+
+if ( $is_platform_admin )
 {
-    $userInput->setValidator( 'cmd' ,
-        new Claro_Validator_AllowedList( array( 'rqShowList',
-                                                'rqView',
-                                                'exReport2pdf' ) ) );
+    $actionList = array_merge( $actionList
+                               , array( 'rqEditPlugins',
+                                        'exActivatePlugin',
+                                        'exDesactivatePlugin' ) );
 }
-else
+
+if ( $is_allowed_to_edit
+  && get_conf( 'UCREPORT_public_allowed' )
+  || $is_platform_admin )
 {
-    $userInput->setvalidator( 'cmd' ,
-        new Claro_Validator_AllowedList( array( 'rqShowList' ) ) );
+    $actionList = array_merge( $actionList
+                             , array( 'exMkPublic',
+                                      'exMkPrivate' ) );
 }
+
+$userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
 
 $dialogBox = new DialogBox();
 
@@ -85,8 +101,7 @@ try
     
     if ( ! $id )
     {
-        $pluginLoader = new PluginLoader( 'lib/plugins/' );
-        $pluginLoader->loadPlugins();
+        $pluginLoader = new PluginLoader( 'lib/plugins/' , 'conf/plugins.conf' );
     }
     
     $reportList = new ReportList();
@@ -94,6 +109,11 @@ try
     // CONTROLLER
     switch( $cmd )
     {
+        case 'rqEditPlugins':
+        {
+            break;
+        }
+        
         case 'rqView':
         case 'rqDelete':
         case 'exReport2xml':
@@ -186,6 +206,22 @@ try
             break;
         }
         
+        case 'exActivatePlugin':
+        case 'exDesactivatePlugin':
+        {
+            $pluginName = $userInput->get( 'plugin' );
+            $pluginLoader->setActive( $pluginName , $cmd == 'exActivatePlugin' );
+            $execution_ok = $pluginLoader->saveActiveList();
+            break;
+        }
+        
+        case 'exMkPublic':
+        case 'exMkPrivate':
+        {
+            $reportList->setConfidentiality( $id , $cmd == 'exMkPrivate' );
+            break;
+        }
+        
         default :
         {
             throw new Exception( 'bad command' );
@@ -207,7 +243,11 @@ try
         case 'exDelete':
         case 'exMkVisible':
         case 'exMkInvisible':
+        case 'exMkPublic':
+        case 'exMkPrivate':
         case 'exPublish':
+        case 'exMkPublic':
+        case 'exMkPrivate':
         {
             $pageTitle[ 'subTitle' ] = get_lang( 'Report list' );
             
@@ -248,6 +288,14 @@ try
             $cmdList[] = array( 'img'  => 'exam',
                     'name' => get_lang( 'Examinations' ),
                     'url'  => 'examination.php' );
+            
+            if ( $is_platform_admin )
+            {
+                $cmdList[] = array( 'img'  => 'plugin_edit',
+                                    'name' => get_lang( 'Manage plugins' ),
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPlugins') ) );
+            }
+            
             break;
         }
         
@@ -281,6 +329,7 @@ try
             $reportView = new ModuleTemplate( 'UCREPORT' , 'report.tpl.php' );
             $reportView->assign( 'id' , (int)$id );
             $reportView->assign( 'datas' , $report->export() );
+            $reportView->assign( 'is_public' , $reportList->isPublic( $id ) );
             
             if ( $cmd == 'rqPublish' )
             {
@@ -316,6 +365,20 @@ try
             $cmdList[] = array( 'img'  => 'export',
                                 'name' => get_lang( 'Export to pdf' ),
                                 'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2pdf&id=' . $id ) ) );
+            break;
+        }
+        
+        case 'rqEditPlugins':
+        case 'exActivatePlugin':
+        case 'exDesactivatePlugin':
+        {
+            $pageTitle[ 'subTitle' ] = get_lang( 'Plugin management' );
+            $reportView = new ModuleTemplate( 'UCREPORT' , 'edit_plugin.tpl.php' );
+            $reportView->assign( 'pluginList' , $pluginLoader->getPluginList( false ) );
+            
+            $cmdList[] = array( 'img'  => 'go_left',
+                    'name' => get_lang( 'Back to the report list' ),
+                    'url'  => 'report.php' );
             break;
         }
         
