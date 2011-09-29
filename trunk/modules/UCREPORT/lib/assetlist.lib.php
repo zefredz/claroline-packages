@@ -97,7 +97,7 @@ class AssetList
         return Claroline::getDatabase()->query( "
             SELECT confidentiality
             FROM `{$this->tableName}`
-            WHERE id = " . Claroline::getDatabase()->escape( $assetId ) . "
+            WHERE id = " . Claroline::getDatabase()->escape( (int)$assetId ) . "
             AND confidentiality = " . Claroline::getDatabase()->quote( self::ACCESS_PUBLIC )
         )->numRows(); 
     }
