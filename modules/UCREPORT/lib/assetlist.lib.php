@@ -21,6 +21,8 @@ class AssetList
 {
     const VISIBLE = 'VISIBLE';
     const INVISIBLE = 'INVISIBLE';
+    const ACCESS_PUBLIC = 'PUBLIC';
+    const ACCESS_PRIVATE = 'PRIVATE';
     
     protected $tableName;
     protected $dataName;
@@ -48,11 +50,56 @@ class AssetList
                     id,
                     title,
                     publication_date,
+                    confidentiality,
                     visibility
                 FROM `{$this->tableName}`" );
         }
         
         return $this->assetList;
+    }
+    
+    /**
+     * Set the confidentiality parameter of an asset
+     * @param int assetId
+     * @param string $confidentiality
+     * @return true on success
+     */
+    public function setConfidentiality( $assetId , $is_private = true )
+    {
+        $confidentiality = $is_private ? self::ACCESS_PRIVATE : self::ACCESS_PUBLIC;
+        
+        return Claroline::getDatabase()->exec( "
+            UPDATE `{$this->tableName}`
+            SET confidentiality = " . Claroline::getDatabase()->quote( $confidentiality ) . "
+            WHERE id = " . Claroline::getDatabase()->escape( $assetId ) );
+    }
+    
+    /**
+     * Helpers
+     */
+    public function setPrivate( $assetId )
+    {
+        return $this->setConfidentiality( $assetId , true );
+    }
+    
+    public function setPublic( $assetId )
+    {
+        return $this->setConfidentiality( $assetId , false );
+    }
+    
+    /**
+     * Check the confidentiality of an asset
+     * @param int $assetId
+     * @return boolean true if private
+     */
+    public function isPublic( $assetId )
+    {
+        return Claroline::getDatabase()->query( "
+            SELECT confidentiality
+            FROM `{$this->tableName}`
+            WHERE id = " . Claroline::getDatabase()->escape( $assetId ) . "
+            AND confidentiality = " . Claroline::getDatabase()->quote( self::ACCESS_PUBLIC )
+        )->numRows(); 
     }
     
     /**
@@ -100,6 +147,7 @@ class AssetList
                 title = " . Claroline::getDatabase()->quote( $title ) . ",\n"
                 . $this->dataName . " = " . Claroline::getDatabase()->quote( $data ) . ",
                 publication_date = NOW(),
+                confidentiality = " . Claroline::getDatabase()->quote( self::ACCESS_PRIVATE ) . ",
                 visibility = " . Claroline::getDatabase()->quote( self::VISIBLE ) ) )
         {
             return Claroline::getDatabase()->insertId();
