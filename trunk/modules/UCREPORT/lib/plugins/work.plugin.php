@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 1.3.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 1.3.0 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -13,6 +13,7 @@
  * Report plugins for "Assignments" tool
  * These plugins allow to send datas from Claroline tools to the Report object
  * @const TOOL_NAME
+ * @const TOOL_LABEL
  */
 class WorkPlugin extends ReportPlugin
 {
