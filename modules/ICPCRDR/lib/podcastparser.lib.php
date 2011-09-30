@@ -42,9 +42,7 @@ class PodcastParser
     {
         $startOfFile = url_get_first_bytes($url,255);
             
-        // var_dump($startOfFile);
-
-        if ( ! preg_match('/<rss/', $startOfFile ) )
+        if ( ! preg_match('/<\?xml/', $startOfFile ) )
         {
             throw new Exception("Invalid Podcast");
         }
