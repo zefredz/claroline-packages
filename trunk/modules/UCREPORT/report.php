@@ -167,6 +167,7 @@ try
             else
             {
                 $userList = claro_get_course_user_list();
+                unset( $_SESSION[ 'user_list' ] );
             }
             
             $reset = $cmd == 'exReset'
