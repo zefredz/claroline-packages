@@ -305,7 +305,8 @@ class Agregator
      */
     public function setUserActive( $userId , $active = false )
     {
-        return $this->userList[ $userId ][ 'active' ] = (boolean)$active;
+        $this->userList[ $userId ][ 'active' ] = (boolean)$active;
+        unset( $this->userList[ $userId ][ 'final_score' ] );
     }
     
     /**
