@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -47,7 +47,8 @@ class Agregator
     }
     
     /**
-     *
+     * Loads datas
+     * This method is called by the constructor
      */
     public function load( $userList = null , $itemList = null )
     {
@@ -107,7 +108,7 @@ class Agregator
     }
     
     /**
-     *
+     * Getter for $itemList
      */
     public function getItemList()
     {
@@ -115,7 +116,7 @@ class Agregator
     }
     
     /**
-     *
+     * Getter for $dataList
      */
     public function getDataList()
     {
@@ -123,7 +124,7 @@ class Agregator
     }
     
     /**
-     *
+     * Getter for $userList
      */
     public function getUserList()
     {
@@ -131,7 +132,7 @@ class Agregator
     }
     
     /**
-     *
+     * Getter for $averageScore
      */
     public function getAverageScore()
     {
@@ -166,7 +167,8 @@ class Agregator
     }
     
     /**
-     * A private method
+     * Sets proportionnal weights
+     * @private
      */
     private function setProportionalWeight()
     {
@@ -195,7 +197,8 @@ class Agregator
     }
     
     /**
-     *
+     * Sets default active users
+     * @private
      */
     private function setActive()
     {
@@ -227,7 +230,8 @@ class Agregator
     }
     
     /**
-     *
+     * Sets final scores
+     * @private
      */
     private function setFinalScore()
     {
@@ -250,7 +254,8 @@ class Agregator
     }
     
     /**
-     *
+     * Sets average score
+     * @private
      */
     private function setAverageScore()
     {
@@ -280,7 +285,8 @@ class Agregator
     }
     
     /**
-     *
+     * Sets global result
+     * @private
      */
     private function setGlobalResult()
     {
@@ -293,7 +299,9 @@ class Agregator
     }
     
     /**
-     *
+     * Sets the specified user (in)active
+     * @param int $userId
+     * @param boolean $is_active
      */
     public function setUserActive( $userId , $active = false )
     {
