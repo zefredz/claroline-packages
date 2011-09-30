@@ -160,7 +160,7 @@ class Agregator
                 $total = $this->itemList[ $itemId ][ 'total' ];
                 $count = $this->itemList[ $itemId ][ 'submission_count' ];
                 
-                $this->itemList[ $itemId ][ 'average' ] = round( $total / $count , 3 );
+                $this->itemList[ $itemId ][ 'average' ] = round( $total / $count , 2 );
             }
         }
     }
@@ -184,7 +184,7 @@ class Agregator
         {
             if ( $this->itemList[ $itemId ][ 'selected' ] )
             {
-                $proportionalWeight = round( $this->itemList[ $itemId ][ 'weight' ] / $weightSum , 3 );
+                $proportionalWeight = round( $this->itemList[ $itemId ][ 'weight' ] / $weightSum , 2 );
             }
             else
             {
@@ -318,7 +318,7 @@ class Agregator
         return array( 'users'   => $this->userList
                     , 'items'   => $this->itemList
                     , 'report'  => $this->dataList
-                    , 'average' => $this->averageScore );
+                    , 'average' => round( $this->averageScore , 2 ) );
     }
     
     /**

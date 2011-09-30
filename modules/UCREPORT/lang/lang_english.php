@@ -39,6 +39,7 @@ $_lang['Export to pdf'] = 'Export to pdf';
 $_lang['Gathering datas'] = 'Gathering datas';
 $_lang['incomplete'] = 'incomplete';
 $_lang['Items selection'] = 'Items selection';
+$_lang['Learningpath'] = 'Learning path';
 $_lang['Mark'] = 'Mark';
 $_lang['Max value'] = 'Max value';
 $_lang['My examination results and comments'] = 'My examination results and comments';
