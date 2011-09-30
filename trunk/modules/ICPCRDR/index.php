@@ -326,6 +326,31 @@ try
 
     // add the layout to the claroline page 
     Claroline::getDisplay()->body->appendcontent( $layout->render() );
+
+    // load optional javascript and css
+    // see core/loader.lib for details
+    JavascriptLoader::getInstance()->load( 'flowplayer-3.2.4.min' );
+    CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
+
+    // define the name of the tool to be displayed in various locations
+    $nameTools = get_lang("Video podcast reader");
+
+    // set html page title 
+    Claroline::getDisplay()->header->setTitle( $nameTools );
+
+    // set module node in breadcrumbs
+    ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools, Url::Contextualize( $_SERVER['PHP_SELF'] ) );
+
+    // if a podcast is displayed add it to the breadcrumbs
+    if ( 'visit' == $cmd && isset( $parser ) )
+    {
+        $channelInfo = $parser->getChannelInfo();
+        ClaroBreadCrumbs::getInstance()->append( $channelInfo['title'] );
+    }
+
+    // display the page and send it back to the user
+    echo Claroline::getDisplay()->render();
+
 }
 catch ( Exception $e )
 {
@@ -337,34 +362,20 @@ catch ( Exception $e )
     {
         $dialogBox->error( $e->getMessage() );
     }
+    // define the name of the tool to be displayed in various locations
+    $nameTools = get_lang("Video podcast reader");
+
+    // set html page title 
+    Claroline::getDisplay()->header->setTitle( $nameTools );
+
+    // set module node in breadcrumbs
+    ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools, Url::Contextualize( $_SERVER['PHP_SELF'] ) );
     
     // add the title of the module to the claroline page
     Claroline::getDisplay()->body->appendcontent( claro_html_tool_title( get_lang("Video podcast reader") ) );
 
     // add the error message to the claroline page
     Claroline::getDisplay()->body->appendcontent( $dialogBox->render() );
+    
+    echo Claroline::getDisplay()->render();
 }
-
-// load optional javascript and css
-// see core/loader.lib for details
-JavascriptLoader::getInstance()->load( 'flowplayer-3.2.4.min' );
-CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
-
-// define the name of the tool to be displayed in various locations
-$nameTools = get_lang("Video podcast reader");
-
-// set html page title 
-Claroline::getDisplay()->header->setTitle( $nameTools );
-
-// set module node in breadcrumbs
-ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools, Url::Contextualize( $_SERVER['PHP_SELF'] ) );
-
-// if a podcast is displayed add it to the breadcrumbs
-if ( 'visit' == $cmd && isset( $parser ) )
-{
-    $channelInfo = $parser->getChannelInfo();
-    ClaroBreadCrumbs::getInstance()->append( $channelInfo['title'] );
-}
-
-// display the page and send it back to the user
-echo Claroline::getDisplay()->render();
