@@ -40,6 +40,15 @@ class PodcastParser
     */
     public function parseFeed($url)
     {
+        $startOfFile = url_get_first_bytes($url,255);
+            
+        // var_dump($startOfFile);
+
+        if ( ! preg_match('/<rss/', $startOfFile ) )
+        {
+            throw new Exception("Invalid Podcast");
+        }
+        
         $this->feed_url = $url;
         
         $file = url_get_contents($url);

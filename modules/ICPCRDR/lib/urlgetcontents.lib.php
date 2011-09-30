@@ -10,6 +10,124 @@
  *              GNU AFFERO GENERAL PUBLIC LICENSE version 3
  */
 
+function url_get_first_bytes( $url, $length )
+{
+    if ( !is_int($length) || $length <=0 )
+    {
+        throw new Exception("Invalid length given (must be positive int)");
+    }
+    
+    if ( ini_get( 'allow_url_fopen' ) )
+    {
+        $fc = fopen( $url , 'r' );
+        $contents = fread($fc, $length);
+        fclose($fc);
+        
+        return $contents;
+    }
+    elseif ( function_exists('curl_init') )
+    {
+        $ch = curl_init();
+        
+        // set the url to fetch
+        curl_setopt( $ch, CURLOPT_URL, $url );
+        // don't give me the headers just the content
+        curl_setopt( $ch, CURLOPT_HEADER, 0 );
+        // return the value instead of printing the response to browser
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        
+        curl_setopt($ch, CURLOPT_RANGE, "0-$length");
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, 1);
+
+        
+        // get content
+        $content = @curl_exec( $ch );
+        
+        if ( false !== $content )
+        {
+            curl_close( $ch );
+            return $content;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    elseif ( function_exists( 'fsockopen' ) )
+    {
+        // get the host name and url path
+        $parsedUrl = parse_url( $url );
+        $host = $parsedUrl['host'];
+
+        if ( isset( $parsedUrl['path'] ) )
+        {
+            $path = $parsedUrl['path'];
+        }
+        else
+        {
+            // the url is pointing to the host like http://www.mysite.com
+            $path = '/';
+        }
+
+        if ( isset( $parsedUrl['query'] ) )
+        {
+            $path .= '?' . $parsedUrl['query'];
+        }
+
+        if ( isset( $parsedUrl['port'] ) )
+        {
+            $port = $parsedUrl['port'];
+        }
+        else 
+        {
+            // most sites use port 80
+            $port = '80';
+        }
+
+        $timeout = 10;
+        $response = '';
+
+        // connect to the remote server
+        $fp = @fsockopen( $host, $port, $errno, $errstr, $timeout );
+
+        if ( !$fp )
+        {
+            return false;
+        }
+        else
+        {
+            // send the necessary headers to get the file
+            fputs( $fp, "GET {$path} HTTP/1.0\r\n" .
+                     "Host: {$host}\r\n" .
+                     "Accept: */*\r\n" .
+                     "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n" .
+                     "Keep-Alive: 300\r\n" .
+                     "Connection: keep-alive\r\n" );
+
+            // retrieve the response from the remote server
+            while ( $line = fread( $fp, $length ) )
+            {
+                $response .= $line;
+            }
+
+            fclose( $fp );
+
+            // strip the headers
+            $pos      = strpos( $response, "\r\n\r\n" );
+            $response = substr( $response, $pos + 4 );
+            
+            return substr($response, 0, $length);
+        }
+
+        // return the file content
+        return $response;
+    }
+    else
+    {
+        throw new Exception("Your PHP install does not support url access.");
+    }
+}
+
 /**
  * Get a file from a remote url using several remote file access mechanism
  * (file_get_contents, curl, or fsockopen)
