@@ -29,6 +29,10 @@
         </tr>
     </thead>
     <tbody>
+    <?php if ( ! $this->id ) : ?>
+    <form method="post"
+          action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActualize' ) );?>" />
+    <?php endif; ?>
     <tr class="average">
         <td class="cell">
             <?php echo get_lang( 'Average' ); ?>
@@ -73,7 +77,11 @@
             <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
             <td class="cell">
                     <?php if ( isset( $userReport[ $id ] ) ) : ?>
+                <?php if ( ! $this->id ) : ?>
+                    <input type="text" name="mark[<?php echo $userId; ?>][<?php echo $id; ?>]" value="<?php echo $userReport[ $id ]; ?>" />
+                <?php else : ?>
                     <?php echo $userReport[ $id ]; ?>
+                <?php endif; ?>
                     <?php else :?>
                 <span class="empty"><?php echo get_lang( 'empty' ); ?></span>
                     <?php endif; ?>
@@ -91,6 +99,9 @@
     <?php endforeach; ?>
     </tbody>
 </table>
+<?php if ( ! $this->id ) : ?>
+    <input type="submit" name="create" value="<?php echo get_lang( 'Actualize' ); ?>" />
+<?php endif; ?>
     <?php if ( ! isset( $this->datas[ 'report' ][ claro_get_current_user_id() ] ) && ! claro_is_allowed_to_edit() ) : ?>
 <p class="noscore"><?php echo get_lang( 'You don\'t have score in this report' ); ?></p>
     <?php endif; ?>
@@ -100,6 +111,11 @@
 <p class="exam"><strong><?php echo get_lang( 'Comment for ' ) . $this->itemList[ $itemId ][ 'title' ]; ?> :</strong> <?php echo $comment; ?></p>
         <?php endforeach; ?>
     <?php endif; ?>
+    
+    <?php if ( ! $this->id ) : ?>
+    </form>
+    <?php endif; ?>
+    
 <?php else : ?>
 <p class="empty"><?php echo get_lang( 'No result at this time' ); ?></p>
 <?php endif; ?>

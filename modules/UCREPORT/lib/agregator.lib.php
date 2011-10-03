@@ -62,12 +62,12 @@ class Agregator
             }
         }
         
-        $setActive = true;
+        $resetResult = true;
         
         if ( ! $itemList && $this->itemList )
         {
             $itemList = $this->itemList;
-            $setActive = false;
+            $resetResult = false;
         }
         
         $this->itemList = array();
@@ -97,8 +97,16 @@ class Agregator
             }
         }
         
+        $this->actualize( $resetResult );
+    }
+    
+    /**
+     * Actualizes datas
+     */
+    public function actualize( $resetResult = false )
+    {
         $this->setProportionalWeight();
-        if ( $setActive )
+        if ( $resetResult )
         {
             $this->setActive();
         }
@@ -163,6 +171,20 @@ class Agregator
                 
                 $this->itemList[ $itemId ][ 'average' ] = round( $total / $count , 2 );
             }
+        }
+    }
+    
+    /**
+     * Sets a score
+     * @param int $userId
+     * @param string $itemId
+     * @param int $score
+     */
+    public function setScore( $userId , $itemId , $score )
+    {
+        if ( isset( $this->dataList[ $userId ][ $itemId ] ) )
+        {
+            $this->dataList[ $userId ][ $itemId ] = (int)$score;
         }
     }
     

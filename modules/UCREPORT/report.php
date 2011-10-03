@@ -56,6 +56,7 @@ if ( $is_allowed_to_edit )
                                         'exGenerate',
                                         'exActivate',
                                         'exReset',
+                                        'exActualize',
                                         'rqPublish',
                                         'exPublish',
                                         'rqDelete',
@@ -139,6 +140,7 @@ try
         
         case 'exGenerate':
         case 'exActivate':
+        case 'exActualize':
         case 'exReset':
         case 'rqPublish':
         case 'exPublish':
@@ -150,6 +152,7 @@ try
             $userToActivate = $userInput->get( 'userId' );
             $itemList = $userInput->get( 'item' );
             $title = $userInput->get( 'title' );
+            $markList = $userInput->get( 'mark' );
             
             if ( $itemList )
             {
@@ -179,8 +182,21 @@ try
             if ( $userToActivate )
             {
                 $report->setUserActive( $userToActivate , $active );
-                $report->load();
+                $report->actualize();
                 $_SESSION[ 'user_list' ] = $report->getUserList();
+            }
+            
+            if ( $markList )
+            {
+                foreach ( $markList as $studentId => $result )
+                {
+                    foreach ( $result as $itemId => $score )
+                    {
+                        $report->setScore( $studentId , $itemId , $score );
+                    }
+                }
+                
+                $report->actualize();
             }
             
             if ( $title )
@@ -315,6 +331,7 @@ try
         case 'rqView':
         case 'exGenerate':
         case 'exActivate':
+        case 'exActualize':
         case 'exReset':
         case 'rqPublish':
         {
