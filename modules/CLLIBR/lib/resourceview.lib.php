@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.3 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -11,7 +11,7 @@
 
 /**
  * An abstract class for resource view
- * @property StoredResource object $storedResource
+ * @property StoredResource object or string $storedResource
  * @abstract render()
  */
 abstract class ResourceView
@@ -23,6 +23,11 @@ abstract class ResourceView
      */
     public function __construct( $storedResource )
     {
+        if ( ! is_string( $storedResource ) && ! is_a( $storedResource , 'StoredResource' ) )
+        {
+            throw new Exception( 'invalid data' );
+        }
+        
         $this->storedResource = $storedResource;
     }
     
