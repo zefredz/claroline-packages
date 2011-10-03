@@ -77,7 +77,19 @@ class Text2ColumnsComponent extends Component
     function setData( $data )
     {
         $this->contentA = $data['contentA'];
+        
+        if ( !preg_match('/content\: html tiny_mce/', $this->contentA) )
+        {
+            $this->contentA .= "\n".'<!-- content: html tiny_mce -->';
+        }
+        
         $this->contentB = $data['contentB'];
+        
+        if ( !preg_match('/content\: html tiny_mce/', $this->contentB) )
+        {
+            $this->contentB .= "\n".'<!-- content: html tiny_mce -->';
+        }
+        
         $this->textAAlign = $data['textAAlign'];
         $this->textBAlign = $this->textAAlign == 'left' ? 'right' : 'left';
     }
