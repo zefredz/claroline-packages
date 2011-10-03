@@ -49,6 +49,11 @@ class TextComponent extends Component
     public function setData($data)
     {
         $this->content = $data['content'];
+        
+        if ( !preg_match('/content\: html tiny_mce/', $this->content) )
+        {
+            $this->content .= "\n".'<!-- content: html tiny_mce -->';
+        }
     }
 
     /**

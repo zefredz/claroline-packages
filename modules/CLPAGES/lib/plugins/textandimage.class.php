@@ -115,6 +115,12 @@ class TextAndImageComponent extends Component
     function setData( $data )
     {
         $this->content = $data['content'];
+        
+        if ( !preg_match('/content\: html tiny_mce/', $this->content) )
+        {
+            $this->content .= "\n".'<!-- content: html tiny_mce -->';
+        }
+        
         $this->textAlign = $data['textAlign'];
         $this->imgAlign = $this->textAlign == 'left' ? 'right' : 'left';
         $this->url = $data['url'];
