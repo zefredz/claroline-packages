@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.3 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -955,10 +955,17 @@ try
                     if ( array_key_exists( 'resourceview' , $pluginList )
                       && in_array( strtolower( $viewName ) , $pluginList[ 'resourceview' ] ) )
                     {
-                        $resourceViewer = new $viewName( new StoredResource( $repository
-                                                                           , null
-                                                                           , $resource
-                                                                           , $secretKey ) );
+                        if ( $resource->getStorageType() == Resource::TYPE_FILE )
+                        {
+                            $resourceViewer = new $viewName( new StoredResource( $repository
+                                                                               , null
+                                                                               , $resource
+                                                                               , $secretKey ) );
+                        }
+                        else
+                        {
+                            $resourceViewer = new $viewName( $resource->getName() );
+                        }
                         
                         $is_validated = $resourceViewer->validate( StoredResource::getFileExtension( $resource->getName() ) );
                     }
