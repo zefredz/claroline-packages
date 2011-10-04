@@ -182,7 +182,7 @@ class Agregator
      */
     public function setScore( $userId , $itemId , $score )
     {
-        if ( isset( $this->dataList[ $userId ][ $itemId ] ) )
+        if ( isset( $this->dataList[ $userId ][ $itemId ] ) && abs( (int)$score ) <= 100 )
         {
             $this->dataList[ $userId ][ $itemId ] = (int)$score;
         }
