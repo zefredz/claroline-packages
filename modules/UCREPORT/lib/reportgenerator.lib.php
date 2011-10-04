@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -19,6 +19,15 @@ class ReportGenerator
     {
         $this->courseId = $courseId;
         $this->datas = $datas;
+        
+        foreach( $this->datas['users'] as $userId => $data )
+        {
+            if( ! $data[ 'active' ] )
+            {
+                unset( $this->datas[ 'users' ][ $userId ] );
+                unset( $this->datas[ 'report' ][ $userId ] );
+            }
+        }
         
         $this->tbl = get_module_course_tbl( array( 'report_report' ) );
     }
