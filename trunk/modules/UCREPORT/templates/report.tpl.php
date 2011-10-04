@@ -93,7 +93,7 @@
                 <?php if ( isset( $this->datas[ 'users' ][ $userId ][ 'final_score' ] ) ) : ?>
                 <?php echo $this->datas[ 'users' ][ $userId ][ 'final_score' ]; ?>
                 <?php else : ?>
-                <span class="empty"><?php echo get_lang( 'incomplete' ); ?></span>
+                <span class="empty"><?php echo get_lang( 'inactive' ); ?></span>
                     <?php endif; ?>
             </td>
         </tr>

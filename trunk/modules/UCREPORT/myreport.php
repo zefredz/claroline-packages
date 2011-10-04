@@ -47,7 +47,7 @@ else
         $output .= '        <tr>' . "\n"
                 .  '            <td>' . $report[ 'course_code' ] . '</td>' . "\n"
                 .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqShowReport&cidReq=' . $report[ 'course_code' ] . '&reportId=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
+                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqView&cidReq=' . $report[ 'course_code' ] . '&id=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
                 .  '            <td>'. $report[ 'date' ] . '</td>' . "\n"
                 .  '            <td>'. $finalScore . '</td>' . "\n"
                 .  '        </tr>' . "\n";
