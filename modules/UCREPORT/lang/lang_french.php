@@ -12,6 +12,7 @@
 $_lang['Action failed'] = 'L\'opération a échoué';
 $_lang['Activate'] = 'Activer';
 $_lang['Active / inactive'] = 'Actif / inactif';
+$_lang['Actualize'] = 'Actualiser';
 $_lang['An error occured: the report has not been created!'] = 'Une erreur est survenue: le bulletin n\' a pu être créé!';
 $_lang['An error occured: the report has not been deleted!'] = 'Une erreur est survenue: le bulletin n\' a  pu être supprimé!';
 $_lang['Average'] = 'Moyenne';

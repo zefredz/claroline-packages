@@ -154,6 +154,11 @@ try
             $title = $userInput->get( 'title' );
             $markList = $userInput->get( 'mark' );
             
+            if ( ! $markList && isset( $_SESSION['markList'] ) )
+            {
+                $markList = $_SESSION[ 'markList' ];
+            }
+            
             if ( $itemList )
             {
                 $_SESSION[ 'item_list' ] = $itemList;
@@ -188,6 +193,8 @@ try
             
             if ( $markList )
             {
+                $_SESSION[ 'markList' ] = $markList;
+                
                 foreach ( $markList as $studentId => $result )
                 {
                     foreach ( $result as $itemId => $score )

@@ -78,7 +78,9 @@
             <td class="cell">
                     <?php if ( isset( $userReport[ $id ] ) ) : ?>
                 <?php if ( ! $this->id ) : ?>
-                    <input type="text" name="mark[<?php echo $userId; ?>][<?php echo $id; ?>]" value="<?php echo $userReport[ $id ]; ?>" />
+                    <input type="text"
+                           size="2"
+                           name="mark[<?php echo $userId; ?>][<?php echo $id; ?>]" value="<?php echo $userReport[ $id ]; ?>" />
                 <?php else : ?>
                     <?php echo $userReport[ $id ]; ?>
                 <?php endif; ?>
