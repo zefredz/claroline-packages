@@ -1,0 +1,18 @@
+<module>
+  <label>COMPILAT</label>
+  <name>Compilatio</name>
+  <version>1.6</version>
+  <license>GPL</license>
+  <type>tool</type>
+  <icon>icon.gif</icon>
+
+  <description>
+    Module qui intègre l'outil antiplagia Compilatio à Claroline!!
+  </description>
+
+  <author>
+     <name>David Charbonnier</name>
+     <email>david@compilatio.net</email>
+     <web>http://www.compilatio.net</web>
+  </author>
+</module>

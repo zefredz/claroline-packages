@@ -1,0 +1,14 @@
+changelog Module/Applet Compilatio Claroline v1.6
+
+*codage en base64 pour l'envoi du contenu des fichiers via soap
+*optimisation des variables pour l'envoi des fichiers (économie de mémoire)
+*nouveau mode de transport: récupération des fichiers par wget
+*le quota n'est plus affiché dans l'espace utilisateur, mais dans l'admin de l'applet
+*Bouton de test de connexion dans l'admin de l'applet Compilatio
+*Suppression du lien vers compilatio dans l'affichage de l'applet
+*Refonte de la classe Compilatio pour la rendre plus générique (compatible avec d'autres plateformes)
+*Detection en amont du type de fichier pour ne pas proposer l'upload si incorrect
+*Detection en amont de la taille du fichier pour ne pas proposer l'upload si supérieur à 10Mo (limite interne de Compilatio)
+*Les actions "envoyer le fichier" et "analyser" sont regroupée dans une seule action "Lancer l'analyse";
+*Ajout d'une frame "chargement en cours" dans la popup d'upload pour les serveur gérant mal la commande flush (vidage de buffer avant fin d'execution de page)
+*Nouvelle barre de progression/résultat d'analyse plus esthetique
