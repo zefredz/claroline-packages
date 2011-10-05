@@ -1,0 +1,20 @@
+<module>
+  <label>COMPILAP</label>
+  <name>Applet for Compilatio</name>
+  <version>1.6</version>
+  <license>GPL</license>
+  <type>applet</type>
+  <icon>icon.gif</icon>
+
+  <description>
+   Permet de rendre le module Compilatio accessible depuis l'ensemble de la plateforme claroline et de voir les credits utilises 
+  </description>
+  
+  <default_dock>userBannerRight</default_dock>
+
+  <author>
+     <name>David CHARBONNIER</name>
+     <email>david@compilatio.net</email>
+     <web>http://www.compilatio.net</web>
+  </author>
+</module>
