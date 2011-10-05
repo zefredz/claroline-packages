@@ -154,11 +154,6 @@ try
             $title = $userInput->get( 'title' );
             $markList = $userInput->get( 'mark' );
             
-            if ( ! $markList && isset( $_SESSION['markList'] ) )
-            {
-                $markList = $_SESSION[ 'markList' ];
-            }
-            
             if ( $itemList )
             {
                 $_SESSION[ 'item_list' ] = $itemList;
@@ -189,11 +184,17 @@ try
                 $report->setUserActive( $userToActivate , $active );
                 $report->actualize();
                 $_SESSION[ 'user_list' ] = $report->getUserList();
+                
+                if ( isset( $_SESSION['mark_list'] ) )
+                {
+                    $markList = $_SESSION[ 'mark_list' ];
+                    unset( $_SESSION[ 'mark_list' ] );
+                }
             }
             
             if ( $markList )
             {
-                $_SESSION[ 'markList' ] = $markList;
+                $_SESSION[ 'mark_list' ] = $markList;
                 
                 foreach ( $markList as $studentId => $result )
                 {
