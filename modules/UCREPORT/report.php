@@ -129,6 +129,7 @@ try
         {
             unset( $_SESSION[ 'item_list' ] );
             unset( $_SESSION[ 'user_list' ] );
+            unset( $_SESSION[ 'mark_list' ] );
             break;
         }
         
@@ -188,7 +189,6 @@ try
                 if ( isset( $_SESSION['mark_list'] ) )
                 {
                     $markList = $_SESSION[ 'mark_list' ];
-                    unset( $_SESSION[ 'mark_list' ] );
                 }
             }
             
