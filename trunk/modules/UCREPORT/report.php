@@ -381,16 +381,16 @@ try
                 
                 $cmdList[] = array( 'img'  => 'export',
                                     'name' => get_lang( 'Export to MS-Excel xlsx file' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2xml&id=' . $id ) ) );
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2xml&id=' . $id ) ) );
                 
                 $cmdList[] = array( 'img'  => 'export',
                                     'name' => get_lang( 'Export to csv' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2csv&id=' . $id ) ) );
+                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2csv&id=' . $id ) ) );
             }
             
             $cmdList[] = array( 'img'  => 'export',
                                 'name' => get_lang( 'Export to pdf' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . $id ? 'Re' : 'Ex' . 'port2pdf&id=' . $id ) ) );
+                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2pdf&id=' . $id ) ) );
             break;
         }
         
@@ -438,6 +438,7 @@ try
             $reportPdf = new ModuleTemplate( 'UCREPORT' , 'report.pdf.tpl.php' );
             $reportPdf->assign( 'datas' , $report->export() );
             $reportPdf->assign( 'courseData' , claro_get_current_course_data() );
+            $reportPdf->assign( 'is_public' , $reportList->isPublic( $id ) );
             
             $pdf = new TCPDF( 'L' , 'mm' , 'A4' , true , 'UTF-8' , false);
             $pdf->setTitle( claro_utf8_encode( 'Report_' . claro_get_current_course_id() ) );

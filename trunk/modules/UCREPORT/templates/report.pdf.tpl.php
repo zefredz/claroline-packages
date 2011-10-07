@@ -53,7 +53,7 @@
         </td>
     </tr>
     <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
-        <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() ) : ?>
+        <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() || $this->is_public ) : ?>
         <tr>
             <td>
             <?php if ( $userId ) : ?>
