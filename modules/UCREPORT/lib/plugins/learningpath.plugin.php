@@ -17,7 +17,7 @@
  */
 class LearningPathPlugin extends ReportPlugin
 {
-    const TOOL_NAME  = 'Learning Path';
+    const TOOL_NAME  = 'Learning path';
     const TOOL_LABEL = 'CLLNP';
     
     /**
