@@ -102,7 +102,11 @@ try
     
     if ( ! $id )
     {
-        $pluginLoader = new PluginLoader( 'lib/plugins/' , 'conf/plugins.conf' );
+        //$pluginLoader = new PluginLoader( 'lib/plugins/' , 'conf/plugins.conf' );
+        $pluginLoader = new PluginLoader( 'lib/plugins/'
+                                        , get_path( 'coursesRepositorySys' )
+                                        . claro_get_current_course_id()
+                                        . '/plugins.conf' );
     }
     
     $reportList = new ReportList();
@@ -315,7 +319,8 @@ try
                     'name' => get_lang( 'Examinations' ),
                     'url'  => 'examination.php' );
             
-            if ( $is_platform_admin )
+            //if ( $is_platform_admin )
+            if ( $is_allowed_to_edit )
             {
                 $cmdList[] = array( 'img'  => 'plugin_edit',
                                     'name' => get_lang( 'Manage plugins' ),
