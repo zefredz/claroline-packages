@@ -18,7 +18,7 @@
 class ExaminationPlugin extends ReportPlugin
 {
     const TOOL_NAME  = 'Examination Report';
-    const TOOL_LABEL = 'UCEXAM';
+    const TOOL_LABEL = 'UCREPORT';
     
     /**
      * contructor
