@@ -185,11 +185,11 @@ try
                 $report->setUserActive( $userToActivate , $active );
                 $report->actualize();
                 $_SESSION[ 'user_list' ] = $report->getUserList();
-                
-                if ( isset( $_SESSION['mark_list'] ) )
-                {
-                    $markList = $_SESSION[ 'mark_list' ];
-                }
+            }
+            
+            if ( ! $markList && isset( $_SESSION['mark_list'] ) )
+            {
+                $markList = $_SESSION[ 'mark_list' ];
             }
             
             if ( $markList )
@@ -214,6 +214,7 @@ try
                 $id = $reportGenerator->save();
                 $execution_ok = (boolean)$id;
             }
+            
             break;
         }
         
