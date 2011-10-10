@@ -106,7 +106,7 @@ try
         $pluginLoader = new PluginLoader( 'lib/plugins/'
                                         , get_path( 'coursesRepositorySys' )
                                         . claro_get_current_course_id()
-                                        . '/plugins.conf' );
+                                        . '/report_plugins.conf' );
     }
     
     $reportList = new ReportList();
