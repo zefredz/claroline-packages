@@ -111,12 +111,16 @@ abstract class ReportPlugin
      */
     public function export( $userList = array() , $itemList = array() , $force = false )
     {
-        if ( $force || ! $this->itemList )
+        if ( array_key_exists( $this->toolLabel , claro_get_tool_name_list() ) )
         {
-            $this->load();
+            if ( $force || ! $this->itemList )
+            {
+                $this->load();
+            }
         }
         
         $this->bake( $userList , $itemList );
+        
         return array( 'item' => $this->itemList , 'data' => $this->dataList );
     }
 }
