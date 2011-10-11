@@ -15,7 +15,9 @@
     <span class="empty"><?php echo get_lang( 'This resource has been deleted' ); ?></span>
 <?php elseif ( $this->read_allowed ) : ?>
     <?php if ( $this->viewer ) : ?>
-    <?php echo $this->viewer->render(); ?>
+    <div id="imageView">
+        <?php echo $this->viewer->render(); ?>
+    </div>
     <?php endif; ?>
     <?php if ( $this->storageType == 'file' ) : ?>
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
