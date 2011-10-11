@@ -21,13 +21,13 @@ class PictureView extends ResourceView
         }
         else
         {
-            return '<div id="imageView"><img src="data:'
+            return '<img src="data:'
                  . StoredResource::getMimeType( $this->storedResource->getFileName() )
                  . ';base64,'
                  . base64_encode( $this->storedResource->getFile( StoredResource::RAW_ACCESS ) )
                  . '" alt="'
                  . $this->storedResource->getFileName()
-                 . '" /></div>';
+                 . '" />';
         }
     }
 }
