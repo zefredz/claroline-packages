@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.3 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 0.9.4 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -493,6 +493,7 @@ try
             
             case 'exEditResource':
             {
+                $type = $userInput->get( 'type' );
                 $title = $userInput->get( 'title' );
                 $description = $userInput->get( 'description' );
                 $names = $userInput->get( 'name' );
@@ -506,6 +507,8 @@ try
                 
                 $keywords = is_array( $keyword ) ? $keyword : array( $keyword );
                 $newKeywords = explode( ',' , $newKeyword );
+                
+                $resource->setType( $type );
                 
                 if ( $title )
                 {
@@ -978,7 +981,6 @@ try
                 $template->assign( 'resourceId' , $resourceId );
                 $template->assign( 'storageType' , $resource->getStorageType() );
                 $template->assign( 'resourceType' , $type );
-                $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )->getDefaultMetadataList() );
                 $template->assign( 'url' , $resource->getName() );
                 $template->assign( 'metadataList' , $metadata->getMetadataList( true ) );
                 $template->assign( 'userId' , $userId );
@@ -989,6 +991,9 @@ try
                 $template->assign( 'viewer' , $is_validated ? $resourceViewer : false );
                 $template->assign( 'userNote' , isset( $userNote ) && $userNote->noteExists() ? $userNote->getContent() : null );
                 $template->assign( 'is_deleted' , $is_deleted );
+                $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )
+                                                         ? $resourceTypeList->get( $type )->getDefaultMetadataList()
+                                                         : array() );
                 
                 if ( $edit_allowed )
                 {
@@ -1085,10 +1090,14 @@ try
                 $template->assign( 'libraryId' , $libraryId );
                 $template->assign( 'refId' , $resourceId );
                 $template->assign( 'refName' , 'resourceId' );
-                $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )->getDefaultMetadataList() );
                 $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
                 $template->assign( 'propertyList' , $metadata->getAllProperties() );
                 $template->assign( 'tagCloud' , $tagCloud->render() );
+                $template->assign( 'typeList' , $resourceTypeList->getResourceTypeList() );
+                $template->assign( 'resourceType' , $resource->getType() );
+                $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )
+                                                         ? $resourceTypeList->get( $type )->getDefaultMetadataList()
+                                                         : array() );
                 break;
             }
             
