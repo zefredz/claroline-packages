@@ -808,6 +808,7 @@ try
         $template->assign( 'courseId' , $courseId );
         $template->assign( 'icon' , get_icon_url( 'icon' ) );
         $template->assign( 'tagCloud' , $tagCloud->render() );
+        $template->assign( 'subTitle' , $pageTitle[ 'subTitle' ] );
         
         if ( $context == 'resourcetype' )
         {
