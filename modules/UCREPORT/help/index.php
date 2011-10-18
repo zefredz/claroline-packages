@@ -11,7 +11,7 @@
 
 $tlabelReq = 'UCREPORT';
 
-require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';
 
 $hide_banner = true;
 $hide_footer = true;

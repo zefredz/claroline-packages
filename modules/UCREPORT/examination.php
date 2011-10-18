@@ -112,10 +112,7 @@ try
             
             foreach( array_keys( $mark ) as $userId )
             {
-                if ( $mark[ $userId ] != '' )
-                {
-                    $examination->setScore( $userId , $mark[ $userId ] , $comment[ $userId ] );
-                }
+                $examination->setScore( $userId , $mark[ $userId ] , $comment[ $userId ] );
             }
             break;
         }
@@ -282,7 +279,8 @@ try
             
             foreach( array_keys( $comment ) as $userId )
             {
-                if ( $mark[ $userId ] == '' )
+                if ( $mark[ $userId ] == ''
+                  && $comment[ $userId ] != '' )
                 {
                     $dialogBox->info( '<strong>' . get_lang( 'Comments without marks has been ignored!' ) . '</strong>' );
                     break;

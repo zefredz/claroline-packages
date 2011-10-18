@@ -88,4 +88,8 @@ $_lang['You have no mark yet for this session'] = 'Vous n\'avez pas encore de no
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 
 $_lang['blockReportHelp'] = '<h1>Aide en ligne de l\'outil bulletin</h1>
-<h2>Désolé, elle doit encore être écrite :-P...</h2>';
+<h2>Introduction</h2>
+<h2>Gestion des plugins</h2>
+<h2>Notes d\'examen</h2>
+<h3>Créer un nouvel examen</h3>
+<h2>Créer un bulletin</h2>';
