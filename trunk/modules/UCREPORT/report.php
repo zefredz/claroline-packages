@@ -489,7 +489,7 @@ try
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help.php' , $cmdList )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help/index.php' , $cmdList )
                                                           . $dialogBox->render()
                                                           . $reportView->render() );
 }

@@ -125,7 +125,13 @@ class Examination
     {
         if ( (int)$score > $this->maxScore || (int)$score < 0 ) throw new Exception( 'Invalid score value' );
         
-        if ( isset( $this->scoreList[ $userId ][ 'score' ] ) || isset( $this->scoreList[ $userId ][ 'comment' ] ) )
+        if ( $score == '' )
+        {
+            $this->scoreList[ $userId ][ 'score' ] = null;
+            $this->scoreList[ $userId ][ 'comment' ] = null;
+            $this->deleteScore( $userId );
+        }
+        elseif ( isset( $this->scoreList[ $userId ][ 'score' ] ) || isset( $this->scoreList[ $userId ][ 'comment' ] ) )
         {
             $this->updateScore( $userId , $score , $comment );
         }
@@ -165,11 +171,11 @@ class Examination
     
     public function deleteScore( $userId )
     {
-        return Claroline::getDatabase()->excec( "
+        return Claroline::getDatabase()->exec( "
             DELETE FROM
                 `{$this->tbl['examination_score']}`
             WHERE
-                user_id = " . Claroline::getDatabase()->escape( $userId ) . ",
+                user_id = " . Claroline::getDatabase()->escape( $userId ) . "
             AND
                 session_id = " . Claroline::getDatabase()->escape( $this->sessionId )
         );
