@@ -72,7 +72,7 @@ $_lang['Student Report'] = 'Bulletin';
 $_lang['Student\'s name'] = 'Nom de l\'étudiant';
 $_lang['Success'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['The changes has been recorded'] = 'Les changements ont été éffectués avec succès';
-$_lang['The examination %title has been created'] = 'L\'examen title a été crée';
+$_lang['The examination %title has been created'] = 'L\'examen "title" a été crée';
 $_lang['The examination has been reseted'] = 'Les notes ont étés réinitialisées avec succès';
 $_lang['The report has been successfully created!'] = 'Le bulletin a été créé avec succès!';
 $_lang['The report has beeen successfully deleted!'] = 'Le bulletin a été supprimé!';
@@ -88,12 +88,44 @@ $_lang['You have no mark yet for this session'] = 'Vous n\'avez pas encore de no
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 
 $_lang['blockReportHelp'] = '<h1>Outil bulletin : manuel de l\'enseignant</h1>
+<strong>Note:</strong> Les captures d\'écran accompagnant ce manuel en ligne sont en anglais.<br />
+Chaque référence à une commande de l\'interface sera indiquée en <strong>gras</strong> et en français, suivie de sa traduction correspondante en anglais (telle qu\'elle apparaît sur les captures) en <em>[italique et entre crochets]</em>.
 <h2>Introduction</h2>
+L\'objet de l\'outil "Bulletin" est :
+<ul>
+    <li>d\'encoder des notes d\'examen et de les communiquer à vos étudiants, éventuellement accompagnés de commentaires</li>
+    <li>d\'agréger les notes en provenance des autres outils de Claroline, de leur assigner des podérations, et de calculer automatiquement les résultats et les moyennes.</li>
+    <li>d\'exporter ces résultats sous différentes formats (xlxs, csv, pdf)
+    <li>de les communiquer à vos étudiants sous la forme de bulletins accessibles via leurs bureaux</li>
+</ul>
 <h2>Gestion des plugins</h2>
+L\'import des résultats s\'effectue au travers d\'un système de plugins.<br />
+Par défaut, l\'importation vers les outils suivants est disponible: Travaux, Exercices, Parcours pédagogique et ... Examen.<br />
+Si certains imports ne vous intéresse pas, ils sont toutefois désactivables, afin de ne pas encombrer inutilement l\'interface.<br />
+On accède à la gestion des plugins en cliquant sur le bouton <strong>Gérer les plugins</strong><em>[Plugin management]</em><br />
+Les plugins peuvent être activés ou désactivés en cliquant simplement sur la petite icône représentant une pièce de puzzle.<br />
+<img src="img/plugin_manage.png" alt="interface de gestion des plugins" /><br />
+L\'icône est jaune lorsque le plugin est activé, grise dans le cas contraire.
+
 <h2>Notes d\'examen</h2>
+Si vous désirer introduire des notes d\'examen dans vos bulletins, il faudra préalablement les introduire dans la section <strong>Notes d\'examen</strong><em>[Examinations]</em> de l\'outil.<br />
+Il s\'agit en fait d\'un outil à part entière, intégré dans "Bulletin".
 <h3>Créer un nouvel examen</h3>
+La première étape consiste à créer une "session" d\'examen en cliquant sur le bouton <strong>Créer un nouvel examen</strong><em>[Create a new session]</em><br />
+Un formulaire apparaîtra alors vous demandant de lui donner un nom, et de fixer sa note maximale. Par défaut, celle-ci vaut 20.<br />
+<img src="img/exam_create.png" alt="examen créé" />
+
 <h3>Encodage des notes</h3>
+Une fois le formulaire validé, vous êtes alors redirigé vers la page vous permettant d\'encoder les notes de votre examen nouvellement créé.<br />
+<img src="img/exam_created.png" alt="formulaire d\'édition d\'un examen" /><br />
+Pour chaque membre de votre cours, vous pouvez attribuer une note et d\'ajouter un éventuel commentaire.<br />
+Contrairement à un bulletin, qui une fois publié ne peut plus être modifier, il vous est loisible de modifier les notes d\'un examen quand bon vous semble.
+
 <h3>Accès des étudiants à leurs notes</h3>
+Vos étudiants auront accès à ses notes via l\'outil "Bulletin" de votre cours en cliquant sur <strong>Notes d\'examen</strong><em>[Examinations]</em> de l\'outil.<br />
+Il n\'aura toutefois pas accès aux notes de ses condisciples dans cette page.<br />
+<img src="img/mark_encoding.png" alt="formulaire d\'édition d\'un examen" /><br />
+
 <h2>Créer un bulletin</h2>
 <h3>Etape 1 : Sélection des items et encodage des pondérations</h3>
 <h3>Etape 2 : Sélection des étudiants et ajustement des notes</h3>
