@@ -72,7 +72,8 @@ if ( $is_allowed_to_edit )
                                         'exReport2csv' ) );
 }
 
-if ( $is_platform_admin )
+//if ( $is_platform_admin )
+if ( $is_allowed_to_edit )
 {
     $actionList = array_merge( $actionList
                                , array( 'rqEditPlugins',
@@ -261,6 +262,9 @@ try
     // VIEW
     CssLoader::getInstance()->load( 'ucreport' , 'screen' );
     $pageTitle = array( 'mainTitle' => $nameTools );
+    $helpUrl = $is_allowed_to_edit
+             ? '../../module/UCREPORT/help/index.php'
+             : null;
     $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
              ? $userList[ claro_get_current_user_id() ][ 'comment' ]
              : false;
@@ -489,7 +493,7 @@ try
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , '../../module/UCREPORT/help/index.php' , $cmdList )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , $helpUrl , $cmdList )
                                                           . $dialogBox->render()
                                                           . $reportView->render() );
 }

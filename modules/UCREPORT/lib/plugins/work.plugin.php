@@ -18,7 +18,7 @@
 class WorkPlugin extends ReportPlugin
 {
     const TOOL_NAME  = 'Assignments';
-    const TOOL_LABEL = 'CLWORK';
+    const TOOL_LABEL = 'CLWRK';
     
     /**
      * constructor
@@ -44,7 +44,6 @@ class WorkPlugin extends ReportPlugin
                     id, title, visibility
                 FROM
                     `{$this->tbl['wrk_assignment']}`" );
-        
         
         $this->dataQueryResult = array( Claroline::getDatabase()->query( "
                 SELECT
