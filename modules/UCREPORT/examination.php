@@ -113,7 +113,7 @@ try
             foreach( array_keys( $mark ) as $userId )
             {
                 if ( (int)$mark[ $userId ] <= $examination->getMaxScore()
-                  && (int)$mark[ $userId ] > 0 )
+                  && (int)$mark[ $userId ] >= 0 )
                 {
                     $examination->setScore( $userId , $mark[ $userId ] , $comment[ $userId ] );
                 }
