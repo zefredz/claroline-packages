@@ -72,7 +72,7 @@ $_lang['Student Report'] = 'Bulletin';
 $_lang['Student\'s name'] = 'Nom de l\'étudiant';
 $_lang['Success'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['The changes has been recorded'] = 'Les changements ont été éffectués avec succès';
-$_lang['The examination %title has been created'] = 'L\'examen %title a été crée';
+$_lang['The examination %title has been created'] = 'L\'examen title a été crée';
 $_lang['The examination has been reseted'] = 'Les notes ont étés réinitialisées avec succès';
 $_lang['The report has been successfully created!'] = 'Le bulletin a été créé avec succès!';
 $_lang['The report has beeen successfully deleted!'] = 'Le bulletin a été supprimé!';
@@ -87,9 +87,15 @@ $_lang['You don\'t have score in this report'] = 'Vous n\'avez pas de note pour 
 $_lang['You have no mark yet for this session'] = 'Vous n\'avez pas encore de note pour cet examen';
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 
-$_lang['blockReportHelp'] = '<h1>Aide en ligne de l\'outil bulletin</h1>
+$_lang['blockReportHelp'] = '<h1>Outil bulletin : manuel de l\'enseignant</h1>
 <h2>Introduction</h2>
 <h2>Gestion des plugins</h2>
 <h2>Notes d\'examen</h2>
 <h3>Créer un nouvel examen</h3>
-<h2>Créer un bulletin</h2>';
+<h3>Encodage des notes</h3>
+<h3>Accès des étudiants à leurs notes</h3>
+<h2>Créer un bulletin</h2>
+<h3>Etape 1 : Sélection des items et encodage des pondérations</h3>
+<h3>Etape 2 : Sélection des étudiants et ajustement des notes</h3>
+<h3>Etape 3 : Publication du bulletin</h3>
+<h2>Gestion des bulletins</h2>';

@@ -378,9 +378,13 @@ try
     
     $examinationView->assign( 'currentUserId' , $currentUserId );
     
+    $helpUrl = $is_allowed_to_edit
+             ? '../../module/UCREPORT/help/index.php'
+             : null;
+    
     ClaroBreadCrumbs::getInstance()->append( get_lang( 'Session list' )
                                            , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
-    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList )
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , $helpUrl , $cmdList )
                                                           . $dialogBox->render()
                                                           . $examinationView->render() );
 }
