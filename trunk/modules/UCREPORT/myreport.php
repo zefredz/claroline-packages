@@ -48,8 +48,8 @@ else
                 .  '            <td>' . $report[ 'course_code' ] . '</td>' . "\n"
                 .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
                 .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqView&cidReq=' . $report[ 'course_code' ] . '&id=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
-                .  '            <td>'. $report[ 'date' ] . '</td>' . "\n"
-                .  '            <td>'. $finalScore . '</td>' . "\n"
+                .  '            <td align="center">'. $report[ 'date' ] . '</td>' . "\n"
+                .  '            <td align="center">'. $finalScore . '</td>' . "\n"
                 .  '        </tr>' . "\n";
     }
 }
