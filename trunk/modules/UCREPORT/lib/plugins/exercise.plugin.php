@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.11
+ * @version     UCREPORT 2.2.4 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -46,7 +46,7 @@ class ExercisePlugin extends ReportPlugin
             SELECT
                 T.user_id,
                 T.exo_id AS item_id,
-                T.result AS score
+                ROUND( " . self::DEFAULT_MAX_SCORE . " * ( T.result/T.weighting ) ) AS score
             FROM
                 `{$this->tbl['qwz_tracking']}` AS T,
                 `{$this->tbl['qwz_exercise']}` AS E
