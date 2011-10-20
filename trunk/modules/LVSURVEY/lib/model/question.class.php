@@ -10,20 +10,23 @@ class Question
 {
 	
 	public static $VALID_QUESTION_TYPES = array(	'OPEN', 
-													'MCSA', 
-													'MCMA', 
-													'ARRAY'); 
+                                                        'MCSA', 
+                                                        'MCMA', 
+                                                        'ARRAY'); 
 	
 	public $id;
 	
 	public $text;
 	
-	public $type;
-	
+	public $type;	
 	
 	protected $used;
 	
 	protected $choiceList;
+        
+        protected $author_id;
+        /** Claro_User */
+        protected $author = null;
 	
 	
 	public function __construct()
@@ -33,6 +36,7 @@ class Question
         $this->type = 'MCSA'; 
         $this->choiceList = array();
         $this->used = 0;
+        $this->setAuthor(Claro_CurrentUser::getInstance());
     }
 	
 	static function __set_state($array)
@@ -64,6 +68,7 @@ class Question
         $sql = "
         	SELECT
             	       Q.`id` 							AS id,
+                       Q.`author_id`						AS author_id,
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       COUNT(DISTINCT S.`id`)			AS used
@@ -175,13 +180,7 @@ class Question
 				$question->choiceList[] = $choice;	
 			}
 		}
-		if($duplicate)
-		{
-			
-			$surveyId = (int)$_REQUEST['surveyId'];
-			$survey = Survey::load($surveyId);
-			$survey->removeQuestion($formId);
-		}
+		
 		
 		return $question;
     }
@@ -239,6 +238,32 @@ class Question
     	
     	return $validationErrors;    	
     }
+    
+    public function getAuthor()
+    {
+        if(is_null($this->author))
+        {
+            $this->loadAuthor();
+        }
+        return $this->author;
+    }
+    
+    private function loadAuthor()
+    {
+        if(is_null($this->author_id))
+        {
+            $this->author_id = end(claro_get_uid_of_platform_admin());
+        }
+        $this->author = new Claro_User($this->author_id);
+        $this->author->loadFromDatabase();
+    }
+    
+    public function setAuthor(Claro_User $author)
+    {
+        $this->author = $author;
+        $this->author_id = $author->userId;
+    }
+    
     public function save()
     {
     	$validationErrors = $this->validate();
@@ -273,9 +298,10 @@ class Question
     	
         //Insert new survey in DB
         $sql = "
-        		INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
-                SET 		`text` 				= ".$dbCnx->quote($this->text).",
-                			`type` 				= ".$dbCnx->quote($this->type)."; ";
+            INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
+            SET 	`text` 				= ".$dbCnx->quote($this->text).",
+                        `author_id			= ".$dbCnx->quote($this->author_id).", 
+                	`type` 				= ".$dbCnx->quote($this->type)."; ";
                     
 			
         // execute the creation query and get id of inserted assignment
@@ -296,8 +322,9 @@ class Question
     	$dbCnx = ClaroLine::getDatabase();
         //update current survey in DB (we cannot change id, courseId or anonimity)
         $sql = "
-        	UPDATE 		`".SurveyConstants::$QUESTION_TBL."`
+            UPDATE 		`".SurveyConstants::$QUESTION_TBL."`
             SET 		`text` 				= ".$dbCnx->quote($this->text).",
+                                `author_id			= ".$dbCnx->quote($this->author_id).", 
                 		`type` 				= ".$dbCnx->quote($this->type)."  
             WHERE 		`id` = ".(int)$this->id ;
             
