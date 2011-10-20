@@ -263,7 +263,7 @@ try
     CssLoader::getInstance()->load( 'ucreport' , 'screen' );
     $pageTitle = array( 'mainTitle' => $nameTools );
     $helpUrl = $is_allowed_to_edit
-             ? '../../module/UCREPORT/help/index.php'
+             ? get_help_page_url('blockReportHelp', 'UCREPORT')
              : null;
     $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
              ? $userList[ claro_get_current_user_id() ][ 'comment' ]

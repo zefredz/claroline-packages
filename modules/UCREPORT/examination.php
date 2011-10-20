@@ -379,7 +379,7 @@ try
     $examinationView->assign( 'currentUserId' , $currentUserId );
     
     $helpUrl = $is_allowed_to_edit
-             ? '../../module/UCREPORT/help/index.php'
+             ? get_help_page_url('blockReportHelp', 'UCREPORT')
              : null;
     
     ClaroBreadCrumbs::getInstance()->append( get_lang( 'Session list' )

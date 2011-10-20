@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.4.0 $Revision$ - Claroline 1.9
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -87,9 +87,11 @@ $_lang['You don\'t have score in this report'] = 'Vous n\'avez pas de note pour 
 $_lang['You have no mark yet for this session'] = 'Vous n\'avez pas encore de note pour cet examen';
 $_lang['You must give a score to add a comment'] = 'Vous devez d\'abord assigner une note avant d\'ajouter un commentaire';
 
+// HELP FILE
 $_lang['blockReportHelp'] = '<h1>Outil bulletin : manuel de l\'enseignant</h1>
 <strong>Note:</strong> Les captures d\'écran accompagnant ce manuel en ligne sont en anglais.<br />
 Chaque référence à une commande de l\'interface sera indiquée en <strong>gras</strong> et en français, suivie de sa traduction correspondante en anglais (telle qu\'elle apparaît sur les captures) en <em>[italique et entre crochets]</em>.
+
 <h2>Introduction</h2>
 L\'objet de l\'outil "Bulletin" est :
 <ul>
@@ -98,36 +100,104 @@ L\'objet de l\'outil "Bulletin" est :
     <li>d\'exporter ces résultats sous différentes formats (xlxs, csv, pdf)
     <li>de les communiquer à vos étudiants sous la forme de bulletins accessibles via leurs bureaux</li>
 </ul>
+
 <h2>Gestion des plugins</h2>
 L\'import des résultats s\'effectue au travers d\'un système de plugins.<br />
 Par défaut, l\'importation vers les outils suivants est disponible: Travaux, Exercices, Parcours pédagogique et ... Examen.<br />
-Si certains imports ne vous intéresse pas, ils sont toutefois désactivables, afin de ne pas encombrer inutilement l\'interface.<br />
-On accède à la gestion des plugins en cliquant sur le bouton <strong>Gérer les plugins</strong><em>[Plugin management]</em><br />
+Si certains imports ne vous intéresse pas, ils sont toutefois désactivables, afin de ne pas encombrer inutilement l\'interface.<br /><br />
+On accède à la gestion des plugins en cliquant sur le bouton <strong>Gérer les plugins</strong><em>[Plugin management]</em> dans la page d\'accueil de l\'outil.<br />
 Les plugins peuvent être activés ou désactivés en cliquant simplement sur la petite icône représentant une pièce de puzzle.<br />
-<img src="img/plugin_manage.png" alt="interface de gestion des plugins" /><br />
+<img src="../../module/UCREPORT/img/help/plugin_manage.png" alt="interface de gestion des plugins" /><br />
 L\'icône est jaune lorsque le plugin est activé, grise dans le cas contraire.
 
 <h2>Notes d\'examen</h2>
-Si vous désirer introduire des notes d\'examen dans vos bulletins, il faudra préalablement les introduire dans la section <strong>Notes d\'examen</strong><em>[Examinations]</em> de l\'outil.<br />
-Il s\'agit en fait d\'un outil à part entière, intégré dans "Bulletin".
+Si vous désirer introduire des notes d\'examen dans vos bulletins, il faudra préalablement les introduire dans la section dédiée au sein de l\'outil.<br />
+Il s\'agit en fait d\'un outil à part entière, intégré dans "Bulletin".<br /><br />
+Pour y accéder, cliquez sur le bouton <strong>Notes d\'examen</strong><em>[Examinations]</em> présent sur la page d\'accueil de l\'outil.<br />
+<img src="../../module/UCREPORT/img/help/tool_entry.png" alt="page d\'accueil de l\'outil Bulletin" />
+
 <h3>Créer un nouvel examen</h3>
-La première étape consiste à créer une "session" d\'examen en cliquant sur le bouton <strong>Créer un nouvel examen</strong><em>[Create a new session]</em><br />
+La première étape consiste à créer une "session" d\'examen en cliquant sur le bouton <strong>Créer un nouvel examen</strong><em>[Create a new session]</em>.<br />
 Un formulaire apparaîtra alors vous demandant de lui donner un nom, et de fixer sa note maximale. Par défaut, celle-ci vaut 20.<br />
-<img src="img/exam_create.png" alt="examen créé" />
+<img src="../../module/UCREPORT/img/help/exam_create.png" alt="examen créé" />
 
 <h3>Encodage des notes</h3>
-Une fois le formulaire validé, vous êtes alors redirigé vers la page vous permettant d\'encoder les notes de votre examen nouvellement créé.<br />
-<img src="img/exam_created.png" alt="formulaire d\'édition d\'un examen" /><br />
-Pour chaque membre de votre cours, vous pouvez attribuer une note et d\'ajouter un éventuel commentaire.<br />
-Contrairement à un bulletin, qui une fois publié ne peut plus être modifier, il vous est loisible de modifier les notes d\'un examen quand bon vous semble.
+Une fois le formulaire validé, vous êtes alors redirigé vers la page vous permettant d\'encoder les notes de votre examen.<br />
+<img src="../../module/UCREPORT/img/help/exam_created.png" alt="formulaire d\'édition d\'un examen" /><br />
+Pour chaque membre de votre cours, vous pouvez attribuer une note et ajouter un éventuel commentaire.<br />
+Lorsque vous cliquez pour la première fois sur <strong>OK</strong>, un message vous indique - si tout s\'est bien passé - que votre bulletin a été créé.<br />
+<img src="../../module/UCREPORT/img/help/exam_edit.png" alt="formulaire d\'édition d\'un examen" /><br />
+Vous restez toutefois sur la même page, car contrairement à un bulletin, qui une fois publié ne peut plus être modifié, il vous est loisible de changer les notes d\'un examen à tout moment.<br /><br />
+Si vous revenez à la liste des examens, vous verrez que votre "session" nouvellement créée y figure bien.<br />
+<img src="../../module/UCREPORT/img/help/exam_list.png" alt="liste des examens" /><br />
+A partir de cette liste, vous pouvez, comme dans la plupart des outils de Claroline, modifier la visibilité de cet élément... encore le supprimer
 
 <h3>Accès des étudiants à leurs notes</h3>
 Vos étudiants auront accès à ses notes via l\'outil "Bulletin" de votre cours en cliquant sur <strong>Notes d\'examen</strong><em>[Examinations]</em> de l\'outil.<br />
 Il n\'aura toutefois pas accès aux notes de ses condisciples dans cette page.<br />
-<img src="img/mark_encoding.png" alt="formulaire d\'édition d\'un examen" /><br />
+<img src="../../module/UCREPORT/img/help/exam_student.png" alt="examen: vue étudiant" />
 
 <h2>Créer un bulletin</h2>
+La création d\'un bulletin s\'effectue en plusieurs étapes.<br />
+Commencez par cliquer sur <strong>Créer un nouveau bulletin</strong><em>[Create a new report]</em>.
+
 <h3>Etape 1 : Sélection des items et encodage des pondérations</h3>
+La première étape consiste à sélectionner les items pertinents pour votre bulletin et leur assigner une pondération.<br />
+La page qui s\'affiche alors dresse la liste de tous les items détéctés par le système.<br />
+<img src="../../module/UCREPORT/img/help/result_import.png" alt="interface de sélection des items à importer" /><br />
+Vous séléctionnez les items à importer en cochant leurs cases correspondantes dans la colonne <strong>Sélectionner</strong><em>[Select]</em><br />
+Vous remarquerez que par défaut, certains sont déjà sélectionnés. L\'outil se base en effet sur leur visibilité pour opérer une présélection.<br />
+La colonne <strong>Pondération</strong><em>[Weight]</em> vous permet de définir la pondération de chaque élément.<br /><br />
+Par défaut, la pondération de chaque item est de 100.<br />
+Introduisez la valeur numérique de votre choix dans chacun de ces champs.<br />
+Le système calculera les pondérations proportionnellement à ces valeurs.<br /><br />
+<em>Par exemple,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;dans le cas de quatre items pour lesquels vous introduisez ces valeurs: 50, 200, 100 et 150,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;vous obtiendrez respectivement les pondérations suivantes: 10%, 40%, 20% et 30%.</em><br /><br />
+Une fois cela fait, validez en cliquant sur <strong>Importer</strong><em>[Import]</em>.
+
 <h3>Etape 2 : Sélection des étudiants et ajustement des notes</h3>
+La page suivante affiche alors les résultats de chaque étudiant, ainsi que sa moyenne, en tenant compte des pondérations choisies.<br />
+<img src="../../module/UCREPORT/img/help/result_edit.png" alt="interface d\'édition du bulletin" /><br />
+Les moyennes ne sont calculées que pour les étudiants possédant une note dans TOUS les items.<br />
+Les étudiants ayant des notes manquantes sont dits "désactivés": cela veut dire qu\'ils ne figureront pas dans le bulletin une fois publié.<br />
+Ceux-ci sont facilement identifiables, car pour eux:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;d\'une part le "petit oeil" dans la colonne <strong>Activer</strong><em>[Activate]</em> est fermé,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;d\'autre part, la colonne des résultats finaux indique <strong>inactif</strong><em>[inactive]</em> en grisé<br /><br />
+Un étudiant peut être activé ou désactivé en cliquant sur le petit oeil correspondant.<br /><br />
+Lors de l\'activation, les note manquantes sont converties en 0 (zéro).<br />
+A chaque changement, les moyennes sont automatiquement recalculées.<br /><br />
+A ce stade, vous avez la possibilité de modifier les notes.<br />
+Par exemple, pour attribuer une note à une étudiant ayant fournit un travail en retard et qui, aux yeux du système, ne possède pas de résultat.<br /><br />
+Vos modifications ne seront prises en compte qu\'après avoir cliqué sur <strong>Actualiser</strong><em>[Actualize]</em><br /><br />
+Vous pouvez également exporter les données qui s\'affichent dans trois formats différents: MS-Excel 2007 (*.xlsx), CSV et PDF.
+
 <h3>Etape 3 : Publication du bulletin</h3>
-<h2>Gestion des bulletins</h2>';
+Une fois toutes les notes attribuées, vous pouvez maintenant "publier" le bulletin en cliquant sur <strong>Publier le bulletin</strong><em>[Publish the report]</em>.<br />
+Un formulaire apparaît alors, vous demandant de lui choisir un titre:<br />
+<img src="../../module/UCREPORT/img/help/report_create.png" alt="formulaire de soumission du titre du bulletin" /><br />
+Une fois le bulletin publié, vous êtes redirigé vers l\'accueil de l\'outil, affichant la liste des bulletins disponibles.
+<img src="../../module/UCREPORT/img/help/report_created.png" alt="le bulletin a été publié" />
+
+<h2>Les bulletins publiés</h2>
+Une fois publié, un bulletin ne peut plus être modifié, mais seulement consulté. C\'est pourquoi on parle de "publication".<br />
+<img src="../../module/UCREPORT/img/help/report_list.png" alt="liste des bulletins" /><br />
+Vous pouvez en revanche le supprimer ou le rendre "invisible" pour les étudiants via la liste de la page d\'accueil de l\'outil.<br />
+Pour consulter un bulletin, il suffit de cliquer sur son nom dans cette même liste.<br /><br />
+L\'affichage du bulletin se présente ainsi:<br />
+<img src="../../module/UCREPORT/img/help/report_view.png" alt="bulletin publié" /><br />
+De cette page vous pouvez toujours exporter les données affichées dans les trois mêmes formats que lors de l\'édition.
+
+<h3>Confidentialité du bulletin</h3>
+Outre la visibilité du bulletin, l\'outil prévoit d\'autoriser ou non l\'accès des étudiants aux notes de leurs condisciples.<br />
+Lorsque cette option est activée, la confidentialité du bulletin est modifiable via l\'icône de la colonne <strong>Public / Privé</strong><em>[Public / Private]</em> de la liste des bulletins.<br/>
+<img src="../../web/img/user.png" alt="personnage seul" /> signifie que les étudiants n\'ont accès qu\'à leur propres notes.<br/>
+<img src="../../web/img/group.png" alt="deux personnages" /> signifie que toutes les notes sont accessibles à tous les membres de la classe.<br /><br />
+<strong>Attention : </strong>Afin de satisfaire à la politique de confidentialité de certains site d\'e-Learning, cette otpion peut être désactivée par l\'administrateur de la plateforme.<br/>
+Il est donc possible que n\'y ayez pas accès. Dans ce cas la colonne n\'est pas visible, et les résultats sont alors "privés".
+
+<h3>Accès des étudiants aux bulletins publiés</h3>
+Les étudiants peuvent bien entendu consulter les bulletins publiés (sous les conditions de confidentialité définies par l\'outil) la page d\'accueil de l\'outil de votre site de cours.<br /><br />
+Mais ils peuvent également y accéder via leur bureau qui agère tous les bulletins les concernant.
+<img src="../../module/UCREPORT/img/help/desktop_portlet.png" alt="portlet du bureau" /><br />
+Les étudiants peuvent exporter les résultats en PDF uniquement';
