@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.10
+ * @version     UCREPORT 2.4.0 $Revision$ - Claroline 1.10
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -180,6 +180,7 @@ try
             }
             
             $reset = $cmd == 'exReset'
+                  || $cmd == 'exGenerate'
                   || ! isset( $_SESSION[ 'item_list' ] )
                   || ! isset( $_SESSION[ 'user_list' ] );
             
