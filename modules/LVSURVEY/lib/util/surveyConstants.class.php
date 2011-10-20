@@ -28,17 +28,22 @@ class SurveyConstants{
     public static $ANSWER_ITEM_TBL;
 	
     //table which contains relation between users and surveys
-	public static $PARTICIPATION_TBL;
+    public static $PARTICIPATION_TBL;
 	
-	//table for different option of a choice, used for array questions
-	public static $OPTION_TBL;
+    //table for different option of a choice, used for array questions
+    public static $OPTION_TBL;
+    
+    //table for storing which version of the plugin has been installed
+    public static $VERSION_TBL;
+    
+    
 	
 	
 	
 	
 	static function __init()
 	{		
-		$tbl = claro_sql_get_tbl(
+		$tbl = get_module_main_tbl(
 		             array('survey2_survey', 
 		                   'survey2_question',
 		            	   'survey2_choice', 
@@ -48,7 +53,8 @@ class SurveyConstants{
 		                   'survey2_answer_item', 
 		                   'survey2_answer', 
 		                   'survey2_participation', 
-		             	   'survey2_option'
+		             	   'survey2_option',
+                                   'survey2_version'
 		                 )
 		             );
 		SurveyConstants::$SURVEY_TBL = $tbl['survey2_survey']; 
@@ -61,6 +67,7 @@ class SurveyConstants{
 		SurveyConstants::$ANSWER_ITEM_TBL = $tbl['survey2_answer_item'];
 		SurveyConstants::$PARTICIPATION_TBL = $tbl['survey2_participation'];
 		SurveyConstants::$OPTION_TBL = $tbl['survey2_option'];
+                SurveyConstants::$VERSION_TBL = $tbl['survey2_version'];
 	}
 }
 

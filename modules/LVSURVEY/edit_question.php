@@ -26,30 +26,30 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 		$idValidator = new Claro_Validator_ValueType('intstr');
 		$input->setValidator('questionId', $idValidator);
 		$input->setValidator('surveyId', $idValidator);
-        $input->setValidator('questionLineId', $idValidator);
+                $input->setValidator('questionLineId', $idValidator);
        
 		$surveyId = (int)$input->get('surveyId', '0');
-        $questionLineId = (int)$input->get('questionLineId', '0');
+                $questionLineId = (int)$input->get('questionLineId', '0');
 		$this->questionId = (int)$input->get('questionId', '0');
 
         
 		if(!empty($surveyId))
 		{
 			$this->survey = Survey::load($surveyId);
-            if($questionLineId > 0)
-            {
-                $this->questionLine = SurveyLineFactory::loadSingleLine($questionLineId, $this->survey);
-                $this->question = $this->questionLine->question;
-                $this->questionId = $this->question->id;
-            }
-            else
-            {
-                $this->questionLine = 
-                        SurveyLineFactory::createQuestionLine(
-                                    $this->survey,
-                                    $this->question, 
-                                    true);
-            }
+                        if($questionLineId > 0)
+                        {
+                            $this->questionLine = SurveyLineFactory::loadSingleLine($questionLineId, $this->survey);
+                            $this->question = $this->questionLine->question;
+                            $this->questionId = $this->question->id;
+                        }
+                        else
+                        {
+                            $this->questionLine = 
+                                    SurveyLineFactory::createQuestionLine(
+                                                $this->survey,
+                                                $this->question, 
+                                                true);
+                        }
 		}
 
 
