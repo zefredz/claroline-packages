@@ -1,0 +1,40 @@
+TECHNICAL NOTE ABOUT WRITING PLUGINS
+====================================
+
+How to write a plugin for "Student Report" module (UCREPORT)?
+
+1. Create a file named "name_of_the_plugin.plugin.php"
+2. Inside, write a class "name_of_the_pluginPlugin" which extends ReportPlugin
+3. Copy the file in lib/plugins
+
+
+Plugin class specifications
+---------------------------
+
+First, defines two protected attributes :
+
+    $toolLabel : the label of the module you want to import
+                 Warning: you must use the REAL label!.
+    $toolName  : the module's name, as it will appear in the import list.
+                 Note: the name can differ from the real tool name.
+    
+Then, implement the public load() method.
+
+Its role is to harvest datas from tool's database,
+and put them in two protected attributes: $itemQueryResult and $dataQueryResult.
+
+$itemQueryResult is an iterator ( usually a Database_ResultSet )
+which each line contains the following datas :
+
+    id         : the ID of the importable item in tool database
+    title      : The title of the item
+    visibility : The item's visibility, expressed in the following format :
+                 'visible'/'invisible' or 'VISIBLE'/'INVISIBLE'
+
+$dataQueryResult is an array which contains one or more iterator(s).
+Each iterators must have the same content structure :
+
+    user_id : The ID of the user
+    item_id : The ID of the item (the same as in $itemQueryresult)
+    score   : the score of the user for the item,
+              which must be an integer with 0 =< score =< 100
