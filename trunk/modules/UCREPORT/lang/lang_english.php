@@ -101,15 +101,15 @@ The aim of the "Student Report" tool is:
 
 <h2>Plugins management</h2>
 This tool actually imports results from others tools throught a plugin system.<br />
-By default, import from the following tools is available: Assignement, Exercices, Learning Path and... Examination.<br />
-In order to keep the UI as clean as possible, you can desactivate plugins for import you don\'t need.<br />
-Plugin management page is accessible bu clicking on <strong>Plugin management</strong> button in the report tool main page.<br />
+By default, import is available from the following tools : Assignement, Exercices, Learning Path and... Examination.<br />
+In order to keep the UI as clean as possible, you can desactivate plugins for imports you don\'t need.<br />
+Plugin management page is accessible by clicking on <strong>Plugin management</strong> button in the report tool main page.<br />
 To (des)activate a plugin, simply click on the little "puzzle piece" icon.<br />
 <img src="../../module/UCREPORT/img/help/plugin_manage.png" alt="plugins management page" /><br />
 Yellow icons indicate activated plugins... and greys ones stand for the others. 
 
 <h2>Examination marks</h2>
-The report module, integrates a examination marks management tool.<br />
+The report module, integrates an examination marks management tool.<br />
 Actually, it works as a separate bundled module. That\'s why there is a import plugin for that.<br /><br />
 In order to access to this part, just click on the <strong>Examinations</strong> button in the tool main page.<br />
 <img src="../../module/UCREPORT/img/help/tool_entry.png" alt="report tool main page" />
@@ -127,14 +127,14 @@ And you are redirected to a page where you can encode the examination marks for 
 Optionnaly, you can give them a comment aswell.<br /><br />
 Then click on <strong>OK</strong> to save your datas.<br />
 <img src="../../module/UCREPORT/img/help/exam_edit.png" alt="exam editiing form" /><br />
-After that, you stay in the same page though, for examination marks can be modified at any time - unlike report marks...<br /><br />
+After that, you stay in the same page though, for examination marks can be modified at any time ( unlike report marks )...<br /><br />
 If you return to the examination list by clicking on <strong>Back to examination list</strong>, you can see that your session has been added to the list.<br />
 <img src="../../module/UCREPORT/img/help/exam_list.png" alt="session list" /><br />
 From that page, you can modify its visibility... or delete it.
 
 <h3>How my students can access to their marks and comments?</h3>
 Students can view their marks and comments by clicking on the <strong>Examination</strong> button.<br />
-However, they can\'t see the scores of their fellow in this page.<br />
+However, they can\'t see the scores of their fellows in this page.<br />
 <img src="../../module/UCREPORT/img/help/exam_student.png" alt="student view" />
 
 <h2>Create a report</h2>
@@ -144,28 +144,28 @@ The report creation process includes three steps.
 First of all, click on the <strong>Create a new report</strong> button.<br />
 You are led to a page displaying a list of items detected by the system.<br />
 <img src="../../module/UCREPORT/img/help/result_import.png" alt="item import GUI" /><br />
-Select the items you want to import by checking the corresponding checkbox in the <strong>Select</strong> column.<br />
-Items which are visibles in their tool are selected by default.<br /><br />
+Select the items you want to import by checking the corresponding checkboxes in the <strong>Select</strong> column.<br />
+Items which are visibles in their tools are selected by default.<br /><br />
 
 The <strong>Weight</strong> column allows you to define the weighting of each item.<br /><br />
 The default weighting is 100.<br />
 You are free to put any numeric values in these fields. The system will automatically calculate the proportionnal weights.<br /><br />
 
 <em>For instance,<br />
-&nbsp;&nbsp;&nbsp;&nbsp;in case of 4 items with the following weight values: 50, 200, 100 et 150,<br />
-&nbsp;&nbsp;&nbsp;&nbsp;you\'ll get the subsequent proportionnal weights: 10%, 40%, 20% et 30%.</em><br /><br />
-Once you\'ve done, validate your choices by clicking in <strong>Import</strong>.
+&nbsp;&nbsp;&nbsp;&nbsp;in case of 4 items with the following weight values: 50, 200, 100 and 150,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;you\'ll get the subsequent proportionnal weights: 10%, 40%, 20% and 30%.</em><br /><br />
+Once done, validate your choices by clicking in <strong>Import</strong>.
 
 <h3>Step 2 : Students selection and marks adjustment</h3>
-The following page displays the results of all your students, baked with weighted average scores.<br />
+The following page displays the result of all your students, baked with weighted average scores.<br />
 <img src="../../module/UCREPORT/img/help/result_edit.png" alt="report editing GUI" /><br />
-Final scores are only generated for student with a mark in ALL columns.<br />
-The other ones are "unabled" : their marks will not appear in the published report.<br />
+Final scores are only generated for students with marks in ALL columns.<br />
+The other ones are "unabled" : they will not appear in the published report.<br />
 You can easily identify an unabled student:<br />
 &nbsp;&nbsp;&nbsp;&nbsp;his "little eyed" in the <strong>Activate</strong> column is closed.<br />
-&nbsp;&nbsp;&nbsp;&nbsp;instead of his final score displayed in the las column, there is a "inactive" statement (in light grey).<br /><br />
+&nbsp;&nbsp;&nbsp;&nbsp;instead of his final score displayed in the last column, there is a "inactive" statement (in light grey).<br /><br />
 You can simply activate or desactivate any student by click on the "little eye".<br /><br />
-When activating an user, his missing marks are coneverted into zeros.<br />
+When activating an user, his missing marks are converted into zeros.<br />
 The average scores are automatically regenerated at each change.<br /><br />
 At this stage, you can modify (or adjust) any marks.<br />
 For instance, you can give a score to a student who send a (late) work by mail, and therefore has no score in the Assignements tool...<br /><br />
@@ -184,13 +184,13 @@ Published reports can\'t be modified.<br />
 You can althought change their visibility or delete them.<br />
 <img src="../../module/UCREPORT/img/help/report_list.png" alt="report list" /><br />
 To consult a report, just click on its name in the list.<br />
-A report looks like this:<br />
+A report looks like this :<br />
 <img src="../../module/UCREPORT/img/help/report_view.png" alt="published report" /><br />
 From this page, you can export it into the same formats as step 2...
 
 <h3>Report confidentiality</h3>
 Our tool implements a functionality which allow students to see each other scores.<br />
-When this functionality is enabled, you can change the report status by clicking on the icon in the <strong>Public / Private</strong> column.<br/>
+When this feature is enabled, you can change the report status by clicking on the icon in the <strong>Public / Private</strong> column.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<img src="../../web/img/user.png" alt="one little head" /> means that students can only see their own results.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<img src="../../web/img/group.png" alt="two little heads" /> means that they can see each other results.<br /><br />
 <strong>Warning : </strong>This feature can be in conflict with the security policy of your e-Learning platform.<br />
@@ -199,7 +199,7 @@ If it\'s the case, the <strong>Public / Private</strong> column simply not appea
 
 <h3>Students access to published reports</h3>
 
-Students can consult published report, (under the conditions defined by the security policy of your institution) in the "report" page of your course.<br /><br />
+Students can consult published reports, (under the conditions defined by the security policy of your institution) in the "report" page of your course.<br /><br />
 They also have an access to any published reports concerning them throught their desktop.<br />
 <img src="../../module/UCREPORT/img/help/desktop_portlet.png" alt="desktop portlet" /><br />
-They can export report into PDF format';
+They can export reports into PDF format.';
