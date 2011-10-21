@@ -2,6 +2,18 @@
 require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';  
 require_once dirname(__FILE__) . '/../lib/util/surveyConstants.class.php';
 
+
+if ( !claro_is_user_authenticated() )
+{
+    claro_disp_auth_form(true);
+}
+if( !claro_is_platform_admin())
+{
+    echo 'Migration can only be done by platform admin';
+    die();
+}
+
+
 class LVSurveyUpgrader
 {
     /** @var \Claroline_Database_Connection */
@@ -61,13 +73,8 @@ class LVSurveyUpgrader
                 . 'FROM `'.SurveyConstants::$VERSION_TBL.'` V '                 
                 . 'ORDER BY V.`created_at` DESC '
                 . 'LIMIT 1 ';
-        $rs = $this->db->query($query);
-        // when downgrading, version table is not dropped but emptied
-        if ($rs->count() == 0) 
-        {
-            $this->currentDBVersion = '00000000000001';
-            return;
-        }
+        
+        $rs = $this->db->query($query);        
         $record = $rs->fetch();
         $this->currentDBVersion = $record['version'];
     }
@@ -173,27 +180,11 @@ class LVSurveyUpgrader
                 continue;
             }            
             $this->db->exec($query);
-        }
-        
-        $this->updateVersiontable($migration);
+        }        
         
         echo " ... Done ! <br/>";
     }
     
-    private function updateVersiontable($migration)
-    {
-        if($this->isUpgrading())
-        {
-            $query =  'INSERT INTO `'.SurveyConstants::$VERSION_TBL.'`  
-                        (version) VALUES ("'. $migration .'");';
-        }
-        else
-        {
-            $query =  'DELETE FROM `'.SurveyConstants::$VERSION_TBL.'`  
-                       WHERE `version` LIKE "'. $migration .'";';
-        }
-        $this->db->exec($query);
-    }
     
 }
 $target = Claro_UserInput::getInstance()->get('target');

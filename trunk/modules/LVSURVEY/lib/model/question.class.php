@@ -36,7 +36,6 @@ class Question
         $this->type = 'MCSA'; 
         $this->choiceList = array();
         $this->used = 0;
-        $this->setAuthor(Claro_CurrentUser::getInstance());
     }
 	
 	static function __set_state($array)
@@ -68,7 +67,7 @@ class Question
         $sql = "
         	SELECT
             	       Q.`id` 							AS id,
-                       Q.`author_id`						AS author_id,
+                       Q.`author_id`					AS author_id,
             	       Q.`text`							AS text,
             	       Q.`type`							AS type,
             	       COUNT(DISTINCT S.`id`)			AS used
@@ -90,7 +89,7 @@ class Question
         return self::__set_state($data);
     }
     
-    static function loadQuestionPool($orderBy, $ascDesc )
+    static function loadQuestionPool($orderBy, $ascDesc, $author_id = null, $course_id = null )
     {
     	$acceptedOrderBy = array('text', 'id', 'type', 'used');
         if(!in_array($orderBy, $acceptedOrderBy))
@@ -105,6 +104,7 @@ class Question
         	SELECT
             	       Q.`id` 							AS id,
             	       Q.`text`							AS text,
+                       Q.`author_id`					AS author_id,
             	       Q.`type`							AS type,
             	       COUNT(DISTINCT S.`id`)			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
@@ -113,7 +113,24 @@ class Question
             LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_TBL."` AS SL
             ON 			SLQ.`id`= SL.`id`
             LEFT JOIN 	`".SurveyConstants::$SURVEY_TBL."` AS S
-            ON 			SL.`surveyId`= S.`id`
+            ON 			SL.`surveyId`= S.`id`";
+        
+        if($author_id)
+        {
+            $sql .=
+            "
+                WHERE Q.`author_id` = " .(int) $author_id . " ";
+        }
+        if($course_id)
+        {
+            $question_word = $author_id ? 'AND' : 'WHERE';
+            $sql .=
+            "
+                {$question_word} S.`courseId` = " .$dbCnx->quote($course_id) . " ";
+        }
+        
+        $sql .= 
+        "
             GROUP BY	Q.`id` 
            	ORDER BY 	".$orderBy." ".$ascDesc." ; ";
         
@@ -249,19 +266,30 @@ class Question
     }
     
     private function loadAuthor()
+    {        
+        $this->author = new Claro_User($this->getAuthorId());
+        $this->author->loadFromDatabase();
+    }
+    
+    public function getAuthorId()
     {
         if(is_null($this->author_id))
         {
             $this->author_id = end(claro_get_uid_of_platform_admin());
         }
-        $this->author = new Claro_User($this->author_id);
-        $this->author->loadFromDatabase();
+        return $this->author_id;
     }
     
     public function setAuthor(Claro_User $author)
     {
+        $this->setAuthorId($author->userId);
         $this->author = $author;
-        $this->author_id = $author->userId;
+    }
+    
+    public function setAuthorId($authorId)
+    {
+        $this->author = null;
+        $this->author_id = $authorId;
     }
     
     public function save()
@@ -300,8 +328,8 @@ class Question
         $sql = "
             INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
             SET 	`text` 				= ".$dbCnx->quote($this->text).",
-                        `author_id			= ".$dbCnx->quote($this->author_id).", 
-                	`type` 				= ".$dbCnx->quote($this->type)."; ";
+                    `author_id`			= ".$dbCnx->quote($this->author_id).", 
+                	`type` 				= ".$dbCnx->quote($this->type)." ; ";
                     
 			
         // execute the creation query and get id of inserted assignment
@@ -324,7 +352,7 @@ class Question
         $sql = "
             UPDATE 		`".SurveyConstants::$QUESTION_TBL."`
             SET 		`text` 				= ".$dbCnx->quote($this->text).",
-                                `author_id			= ".$dbCnx->quote($this->author_id).", 
+                        `author_id`			= ".$dbCnx->quote($this->author_id).", 
                 		`type` 				= ".$dbCnx->quote($this->type)."  
             WHERE 		`id` = ".(int)$this->id ;
             

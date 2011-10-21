@@ -29,27 +29,28 @@ class EditQuestionPage extends ManagerSurveyLessPage {
                 $input->setValidator('questionLineId', $idValidator);
        
 		$surveyId = (int)$input->get('surveyId', '0');
-                $questionLineId = (int)$input->get('questionLineId', '0');
+        $questionLineId = (int)$input->get('questionLineId', '0');
 		$this->questionId = (int)$input->get('questionId', '0');
-
+        
         
 		if(!empty($surveyId))
 		{
 			$this->survey = Survey::load($surveyId);
-                        if($questionLineId > 0)
-                        {
-                            $this->questionLine = SurveyLineFactory::loadSingleLine($questionLineId, $this->survey);
-                            $this->question = $this->questionLine->question;
-                            $this->questionId = $this->question->id;
-                        }
-                        else
-                        {
-                            $this->questionLine = 
-                                    SurveyLineFactory::createQuestionLine(
-                                                $this->survey,
-                                                $this->question, 
-                                                true);
-                        }
+            if($questionLineId > 0)
+            {
+                $this->questionLine = SurveyLineFactory::loadSingleLine($questionLineId, $this->survey);
+                $this->question = $this->questionLine->question;
+                $this->questionId = $this->question->id;
+            }
+            else
+            {
+                $this->question = new Question();
+                $this->questionLine = 
+                        SurveyLineFactory::createQuestionLine(
+                                    $this->survey,
+                                    $this->question, 
+                                    true);
+            }
 		}
 
 
@@ -131,6 +132,7 @@ class EditQuestionPage extends ManagerSurveyLessPage {
        try
 		{
 			$this->question = Question::loadFromForm();
+            $this->question->setAuthorId(claro_get_current_user_id());
 			$this->question->save();
 			if(!empty($this->survey))
 			{
@@ -150,6 +152,22 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 		{
 			parent::error($e->getMessage());
 		}
+        
+        
+	}
+    
+    protected function checkAccess(){
+        if (!parent::checkAccess())
+        {
+            return false;
+        }
+        $current_user_id = claro_get_current_user_id(); 
+        $author_id = $this->question->getAuthorId();
+        if($current_user_id != $author_id)
+        {
+            return false;
+        }
+        return true;
 	}
 }
 

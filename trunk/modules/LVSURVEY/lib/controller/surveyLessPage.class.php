@@ -11,7 +11,6 @@ abstract class SurveyLessPage{
 	
 	
 	public function __construct(){
-		$this->assertSecurityAccess();
 		$this->flash = new DialogBox();
 		self::$DEFAULT_ERROR_MESSAGE = get_lang('Error');
 		self::$DEFAULT_SUCCES_MESSAGE = get_lang('Success');	
@@ -20,6 +19,7 @@ abstract class SurveyLessPage{
 	}
 	
 	public function execute(){
+		$this->assertSecurityAccess();
 		$this->performCommandIfNeeded();
 		
 		$this->defineBreadCrumb();
@@ -80,13 +80,32 @@ abstract class SurveyLessPage{
 	}
 	
 	protected function assertSecurityAccess(){
-	if ( 	!claro_is_in_a_course() 
-		|| !claro_is_course_allowed() 
-		|| !claro_is_user_authenticated() )
+        if ( !claro_is_user_authenticated() )
 		{
 			claro_disp_auth_form(true);
 		}
-	}
+        if(claro_is_platform_admin())
+        {
+            return;
+        }        
+        if(!$this->checkAccess())
+        {
+            $this->errorAndDie('Access denied');
+        }
+    }
+    
+    protected function checkAccess()
+    {
+        
+        if (    !claro_is_in_a_course() 
+            ||  !claro_is_course_allowed() 
+        )
+		{
+			return false;
+		}
+        return true;
+    }
+        
 	private function init(){
 		$tlabelReq = 'LVSURVEY';
 		add_module_lang_array($tlabelReq);

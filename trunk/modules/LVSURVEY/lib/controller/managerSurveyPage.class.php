@@ -4,12 +4,16 @@ From::module('LVSURVEY')->uses('controller/surveyPage.class');
 
 abstract class ManagerSurveyPage extends SurveyPage{
 	
-	protected function assertSecurityAccess(){
-		parent::assertSecurityAccess();
+	protected function checkAccess()
+    {
+		if( !parent::checkAccess())
+        {
+            return false;
+        }
 		if(!claro_is_allowed_to_edit())
 		{
-			//not allowed for normal user
-		    parent::errorAndDie('Access denied');
+			return false;
 		}
+        return true;
 	}
 }

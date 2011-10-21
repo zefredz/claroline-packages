@@ -9,6 +9,9 @@ class QuestionPoolPage extends ManagerSurveyLessPage
 	
 	const DEFAULT_ORDER_BY = 'text';
 	const DEFAULT_ASCDESC = 'ASC';
+    
+    const DEFAULT_AUTHOR_FILTER = null; 
+    const DEFAULT_COURSE_FILTER = null; 
 	
 	private $questionId = 0;
 	private $question = null;
@@ -17,6 +20,9 @@ class QuestionPoolPage extends ManagerSurveyLessPage
 	
 	private $orderby = self::DEFAULT_ORDER_BY;
 	private $ascDesc = self::DEFAULT_ASCDESC;
+    
+    private $author_filter = self::DEFAULT_AUTHOR_FILTER;
+    private $course_filter = self::DEFAULT_COURSE_FILTER;
 	
 	
 	public function __construct()
@@ -30,7 +36,11 @@ class QuestionPoolPage extends ManagerSurveyLessPage
 		
 		$this->orderby = $input->get('orderby', self::DEFAULT_ORDER_BY);
 		$this->ascDesc = $input->get('ascDesc', self::DEFAULT_ASCDESC);
-		
+        
+        
+        $this->author_filter = $input->get('author_filter', self::DEFAULT_AUTHOR_FILTER);
+        $this->course_filter = $input->get('course_filter', self::DEFAULT_COURSE_FILTER);
+        
 		$idValidator = new Claro_Validator_ValueType('intstr');
 		$input->setValidator('questionId', $idValidator);
 		$input->setValidator('surveyId', $idValidator);
@@ -78,7 +88,7 @@ class QuestionPoolPage extends ManagerSurveyLessPage
 	{
 		try
 		{
-		    $questionList = Question::loadQuestionPool($this->orderby, $this->ascDesc);		    
+		    $questionList = Question::loadQuestionPool($this->orderby, $this->ascDesc, $this->author_filter, $this->course_filter);		    
 		}catch(Exception $e)
 		{
 			parent::error($e->getMessage());
