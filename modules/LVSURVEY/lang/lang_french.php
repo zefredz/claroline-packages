@@ -153,5 +153,14 @@ $_lang['Display comments'] = 'Afficher les commentaires';
 $_lang['Hide comments'] = 'Cacher les commentaires';
 $_lang['Answer required'] = 'Réponse obligatoire';
 $_lang['Cannot save participation, you might have forgotten required answers'] = 'La participation n\'a pu etre sauvée. Vous avez peut-être oublié des questions obligatoires';
-$_lang['Allow users to change their answer until the survey is closed'] = 'Autoriser les utilisateurs à changer leur(s) réponse(s) tant que le sondage est actif'
-?>
+$_lang['Allow users to change their answer until the survey is closed'] = 'Autoriser les utilisateurs à changer leur(s) réponse(s) tant que le sondage est actif';
+$_lang['Author of question'] = 'Auteur de la question';
+$_lang['Only the author of a question can edit it'] = 'Seul l\'auteur d\'une question peut l\'éditer';
+$_lang['Display all questions'] = 'Afficher toutes les questions';
+$_lang['Display only my questions'] = 'Afficher uniquement mes questions';
+$_lang['Display only questions appearing in this course'] = 'Afficher uniquement les questions des sondages du cours actuel';
+
+
+
+
+

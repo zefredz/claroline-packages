@@ -10,3 +10,10 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_version` (
 ALTER TABLE `__CL_MAIN__survey2_question` 
     ADD COLUMN `author_id` INTEGER NULL, 
     ADD INDEX author_idx (`author_id`);
+
+
+
+INSERT INTO `__CL_MAIN__survey2_version` 
+        (version) 
+VALUES 
+        ("00000000000002");
