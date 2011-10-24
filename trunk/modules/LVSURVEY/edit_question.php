@@ -165,7 +165,6 @@ class EditQuestionPage extends ManagerSurveyLessPage {
         {
             return true;
         }
-        var_dump( $this->questionId );
         $current_user_id = claro_get_current_user_id(); 
         $author_id = $this->question->getAuthorId();
         if($current_user_id != $author_id)
