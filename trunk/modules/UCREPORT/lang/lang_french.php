@@ -96,8 +96,8 @@ Chaque référence à une commande de l\'interface sera indiquée en <strong>gras</s
 L\'objet de l\'outil "Bulletin" est :
 <ul>
     <li>d\'encoder des notes d\'examen et de les communiquer à vos étudiants, éventuellement accompagnés de commentaires</li>
-    <li>d\'agréger les notes en provenance des autres outils de Claroline, de leur assigner des podérations, et de calculer automatiquement les résultats et les moyennes.</li>
-    <li>d\'exporter ces résultats sous différentes formats (xlxs, csv, pdf)
+    <li>d\'agréger les notes en provenance des autres outils de Claroline, de leur assigner des pondérations, et de calculer automatiquement les résultats et les moyennes.</li>
+    <li>d\'exporter ces résultats sous différents formats (xlxs, csv, pdf)
     <li>de les communiquer à vos étudiants sous la forme de bulletins accessibles via leurs bureaux</li>
 </ul>
 
@@ -126,9 +126,9 @@ Une fois le formulaire validé, un message vous indique - si tout s\'est bien pas
 Vous êtes alors redirigé vers la page vous permettant d\'encoder les notes de votre examen.<br />
 <img src="../../module/UCREPORT/img/help/exam_created.png" alt="formulaire d\'édition d\'un examen" /><br />
 Pour chaque membre de votre cours, vous pouvez attribuer une note et ajouter un éventuel commentaire.<br />
-Cliquez sur <strong>OK</strong> pour validez vos notes.<br />
 <img src="../../module/UCREPORT/img/help/exam_edit.png" alt="formulaire d\'édition d\'un examen" /><br />
-Vous restez toutefois sur la même page, car contrairement à un bulletin, qui une fois publié ne peut plus être modifié, il vous est loisible de changer les notes d\'un examen à tout moment.<br /><br />
+Cliquez sur <strong>OK</strong> pour validez vos notes.<br />
+Vous restez toutefois sur la même page, car contrairement à un bulletin (qui une fois publié ne peut plus être modifié), il vous est loisible de changer les notes d\'un examen à tout moment.<br /><br />
 Si vous revenez à la liste des examens, vous verrez que votre "session" nouvellement créée y figure bien.<br />
 <img src="../../module/UCREPORT/img/help/exam_list.png" alt="liste des examens" /><br />
 A partir de cette liste, vous pouvez, comme dans la plupart des outils de Claroline, modifier la visibilité de cet élément... encore le supprimer.
@@ -198,7 +198,7 @@ Lorsque cette option est activée, la confidentialité du bulletin est modifiable 
 Il est donc possible que n\'y ayez pas accès. Dans ce cas la colonne n\'est pas visible, et les résultats sont alors "privés".
 
 <h3>Accès des étudiants aux bulletins publiés</h3>
-Les étudiants peuvent bien entendu consulter les bulletins publiés (sous les conditions de confidentialité définies par l\'outil) la page d\'accueil de l\'outil de votre site de cours.<br /><br />
+Les étudiants peuvent bien entendu consulter les bulletins publiés (sous les conditions de confidentialité définies par l\'outil) via la page d\'accueil de l\'outil de votre site de cours.<br /><br />
 Mais ils peuvent également y accéder via leur bureau qui agère tous les bulletins les concernant.<br />
 <img src="../../module/UCREPORT/img/help/desktop_portlet.png" alt="portlet du bureau" /><br />
 Les étudiants peuvent exporter les résultats en PDF uniquement.';
