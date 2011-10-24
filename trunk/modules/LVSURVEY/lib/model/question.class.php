@@ -31,7 +31,7 @@ class Question
 	
 	public function __construct()
     {
-        $this->id = -1;
+        $this->id = 0;
         $this->text = '';
         $this->type = 'MCSA'; 
         $this->choiceList = array();
@@ -174,7 +174,7 @@ class Question
     	
     	
     	//UPDATE QUESTION   	
-		if($formId == -1 || $duplicate)
+		if($formId == 0 || $duplicate)
 		{			
 			$question = new Question();
 			
@@ -299,7 +299,7 @@ class Question
     		throw new Exception(implode('<br/>', $validationErrors));
     	}
     	
-    	if($this->id == -1){
+    	if($this->id == 0){
     		$this->insertInDB();
     	}
     	else
@@ -391,7 +391,7 @@ class Question
 	
 	public function delete()
 	{
-		if($this->id == -1)
+		if($this->id == 0)
 			return;
 		$dbCnx = Claroline::getDatabase();
 		$this->deleteSurveyLines($dbCnx);

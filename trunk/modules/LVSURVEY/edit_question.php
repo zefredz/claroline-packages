@@ -115,7 +115,7 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 	    }
 		
 		
-		if($this->question->id != -1)
+		if($this->question->id != 0)
 	    {
 	    	$editQuestionURL .= '&questionId='.$this->question->id;
 	    	parent::appendBreadCrumbElement(get_lang('Edit question'), $editQuestionURL);
@@ -161,6 +161,11 @@ class EditQuestionPage extends ManagerSurveyLessPage {
         {
             return false;
         }
+        if ( $this->questionId == 0 )
+        {
+            return true;
+        }
+        var_dump( $this->questionId );
         $current_user_id = claro_get_current_user_id(); 
         $author_id = $this->question->getAuthorId();
         if($current_user_id != $author_id)
