@@ -15,33 +15,33 @@ class Choice
 	protected $question;
 	
 	protected $optionList;
-	
+        	
 	public function __construct($questionId)
-    {
-        $this->id = -1;
-        $this->text = '';      
-        $this->questionId = $questionId;
-        $this->question = NULL;
-        $this->optionList = array();
-    }
+        {
+            $this->id = -1;
+            $this->text = '';      
+            $this->questionId = $questionId;
+            $this->question = NULL;
+            $this->optionList = array();
+        }
 	
 	static function __set_state($array)
-    {
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new Choice(-1)));
-    	}
-    	
-    	$res = new Choice($array['questionId']);
-        foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
+        {
+            static $properties = array();
+            if(empty($properties))
             {
-            	$res -> {$akey} = $aval;
+                    $properties = array_keys(get_object_vars(new Choice(-1)));
             }
-        }
-        return $res;
-    }	
+
+            $res = new Choice($array['questionId']);
+            foreach ($array as $akey => $aval) {
+                if(in_array($akey,$properties))
+                {
+                    $res -> {$akey} = $aval;
+                }
+            }
+            return $res;
+        }	
     
     //load survey from the db
     static function load($id)
@@ -96,16 +96,23 @@ class Choice
     
     static function loadFromForm($choiceNumber,$question,$duplicate = false)
     {
-    	$choiceId = $duplicate?-1:(int)$_REQUEST['questionChId'.$choiceNumber];
-		$choiceText = $_REQUEST['questionCh'.$choiceNumber];
-		$choice = Choice::__set_state(array('id' => $choiceId, 'text' => $choiceText, 'questionId' => $question->id));
-		$choice->setQuestion($question);
-		
-		if('ARRAY' == $question->type)
-		{
-			$choice->optionList = self::loadOptionsFromForm($choiceNumber, $choice);
-		}
-		return $choice;
+        static $choiceValidator;
+        if(is_null($choiceValidator))
+        {
+            $choiceValidator= new Claro_Validator_CustomNotEmpty();
+        }
+        $userInput = Claro_UserInput :: getInstance();
+        $choiceId = $duplicate?-1:(int)$userInput->getMandatory('questionChId'.$choiceNumber);
+        $userInput->setValidator('questionCh'.$choiceNumber, $choiceValidator);    	
+        $choiceText = $userInput->getMandatory('questionCh'.$choiceNumber);
+        $choice = Choice::__set_state(array('id' => $choiceId, 'text' => $choiceText, 'questionId' => $question->id));
+        $choice->setQuestion($question);
+
+        if('ARRAY' == $question->type)
+        {
+                $choice->optionList = self::loadOptionsFromForm($choiceNumber, $choice);
+        }
+        return $choice;
     }
     
     static function loadOptionsFromForm($choiceNumber,$choice)
