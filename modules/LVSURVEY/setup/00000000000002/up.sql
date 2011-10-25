@@ -9,13 +9,15 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_version` (
 
 ALTER TABLE `__CL_MAIN__survey2_question` 
     ADD COLUMN `author_id` INTEGER NULL, 
+    ADD COLUMN `shared` TINYINT(1) NULL DEFAULT 1,
     ADD INDEX author_idx (`author_id`);
 
 -- --------------------------------------------------------
 
-ALTER TABLE `__CL_MAIN__survey2_question` 
-    ADD COLUMN `shared` TINYINT(1) NULL DEFAULT 1;
+ALTER TABLE `__CL_MAIN__survey2_participation` 
+    DROP INDEX `surveyId`;
 
+-- --------------------------------------------------------
 
 
 INSERT INTO `__CL_MAIN__survey2_version` 
