@@ -31,18 +31,11 @@ class Participation
 	static function __set_state($array)
     {
     	if(empty($array)) return false;
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new Participation(-1,-1)));
-    	}
     	
     	$res = new Participation($array['surveyId'], $array['userId']);
-        foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
-            {
-            	$res -> {$akey} = $aval;
-            }
+        foreach ($array as $akey => $aval) 
+        {            
+            $res -> {$akey} = $aval;
         }
         return $res;
     }

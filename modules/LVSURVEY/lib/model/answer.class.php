@@ -6,6 +6,7 @@ From::module('LVSURVEY')->uses(	'util/surveyConstants.class',
 
 class Answer
 {
+        
 	public $id;
 	
 	protected $participationId;
@@ -34,18 +35,10 @@ class Answer
 	static function __set_state($array)
     {
     	if(empty($array)) return false;
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new Answer(-1,-1)));
-    	}
-    	
+    	    	
     	$res = new Answer($array['participationId'], $array['surveyLineId']);
         foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
-            {
-            	$res -> {$akey} = $aval;
-            }
+            $res -> {$akey} = $aval;
         }
         return $res;
     }	

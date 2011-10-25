@@ -83,18 +83,10 @@ class Survey {
     
     static function __set_state($array = array())
     {
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new Survey('')));
-    	}
-    	
     	$res = new Survey($array['courseId']);
-        foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
-            {
-            	$res -> {$akey} = $aval;
-            }
+        foreach ($array as $akey => $aval) 
+        {            
+            $res -> {$akey} = $aval;
         }
         return $res;
     }	
