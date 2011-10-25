@@ -63,7 +63,7 @@ class LVSurveyUpgrader
             $this->currentDBVersion = '00000000000000';
             return;
         }
-        if($this->moduleInstalledButNoVersionTable())
+        if($this->noVersionTable())
         {
             $this->currentDBVersion = '00000000000001';
             return;
@@ -84,7 +84,7 @@ class LVSurveyUpgrader
         return $this->tableNotExists('survey2_survey');
     }
     
-    private function moduleInstalledButNoVersionTable()
+    private function noVersionTable()
     {        
         return $this->tableNotExists('survey2_version');
     }

@@ -18,7 +18,9 @@ class Question
 	
 	public $text;
 	
-	public $type;	
+	public $type;
+        
+        public $shared;
 	
 	protected $used;
 	
@@ -36,6 +38,7 @@ class Question
         $this->type = 'MCSA'; 
         $this->choiceList = array();
         $this->used = 0;
+        $this->shared = true;
     }
 	
 	static function __set_state($array)
@@ -66,10 +69,11 @@ class Question
         */
         $sql = "
         	SELECT
-            	       Q.`id` 							AS id,
-                       Q.`author_id`					AS author_id,
-            	       Q.`text`							AS text,
-            	       Q.`type`							AS type,
+            	       Q.`id` 					AS id,
+                       Q.`author_id`                            AS author_id,
+            	       Q.`text`					AS text,
+            	       Q.`type`					AS type,
+                       Q.`shared`                               AS shared,
             	       COUNT(DISTINCT S.`id`)			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
@@ -102,10 +106,11 @@ class Question
         $dbCnx = Claroline::getDatabase();
         $sql = "
         	SELECT
-            	       Q.`id` 							AS id,
-            	       Q.`text`							AS text,
-                       Q.`author_id`					AS author_id,
-            	       Q.`type`							AS type,
+            	       Q.`id` 					AS id,
+            	       Q.`text`					AS text,
+                       Q.`author_id`				AS author_id,
+            	       Q.`type`					AS type,
+                       Q.`shared`       			AS shared,
             	       COUNT(DISTINCT S.`id`)			AS used
            	FROM 		`".SurveyConstants::$QUESTION_TBL."` Q
            	LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ
@@ -113,20 +118,20 @@ class Question
             LEFT JOIN 	`".SurveyConstants::$SURVEY_LINE_TBL."` AS SL
             ON 			SLQ.`id`= SL.`id`
             LEFT JOIN 	`".SurveyConstants::$SURVEY_TBL."` AS S
-            ON 			SL.`surveyId`= S.`id`";
+            ON 			SL.`surveyId`= S.`id`
+            WHERE               Q.`shared` = 1 ";
         
         if($author_id)
         {
             $sql .=
             "
-                WHERE Q.`author_id` = " .(int) $author_id . " ";
+                AND Q.`author_id` = " .(int) $author_id . " ";
         }
         if($course_id)
         {
-            $question_word = $author_id ? 'AND' : 'WHERE';
             $sql .=
             "
-                {$question_word} S.`courseId` = " .$dbCnx->quote($course_id) . " ";
+                AND S.`courseId` = " .$dbCnx->quote($course_id) . " ";
         }
         
         $sql .= 
@@ -150,12 +155,15 @@ class Question
     	$userInput = Claro_UserInput::getInstance();
     	$questionTypeValidator = new Claro_Validator_AllowedList(self::$VALID_QUESTION_TYPES);
     	$userInput->setValidator('questionType',$questionTypeValidator);
+        $sharedValidator = new Claro_Validator_ValueType('boolstr');
+        $userInput->setValidator('shared', $sharedValidator);
     	$formDuplicate = $userInput->get('questionDuplicate','0');
     	
     	try
     	{
 	    	$formId = (int)$userInput->getMandatory('questionId');  
-	    	$formText = (string)$userInput->getMandatory('questionText');	    	
+	    	$formText = (string)$userInput->getMandatory('questionText');
+                $formShared = (boolean)$userInput->getMandatory('shared');
     	}
     	catch(Claro_Validator_Exception $e)
     	{
@@ -186,15 +194,22 @@ class Question
 		
 		$question->text = $formText;
 		$question->type = $formType;
+                $question->shared = $formShared;
 		
 		//HANDLE CHOICE LIST if question type is not OPEN
 		if('OPEN' != $question->type)
 		{
+                                               
 			$question->choiceList = array();
-			for($i = 1; isset($_REQUEST['questionCh'.$i]) && !empty($_REQUEST['questionCh'.$i]); ++$i)
-			{
-				$choice = Choice::loadFromForm($i, $question, $duplicate);
-				$question->choiceList[] = $choice;	
+			for($i = 1; $i < 100; ++$i)
+			{                            
+                            try{                            
+                                $choice = Choice::loadFromForm($i, $question, $duplicate);
+				$question->choiceList[] = $choice;
+                            } catch (Claro_Validator_Exception $e)
+                            {
+                                break;
+                            }
 			}
 		}
 		
