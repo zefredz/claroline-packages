@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey` (
   `maxCommentSize`      INTEGER                                         NOT NULL    DEFAULT 200,
   `allow_change_answers` TINYINT(1)                                     NULL DEFAULT 1,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_question` (
   `shared` TINYINT(1)   NULL                                            DEFAULT 1,
   INDEX author_idx (`author_id`),
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line` (
   `rank`                INTEGER                                         NULL,
   PRIMARY KEY  (`id`)
   -- , UNIQUE(`surveyId`, `rank`) -- removed for allowing swapping lines
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -44,8 +44,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_separator` (
   `title`               VARCHAR(255)                                    NOT NULL,
   `description`             TEXT                                        NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
-
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -56,7 +55,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_survey_line_question` (
   `maxCommentSize`      INTEGER                                         NOT NULL    DEFAULT 200,
   `required`            TINYINT(1)                                      NULL DEFAULT  1,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 
 -- --------------------------------------------------------
@@ -67,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_choice` (
   `questionId`          INTEGER                                         NOT NULL,
   `text`                TEXT                                            NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -76,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_option` (
   `choiceId`            INTEGER                                         NOT NULL,
   `text`                TEXT                                            NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM;;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -87,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer` (
   `comment`             VARCHAR(200)                                    NULL,
   PRIMARY KEY (`id`),
   UNIQUE (`surveyLineId`, `participationId`)
-);
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -98,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
   `optionId`            INTEGER                                         NULL,
   PRIMARY KEY (`id`),
   UNIQUE (`answerId`, `choiceId`)
-);
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
@@ -108,13 +107,15 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_participation` (
     `userId`            INTEGER                                         NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE  (`surveyId`,`userId`)
-);
+) ENGINE=MyISAM;
+
+-- --------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_version` (
   `version`         CHAR(14)        NOT NULL,
   `created_at`          TIMESTAMP,
   PRIMARY KEY  (`version`)
-) ;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
