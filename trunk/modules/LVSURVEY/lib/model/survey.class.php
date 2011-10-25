@@ -42,10 +42,10 @@ class Survey {
     public $endDate;    
     
     //max size of comments
-	public $maxCommentSize;
+    public $maxCommentSize;
 	
-	//rank of survey
-	public $rank;
+    //rank of survey
+    public $rank;
 
     protected $surveyLineList;
 	
@@ -69,7 +69,7 @@ class Survey {
         $this->resultsVisibility = 'INVISIBLE';
         $this->startDate = time();
         $nextMonth = strtotime( "+1 month" );
-        $this->endDate = $nextMonth;//PHP_INT_MAX;
+        $this->endDate = $nextMonth;
         $this->maxCommentSize = self::DEFAULT_MAX_COMMENT_SIZE;
         $this->rank = -1;
         
@@ -148,7 +148,7 @@ class Survey {
     	{
 	    	$formId = (string)$userInput->getMandatory('surveyId');  
 	    	$formTitle = (string)$userInput->getMandatory('surveyTitle');
-	    	$formIsAnonymous = (string)$userInput->getMandatory('surveyAnonymous');
+	    	$formIsAnonymous = (string)$userInput->getMandatory('surveyIsAnonymous');
 	    	$formDescription = (string)$userInput->getMandatory('surveyDescription');
 	    	$formResultsVisibility = (string)$userInput->getMandatory('surveyResultsVisibility');
 	    	$formMaxCommentSize = (int)$userInput->getMandatory('maxCommentSize');

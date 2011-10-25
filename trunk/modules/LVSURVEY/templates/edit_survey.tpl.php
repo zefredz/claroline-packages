@@ -34,21 +34,21 @@ if($this->survey->isAnswered()){
 	<!--  ANONYMOUS  -->
     <tr>
     	<td valign="top">
-        	<label for="surveyAnonymous"><?php echo get_lang('Anonymous survey'); ?> 
+        	<label for="surveyIsAnonymous"><?php echo get_lang('Anonymous survey'); ?> 
         		&nbsp; <span class="required">*</span>&nbsp;:
         	</label>
          </td>
          <td>
         <?php if($this->survey->id == -1): ?>
-        	<input type="radio" name="surveyAnonymous" id="surveyAnonymous" value="true"
+        	<input type="radio" name="surveyIsAnonymous" id="surveyAnonymous" value="true"
                 <?php echo ($this->survey->is_anonymous?'checked="checked" ':''); ?>
             /><?php echo get_lang('Yes'); ?>
-            <input type="radio" name="surveyAnonymous" id="surveyAnonymous" value="false" 
+            <input type="radio" name="surveyIsAnonymous" id="surveyAnonymous" value="false" 
                 <?php echo (!$this->survey->is_anonymous?'checked="checked" ':''); ?>
             /><?php echo get_lang('No'); ?>
          <?php else : ?>
          	<?php echo ($this->survey->is_anonymous?get_lang('Yes'):get_lang('No')); ?>
-         	<input type="hidden" name="surveyAnonymous" id="surveyAnonymous" 
+         	<input type="hidden" name="surveyIsAnonymous" id="surveyAnonymous" 
                 value="<?php echo ($this->survey->is_anonymous?'true':'false'); ?>" />
          <?php endif; ?>
          </td>

@@ -119,7 +119,8 @@ class Question
             ON 			SLQ.`id`= SL.`id`
             LEFT JOIN 	`".SurveyConstants::$SURVEY_TBL."` AS S
             ON 			SL.`surveyId`= S.`id`
-            WHERE               Q.`shared` = 1 ";
+            WHERE               Q.`author_id` = ".  claro_get_current_user_id()." 
+            OR (  Q.`shared` = 1 ";
         
         if($author_id)
         {
@@ -135,7 +136,7 @@ class Question
         }
         
         $sql .= 
-        "
+        ")
             GROUP BY	Q.`id` 
            	ORDER BY 	".$orderBy." ".$ascDesc." ; ";
         
