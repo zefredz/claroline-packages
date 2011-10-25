@@ -159,6 +159,7 @@ $_lang['Only the author of a question can edit it'] = 'Seul l\'auteur d\'une que
 $_lang['Display all questions'] = 'Afficher toutes les questions';
 $_lang['Display only my questions'] = 'Afficher uniquement mes questions';
 $_lang['Display only questions appearing in this course'] = 'Afficher uniquement les questions des sondages du cours actuel';
+$_lang['Allow other surveys to use this question'] = 'Cette question peut être réutilisée dans d\'autres sondages';
 
 
 

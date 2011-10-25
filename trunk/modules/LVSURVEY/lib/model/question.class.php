@@ -155,15 +155,15 @@ class Question
     	$userInput = Claro_UserInput::getInstance();
     	$questionTypeValidator = new Claro_Validator_AllowedList(self::$VALID_QUESTION_TYPES);
     	$userInput->setValidator('questionType',$questionTypeValidator);
-        $sharedValidator = new Claro_Validator_ValueType('boolstr');
-        $userInput->setValidator('shared', $sharedValidator);
+        
     	$formDuplicate = $userInput->get('questionDuplicate','0');
+        $formShared = $userInput->get('shared', '1') == '1';
     	
     	try
     	{
 	    	$formId = (int)$userInput->getMandatory('questionId');  
 	    	$formText = (string)$userInput->getMandatory('questionText');
-                $formShared = (boolean)$userInput->getMandatory('shared');
+                
     	}
     	catch(Claro_Validator_Exception $e)
     	{
@@ -343,7 +343,8 @@ class Question
         $sql = "
             INSERT INTO `".SurveyConstants::$QUESTION_TBL."`
             SET 	`text` 				= ".$dbCnx->quote($this->text).",
-                    `author_id`			= ".$dbCnx->quote($this->author_id).", 
+                        `author_id`			= ".$dbCnx->quote($this->author_id).", 
+                        `shared`			= ".(int) $this->shared.",
                 	`type` 				= ".$dbCnx->quote($this->type)." ; ";
                     
 			
@@ -367,7 +368,8 @@ class Question
         $sql = "
             UPDATE 		`".SurveyConstants::$QUESTION_TBL."`
             SET 		`text` 				= ".$dbCnx->quote($this->text).",
-                        `author_id`			= ".$dbCnx->quote($this->author_id).", 
+                                `author_id`			= ".$dbCnx->quote($this->author_id).", 
+                                `shared`			= ".(int) $this->shared.",
                 		`type` 				= ".$dbCnx->quote($this->type)."  
             WHERE 		`id` = ".(int)$this->id ;
             
