@@ -7,30 +7,29 @@ From::module('LVSURVEY')->uses(	'util/surveyConstants.class',
 
 
 class Question
-{
-	
-	public static $VALID_QUESTION_TYPES = array(	'OPEN', 
-                                                        'MCSA', 
-                                                        'MCMA', 
-                                                        'ARRAY'); 
-	
-	public $id;
-	
-	public $text;
-	
-	public $type;
-        
-        public $shared;
-	
-	protected $used;
-	
-	protected $choiceList;
-        
-        protected $author_id;
-        /** Claro_User */
-        protected $author = null;
-	
-	
+{    
+    public static $VALID_QUESTION_TYPES = array(	'OPEN', 
+                                                    'MCSA', 
+                                                    'MCMA', 
+                                                    'ARRAY'); 
+
+    public $id;
+
+    public $text;
+
+    public $type;
+
+    public $shared;
+
+    protected $used;
+
+    protected $choiceList;
+
+    protected $author_id;
+    /** Claro_User */
+    protected $author = null;
+
+
 	public function __construct()
     {
         $this->id = 0;
@@ -44,18 +43,11 @@ class Question
 	static function __set_state($array)
     {
     	if(empty($array)) return false;
-    	static $properties = array();
-    	if(empty($properties))
-    	{
-    		$properties = array_keys(get_object_vars(new Question()));
-    	}
-    	
+    	    	
     	$res = new Question();
-        foreach ($array as $akey => $aval) {
-            if(in_array($akey,$properties))
-            {
-            	$res -> {$akey} = $aval;
-            }
+        foreach ($array as $akey => $aval) 
+        {            
+            $res -> {$akey} = $aval;
         }
         return $res;
     }	

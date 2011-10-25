@@ -26,19 +26,12 @@ class Choice
         }
 	
 	static function __set_state($array)
-        {
-            static $properties = array();
-            if(empty($properties))
-            {
-                    $properties = array_keys(get_object_vars(new Choice(-1)));
-            }
+        {  
 
             $res = new Choice($array['questionId']);
             foreach ($array as $akey => $aval) {
-                if(in_array($akey,$properties))
-                {
-                    $res -> {$akey} = $aval;
-                }
+                
+                $res -> {$akey} = $aval;
             }
             return $res;
         }	
