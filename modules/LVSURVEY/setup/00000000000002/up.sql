@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_version` (
   `version` 		CHAR(14)		NOT NULL,
   `created_at`          TIMESTAMP,
   PRIMARY KEY  (`version`)
-) ;
+) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
 
