@@ -33,6 +33,7 @@ From::Module( 'UCREPORT' )->uses( 'agregator.lib'
                                 , 'storedreport.lib' );
 
 $nameTools = get_lang( 'Student Report' );
+$courseId = claro_get_current_course_id();
 
 if ( ! claro_is_in_a_course() || ! claro_is_course_allowed() ) claro_disp_auth_form( true );
 
@@ -133,9 +134,9 @@ try
         
         case 'rqCreate':
         {
-            unset( $_SESSION[ 'item_list' ] );
-            unset( $_SESSION[ 'user_list' ] );
-            unset( $_SESSION[ 'mark_list' ] );
+            unset( $_SESSION[ $courseId . '_UCREPORT_item_list' ] );
+            unset( $_SESSION[ $courseId . '_UCREPORT_user_list' ] );
+            unset( $_SESSION[ $courseId . '_UCREPORT_mark_list' ] );
             $selector = new Selector( $pluginLoader->getPLuginList() );
             break;
         }
@@ -158,27 +159,27 @@ try
             
             if ( $itemList )
             {
-                $_SESSION[ 'item_list' ] = $itemList;
+                $_SESSION[ $courseId . '_UCREPORT_item_list' ] = $itemList;
             }
-            elseif ( isset( $_SESSION[ 'item_list' ] ) )
+            elseif ( isset( $_SESSION[ $courseId . '_UCREPORT_item_list' ] ) )
             {
-                $itemList = $_SESSION[ 'item_list' ];
+                $itemList = $_SESSION[ $courseId . '_UCREPORT_item_list' ];
             }
             
-            if ( isset( $_SESSION[ 'user_list' ] ) && $cmd != 'exReset' )
+            if ( isset( $_SESSION[ $courseId . '_UCREPORT_user_list' ] ) && $cmd != 'exReset' )
             {
-                $userList = $_SESSION[ 'user_list' ];
+                $userList = $_SESSION[ $courseId . '_UCREPORT_user_list' ];
             }
             else
             {
                 $userList = claro_get_course_user_list();
-                unset( $_SESSION[ 'user_list' ] );
+                unset( $_SESSION[ $courseId . '_UCREPORT_user_list' ] );
             }
             
             $reset = $cmd == 'exReset'
                   || $cmd == 'exGenerate'
-                  || ! isset( $_SESSION[ 'item_list' ] )
-                  || ! isset( $_SESSION[ 'user_list' ] );
+                  || ! isset( $_SESSION[ $courseId . '_UCREPORT_item_list' ] )
+                  || ! isset( $_SESSION[ $courseId . '_UCREPORT_user_list' ] );
             
             $report = new Agregator( $pluginLoader->getPluginList() , $userList , $itemList , $reset );
             
@@ -186,17 +187,17 @@ try
             {
                 $report->setUserActive( $userToActivate , $active );
                 $report->actualize();
-                $_SESSION[ 'user_list' ] = $report->getUserList();
+                $_SESSION[ $courseId . '_UCREPORT_user_list' ] = $report->getUserList();
             }
             
-            if ( ! $markList && isset( $_SESSION['mark_list'] ) )
+            if ( ! $markList && isset( $_SESSION[$courseId . '_UCREPORT_mark_list'] ) )
             {
-                $markList = $_SESSION[ 'mark_list' ];
+                $markList = $_SESSION[ $courseId . '_UCREPORT_mark_list' ];
             }
             
             if ( $markList )
             {
-                $_SESSION[ 'mark_list' ] = $markList;
+                $_SESSION[ $courseId . '_UCREPORT_mark_list' ] = $markList;
                 
                 foreach ( $markList as $studentId => $result )
                 {
