@@ -115,6 +115,7 @@ try
     // CONTROLLER
     switch( $cmd )
     {
+        case 'rqShowList':
         case 'rqEditPlugins':
         {
             break;
@@ -130,16 +131,11 @@ try
             break;
         }
         
-        case 'rqShowList':
+        case 'rqCreate':
         {
             unset( $_SESSION[ 'item_list' ] );
             unset( $_SESSION[ 'user_list' ] );
             unset( $_SESSION[ 'mark_list' ] );
-            break;
-        }
-        
-        case 'rqCreate':
-        {
             $selector = new Selector( $pluginLoader->getPLuginList() );
             break;
         }
