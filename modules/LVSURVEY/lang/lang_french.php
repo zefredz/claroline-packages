@@ -160,6 +160,27 @@ $_lang['Display all questions'] = 'Afficher toutes les questions';
 $_lang['Display only my questions'] = 'Afficher uniquement mes questions';
 $_lang['Display only questions appearing in this course'] = 'Afficher uniquement les questions des sondages du cours actuel';
 $_lang['Allow other surveys to use this question'] = 'Cette question peut être réutilisée dans d\'autres sondages';
+$_lang['Delete question'] = 'Supprimer cette question';
+$_lang['Display details'] = 'Voir les details';
+$_lang['Edit separator'] = 'Modifier le séparateur';
+$_lang['Edit survey'] = 'Modifier le sondage';
+$_lang['Error'] = 'Erreur';
+$_lang['List of questions'] = 'Liste des questions';
+$_lang['Make Invisible'] = 'Rendre innvisible';
+$_lang['Make Visible'] = 'Rendre visible';
+$_lang['Move Down'] = 'Déplacer vers le haut';
+$_lang['Move Up'] = 'Déplacer vers le bas';
+$_lang['No Choices'] = 'Aucun choix';
+$_lang['No Results'] = 'Aucun résultat';
+$_lang['Question preview'] = 'Aperçu de la question';
+$_lang['Select'] = 'Sélectionner';
+$_lang['Success'] = 'Succès';
+$_lang['Survey Recall'] = 'Envoyer un rappel';
+$_lang['This question is used in some surveys . You can\'t delete it'] = 'Vous ne pouvez pas supprimer cette question, car celle-ci est utilisée.';
+$_lang['Unknown Question Type or Alignment'] = 'Type de question non reconnu';
+$_lang['You have forgotten to fill a mandatory field'] = 'Vous avez oublié de remplir au moins un des champs obligatoires';
+$_lang['You have forgotten to give options for choice'] = 'Vous avez oublié d\'encoder les choix et/ou options';
+$_lang['char(s) left'] = 'caractère(s) restant';
 
 
 
