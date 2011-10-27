@@ -122,7 +122,7 @@ Un formulaire apparaîtra alors vous demandant de lui donner un nom, et de fixer 
 <img src="../../module/UCREPORT/img/help/exam_create.png" alt="examen créé" />
 
 <h3>Encodage des notes</h3>
-Une fois le formulaire validé, un message vous indique - si tout s\'est bien passé - que votre bulletin a été créé.<br />
+Une fois le formulaire validé, un message vous indique - si tout s\'est bien passé - que votre session a été créée.<br />
 Vous êtes alors redirigé vers la page vous permettant d\'encoder les notes de votre examen.<br />
 <img src="../../module/UCREPORT/img/help/exam_created.png" alt="formulaire d\'édition d\'un examen" /><br />
 Pour chaque membre de votre cours, vous pouvez attribuer une note et ajouter un éventuel commentaire.<br />
