@@ -55,7 +55,31 @@ class CLLIBR_ACL
      */
     public function accessGranted( $resourceId , $access = self::ACCESS_SEARCH )
     {
-        $in_bookmark = $this->database->query( "
+        return $this->is_platform_admin
+            || $this->in_bookmark()
+            || $this->in_bibliography()
+            || $this->in_library()
+            || $this->in_course_library();
+    }
+    
+    /**
+     * Controls if user is allowed to edit the specified resource
+     * @param int $resourceId
+     * @return boolean
+     */
+    public function editGranted( $resourceId )
+    {
+        return $this->is_platform_admin
+            || $this->is_librarian();
+    }
+    
+    /**
+     * Controls if resource is in user's bookmark
+     * @return boolean
+     */
+    private function in_bookmark()
+    {
+        return $this->database->query( "
             SELECT
                 resource_id
             FROM
@@ -67,8 +91,15 @@ class CLLIBR_ACL
             AND
                 resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
-        
-        $in_bibliography = $this->database->query( "
+    }
+    
+    /**
+     * Controls if resource is in a bibliography of a course which user has access
+     * @return boolean
+     */
+    private function in_bibliography()
+    {
+        return $this->database->query( "
             SELECT
                 C.resource_id
             FROM
@@ -94,8 +125,15 @@ class CLLIBR_ACL
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
-        
-        $in_course_library = $this->database->query( "
+    }
+    
+    /**
+     * Controls if resource is in a library of a course which user has access
+     * @return boolean
+     */
+    private function in_course_library()
+    {
+        return $this->database->query( "
             SELECT
                 C.resource_id
             FROM
@@ -115,7 +153,14 @@ class CLLIBR_ACL
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
-        
+    }
+    
+    /**
+     * Controls if resource is in a library which user has access
+     * @return boolean
+     */
+    private function in_library()
+    {
         $cond = $access == self::ACCESS_READ
               ? " = 'public'"
               : " != 'private'";
@@ -127,7 +172,7 @@ class CLLIBR_ACL
                 L.user_id = " . $this->database->escape( $this->userId ) . ")"
              : "";
         
-        $in_library = $this->database->query( "
+        return $this->database->query( "
             SELECT
                 C.resource_id
             FROM
@@ -145,22 +190,15 @@ class CLLIBR_ACL
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
-        
-        return $this->is_platform_admin
-            || $in_bookmark
-            || $in_bibliography
-            || $in_library
-            || $in_course_library;
     }
     
     /**
-     * Controls if user is allowed to edit the specified resource
-     * @param int $resourceId
+     * Controls if resource is in a library which user is librarian
      * @return boolean
      */
-    public function editGranted( $resourceId )
+    private function is_librarian()
     {
-        $is_librarian = $this->database->query( "
+        return $this->database->query( "
             SELECT
                 C.resource_id
             FROM
@@ -176,8 +214,5 @@ class CLLIBR_ACL
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
         )->numRows();
-        
-        return $this->is_platform_admin
-            || $is_librarian;
     }
 }
