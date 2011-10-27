@@ -199,6 +199,6 @@ Il est donc possible que n\'y ayez pas accès. Dans ce cas la colonne n\'est pas 
 
 <h3>Accès des étudiants aux bulletins publiés</h3>
 Les étudiants peuvent bien entendu consulter les bulletins publiés (sous les conditions de confidentialité définies par l\'outil) via la page d\'accueil de l\'outil de votre site de cours.<br /><br />
-Mais ils peuvent également y accéder via leur bureau qui agère tous les bulletins les concernant.<br />
+Mais ils peuvent également y accéder via leur bureau qui agrège tous les bulletins les concernant.<br />
 <img src="../../module/UCREPORT/img/help/desktop_portlet.png" alt="portlet du bureau" /><br />
 Les étudiants peuvent exporter les résultats en PDF uniquement.';
