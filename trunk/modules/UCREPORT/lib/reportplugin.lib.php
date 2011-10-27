@@ -93,7 +93,9 @@ abstract class ReportPlugin
                     $userId = $line[ 'user_id' ];
                     $itemId = $this->toolLabel . '_' . $line[ 'item_id' ];
                     
-                    if ( array_key_exists( $userId , $userList ) || empty( $userList ) )
+                    if ( array_key_exists( $itemId , $this->itemList )
+                      && array_key_exists( $userId , $userList )
+                      || empty( $userList ) )
                     {
                         $this->dataList[ $userId ][ $itemId ] = $line[ 'score' ];
                         $this->itemList[ $itemId ][ 'submission_count' ]++;
