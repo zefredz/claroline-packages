@@ -1,4 +1,4 @@
-<?php// $Id$
+<?php // $Id$
 
 /**
  * Connector used to merge CLLP data from 2 users
