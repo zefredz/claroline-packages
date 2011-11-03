@@ -40,11 +40,6 @@ require_once dirname( __FILE__ ) . '/../lib/path.class.php';
 require_once dirname( __FILE__ ) . '/../lib/item.class.php';
 
 /*
- * Shared libraries
- */
-include_once get_path('incRepositorySys') . '/lib/embed.lib.php';
-
-/*
  * init request vars
  */
 if( isset($_REQUEST['pathId']) && is_numeric($_REQUEST['pathId']) )   $pathId = (int) $_REQUEST['pathId'];
