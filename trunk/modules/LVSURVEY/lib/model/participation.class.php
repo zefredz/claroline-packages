@@ -1,8 +1,9 @@
 <?php
 From::module('LVSURVEY')->uses(	'util/surveyConstants.class', 
-								'model/question.class', 
-								'model/answer.class', 
-								'model/surveyLine.class');
+                                'model/question.class', 
+                                'model/answer.class', 
+                                'model/surveyLine.class',
+                                'model/guest.class.php');
 
 class Participation
 {
@@ -84,8 +85,8 @@ class Participation
     }
     
     static function loadFromForm()
-    {
-    	$userId = claro_get_current_user_id();    	
+    {        
+        $userId = claro_get_current_user_id();        
     	$userInput = Claro_UserInput::getInstance();    	
     	
     	try
@@ -145,9 +146,11 @@ class Participation
     	$dbCnx = ClaroLine::getDatabase();
     	
         $sql = "
-        		INSERT INTO `".SurveyConstants::$PARTICIPATION_TBL."`
-                SET `surveyId` 				= ".(int)$this->surveyId.",
-                	`userId` 				= ".(int) $this->userId."; ";
+        INSERT INTO `".SurveyConstants::$PARTICIPATION_TBL."`
+        SET 
+            `updated_at`                        = NULL, 
+            `surveyId` 				= ".(int)$this->surveyId.",
+            `userId` 				= ".(int) $this->userId."; ";
 			
         // execute the creation query and get id of inserted assignment
         $dbCnx->exec($sql);
@@ -158,7 +161,14 @@ class Participation
     }
     private function updateInDB()
     {
-    	//NOTHING TO DO HERE
+        //automatically update timestamp
+    	$dbCnx = ClaroLine::getDatabase();
+        $sql = "
+            UPDATE 		`".SurveyConstants::$PARTICIPATION_TBL."`
+            SET `updated_at` 				= NULL
+            WHERE 		`id` = ".(int)$this->id ;
+            
+            $dbCnx->exec($sql);
     }
     
 	public function getSurvey()
@@ -190,7 +200,20 @@ class Participation
     private function loadUser()
     {
     	$this->user = new Claro_User($this->userId);
-    	$this->user->loadFromDatabase();
+        try
+        {
+            $this->user->loadFromDatabase();
+        }catch(Exception $e)
+        {
+            $this->setUser(new Guest());
+        }
+    	
+    }
+    
+    public function setUser($user)
+    {
+        $this->userId = $user->userId;
+        $this->user = $user;
     }
     
     public function getAnswerList()

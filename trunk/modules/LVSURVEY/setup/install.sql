@@ -104,6 +104,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_participation` (
     `id`                INTEGER                                         NOT NULL auto_increment,
     `surveyId`          INTEGER                                         NOT NULL,
     `userId`            INTEGER                                         NOT NULL,
+    `updated_at`        TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE  (`surveyId`,`userId`)
 ) ENGINE=MyISAM;

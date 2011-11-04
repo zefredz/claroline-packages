@@ -1,4 +1,6 @@
 <?php
+From::module('LVSURVEY')->uses(	'model/guest.class.php');
+
 class Result
 {
 	
@@ -24,6 +26,13 @@ class Result
             foreach ($array as $akey => $aval) 
             {                
                 $res -> {$akey} = $aval;
+            }
+            if(is_null($res->userId))
+            {
+                $guest = new Guest();
+                $res->userId = $guest->userId;
+                $res->firstName = $guest->firstName;
+                $res->lastName = $guest->lastName;
             }
             return $res;
         }
@@ -69,7 +78,7 @@ class SurveyResults
         	ON 			AI.`answerId` 		= A.`id` 
         	INNER JOIN `".SurveyConstants::$PARTICIPATION_TBL."` as P
         	ON 			A.`participationId` = P.`id`
-        	INNER JOIN  `".$userTable."` as U 
+        	LEFT OUTER JOIN  `".$userTable."` as U 
         	ON 			P.`userId` 			= U.`user_id`        	 
         	WHERE 		P.`surveyId`		= ".(int)$surveyId."
      		";
@@ -113,11 +122,11 @@ class SurveyResults
 	    			$choiceResultList->optionResultList[$result->optionId] = new OptionResults();
 	    		}
 	    		$optionResultList = $choiceResultList->optionResultList[$result->optionId];
-	    		$optionResultList->resultList[$result->userId] = $result;
+	    		$optionResultList->resultList[] = $result;
     		}
     		
-    		$choiceResultList->resultList[$result->userId] = $result;
-    		$questionResultList->resultList[$result->userId] = $result;
+    		$choiceResultList->resultList[] = $result;
+    		$questionResultList->resultList[] = $result;
     		
     		
     	}

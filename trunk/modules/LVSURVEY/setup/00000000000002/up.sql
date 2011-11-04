@@ -5,6 +5,10 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_version` (
   PRIMARY KEY  (`version`)
 ) ENGINE=MyISAM;
 
+INSERT INTO `__CL_MAIN__survey2_version` 
+        (version) 
+VALUES 
+        ("00000000000002");
 -- --------------------------------------------------------
 
 ALTER TABLE `__CL_MAIN__survey2_question` 
@@ -15,12 +19,9 @@ ALTER TABLE `__CL_MAIN__survey2_question`
 -- --------------------------------------------------------
 
 ALTER TABLE `__CL_MAIN__survey2_participation` 
-    DROP INDEX `surveyId`;
+    DROP INDEX `surveyId`,
+    ADD COLUMN `updated_at`          TIMESTAMP;
 
 -- --------------------------------------------------------
 
 
-INSERT INTO `__CL_MAIN__survey2_version` 
-        (version) 
-VALUES 
-        ("00000000000002");

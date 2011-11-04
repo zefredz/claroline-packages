@@ -275,16 +275,22 @@ class Question
     
     private function loadAuthor()
     {        
-        $this->author = new Claro_User($this->getAuthorId());
-        $this->author->loadFromDatabase();
+        $author = new Claro_User($this->getAuthorId());
+        try
+        {
+            $author->loadFromDatabase();
+            $this->setAuthor($author);
+        }catch(Exception $e)
+        {
+            $admin_id = end(claro_get_uid_of_platform_admin());
+            $admin = new Claro_User($admin_id);
+            $admin->loadFromDatabase();
+            $this->setAuthor($admin);
+        }
     }
     
     public function getAuthorId()
-    {
-        if(is_null($this->author_id))
-        {
-            $this->author_id = end(claro_get_uid_of_platform_admin());
-        }
+    {        
         return $this->author_id;
     }
     

@@ -33,10 +33,10 @@ class ShowSurveyPage extends SurveyPage{
 	}
 	
 	public function performSaveParticipation(){
-		if(isset($_REQUEST['claroFormId']))
-		{
-			$this->processForm();			
-		}
+            if(isset($_REQUEST['claroFormId']))
+            {
+                $this->processForm();			
+            }
 	}
 		
 
@@ -47,22 +47,21 @@ class ShowSurveyPage extends SurveyPage{
 	}
 	
 	private function processForm(){
-		try
-			{
-				$participation = Participation::loadFromForm();
-        		if(!$participation->isValid())
+            try
+            {
+                $participation = Participation::loadFromForm();
+                if(!$participation->isValid())
                 {
                     throw new Exception('Cannot save participation, you might have forgotten required answers');
                 }
                 $participation->save();
-				$this->redirectToResultsIfPossible();
-        		parent::success('Participation saved');				
-			}
-			catch(Exception $e)
-			{
-				parent::error($e->getMessage());				
-			}
-			
+                $this->redirectToResultsIfPossible();
+                parent::success('Participation saved');				
+            }
+            catch(Exception $e)
+            {
+                    parent::error($e->getMessage());				
+            }	
 	}
 	
 	private function redirectToResultsIfPossible(){
@@ -113,21 +112,29 @@ class ShowSurveyPage extends SurveyPage{
     }
     
     public function render(){
-		$survey = parent::getSurvey();
-		$editMode = claro_is_allowed_to_edit();
-		$participation = Participation::loadParticipationOfUserForSurvey(claro_get_current_user_id(), $survey->id);
-		
-		if(!$editMode && !$survey->isAccessible())
+        $survey = parent::getSurvey();
+        $editMode = claro_is_allowed_to_edit();
+        if(!$editMode && !$survey->isAccessible())
     	{
-    		parent::error('This survey is not accessible');
-        	return '';
+            parent::error('This survey is not accessible');
+            return '';
     	}
+        
+        
+        if(claro_is_user_authenticated())
+        {
+            $participation = Participation::loadParticipationOfUserForSurvey(claro_get_current_user_id(), $survey->id);
+        }else{
+            $participation = new Participation($survey->id, null);
+        }
+
+        
 	 
         
     	$showSurveyTpl = new PhpTemplate(dirname(__FILE__).'/templates/show_survey.tpl.php');
-	    $showSurveyTpl->assign('survey', $survey);
+        $showSurveyTpl->assign('survey', $survey);
     	$showSurveyTpl->assign('participation', $participation);
-	    $showSurveyTpl->assign('editMode', claro_is_allowed_to_edit());
+        $showSurveyTpl->assign('editMode', claro_is_allowed_to_edit());
 
 	
     	return $showSurveyTpl->render();

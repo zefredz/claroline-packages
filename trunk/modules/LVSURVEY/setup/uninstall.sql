@@ -18,3 +18,5 @@ DROP TABLE IF EXISTS `__CL_MAIN__survey2_question`;
 
 DROP TABLE IF EXISTS `__CL_MAIN__survey2_survey`;
 
+DROP TABLE IF EXISTS `__CL_MAIN__survey2_version`;
+
