@@ -58,7 +58,12 @@
         </a>
         
         <script type="text/javascript">
-            flowplayer( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.2.5.swf", {
+            $f( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.2.7.swf", {
+                plugins: {
+                    audio: {
+                        url: './flash/flowplayer.audio-3.2.2.swf'
+                    }
+                },
                 clip: {
                     autoPlay: <?php echo get_conf( 'flowplayer_autoPlay', false ) ? 'true' : 'false'; ?>,
                     autoBuffering: <?php echo get_conf( 'flowplayer_autoBuffering', false ) ? 'true' : 'false'; ?>

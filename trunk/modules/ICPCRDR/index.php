@@ -329,7 +329,7 @@ try
 
     // load optional javascript and css
     // see core/loader.lib for details
-    JavascriptLoader::getInstance()->load( 'flowplayer-3.2.4.min' );
+    JavascriptLoader::getInstance()->load( 'flowplayer-3.2.6.min' );
     CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
 
     // define the name of the tool to be displayed in various locations
