@@ -56,10 +56,10 @@ class CLLIBR_ACL
     public function accessGranted( $resourceId , $access = self::ACCESS_SEARCH )
     {
         return $this->is_platform_admin
-            || $this->in_bookmark()
-            || $this->in_bibliography()
-            || $this->in_library()
-            || $this->in_course_library();
+            || $this->in_bookmark( $resourceId )
+            || $this->in_bibliography( $resourceId )
+            || $this->in_library( $resourceId )
+            || $this->in_course_library( $resourceId );
     }
     
     /**
@@ -70,14 +70,14 @@ class CLLIBR_ACL
     public function editGranted( $resourceId )
     {
         return $this->is_platform_admin
-            || $this->is_librarian();
+            || $this->is_librarian( $resourceId );
     }
     
     /**
      * Controls if resource is in user's bookmark
      * @return boolean
      */
-    private function in_bookmark()
+    private function in_bookmark( $resourceId )
     {
         return $this->database->query( "
             SELECT
@@ -97,7 +97,7 @@ class CLLIBR_ACL
      * Controls if resource is in a bibliography of a course which user has access
      * @return boolean
      */
-    private function in_bibliography()
+    private function in_bibliography( $resourceId )
     {
         return $this->database->query( "
             SELECT
@@ -131,7 +131,7 @@ class CLLIBR_ACL
      * Controls if resource is in a library of a course which user has access
      * @return boolean
      */
-    private function in_course_library()
+    private function in_course_library( $resourceId )
     {
         return $this->database->query( "
             SELECT
@@ -159,7 +159,7 @@ class CLLIBR_ACL
      * Controls if resource is in a library which user has access
      * @return boolean
      */
-    private function in_library()
+    private function in_library( $resourceId )
     {
         $cond = $access == self::ACCESS_READ
               ? " = 'public'"
@@ -196,7 +196,7 @@ class CLLIBR_ACL
      * Controls if resource is in a library which user is librarian
      * @return boolean
      */
-    private function is_librarian()
+    private function is_librarian( $resourceId )
     {
         return $this->database->query( "
             SELECT
