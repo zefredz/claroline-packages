@@ -80,10 +80,7 @@ abstract class SurveyLessPage{
 	}
 	
 	protected function assertSecurityAccess(){
-        if ( !claro_is_user_authenticated() )
-		{
-			claro_disp_auth_form(true);
-		}
+        
         if(claro_is_platform_admin())
         {
             return;
@@ -100,9 +97,9 @@ abstract class SurveyLessPage{
         if (    !claro_is_in_a_course() 
             ||  !claro_is_course_allowed() 
         )
-		{
-			return false;
-		}
+        {
+                return false;
+        }
         return true;
     }
         

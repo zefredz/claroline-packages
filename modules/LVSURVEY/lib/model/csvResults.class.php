@@ -71,7 +71,7 @@ class AnonymousCSVResults extends CSVResults
     	}
     }
     function appendOptionResultList($optionResultList,$question, $choice, $option){
-    	foreach($optionResultList as $userId => $result)
+    	foreach($optionResultList as  $result)
         {
         	$optionLine = array (
         		$this->survey->id,
@@ -88,7 +88,7 @@ class AnonymousCSVResults extends CSVResults
     }        	
     
     function appendChoiceResultList($choiceResultList,$question, $choice){
-    	foreach($choiceResultList as $userId => $result)
+    	foreach($choiceResultList as $result)
         {
         	$choiceLine = array (
         		$this->survey->id,
@@ -112,9 +112,9 @@ class NamedCSVResults extends AnonymousCSVResults
     		'surveyId', 
     		'questionId', 
     		'question', 
-			'userId', 
-			'userFirstName', 
-			'userLastName', 
+                'userId', 
+                'userFirstName', 
+                'userLastName', 
     		'comment', 
     		'choiceId', 
     		'choice', 
@@ -123,33 +123,33 @@ class NamedCSVResults extends AnonymousCSVResults
 	}
 	
 	function appendOptionResultList($optionResultList,$question, $choice, $option){
-    	foreach($optionResultList as $userId => $result)
-        {
-        	$optionLine = array (
-        		$this->survey->id,
-        		$question->id,
-        		$question->text,
-        		$userId, 
-        		$result->firstName,
-        		$result->lastName,
-	        	$result->comment,
-        		$choice->id,
-        		$choice->text,
-        		$option->getId(),
-        		$option->getText(),			 
-        	);
-        	$this->recordList[] = $optionLine;
-        }
-    }        	
+            foreach($optionResultList as $result)
+            {
+                    $optionLine = array (
+                            $this->survey->id,
+                            $question->id,
+                            $question->text,
+                            $result->userId,
+                            $result->firstName,
+                            $result->lastName,
+                            $result->comment,
+                            $choice->id,
+                            $choice->text,
+                            $option->getId(),
+                            $option->getText(),			 
+                    );
+                    $this->recordList[] = $optionLine;
+            }
+        }        	
     
     function appendChoiceResultList($choiceResultList,$question, $choice){
-    	foreach($choiceResultList as $userId => $result)
+    	foreach($choiceResultList as $result)
         {
         	$choiceLine = array (
         		$this->survey->id,
         		$question->id,
         		$question->text,
-        		$userId, 
+        		$result->userId,
         		$result->firstName,
         		$result->lastName,
 	        	$result->comment,

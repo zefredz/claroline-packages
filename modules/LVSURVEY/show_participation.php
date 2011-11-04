@@ -122,10 +122,9 @@ class ShowParticipationPage extends ManagerSurveyPage{
 		$allParticipantsList = array();
 		foreach($participationList as $participation){
 			$user = $participation->getUser();
-			$rawData = $user->getRawData();
-			$id = $rawData['userId'];
-			$firstName = $rawData['firstName'];
-			$lastName = $rawData['lastName'];
+			$id = $user->userId;
+			$firstName = $user->firstName;
+			$lastName = $user->lastName;
 			
 			$participant = array(
 				'id' 		=> $id, 
