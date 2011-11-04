@@ -131,21 +131,19 @@
             </td>
         </tr>
         
-        <!-- SHARED OR NOT -->
-        <tr>
-            <td>
-                <?php  echo get_lang('Allow other surveys to use this question'); ?>
-            </td>
-            <td>
-                <input type="radio" id="sharedYes" name="shared" value="1" <?php echo $this->question->shared?"checked":""; ?> />
-                <label for="sharedYes"><?php echo get_lang('Yes'); ?></label>
-                <input type="radio" id="sharedNo" name="shared" value="0" <?php echo $this->question->shared?"":"checked"; ?> />
-                <label for="sharedNo"><?php  echo get_lang('No'); ?></label>
-            </td>
-        </tr>
-    <?php else: ?>
-        <input type="hidden" name="shared" value="true" />
     <?php endif;?>
+    <!-- SHARED OR NOT -->
+    <tr>
+        <td>
+            <?php  echo get_lang('Allow other surveys to use this question'); ?>
+        </td>
+        <td>
+            <input type="radio" id="sharedYes" name="shared" value="1" <?php echo $this->question->shared?"checked":""; ?> />
+            <label for="sharedYes"><?php echo get_lang('Yes'); ?></label>
+            <input type="radio" id="sharedNo" name="shared" value="0" <?php echo $this->question->shared?"":"checked"; ?> />
+            <label for="sharedNo"><?php  echo get_lang('No'); ?></label>
+        </td>
+    </tr>
     <!-- SUBMIT -->
     <tr>
             <td>
