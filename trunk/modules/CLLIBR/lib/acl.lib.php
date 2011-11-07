@@ -58,7 +58,7 @@ class CLLIBR_ACL
         return $this->is_platform_admin
             || $this->in_bookmark( $resourceId )
             || $this->in_bibliography( $resourceId )
-            || $this->in_library( $resourceId )
+            || $this->in_library( $resourceId , $access )
             || $this->in_course_library( $resourceId );
     }
     
@@ -159,7 +159,7 @@ class CLLIBR_ACL
      * Controls if resource is in a library which user has access
      * @return boolean
      */
-    private function in_library( $resourceId )
+    private function in_library( $resourceId , $access )
     {
         $cond = $access == self::ACCESS_READ
               ? " = 'public'"
