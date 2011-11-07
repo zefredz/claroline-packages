@@ -33,6 +33,17 @@ $officialCode = isset( $_REQUEST['officialCode'] )
     : null
     ;
 
+// For LDAP employee ID number compat
+$employeeNumber = isset( $_REQUEST['employeeNumber'] )
+    ? ltrim( trim($_REQUEST['employeeNumber']), '0' )
+    : null
+    ;
+
+if ( ! is_null( $employeeNumber ) )
+{
+    $officialCode = $employeeNumber;
+}
+
 // get user id from username or official code
 if ( empty ( $userId ) )
 {
