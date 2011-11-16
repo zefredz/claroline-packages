@@ -1,0 +1,33 @@
+.ICSURVEW_question
+{
+    /*visibility: hidden;*/
+    text-align: center;
+}
+
+.ICSURVEW_question table
+{
+    border: solid 1px #aaa;
+}
+
+.ICSURVEW_question table thead
+{
+    background-color: #fcd;
+}
+
+.ICSURVEW_question table tbody td,
+.ICSURVEW_question table thead td
+{
+    padding: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.ICSURVEW_dark
+{
+    background-color: #ded;
+}
+
+.ICSURVEW_light
+{
+    background-color: #efe;
+}

@@ -38,7 +38,7 @@ try
             $submission = $userInput->get( 'answer' );
             $cmd = $userInput->get( 'cmd' );
             
-            if ( $cmd == 'accept' )
+            if ( $cmd == 'accept' && $_SESSION[ 'ICSURVEW_STAGE' ] == 0 )
             {
                 $success = true;
             }
@@ -73,15 +73,20 @@ try
         
         case 2:
             $codeList = $userInput->get( 'code' );
-            foreach( $codeList as $code => $newCode )
+            
+            if ( $codeList )
             {
-                if( $code != $newCode )
+                foreach( $codeList as $code => $newCode )
                 {
-                    // ici on change le code cours
+                    if( $code != $newCode )
+                    {
+                        // ici on change le code cours
+                    }
                 }
+                
+                $success = true;
             }
             
-            $success = true;
             break;
         
         case 3:
@@ -95,6 +100,8 @@ try
     {
         $_SESSION[ 'ICSURVEW_STAGE' ]++;
     }
+    
+    CssLoader::getInstance()->load( 'ICSURVEW_style' , 'screen' );
     
     $pageTitle[ 'subTitle' ] = get_lang( 'Stage %_stage' , array( '%_stage' => $_SESSION[ 'ICSURVEW_STAGE' ] + 1 ) );
     
