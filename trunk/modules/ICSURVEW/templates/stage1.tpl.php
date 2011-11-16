@@ -1,9 +1,29 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".ICSURVEW_question").hide();
+        $("#question1").show();
+        $(".ICSURVEW_prev").click(function(){
+            var question=$(this).attr("id").substr(9);
+            $("#question"+question).hide();
+            question--;
+            $("#question"+question).show();
+        });
+        $(".ICSURVEW_next").click(function(){
+            var question=$(this).attr("id").substr(9);
+            $("#question"+question).hide();
+            question++;
+            $("#question"+question).show();
+        });
+    });
+</script>
 <form id="stage1"
       method="post"
       action="<?php echo  htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) );?>" >
 <?php foreach( $this->answer->getQuestionList() as $questionId => $question ) : ?>
+<div id="question<?php echo $questionId; ?>"
+     class="ICSURVEW_question">
     <h3><?php echo utf8_decode( $question->question ); ?></h3>
-    <table>
+    <table align="center">
         <thead>
             <tr>
                 <td></td>
@@ -13,8 +33,10 @@
             </tr>
         </thead>
         <tbody>
+    <?php $color = 1; ?>
     <?php foreach( array_keys( $this->answer->getCourseList() ) as $courseId ) : ?>
-            <tr>
+    <?php $color = -$color; ?>
+            <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
             <td><?php echo $courseId; ?></td>
         <?php foreach( $question->options as $optionId => $option ) : ?>
             <td>
@@ -25,7 +47,22 @@
             </tr>
     <?php endforeach; ?>
         </tbody>
-    <table>
+    </table>
+    <div class="ICSURVEW_nav">
+        <?php if( $questionId != 1 ) : ?>
+        <input type="button"
+               id="nav_prev_<?php echo $questionId; ?>"
+               class="ICSURVEW_prev"
+               value="<?php echo get_lang( 'Previous' ); ?>" />
+        <?php endif; ?>
+        <?php if( $questionId < count( (array)$this->answer->getQuestionList() ) ) : ?>
+        <input type="button"
+               id="nav_next_<?php echo $questionId; ?>"
+               class="ICSURVEW_next"
+               value="<?php echo get_lang( 'Next' ); ?>" />
+        <?php endif; ?>
+    </div>
+</div>
 <?php endforeach; ?>
     <input type="submit" name="" value="<?php echo get_lang( 'Submit' ); ?>" />
     <a href="<?php echo  htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) );?>">

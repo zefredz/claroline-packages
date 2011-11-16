@@ -1,0 +1,24 @@
+{
+    "1":
+    {
+        "question":"Quel-est votre plat préféré?",
+        "options":
+        {
+            "1":"coucous",
+            "2":"choucroute",
+            "3":"waterzooi",
+            "4":"moules-frites"
+        }
+    },
+    "2":
+    {
+        "question":"Vous dansez...",
+        "options":
+        {
+            "1":"salsa",
+            "2":"samba",
+            "3":"polka",
+            "4":"pogo"
+        }
+    }
+}
