@@ -1,0 +1,20 @@
+<module>
+    <label>ICSURVEW</label>
+    <name>iCampus course survey</name>
+    <description><![CDATA[ iCampus course survey ]]></description>
+    <version>0.1.0</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>applet</type>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9.0</version>
+        </claroline>
+    </requirements>
+</module>
