@@ -60,11 +60,12 @@
                id="nav_next_<?php echo $questionId; ?>"
                class="ICSURVEW_next"
                value="<?php echo get_lang( 'Next' ); ?>" />
+        <?php else : ?>
+        <input id="ICSURVEW_submit" type="submit" name="" value="<?php echo get_lang( 'Submit' ); ?>" />
         <?php endif; ?>
     </div>
 </div>
 <?php endforeach; ?>
-    <input type="submit" name="" value="<?php echo get_lang( 'Submit' ); ?>" />
     <a href="<?php echo  htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) );?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Later' );?>" />
     </a>
