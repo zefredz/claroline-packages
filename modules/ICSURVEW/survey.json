@@ -1,24 +1,26 @@
 {
     "1":
     {
-        "question":"Quel-est votre plat préféré?",
+        "question":"<strong>Question 1/2 :</strong> Dans votre liste de cours, quels sont ceux qui sont intégrés à un programme officiel UCL, ceux qui sont des cours hors programme, et ceux qui sont utilisés à d'autres fins ?",
         "options":
         {
-            "1":"coucous",
-            "2":"choucroute",
-            "3":"waterzooi",
-            "4":"moules-frites"
+            "1":"Cours au programme UCL",
+            "2":"Cours hors programme",
+            "3":"Espace de communication vers les étudiants",
+            "4":"Espace de partage étudiants géré par des délégués",
+            "5":"Site d'inscription aux examens oraux",
+            "6":"Espace de travail partagé",
+            "7":"Autre"
         }
     },
     "2":
     {
-        "question":"Vous dansez...",
+        "question":"<strong>Question 2/2 :</strong> Dans votre liste de cours, quels sont ceux que vous utilisez cette année, ceux que vous utiliserez plus tard et ceux que vous n'utilisez plus ?",
         "options":
         {
-            "1":"salsa",
-            "2":"samba",
-            "3":"polka",
-            "4":"pogo"
+            "1":"Est utilisé cette année",
+            "2":"Sera utilisé prochainement",
+            "3":"N'est plus utilisé"
         }
     }
 }

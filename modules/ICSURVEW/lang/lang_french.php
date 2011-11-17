@@ -1,11 +1,16 @@
 <?php
 
-$_lang[ '_intro_text' ] = 'Voulez-vous bien répondre à ce questionnaire?';
+$_lang[ '_intro_text' ] = '<h3>Enquête sur l\'utilisation des cours sur iCampus</h3>
+Afin de détecter les cours non utilisés sur iCampus et de mieux cerner les utilisations des cours, nous vous demandons de répondre à une enquête qui comporte deux questions et une vérification.<br />
+Vos réponses sont attentdues avant le 30 septembre.<br />
+Cette enquête est réalisée à la demande du prorecteur à la formation et à l\'enseignement, Vincent Wertz.';
 $_lang[ '_not_complete' ] = 'Vous n\'avez pas rempli tous les champs!';
-$_lang[ '_course_code_verification' ] = 'Veuillez vérifier que les codes de cours sont bien exacts:';
-$_lang[ '_exit_message' ] = 'Merci d\'avoir pris le temps de répondre à ce sondage!';
+$_lang[ '_course_code_verification' ] = '<h3>Vérification de la composition des codes cours des cours officiels</h3>
+Depuis quelques années, les cours intégrés à un programme officiel UCL ont un code cours qui commence par « L » , « W » ou « M » selon qu\'ils sont dispensés à Louvain-la-Neuve, à Woluwé ou à Mons.<br />
+Pour que les étudiants trouvent votre cours sans difficulté dans la liste des cours, nous vous suggérons de modifier les codes de vos cours officiels si nécessaire :';
+$_lang[ '_exit_message' ] = 'Merci pour votre collaboration et bon travail sur iCampus ...';
 $_lang[ 'iCampus Course Survey' ] = "Sondage iCampus";
-$_lang[ 'Now' ] = 'Répondre';
-$_lang[ 'Later' ] = 'Plus tard';
+$_lang[ 'Now' ] = 'Répondre maintenant';
+$_lang[ 'Later' ] = 'Répondre plus tard';
 $_lang[ 'Stage %_stage' ] = 'Etape %_stage';
 $_lang[ 'Users can delay their answer' ] = 'Les utilisateurs peuvent postposer leur réponse';
