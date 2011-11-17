@@ -42,7 +42,8 @@ class ICSURVEW_Answer
      */
     public function hasAnswered()
     {
-        return $this->answeredNb == $this->itemNb;
+        return $this->answeredNb == $this->itemNb
+          || ! $this->courseList;
     }
     
     /**
