@@ -13,7 +13,7 @@ class ICSURVEW_Survey
     
     public function load()
     {
-        $this->questionnaire = json_decode( claro_utf8_encode ( file_get_contents( $this->fileUrl ) ) );
+        $this->questionnaire = json_decode( file_get_contents( $this->fileUrl ) );
     }
     
     public function get()
