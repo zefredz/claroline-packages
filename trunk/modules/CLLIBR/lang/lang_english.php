@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -148,6 +148,7 @@ $_lang[ 'Quick search' ] = 'Quick search';
 $_lang[ 'Remove from bibliography' ] = 'Remove from bibliography';
 $_lang[ 'Remove from my bookmark' ] = 'Remove from my bookmark';
 $_lang[ 'Show tagcloud' ] = 'Show tagcloud';
+$_lang[ 'Update resource' ] = 'Update resource';
 
 // Messages
 $_lang[ 'Access denied' ] = 'Access denied';
