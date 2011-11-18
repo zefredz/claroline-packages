@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.4 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -159,6 +159,21 @@ try
     $library = new Library( $database , $libraryId );
     $resource = new Resource( $database , $resourceId );
     $metadata = new Metadata( $database , $resourceId );
+    
+    $exporterList = array();
+    
+    if ( array_key_exists( 'metadataview' , $pluginList ) )
+    {
+        foreach( $pluginList[ 'metadataview' ] as $pluginName )
+        {
+            $exporter = new $pluginName( $metadata->getMetadataList() );
+            
+            if ( is_a( $exporter , 'Exportable' ) )
+            {
+                $exporterList[ $pluginName ] = $exporter;
+            }
+        }
+    }
     
     if ( $libraryId )
     {
@@ -715,20 +730,26 @@ try
             
             case 'exExport':
             {
-                $exporter = new DublinCore( $metadata->getMetadataList() );
-                $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                     . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
-                $fileName = 'RDF_metadata_resource_' . $resourceId . '.rdf';
-                header("Content-type: application/xml");
-                header('Content-Disposition: attachment; filename="' . $fileName );
-                echo claro_utf8_encode( $exporter->export( $url ) );
-                exit();
+                $exportFormat = $userInput->get( 'format' )
+                              ? $userInput->get( 'format' )
+                              : 'DublinCore';
+                if ( array_key_exists( $exportFormat , $exporterList ) )
+                {
+                    $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                         . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
+                    $fileName = 'RDF_metadata_resource_' . $resourceId . '.rdf';
+                    header("Content-type: application/xml");
+                    header('Content-Disposition: attachment; filename="' . $fileName );
+                    echo claro_utf8_encode( $exporterList[ $exporterFormat ]->export( $url ) );
+                    exit();
+                }
             }
             
             case 'exCite' :
             {
-                $exporter = new Bibliography( $metadata->getMetadataList() );
-                $cite = $exporter->export( $resource->getType() );
+                $exporter = new BibliographicNote( $metadata->getMetadataList() );
+                $exporter->setType( $resource->getType() );
+                $cite = $exporter->render();
                 break;
             }
             
@@ -1015,10 +1036,14 @@ try
                                                   .'/index.php?cmd=exBookmark&resourceId=' . $resourceId ) ) );
                 }
                 
-                $cmdList[] = array( 'img'  => 'export',
-                                    'name' => get_lang( 'Export metadatas in RDF format' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                              .'/index.php?cmd=exExport&resourceId=' . $resourceId ) ) );
+                foreach( $exporterList as $name => $exporter )
+                {
+                    $cmdList[] = array( 'img'  => 'export',
+                                        'name' => get_lang( 'Export metadatas' ) . ' ( ' . $name . ' ) ',
+                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                  .'/index.php?cmd=exExport&format='. $name
+                                                  . '&resourceId=' . $resourceId ) ) );
+                }
                 
                 if ( $cmd == 'exCite' )
                 {

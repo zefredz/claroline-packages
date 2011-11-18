@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.2 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -13,15 +13,21 @@
  * A class that represents the metadatas
  * related to a specified resource
  * @property array $propertyList
+ * @property array $templateList
  * @property array $translator
  * @property array $metadatas
+ * @property string $type
  */
 class MetadataView
 {
+    const TYPE_DEFAULT = 'default';
+    
     protected $propertyList;
+    protected $templateList;
     protected $translator;
     
     protected $metadatas;
+    protected $type;
     
     /**
      * Constructor
@@ -30,6 +36,7 @@ class MetadataView
     public function __construct( $metadatas )
     {
         $this->metadatas = $this->translate( $metadatas);
+        $this->type = self::TYPE_DEFAULT;
     }
     
     /**
@@ -39,6 +46,17 @@ class MetadataView
     public function getPropertyList()
     {
         return $this->propertyList;
+    }
+    
+    /**
+     * Setter for $type
+     * @param string $type
+     */
+    public function setType( $type )
+    {
+        return $this->type = array_key_exists( $type , $this->templateList )
+                               ? $type
+                               : self::TYPE_DEFAULT;
     }
     
     /**
@@ -79,5 +97,5 @@ interface Renderable
  */
 interface Exportable
 {
-    public function export( $argument );
+    public function export( $url );
 }
