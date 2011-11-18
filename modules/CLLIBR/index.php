@@ -42,6 +42,7 @@ From::Module( 'CLLIBR' )->uses(
 $claroline->currentModuleLabel( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
 load_module_language( 'CLLIBR' );
+$dialogBox = new DialogBox();
 
 $nameTools = get_lang( 'Online Library' );
 $pageTitle = array( 'mainTitle' => get_lang( 'Online Library' ) );
@@ -110,6 +111,8 @@ try
                                  , 'exEditResource'
                                  , 'exDeleteResource'
                                  , 'exMoveResource'
+                                 , 'rqUpdateResource'
+                                 , 'exUpdateResource'
                                  , 'exAdd'
                                  , 'rqRemove'
                                  , 'exRemove'
@@ -135,6 +138,7 @@ try
                             , 'exAddLibrarian'    => 'rqShowLibrarian'
                             , 'exRemoveLibrarian' => 'rqShowLibrarian'
                             , 'exEditResource'    => 'rqView'
+                            , 'exUpdateResource'  => 'rqView'
                             , 'exNote'            => 'rqView'
                             , 'exBookmark'        => ''
                             , 'exUnbookmark'      => ''
@@ -296,6 +300,7 @@ try
             case 'rqAddResource':
             case 'rqEditResource':
             case 'rqDeleteResource':
+            case 'rqUpdateResource' :
             case 'rqRemove':
             case 'rqCreateLibrary':
             case 'rqEditLibrary':
@@ -503,6 +508,59 @@ try
                                && $metadata->setResourceId( $resource->getId() )
                                && $metadata->setTitle( $title )
                                && $metadata->setDescription( $description );
+                break;
+            }
+            
+            case 'exUpdateResource':
+            {
+                if ( $resource->getStorageType() == Resource::TYPE_FILE )
+                {
+                    $resourceType = $resourceTypeList->get( $resource->getType() );
+                    $authorizedFileList = $resourceType->getAuthorizedFileList();
+                    $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
+                    
+                    if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
+                    {
+                        $file = $_FILES[ 'uploadedFile' ];
+                    }
+                    else
+                    {
+                        $errorMsg = get_lang( 'File missing' );
+                    }
+                    
+                    if ( ! $errorMsg
+                      && $storedResource->validate( $file[ 'name' ] ) )
+                    {
+                        $storedResource->delete();
+                        $resource->setName( $file[ 'name' ] );
+                    }
+                    else
+                    {
+                        $errorMsg = get_lang( 'Invalid file' );
+                    }
+                    
+                    if ( ! $errorMsg
+                      && ! $storedResource->store( $file ) )
+                    {
+                        $errorMsg = getlang( 'File cannot be stored' );
+                    }
+                }
+                elseif( $resource->getStorageType() == Resource::TYPE_URL )
+                {
+                    $resourceName = $userInput->get( 'resourceUrl' );
+                    
+                    if ( $resourceName )
+                    {
+                        $resource->setName( $resourceName );
+                    }
+                    else
+                    {
+                        $errorMsg = get_lang( 'Url missing' );
+                    }
+                }
+                
+                $execution_ok = ! $errorMsg
+                               && $resource->save();
                 break;
             }
             
@@ -807,7 +865,6 @@ try
         // VIEW
         CssLoader::getInstance()->load( 'cllibr' , 'screen' );
         $cmdList = array();
-        $dialogBox = new DialogBox();
         $warning = new DialogBox();
         
         if ( $metadata->getResourceId() )
@@ -1026,6 +1083,10 @@ try
                                         'name' => get_lang( 'Edit resource\'s metadatas' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqEditResource&resourceId=' . $resourceId ) ) );
+                    $cmdList[] = array( 'img'  => 'edit',
+                                        'name' => get_lang( 'Update resource' ),
+                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                  .'/index.php?cmd=rqUpdateResource&resourceId=' . $resourceId ) ) );
                 }
                 
                 if ( $userId )
@@ -1096,6 +1157,15 @@ try
                 $template->assign( 'libraryId' , $libraryId );
                 $template->assign( 'typeList' , $resourceTypeList->getResourceTypeList() );
                 $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
+                break;
+            }
+            
+            case 'rqUpdateResource':
+            {
+                $pageTitle[ 'subTitle' ] = get_lang( 'Update resource' );
+                $template = new ModuleTemplate( 'CLLIBR' , 'updateresource.tpl.php' );
+                $template->assign( 'userId' , $userId );
+                $template->assign( 'resource' , $resource );
                 break;
             }
             
@@ -1297,7 +1367,6 @@ try
     }
     else // FORBIDDEN ACTION
     {
-        $dialogBox = new DialogBox();
         $dialogBox->error( get_lang( 'Access denied' ) );
         Claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
     }

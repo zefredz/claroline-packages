@@ -148,6 +148,7 @@ $_lang[ 'Quick search' ] = 'Recherche rapide';
 $_lang[ 'Remove from bibliography' ] = 'Retirer de la bibliographie du cours';
 $_lang[ 'Remove from my bookmark' ] = 'Retirer de mes lectures';
 $_lang[ 'Show tagcloud' ] = 'Afficher le nuage de tags';
+$_lang[ 'Update resource' ] = 'Mettre à jour la ressource';
 
 // Messages
 $_lang[ 'Access denied' ] = 'Accès non autorisé';
