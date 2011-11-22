@@ -22,7 +22,7 @@
 <?php foreach( $this->answer->getQuestionList() as $questionId => $question ) : ?>
 <div id="question<?php echo $questionId; ?>"
      class="ICSURVEW_question">
-    <h3><?php echo get_lang( 'Question' ) . ' ' . $questionId . '/' . count( (array)$this->answer->getQuestionList() ) . ': ' . utf8_decode( $question->question ); ?></h3>
+    <h3><?php echo get_lang( 'Question' ) . ' ' . $questionId . '/' . count( (array)$this->answer->getQuestionList() ) . ' : ' . utf8_decode( $question->question ); ?></h3>
     <table align="center">
         <thead>
             <tr>
