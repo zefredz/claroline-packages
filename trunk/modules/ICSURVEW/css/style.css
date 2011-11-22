@@ -20,6 +20,7 @@
     padding: 5px;
     font-weight: bold;
     color: #555;
+    width: 200px;
 }
 
 .ICSURVEW_dark
@@ -30,4 +31,17 @@
 .ICSURVEW_light
 {
     background-color: #efe;
+}
+
+.ICSURVEW_courseTitle
+{
+    font-size: small;
+    font-weight: normal;
+    font-style: italic;
+}
+
+.ICSURVEW_courseManager
+{
+    font-size: smaller;
+    font-weight: bold;
 }
