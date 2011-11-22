@@ -3,7 +3,7 @@
 $_lang[ '_intro_text' ] = '<h3>Enquête sur l\'utilisation des cours sur iCampus</h3>
 Afin de détecter les cours non utilisés sur iCampus et de mieux cerner les utilisations des cours, nous vous demandons de répondre à une enquête qui comporte deux questions et une vérification.<br />
 Vos réponses sont attentdues avant le 30 septembre.<br />
-Cette enquête est réalisée à la demande du prorecteur à la formation et à l\'enseignement, Vincent Wertz.';
+Cette enquête est réalisée à la demande du prorecteur à la formation et à l\'enseignement.';
 $_lang[ '_not_complete' ] = 'Vous n\'avez pas rempli tous les champs!';
 $_lang[ '_course_code_verification' ] = '<h3>Vérification de la composition des codes cours des cours officiels</h3>
 Depuis quelques années, les cours intégrés à un programme officiel UCL ont un code cours qui commence par « L » , « W » ou « M » selon qu\'ils sont dispensés à Louvain-la-Neuve, à Woluwé ou à Mons.<br />

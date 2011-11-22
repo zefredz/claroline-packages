@@ -56,10 +56,61 @@ class ICSURVEW_Answer
     
     /**
      * Getter for $this->courseList
+     * @param array $filter
+     * @return array $courseList
      */
-    public function getCourseList()
+    public function getCourseList( $filter = null )
     {
-        return $this->courseList;
+        if ( $filter )
+        {
+            $courseList = array();
+            
+            $sql = "SELECT
+                        course_id
+                    FROM
+                        `{$this->tbl['ICSURVEW_log']}`
+                    WHERE
+                        user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
+                    AND (\n";
+            
+            foreach( $filter as $index => $cond )
+            {
+                $arg = array();
+                
+                foreach( $cond as $item => $itemId )
+                {
+                    $arg[] = $item . " = " . $itemId . "\n";
+                }
+                
+                $sql .= "( " . implode( " AND \n" , $arg ) .") \n";
+                
+                if ( $index < count( $filter) - 1 )
+                {
+                    $sql .= "OR\n";
+                }
+            }
+            
+            $sql .= " )";
+            
+            $result = Claroline::getDatabase()->query( $sql );
+            
+            foreach( $result as $course )
+            {
+                //unset( $this->courseList[ $course[ 'course_id' ] ] );
+                $courseId = $course[ 'course_id' ];
+                
+                if ( array_key_exists( $courseId , $this->courseList ) )
+                {
+                    $courseList[ $courseId ] = $this->courseList[ $courseId ];
+                }
+            }
+            
+            return $courseList;
+        }
+        else
+        {
+            return $this->courseList;
+        }
     }
     
     /**

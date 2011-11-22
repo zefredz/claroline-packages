@@ -13,17 +13,17 @@ FromKernel::uses(
 
 From::Module( 'ICSURVEW' )->uses( 'answer.lib' , 'survey.lib' );
 
+if ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] ) )
+{
+    $_SESSION[ 'ICSURVEW_STAGE' ] = 0;
+}
+
 $surveyFileUrl = dirname( __FILE__ ) . '/survey.json';
 $userId = claro_get_current_user_id();
 $survey = new ICSURVEW_Survey( $surveyFileUrl );
 $answer = new ICSURVEW_Answer( $userId , $survey->get() );
 
 $pageTitle = array( 'mainTitle' => get_lang( 'iCampus Course Survey' ) );
-
-if ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] ) )
-{
-    $_SESSION[ 'ICSURVEW_STAGE' ] = 0;
-}
 
 $success = false;
 $userInput = Claro_UserInput::getInstance();
