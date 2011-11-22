@@ -22,22 +22,26 @@
 <?php foreach( $this->answer->getQuestionList() as $questionId => $question ) : ?>
 <div id="question<?php echo $questionId; ?>"
      class="ICSURVEW_question">
-    <h3><?php echo utf8_decode( $question->question ); ?></h3>
+    <h3><?php echo get_lang( 'Question' ) . ' ' . $questionId . '/' . count( (array)$this->answer->getQuestionList() ) . ': ' . utf8_decode( $question->question ); ?></h3>
     <table align="center">
         <thead>
             <tr>
                 <td></td>
     <?php foreach( $question->options as $optionId => $option ) : ?>
-                <td><?php echo( $option ); ?></td>
+                <td><?php echo utf8_decode( $option ); ?></td>
     <?php endforeach; ?>
             </tr>
         </thead>
         <tbody>
     <?php $color = 1; ?>
-    <?php foreach( array_keys( $this->answer->getCourseList() ) as $courseId ) : ?>
+    <?php foreach( $this->answer->getCourseList() as $courseId => $course ) : ?>
     <?php $color = -$color; ?>
             <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
-            <td><?php echo $courseId; ?></td>
+            <td>
+                <?php echo $courseId; ?><br />
+                <span class="ICSURVEW_courseTitle"><?php echo $course[ 'title' ]; ?></span><br />
+                <span class="ICSURVEW_courseManager"><?php echo get_lang( 'Manager' ) . ' : ' . $course[ 'manager' ]; ?></span>
+            </td>
         <?php foreach( $question->options as $optionId => $option ) : ?>
             <td>
                 <input type="radio" name="answer[<?php echo $courseId; ?>][<?php echo $questionId; ?>]" value="<?php echo $optionId; ?>"

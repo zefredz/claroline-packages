@@ -41,6 +41,7 @@ try
             if ( $cmd == 'accept' && $_SESSION[ 'ICSURVEW_STAGE' ] == 0 )
             {
                 $success = true;
+                break;
             }
             elseif( $cmd == 'later' && get_conf( 'ICSURVEW_postpone_allowed' ) )
             {
@@ -101,7 +102,7 @@ try
         $_SESSION[ 'ICSURVEW_STAGE' ]++;
     }
     
-    CssLoader::getInstance()->load( 'ICSURVEW_style' , 'screen' );
+    CssLoader::getInstance()->load( 'style' , 'screen' );
     
     $pageTitle[ 'subTitle' ] = get_lang( 'Stage %_stage' , array( '%_stage' => $_SESSION[ 'ICSURVEW_STAGE' ] + 1 ) );
     

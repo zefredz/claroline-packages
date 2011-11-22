@@ -142,7 +142,8 @@ class ICSURVEW_Answer
             SELECT
                 code AS id,
                 administrativeNumber AS code,
-                intitule AS title
+                intitule AS title,
+                titulaires AS manager
             FROM
                 `{$this->tbl['course']}` AS C
             INNER JOIN
@@ -156,8 +157,9 @@ class ICSURVEW_Answer
         
         foreach( $result as $line )
         {
-            $this->courseList[ $line[ 'id' ] ] = array( 'code' => $line[ 'code' ]
-                                                      , 'title' => $line[ 'title' ] );
+            $this->courseList[ $line[ 'id' ] ] = array( 'code'    => $line[ 'code' ]
+                                                      , 'title'   => $line[ 'title' ]
+                                                      , 'manager' => $line[ 'manager' ] );
         }
     }
     
