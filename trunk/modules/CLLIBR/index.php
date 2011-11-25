@@ -798,7 +798,7 @@ try
                     $fileName = 'RDF_metadata_resource_' . $resourceId . '.rdf';
                     header("Content-type: application/xml");
                     header('Content-Disposition: attachment; filename="' . $fileName );
-                    echo claro_utf8_encode( $exporterList[ $exporterFormat ]->export( $url ) );
+                    echo claro_utf8_encode( $exporterList[ $exportFormat ]->export( $url ) );
                     exit();
                 }
             }
