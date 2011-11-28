@@ -104,7 +104,7 @@ abstract class SurveyLessPage{
     }
         
 	private function init(){
-		$tlabelReq = 'LVSURVEY';
+        global $tlabelReq;
 		add_module_lang_array($tlabelReq);
 		claro_set_display_mode_available(true);
 	}

@@ -1,7 +1,8 @@
 <?php 
-
- require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
- From::module('LVSURVEY')->uses(	'model/question.class', 
+global $tlabelReq;
+$tlabelReq = 'LVSURVEY';
+require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
+From::module('LVSURVEY')->uses(	'model/question.class', 
  									'model/survey.class', 
  									'controller/managerSurveyPage.class');
  

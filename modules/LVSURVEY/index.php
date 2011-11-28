@@ -17,4 +17,3 @@
 */
 header('Location:./survey_list.php');
 exit();
-?>
