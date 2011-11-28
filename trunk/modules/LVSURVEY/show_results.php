@@ -1,5 +1,6 @@
-<?php 
-
+<?php
+global $tlabelReq;
+$tlabelReq = 'LVSURVEY';
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 From::module('LVSURVEY')->uses(	'model/survey.class', 

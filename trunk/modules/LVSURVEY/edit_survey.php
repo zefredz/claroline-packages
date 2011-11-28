@@ -1,5 +1,7 @@
 <?php 
- 
+global $tlabelReq;
+$tlabelReq = 'LVSURVEY';
+
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 From::module('LVSURVEY')->uses(	'controller/surveyPage.class');
 
@@ -28,7 +30,6 @@ class EditSurveyPage extends SurveyPage{
 			parent::loadSurvey();
 			return;
 		}
-		$input = Claro_UserInput::getInstance();
 		$survey = new Survey(claro_get_current_course_id());
 		$survey->title = self::DEFAULT_TITLE;
 		parent::setSurvey($survey);		
