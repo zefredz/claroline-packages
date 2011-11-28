@@ -9,6 +9,15 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */?>
 
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#selectAll" ).click(function(){
+            var is_checked=$(this).attr('checked');
+            $(".itemSelect").attr('checked',is_checked);
+        });
+    });
+</script>
+
 <form id="itemSelection"
       method="post"
       action="<?php echo htmlspecialchars( 'report.php?cmd=exGenerate' ); ?>">
@@ -18,7 +27,7 @@
                 <th><?php echo get_lang( 'Title' ); ?></th>
                 <th><?php echo get_lang( 'Number of marks' ); ?></th>
                 <th><?php echo get_lang( 'Weight' ); ?></th>
-                <th><?php echo get_lang( 'Select' ); ?></th>
+                <th><!--<?php echo get_lang( 'Select' ); ?>--><input id="selectAll" type="checkbox" /></th>
             </tr>
         </thead>
         <tbody>
@@ -37,7 +46,7 @@
                                       size="3" />
             </td>
             <td align="center">
-                <input class="resourceSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" <?php echo $itemDatas['selected'] ? 'checked="yes"' : ''; ?>" />
+                <input class="itemSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" <?php echo $itemDatas['selected'] ? 'checked="yes"' : ''; ?>" />
             </td>
         </tr>
         <?php endforeach; ?>
