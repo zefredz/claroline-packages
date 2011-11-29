@@ -12,11 +12,14 @@
             </thead>
             <tbody>
         <?php $color = 1; ?>
-        <?php foreach( array_keys( $this->answer->getCourseList( array( array( 'question_id' => 1 , 'choice_id' => 1 ) , array( 'question_id' => 2 , 'choice_id' => '!3' ) ) ) ) as $courseId ) : ?>
+        <?php foreach( $this->answer->getCourseList( array( array( 'question_id' => 1 , 'choice_id' => 1 ) , array( 'question_id' => 2 , 'choice_id' => '!3' ) ) ) as $courseId => $course ) : ?>
         <?php $color = -$color; ?>
             <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
-                <td><?php echo $courseId; ?></td>
-                <td><input type="text" name="code[<?php echo $courseId; ?>]" value="<?php echo $courseId; ?>" />
+                <td><?php echo $course[ 'code' ]; ?></td>
+                <td>
+                    <input type="hidden" name="code[<?php echo $courseId; ?>]" value="<?php echo $course[ 'code' ]; ?>" />
+                    <input type="text" name="newCode[<?php echo $courseId; ?>]" value="<?php echo $course[ 'code' ]; ?>" />
+                </td>
             </tr>
             </tbody>
         <?php endforeach; ?>

@@ -103,7 +103,6 @@ class ICSURVEW_Answer
             
             foreach( $result as $course )
             {
-                //unset( $this->courseList[ $course[ 'course_id' ] ] );
                 $courseId = $course[ 'course_id' ];
                 
                 if ( array_key_exists( $courseId , $this->courseList ) )
