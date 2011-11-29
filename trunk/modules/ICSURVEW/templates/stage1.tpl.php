@@ -38,7 +38,7 @@
     <?php $color = -$color; ?>
             <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
             <td>
-                <?php echo $courseId; ?><br />
+                <?php echo $course[ 'code' ]; ?><br />
                 <span class="ICSURVEW_courseTitle"><?php echo $course[ 'title' ]; ?></span><br />
                 <span class="ICSURVEW_courseManager"><?php echo get_lang( 'Manager' ) . ' : ' . $course[ 'manager' ]; ?></span>
             </td>

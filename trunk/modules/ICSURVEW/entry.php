@@ -9,7 +9,8 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 FromKernel::uses(
     'utils/input.lib',
     'utils/validator.lib',
-    'display/layout.lib' );
+    'display/layout.lib',
+    'claroCourse.class' );
 
 From::Module( 'ICSURVEW' )->uses( 'answer.lib' , 'survey.lib' );
 
@@ -74,14 +75,18 @@ try
         
         case 2:
             $codeList = $userInput->get( 'code' );
+            $newCodeList = $userInput->get( 'newCode' );
             
             if ( $codeList )
             {
-                foreach( $codeList as $code => $newCode )
+                foreach( $newCodeList as $courseId => $newCode )
                 {
-                    if( $code != $newCode )
+                    if( $codeList[ $courseId ] != $newCode )
                     {
-                        // ici on change le code cours
+                        $course = new claroCourse();
+                        $course->load( $courseId );
+                        $course->officialCode = $newCode;
+                        $course->save();
                     }
                 }
                 
