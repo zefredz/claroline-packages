@@ -12,7 +12,7 @@
             </thead>
             <tbody>
         <?php $color = 1; ?>
-        <?php foreach( array_keys( $this->answer->getCourseList( array( array( 'question_id' => 1 , 'choice_id' => 1 ) , array( 'question_id' => 2 , 'choice_id' => 1 ) ) ) ) as $courseId ) : ?>
+        <?php foreach( array_keys( $this->answer->getCourseList( array( array( 'question_id' => 1 , 'choice_id' => 1 ) , array( 'question_id' => 2 , 'choice_id' => '!3' ) ) ) ) as $courseId ) : ?>
         <?php $color = -$color; ?>
             <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
                 <td><?php echo $courseId; ?></td>

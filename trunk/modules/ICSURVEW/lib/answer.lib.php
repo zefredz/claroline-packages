@@ -31,7 +31,6 @@ class ICSURVEW_Answer
      */
     public function load()
     {
-        $this->checkItemNb();
         $this->loadCourseList();
         $this->loadAnswerList();
     }
@@ -42,8 +41,7 @@ class ICSURVEW_Answer
      */
     public function hasAnswered()
     {
-        return $this->answeredNb == $this->itemNb
-          || ! $this->courseList;
+        return $this->answeredNb == count( (array)$this->questionList ) * count( $this->courseList );
     }
     
     /**
@@ -66,31 +64,40 @@ class ICSURVEW_Answer
             $courseList = array();
             
             $sql = "SELECT
-                        course_id
+                        L.course_id
                     FROM
-                        `{$this->tbl['ICSURVEW_log']}`
-                    WHERE
-                        user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
-                    AND (\n";
+                        `{$this->tbl['ICSURVEW_log']}` AS L\n";
+            $sql2 = "";
             
             foreach( $filter as $index => $cond )
             {
+                $tblAlias = "L" . $index;
+                
+                $sql .= "INNER JOIN
+                            `{$this->tbl['ICSURVEW_log']}` AS ".  $tblAlias . "
+                        ON L.course_id = " . $tblAlias . ".course_id\n";
                 $arg = array();
                 
-                foreach( $cond as $item => $itemId )
+                foreach( $cond as $field => $value )
                 {
-                    $arg[] = $item . " = " . $itemId . "\n";
+                    if( substr( (string)$value , 0 , 1 ) == '!' )
+                    {
+                        $comp = " != ";
+                        $value = (int)substr( $value , 1 );
+                    }
+                    else
+                    {
+                        $comp = " = ";
+                    }
+                    
+                    $arg[] = $tblAlias . "." . $field . $comp . $value;
                 }
                 
-                $sql .= "( " . implode( " AND \n" , $arg ) .") \n";
-                
-                if ( $index < count( $filter) - 1 )
-                {
-                    $sql .= "OR\n";
-                }
+                $sql2 .= "( " . implode( " AND " , $arg ) .")\n AND ";
             }
             
-            $sql .= " )";
+            $sql .= "WHERE\n" . $sql2;
+            $sql .= "L.user_id = " . Claroline::getDatabase()->escape( $this->userId );
             
             $result = Claroline::getDatabase()->query( $sql );
             
@@ -238,19 +245,6 @@ class ICSURVEW_Answer
             {
                 $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];
                 $this->answeredNb++;
-            }
-        }
-    }
-    
-    private function checkItemNb()
-    {
-        $this->itemNb = 0;
-        
-        foreach( $this->questionList as $question )
-        {
-            foreach( $question as $option )
-            {
-                $this->itemNb++;
             }
         }
     }
