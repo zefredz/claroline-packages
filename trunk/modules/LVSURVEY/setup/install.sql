@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__survey2_answer_item` (
   `answerId`            INTEGER                                         NOT NULL,
   `choiceId`            INTEGER                                         NOT NULL,
   `optionId`            INTEGER                                         NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM;
 
 -- --------------------------------------------------------
