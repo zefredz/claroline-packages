@@ -19,7 +19,6 @@ class ICSURVEW_Answer
     {
         $this->userId = (int)$userId;
         $this->questionList = $questionList;
-        $this->answeredNb = 0;
         
         $this->tbl = get_module_main_tbl( array( 'ICSURVEW_log' , 'course' , 'rel_course_user' ) );
         $this->load();
@@ -233,6 +232,7 @@ class ICSURVEW_Answer
                 user_id = " . Claroline::getDatabase()->escape( $this->userId ) );
         
         $this->answerList = array();
+        $this->answeredNb = 0;
         
         foreach( $result as $line )
         {
