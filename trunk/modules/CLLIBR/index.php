@@ -795,11 +795,7 @@ try
                 {
                     $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                          . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
-                    $fileName = 'RDF_metadata_resource_' . $resourceId . '.rdf';
-                    header("Content-type: application/xml");
-                    header('Content-Disposition: attachment; filename="' . $fileName );
-                    echo claro_utf8_encode( $exporterList[ $exportFormat ]->export( $url ) );
-                    exit();
+                    $exporterList[ $exportFormat ]->export( $url );
                 }
             }
             

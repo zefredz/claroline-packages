@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.6.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.7 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -83,6 +83,16 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
         $xml .= '    </rdf:Description>' . "\n";
         $xml .= '</rdf:RDF>';
         
-        return( $xml );
+        //return $xml;
+        
+        $charList = array( ' ' , '/' , '\\' , '$' , '*' , '(' , ')' , '[' , ']' );
+        $fileName = array_key_exists( 'title' , $this->metadatas )
+                  ? str_replace( $charList , '_' , $this->metadatas[ 'title' ] )
+                  : '';
+        $fileName = 'metadata_' . $fileName . '.rdf';
+        header("Content-type: application/xml");
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        echo $xml;
+        exit();
     }
 }
