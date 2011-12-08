@@ -2,14 +2,14 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class DublinCore extends MetaDataView implements Renderable, Exportable
+class DublinCore extends MetadataExport implements Renderable
 {
     protected $propertyList = array( 'title'
                                    , 'creator'
@@ -31,6 +31,8 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
                                  , 'publication date' => 'date'
                                  , 'ISBN' => 'identifier'
                                  , 'ISSN' => 'identifier' );
+    
+    protected $fileExtension = 'rdf';
     
     public function render()
     {
@@ -83,16 +85,6 @@ class DublinCore extends MetaDataView implements Renderable, Exportable
         $xml .= '    </rdf:Description>' . "\n";
         $xml .= '</rdf:RDF>';
         
-        //return $xml;
-        
-        $charList = array( ' ' , '/' , '\\' , '$' , '*' , '(' , ')' , '[' , ']' );
-        $fileName = array_key_exists( 'title' , $this->metadatas )
-                  ? str_replace( $charList , '_' , $this->metadatas[ 'title' ] )
-                  : '';
-        $fileName = 'metadata_' . $fileName . '.rdf';
-        header("Content-type: application/xml");
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
-        echo $xml;
-        exit();
+        return $xml;
     }
 }

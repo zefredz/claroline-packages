@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -12,13 +12,14 @@
 /**
  * A class that represents the metadatas
  * related to a specified resource
+ * ready to be rendered
  * @property array $propertyList
  * @property array $templateList
  * @property array $translator
  * @property array $metadatas
  * @property string $type
  */
-class MetadataView
+abstract class MetadataView
 {
     const TYPE_DEFAULT = 'default';
     
@@ -90,12 +91,4 @@ class MetadataView
 interface Renderable
 {
     public function render();
-}
-
-/**
- * Interface for metadatas that can be exported
- */
-interface Exportable
-{
-    public function export( $url );
 }

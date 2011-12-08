@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -32,6 +32,7 @@ From::Module( 'CLLIBR' )->uses(
     'metadata.lib',
     'search.lib',
     'metadataview.lib',
+    'metadataexport.lib',
     'pluginloader.lib',
     'resourceview.lib',
     'acl.lib',
@@ -172,7 +173,7 @@ try
         {
             $exporter = new $pluginName( $metadata->getMetadataList() );
             
-            if ( is_a( $exporter , 'Exportable' ) )
+            if ( is_a( $exporter , 'MetadataExport' ) )
             {
                 $exporterList[ $pluginName ] = $exporter;
             }
@@ -795,7 +796,11 @@ try
                 {
                     $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                          . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
-                    $exporterList[ $exportFormat ]->export( $url );
+                    $fileName = $exporterList[ $exportFormat ]->getFileName( $resourceId );
+                    header("Content-type: " . StoredResource::getMimeType( $fileName ) );
+                    header('Content-Disposition: attachment; filename="' . $fileName . '"');
+                    echo $exporterList[ $exportFormat ]->export( $url );
+                    exit();
                 }
             }
             
