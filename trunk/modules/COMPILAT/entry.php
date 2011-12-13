@@ -4,11 +4,11 @@ Module COMPILATIO v1.6 testé sur Claroline 1.8.11 et 1.9rc5
 Compilatio - www.compilatio.net
 */
 //////////////////////////////////////////////////////////////////////////
-//							Identifier									//
+//                          Identifier                                  //
 //////////////////////////////////////////////////////////////////////////
 $tlabelReq = 'COMPILAT';
 //////////////////////////////////////////////////////////////////////////
-//							Includes									//
+//                          Includes                                    //
 //////////////////////////////////////////////////////////////////////////
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 add_module_lang_array($tlabelReq);
@@ -47,7 +47,7 @@ $currentCoursePath =  claro_get_current_course_data('path');
 // 'step' of pager
 $assignmentsPerPage = 20;
 //////////////////////////////////////////////////////////////////////////
-//							Business Logic								//
+//                          Business Logic                              //
 //////////////////////////////////////////////////////////////////////////
 //$compilatio = new compilatio();
 //$result=$compilatio->SendDoc($_SESSION['_cid'],1,utf8_encode("Le fichier"),"claro.pdf");
@@ -67,14 +67,14 @@ $dialogBox = '';
 // permission
 $is_allowedToEdit = claro_is_allowed_to_edit();
 //////////////////////////////////////////////////////////////////////////
-//							Display										//
+//                          Display                                     //
 //////////////////////////////////////////////////////////////////////////
 
 /*--------------------------------------------------------------------
                             HEADER
   --------------------------------------------------------------------*/
     $noQUERY_STRING = true;
-	$nameTools = get_lang('Compilatio')." - ".get_lang('Anti Plagiarism Tool');
+    $nameTools = get_lang('Compilatio')." - ".get_lang('Anti Plagiarism Tool');
     /*--------------------------------------------------------------------
                                   LIST
       --------------------------------------------------------------------*/
@@ -212,7 +212,7 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
         $out .= '<tr ' . $style . '>'."\n"
         .    '<td>' . "\n"
         .    '<a href="compilist.php?assigId=' . $anAssignment['id'] . '" class="item' . $classItem . '">'
-        .    '<img src="' . get_path('imgRepositoryWeb') . 'assignment.gif" alt="" /> '
+        .    '<img src="' . get_icon_url( 'assignment' ) . '" alt="" /> '
         .    $anAssignment['title']
         .    '</a>' . "\n"
         .    '</td>' . "\n"
@@ -221,9 +221,9 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
         $out .= '<td align="center">';
 
         if( $anAssignment['assignment_type'] == 'INDIVIDUAL' )
-            $out .= '<img src="' . get_path('imgRepositoryWeb') . 'user.gif" border="0" alt="' . get_lang('Individual') . '" />' ;
+            $out .= '<img src="' . get_icon_url( 'user' ) . '" border="0" alt="' . get_lang('Individual') . '" />' ;
         elseif( $anAssignment['assignment_type'] == 'GROUP' )
-            $out .= '<img src="' . get_path('imgRepositoryWeb') . 'group.gif" border="0" alt="' . get_lang('Groups (from groups tool, only group members can post)') . '" />' ;
+            $out .= '<img src="' . get_icon_url( 'group' ) . '" border="0" alt="' . get_lang('Groups (from groups tool, only group members can post)') . '" />' ;
         else
             $out .= '&nbsp;';
 
