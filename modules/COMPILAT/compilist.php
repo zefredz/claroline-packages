@@ -9,11 +9,11 @@ Script d'affichage de la liste des documents associés à un assesment/travail
 Adaptation du script workList.php inclus dans le module work de claroline
 */
 //////////////////////////////////////////////////////////////////////////
-//							Identifier									//
+//                          Identifier                                  //
 //////////////////////////////////////////////////////////////////////////
 $tlabelReq = 'COMPILAT';
 //////////////////////////////////////////////////////////////////////////
-//							Includes									//
+//                          Includes                                    //
 //////////////////////////////////////////////////////////////////////////
 
 require '../../claroline/inc/claro_init_global.inc.php';
@@ -63,7 +63,7 @@ if ( !$req['assignmentId'] || !$assignment->load($req['assignmentId']) )
     exit();
 }
 /*============================================================================
-	Permissions
+    Permissions
   ============================================================================*/
 
 $assignmentIsVisible = (bool) ( $assignment->getVisibility() == 'VISIBLE' );
@@ -78,7 +78,7 @@ if( !$assignmentIsVisible && !$is_allowedToEditAll )
 }
 
 //////////////////////////////////////////////////////////////////////////
-//							Business Logic								//
+//                          Business Logic                              //
 //////////////////////////////////////////////////////////////////////////
 /*Cleaning compilatio if some submissions has been deleted*/
 Clean_compilatio($tbl_wrk_submission,claro_get_current_course_id(),$_REQUEST['assigId']);
@@ -106,89 +106,89 @@ $perc_ana=$quotas->usedCredits/$quotas->credits*100;
 if( $assignment->getAssignmentType() == 'INDIVIDUAL' )
 {
 $sql = "SELECT user_id,title,authors,id,submitted_doc_path
-		FROM `" . $tbl_wrk_submission
-		."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
+        FROM `" . $tbl_wrk_submission
+        ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
 }
 else
 {
 $sql = "SELECT user_id,group_id,title,authors,id,submitted_doc_path
-		FROM `" . $tbl_wrk_submission
-		."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
-		}
+        FROM `" . $tbl_wrk_submission
+        ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
+        }
 if(!$is_allowedToEditAll)
-	{
-	$sql.=" AND user_id=".claro_get_current_user_id();
-	}
+    {
+    $sql.=" AND user_id=".claro_get_current_user_id();
+    }
 
 $results=claro_sql_query_fetch_all($sql);
 /* Fetch array of documents that are already associated between claroline & compilatio */
 /*$sql2 = "SELECT submission_id,compilatio_id
-	FROM `".$tbl_compi."`
-	WHERE assignment_id=".$_REQUEST['assigId']." AND course_code='".$_course['officialCode']."'";
+    FROM `".$tbl_compi."`
+    WHERE assignment_id=".$_REQUEST['assigId']." AND course_code='".$_course['officialCode']."'";
 */
 $sql2 = "SELECT submission_id,compilatio_id
-	FROM `".$tbl_compi."`
-	WHERE assignment_id=".$_REQUEST['assigId']." AND course_code='".claro_get_current_course_id()."'";
-	
-$results2=claro_sql_query_fetch_all($sql2);	
+    FROM `".$tbl_compi."`
+    WHERE assignment_id=".$_REQUEST['assigId']." AND course_code='".claro_get_current_course_id()."'";
+    
+$results2=claro_sql_query_fetch_all($sql2); 
 
 //print_r($results2);
-		
+        
 $cmd = ( isset($_REQUEST['cmd']) )?$_REQUEST['cmd']:'';
 if ($is_allowedToEditAll)
-	{
+    {
     if ($cmd=='start')
-    	{
+        {
         if ( isset($_REQUEST['doc']) )
-        	{
-			AnaDoc($_REQUEST['doc']);
-			}		
-		claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-		}
-	elseif($cmd=='del')
-		{
-		if (isset($_REQUEST['doc']))
-        	{
-			SupprDoc($_REQUEST['doc']);
-			claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-			}
-		}
-	elseif($cmd=='multi')
-		{
-		if(isset($_REQUEST['action']) && isset($_REQUEST['mutli_docs']))
-			{
-			if($_REQUEST['action']=="suppr")
-				{
-				foreach ($_REQUEST['mutli_docs'] as $choix)
-					{
-					 if(is_md5($choix))
-						{
-						SupprDoc($choix);
-						}
-					}
-				claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-				}
-			elseif($_REQUEST['action']=="upload")
-				{
-				$up=$_REQUEST['mutli_docs'];
-				}
-			elseif($_REQUEST['action']=="analyse")
-				{
-				foreach ($_REQUEST['mutli_docs'] as $choix)
-					{
-					if(GetCompiStat($choix)=="ANALYSE_NOT_STARTED")
-						{
-						AnaDoc($choix);
-						}
-					}
-				claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-				}
-			}
-		
-		}
-	}
+            {
+            AnaDoc($_REQUEST['doc']);
+            }       
+        claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+        }
+    elseif($cmd=='del')
+        {
+        if (isset($_REQUEST['doc']))
+            {
+            SupprDoc($_REQUEST['doc']);
+            claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+            }
+        }
+    elseif($cmd=='multi')
+        {
+        if(isset($_REQUEST['action']) && isset($_REQUEST['mutli_docs']))
+            {
+            if($_REQUEST['action']=="suppr")
+                {
+                foreach ($_REQUEST['mutli_docs'] as $choix)
+                    {
+                     if(is_md5($choix))
+                        {
+                        SupprDoc($choix);
+                        }
+                    }
+                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+                }
+            elseif($_REQUEST['action']=="upload")
+                {
+                $up=$_REQUEST['mutli_docs'];
+                }
+            elseif($_REQUEST['action']=="analyse")
+                {
+                foreach ($_REQUEST['mutli_docs'] as $choix)
+                    {
+                    if(GetCompiStat($choix)=="ANALYSE_NOT_STARTED")
+                        {
+                        AnaDoc($choix);
+                        }
+                    }
+                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+                }
+            }
+        
+        }
+    }
 //////////////////////////////////////////////////////////////////////////
-//							Display										//
+//                          Display                                     //
 //////////////////////////////////////////////////////////////////////////
 
 /*--------------------------------------------------------------------
@@ -232,17 +232,17 @@ $out .= '<script language=\'javascript\'>' . "\n"
     . '            <tr class="headerX">' . "\n";
 
 $out .= '<th>'.get_lang('Assignments').'</th>'
-.	 '<th>'.get_lang('Author(s)').'</th>'
-.	 '<th colspan=3>'.get_lang('Compilatio').'</th>'
-.	 '</tr>'
-.	 '</thead>'
-.	 '<tbody>';
+.    '<th>'.get_lang('Author(s)').'</th>'
+.    '<th colspan=3>'.get_lang('Compilatio').'</th>'
+.    '</tr>'
+.    '</thead>'
+.    '<tbody>';
 if(isset($up))
-	{
-	$out .= "<script>".
-		 "window.open('uploadframe.php?type=multi&doc=".serialize($up)."&assigId=".$_REQUEST['assigId']."&tab=".$tbl_wrk_submission."','MyWindow','width=350,height=290,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes');".
-		 "</script>";
-	}
+    {
+    $out .= "<script>".
+         "window.open('uploadframe.php?type=multi&doc=".serialize($up)."&assigId=".$_REQUEST['assigId']."&tab=".$tbl_wrk_submission."','MyWindow','width=350,height=290,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes');".
+         "</script>";
+    }
 if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
 {
     foreach( $results as $result )
@@ -287,30 +287,30 @@ if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
     }
 }
 $out .= '<tbody>'
-.	 '</table>'
-.	 '</form></div>';
+.    '</table>'
+.    '</form></div>';
  
 if ($is_allowedToEditAll)
-	{
-	/*Gestion multi doc*/
+    {
+    /*Gestion multi doc*/
 $out .= "<div align='right'>"
-.	 get_lang('To all')." : "
-.	 "<a href='javascript:void(0)' onclick='if(tout_cocher(true)) return false;'>".get_lang('check')."</a> - "
-.	 "<a href='javascript:void(0)' onclick=\"if(tout_cocher(false)) return false;\">".get_lang('uncheck')."</a>"
-.	 "</div>"
-.	 "<div align='right'>"
-.	 get_lang('Do to selected items')." : "
-.	 "<a href=\"javascript:document.action_multi.action.value='upload';document.action_multi.submit();\"><img src='img/ajouter.gif' alt='Ajouter '/>".get_lang('Start analysis')."</a>"
-.	 "</div>"
-.	 "<div class='spacer'>&nbsp;</div>";
-	/*affichage du quotas compilatio*/
-	/*$out .= '<table class="claroTable emphaseLine" width="100%">' . "\n"
-	.    '<thead>' . "\n"
-	.    '<tr class="headerX">' . "\n"
-	.	 '<th>'.get_lang('Compilatio quotas')." : ".get_lang('Used space').$use_space." Mo ".compi_bar($perc_space,0.5)." ".get_lang('of')." ".$total_space." Mo - ".get_lang('Analysis credits').$quotas->usedCredits." ".compi_bar($perc_ana,0.5)." ".get_lang('of')." ".$quotas->credits." </th>"
-	.	 '</thead>'
-	.	 '</table>';*/
-	}
+.    get_lang('To all')." : "
+.    "<a href='javascript:void(0)' onclick='if(tout_cocher(true)) return false;'>".get_lang('check')."</a> - "
+.    "<a href='javascript:void(0)' onclick=\"if(tout_cocher(false)) return false;\">".get_lang('uncheck')."</a>"
+.    "</div>"
+.    "<div align='right'>"
+.    get_lang('Do to selected items')." : "
+.    "<a href=\"javascript:document.action_multi.action.value='upload';document.action_multi.submit();\"><img src='img/ajouter.gif' alt='Ajouter '/>".get_lang('Start analysis')."</a>"
+.    "</div>"
+.    "<div class='spacer'>&nbsp;</div>";
+    /*affichage du quotas compilatio*/
+    /*$out .= '<table class="claroTable emphaseLine" width="100%">' . "\n"
+    .    '<thead>' . "\n"
+    .    '<tr class="headerX">' . "\n"
+    .    '<th>'.get_lang('Compilatio quotas')." : ".get_lang('Used space').$use_space." Mo ".compi_bar($perc_space,0.5)." ".get_lang('of')." ".$total_space." Mo - ".get_lang('Analysis credits').$quotas->usedCredits." ".compi_bar($perc_ana,0.5)." ".get_lang('of')." ".$quotas->credits." </th>"
+    .    '</thead>'
+    .    '</table>';*/
+    }
 
 Claroline::getInstance()->display->body->appendContent( $out );
 echo Claroline::getInstance()->display->render();
