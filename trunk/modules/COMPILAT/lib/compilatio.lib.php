@@ -72,7 +72,7 @@ $compilatio = new compilatio(get_conf('clef_compilatio'),$urlsoap,get_conf('soap
 /*Fonction qui créer le tableau des documents claroline et qui propose les actions possible sur ceux si en fonction de le statut*/
 function Compi_list($assign_id,$doc_id,$status,$table,$compilatio_id)
 {
-    $id_multi=$compilatio_id; //utilisé pour la checkbox action mutliples
+    $id_multi = $compilatio_id == 'no' ? $doc_id : false; //utilisé pour la checkbox action mutliples
     $isAllowtoEdit=claro_is_allowed_to_edit();
     
     if (get_conf('using_SSL'))
@@ -162,14 +162,14 @@ function Compi_list($assign_id,$doc_id,$status,$table,$compilatio_id)
     }
     
     //si l'utisateur a des droits sur le documents alors il a accès à la check box d'actions multiples sur les documents associés à ce travail. 
-    if(! isset( $id_multi ) )
+    if( ! $id_multi )
     {
         //dans ces cas la, on ne fait rien
         $chaine.="<td>&nbsp;</td>";
     }
     elseif ($status=="NOT_IN_COMPILATIO")
     {
-        $chaine.="<td><input type='checkbox' name='mutli_docs[]' value='".$doc_id."'></td>";
+        $chaine.="<td><input type='checkbox' name='mutli_docs[]' value='".$id_multi."'></td>";
     }
     else
     {
