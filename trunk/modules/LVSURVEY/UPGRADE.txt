@@ -1,0 +1,19 @@
+Si vous mettez à jour à partir d'une ancienne version, n'oubliez pas de faire évoluer le schéma de la  base de données afin qu'il soit en phase avec ce qui est attendu par le code.
+
+le moyen le plus simple d'y arriver est d'etre connecté avec un compte d'administrateur de plateforme et de lancer la migration automatique du schema par la page :
+
+[adresse_de_votre_plateforme]/module/LVSURVEY/setup/migrate.php
+
+Ce processus de migration va automatiquement détecter la version du code et la version de la DB.
+
+Si vous ne souhaitez pas faire évoluer votre DB pour qu'elle ait la même version que votre code, vous pouvez utilisez "target=[NUM_DE_VERSION]"
+
+
+Exemple :
+
+[adresse_de_votre_plateforme]/module/LVSURVEY/setup/migrate.php?target=00000000000000 => supprime toute trace du module de la DB
+
+[adresse_de_votre_plateforme]/module/LVSURVEY/setup/migrate.php?target=00000000000001 => upgrade/downgrade le schema jusqu'a la premiere version.
+
+
+La version de votre code peut facilement etre trouvée en ouvrant le repertoire setup du module et en regardant le nom du repertoire qui a le numero le plus élevé.
