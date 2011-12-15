@@ -1,5 +1,5 @@
 <html>
-<body>
-<?php echo 'Loading...'; ?>
-</body>
+    <body>
+        <?php echo 'Loading...'; ?>
+    </body>
 </html>

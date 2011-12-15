@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__compilatio_docs` (
     `compilatio_id` VARCHAR( 32 ) NOT NULL,
     `course_code` VARCHAR( 40 ) NOT NULL,
     PRIMARY KEY  (`id`)
-) TYPE=MyISAM AUTO_INCREMENT=1;
+) ENGINE=MyISAM AUTO_INCREMENT=1;
 
 /*Création de la table qui stocke les informations sur le serveur CAS pour compilatio */
  CREATE TABLE `__CL_MAIN__compilatio_auth_serv` (
@@ -20,4 +20,4 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__compilatio_docs` (
     `version_auth_serv` INT NOT NULL DEFAULT '2',
     `uri_auth_serv` VARCHAR( 100 ) NOT NULL,
     PRIMARY KEY ( `id_auth_serv` )
-) TYPE=MyISAM 
+) ENGINE=MyISAM;

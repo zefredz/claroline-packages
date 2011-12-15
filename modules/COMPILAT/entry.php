@@ -73,55 +73,62 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 /*--------------------------------------------------------------------
                             HEADER
   --------------------------------------------------------------------*/
-    $noQUERY_STRING = true;
-    $nameTools = get_lang('Compilatio')." - ".get_lang('Anti Plagiarism Tool');
-    /*--------------------------------------------------------------------
-                                  LIST
-      --------------------------------------------------------------------*/
-    // if user come from a group
-    if ( claro_is_in_a_group() && claro_is_group_allowed() )
+$noQUERY_STRING = true;
+$nameTools = get_lang('Compilatio')." - ".get_lang('Anti Plagiarism Tool');
+/*--------------------------------------------------------------------
+                              LIST
+--------------------------------------------------------------------*/
+
+// if user come from a group
+if ( claro_is_in_a_group() && claro_is_group_allowed() )
+{
+    // select only the group assignments
+    $sql = "SELECT `id`,
+                    `title`,
+                    `def_submission_visibility`,
+                      `visibility`,
+                    `assignment_type`,
+                    `authorized_content`,
+                    unix_timestamp(`start_date`) as `start_date_unix`,
+                    unix_timestamp(`end_date`) as `end_date_unix`
+            FROM `" . $tbl_wrk_assignment . "`
+            WHERE `assignment_type` = 'GROUP'";
+    
+    if( isset($_GET['sort']) )
     {
-        // select only the group assignments
-        $sql = "SELECT `id`,
-                        `title`,
-                        `def_submission_visibility`,
-                          `visibility`,
-                        `assignment_type`,
-                        `authorized_content`,
-                        unix_timestamp(`start_date`) as `start_date_unix`,
-                        unix_timestamp(`end_date`) as `end_date_unix`
-                FROM `" . $tbl_wrk_assignment . "`
-                WHERE `assignment_type` = 'GROUP'";
-
-            if ( isset($_GET['sort']) ) $sortKeyList[$_GET['sort']] = isset($_GET['dir']) ? $_GET['dir'] : SORT_ASC;
-
-            $sortKeyList['end_date']    = SORT_ASC;
+        $sortKeyList[$_GET['sort']] = isset($_GET['dir']) ? $_GET['dir'] : SORT_ASC;
     }
-    else
+    
+    $sortKeyList['end_date']    = SORT_ASC;
+}
+else
+{
+    $sql = "SELECT `id`,
+                    `title`,
+                    `def_submission_visibility`,
+                    `visibility`,
+                    `assignment_type`,
+                    unix_timestamp(`start_date`) as `start_date_unix`,
+                    unix_timestamp(`end_date`) as `end_date_unix`
+            FROM `" . $tbl_wrk_assignment . "`";
+    
+    if ( isset($_GET['sort']) )
     {
-        $sql = "SELECT `id`,
-                        `title`,
-                        `def_submission_visibility`,
-                        `visibility`,
-                        `assignment_type`,
-                        unix_timestamp(`start_date`) as `start_date_unix`,
-                        unix_timestamp(`end_date`) as `end_date_unix`
-                FROM `" . $tbl_wrk_assignment . "`";
-
-        if ( isset($_GET['sort']) ) $sortKeyList[$_GET['sort']] = isset($_GET['dir']) ? $_GET['dir'] : SORT_ASC;
-
-        $sortKeyList['end_date']    = SORT_ASC;
+        $sortKeyList[$_GET['sort']] = isset($_GET['dir']) ? $_GET['dir'] : SORT_ASC;
     }
+    
+    $sortKeyList['end_date']    = SORT_ASC;
+}
 
-    $offset = (isset($_REQUEST['offset']) && !empty($_REQUEST['offset']) ) ? $_REQUEST['offset'] : 0;
-    $assignmentPager = new claro_sql_pager($sql, $offset, $assignmentsPerPage);
+$offset = (isset($_REQUEST['offset']) && !empty($_REQUEST['offset']) ) ? $_REQUEST['offset'] : 0;
+$assignmentPager = new claro_sql_pager($sql, $offset, $assignmentsPerPage);
 
-    foreach($sortKeyList as $thisSortKey => $thisSortDir)
-    {
-        $assignmentPager->add_sort_key( $thisSortKey, $thisSortDir);
-    }
+foreach($sortKeyList as $thisSortKey => $thisSortDir)
+{
+    $assignmentPager->add_sort_key( $thisSortKey, $thisSortDir);
+}
 
-    $assignmentList = $assignmentPager->get_result_list();
+$assignmentList = $assignmentPager->get_result_list();
 
 /*--------------------------------------------------------------------
                     TOOL TITLE
@@ -129,14 +136,12 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 
 $out = claro_html_tool_title($nameTools);
 
-
 if ($is_allowedToEdit)
 {
-
     /*--------------------------------------------------------------------
                             DIALOG BOX SECTION
       --------------------------------------------------------------------*/
-
+    
     if ( isset($dialogBox) && !empty($dialogBox) )
     {
         $out .= claro_html_message_box($dialogBox);
@@ -146,6 +151,7 @@ if ($is_allowedToEdit)
 /*--------------------------------------------------------------------
                             ASSIGNMENT LIST
     --------------------------------------------------------------------*/
+
 // if we don't display assignment form
 if ( (!isset($displayAssigForm) || !$displayAssigForm) )
 {
@@ -172,11 +178,13 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
     $out .= '</tr>' . "\n"
     .     '<tbody>' . "\n\n";
 
-
     $atLeastOneAssignmentToShow = false;
 
-    if (claro_is_user_authenticated()) $date = $claro_notifier->get_notification_date(claro_get_current_user_id());
-
+    if (claro_is_user_authenticated())
+    {
+        $date = $claro_notifier->get_notification_date(claro_get_current_user_id());
+    }
+    
     foreach ( $assignmentList as $anAssignment )
     {
         //modify style if the file is recently added since last login and that assignment tool is used with visible default mode for submissions.
@@ -184,15 +192,15 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
         if( claro_is_user_authenticated() )
         {
             if ( $claro_notifier->is_a_notified_ressource(claro_get_current_course_id(), $date, claro_get_current_user_id(), '',  claro_get_current_tool_id(), $anAssignment['id'],FALSE) && ($anAssignment['def_submission_visibility']=="VISIBLE"  || $is_allowedToEdit))
-        {
-            $classItem=' hot';
-        }
+            {
+                $classItem=' hot';
+            }
             else //otherwise just display its name normally and tell notifier that every ressources are seen (for tool list notification consistancy)
-        {
-            $claro_notifier->is_a_notified_ressource(claro_get_current_course_id(), $date, claro_get_current_user_id(), '', claro_get_current_tool_id(), $anAssignment['id']);
+            {
+                $claro_notifier->is_a_notified_ressource(claro_get_current_course_id(), $date, claro_get_current_user_id(), '', claro_get_current_tool_id(), $anAssignment['id']);
+            }
         }
-        }
-
+        
         if ( $anAssignment['visibility'] == "INVISIBLE" )
         {
             if ( $is_allowedToEdit )
@@ -208,7 +216,7 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
         {
             $style='';
         }
-
+        
         $out .= '<tr ' . $style . '>'."\n"
         .    '<td>' . "\n"
         .    '<a href="compilist.php?assigId=' . $anAssignment['id'] . '" class="item' . $classItem . '">'
@@ -217,19 +225,26 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
         .    '</a>' . "\n"
         .    '</td>' . "\n"
         ;
-
+    
         $out .= '<td align="center">';
-
+    
         if( $anAssignment['assignment_type'] == 'INDIVIDUAL' )
+        {
             $out .= '<img src="' . get_icon_url( 'user' ) . '" border="0" alt="' . get_lang('Individual') . '" />' ;
+        }
         elseif( $anAssignment['assignment_type'] == 'GROUP' )
+        {
             $out .= '<img src="' . get_icon_url( 'group' ) . '" border="0" alt="' . get_lang('Groups (from groups tool, only group members can post)') . '" />' ;
+        }
         else
+        {
             $out .= '&nbsp;';
-
+        }
+    
         $out .= '</td>' . "\n"
         .    '<td><small>' . claro_html_localised_date(get_locale('dateTimeFormatLong'),$anAssignment['start_date_unix']) . '</small></td>' . "\n"
         .    '<td><small>' . claro_html_localised_date(get_locale('dateTimeFormatLong'),$anAssignment['end_date_unix']) . '</small></td>' . "\n";
+        
         if ( isset($_REQUEST['submitGroupWorkUrl']) && !empty($_REQUEST['submitGroupWorkUrl']) )
         {
             if( !isset($anAssignment['authorized_content']) || $anAssignment['authorized_content'] != 'TEXT' )
@@ -244,24 +259,22 @@ if ( (!isset($displayAssigForm) || !$displayAssigForm) )
             {
                 $out .= '<td align="center">'
                 .      '<small>-</small>'
-                .     '</td>' . "\n"
-                ;
+                .     '</td>' . "\n";
             }
         }
-
-
+        
         $atLeastOneAssignmentToShow = true;
     }
-
+    
     if ( ! $atLeastOneAssignmentToShow )
     {
         $out .= '<tr>' . "\n"
         .    '<td colspan=' . $colspan . '>' . "\n"
         .    get_lang('There is no assignment at the moment')
         .    '</td>' . "\n"
-        .    '</tr>' . "\n"
-        ;
+        .    '</tr>' . "\n";
     }
+    
     $out .= '</tbody>' . "\n"
     .     '</table>' . "\n\n";
 }
