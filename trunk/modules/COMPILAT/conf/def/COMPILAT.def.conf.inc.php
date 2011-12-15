@@ -25,13 +25,13 @@ array ( 'clef_compilatio',
     'wget_uri',
     'wget_login',
     'wget_password',
-		'using_CAS',
-		'host_CAS',
-		'port_CAS',
-		'uri_CAS',
-		'version_CAS',
-		'using_debug'
-		);
+        'using_CAS',
+        'host_CAS',
+        'port_CAS',
+        'uri_CAS',
+        'version_CAS',
+        'using_debug'
+        );
 
 /* GENERAL PROPERTIES*/
 $conf_def_property_list['clef_compilatio'] =
@@ -41,21 +41,19 @@ array ( 'label'   => 'Votre clef d\'identification Compilatio'
       , 'acceptedValue' => array ('Min'=>'5')
       );
 
-
 $conf_def_property_list['soap_proxy_host'] =
 array ( 'label'   => 'Adresse du proxy pour SOAP'
       , 'default' => ''
       , 'type'    => 'string'
       , 'acceptedValue' => array ('Min'=>'5')
       );
-	  
+
 $conf_def_property_list['soap_proxy_port'] =
 array ( 'label'   => 'Port du proxy pour SOAP'
       , 'default' => ''
       , 'type'    => 'string'
       ,'acceptedValue' => array ('Min'=>'1')
       );
-
 
 $conf_def_property_list['using_SSL'] =
 array ( 'label'       => 'Utilisation en SSL (https)'
@@ -67,7 +65,6 @@ array ( 'label'       => 'Utilisation en SSL (https)'
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
 
-
 $conf_def_property_list['mode_transport'] =
 array ( 'label'       => 'Mode de transport des données'
       , 'description' => ''
@@ -78,29 +75,27 @@ array ( 'label'       => 'Mode de transport des données'
       ,'acceptedValue' => array('TRUE' => 'Envoi des fichiers par Soap', 'FALSE' => 'Récupération des fichiers par téléchargement')
       );
 
-	  
 $conf_def_property_list['wget_uri'] =
 array ( 'label'   => 'Si transport par récupération, URL spéciales de transport (URL normale de Claroline par défaut)'
       , 'default' => ''
       , 'type'    => 'string'
       , 'acceptedValue' => array ('Min'=>'5')
-      );	  
+      );      
 
 $conf_def_property_list['wget_login'] =
 array ( 'label'   => 'Login si URL protégée par mot de passe'
       , 'default' => ''
       , 'type'    => 'string'
       , 'acceptedValue' => array ('Min'=>'5')
-      );	
-      
+      );
+
 $conf_def_property_list['wget_password'] =
 array ( 'label'   => 'Mot de passe'
       , 'default' => ''
       , 'type'    => 'string'
       , 'acceptedValue' => array ('Min'=>'5')
-      );	     
-  
-	  
+      );
+
 $conf_def_property_list['using_CAS'] =
 array ( 'label'       => 'Utilisation de l\'authentification CAS'
       , 'description' => ''
@@ -117,7 +112,6 @@ array ( 'label'   => 'Adresse du serveur CAS'
       , 'type'    => 'string'
       , 'acceptedValue' => array ('Min'=>'5')
       );
-	  
 $conf_def_property_list['port_CAS'] =
 array ( 'label'   => 'Port utilisé par le serveur CAS'
       , 'default' => 0
@@ -138,7 +132,7 @@ array ( 'label'   => 'Version du serveur CAS (1 ou 2) '
       ,  'type'    => 'integer'
       ,'acceptedValue' => array ('Min'=>'1')
       );
-      
+
 $conf_def_property_list['using_debug'] =
 array ( 'label'       => 'Mode debug'
       , 'description' => ''
@@ -148,5 +142,3 @@ array ( 'label'       => 'Mode debug'
       , 'readonly'    => FALSE
       ,'acceptedValue' => array('TRUE' => 'Yes', 'FALSE' => 'No')
       );
-      
-?>

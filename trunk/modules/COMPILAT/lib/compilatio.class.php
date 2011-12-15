@@ -26,9 +26,12 @@ class compilatio
     {
         try
         {
-            if(!empty($key)){
+            if(!empty($key))
+            {
                 $this->key = $key;
-                if(!empty($urlsoap)){
+                
+                if(!empty($urlsoap))
+                {
                     if(!empty($proxy_host))
                     {
                         $param=array('trace'=>false,
@@ -44,10 +47,14 @@ class compilatio
                         'exceptions'=>true);
                     }
                     $this->soapcli = new SoapClient($urlsoap,$param);
-                }else{
+                }
+                else{
+                    
                     $this->soapcli = 'WS urlsoap not available' ;
                 }
-            }else{
+            }
+            else
+            {
                 $this->soapcli ='API key not available';
             }
         }
@@ -55,7 +62,8 @@ class compilatio
         {
             $this->soapcli = "Error constructor compilatio " . $fault->faultcode ." " .$fault->faultstring ;
         }
-        catch (Exception $e) {
+        catch (Exception $e)
+        {
             $this->soapcli = "Error constructor compilatio with urlsoap" . $urlsoap;
         }
     }
@@ -66,7 +74,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $idDocument = $this->soapcli->__call('addDocumentBase64',array($this->key,utf8_encode(urlencode($title)),utf8_encode(urlencode($description)),utf8_encode(urlencode($filename)),utf8_encode($mimetype),base64_encode($content)));
             return $idDocument;
         }
@@ -82,7 +93,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $param=array($this->key,$compi_hash);
             $idDocument = $this->soapcli->__call('getDocument',$param);
             return $idDocument;
@@ -99,7 +113,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $param=array($this->key,$compi_hash);
             $idDocument = $this->soapcli->__call('getDocumentReportUrl',$param);
             return $idDocument;
@@ -116,7 +133,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $param=array($this->key,$compi_hash);
             $this->soapcli->__call('deleteDocument',$param);
         }
@@ -132,7 +152,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $param=array($this->key,$compi_hash);
             $this->soapcli->__call('startDocumentAnalyse',$param);
         }
@@ -148,7 +171,10 @@ class compilatio
         try
         {
             if (!is_object($this->soapcli))
+            {
                 return("Error in constructor compilatio() " . $this->soapcli);
+            }
+            
             $param=array($this->key);
             $resultat=$this->soapcli->__call('getAccountQuotas',$param);
             return $resultat;
@@ -158,7 +184,6 @@ class compilatio
             return("Erreur  GetQuotas()" . $fault->faultcode ." " .$fault->faultstring);
         }
     }
-
 }
 
 /**
@@ -167,14 +192,18 @@ class compilatio
 *  2009-03-18*/
 function veriffiletype($nomFichier)
 {
-        $types = array("doc","docx","rtf","xls","xlsx","ppt","pptx","odt","pdf","txt","htm","html");
-        $extension=substr($nomFichier, strrpos($nomFichier, ".")+1);
-        $extension=strtolower($extension);
-        if (in_array($extension, $types))
-        {
-            return true;
-        }
-        else return false;
+    $types = array("doc","docx","rtf","xls","xlsx","ppt","pptx","odt","pdf","txt","htm","html");
+    $extension=substr($nomFichier, strrpos($nomFichier, ".")+1);
+    $extension=strtolower($extension);
+    
+    if (in_array($extension, $types))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /**
@@ -186,8 +215,8 @@ function veriffiletype($nomFichier)
  * @param $texte : array contenant les morceaux de texte nécessaires
  * @return unknown_type
  */
-function getProgressionAnalyseDocv31($status,$pour=0,$chemin_images='',$texte='') {
-
+function getProgressionAnalyseDocv31($status,$pour=0,$chemin_images='',$texte='')
+{
     $refreshretour = "<a href=\"javascript:window.location.reload(false);\"><img src=\"".$chemin_images."refresh.gif\" title=\"" . $texte['refresh'] . "\" alt=\"" . $texte['refresh'] . "\"/></a>";
     $debutretour="<table cellpadding=\"0\" cellspacing=\"0\" style=\"border:0px;margin:0px;padding:0px;\"><tr>";
     $debutretour.="<td width=\"15\" style=\"border:0px;margin:0px;padding:0px;\">&nbsp;</td>";
@@ -199,13 +228,17 @@ function getProgressionAnalyseDocv31($status,$pour=0,$chemin_images='',$texte=''
 
     $finretour="</td></tr></table>";
 
-    if($status=="ANALYSE_IN_QUEUE" ){
+    if($status=="ANALYSE_IN_QUEUE" )
+    {
         return $debutretour . "<span style='font-size:11px'>".$texte['analysisinqueue']."</span>".$finretour;
     }
-    if($status=="ANALYSE_PROCESSING" ){
-
+    
+    if($status=="ANALYSE_PROCESSING" )
+    {
         if($pour==100)
-        return $debutretour."<span style='font-size:11px'>".$texte['analysisinfinalization']."</span>".$finretour;
+        {
+            return $debutretour."<span style='font-size:11px'>".$texte['analysisinfinalization']."</span>".$finretour;
+        }
         else
         {
             return $debutretour2."<td width=\"25\" align=\"right\" style=\"border:0px;margin:0px;padding:0px;\">$pour%</td><td width=\"55\" style=\"border:0px;margin:0px;padding:0px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_fond.png) no-repeat scroll 0;height:12px;padding:0 0 0 2px;width:55px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_gris.png) no-repeat scroll 0;height:12px;width:" . $pour/2 . "px;\"></div></div>".$finretour;
@@ -222,26 +255,32 @@ function getProgressionAnalyseDocv31($status,$pour=0,$chemin_images='',$texte=''
  * @param $texte : array contenant les morceaux de texte nécessaires
  * @return unknown_type
  */
-function getPomprankBarv31($pourcentagePompage, $seuil_faible, $seuil_eleve, $chemin_images='',$texte='') {
-
-
+function getPomprankBarv31($pourcentagePompage, $seuil_faible, $seuil_eleve, $chemin_images='',$texte='')
+{
     $pourcentagePompage = round($pourcentagePompage);
     $pour = round((50*$pourcentagePompage)/100);
-
+    
     $retour="<table cellpadding=\"0\" cellspacing=\"0\"><tr>";
-    if($pourcentagePompage<$seuil_faible) {
+    
+    if($pourcentagePompage<$seuil_faible)
+    {
         $retour.="<td width=\"15\" style=\"border:0px;margin:0px;padding:0px;\"><img src=\"".$chemin_images."mini-drapeau_vert.png\" title=\"" . $texte['result'] . "\" alt=\"faible\" width=\"15\" height=\"15\" /></td>";
         $retour.="<td width=\"25\" align=\"right\" style=\"border:0px;margin:0px;padding:0px;\">" . $pourcentagePompage . "%</td>";
         $retour.= "<td width=\"55\" style=\"border:0px;margin:0px;padding:0px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_fond.png) no-repeat scroll 0;height:12px;padding:0 0 0 2px;width:55px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_vert.png) no-repeat scroll 0;height:12px;width:" . $pour . "px\"></div></div></td>";
-    } else if($pourcentagePompage>=$seuil_faible && $pourcentagePompage<$seuil_eleve) {
+    }
+    else if($pourcentagePompage>=$seuil_faible && $pourcentagePompage<$seuil_eleve)
+    {
         $retour.="<td width=\"15\" style=\"border:0px;margin:0px;padding:0px;\"><img src=\"".$chemin_images."mini-drapeau_orange.png\" title=\"" . $texte['result'] . "\" alt=\"faible\" width=\"15\" height=\"15\" /></td>";
         $retour.="<td width=\"25\" align=\"right\" style=\"border:0px;margin:0px;padding:0px;\">" . $pourcentagePompage . "%</td>";
         $retour.= "<td width=\"55\" style=\"border:0px;margin:0px;padding:0px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_fond.png) no-repeat scroll 0;height:12px;padding:0 0 0 2px;width:55px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_orange.png) no-repeat scroll 0;height:12px;width:" . $pour . "px\"></div></div></td>";
-    } else {
+    }
+    else
+    {
         $retour.="<td width=\"15\" style=\"border:0px;margin:0px;padding:0px;\"><img src=\"".$chemin_images."mini-drapeau_rouge.png\" title=\"" . $texte['result'] . "\" alt=\"faible\" width=\"15\" height=\"15\" /></td>";
         $retour.="<td width=\"25\" align=\"right\" style=\"border:0px;margin:0px;padding:0px;\">" . $pourcentagePompage . "%</td>";
         $retour.= "<td width=\"55\" style=\"border:0px;margin:0px;padding:0px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_fond.png) no-repeat scroll 0;height:12px;padding:0 0 0 2px;width:55px;\"><div style=\"background:transparent url(".$chemin_images."mini-jauge_rouge.png) no-repeat scroll 0;height:12px;width:" . $pour . "px\"></div></div></td>";
     }
+    
     $retour.="</tr></table>";
 
     return $retour;
@@ -262,13 +301,29 @@ function is_md5($hash)
 function typeMime($nomFichier)
 {
     if(preg_match("@Opera(/| )([0-9].[0-9]{1,2})@", $_SERVER['HTTP_USER_AGENT'], $resultats))
-    $navigateur="Opera";
+    {
+        $navigateur="Opera";
+    }
     elseif(preg_match("@MSIE ([0-9].[0-9]{1,2})@", $_SERVER['HTTP_USER_AGENT'], $resultats))
-    $navigateur="Internet Explorer";
-    else $navigateur="Mozilla";
+    {
+        $navigateur="Internet Explorer";
+    }
+    else
+    {
+        $navigateur="Mozilla";
+    }
+    
     $mime=parse_ini_file("mime.ini");
     $extension=substr($nomFichier, strrpos($nomFichier, ".")+1);
-    if(array_key_exists($extension, $mime)) $type=$mime[$extension];
-    else $type=($navigateur!="Mozilla") ? 'application/octetstream' : 'application/octet-stream';
+    
+    if(array_key_exists($extension, $mime))
+    {
+        $type=$mime[$extension];
+    }
+    else
+    {
+        $type=($navigateur!="Mozilla") ? 'application/octetstream' : 'application/octet-stream';
+    }
+    
     return $type;
 }

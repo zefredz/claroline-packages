@@ -62,12 +62,12 @@ if ( !$req['assignmentId'] || !$assignment->load($req['assignmentId']) )
     claro_redirect('entry.php');
     exit();
 }
+
 /*============================================================================
     Permissions
   ============================================================================*/
 
 $assignmentIsVisible = (bool) ( $assignment->getVisibility() == 'VISIBLE' );
- 
 $is_allowedToEditAll = (bool) claro_is_allowed_to_edit();
 
 if( !$assignmentIsVisible && !$is_allowedToEditAll )
@@ -84,7 +84,6 @@ if( !$assignmentIsVisible && !$is_allowedToEditAll )
 Clean_compilatio($tbl_wrk_submission,claro_get_current_course_id(),$_REQUEST['assigId']);
 
 /*récupération des quotas compilatio*/
-
 if (get_conf('using_SSL'))
 {
   $urlsoap='https://service.compilatio.net/webservices/CompilatioUserClient.wsdl';
@@ -102,23 +101,25 @@ $total_space=$quotas->space/1000000;
 $perc_space=$use_space/$total_space*100;
 $perc_ana=$quotas->usedCredits/$quotas->credits*100;
 */
+
 /* Fetch array of submissions */
 if( $assignment->getAssignmentType() == 'INDIVIDUAL' )
 {
-$sql = "SELECT user_id,title,authors,id,submitted_doc_path
-        FROM `" . $tbl_wrk_submission
-        ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
+    $sql = "SELECT user_id,title,authors,id,submitted_doc_path
+            FROM `" . $tbl_wrk_submission
+            ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
 }
 else
 {
-$sql = "SELECT user_id,group_id,title,authors,id,submitted_doc_path
-        FROM `" . $tbl_wrk_submission
-        ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
-        }
+    $sql = "SELECT user_id,group_id,title,authors,id,submitted_doc_path
+            FROM `" . $tbl_wrk_submission
+            ."` WHERE assignment_id=".$_REQUEST['assigId'] . " AND parent_id IS NULL";
+}
+
 if(!$is_allowedToEditAll)
-    {
+{
     $sql.=" AND user_id=".claro_get_current_user_id();
-    }
+}
 
 $results=claro_sql_query_fetch_all($sql);
 /* Fetch array of documents that are already associated between claroline & compilatio */
@@ -135,58 +136,62 @@ $results2=claro_sql_query_fetch_all($sql2);
 //print_r($results2);
         
 $cmd = ( isset($_REQUEST['cmd']) )?$_REQUEST['cmd']:'';
+
 if ($is_allowedToEditAll)
-    {
+{
     if ($cmd=='start')
-        {
+    {
         if ( isset($_REQUEST['doc']) )
-            {
-            AnaDoc($_REQUEST['doc']);
-            }       
-        claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-        }
-    elseif($cmd=='del')
         {
+            AnaDoc($_REQUEST['doc']);
+        }
+        
+        claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+    }
+    elseif($cmd=='del')
+    {
         if (isset($_REQUEST['doc']))
-            {
+        {
             SupprDoc($_REQUEST['doc']);
             claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-            }
-        }
-    elseif($cmd=='multi')
-        {
-        if(isset($_REQUEST['action']) && isset($_REQUEST['mutli_docs']))
-            {
-            if($_REQUEST['action']=="suppr")
-                {
-                foreach ($_REQUEST['mutli_docs'] as $choix)
-                    {
-                     if(is_md5($choix))
-                        {
-                        SupprDoc($choix);
-                        }
-                    }
-                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-                }
-            elseif($_REQUEST['action']=="upload")
-                {
-                $up=$_REQUEST['mutli_docs'];
-                }
-            elseif($_REQUEST['action']=="analyse")
-                {
-                foreach ($_REQUEST['mutli_docs'] as $choix)
-                    {
-                    if(GetCompiStat($choix)=="ANALYSE_NOT_STARTED")
-                        {
-                        AnaDoc($choix);
-                        }
-                    }
-                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
-                }
-            }
-        
         }
     }
+    elseif($cmd=='multi')
+    {
+        if(isset($_REQUEST['action']) && isset($_REQUEST['mutli_docs']))
+        {
+            if($_REQUEST['action']=="suppr")
+            {
+                foreach ($_REQUEST['mutli_docs'] as $choix)
+                {
+                    if(is_md5($choix))
+                    {
+                        SupprDoc($choix);
+                    }
+                }
+                
+                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+            }
+            elseif($_REQUEST['action']=="upload")
+            {
+                $up=$_REQUEST['mutli_docs'];
+            }
+            elseif($_REQUEST['action']=="analyse")
+            {
+                foreach ($_REQUEST['mutli_docs'] as $choix)
+                {
+                    if(GetCompiStat($choix)=="ANALYSE_NOT_STARTED")
+                    {
+                        AnaDoc($choix);
+                    }
+                }
+                
+                claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
+            }
+        }
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 //                          Display                                     //
 //////////////////////////////////////////////////////////////////////////
@@ -237,17 +242,20 @@ $out .= '<th>'.get_lang('Assignments').'</th>'
 .    '</tr>'
 .    '</thead>'
 .    '<tbody>';
+
 if(isset($up))
-    {
+{
     $out .= "<script>".
          "window.open('uploadframe.php?type=multi&doc=".serialize($up)."&assigId=".$_REQUEST['assigId']."&tab=".$tbl_wrk_submission."','MyWindow','width=350,height=290,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes');".
          "</script>";
-    }
+}
+
 if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
 {
     foreach( $results as $result )
     { 
         $is_in=IsInCompilatio($result["id"],$results2);
+        
         if(strlen($result['title'])>40)
         {
             $title_ass=substr($result['title'],0,38)." (...)";
@@ -263,6 +271,7 @@ if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
             .$result['authors'].'</td>';
             /*On vérifie l'etat du document sur compilatio pour proposé l'action qui convient*/
         $filePath = $assignment->getassigdirsys() . $result['submitted_doc_path'];
+        
         if ( ! is_file( $filePath ) )
         {
             // s'il n'y a pas de fichier
@@ -282,16 +291,18 @@ if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
         {
             $compiliste=Compi_list($_REQUEST['assigId'],$result["id"],GetCompiStat($is_in),$tbl_wrk_submission,$is_in);
         }
+        
         $out .= $compiliste;
         $out .= '</tr>';
     }
 }
+
 $out .= '<tbody>'
 .    '</table>'
 .    '</form></div>';
  
 if ($is_allowedToEditAll)
-    {
+{
     /*Gestion multi doc*/
 $out .= "<div align='right'>"
 .    get_lang('To all')." : "
@@ -310,7 +321,7 @@ $out .= "<div align='right'>"
     .    '<th>'.get_lang('Compilatio quotas')." : ".get_lang('Used space').$use_space." Mo ".compi_bar($perc_space,0.5)." ".get_lang('of')." ".$total_space." Mo - ".get_lang('Analysis credits').$quotas->usedCredits." ".compi_bar($perc_ana,0.5)." ".get_lang('of')." ".$quotas->credits." </th>"
     .    '</thead>'
     .    '</table>';*/
-    }
+}
 
 Claroline::getInstance()->display->body->appendContent( $out );
 echo Claroline::getInstance()->display->render();

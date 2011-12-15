@@ -35,4 +35,3 @@ $_lang['Too big file (10Mb Max)'] = 'Fichier trop gros (10 Mo max)';
 $_lang['Bad filetype'] = 'Mauvais type de fichier';
 $_lang['Loading...'] = 'Chargement en cours...';
 $_lang['No file to analyze'] = 'Pas de fichier à analyser';
-?>
