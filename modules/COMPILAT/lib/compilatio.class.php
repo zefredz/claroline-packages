@@ -78,7 +78,12 @@ class compilatio
                 return("Error in constructor compilatio() " . $this->soapcli);
             }
             
-            $idDocument = $this->soapcli->__call('addDocumentBase64',array($this->key,utf8_encode(urlencode($title)),utf8_encode(urlencode($description)),utf8_encode(urlencode($filename)),utf8_encode($mimetype),base64_encode($content)));
+            $idDocument = $this->soapcli->__call('addDocumentBase64',array($this->key
+                                                                           ,utf8_encode(urlencode($title))
+                                                                           ,utf8_encode(urlencode($description))
+                                                                           ,utf8_encode(urlencode($filename))
+                                                                           ,utf8_encode($mimetype)
+                                                                           ,base64_encode($content)));
             return $idDocument;
         }
         catch (SoapFault $fault)
@@ -195,15 +200,7 @@ function veriffiletype($nomFichier)
     $types = array("doc","docx","rtf","xls","xlsx","ppt","pptx","odt","pdf","txt","htm","html");
     $extension=substr($nomFichier, strrpos($nomFichier, ".")+1);
     $extension=strtolower($extension);
-    
-    if (in_array($extension, $types))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return in_array($extension, $types);
 }
 
 /**
@@ -288,14 +285,7 @@ function getPomprankBarv31($pourcentagePompage, $seuil_faible, $seuil_eleve, $ch
 
 function is_md5($hash)
 {
-    if(preg_match('`^[a-f0-9]{32}$`',$hash))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return preg_match('`^[a-f0-9]{32}$`',$hash);
 }
 
 function typeMime($nomFichier)
