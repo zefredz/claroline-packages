@@ -5,7 +5,8 @@ Compilatio - www.compilatio.net
 */
 /*Fichier de langue Francaise pour le module compilatio pour claroline*/
 $_lang['compilatio'] = 'Compilatio';
-$_lang['Compilatio'] = 'Compilatio';
+//$_lang['Compilatio'] = 'Compilatio';
+$_lang['Compilatio'] = 'Aide à la detection du plagiat';
 $_lang['Anti Plagiarism Tool'] = 'Analyse anti-plagiat des travaux';
 $_lang['Analysis complet'] = 'Analyse termin&eacute;e. ';
 $_lang['View report'] = 'Voir le rapport';
@@ -35,3 +36,4 @@ $_lang['Too big file (10Mb Max)'] = 'Fichier trop gros (10 Mo max)';
 $_lang['Bad filetype'] = 'Mauvais type de fichier';
 $_lang['Loading...'] = 'Chargement en cours...';
 $_lang['No file to analyze'] = 'Pas de fichier à analyser';
+$_lang['Nothing checked!'] = 'Pas de sélection!';

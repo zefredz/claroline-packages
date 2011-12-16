@@ -21,8 +21,4 @@ $this->_strings = array(
  CAS_STR_YOU_WERE_NOT_AUTHENTICATED 
  => '<p>Vous n\'avez pas été authentifié(e).</p><p>Vous pouvez soumettre votre requete à nouveau en cliquant <a href="%s">ici</a>.</p><p>Si le problème persiste, vous pouvez contacter <a href="mailto:%s">l\'administrateur de ce site</a>.</p>',
  CAS_STR_SERVICE_UNAVAILABLE
- => 'Le service `<b>%s</b>\' est indisponible (<b>%s</b>)'
-
-);
-
-?>
+ => 'Le service `<b>%s</b>\' est indisponible (<b>%s</b>)');

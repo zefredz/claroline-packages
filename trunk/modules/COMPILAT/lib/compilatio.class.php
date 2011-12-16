@@ -48,8 +48,8 @@ class compilatio
                     }
                     $this->soapcli = new SoapClient($urlsoap,$param);
                 }
-                else{
-                    
+                else
+                {
                     $this->soapcli = 'WS urlsoap not available' ;
                 }
             }

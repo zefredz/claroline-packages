@@ -21,7 +21,4 @@ $this->_strings = array(
  CAS_STR_YOU_WERE_NOT_AUTHENTICATED 
  => '<p>認証できませんでした.</p><p>もう一度リクエストを送信する場合は<a href="%s">こちら</a>をクリック.</p><p>問題が解決しない場合は <a href="mailto:%s">このサイトの管理者</a>に問い合わせてください.</p>',
  CAS_STR_SERVICE_UNAVAILABLE
- => 'サービス `<b>%s</b>\' は利用できません (<b>%s</b>).'
-);
-
-?>
+ => 'サービス `<b>%s</b>\' は利用できません (<b>%s</b>).');

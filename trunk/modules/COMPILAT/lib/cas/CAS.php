@@ -603,7 +603,7 @@ class phpCAS
    *
    * @sa PHPCAS_LANG_FRENCH, PHPCAS_LANG_ENGLISH
    */
-    function setLang($lang)
+  function setLang($lang)
     {
         global $PHPCAS_CLIENT;
         
