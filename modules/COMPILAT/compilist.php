@@ -86,11 +86,11 @@ Clean_compilatio($tbl_wrk_submission,claro_get_current_course_id(),$_REQUEST['as
 /*récupération des quotas compilatio*/
 if (get_conf('using_SSL'))
 {
-  $urlsoap='https://service.compilatio.net/webservices/CompilatioUserClient.wsdl';
+    $urlsoap='https://service.compilatio.net/webservices/CompilatioUserClient.wsdl';
 }
 else
 {
-  $urlsoap='http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl'; 
+    $urlsoap='http://service.compilatio.net/webservices/CompilatioUserClient2.wsdl'; 
 }
 
 
@@ -130,11 +130,11 @@ $results=claro_sql_query_fetch_all($sql);
 $sql2 = "SELECT submission_id,compilatio_id
     FROM `".$tbl_compi."`
     WHERE assignment_id=".$_REQUEST['assigId']." AND course_code='".claro_get_current_course_id()."'";
-    
+
 $results2=claro_sql_query_fetch_all($sql2); 
 
 //print_r($results2);
-        
+
 $cmd = ( isset($_REQUEST['cmd']) )?$_REQUEST['cmd']:'';
 
 if ($is_allowedToEditAll)
@@ -158,11 +158,11 @@ if ($is_allowedToEditAll)
     }
     elseif($cmd=='multi')
     {
-        if(isset($_REQUEST['action']) && isset($_REQUEST['mutli_docs']))
+        if(isset($_REQUEST['action']) && isset($_REQUEST['multi_docs']))
         {
             if($_REQUEST['action']=="suppr")
             {
-                foreach ($_REQUEST['mutli_docs'] as $choix)
+                foreach ($_REQUEST['multi_docs'] as $choix)
                 {
                     if(is_md5($choix))
                     {
@@ -174,11 +174,11 @@ if ($is_allowedToEditAll)
             }
             elseif($_REQUEST['action']=="upload")
             {
-                $up=$_REQUEST['mutli_docs'];
+                $up=$_REQUEST['multi_docs'];
             }
             elseif($_REQUEST['action']=="analyse")
             {
-                foreach ($_REQUEST['mutli_docs'] as $choix)
+                foreach ($_REQUEST['multi_docs'] as $choix)
                 {
                     if(GetCompiStat($choix)=="ANALYSE_NOT_STARTED")
                     {
@@ -188,6 +188,10 @@ if ($is_allowedToEditAll)
                 
                 claro_redirect('compilist.php?assigId='.$_REQUEST['assigId']);
             }
+        }
+        else
+        {
+            $_REQUEST[ 'cmd' ] = $cmd = null;
         }
     }
 }
@@ -218,15 +222,28 @@ $out = claro_html_tool_title( $nameTools
 /*Formulaire permettant de gérer les actions multiple*/
 
 $out .= '<script language=\'javascript\'>' . "\n"
-    . '    function tout_cocher(Etat)' . "\n"
+    . '    function check_all(Etat)' . "\n"
     . '    {' . "\n"
-    . '         var balises=document.getElementById("action_multi")[\'mutli_docs[]\'];' . "\n"
+    . '         var balises=document.getElementById("action_multi")[\'multi_docs[]\'];' . "\n"
     . '         for(i=0; i<balises.length; i++) {' . "\n"
     . '         if (balises[i].type == \'checkbox\')' . "\n"
     . '         {' . "\n"
     . '              balises[i].checked = Etat;' . "\n"
     . '         }' . "\n"
     . '    }' . "\n"
+    . '}' . "\n"
+    . '    function analyse_checked()' . "\n"
+    . '    {' . "\n"
+    . '         var balises=document.getElementById("action_multi");' . "\n"
+    . '         for(i=0; i<balises.length; i++) {' . "\n"
+    . '         if (balises[i].type == \'checkbox\' && balises[i].checked == true)' . "\n"
+    . '         {' . "\n"
+    . '              document.action_multi.action.value=\'upload\';' . "\n"
+    . '              document.action_multi.submit();' . "\n"
+    . '              exit();' . "\n"
+    . '         }' . "\n"
+    . '    }' . "\n"
+    . '    alert( "' . get_lang( 'Nothing checked!' ) . '" );' . "\n"
     . '}' . "\n"
     . '</script>' . "\n"
     . '<div id="div_chck"><form name="action_multi" id="action_multi" action="" method="POST">' . "\n"
@@ -243,7 +260,7 @@ $out .= '<th>'.get_lang('Assignments').'</th>'
 .    '</thead>'
 .    '<tbody>';
 
-if(isset($up))
+if( isset( $up ) && ! empty( $up ) )
 {
     $out .= "<script>".
          "window.open('uploadframe.php?type=multi&doc=".serialize($up)."&assigId=".$_REQUEST['assigId']."&tab=".$tbl_wrk_submission."','MyWindow','width=350,height=290,toolbar=no,location=no,directories=no,status=yes,menubar=no,scrollbars=yes,resizable=yes');".
@@ -253,8 +270,9 @@ if(isset($up))
 if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
 {
     foreach( $results as $result )
-    { 
-        $is_in=IsInCompilatio($result["id"],$results2);
+    {
+        $docId = $result[ 'id' ];
+        $is_in=IsInCompilatio($docId,$results2);
         
         if(strlen($result['title'])>40)
         {
@@ -275,21 +293,21 @@ if( !empty($results) && is_array($results) && !isset($_REQUEST['cmd']) )
         if ( ! is_file( $filePath ) )
         {
             // s'il n'y a pas de fichier
-            $compiliste=Compi_list($_REQUEST['assigId'],$result["id"],"NO_FILE",$tbl_wrk_submission,$is_in);
+            $compiliste=Compi_list($_REQUEST['assigId'],$docId,"NO_FILE",$tbl_wrk_submission,$is_in);
         }
         elseif ( claro_get_file_size( $filePath ) > 10000000 )
         {
             //si le fichier est trop gros->erreur
-            $compiliste=Compi_list($_REQUEST['assigId'],$result["id"],"BAD_FILESIZE",$tbl_wrk_submission,$is_in);
+            $compiliste=Compi_list($_REQUEST['assigId'],$docId,"BAD_FILESIZE",$tbl_wrk_submission,$is_in);
         }
         elseif(!veriffiletype($result['submitted_doc_path']))
         {
             //si le fichier n'est pas du bon type->erreur
-            $compiliste=Compi_list($_REQUEST['assigId'],$result["id"],"BAD_FILETYPE",$tbl_wrk_submission,$is_in);
+            $compiliste=Compi_list($_REQUEST['assigId'],$docId,"BAD_FILETYPE",$tbl_wrk_submission,$is_in);
         }
         else
         {
-            $compiliste=Compi_list($_REQUEST['assigId'],$result["id"],GetCompiStat($is_in),$tbl_wrk_submission,$is_in);
+            $compiliste=Compi_list($_REQUEST['assigId'],$docId,GetCompiStat($is_in),$tbl_wrk_submission,$is_in);
         }
         
         $out .= $compiliste;
@@ -306,12 +324,12 @@ if ($is_allowedToEditAll)
     /*Gestion multi doc*/
 $out .= "<div align='right'>"
 .    get_lang('To all')." : "
-.    "<a href='javascript:void(0)' onclick='if(tout_cocher(true)) return false;'>".get_lang('check')."</a> - "
-.    "<a href='javascript:void(0)' onclick=\"if(tout_cocher(false)) return false;\">".get_lang('uncheck')."</a>"
+.    "<a href='javascript:void(0)' onclick='if(check_all(true)) return false;'>".get_lang('check')."</a> - "
+.    "<a href='javascript:void(0)' onclick='if(check_all(false)) return false;'>".get_lang('uncheck')."</a>"
 .    "</div>"
 .    "<div align='right'>"
 .    get_lang('Do to selected items')." : "
-.    "<a href=\"javascript:document.action_multi.action.value='upload';document.action_multi.submit();\"><img src='img/ajouter.gif' alt='Ajouter '/>".get_lang('Start analysis')."</a>"
+.    "<a href='javascript:void(0)' onclick='analyse_checked();'><img src='img/ajouter.gif' alt='Ajouter '/>".get_lang('Start analysis')."</a>"
 .    "</div>"
 .    "<div class='spacer'>&nbsp;</div>";
     /*affichage du quotas compilatio*/

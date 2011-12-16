@@ -21,7 +21,4 @@ $this->_strings = array(
  CAS_STR_YOU_WERE_NOT_AUTHENTICATED 
  => '<p>Sie wurden nicht angemeldet.</p><p>Um es erneut zu versuchen klicken Sie <a href="%s">hier</a>.</p><p>Wenn das Problem bestehen bleibt, kontkatieren Sie den <a href="mailto:%s">Administrator</a> dieser Seite.</p>',
  CAS_STR_SERVICE_UNAVAILABLE
- => 'Der Dienst `<b>%s</b>\' ist nicht verf&uuml;gbar (<b>%s</b>).'
-);
-
-?>
+ => 'Der Dienst `<b>%s</b>\' ist nicht verf&uuml;gbar (<b>%s</b>).');

@@ -54,9 +54,9 @@ if(isset($_REQUEST['type']) && $_REQUEST['type']=="multi")
             
             /////////////////
             //insertion directe de la fonction SendDoc pour economiser la moitié de la mémoire
-            //function SendDoc($doc_id,$assigId,$table,$courseCode)
+            //function SendDoc($docId,$assigId,$table,$courseCode)
             /////////////////
-            $doc_id=$docs[$k];
+            $docId=$docs[$k];
             $assigId=$_REQUEST['assigId'];
             $table=$_REQUEST['tab'];
             $courseCode=claro_get_current_course_id();
@@ -65,7 +65,7 @@ if(isset($_REQUEST['type']) && $_REQUEST['type']=="multi")
             $tbl_compi = $tbl_compi_names['compilatio_docs'];
             
             /*On récupère les infos du documents pour le mettre en ligne*/
-            $sql3="SELECT * FROM `".$table."` WHERE assignment_id=".$assigId." AND id=".$doc_id;
+            $sql3="SELECT * FROM `".$table."` WHERE assignment_id=".$assigId." AND id=".$docId;
             $results3=claro_sql_query_fetch_all($sql3);
             /*On charge le document sur compilatio via le webservice*/
             $doc=$results3[0];
@@ -118,7 +118,7 @@ if(isset($_REQUEST['type']) && $_REQUEST['type']=="multi")
             /*Si cela fonctionne on associe dans la BDD le document claroline au document compilatio*/
             $sql4="INSERT INTO `".$tbl_compi."`
             (submission_id,assignment_id,compilatio_id,course_code)
-            VALUES (".$doc_id.",".$assigId.",'".$id_compi."','".$courseCode."')";
+            VALUES (".$docId.",".$assigId.",'".$id_compi."','".$courseCode."')";
             //$out .= $id_compi;
             
             /*On vérifie que l'id document retourné est bien un hash_md5*/
@@ -155,9 +155,9 @@ else
 {
     /////////////////
     //insertion directe de la fonction SendDoc pour economiser la moitié de la mémoire
-    //function SendDoc($doc_id,$assigId,$table,$courseCode)
+    //function SendDoc($docId,$assigId,$table,$courseCode)
     /////////////////
-    $doc_id=$_REQUEST['doc'];
+    $docId=$_REQUEST['doc'];
     $assigId=$_REQUEST['assigId'];
     $table=$_REQUEST['tab'];
     $courseCode=claro_get_current_course_id();
@@ -166,7 +166,7 @@ else
     $tbl_compi = $tbl_compi_names['compilatio_docs'];
     
     /*On récupère les infos du documents pour le mettre en ligne*/
-    $sql3="SELECT * FROM `".$table."` WHERE assignment_id=".$assigId." AND id=".$doc_id;
+    $sql3="SELECT * FROM `".$table."` WHERE assignment_id=".$assigId." AND id=".$docId;
     $results3=claro_sql_query_fetch_all($sql3);
     /*On charge le document sur compilatio via le webservice*/
     $doc=$results3[0];
@@ -218,7 +218,7 @@ else
     /*Si cela fonctionne on associe dans la BDD le document claroline au document compilatio*/
     $sql4="INSERT INTO `".$tbl_compi."`
     (submission_id,assignment_id,compilatio_id,course_code)
-    VALUES (".$doc_id.",".$assigId.",'".$id_compi."','".$courseCode."')";
+    VALUES (".$docId.",".$assigId.",'".$id_compi."','".$courseCode."')";
     
     /*On vérifie que l'id document retourné est bien un hash_md5*/
     if(is_md5($id_compi))
