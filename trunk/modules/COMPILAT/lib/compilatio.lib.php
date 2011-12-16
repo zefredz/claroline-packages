@@ -115,19 +115,19 @@ function Compi_list($assign_id,$doc_id,$status,$table,$compilatio_id)
         
         $chaine="<td>".getProgressionAnalyseDocv31($status,$soap_res->documentStatus->progression,"img/",$texte)."</td>";
         //nouvelle version: on ne supprime plus les docs
-        //$chaine.="<td><a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$compilatio_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
+        //$chaine.="<td><a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$doc_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
     }
     //si l'analyse n'est pas encore lancé on propose de lancer l'analyse en indiquant le nombre de crédits nécessaires à celle ci ou bien supprimer le document
     elseif($status=="ANALYSE_NOT_STARTED" && $isAllowtoEdit)
     {
-        $chaine="<td>"."<a href='compilist.php?assigId=".$assign_id."&cmd=start&doc=".$compilatio_id."'><img src='icon.gif' alt='Compilatio '/> ".get_lang('Start analysis')." </a>".get_lang('for').$soap_res->documentStatus->cost.get_lang('credit')." </td>";
-        //$chaine.="<td> <a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$compilatio_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
+        $chaine="<td>"."<a href='compilist.php?assigId=".$assign_id."&cmd=start&doc=".$doc_id."'><img src='icon.gif' alt='Compilatio '/> ".get_lang('Start analysis')." </a>".get_lang('for').$soap_res->documentStatus->cost.get_lang('credit')." </td>";
+        //$chaine.="<td> <a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$doc_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
     }
     //compilatio intègre un système de file d'attente des analyse pour limité la surcharge des serveurs, quand l'analyse en en attente seul la suppression du document est proposé
     elseif($status=="ANALYSE_IN_QUEUE" && $isAllowtoEdit)
     {
         $chaine="<td><img src='icon.gif' alt='Compilatio.net - '/>".get_lang('Analysis cued')."</td>";
-        //$chaine.="<td> <a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$compilatio_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
+        //$chaine.="<td> <a href='compilist.php?assigId=".$assign_id."&cmd=del&doc=".$doc_id."'><img src='img/trash.gif' alt='Corbeille '/> ".get_lang('Delete on Compilatio')." </a></td>";
     }
     //si le document n'est pas chargé sur compilatio l'utilisateur ayant des droits peut le mettre en ligne
     elseif($status=="NOT_IN_COMPILATIO" && $isAllowtoEdit)
@@ -159,15 +159,15 @@ function Compi_list($assign_id,$doc_id,$status,$table,$compilatio_id)
         $chaine="<td><img src='icon.gif' alt='Compilatio.net - '/>".get_lang('Document not analysed yet')."</td>";
     }
     
-    //si l'utisateur a des droits sur le documents alors il a accès à la check box d'actions multiples sur les documents associés à ce travail. 
-    if( ! $id_multi )
+    //si l'utisateur a des droits sur le documents alors il a accès à la check box d'actions multiples sur les documents associés à ce travail.	
+    if(! isset( $id_multi ) )
     {
         //dans ces cas la, on ne fait rien
         $chaine.="<td>&nbsp;</td>";
     }
     elseif ($status=="NOT_IN_COMPILATIO")
     {
-        $chaine.="<td><input type='checkbox' name='mutli_docs[]' value='".$id_multi."'></td>";
+        $chaine.="<td><input type='checkbox' name='multi_docs[]' value='".$id_multi."'></td>";
     }
     else
     {
