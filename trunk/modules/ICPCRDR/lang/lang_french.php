@@ -15,7 +15,7 @@ $_lang['Get title from feed'] = 'Récupérer le titre à partir du flux';
 $_lang['No podcast for now...'] = 'Aucun podcast pour l\'instant...';
 $_lang['Podcast edited successfully'] = 'Le podcast a été modifié avec succès!';
 $_lang['Podcast feed not found'] = 'Le flux du podcast n\'a pas été trouvé';
-$_lang['Suscribe'] = 'S\'abonner';
+$_lang['Suscribe to podcast'] = 'S\'abonner au podcast';
 $_lang['The podcast deleted successfully'] = 'Le podcast a été supprimé';
 $_lang['The podcast has been added successfully'] = 'Le podcast à été ajouté avec succès!';
 $_lang['The podcast is now invisible'] = 'Ce podcast n\'est maintenant plus visible';
@@ -23,4 +23,5 @@ $_lang['Unable to change the visibility of the podcast'] = 'Impossible de modifi
 $_lang['Video podcast reader'] = 'Lecteur de podcast vidéo';
 $_lang['The podcast is now visible'] = 'Ce podcast est maintenant visible';
 $_lang['Error: unable to change the visibility of the podcast'] = 'Erreur: impossible de rendre le podcast visible';
+$_lang['If the media doesn\'t play correctly, you can download it using the following link (right-click Save Link As or ctrl+click Save Link As)'] = 'Si le média ne se joue pas correctement, vous pouvez le télécharger via le lien ci-dessous (clic droit Enregistrer sous ou ctrl+clic Enregistrer sous)';
 

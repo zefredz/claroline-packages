@@ -16,7 +16,7 @@
 <p>
     <a href="<?php echo htmlspecialchars($this->url);?>">
         <img src="<?php echo get_icon_url('feed'); ?>" alt="rss" /> 
-        <?php echo get_lang('Suscribe');?></a>
+        <?php echo get_lang('Suscribe to podcast');?></a>
 </p>
 
 <p class="channelPubDate">
@@ -37,11 +37,6 @@
         <h4 class="itemTitle">
             <?php echo htmlspecialchars( claro_utf8_decode($item->metadata['title']) ); ?>
         </h4>
-        
-        <a href="<?php echo htmlspecialchars( $item->enclosure['url'] );?>">
-            <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
-            <?php echo get_lang( 'Download this video' ); ?>
-        </a>
 
         <p class="itemPubDate">
             <?php echo htmlspecialchars( $item->metadata['pubDate'] ); ?>
@@ -91,6 +86,19 @@
         </script>
         
         <?php endif; ?>
+        
+        <p>
+            <em>
+                <?php echo get_lang('If the media doesn\'t play correctly, you can download it using the following link (right-click Save Link As or ctrl+click Save Link As)' );?>
+            </em>
+            <br />
+            <em>
+                <a href="<?php echo htmlspecialchars( $item->enclosure['url'] );?>">
+                    <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
+                    <?php echo get_lang( 'Download this video' ); ?>
+                </a>
+            </em>
+        </p>
         
 <?php
         $videoId++;
