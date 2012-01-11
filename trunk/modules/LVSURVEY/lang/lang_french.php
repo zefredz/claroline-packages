@@ -181,6 +181,7 @@ $_lang['Unknown Question Type or Alignment'] = 'Type de question non reconnu';
 $_lang['You have forgotten to fill a mandatory field'] = 'Vous avez oublié de remplir au moins un des champs obligatoires';
 $_lang['You have forgotten to give options for choice'] = 'Vous avez oublié d\'encoder les choix et/ou options';
 $_lang['char(s) left'] = 'caractère(s) restant';
+$_lang['Import survey'] = 'Importer un sondage';
 
 
 

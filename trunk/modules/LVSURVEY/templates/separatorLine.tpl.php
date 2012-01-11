@@ -2,12 +2,12 @@
 $title = $this->surveyLine->title;
 $description = $this->surveyLine->description;
 
-$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
-$arrowUpIcon 	= claro_html_icon('move_up', 	get_lang('Move Up'), 		get_lang('Move Up'));
-$arrowDownIcon 	= claro_html_icon('move_down', 	get_lang('Move Down'), 		get_lang('Move Down'));
-$deleteIcon		= claro_html_icon('delete');
-
+$editIcon       = claro_html_icon('edit',       get_lang('Modify'),         get_lang('Modify'));
+$arrowUpIcon    = claro_html_icon('move_up',    get_lang('Move Up'),        get_lang('Move Up'));
+$arrowDownIcon  = claro_html_icon('move_down',  get_lang('Move Down'),      get_lang('Move Down'));
+$deleteIcon     = claro_html_icon('delete');
 ?>
+
 <div class="LVSURVEYLine">
     <div class="LVSURVEYLineTitle">
         <?php
@@ -29,4 +29,3 @@ $deleteIcon		= claro_html_icon('delete');
         <?php echo $description; ?>
     </div>
 </div>
-

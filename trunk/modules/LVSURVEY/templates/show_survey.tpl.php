@@ -3,7 +3,7 @@ JavascriptLoader::getInstance()->load('jquery');
 JavascriptLoader::getInstance()->load('jquery.limit-1.2');
 CssLoader::getInstance()->load('LVSURVEY');
 
-$editIcon 		= claro_html_icon('edit', 		get_lang('Modify'), 		get_lang('Modify'));
+$editIcon       = claro_html_icon('edit',       get_lang('Modify'),         get_lang('Modify'));
 
 
 $currentUserId = claro_get_current_user_id();
@@ -17,7 +17,7 @@ echo claro_html_tool_title($this->survey->title);
 $cmd_menu = array();
 
 if($this->editMode)
-{		
+{       
     $cmd_menu[] = '<a class="claroCmd" href="edit_survey.php?surveyId='.$this->survey->id.'">'.$editIcon.' '.get_lang('Edit survey properties').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="question_pool.php?surveyId='.$this->survey->id.'">'.get_lang('Add question').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="edit_separator.php?surveyId='.$this->survey->id.'">'.get_lang('Add separator').'</a>';
@@ -53,7 +53,6 @@ if('INVISIBLE' == $this->survey->resultsVisibility )
 }
 
 echo $infoBox->render();
-
 ?>
 
 <div><?php echo $this->survey->description; ?></div>
@@ -66,7 +65,6 @@ echo $infoBox->render();
     <input type="hidden" name="surveyId" value="<?php echo $this->survey->id; ?>" />
     <input type="hidden" name="participationId" value="<?php echo $participation->id; ?>" />
     <?php endif; ?>
-
 
     <div class="LVSURVEYQuestionList">
         <?php  if(empty($surveyLineList)) :?>
@@ -83,6 +81,3 @@ echo $infoBox->render();
     <?php endif; ?>
 </form>
 <?php endif; ?>
-
-
-
