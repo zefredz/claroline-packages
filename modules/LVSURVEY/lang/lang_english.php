@@ -52,6 +52,7 @@ $_lang['Get back to the survey list'] = 'Get back to the survey list';
 $_lang['Go back to Question Pool'] = 'Go back to Question Pool';
 $_lang['Hide Details'] = 'Hide Details';
 $_lang['Hide comments'] = 'Hide comments';
+$_lang['Import survey'] = 'Import survey';
 $_lang['List of questions'] = 'List of questions';
 $_lang['List of surveys'] = 'List of surveys';
 $_lang['Make Invisible'] = 'Make Invisible';

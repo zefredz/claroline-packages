@@ -2,7 +2,6 @@
 
 class Guest extends Claro_User
 {
-    
     public $userId = null;
     public $firstName = "Anon";
     public $lastName = "Ymous";
@@ -14,7 +13,5 @@ class Guest extends Claro_User
     public function __construct() {
         parent::__construct($this->userId);
     }
-    
-
 }
 
