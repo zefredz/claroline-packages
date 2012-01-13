@@ -136,7 +136,7 @@ class SurveyImport
             
             $choiceId = Claroline::getDatabase()->insertId();
             
-            if ( $choiceList[ 'optionList' ] )
+            if ( array_key_exists( 'optionList' , $choiceList ) && is_array( $choiceList[ 'optionList' ] ) )
             {
                 foreach( $choice[ 'optionList' ] as $option )
                 {
