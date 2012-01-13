@@ -39,8 +39,7 @@ class LVSurveyUpgrader
         $this->populateAvailableMigrations();
         $this->determineDBVersion();
         $this->determineFileversion();
-        $this->targetVersion = $this->currentFileVersion;               
-        
+        $this->targetVersion = $this->currentFileVersion;
     }
     
     private function populateAvailableMigrations()
@@ -70,11 +69,11 @@ class LVSurveyUpgrader
         }
         
         $query =  'SELECT V.`version` '
-                . 'FROM `'.SurveyConstants::$VERSION_TBL.'` V '                 
+                . 'FROM `'.SurveyConstants::$VERSION_TBL.'` V '
                 . 'ORDER BY V.`created_at` DESC '
                 . 'LIMIT 1 ';
         
-        $rs = $this->db->query($query);        
+        $rs = $this->db->query($query);
         $record = $rs->fetch();
         $this->currentDBVersion = $record['version'];
     }
@@ -178,9 +177,12 @@ class LVSurveyUpgrader
             if(ctype_space($query))
             {
                 continue;
-            }            
+            }
+            
+            $query = str_replace ('__CL_MAIN__',get_conf('mainTblPrefix'), $query );
+            
             $this->db->exec($query);
-        }        
+        }
         
         echo " ... Done ! <br/>";
     }
