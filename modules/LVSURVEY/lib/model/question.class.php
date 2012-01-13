@@ -1,6 +1,7 @@
 <?php
 FromKernel::uses(   'utils/input.lib', 
-                    'utils/validator.lib');
+					'utils/validator.lib',
+					'user.lib');
 From::module('LVSURVEY')->uses( 'util/surveyConstants.class', 
                                 'model/choice.class',
                                 'util/functions.class');
