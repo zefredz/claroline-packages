@@ -67,7 +67,7 @@ class EditSeparatorPage extends ManagerSurveyPage {
         }
         else
         {
-            parent::appendBreadCrumbElement('New separator', $editSeparatorURL);
+	    	parent::appendBreadCrumbElement(get_lang('New separator'), $editSeparatorURL);
         }
         
     }

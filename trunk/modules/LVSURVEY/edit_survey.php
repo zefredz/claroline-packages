@@ -46,7 +46,7 @@ class EditSurveyPage extends SurveyPage
         }
         else
         {
-            parent::appendBreadCrumbElement('New survey', $editSurveyURL);
+            parent::appendBreadCrumbElement(get_lang('New survey'), $editSurveyURL);
         }
         
         if($this->showSuccessBox)

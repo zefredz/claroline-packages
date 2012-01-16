@@ -124,7 +124,7 @@ class EditQuestionPage extends ManagerSurveyLessPage {
 	    }
 	    else
 	    {
-	    	parent::appendBreadCrumbElement('New question', $editQuestionURL);
+	    	parent::appendBreadCrumbElement(get_lang('New question'), $editQuestionURL);
 	    }
 	    
 	}

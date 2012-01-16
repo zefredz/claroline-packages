@@ -1,7 +1,9 @@
 <?php
+global $tlabelReq;
+$tlabelReq = 'LVSURVEY';
+
 require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';  
 require_once dirname(__FILE__) . '/../lib/util/surveyConstants.class.php';
-
 
 if ( !claro_is_user_authenticated() )
 {
@@ -9,7 +11,7 @@ if ( !claro_is_user_authenticated() )
 }
 if( !claro_is_platform_admin())
 {
-    echo 'Migration can only be done by platform admin';
+    echo get_lang( 'Migration can only be done by platform admin' );
     die();
 }
 
