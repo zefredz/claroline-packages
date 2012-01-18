@@ -13,6 +13,7 @@
     }
     $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=SyntheticCSV">'.get_lang('Export Synthetic results').'</a>';
     $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=RawCSV">'.get_lang('Export Raw results').'</a>';
+    $cmd_menu[] = '<a class="claroCmd" href="show_results.php?surveyId='.$this->survey->id.'&amp;format=PerUserCSV">'.get_lang('Export per user results').'</a>';
     echo '<p>' . claro_html_menu_horizontal($cmd_menu) . '</p>'; 
     
     claro_html_tool_title(get_lang('Results'));
