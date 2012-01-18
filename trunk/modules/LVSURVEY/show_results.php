@@ -11,7 +11,7 @@ From::module('LVSURVEY')->uses( 'model/survey.class',
 
 class ShowResultsPage extends SurveyPage{
     
-    private static $AUTHORIZED_FORMATS = array('HTML', 'SyntheticCSV', 'RawCSV');
+    private static $AUTHORIZED_FORMATS = array('HTML', 'SyntheticCSV', 'RawCSV', 'PerUserCSV');
     private $renderResetConf = false;
     
     public function performReset(){
@@ -76,6 +76,9 @@ class ShowResultsPage extends SurveyPage{
             case 'RawCSV' :
                 $this->sendRawCSVResultsAndDie();
                 break;
+            case 'PerUserCSV' :
+                $this->sendPerUserCSVResultsAndDie();
+                break;
             default:
             case 'HTML' :
                 return $this->renderHTMLResults();  
@@ -105,12 +108,19 @@ class ShowResultsPage extends SurveyPage{
         $this->sendCSVAndDie($csvData);
     }
     
+    private function sendPerUserCSVResultsAndDie()
+    {
+        $survey = parent::getSurvey();
+        $csvData = new PerUserCSVResults($survey);
+        $this->sendCSVAndDie($csvData);
+    }
+    
     private function sendCSVAndDie($csvResults)
     {
         $survey = parent::getSurvey();
         $csvResults->buildRecords();
         header("Content-type: application/csv");
-        header('Content-Disposition: attachment; filename="surveyResults'.$survey->id.'.csv"');
+        header('Content-Disposition: attachment; filename="' . get_lang( 'survey-results' ) .$survey->id.'.csv"');
         echo $csvResults->export();
         die();
     }

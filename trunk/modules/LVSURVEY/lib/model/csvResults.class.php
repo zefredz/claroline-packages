@@ -234,3 +234,99 @@ class SyntheticResults extends CSVResults
         }
     }
 }
+
+class PerUserCSVResults extends CSVResults
+{
+    protected function getTitleLine()
+    {
+        $titleLine = array();
+        $titleLine[] = 'Participant';
+        $index = 1;
+        foreach( $this->survey->getSurveyLineList() as $surveyLine )
+        {
+            if( $surveyLine instanceof QuestionLine ) 
+            {
+                if( $surveyLine->question->type == 'ARRAY' ) 
+                {
+                    $subindex = 1;
+                    foreach( $surveyLine->question->getChoiceList() as $choice )
+                    {
+                        $titleLine[] = 'Question ' . $index . '/' . $subindex++;
+                    }
+                    $titleLine[] = 'Commentaire question ' . $index++; 
+                }
+                else
+                {
+                    $titleLine[] = 'Question ' . $index;
+                    $titleLine[] = 'Commentaire question ' . $index++; 
+                }
+            }
+        }   
+        return $titleLine;
+    }
+    
+    protected function appendRecords()
+    {
+        $participationList = $this->survey->getParticipationList();
+        $index = 1;
+        foreach( $participationList as $participation )
+        {
+            if( $this->survey->is_anonymous )
+            {
+                $thisUser = $index++;
+                $data = $this->appendParticipationLine( $participation, $this->survey->id );
+            }
+            else
+            {
+                $thisUser = $participation->getUser()->firstName . ' ' . $participation->getUser()->lastName;
+                $data = $this->appendParticipationLine( $participation, $this->survey->id );
+            }
+            array_unshift( $data, $thisUser ); 
+            $this->recordList[] = $data;
+        }
+    }
+    
+    protected function appendParticipationLine( $participation, $surveyId )
+    {
+        $participationLine = array();
+        if( $participation->getUser()->userId )
+        {
+            $answerList = Participation::loadParticipationOfUserForSurvey( $participation->getUser()->userId, $surveyId )->getAnswerList();
+        }
+        else
+        {
+            $answerList = $participation->getAnswerList();
+        }
+        
+        foreach( $answerList as $answer )
+        {
+            if( $answer->getQuestionLine()->question->type == 'ARRAY' ) 
+            {               
+                $subanswers = $answer->getSelectedOptionList();
+                foreach( $subanswers as $subanswer )
+                {
+                    $participationLine[] = $subanswer->getText();
+                }
+            }
+            else
+            {
+                $choiceList = $answer->getSelectedChoiceList();
+                if( sizeof( $choiceList ) == 1 ) 
+                {
+                    $participationLine[] = $choiceList[0]->text;
+                }
+                else
+                {
+                    $tmp = array();
+                    foreach( $choiceList as $choice )
+                    {
+                        $tmp[] = $choice->text;
+                    }
+                    $participationLine[] = implode( ', ', $tmp );
+                }
+            }
+            $participationLine[] = $answer->comment;
+        } 
+        return $participationLine;
+    }
+}
