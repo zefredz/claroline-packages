@@ -95,7 +95,7 @@
                         echo claro_html_link($urlEdit, $editIcon);
                     ?>
                 </td>
-                <td>
+                <td align="center">
                     <?php
                         $urlDelete = 'question_pool.php?questionId='.$question->id.'&amp;cmd=questionDelete';
                         echo claro_html_link($urlDelete, $deleteIcon);

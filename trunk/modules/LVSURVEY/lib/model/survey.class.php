@@ -435,7 +435,7 @@ class Survey
         }
         if($this->id != -1)
         {
-            $this->deleteRelationsToQuestions($dbCnx);
+            $this->deleteSurveyLines($dbCnx);
             $this->deleteSurvey($dbCnx);
         }
     }
@@ -488,13 +488,23 @@ class Survey
         $dbCnx->exec($sql);             
     }
     
-    private function deleteRelationsToQuestions($dbCnx)
+    private function deleteSurveyLines($dbCnx)
     {
         $sql = "
-                    DELETE FROM `".SurveyConstants::$SURVEY_LINE_TBL."`
+                    DELETE L, S FROM `".SurveyConstants::$SURVEY_LINE_TBL."` AS L
+                    INNER JOIN  `".SurveyConstants::$SURVEY_LINE_SEPARATOR_TBL."` AS S
+                    ON          L.`id` = S.`id` 
+                    WHERE       `surveyId` = " . (int)$this->id;
+        $dbCnx->exec($sql);
+        
+        $sql = "
+                    DELETE L, Q FROM `".SurveyConstants::$SURVEY_LINE_TBL."` AS L
+                    INNER JOIN  `".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS Q
+                    ON          L.`id` = Q.`id` 
                     WHERE       `surveyId` = ".(int)$this->id;
         $dbCnx->exec($sql); 
     }
+    
     private function deleteSurvey($dbCnx)
     {
         $sql = "

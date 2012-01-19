@@ -47,22 +47,23 @@ class ShowSurveyPage extends SurveyPage
         parent::appendBreadCrumbElement(get_lang('Display survey'));
     }
     
-    private function processForm(){
-            try
+    private function processForm()
+    {
+        try
+        {
+            $participation = Participation::loadFromForm();
+            if(!$participation->isValid())
             {
-                $participation = Participation::loadFromForm();
-                if(!$participation->isValid())
-                {
-                    throw new Exception('Cannot save participation, you might have forgotten required answers');
-                }
-                $participation->save();
-                $this->redirectToResultsIfPossible();
-                parent::success('Participation saved');
+                throw new Exception('Cannot save participation, you might have forgotten required answers');
             }
-            catch(Exception $e)
-            {
-                    parent::error($e->getMessage());
-            }
+            $participation->save();
+            $this->redirectToResultsIfPossible();
+            parent::success('Participation saved');
+        }
+        catch(Exception $e)
+        {
+                parent::error($e->getMessage());
+        }
     }
     
     private function redirectToResultsIfPossible(){

@@ -433,22 +433,8 @@ class Question
         }
         
         $dbCnx = Claroline::getDatabase();
-        $this->deleteSurveyLines($dbCnx);
         $this->deleteLinkedChoices($dbCnx);
         $this->deleteQuestion($dbCnx);
-    }
-    
-    private function deleteSurveyLines($dbCnx)
-    {
-        $sql = "
-                DELETE      SLQ, A, AI 
-                FROM        `".SurveyConstants::$SURVEY_LINE_QUESTION_TBL."` AS SLQ 
-                INNER JOIN  `".SurveyConstants::$ANSWER_TBL."` AS A 
-                ON          SLQ.`id` = A.`surveyLineId` 
-                INNER JOIN  `".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI  
-                ON          A.`id` = AI.`answerId` 
-                WHERE       SLQ.`questionId` = ".(int) $this->id." ; ";
-        $dbCnx->exec($sql);
     }
     
     private function deleteLinkedChoices($dbCnx)
@@ -456,7 +442,7 @@ class Question
         $sql = "
                 DELETE              C, O
                 FROM                `".SurveyConstants::$CHOICE_TBL."` AS C 
-                INNER JOIN          `".SurveyConstants::$OPTION_TBL."` AS O 
+                LEFT JOIN          `".SurveyConstants::$OPTION_TBL."` AS O 
                 ON                  C.`id` = O.`choiceId` 
                 WHERE               C.`questionId` = ".(int)$this->id;
         $dbCnx->exec($sql);
