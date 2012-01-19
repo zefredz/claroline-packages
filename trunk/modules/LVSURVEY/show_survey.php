@@ -9,6 +9,8 @@ From::module('LVSURVEY')->uses('controller/surveyPage.class');
 
 class ShowSurveyPage extends SurveyPage
 {
+    private $showSuccessBox = false;
+    
     private function getMandatorySurveyLineId(){
         $input = Claro_UserInput::getInstance();
         return $input->getMandatory('surveyLineId');
@@ -57,21 +59,12 @@ class ShowSurveyPage extends SurveyPage
                 throw new Exception('Cannot save participation, you might have forgotten required answers');
             }
             $participation->save();
-            $this->redirectToResultsIfPossible();
             parent::success('Participation saved');
+            $this->showSuccessBox = true;
         }
         catch(Exception $e)
         {
                 parent::error($e->getMessage());
-        }
-    }
-    
-    private function redirectToResultsIfPossible(){
-        $survey = parent::getSurvey();
-        if($survey->areResultsVisibleNow())
-        {
-            claro_redirect('show_results.php?surveyId='.$survey->id);
-            die();
         }
     }
     
@@ -122,6 +115,25 @@ class ShowSurveyPage extends SurveyPage
     }
     
     public function render()
+    {
+        if($this->showSuccessBox)
+        {
+            return $this->renderSucessBox();
+        }
+        return $this->renderShowSurvey();
+    }
+    
+    private function renderSucessBox()
+    {
+        $survey = parent::getSurvey();
+        $participationSavedBoxTpl = new PhpTemplate(dirname(__FILE__).'/templates/participation_saved_success.tpl.php');
+        $participationSavedBoxTpl->assign('surveyId', $survey->id);
+        $participationSavedBoxTpl->assign('showResultsLink', $survey->areResultsVisibleNow() );
+        
+        return $participationSavedBoxTpl->render();
+    }
+    
+    private function renderShowSurvey()
     {
         $survey = parent::getSurvey();
         $editMode = claro_is_allowed_to_edit();
