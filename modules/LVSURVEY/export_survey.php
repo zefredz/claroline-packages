@@ -38,11 +38,14 @@ class SurveyExport
                 $lineData[ 'type' ] = $surveyLine->question->type;
                 $lineData[ 'text' ] = utf8_encode( $surveyLine->question->text );
                 
+                if( $surveyLine->question->type != 'OPEN' )
+                {
                 foreach( $surveyLine->question->getChoiceList() as $choice )
                 {
                     $lineData[ 'choiceList' ][] = array( 'text' => utf8_encode( $choice->text )
                                                        , 'optionList' => claro_utf8_encode_array( $choice->getOptionList() ) );
                 }
+            }
             }
             elseif( is_a( $surveyLine , 'SeparatorLine' ) )
             {
