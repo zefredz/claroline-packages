@@ -3,6 +3,7 @@ global $tlabelReq;
 $tlabelReq = 'LVSURVEY';
 
 require_once dirname(__FILE__) . '/../../../claroline/inc/claro_init_global.inc.php';  
+require_once get_path('incRepositorySys') . '/lib/utils/input.lib.php';  
 require_once dirname(__FILE__) . '/../lib/util/surveyConstants.class.php';
 
 if ( !claro_is_user_authenticated() )
@@ -130,6 +131,11 @@ class LVSurveyUpgrader
         }
         $this->determineDirection();        
         $this->selectMigrations();        
+        if( sizeof( $this->selectMigrations() ) == 0 )
+        {
+            echo "No upgrade available<br/>Current database and file version : " . $this->currentDBVersion;
+            die();
+        }
         $sortedMigrations = $this->sortMigrations();
                 
         $direction = $this->isUpgrading ? 'upgrade' : 'downgrade';
