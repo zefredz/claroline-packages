@@ -85,6 +85,24 @@
                 <?php endforeach;?>
             </ul>
         <?php endif; ?>
+        <?php if ('LIKERT' == $question->type) : ?>
+            <ul>
+                <?php for( $i = 1; $i <= 5; $i++ ) : ?>
+                    <li>
+                        <input  name="predefined<?php  echo $surveyLine->id; ?>" 
+                                type="radio" 
+                                value="__LIKERT_LEVEL_<?php  echo $i ?>__" 
+                                id="likertLevel<?php  echo $surveyLine->id; ?>_<?php  echo $i; ?>"
+                                <?php echo ( '__LIKERT_LEVEL_' . $i . '__' == $answer->getPredefinedValue() ) ?'checked="checked"':''; ?> 
+                                <?php echo $this->allowChange?"":"disabled='disabled'"; ?>
+                        />
+                        <label  for="likertLevel<?php  echo $surveyLine->id; ?>_<?php  echo $i; ?>">
+                            <?php echo htmlspecialchars( get_lang( '__LIKERT_LEVEL_' . $i . '__' ) ); ?>
+                        </label>
+                    </li>
+                <?php endfor;?>
+             </ul>
+        <?php endif; ?>
         <?php if ('ARRAY' == $question->type) : ?>
             <table>
                 <?php foreach($question->getChoiceList() as $choice) : ?>

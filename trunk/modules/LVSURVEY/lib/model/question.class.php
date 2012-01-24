@@ -12,7 +12,8 @@ class Question
     public static $VALID_QUESTION_TYPES = array(    'OPEN', 
                                                     'MCSA', 
                                                     'MCMA', 
-                                                    'ARRAY'); 
+                                                    'ARRAY',
+                                                    'LIKERT'); 
 
     public $id;
 
@@ -189,7 +190,7 @@ class Question
                 $question->shared = $formShared;
         
         //HANDLE CHOICE LIST if question type is not OPEN
-        if('OPEN' != $question->type)
+        if('OPEN' != $question->type && 'LIKERT' != $question->type )
         {
             $question->choiceList = array();
             for($i = 1; $i < 100; ++$i)

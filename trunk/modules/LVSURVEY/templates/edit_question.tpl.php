@@ -62,13 +62,15 @@
         <td>
             
             <input type="radio" id="questionTypeOPEN" name="questionType" value="OPEN" <?php echo $this->question->type=="OPEN"?"checked":""; ?> />
-            <label for="questionTypeOPEN"><?php echo get_lang('Text'); ?></label>
+            <label for="questionTypeOPEN"><?php echo get_lang('Text'); ?></label><br/>
             <input type="radio" id="questionTypeMCSA" name="questionType" value="MCSA" <?php echo $this->question->type=="MCSA"?"checked":""; ?> />
-            <label for="questionTypeMCSA"><?php  echo get_lang('Multiple choices, single answer'); ?></label>
+            <label for="questionTypeMCSA"><?php  echo get_lang('Multiple choices, single answer'); ?></label><br/>
             <input type="radio" id="questionTypeMCMA" name="questionType" value="MCMA" <?php echo $this->question->type=="MCMA"?"checked":""; ?> />
-            <label for="questionTypeMCMA"><?php echo get_lang('Multiple choices, multiple answers'); ?></label>
+            <label for="questionTypeMCMA"><?php echo get_lang('Multiple choices, multiple answers'); ?></label><br/>
+            <input type="radio" id="questionTypeLIKERT" name="questionType" value="LIKERT" <?php echo $this->question->type=="ARRAY"?"checked":""; ?> />
+            <label for="questionTypeLIKERT"><?php echo get_lang('Likert scale'); ?></label><br/>
             <input type="radio" id="questionTypeARRAY" name="questionType" value="ARRAY" <?php echo $this->question->type=="ARRAY"?"checked":""; ?> />
-            <label for="questionTypeARRAY"><?php echo get_lang('Array choices'); ?></label>
+            <label for="questionTypeARRAY"><?php echo get_lang('Array choices'); ?></label><br/>
         </td>
     </tr>
     <tr>

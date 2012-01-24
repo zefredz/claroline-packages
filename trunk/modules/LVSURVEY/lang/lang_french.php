@@ -59,6 +59,7 @@ $_lang['Go back to Question Pool'] = 'Revenir à la liste des questions';
 $_lang['Hide Details'] = 'Cacher les détails';
 $_lang['Hide comments'] = 'Cacher les commentaires';
 $_lang['Import survey'] = 'Importer un sondage';
+$_lang['Likert scale'] = 'Echelle de Likert';
 $_lang['List of questions'] = 'Liste des questions';
 $_lang['List of surveys'] = 'Sondages';
 $_lang['Make Invisible'] = 'Rendre innvisible';
@@ -133,6 +134,11 @@ $_lang['View results of this survey'] = 'Voir les résultats du sondage';
 $_lang['You are not allowed to see these results.'] = 'Vous n\'avez pas le droit de voir ces résultats.';
 $_lang['You have forgotten to fill a mandatory field'] = 'Vous avez oublié de remplir au moins un des champs obligatoires';
 $_lang['You have forgotten to give options for choice'] = 'Vous avez oublié d\'encoder les choix et/ou options';
+$_lang['__LIKERT_LEVEL_1__'] = 'Tout à fait d\'accord';
+$_lang['__LIKERT_LEVEL_2__'] = 'D\'accord';
+$_lang['__LIKERT_LEVEL_3__'] = 'Sans avis';
+$_lang['__LIKERT_LEVEL_4__'] = 'Pas d\'accord';
+$_lang['__LIKERT_LEVEL_5__'] = 'Pas du tout d\'accord';
 $_lang['__RECALL_MESSAGE__'] = <<<EOS
 Bonjour, <br/>
 <br/>

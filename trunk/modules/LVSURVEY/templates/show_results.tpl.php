@@ -37,6 +37,7 @@
             {
                 $lineResultList = $surveyResults->lineResultList[$surveyLine->id];
             }
+            $predefinedResultList = $lineResultList->predefinedResultList;
         ?>
         <div class="LVSURVEYQuestion">
             <input type="hidden" name="questionType" value="<?php echo $question->type; ?>" />
@@ -45,12 +46,24 @@
             </div>                
             <div class="LVSURVEYQuestionContent"> 
                 <div class="LVSURVEYQuestionResultChart <?php echo $question->type;?>"></div>
-                <?php if (empty($choiceList)) :?>
                     <div class="answer">
+                    <?php if (empty($choiceList) && empty($lineResultList->predefinedResultList)) :?>
                         <?php echo get_lang('No Choices'); ?>
-                    </div>                  
+                    
+                    <?php elseif (empty($choiceList)) :?>
+                        <table>
+                            <?php foreach($predefinedResultList as $predefinedResult) : 
+                                $predefinedResultList = $predefinedResult->resultList;
+                                $count = count($predefinedResultList);
+                                $resultRowTpl = new PhpTemplate(dirname(__FILE__).'/show_results/predefined_result.tpl.php');                                 
+                                $resultRowTpl->assign('participantCount', $participantCount);
+                                $resultRowTpl->assign('predefinedResults', $predefinedResultList);
+                                $resultRowTpl->assign('anonymous', $this->survey->is_anonymous);
+                                echo $resultRowTpl->render(); ?>
+                            <?php endforeach;?>
+                        </table>   
+                    
                 <?php  else :?>
-                    <div class="answer">
                         <table>
                             <?php foreach($choiceList as $choice) : ?>
                                 <?php 
@@ -82,8 +95,9 @@
                                 ?>
                             <?php endforeach;?>
                         </table>
-                    </div>
+                    
                 <?php  endif;?>
+                    </div>
             </div>
             <div class="LVSURVEYQuestionDetails">
                 <a href="#" class="deployDetailedList">

@@ -10,8 +10,8 @@ $choiceText = $choice->getText();
 <tr class="answerTR">
        <td>
             <span class="answerLabel" >
-                <?php echo $choice->text; ?> :
-            </span>
+       			<?php echo $choice->text; ?>
+			</span> :
         </td>
         <?php  foreach($optionList as $anOption) : ?>
             <?php 

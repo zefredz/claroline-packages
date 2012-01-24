@@ -54,19 +54,30 @@ class AnonymousCSVResults extends CSVResults
     
     function appendLineResults($lineResults, $question)
     {
-        foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
+        if( $question->type == 'LIKERT' )
         {
-            $choice = $question->getChoice($choiceId);
-            
-            if($question->type == "ARRAY")
+            foreach( $lineResults->predefinedResultList as $predefinedValue => $predefinedResults )
             {
-                $optionResults = $choiceResults->optionResultList;
-                $this->appendOptionResults($optionResults,$question,$choice);
+                $predefinedResultList = $predefinedResults->resultList;
+                $this->appendPredefinedResult($predefinedResultList[0], $question);
             }
-            else
+        }
+        else
+        {
+            foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
             {
-                $choiceResultList = $choiceResults->resultList;
-                $this->appendChoiceResultList($choiceResultList, $question, $choice);
+                $choice = $question->getChoice($choiceId);
+                
+                if($question->type == "ARRAY")
+                {
+                    $optionResults = $choiceResults->optionResultList;
+                    $this->appendOptionResults($optionResults,$question,$choice);
+                }
+                else
+                {
+                    $choiceResultList = $choiceResults->resultList;
+                    $this->appendChoiceResultList($choiceResultList, $question, $choice);
+                }
             }
         }
     }
@@ -117,6 +128,21 @@ class AnonymousCSVResults extends CSVResults
             $this->recordList[] = $choiceLine;
         }
     }
+    
+    function appendPredefinedResult($predefinedResult,$question)
+    {
+        $line = array (
+            $this->survey->id,
+            $question->id,
+            $question->text,
+            $predefinedResult->comment,
+            null,
+            get_lang( $predefinedResult->predefinedValue ),
+            null,
+            null
+        );
+        $this->recordList[] = $line;
+    }
 }
 
 class NamedCSVResults extends AnonymousCSVResults
@@ -158,7 +184,8 @@ class NamedCSVResults extends AnonymousCSVResults
         }
     }
     
-    function appendChoiceResultList($choiceResultList,$question, $choice){
+    function appendChoiceResultList($choiceResultList,$question, $choice)
+    {
         foreach($choiceResultList as $result)
         {
             $choiceLine = array (
@@ -176,6 +203,24 @@ class NamedCSVResults extends AnonymousCSVResults
             );
             $this->recordList[] = $choiceLine;
         }
+    }
+    
+    function appendPredefinedResult($predefinedResult,$question)
+    {
+        $line = array (
+            $this->survey->id,
+            $question->id,
+            $question->text,
+            $predefinedResult->userId,
+            $predefinedResult->firstName,
+            $predefinedResult->lastName,
+            $predefinedResult->comment,
+            null,
+            get_lang( $predefinedResult->predefinedValue ),
+            null,
+            null
+        );
+        $this->recordList[] = $line;
     }
 }
 
@@ -201,33 +246,50 @@ class SyntheticResults extends CSVResults
         foreach($this->surveyResults->lineResultList as $questionId => $lineResults)
         {
             $question = $surveyLineList[$questionId]->question;
-            foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
+
+            if( $question->type == 'LIKERT' )
             {
-                $choice = $question->getChoice($choiceId);
-                if($question->type != 'ARRAY')
+                foreach( $lineResults->predefinedResultList as $predefinedValue => $predefinedResults )
                 {
                     $line = array(  $question->text,
-                                    $choice->text,
+                                    get_lang( $predefinedValue ),
                                     null,
-                                    count($choiceResults->resultList),
+                                    count($predefinedResults->resultList),
                                     $participationCount);
                     
-                    $this->recordList[] = $line;
+                    $this->recordList[] = $line;                    
                 }
-                else
+            }
+            else
+            {
+                foreach($lineResults->choiceResultList as $choiceId => $choiceResults)
                 {
-                    foreach($choiceResults->optionResultList as $optionId => $optionResults)
+                    $choice = $question->getChoice($choiceId);
+                    if($question->type != 'ARRAY')
                     {
-                        $option = $choice->getOption($optionId);
-                        $line = array(  
-                                    $question->text, 
-                                    $choice->text, 
-                                    $option->getText(), 
-                                    count($optionResults->resultList),
-                                    $participationCount,
-                        );
+                        $line = array(  $question->text,
+                                        $choice->text,
+                                        null,
+                                        count($choiceResults->resultList),
+                                        $participationCount);
                         
                         $this->recordList[] = $line;
+                    }
+                    else
+                    {
+                        foreach($choiceResults->optionResultList as $optionId => $optionResults)
+                        {
+                            $option = $choice->getOption($optionId);
+                            $line = array(  
+                                        $question->text, 
+                                        $choice->text, 
+                                        $option->getText(), 
+                                        count($optionResults->resultList),
+                                        $participationCount,
+                            );
+                            
+                            $this->recordList[] = $line;
+                        }
                     }
                 }
             }
@@ -307,6 +369,10 @@ class PerUserCSVResults extends CSVResults
                 {
                     $participationLine[] = $subanswer->getText();
                 }
+            }
+            elseif( $answer->getQuestionLine()->question->type == 'LIKERT' )
+            {
+                $participationLine[] = get_lang( $answer->getPredefinedValue() );
             }
             else
             {
