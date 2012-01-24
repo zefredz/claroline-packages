@@ -17,7 +17,7 @@ $(document).ready(function (){
 
 	
 	// paint pie charts
-	$(".LVSURVEYQuestionResultChart.MCSA").each(function(){
+	$(".LVSURVEYQuestionResultChart.MCSA,.LVSURVEYQuestionResultChart.LIKERT").each(function(){
 		var data = [];
 		var i = 0;
 		$(this).siblings().find(".answerTR").each(function(){

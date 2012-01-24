@@ -11,6 +11,7 @@ class Result
     public $firstName;
     public $lastName;
     public $comment;
+    public $predefinedValue;
     
     
     static function __set_state($array)
@@ -44,6 +45,11 @@ class OptionResults
     public $resultList = array();
 }
 
+class PredefinedResults
+{
+    public $resultList = array();
+}
+
 class ChoiceResults
 {
     public $resultList = array();
@@ -54,6 +60,7 @@ class LineResults
 {
     public $resultList = array();
     public $choiceResultList = array(); 
+    public $predefinedResultList = array(); 
 }
 
 class SurveyResults
@@ -72,17 +79,18 @@ class SurveyResults
                         AI.`choiceId`       as choiceId,
                         AI.`optionId`       as optionId,  
                         U.`user_id`         as userId, 
-                        U.`nom`             as firstName,
-                        U.`prenom`          as lastName,
-                        A.`comment`         as comment  
-            FROM        `".SurveyConstants::$CHOICE_TBL."` as C 
-            INNER JOIN `".SurveyConstants::$ANSWER_ITEM_TBL."` as AI
-            ON          AI.`choiceId`       = C.`id` 
+                        U.`nom`             as lastName,
+                        U.`prenom`          as firstName,
+                        A.`comment`         as comment,
+                        A.`predefined`      as predefinedValue
+            FROM        `".SurveyConstants::$PARTICIPATION_TBL."` as P
             INNER JOIN `".SurveyConstants::$ANSWER_TBL."` as A
-            ON          AI.`answerId`       = A.`id` 
-            INNER JOIN `".SurveyConstants::$PARTICIPATION_TBL."` as P
-            ON          A.`participationId` = P.`id`
-            LEFT OUTER JOIN  `".$userTable."` as U 
+            ON          P.`id`              = A.`participationId` 
+            LEFT JOIN  `".SurveyConstants::$ANSWER_ITEM_TBL."` as AI
+            ON          A.`id`              = AI.`answerId`
+            LEFT JOIN `".SurveyConstants::$CHOICE_TBL."` as C 
+            ON          AI.`choiceId`       = C.`id` 
+            LEFT JOIN  `".$userTable."` as U 
             ON          P.`userId`          = U.`user_id`            
             WHERE       P.`surveyId`        = ".(int)$surveyId."
             ";
@@ -99,7 +107,7 @@ class SurveyResults
             ";
         }
         
-        $sql .= "   ORDER BY surveyId, questionId, choiceId, userId ;";
+        $sql .= "   ORDER BY surveyId, questionId, choiceId, predefined, userId ;";
         
         $resultSet = Claroline::getDatabase()->query($sql);
         $res = new SurveyResults();
@@ -114,6 +122,15 @@ class SurveyResults
             }
             
             $questionResultList = $res->lineResultList[$result->surveyLineId];
+            
+            if( !empty( $result->predefinedValue ) )
+            {
+                if( !isset($questionResultList->predefinedResultList[$result->predefinedValue]))
+                {
+                    $questionResultList->predefinedResultList[$result->predefinedValue] = new PredefinedResults();
+                }
+                $questionResultList->predefinedResultList[$result->predefinedValue]->resultList[] = $result;
+            }
             
             if( !isset($questionResultList->choiceResultList[$result->choiceId]))
             {

@@ -234,7 +234,8 @@ class Participation
         $sql = "SELECT  A.`id`                  as id, 
                         A.`participationId`     as participationId, 
                         A.`surveyLineId`        as surveyLineId, 
-                        A.`comment`             as comment
+                        A.`comment`             as comment,
+                        A.`predefined`          as predefinedValue
                 FROM    `".SurveyConstants::$ANSWER_TBL."` as A
                 WHERE   A.`participationId` = ".(int)$this->id."; ";
         

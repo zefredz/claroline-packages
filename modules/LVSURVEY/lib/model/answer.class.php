@@ -16,6 +16,8 @@ class Answer
     
     public $comment;
     
+    protected $predefinedValue;
+    
     protected $selectedChoiceList;
     protected $selectedOptionList;
     
@@ -27,6 +29,7 @@ class Answer
         $this->surveyLineId = $surveyLineId;
         $this->questionLine = NULL;
         $this->comment = '';
+        $this->predefinedValue = NULL;
         $this->selectedChoiceList = array();
         $this->selectedOptionList = array();
     }
@@ -55,7 +58,8 @@ class Answer
                        A.`id`                           AS id,
                        A.`participationId`              AS participationId,
                        A.`surveyLineId`                 AS surveyLineId,
-                       A.`comment`                      AS comment
+                       A.`comment`                      AS comment,
+                       A.`predefined`                   AS predefinedValue
             FROM        `".SurveyConstants::$ANSWER_TBL."` A
             WHERE       `id` = ".(int) $id."; "; 
          
@@ -90,6 +94,7 @@ class Answer
         }
         
         $answer->comment = $userInput->get('answerComment'.$questionLine->id, '');
+        $answer->predefinedValue = $userInput->get('predefined'.$questionLine->id, '');
         
         $answer->selectedChoiceList = Choice::loadSelectedChoicesFromForm($questionLine);
         $answer->selectedOptionList = Option::loadSelectedOptionFromForm($questionLine);
@@ -188,7 +193,8 @@ class Answer
                 INSERT INTO `".SurveyConstants::$ANSWER_TBL."`
                 SET `participationId`       = ".(int)$this->participationId.",
                     `surveyLineId`          = ".(int) $this->surveyLineId.", 
-                    `comment`               = ".$dbCnx->quote($this->comment).";  ";
+                    `comment`               = ".$dbCnx->quote($this->comment).",
+                    `predefined`            = ".$dbCnx->quote($this->predefinedValue).";  ";
             
         $dbCnx->exec($sql);
         $insertedId = $dbCnx->insertId();
@@ -200,7 +206,8 @@ class Answer
         $dbCnx = ClaroLine::getDatabase();
         $sql = "
                 UPDATE `".SurveyConstants::$ANSWER_TBL."`
-                SET    `comment`            = ".$dbCnx->quote($this->comment)."
+                SET    `comment`            = ".$dbCnx->quote($this->comment).",
+                       `predefined`         = ".$dbCnx->quote($this->predefinedValue)."
                 WHERE `id`                  = ".(int)$this->id.";  ";
         
         $dbCnx->exec($sql);
@@ -249,6 +256,29 @@ class Answer
     public function getSurveyLineId()
     {
         return $this->surveyLineId;
+    }
+    
+    public function getPredefinedValue()
+    {
+        if(empty($this->predefinedValue))
+        {
+            $this->loadPredefinedValue();
+        }
+        return $this->predefinedValue;
+    }
+    
+    private function loadPredefinedValue()
+    {
+        $dbCnx = Claroline::getDatabase();
+        $sql = "
+            SELECT  A.`id`         AS id, 
+                    A.`predefined`   AS predefinedValue
+            FROM    `".SurveyConstants::$ANSWER_TBL."` A 
+            WHERE   A.`id` = ".(int)$this->id."; ";
+        
+        $row = $dbCnx->query($sql)->fetch();
+        
+        $this->predefinedValue = $row['predefinedValue'];
     }
     
     public function getSelectedChoiceList()

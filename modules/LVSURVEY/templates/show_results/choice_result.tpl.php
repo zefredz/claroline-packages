@@ -12,8 +12,8 @@ $resultCount = count($resultList);
 <tr class="answerTR">
     <td>
         <span class="answerLabel" >
-        <?php echo $choice->text; ?> :
-    </span>
+        <?php echo $choice->text; ?>
+	</span> :
     </td>
        <td colspan="2" >
         <?php echo (0 == $resultCount)?get_lang('No Results'):$resultCount; ?>
