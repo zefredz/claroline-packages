@@ -85,7 +85,7 @@ class QuestionLine extends SurveyLine
         $sql = "
                     DELETE      A, AI 
                     FROM        `".SurveyConstants::$ANSWER_TBL."` AS A 
-                    INNER JOIN  `".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI 
+                    LEFT JOIN  `".SurveyConstants::$ANSWER_ITEM_TBL."` AS AI 
                     ON          A.`id` = AI.`answerId`
                     WHERE       A.`surveyLineId` = ".(int) $this->id." ; ";
         
