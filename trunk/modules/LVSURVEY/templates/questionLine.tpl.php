@@ -13,7 +13,7 @@
     $deleteIcon     = claro_html_icon('delete');
 ?>
 
-<div class="LVSURVEYLine<?php echo $answer->isValid() ? '' : ' invalid'; ?>">
+<div class="LVSURVEYLine">
     <input type="hidden" name="questionId<?php echo $question->id; ?>" value="<?php echo $question->id; ?>" />
     <input type="hidden" name="answerId<?php echo $surveyLine->id; ?>" value="<?php echo $answer->id; ?>" />
     <div class="LVSURVEYLineTitle">
