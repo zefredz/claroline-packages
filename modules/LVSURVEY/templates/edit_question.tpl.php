@@ -67,7 +67,7 @@
             <label for="questionTypeMCSA"><?php  echo get_lang('Multiple choices, single answer'); ?></label><br/>
             <input type="radio" id="questionTypeMCMA" name="questionType" value="MCMA" <?php echo $this->question->type=="MCMA"?"checked":""; ?> />
             <label for="questionTypeMCMA"><?php echo get_lang('Multiple choices, multiple answers'); ?></label><br/>
-            <input type="radio" id="questionTypeLIKERT" name="questionType" value="LIKERT" <?php echo $this->question->type=="ARRAY"?"checked":""; ?> />
+            <input type="radio" id="questionTypeLIKERT" name="questionType" value="LIKERT" <?php echo $this->question->type=="LIKERT"?"checked":""; ?> />
             <label for="questionTypeLIKERT"><?php echo get_lang('Likert scale'); ?></label><br/>
             <input type="radio" id="questionTypeARRAY" name="questionType" value="ARRAY" <?php echo $this->question->type=="ARRAY"?"checked":""; ?> />
             <label for="questionTypeARRAY"><?php echo get_lang('Array choices'); ?></label><br/>

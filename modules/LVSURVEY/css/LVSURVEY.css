@@ -88,3 +88,7 @@ ul.detailedList{
  	color:#4D5183;
  }
 
+.invalid
+{
+    border: 2px solid red;
+}

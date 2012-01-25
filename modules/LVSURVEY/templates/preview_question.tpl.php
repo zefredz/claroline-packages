@@ -70,6 +70,22 @@
                 <?php endforeach;?>
             </table>
         <?php endif; ?>
+        <?php if ('LIKERT' == $question->type) : ?>
+            <ul>
+                <?php for( $i = 1; $i <= 5; $i++ ) : ?>
+                    <li>
+                        <input  name="predefined" 
+                                type="radio" 
+                                value="__LIKERT_LEVEL_<?php  echo $i ?>__" 
+                                id="likertLevel_<?php  echo $i; ?>"
+                        />
+                        <label  for="likertLevel_<?php  echo $i; ?>">
+                            <?php echo htmlspecialchars( get_lang( '__LIKERT_LEVEL_' . $i . '__' ) ); ?>
+                        </label>
+                    </li>
+                <?php endfor;?>
+             </ul>
+        <?php endif; ?>
     </div>              
     <div class="answerCommentBlock" id="answerCommentBlock">                
         <?php echo get_lang('Comment'); ?> :
