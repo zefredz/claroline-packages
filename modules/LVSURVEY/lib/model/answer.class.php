@@ -382,6 +382,11 @@ class Answer
             if(empty($selectedChoiceList))return false;
         }
         
+        if( $questionLine->question->type == 'LIKERT' )
+        {
+            if(empty($this->predefinedValue))return false;
+        }
+        
         //NOTHING TO CHECK FOR MCMA
         return true;
     }
