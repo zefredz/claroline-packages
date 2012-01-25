@@ -26,7 +26,7 @@ $resultCount = count($resultList);
         &#041; <!--  right parenthese  -->
     </td>      
 </tr>
-<?php if ($anonymous) : ?>
+<?php if ( !$anonymous ) : ?>
 	<tr>
 		<td colspan="3">
 			<div class="LVSURVEYQuestionDetails">
