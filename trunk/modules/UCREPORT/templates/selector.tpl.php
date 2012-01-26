@@ -46,7 +46,7 @@
                                       size="3" />
             </td>
             <td align="center">
-                <input class="itemSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" <?php echo $itemDatas['selected'] ? 'checked="yes"' : ''; ?>" />
+                <input class="itemSelect" type="checkbox" name="item[<?php echo $itemId; ?>][selected]" <?php echo $itemDatas['selected'] ? 'checked="yes"' : ''; ?> />
             </td>
         </tr>
         <?php endforeach; ?>
