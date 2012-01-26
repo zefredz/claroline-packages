@@ -23,8 +23,56 @@ function disableOptions()
 	$("span[id^='optionBlocForChoice']").hide();
 }
 
+function hasValidAnswer(surveyLine)
+{
+   //return always true for non mandatory questions
+   if( !$(surveyLine).find('span').hasClass('required') ) return true;
+   
+   //test for open question: textarea not empty
+   if( $(surveyLine).find('textarea').length ) 
+   {
+       if( $(surveyLine).find('textarea').val() != '' ) return true;
+   }
+   
+   //test for MCUA, MCMA and LIKERT questions : at least one input checked in choice list
+   if( $(surveyLine).find('li > input:checked').length ) return true;
+      
+   //test for Array questions : one input checked per array line
+   if( $(surveyLine.find('table')).length ) 
+   {
+       if( $(surveyLine).find('tr').length == $(surveyLine).find('input:checked').length ) return true;
+   }
+   return false;
+}
+
 $(document).ready(function(){
 	
+	$('#surveyForm').submit( function()
+    {
+        var itemCount = 0;
+        var valid = 0;
+        $('.LVSURVEYLine').each( function()
+        {
+            itemCount++;
+            if( hasValidAnswer($(this)) ) 
+            {
+                $(this).removeClass('invalid');
+                valid++;
+            }
+            else
+            {
+                $(this).addClass('invalid');
+            }
+        });
+        if( valid != itemCount )
+        {
+            alert(Claroline.getLang('__INCOMPLETE_SURVEY_ALERT__'));
+            $('html, body').animate({ scrollTop: $('.invalid:first').offset().top }, 'slow');
+        }
+        
+        return valid == itemCount;
+    });
+    
 	
 	$("input[name='questionType']").click(	function()
 	{

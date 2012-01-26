@@ -1,6 +1,11 @@
 <?php 
 JavascriptLoader::getInstance()->load('jquery');
 JavascriptLoader::getInstance()->load('jquery.limit-1.2');
+$jslang = new JavascriptLanguage;
+$jslang->addLangVar('__INCOMPLETE_SURVEY_ALERT__');
+ClaroHeader::getInstance()->addInlineJavascript($jslang->render());
+
+JavascriptLoader::getInstance()->load('surveyQuestionForm');
 CssLoader::getInstance()->load('LVSURVEY');
 
 $editIcon       = claro_html_icon('edit',       get_lang('Modify'),         get_lang('Modify'));
@@ -58,7 +63,7 @@ echo $infoBox->render();
 <div><?php echo $this->survey->description; ?></div>
 
 <?php  if(!$this->survey->hasEnded()) : ?>
-<form method="post" action="show_survey.php?surveyId=<?php echo $this->survey->id; ?>">
+<form id="surveyForm" method="post" action="show_survey.php?surveyId=<?php echo $this->survey->id; ?>">
     <input type="hidden" name="claroFormId" value="<?php echo uniqid(''); ?>" />
     <input type="hidden" name="cmd" value="saveParticipation" />
     <input type="hidden" name="surveyGoToConf" value="" />
