@@ -134,6 +134,7 @@ $_lang['View results of this survey'] = 'View results of this survey';
 $_lang['You are not allowed to see these results.'] = 'You are not allowed to see these results.';
 $_lang['You have forgotten to fill a mandatory field'] = 'You have forgotten to fill a mandatory field';
 $_lang['You have forgotten to give options for choice'] = 'You have forgotten to give options for choice';
+$_lang['__INCOMPLETE_SURVEY_ALERT__'] = 'Some required answers are missing.\nPlease complete them.';
 $_lang['__LIKERT_LEVEL_1__'] = 'Strongly agree';
 $_lang['__LIKERT_LEVEL_2__'] = 'Agree';
 $_lang['__LIKERT_LEVEL_3__'] = 'Neither agree nor disagree';
