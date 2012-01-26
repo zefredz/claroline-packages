@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__report_report`(
     confidentiality ENUM('PUBLIC','PRIVATE') NOT NULL DEFAULT 'PRIVATE',
     visibility ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE',
     PRIMARY KEY(id)
-);
+) ENGINE=MyISAM;
 
 
 /* Integrated Examination tool tables */
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__examination_score`(
     score TINYINT,
     comment TEXT,
     PRIMARY KEY(id)
-);
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__examination_session`(
     id INT(11) NOT NULL AUTO_INCREMENT,
@@ -39,4 +39,4 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__examination_session`(
     confidentiality ENUM('PUBLIC','PRIVATE') NOT NULL DEFAULT 'PRIVATE',
     visibility ENUM('VISIBLE','INVISIBLE') NOT NULL DEFAULT 'VISIBLE ',
     PRIMARY KEY(id)
-)
+) ENGINE=MyISAM;
