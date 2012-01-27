@@ -120,7 +120,6 @@ class LVSurveyUpgrader
                 $this->selectedMigrations[] = $migration;
             }
         }
-        
     }
     
     public function run($target)
@@ -129,9 +128,9 @@ class LVSurveyUpgrader
         {
             $this->targetVersion = $target;
         }
-        $this->determineDirection();        
-        $this->selectMigrations();        
-        if( sizeof( $this->selectMigrations() ) == 0 )
+        $this->determineDirection();
+        $this->selectMigrations();
+        if( empty( $this->selectedMigrations ) )
         {
             echo "No upgrade available<br/>Current database and file version : " . $this->currentDBVersion;
             die();
