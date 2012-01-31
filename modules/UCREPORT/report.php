@@ -177,7 +177,6 @@ try
             }
             
             $reset = $cmd == 'exReset'
-                  || $cmd == 'exGenerate'
                   || ! isset( $_SESSION[ $courseId . '_UCREPORT_item_list' ] )
                   || ! isset( $_SESSION[ $courseId . '_UCREPORT_user_list' ] );
             
