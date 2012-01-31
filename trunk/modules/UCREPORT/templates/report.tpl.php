@@ -57,16 +57,16 @@
             <?php echo $this->datas[ 'average' ]; ?>
         </td>
     </tr>
-    <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
+    <?php foreach( $this->datas[ 'users' ] as $userId => $userDatas ) : ?>
         <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() || $this->is_public ) : ?>
         <tr>
             <td>
-                <?php echo $this->datas[ 'users' ][ $userId ][ 'lastname' ] . ' ' . $this->datas[ 'users' ][ $userId ][ 'firstname' ]; ?>
+                <?php echo $userDatas[ 'lastname' ] . ' ' . $userDatas[ 'firstname' ]; ?>
             </td>
             <?php if ( ! $this->id ) : ?>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&userId='. $userId . '&active=' . ! $this->datas[ 'users' ][ $userId ][ 'active' ] ) );?>">
-                    <?php if ( $this->datas[ 'users' ][ $userId ][ 'active' ] ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&userId='. $userId . '&active=' . ! $userDatas[ 'active' ] ) );?>">
+                    <?php if ( $userDatas[ 'active' ] ) : ?>
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                     <?php else: ?>
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
@@ -76,14 +76,14 @@
             <?php endif; ?>
             <?php foreach( $this->datas[ 'items' ] as $id => $item ) : ?>
             <td class="cell">
-                    <?php if ( isset( $userReport[ $id ] ) ) : ?>
-                <?php if ( ! $this->id ) : ?>
-                    <input type="text"
-                           size="2"
-                           name="mark[<?php echo $userId; ?>][<?php echo $id; ?>]" value="<?php echo $userReport[ $id ]; ?>" />
-                <?php else : ?>
-                    <?php echo $userReport[ $id ]; ?>
-                <?php endif; ?>
+                    <?php if ( isset( $this->datas[ 'report' ][ $userId ][ $id ] ) ) : ?>
+                        <?php if ( ! $this->id ) : ?>
+                            <input type="text"
+                                   size="2"
+                                   name="mark[<?php echo $userId; ?>][<?php echo $id; ?>]" value="<?php echo $this->datas[ 'report' ][ $userId ][ $id ]; ?>" />
+                        <?php else : ?>
+                            <?php echo $this->datas[ 'report' ][ $userId ][ $id ]; ?>
+                        <?php endif; ?>
                     <?php else :?>
                 <span class="empty"><?php echo get_lang( 'empty' ); ?></span>
                     <?php endif; ?>
