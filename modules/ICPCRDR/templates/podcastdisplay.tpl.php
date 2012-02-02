@@ -16,7 +16,22 @@
 <p>
     <a href="<?php echo htmlspecialchars($this->url);?>">
         <img src="<?php echo get_icon_url('feed'); ?>" alt="rss" /> 
-        <?php echo get_lang('Suscribe to podcast');?></a>
+        <?php echo get_lang('Suscribe to podcast');?>
+    </a>
+</p>
+
+<p>
+    <?php if( $this->rsort ) : ?>
+    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&podcastId=' . $this->id ) );?>">
+        <img src="<?php echo get_icon_url('go_up'); ?>" alt="up" /> 
+        <?php echo get_lang('Sort items in rss order (the newest ones first)');?>
+    </a>
+    <?php else : ?>
+    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&sort=chrono&podcastId=' . $this->id ) );?>">
+        <img src="<?php echo get_icon_url('go_down'); ?>" alt="down" /> 
+        <?php echo get_lang('Sort items in chronological order (the oldest ones first)');?>
+    </a>
+    <?php endif; ?>
 </p>
 
 <p class="channelPubDate">
