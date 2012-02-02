@@ -68,7 +68,7 @@ try
             'rqEditPodcast', 'exEditPodcast',
             'rqDeletePodcast', 'exDeletePodcast',
             'exMkVisible', 'exMkInvisible'
-        ) ) );   
+        ) ) );
     }
     // define actions available for students
     else
@@ -172,9 +172,10 @@ try
                     break;
                 }
                 
+                $rsort = $userInput->get( 'sort' ) == 'chrono';
                 // Parse the podcast RSS flux by using the podcast parser from podcastparser.lib
                 $parser = new PodcastParser();
-                $parser->parseFeed( $url );
+                $parser->parseFeed( $url , $rsort );
                 
                 // use a template to display the podcast
                 // module templates are in module/MODULELABEL/templates folder
@@ -186,6 +187,8 @@ try
                 $videoList->assign( 'channel', $parser->getChannelInfo() );
                 $videoList->assign( 'items', $parser->getItems() );
                 $videoList->assign( 'url', $url );
+                $videoList->assign( 'rsort' , $rsort );
+                $videoList->assign( 'id' , $id );
                 // $videoList->assign( 'title', $title );
                 
                 // append the template to the layout

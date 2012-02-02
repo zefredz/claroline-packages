@@ -38,7 +38,7 @@ class PodcastParser
     /**
     * Gets the feed and parses it
     */
-    public function parseFeed($url)
+    public function parseFeed($url , $rsort = false )
     {
         $startOfFile = url_get_first_bytes($url,255);
             
@@ -68,6 +68,11 @@ class PodcastParser
         foreach ( $xml_parser->channel->children()->item as $item ) 
         {                    // pushes on PodcastItem objects into the items array for each <item> tag
             $this->items[]  = new PodcastItem($item);
+        }
+        
+        if( $rsort )
+        {
+            krsort( $this->items );
         }
         
         unset($xml_parser);
