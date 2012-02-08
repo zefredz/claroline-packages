@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_librarian`(
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__library_course_library`(
     course_id VARCHAR(16) NOT NULL,
     library_id INT(11) NOT NULL,
+    title VARCHAR(128),
     PRIMARY KEY(course_id,library_id)
 ) ENGINE=MyISAM;
 

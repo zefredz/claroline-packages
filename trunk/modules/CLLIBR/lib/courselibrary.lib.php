@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.0 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -28,8 +28,7 @@ class CourseLibrary
     public function __construct( $database , $courseId )
     {
         $this->database = $database;
-        $this->tbl = get_module_main_tbl( array( 'library_course_library'
-                                               , 'library_library' ) );
+        $this->tbl = get_module_main_tbl( array( 'library_course_library' ) );
         
         $this->courseId = $courseId;
         $this->load();
@@ -45,21 +44,17 @@ class CourseLibrary
         
         $result = $this->database->query( "
             SELECT
-                L.id,
-                L.title
+                library_id,
+                title
             FROM
-                `{$this->tbl['library_library']}` AS L
-            INNER JOIN
-                `{$this->tbl['library_course_library']}` AS C
-            ON
-                L.id = C.library_id
+                `{$this->tbl['library_course_library']}`
             WHERE
-                C.course_id = " . $this->database->quote( $this->courseId )
+                course_id = " . $this->database->quote( $this->courseId )
         );
         
         foreach( $result as $line )
         {
-            $this->libraryList[ $line[ 'id' ] ] = $line[ 'title' ];
+            $this->libraryList[ $line[ 'library_id' ] ] = $line[ 'title' ];
         }
     }
     
@@ -99,9 +94,10 @@ class CourseLibrary
     /**
      * Adds a new entry
      * @param int $libraryId
+     * @param string $title
      * @return boolean true on success
      */
-    public function add( $libraryId )
+    public function add( $libraryId , $title )
     {
         if ( ! $this->libraryExists( $libraryId ) )
         {
@@ -110,7 +106,8 @@ class CourseLibrary
                     `{$this->tbl['library_course_library']}`
                 SET
                     library_id = " . $this->database->escape( $libraryId ) . ",
-                    course_id = " . $this->database->quote( $this->courseId ) );
+                    course_id = " . $this->database->quote( $this->courseId ) . ",
+                    title = " . $this->database->quote( $title ) );
         }
     }
     

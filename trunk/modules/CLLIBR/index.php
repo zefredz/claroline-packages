@@ -105,6 +105,7 @@ try
                                  , 'exRemoveLibrarian'
                                  , 'rqDeleteLibrary'
                                  , 'exDeleteLibrary'
+                                 , 'rqAddLibrary'
                                  , 'exAddLibrary'
                                  , 'rqRemoveLibrary'
                                  , 'exRemoveLibrary'
@@ -296,6 +297,7 @@ try
             case 'rqShowBibliography';
             case 'rqShowLibrarylist':
             case 'rqDeleteLibrary':
+            case 'rqAddLibrary':
             case 'rqView':
             case 'rqDownload':
             case 'rqAddResource':
@@ -752,7 +754,8 @@ try
             
             case 'exAddLibrary':
             {
-                $execution_ok = $courseLibraryList->add( $libraryId );
+                $title = $userInput->get( 'title' );
+                $execution_ok = $courseLibraryList->add( $libraryId , $title );
                 break;
             }
             
@@ -1001,7 +1004,23 @@ try
             }
             
             case 'rqShowLibrarylist':
+            case 'rqAddLibrary':
             {
+                if ( $cmd == 'rqAddLibrary' )
+                {
+                    $form = new ModuleTemplate( 'CLLIBR' , 'form.tpl.php');
+                    $form->assign( 'message' , get_lang( 'Choose a title for this link to the library' ) );
+                    $form->assign( 'urlAction' , 'exAddLibrary' );
+                    $form->assign( 'urlCancel' , 'rqShowLibraryList' );
+                    $form->assign( 'xid' , array( array( 'type'  => 'hidden'
+                                                       , 'name'  => 'libraryId'
+                                                       , 'value' => $library->getId() )
+                                                , array( 'type'  => 'text'
+                                                       , 'name'  => 'title'
+                                                       , 'value' => $library->getTitle() ) ) );
+                    $dialogBox->question( $form->render() );
+                }
+                
                 if ( $edit_allowed )
                 {
                     $cmdList[] = array( 'img'  => 'new_book',
