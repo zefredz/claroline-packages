@@ -153,6 +153,7 @@ $_lang[ 'Update resource' ] = 'Mettre à jour la ressource';
 // Messages
 $_lang[ 'Access denied' ] = 'Accès non autorisé';
 $_lang[ 'A library must have at least one librarian' ] ='Une bibliothèque doit avoir au moins un bibliothécaire';
+$_lang[ 'Choose a title for this link to the library' ] = 'Donnez un titre au lien vers cette bibliothèque';
 $_lang[ 'Do you really want to delete this library?' ] = 'Voulez-vous réellement suprimer cette bibliothèque?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Voulez-vous réellement supprimer cette ressource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Voulez-vous réellement congédier ce bibliothécaire?';

@@ -64,7 +64,7 @@
                     <?php if ( isset( $this->courseLibraryList[ $libraryId ] ) ) : ?>
                     <img src="<?php echo get_icon_url( 'add_disabled' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     <?php else : ?>
-                    <a title="<?php echo get_lang( 'Add a library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAddLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Add a library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     </a>
                     <?php endif; ?>

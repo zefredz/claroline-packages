@@ -153,6 +153,7 @@ $_lang[ 'Update resource' ] = 'Update resource';
 // Messages
 $_lang[ 'Access denied' ] = 'Access denied';
 $_lang[ 'A library must have at least one librarian' ] ='A library must have at least one librarian';
+$_lang[ 'Choose a title for this link to the library' ] = 'Choose a title for this link to the library';
 $_lang[ 'Do you really want to delete this library?' ] = 'Do you really want to delete this library?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Do you really want to delete this resource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Do you really want to remove this librarian?';
