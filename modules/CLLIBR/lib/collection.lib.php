@@ -201,7 +201,7 @@ class Collection
     /**
      * Add a resource in the resource set
      * @param int $resourceId
-     * @retrn boolean true on success
+     * @return boolean true on success
      */
     public function add( $resourceId )
     {
