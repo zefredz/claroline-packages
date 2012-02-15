@@ -1,6 +1,7 @@
 <?php 
 
 $_lang['Add a podcast'] = 'Ajouter un podcast';
+$_lang['Change size'] = 'Changer la taille';
 $_lang['Choose a podcast in the list to start'] = 'Choisissez simplement un podcast dans la liste de gauche pour le visionner';
 $_lang['Delete feed'] = 'Effacer le flux';
 $_lang['Do you want to delete the link: %linkTitle ?'] = 'Voulez-vous vraiment supprimer le lien: %linkTitle ?';

@@ -22,3 +22,43 @@
 .itemPubDate {
     font-size: 75%;
 }
+
+.sizeSelector {
+    margin-top: 5px;
+    /*border: solid 1px #444444;*/
+    padding: 6px 3px 6px 3px;
+}
+
+.sizeSelector a {
+    color: white;
+}
+
+.sizeButton {
+    font-weight: bold;
+    padding: 4px 8px 4px 8px;
+    color: white;
+    width: 200px;
+    height: 50px;
+}
+
+.selectorTitle {
+    background-color: #B0B0A0;
+}
+
+.size400 {
+    background-color: #AA4422;
+}
+
+.size600 {
+    background-color: #777722;
+}
+
+.size800 {
+    background-color: #447722;
+}
+
+.videoContainer
+{
+    display: block;
+    margin-bottom: 80px;
+}
