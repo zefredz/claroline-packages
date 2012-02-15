@@ -348,7 +348,7 @@ try
     if ( 'visit' == $cmd && isset( $parser ) )
     {
         $channelInfo = $parser->getChannelInfo();
-        ClaroBreadCrumbs::getInstance()->append( $channelInfo['title'] );
+        ClaroBreadCrumbs::getInstance()->append( claro_utf8_decode( $channelInfo['title'], get_conf('charset') ) );
     }
 
     // display the page and send it back to the user
