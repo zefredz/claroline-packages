@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.2.4 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -11,6 +11,12 @@
 
 class CLLIBR_Portlet extends UserDesktopPortlet
 {
+    public function __construct()
+    {
+        $this->name = 'My Bookmark';
+        $this->label = 'CLLIBR_Portlet';
+    }
+    
     public function renderContent()
     {
         $output = '<div id="portletMyBookmark">' . "\n"
