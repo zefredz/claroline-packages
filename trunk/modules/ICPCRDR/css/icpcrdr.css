@@ -33,7 +33,7 @@
     color: white;
 }
 
-.sizeButton {
+.sizeButton, .selectorTitle{
     font-weight: bold;
     padding: 4px 8px 4px 8px;
     color: white;
