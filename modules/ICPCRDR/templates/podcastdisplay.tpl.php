@@ -113,7 +113,7 @@
             });
         </script>
         <div class="sizeSelector">
-            <span class="sizeButton selectorTitle"><?php echo get_lang( 'Change size' ); ?></span>
+            <span class="selectorTitle"><?php echo get_lang( 'Change size' ); ?></span>
             <a class="sizeButton size400">400</a>
             <a class="sizeButton size600">600</a>
             <a class="sizeButton size800">800</a>
