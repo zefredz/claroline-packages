@@ -62,7 +62,7 @@
         </p>
         
         <a
-            href="<?php echo htmlspecialchars( str_replace( "'", "%39", $item->enclosure['url'] ) ); ?>"
+            href="<?php echo htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
             style="display:block;width:400px;height:300px"
             id="player<?php echo "_{$videoId}"?>">
         </a>
