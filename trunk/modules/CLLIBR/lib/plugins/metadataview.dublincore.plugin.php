@@ -49,7 +49,7 @@ class DublinCore extends MetadataExport implements Renderable
             {
                 foreach( $values as $value )
                 {
-                    $render .= '<meta name="DC.' . $name . '" content = "' . $value . '" />' . "\n";
+                    $render .= '<meta name="DC.' . $name . '" content = "' . strip_tags( $value ) . '" />' . "\n";
                 }
             }
         }
@@ -77,7 +77,7 @@ class DublinCore extends MetadataExport implements Renderable
             {
                 foreach( $values as $value )
                 {
-                    $xml .= '        <dc:' . $name . '>' . $value . '</dc:' . $name . '>' . "\n";
+                    $xml .= '        <dc:' . $name . '>' . strip_tags( $value ) . '</dc:' . $name . '>' . "\n";
                 }
             }
         }
