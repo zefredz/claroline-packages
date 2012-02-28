@@ -14,6 +14,7 @@ $_lang['password'] = 'Mot de passe';
 $_lang['phone_number'] = 'Numéro de téléphone';
 $_lang['official_code'] = 'FGS';
 $_lang['ready_to_add'] = 'Prêts à être ajoutés';
+$_lang['select'] = 'Sélectionner';
 $_lang['study_year'] = 'Année d\'étude';
 $_lang['succes_message'] = 'Les utilisateurs suivant ont été ajoutés';
 $_lang['upload_file'] = 'Soumettre un fichier';

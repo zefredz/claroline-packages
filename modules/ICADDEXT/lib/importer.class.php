@@ -68,9 +68,9 @@ class ICADDEXT_Importer
         $this->csvParser = $csvParser;
         
         $tbl = get_module_main_tbl( array( 'user'
-                                         , 'ICADDEXT_users_added' ) );
+                                         , 'ICADDEXT_user_added' ) );
         $this->userTbl = $tbl[ 'user' ];
-        $this->userAddedTbl = $tbl[ 'ICADDEXT_users_added' ];;
+        $this->userAddedTbl = $tbl[ 'ICADDEXT_user_added' ];;
         $this->database = Claroline::getDatabase();
     }
     
@@ -98,14 +98,26 @@ class ICADDEXT_Importer
      */
     public function add( $toAdd )
     {
-        if( $this->probe( $toAdd ) )
+        if ( is_array( $toAdd )
+            && isset( $toAdd[ 0 ] )
+            && is_array( $toAdd[ 0 ] ) )
+        {
+            $this->csvParser->data = $toAdd;
+            $this->csvParser->titles = array_keys( $toAdd[ 0 ] );
+        }
+        else
+        {
+            throw new Execption( 'Invalid data' );
+        }
+        
+        if( $this->probe() )
         {
             $this->addedNb = $this->_countAddedToday();
             
-            foreach( $toAdd as $userData )
+            foreach( $this->toAdd as $userData )
             {
-                $this->_addMissingFields( $userData );
-                
+                $userData = $this->_addMissingFields( $userData );
+                var_dump( $userData ); exit();
                 if( $this->_insert( $userData , 'user' ) )
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
@@ -122,17 +134,21 @@ class ICADDEXT_Importer
                     $this->output[ 'failed' ][] = $userData;
                 }
             }
-            
-            return array_key_exists( 'success' , $this->output )
-                && $this->csvParser->auto( $this->output[ 'success' ] );
         }
+        
+        return array_key_exists( 'success' , $this->output );
+            //&& $this->csvParser->auto( $this->output[ 'success' ] );
     }
     
     /**
      * Calls two private functions
      */
-    public function probe()
+    public function probe( $data = null )
     {
+        if( $data )
+        {
+            $this->csvParser->data = $data;
+        }
         return $this->_checkRequiredFields()
             && $this->_trackDuplicates();
     }
@@ -212,11 +228,10 @@ class ICADDEXT_Importer
      */
     private function _addMissingFields( $userData )
     {
-        array_merge( $userData , self::$default_fields );
+        $userData = array_merge( $userData , self::$default_fields );
         
-        $userdata[ 'creatorId' ] = claro_get_current_user_id();
-        $userdata[ 'officialCode' ] = $userData[ 'officialCode' ]
-                                    . '-'
+        $userData[ 'creatorId' ]     = claro_get_current_user_id();
+        $userData[ 'officialCode' ] .= '-'
                                     . date( 'Ymd' )
                                     . '-'
                                     . str_pad( ++$this->addedNb , 3 , '0', STR_PAD_LEFT );
@@ -225,12 +240,12 @@ class ICADDEXT_Importer
         {
             $userData[ 'username' ] = self::unaccent( $userData[ 'prenom' ] )
                                     . '.'
-                                    ; self::unaccent( $userData[ 'nom' ] );
+                                    . self::unaccent( $userData[ 'nom' ] );
         }
         
         if( ! array_key_exists( 'password' , $userData ) )
         {
-            $userData[ 'password' ] = mk_password();
+            $userData[ 'password' ] = self::mk_password();
         }
         
         return $userData;
@@ -246,7 +261,7 @@ class ICADDEXT_Importer
             SELECT
                 id
             FROM
-                `{$this->addedTbl}`
+                `{$this->userAddedTbl}`
             WHERE
                 date_ajout LIKE " . $this->database->quote( '%' . date( 'Y-m-d' ) . '%' )
         )->numRows();
@@ -306,5 +321,57 @@ class ICADDEXT_Importer
         }
         
         return implode( ",\n" , $sqlArray );
+    }
+    
+    /**
+     * Generate random password with some security inside
+     * @param   int $ng number of characters
+     * @return  string password
+     */
+    static public function mk_password( $nb = 8 )
+    {
+    
+        $letter = array();
+    
+        $letter[0] = array(
+        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+        'j', 'k', 'm', 'n', 'p', 'q', 'r',
+        's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A',
+        'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J',
+        'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'D',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '9',
+        '6', '5', '1', '3');
+    
+        $letter[1] =  array( '@', '!', '(', ')', 'a', 'e', 'i', 'o', 'u', 'y', 'A', 'E',
+        'I', 'U', 'Y' , '1', '3',  '4', '@', '!', '(', ')' );
+    
+        $letter[-1] = array('b', 'c', 'd', 'f', 'g', 'h', 'j', 'k',
+        'm', 'n', 'p', 'q', 'r', 's', 't',
+        'v', 'w', 'x', 'z', 'B', 'C', 'D', 'F',
+        'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P',
+        'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Z',
+        '5', '6', '9', '@', '!', 4, 5, 6, 7, 8, 9);
+    
+        $passwd_str = '';
+        $prec     = 1;
+        $precprec = -1;
+    
+        srand( ( double )microtime() * 20001107 );
+    
+        while( strlen( $passwd_str ) < $nb )
+        {
+            // To generate the password string we follow these rules : (1) If two
+            // letters are consonnance (vowel), the following one have to be a vowel
+            // (consonnance) - (2) If letters are from different type, we choose a
+            // letter from the alphabet.
+    
+            $type     = ( $precprec + $prec ) / 2;
+            $r        = $letter[ $type ][ array_rand( $letter[$type] , 1 ) ];
+            $passwd_str .= $r;
+            $precprec = $prec;
+            $prec     = in_array( $r, $letter[-1] ) - in_array( $r, $letter[1] );
+        }
+        
+        return $passwd_str;
     }
 }
