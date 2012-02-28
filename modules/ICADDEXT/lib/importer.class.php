@@ -107,7 +107,7 @@ class ICADDEXT_Importer
         }
         else
         {
-            throw new Execption( 'Invalid data' );
+            throw new Exception( 'Invalid data' );
         }
         
         if( $this->probe() )
@@ -117,14 +117,14 @@ class ICADDEXT_Importer
             foreach( $this->toAdd as $userData )
             {
                 $userData = $this->_addMissingFields( $userData );
-                var_dump( $userData ); exit();
+                
                 if( $this->_insert( $userData , 'user' ) )
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
                     $this->insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
-                    if( ! user_send_registration_mail ($userData[ 'user_id' ] , $userData) )
+                    if( ! user_send_registration_mail( $userData[ 'user_id' ] , $userData ) )
                     {
                         $this->output[ 'mail_failed' ][] = $userData;
                     }
@@ -137,7 +137,6 @@ class ICADDEXT_Importer
         }
         
         return array_key_exists( 'success' , $this->output );
-            //&& $this->csvParser->auto( $this->output[ 'success' ] );
     }
     
     /**

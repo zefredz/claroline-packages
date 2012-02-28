@@ -30,6 +30,7 @@ load_module_config( 'ICADDEXT' );
 load_module_language( 'ICADDEXT' );
 
 $dialogBox = new DialogBox();
+CssLoader::getInstance()->load( 'icaddext' , 'screen' );
 
 try
 {
