@@ -1,4 +1,4 @@
-<?php
+<?php // $Id$
 
 class ICADDEXT_View extends ModuleTemplate
 {
