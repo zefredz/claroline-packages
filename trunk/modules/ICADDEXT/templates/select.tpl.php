@@ -23,7 +23,7 @@
                     <?php foreach( $userData as $field => $value ) : ?>
                     <td>
                         <input type="hidden"
-                               name="userData[<?php echo $field; ?>]"
+                               name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $value; ?>" />
                         <?php echo $value; ?>
                     </td>

@@ -100,6 +100,7 @@ class ICADDEXT_Controller
         $selected = $this->userInput->get( 'selected' );
         $userData = $this->userInput->get( 'userData' );
         $sendMail = $this->userInput->get( 'sendMail' );
+        
         $toAdd = array_intersect_key( $userData , $selected );
         $this->satus_ok = $this->importer->add( $toAdd , $sendMail );
     }
