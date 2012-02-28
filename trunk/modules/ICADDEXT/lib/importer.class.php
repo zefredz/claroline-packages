@@ -228,6 +228,11 @@ class ICADDEXT_Importer
                                     ; self::unaccent( $userData[ 'nom' ] );
         }
         
+        if( ! array_key_exists( 'password' , $userData ) )
+        {
+            $userData[ 'password' ] = mk_password();
+        }
+        
         return $userData;
     }
     
