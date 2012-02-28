@@ -1,4 +1,4 @@
-<?php
+<?php // $Id$
 
 class ICADDEXT_Controller
 {
@@ -88,7 +88,7 @@ class ICADDEXT_Controller
             
             foreach( $this->importer->output as $error => $data )
             {
-                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ',' , $data );
+                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
             }
             
             $this->message = array( 'type' => 'error' , 'text' => $msg );

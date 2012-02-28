@@ -1,4 +1,4 @@
-<?php
+<?php // $Id$
 
 class ICADDEXT_Importer
 {
@@ -56,8 +56,8 @@ class ICADDEXT_Importer
     
     public $csvParser;
     
-    protected $conflict = array();
     protected $toAdd = array();
+    protected $conflict = array();
     
     /**
      * Constructor
@@ -151,7 +151,7 @@ class ICADDEXT_Importer
             }
         }
         
-        return empty( $this->output[ 'missing_fields' ] );
+        return empty( $this->output );
     }
     
     /**
@@ -188,12 +188,18 @@ class ICADDEXT_Importer
             if( ! empty( $result ) )
             {
                 $this->conflict[ $index ] = array_intersect_assoc( $line , $result );
+                $this->output[ 'conflict_found' ][] = $line[ 'prenom' ]
+                                                    . ' '
+                                                    . $line[ 'nom' ]
+                                                    . ' ('
+                                                    . implode( ', ' , array_keys( $this->conflict[ $index ] ) )
+                                                    . ')';
             }
         }
         
         $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
         
-        return empty( $this->conflict );
+        return ! empty( $this->toAdd );
     }
     
     /*
