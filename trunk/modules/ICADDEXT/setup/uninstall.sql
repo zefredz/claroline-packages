@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `__CL_MAIN__ICADDEXT_users_added`;

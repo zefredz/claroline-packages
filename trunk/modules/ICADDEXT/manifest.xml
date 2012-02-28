@@ -1,0 +1,21 @@
+<module>
+    <label>ICADDEXT</label>
+    <name>Add external users</name>
+    <description><![CDATA[ A tool specifically written for iCampus (http://icampus.uclouvain.be) which allows platform administrator to create externals accounts]]></description>
+    <version>0.1</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>admin</type>
+    <context>admin</context>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.9</version>
+        </claroline>
+    </requirements>
+</module>
