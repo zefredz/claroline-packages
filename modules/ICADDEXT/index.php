@@ -23,7 +23,8 @@ From::Module( 'ICADDEXT' )->uses(
     'importer.class',
     'controller.class',
     'view.class',
-    'thirdparty/parseCsv.class' );
+    'thirdparty/parseCsv.class',
+    'thirdparty/password.lib' );
 
 $claroline->currentModuleLabel( 'ICADDEXT' );
 load_module_config( 'ICADDEXT' );
