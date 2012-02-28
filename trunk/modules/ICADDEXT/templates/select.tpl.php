@@ -49,7 +49,7 @@
                 <?php foreach( $this->controller->importer->getConflict() as $index => $userData ) : ?>
                 <tr>
                     <?php foreach( $userData as $field => $value ) : ?>
-                    <td>
+                    <td <?php if( array_key_exists( $value , $this->controller->importer->conflict[ $index ] ) ) echo 'class="conflict"'; ?>
                         <?php echo $value; ?>
                     </td>
                     <?php endforeach; ?>
