@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICADDEXT_user_added`(
     anne_etude VARCHAR(32) DEFAULT NULL,
     username VARCHAR(32) NOT NULL,
     password VARCHAR(16) NOT NULL,
-    officalCode VARCHAR(16) NOT NULL,
+    officialCode VARCHAR(16) NOT NULL,
     date_ajout DATETIME NOT NULL,
     remarques TEXT,
     PRIMARY KEY(id),
