@@ -18,6 +18,6 @@ $_lang['official_code'] = 'FGS';
 $_lang['ready_to_add'] = 'Prêts à être ajoutés';
 $_lang['select'] = 'Sélectionner';
 $_lang['study_year'] = 'Année d\'étude';
-$_lang['succes_message'] = 'Les utilisateurs suivant ont été ajoutés avec succès';
+$_lang['success_message'] = 'Les utilisateurs suivant ont été ajoutés avec succès';
 $_lang['upload_file'] = 'Soumettre un fichier';
 $_lang['username'] = 'Identifiant';

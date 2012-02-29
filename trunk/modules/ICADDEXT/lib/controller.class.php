@@ -35,6 +35,7 @@ class ICADDEXT_Controller
         if( method_exists( $this , '_' . $cmd ) )
         {
             $this->{'_' . $cmd}();
+            $this->_output();
         }
         else
         {
@@ -81,18 +82,6 @@ class ICADDEXT_Controller
         
         $this->importer->probe();
         $this->status_ok = $this->importer->getToAdd();
-        
-        if( ! $this->status_ok )
-        {
-            $msg = '';
-            
-            foreach( $this->importer->output as $error => $data )
-            {
-                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
-            }
-            
-            $this->message = array( 'type' => 'error' , 'text' => $msg );
-        }
     }
     
     private function _exAdd()
@@ -101,7 +90,7 @@ class ICADDEXT_Controller
         $userData = $this->userInput->get( 'userData' );
         
         $toAdd = array_intersect_key( $userData , $selected );
-        $this->satus_ok = $this->importer->add( $toAdd );
+        $this->status_ok = $this->importer->add( $toAdd );
     }
     
     /**
@@ -120,5 +109,23 @@ class ICADDEXT_Controller
         }
         
         return $array;
+    }
+    
+    /**
+     * Outputs error message
+     */
+    private function _output()
+    {
+        if( ! $this->status_ok )
+        {
+            $msg = '';
+            
+            foreach( $this->importer->output as $error => $data )
+            {
+                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
+            }
+            
+            $this->message = array( 'type' => 'error' , 'text' => $msg );
+        }
     }
 }
