@@ -14,6 +14,7 @@ $tlabelReq = 'ICADDEXT';
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
 FromKernel::uses(
+    'user.lib',
     'utils/input.lib',
     'utils/validator.lib',
     'display/layout.lib',

@@ -48,9 +48,15 @@ class ICADDEXT_Importer
         , 'remarques' );
     protected static $default_fields = array(
           'authSource' => 'external'
-        , 'isPlatformAdmin' => false
-        , 'isCourseCreator' => false
+        , 'isPlatformAdmin' => 0
+        , 'isCourseCreator' => 0
         , 'officialCode' => 'EXT' );
+    protected static $mail_infos = array(
+          'prenom' => 'firstname'
+        , 'nom' => 'lastname'
+        , 'username' => 'username'
+        , 'password' => 'password'
+        , 'email' => 'email' );
     
     public $output = array();
     
@@ -121,10 +127,10 @@ class ICADDEXT_Importer
                 if( $this->_insert( $userData , 'user' ) )
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
-                    $this->insert( $userData , 'user_added' );
+                    $this->_insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
-                    if( ! user_send_registration_mail( $userData[ 'user_id' ] , $userData ) )
+                    if( ! user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
                     {
                         $this->output[ 'mail_failed' ][] = $userData;
                     }
@@ -227,7 +233,7 @@ class ICADDEXT_Importer
      */
     private function _addMissingFields( $userData )
     {
-        $userData = array_merge( $userData , self::$default_fields );
+        $userData = array_merge( self::$default_fields , $userData );
         
         $userData[ 'creatorId' ]     = claro_get_current_user_id();
         $userData[ 'officialCode' ] .= '-'
@@ -297,9 +303,9 @@ class ICADDEXT_Importer
      */
     static public function unaccent( $string )
     {
-        return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
-                           , '$1'
-                           , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
+        return strtolower( preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
+                                       , '$1'
+                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) ) );
     }
     
     static private function _sqlString( $data , $allowed_fields = null )
@@ -315,11 +321,23 @@ class ICADDEXT_Importer
         {
             if( in_array( $field , $allowed_fields ) )
             {
-                $sqlArray[] = $field . ' = ' . $value;
+                $sqlArray[] = $field . " = '" . $value . "'";
             }
         }
         
         return implode( ",\n" , $sqlArray );
+    }
+    
+    static private function _mailInfos( $data )
+    {
+        $mailInfos = array();
+        
+        foreach( self::$mail_infos as $key => $value )
+        {
+            $mailInfos[$value] = $data[$key];
+        }
+        
+        return $mailInfos;
     }
     
     /**
