@@ -46,6 +46,14 @@ class ICADDEXT_Importer
         , 'officialCode'
         , 'date_ajout'
         , 'remarques' );
+    protected static $report_fields = array(
+          'nom'
+        , 'prenom'
+        , 'officialCode'
+        , 'email'
+        , 'username'
+        , 'password'
+        , 'user_id' );
     protected static $default_fields = array(
           'authSource' => 'external'
         , 'isPlatformAdmin' => 0
@@ -130,19 +138,38 @@ class ICADDEXT_Importer
                     $this->_insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
-                    if( ! user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
+                    if( user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
                     {
-                        $this->output[ 'mail_failed' ][] = $userData;
+                        $this->database->exec( "
+                            UPDATE
+                                `{$this->userAddedTbl}`
+                            SET
+                                mail_envoye = 1
+                            WHERE
+                                user_id = " . $userData[ 'user_id' ] );
+                    }
+                    else
+                    {
+                        $this->output[ 'mail_failed' ][] = $userData[ 'email' ];
                     }
                 }
                 else
                 {
-                    $this->output[ 'failed' ][] = $userData;
+                    $this->output[ 'failed' ][] = $userData[ 'username' ];
                 }
             }
         }
         
         return array_key_exists( 'success' , $this->output );
+    }
+    
+    /**
+     *
+     */
+    public function getReport()
+    {
+        return $this->csvParser->unparse( $this->output[ 'success' ]
+                                        , array_keys( $this->output[ 'success' ][ 0 ] ) );
     }
     
     /**
