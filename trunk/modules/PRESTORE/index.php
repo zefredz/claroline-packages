@@ -35,5 +35,5 @@ catch( Exception $e )
     }
 }
 
-Claroline::getInstance()->display->body->appendContent( '<h3>Success!</h3>' );
+Claroline::getInstance()->display->body->appendContent( isset( $errorMsg ) ? $errorMsg : '<h3>Success!</h3>' );
 echo Claroline::getInstance()->display->render();
