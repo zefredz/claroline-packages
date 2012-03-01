@@ -112,11 +112,15 @@ class ICADDEXT_Controller
     }
     
     /**
-     * Outputs error message
+     * Outputs message
      */
     private function _output()
     {
-        if( ! $this->status_ok )
+        if( $this->status_ok )
+        {
+            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
+        }
+        else
         {
             $msg = '';
             
