@@ -77,7 +77,7 @@ class ICADDEXT_Importer
      * Constructor
      * @param ParseCsv object $csvParser
      */
-    public function __construct( $csvParser = null )
+    public function __construct( $csvParser )
     {
         $this->csvParser = $csvParser;
         
