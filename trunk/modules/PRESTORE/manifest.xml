@@ -1,0 +1,22 @@
+<module>
+<label>PRESTORE</label>
+<name>Profile rights restore</name>
+<description><![CDATA[
+The module restores the profile list as it is on install
+]]></description>
+<version>1.0 $Revision$</version>
+<license>GPL</license>
+<icon>icon.png</icon>
+<type>admin</type>
+<entry>index.php</entry>
+<author>
+<name>Claroline Team</name>
+<email>info@claroline.net</email>
+<web>http://www.claroline.net/</web>
+</author>
+<requirements>
+<claroline>
+<version>1.10</version>
+</claroline>
+</requirements>
+</module>
