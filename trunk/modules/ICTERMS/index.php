@@ -70,6 +70,7 @@ try
                             array('%homePage%' => get_path('url') . '/index.php' )
                         )
                     );
+                    Claro_KernelHook_Lock::releaseLock( 'ICTERMS' );
                     break;
                 }
                 else
