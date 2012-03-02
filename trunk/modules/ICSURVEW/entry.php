@@ -96,6 +96,7 @@ try
             break;
         
         case 3:
+            Claro_KernelHook_Lock::releaseLock( 'ICSURVEW' );
             break;
         
         default:
