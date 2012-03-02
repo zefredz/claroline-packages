@@ -14,24 +14,33 @@
  * @package     icterms
  */
 
-require_once dirname(__FILE__).'/lib/icterms.lib.php';
-
-language::load_module_translation('ICTERMS');
-load_module_config('ICTERMS');
-
-if ( !icterms_is_page_allowed()
-    && claro_is_user_authenticated() /* only when user is logged in */
-    && icterms_user_must_accept_terms( claro_get_current_user_id() ) /* do not ask terms acceptance on every user login */
-    && !icterms_terms_acceptance_in_progress() /* do not loop infinitely here */
-    && !icterms_is_page_allowed() /* only ICTERMS page is allowed */
-)
+if ( Claro_KernelHook_Lock::lockAvailable() )
 {
-    $_SESSION['icterms_acceptance_in_progress'] = true;
+    require_once dirname(__FILE__).'/lib/icterms.lib.php';
     
-    claro_redirect(
-        get_module_url('ICTERMS')
-        .'/index.php?cmd=rqAcceptTerms'
-    ); // redirect to form
+    language::load_module_translation('ICTERMS');
+    load_module_config('ICTERMS');
     
-    die();
+    if( Claro_KernelHook_Lock::getLock( 'ICTERMS' ) )
+    {
+        if ( claro_is_user_authenticated() /* only when user is logged in */
+            && icterms_user_must_accept_terms( claro_get_current_user_id() ) /* do not ask terms acceptance on every user login */
+            && !icterms_terms_acceptance_in_progress() /* do not loop infinitely here */
+            //&& !icterms_is_page_allowed() /* only ICTERMS page is allowed */
+        )
+        {
+            $_SESSION['icterms_acceptance_in_progress'] = true;
+            
+            claro_redirect(
+                get_module_url('ICTERMS')
+                .'/index.php?cmd=rqAcceptTerms'
+            ); // redirect to form
+            
+            die();
+        }
+        else
+        {
+            Claro_KernelHook_Lock::releaseLock( 'ICTERMS' );
+        }
+    }
 }
