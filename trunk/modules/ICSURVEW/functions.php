@@ -8,7 +8,9 @@ include_once dirname( __FILE__ ) . '/lib/survey.lib.php';
 $surveyFileUrl = dirname( __FILE__ ) . '/survey.json';
 $userId = claro_get_current_user_id();
 
-if ( $userId )
+if ( $userId
+  && ! defined( 'ICTERMS_PAGE_ALLOWED' ) // for compatibility with ICTERMS
+  && ! claro_is_platform_admin() )
 {
     $survey = new ICSURVEW_Survey( $surveyFileUrl );
     $answer = new ICSURVEW_Answer( $userId , $survey->get() );
