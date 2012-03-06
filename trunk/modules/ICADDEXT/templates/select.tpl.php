@@ -45,7 +45,6 @@
                 </tr>
             </thead>
             <tbody>
-            <tbody>
                 <?php foreach( $this->controller->importer->getConflict() as $index => $userData ) : ?>
                 <tr>
                     <?php foreach( $userData as $field => $value ) : ?>
