@@ -13,7 +13,7 @@ if ( Claro_KernelHook_Lock::lockAvailable() )
     if ( $userId
       && ! claro_is_platform_admin() )
     {
-        if( Claro_KernelHook_Lock::getLock( 'ICSURVEW' ) )
+        if( Claro_KernelHook_Lock::getLock() )
         {
             $survey = new ICSURVEW_Survey( $surveyFileUrl );
             $answer = new ICSURVEW_Answer( $userId , $survey->get() );
@@ -28,7 +28,7 @@ if ( Claro_KernelHook_Lock::lockAvailable() )
             }
             else
             {
-                Claro_KernelHook_Lock::releaseLock( 'ICSURVEW' );
+                Claro_KernelHook_Lock::releaseLock();
             }
         }
     }
