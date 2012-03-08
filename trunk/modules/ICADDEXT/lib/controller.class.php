@@ -51,9 +51,9 @@ class ICADDEXT_Controller
     
     private function _rqSelect()
     {
-        if ( isset( $_FILES['CSVFile'] ) )
+        if ( isset( $_FILES['CsvFile'] ) )
         {
-            $file = $_FILES['CSVFile']['tmp_name'];
+            $file = $_FILES['CsvFile']['tmp_name'];
             
             if( $this->importer->csvParser->auto( $file ) )
             {
@@ -81,7 +81,7 @@ class ICADDEXT_Controller
         }
         
         $this->importer->probe();
-        $this->status_ok = $this->importer->getToAdd();
+        $this->status_ok = $this->importer->toAdd;
     }
     
     private function _exAdd()
