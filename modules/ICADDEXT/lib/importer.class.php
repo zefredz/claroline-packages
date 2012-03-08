@@ -129,6 +129,7 @@ class ICADDEXT_Importer
                         $data[ 'password' ] = md5( $data[ 'password' ] );
                     }
                     
+                    $data[ 'date_ajout' ] = date( 'Y-m-d H:m:s' );
                     $this->_insert( $data , 'user_added' );
                     // <-- to manage encrypted passwords
                     

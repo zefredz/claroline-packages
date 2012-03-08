@@ -49,7 +49,7 @@ try
     
     if ( $msg = $controller->message )
     {
-        $dialogBox->{$msg[ 'type' ]}( $msg[ 'text' ] );
+        $dialogBox->{$msg[ 'type' ]}( get_lang( $msg[ 'text' ] ) );
     }
     
     Claroline::getInstance()->display->body->appendContent( $dialogBox->render() . $view->render() );
