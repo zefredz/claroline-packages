@@ -30,6 +30,7 @@ try
                        , 'rqCreate'
                        , 'rqImport'
                        , 'exActivate'
+                       , 'exDeactivate'
                        , 'exImport' );
     $userInput = Claro_UserInput::getInstance();
     $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
@@ -62,11 +63,24 @@ try
             
             if( $surveyList->activate( $surveyId ) )
             {
-                $sucessMsg = get_lang( 'The survey has been activated' );
+                $successMsg = get_lang( 'The survey has been activated' );
             }
             else
             {
                 $errorMsg = get_lang( 'Activation failed!' );
+            }
+            break;
+        
+        case 'exDeactivate':
+            $surveyId = $userInput->get( 'surveyId' );
+            
+            if( $surveyList->deactivate( $surveyId ) )
+            {
+                $successMsg = get_lang( 'The survey has been deactivated' );
+            }
+            else
+            {
+                $errorMsg = get_lang( 'Deactivation failed!' );
             }
             break;
         

@@ -30,7 +30,7 @@ class ICSURVEW_SurveyList
         
         if( $result->numRows() > 1 )
         {
-            $this->unactivate();
+            $this->deactivate();
             throw new Exception( 'An error occured : there was more than one active surveys!' );
         }
         
@@ -39,7 +39,7 @@ class ICSURVEW_SurveyList
     
     public function activate( $id )
     {
-        $this->unactivate();
+        $this->deactivate();
         
         return Claroline::getDatabase()->exec( "
             UPDATE
@@ -51,14 +51,14 @@ class ICSURVEW_SurveyList
         );
     }
     
-    public function unactivate( $id = null )
+    public function deactivate( $id = null )
     {
         if( ! $id )
         {
             $id = (int)$this->getActive();
         }
         
-        Claroline::getDatabase()->exec( "
+        return Claroline::getDatabase()->exec( "
             UPDATE
                 `{$this->tbl['ICSURVEW_survey']}`
             SET
