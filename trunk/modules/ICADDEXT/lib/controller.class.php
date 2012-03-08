@@ -51,7 +51,7 @@ class ICADDEXT_Controller
     
     private function _rqSelect()
     {
-        if ( isset( $_FILES['CsvFile'] ) )
+        if ( $_FILES && $_FILES[ 'CsvFile' ][ 'size' ] != 0 )
         {
             $file = $_FILES['CsvFile']['tmp_name'];
             
