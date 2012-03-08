@@ -18,8 +18,10 @@
             <td><?php echo $survey['title']; ?></td>
         <?php if( $survey['id'] == $this->activeId ) : ?>
             <td>
-                <img src="<?php echo get_icon_url( 'on' ); ?>"
-                     alt="<?php echo get_lang( 'enabled' ); ?>" />
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDeactivate&surveyId='. $survey['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'on' ); ?>"
+                         alt="<?php echo get_lang( 'enabled' ); ?>" />
+                </a>
             </td>
         <?php else : ?>
             <td>
