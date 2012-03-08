@@ -96,7 +96,7 @@ class ICADDEXT_Importer
     /**
      * Adds selected users
      */
-    public function add( $toAdd )
+    public function add( $toAdd , $send_mail = true )
     {
         if ( is_array( $toAdd ) )
         {
@@ -135,7 +135,8 @@ class ICADDEXT_Importer
                     //$this->_insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
-                    if( user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
+                    if(   $send_mail
+                       && user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
                     {
                         $this->database->exec( "
                             UPDATE

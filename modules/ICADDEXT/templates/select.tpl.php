@@ -64,6 +64,7 @@
         </table>
     </fieldset>
     <?php endif; ?>
+    <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
        href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
