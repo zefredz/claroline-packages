@@ -2,6 +2,7 @@
 
 $_lang['add_from_csv'] = 'Ajouter une liste d\'utilisateur à partir d\'un fichier CSV';
 $_lang['add_single_user'] = 'Ajouter un utilisateur';
+$_lang['added_message'] = 'Les utilisateurs suivant ont été ajoutés :';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
 $_lang['fail_message'] = 'Erreur';
@@ -20,6 +21,5 @@ $_lang['select'] = 'Sélectionner';
 $_lang['send_mail'] = 'Envoyer l\'identifiant et le mot de passe par mail';
 $_lang['success_message'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['study_year'] = 'Année d\'étude';
-$_lang['success_message'] = 'Les utilisateurs suivant ont été ajoutés avec succès';
 $_lang['upload_file'] = 'Soumettre un fichier';
 $_lang['username'] = 'Identifiant';
