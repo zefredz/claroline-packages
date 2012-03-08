@@ -51,6 +51,8 @@ try
     {
         $dialogBox->{$msg[ 'type' ]}( $msg[ 'text' ] );
     }
+    
+    Claroline::getInstance()->display->body->appendContent( $dialogBox->render() . $view->render() );
 }
 catch( Exception $e )
 {
@@ -67,5 +69,4 @@ catch( Exception $e )
     Claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
 }
 
-Claroline::getInstance()->display->body->appendContent( $dialogBox->render() . $view->render() );
 echo Claroline::getInstance()->display->render();

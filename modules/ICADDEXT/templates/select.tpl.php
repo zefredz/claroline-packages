@@ -13,7 +13,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach( $this->controller->importer->getToAdd() as $index => $userData ) : ?>
+                <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
                 <tr>
                     <td align="center">
                         <input type="checkbox"
@@ -33,27 +33,29 @@
             </tbody>
         </table>
     </fieldset>
-    <?php if( $this->controller->importer->getConflict() ) : ?>
+    <?php if( $this->controller->importer->conflict ) : ?>
+    <br />
     <fieldset>
         <legend><?php echo get_lang( 'conflict_found' ); ?> :</legend>
-        <table class="claroTable emphaseLine" style=" width: 100%;">
+        <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
-                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
-                    <td align="center"><?php echo $field; ?></td>
+                    <?php foreach( $this->controller->importer->getConflictFields() as $field ) : ?>
+                    <th align="center"><?php echo $field; ?></th>
                     <?php endforeach; ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach( $this->controller->importer->getConflict() as $index => $userData ) : ?>
+                <?php foreach( $this->controller->importer->conflict as $index => $userData ) : ?>
                 <tr>
-                    <?php foreach( $userData as $field => $value ) : ?>
-                        <?php if( array_key_exists( $value , $this->controller->importer->conflict[ $index ] ) ) : ?>
-                    <td style="background-color: #faa;" >
+                    <?php foreach( $this->controller->importer->getConflictFields() as $field ) : ?>
+                        <?php if( array_key_exists( $field , $userData ) ) : ?>
+                    <td style="color: #f00;" >
+                        <?php echo $userData[ $field ]; ?>
                         <?php else : ?>
                     <td>
+                        <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
                         <?php endif; ?>
-                        <?php echo $value; ?>
                     </td>
                     <?php endforeach; ?>
                 </tr>

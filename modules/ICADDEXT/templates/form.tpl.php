@@ -5,6 +5,6 @@
            name="<?php  echo isset( $field[ 'name' ] )  ? $field[ 'name' ]  : 'field_' . $index; ?>"
            value="<?php echo isset( $field[ 'value' ] ) ? $field[ 'value' ] : ''; ?>" />
 <?php endforeach; ?>
-    <input type="submit" name="create" value="<?php echo get_lang( 'Create' ); ?>" />
+    <input type="submit" name="<?php echo $this->submit; ?>" value="<?php echo get_lang( $this->submit ); ?>" />
     <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $this->urlCancel ) ) , get_lang( 'Cancel' ) ); ?>
 </form>

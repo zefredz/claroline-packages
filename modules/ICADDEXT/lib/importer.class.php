@@ -54,6 +54,11 @@ class ICADDEXT_Importer
         , 'username'
         , 'password'
         , 'user_id' );
+    protected static $check_conflict_fields = array(
+          'nom'
+        , 'prenom'
+        , 'email'
+        , 'username' );
     protected static $default_fields = array(
           'authSource' => 'external'
         , 'isPlatformAdmin' => 0
@@ -70,8 +75,8 @@ class ICADDEXT_Importer
     
     public $csvParser;
     
-    protected $toAdd = array();
-    protected $conflict = array();
+    public $toAdd = array();
+    public $conflict = array();
     
     /**
      * Constructor
@@ -89,35 +94,15 @@ class ICADDEXT_Importer
     }
     
     /**
-     * Getters
-     */
-    public function getToAdd()
-    {
-        if( ! empty( $this->toAdd ) )
-        {
-            return $this->toAdd;
-        }
-    }
-    
-    public function getConflict()
-    {
-        if ( ! empty( $this->conflict ) )
-        {
-            return $this->conflict;
-        }
-    }
-    
-    /**
      * Adds selected users
      */
     public function add( $toAdd )
     {
-        if ( is_array( $toAdd )
-            && isset( $toAdd[ 0 ] )
-            && is_array( $toAdd[ 0 ] ) )
+        if ( is_array( $toAdd ) )
         {
-            $this->csvParser->data = $toAdd;
-            $this->csvParser->titles = array_keys( $toAdd[ 0 ] );
+            $userData = array_values( $toAdd );
+            $this->csvParser->data = $userData;
+            $this->csvParser->titles = array_keys( $userData[ 0 ] );
         }
         else
         {
@@ -182,6 +167,15 @@ class ICADDEXT_Importer
     {
         return $this->csvParser->unparse( $this->output[ 'success' ]
                                         , array_keys( $this->output[ 'success' ][ 0 ] ) );
+    }
+    
+    /**
+     *
+     */
+    public function getConflictFields()
+    {
+        return array_intersect( self::$check_conflict_fields
+                            ,   $this->csvParser->titles );
     }
     
     /**
@@ -282,9 +276,9 @@ class ICADDEXT_Importer
         
         if( ! array_key_exists( 'username' , $userData ) )
         {
-            $userData[ 'username' ] = self::unaccent( $userData[ 'prenom' ] )
+            $userData[ 'username' ] = strtolower( self::unaccent( $userData[ 'prenom' ] ) )
                                     . '.'
-                                    . self::unaccent( $userData[ 'nom' ] );
+                                    . strtolower( self::unaccent( $userData[ 'nom' ] ) );
         }
         
         if( ! array_key_exists( 'password' , $userData ) )
@@ -342,9 +336,9 @@ class ICADDEXT_Importer
      */
     static public function unaccent( $string )
     {
-        return strtolower( preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
+        return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
                                        , '$1'
-                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) ) );
+                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
     }
     
     static private function _sqlString( $data , $allowed_fields = null )
