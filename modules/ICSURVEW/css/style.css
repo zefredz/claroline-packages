@@ -45,3 +45,10 @@
     font-size: smaller;
     font-weight: bold;
 }
+
+.ICSURVEW_formdl dt
+{
+    clear: both;
+    float: left;
+    width: 10%;
+}

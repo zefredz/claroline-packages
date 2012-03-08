@@ -145,14 +145,14 @@ class ICSURVEW_Answer
      */
     public function set( $courseId , $questionId , $choiceId )
     {
-        if ( isset( $this->questionList->$questionId->options->$choiceId ) )
+        if ( isset( $this->questionList[$questionId]['choice'][$choiceId] ) )
         {
-            if ( ! isset( $this->answerList[ $courseId ][ $questionId ] ) )
+            if( ! isset( $this->answerList[ $courseId ][ $questionId ] ) )
             {
                 $this->answeredNb++;
             }
             
-            if ( $this->save( $courseId , $questionId , $choiceId ) )
+            if( $this->save( $courseId , $questionId , $choiceId ) )
             {
                 return $this->answerList[ $courseId ][ $questionId ] = $choiceId;
             }
@@ -239,7 +239,7 @@ class ICSURVEW_Answer
             $questionId = $line[ 'question_id' ];
             $courseId = $line[ 'course_id' ];
             
-            if ( isset( $this->questionList->$questionId )
+            if ( array_key_exists( $questionId , $this->questionList )
               && array_key_exists( $courseId , $this->courseList ) )
             {
                 $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];

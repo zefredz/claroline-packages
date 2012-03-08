@@ -12,7 +12,9 @@
             </thead>
             <tbody>
         <?php $color = 1; ?>
-        <?php foreach( $this->answer->getCourseList( array( array( 'question_id' => 1 , 'choice_id' => 1 ) , array( 'question_id' => 2 , 'choice_id' => '!3' ) ) ) as $courseId => $course ) : ?>
+        <?php foreach( $this->answer->getCourseList() as $courseId => $course ) :
+            // the line below uses a filter where question and choice id's must correspond to the database fields
+            //foreach( $this->answer->getCourseList( array( array( 'question_id' => 3 , 'choice_id' => 7 ) , array( 'question_id' => 4 , 'choice_id' => '!8' ) ) ) as $courseId => $course ) : ?>
         <?php $color = -$color; ?>
             <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
                 <td><?php echo $course[ 'code' ]; ?></td>

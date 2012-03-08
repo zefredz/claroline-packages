@@ -2,7 +2,7 @@
     "1":
     {
         "question":"Dans votre liste de cours, quels sont ceux qui sont intégrés à un programme officiel UCL, ceux qui sont des cours hors programme, et ceux qui sont utilisés à d'autres fins ( gestion administrative, espace de communication, espace de gestion documentaire, valves, ...)?",
-        "options":
+        "choices":
         {
             "1":"Cours au programme UCL<br />(disposant d'un code officiel)",
             "2":"Cours hors programme UCL<br />(sans code officiel)",
@@ -12,7 +12,7 @@
     "2":
     {
         "question":"Dans votre liste de cours, quels sont ceux que vous avez utilisé cette année, ceux que vous utiliserez plus tard et ceux que vous n'utiliserez plus ?",
-        "options":
+        "choices":
         {
             "1":"A été utilisé cette année",
             "2":"Sera utilisé prochainement",
