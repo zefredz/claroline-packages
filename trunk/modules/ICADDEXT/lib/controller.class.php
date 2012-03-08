@@ -88,9 +88,10 @@ class ICADDEXT_Controller
     {
         $selected = $this->userInput->get( 'selected' );
         $userData = $this->userInput->get( 'userData' );
+        $send_mail = $this->userInput->get( 'send_mail' );
         
         $toAdd = array_intersect_key( $userData , $selected );
-        $this->status_ok = $this->importer->add( $toAdd );
+        $this->status_ok = $this->importer->add( $toAdd , $send_mail );
     }
     
     /**

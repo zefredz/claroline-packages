@@ -17,6 +17,7 @@ $_lang['phone_number'] = 'Numéro de téléphone';
 $_lang['official_code'] = 'FGS';
 $_lang['ready_to_add'] = 'Prêts à être ajoutés';
 $_lang['select'] = 'Sélectionner';
+$_lang['send_mail'] = 'Envoyer l\'identifiant et le mot de passe par mail';
 $_lang['success_message'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['study_year'] = 'Année d\'étude';
 $_lang['success_message'] = 'Les utilisateurs suivant ont été ajoutés avec succès';
