@@ -3,7 +3,7 @@
 class ICADDEXT_Controller
 {
     public $importer;
-    protected $status_ok = false;
+    protected $status_ok = -1;
     
     public $message = null;
     
@@ -46,7 +46,7 @@ class ICADDEXT_Controller
     
     private function _rqAdd()
     {
-        $this->status_ok = true;
+        return;
     }
     
     private function _rqSelect()
@@ -117,11 +117,7 @@ class ICADDEXT_Controller
      */
     private function _output()
     {
-        if( $this->status_ok )
-        {
-            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
-        }
-        else
+        if( ! $this->is_ok() )
         {
             $msg = '';
             
@@ -131,6 +127,10 @@ class ICADDEXT_Controller
             }
             
             $this->message = array( 'type' => 'error' , 'text' => $msg );
+        }
+        elseif( $this->is_ok() == 1 )
+        {
+            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
         }
     }
 }
