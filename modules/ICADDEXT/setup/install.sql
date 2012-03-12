@@ -15,5 +15,5 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICADDEXT_user_added`(
     date_ajout DATETIME NOT NULL,
     remarques TEXT,
     PRIMARY KEY(id),
-    UNIQUE KEY offical_code(officalCode)
+    UNIQUE KEY offical_code(officialCode)
 ) ENGINE=MyISAM;
