@@ -11,7 +11,8 @@ FromKernel::uses(
     'fileUpload.lib' );
 
 From::Module( 'ICSURVEW' )->uses( 'surveylist.class',
-                                  'surveyimport.class' );
+                                  'surveyimport.class',
+                                  'report.class' );
 
 $userId = claro_get_current_user_id();
 
@@ -29,6 +30,7 @@ try
     $actionList = array( 'rqList'
                        , 'rqCreate'
                        , 'rqImport'
+                       , 'rqStat'
                        , 'exActivate'
                        , 'exDeactivate'
                        , 'exImport' );
@@ -56,6 +58,12 @@ try
                                             , 'type' => 'file'
                                             , 'name' => 'survey_file' )
                                     );
+            break;
+        
+        case 'rqStat':
+            $surveyId = $userInput->get('surveyId');
+            $report = new ICSURVEW_Report( $surveyId );
+            $report->export( ICSURVEW_Report::EXPORT_XML );
             break;
         
         case 'exActivate':
