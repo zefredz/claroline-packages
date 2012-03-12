@@ -22,7 +22,7 @@ class ICSURVEW_Report
         $this->tbl = get_module_main_tbl( array(  'ICSURVEW_survey'
                                                 , 'ICSURVEW_question'
                                                 , 'ICSURVEW_choice'
-                                                , 'ICSURVEW_log' ) );
+                                                , 'ICSURVEW_answer' ) );
         $this->load();
     }
     
@@ -81,14 +81,14 @@ class ICSURVEW_Report
             SELECT
                 COUNT( DISTINCT course_id )
             FROM
-                `{$this->tbl['ICSURVEW_log']}`"
+                `{$this->tbl['ICSURVEW_answer']}`"
         )->fetch( Database_ResultSet::FETCH_VALUE );
         
         $this->userCount = Claroline::getDatabase()->query( "
             SELECT
                 COUNT( DISTINCT user_id )
             FROM
-                `{$this->tbl['ICSURVEW_log']}`"
+                `{$this->tbl['ICSURVEW_answer']}`"
         )->fetch( Database_ResultSet::FETCH_VALUE );
     }
     
@@ -116,7 +116,7 @@ class ICSURVEW_Report
                 COUNT( DISTINCT( user_id ) ) as user_count,
                 COUNT( DISTINCT( course_id ) ) as course_count
             FROM
-                `{$this->tbl['ICSURVEW_log']}`
+                `{$this->tbl['ICSURVEW_answer']}`
             WHERE
                 question_id = " . Claroline::getDatabase()->escape( $questionId ) ."
             AND
