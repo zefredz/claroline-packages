@@ -15,7 +15,10 @@
     <tbody>
     <?php foreach( $this->surveyList as $survey ) : ?>
         <tr>
-            <td><?php echo $survey['title']; ?></td>
+            <td>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqStat&surveyId='. $survey['id'] ) );?>">
+                    <?php echo $survey['title']; ?></td>
+                </a>
         <?php if( $survey['id'] == $this->activeId ) : ?>
             <td>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDeactivate&surveyId='. $survey['id'] ) );?>">
