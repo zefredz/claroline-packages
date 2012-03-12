@@ -45,7 +45,7 @@
         <?php foreach( $question['choice'] as $choiceId => $choice ) : ?>
             <td>
                 <input type="radio" name="answer[<?php echo $courseId; ?>][<?php echo $question['id']; ?>]" value="<?php echo $choiceId; ?>"
-                <?php if( $this->answer->get( $courseId , $question['id'] ) == $choiceId ) echo 'checked="checked"'; ?>/>
+                <?php if( $this->answer->get( $courseId , $question['id'] ) == $choiceId ) echo ' checked="checked"'; ?>/>
             </td>
         <?php endforeach; ?>
             </tr>

@@ -20,7 +20,7 @@ class ICSURVEW_Answer
         $this->userId = (int)$userId;
         $this->questionList = $questionList;
         
-        $this->tbl = get_module_main_tbl( array( 'ICSURVEW_log' , 'course' , 'rel_course_user' ) );
+        $this->tbl = get_module_main_tbl( array( 'ICSURVEW_answer' , 'course' , 'rel_course_user' ) );
         $this->load();
     }
     
@@ -65,7 +65,7 @@ class ICSURVEW_Answer
             $sql = "SELECT
                         L.course_id
                     FROM
-                        `{$this->tbl['ICSURVEW_log']}` AS L\n";
+                        `{$this->tbl['ICSURVEW_answer']}` AS L\n";
             $sql2 = "";
             
             foreach( $filter as $index => $cond )
@@ -73,7 +73,7 @@ class ICSURVEW_Answer
                 $tblAlias = "L" . $index;
                 
                 $sql .= "INNER JOIN
-                            `{$this->tbl['ICSURVEW_log']}` AS ".  $tblAlias . "
+                            `{$this->tbl['ICSURVEW_answer']}` AS ".  $tblAlias . "
                         ON L.course_id = " . $tblAlias . ".course_id\n";
                 $arg = array();
                 
@@ -169,12 +169,11 @@ class ICSURVEW_Answer
         {
             return Claroline::getDatabase()->exec( "
                 UPDATE
-                    `{$this->tbl['ICSURVEW_log']}`
+                    `{$this->tbl['ICSURVEW_answer']}`
                 SET
-                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
-                WHERE
+                    choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . ",
                     user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
-                AND
+                WHERE
                     course_id = " . Claroline::getDatabase()->quote( $courseId ) . "
                 AND
                     question_id = " . Claroline::getDatabase()->escape( $questionId ) );
@@ -183,7 +182,7 @@ class ICSURVEW_Answer
         {
             return Claroline::getDatabase()->exec( "
                 INSERT INTO
-                    `{$this->tbl['ICSURVEW_log']}`
+                    `{$this->tbl['ICSURVEW_answer']}`
                 SET
                     user_id = " . Claroline::getDatabase()->escape( $this->userId ) . ",
                     course_id = " . Claroline::getDatabase()->quote( $courseId ) . ",
@@ -225,11 +224,12 @@ class ICSURVEW_Answer
             SELECT
                 course_id,
                 question_id,
-                choice_id
+                choice_id,
+                user_id
             FROM
-                `{$this->tbl['ICSURVEW_log']}`
+                `{$this->tbl['ICSURVEW_answer']}`
             WHERE
-                user_id = " . Claroline::getDatabase()->escape( $this->userId ) );
+                course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')" );
         
         $this->answerList = array();
         $this->answeredNb = 0;
