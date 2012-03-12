@@ -4,7 +4,7 @@
  * Claroline Poll Tool
  *
  * @version     CLQPOLL 1.2.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite Catholique de Louvain (UCL)
+ * @copyright   2001-2012 Universite Catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLQPOLL
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -28,115 +28,102 @@
     
     <!-- BEGIN Display the voting form -->
     <?php if ( $this->userRights[ 'vote' ] ) : ?>
+    <table>
+        <thead>
+            <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
+                <input id="pollId" type="hidden" value="<?php echo $this->poll->getId(); ?>" name="pollId" />
+                <tr class="userline">
+                    <th class="name">
+                        <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists( true ) ? 'Modify your vote' : 'Vote' ); ?>"/>
+                    </th>
         <?php if ( $this->poll->getOption( '_type' ) == '_multi' ) : ?>
         <!-- MULTIPLE VOTE -->
-    <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
-        <input id="pollId" type="hidden" value="<?php echo $this->poll->getId(); ?>" name="pollId" />
-        <table>
-            <tr class="userline">
-                <th class="name">
-                <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists( true ) ? 'Modify your vote' : 'Vote' ); ?>"/>
-                </th>
-                    <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
-                <td>
-                    <input id="option<?php echo $choiceId; ?>" type="checkbox" name="<?php echo 'choice' . $choiceId; ?>" />
-                </td>
-                    <?php endforeach; ?>
-            </tr>
-        </table>
-    </form>
+            <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
+                    <td>
+                        <input id="option<?php echo $choiceId; ?>" type="checkbox" name="<?php echo 'choice' . $choiceId; ?>" />
+                    </td>
+            <?php endforeach; ?>
         <?php else : ?>
         <!-- SINGLE VOTE -->
-    <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
-        <input id="pollId" type="hidden" value="<?php echo $this->poll->getId(); ?>" name="pollId" />
-        <table>
-            <tr class="userline">
-                <th class="name">
-                    <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists() ? 'Modify your vote' : 'Vote' ); ?>"/>
-                </th>
-                    <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
-                <td>
-                    <input id="choice<?php echo $choiceId; ?>" type="radio" name="choiceId" value="<?php echo $choiceId; ?>" />
-                </td>
-                    <?php endforeach; ?>
-            </tr>
-        </table>
-    </form>
+            <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
+                    <td>
+                        <input id="choice<?php echo $choiceId; ?>" type="radio" name="choiceId" value="<?php echo $choiceId; ?>" />
+                    </td>
+            <?php endforeach; ?>
         <?php endif; ?>
+                </tr>
+            </form>
     <?php endif; ?>
     <!-- END Display the voting form -->
-    <table>
-        <!-- BEGIN Displays the option list -->
-        <thead>
-            <!-- BEGIN Displays the current user vote -->
-            <?php if ( claro_get_current_user_id() && $this->userVote->load()->voteExists() ) : ?>
+    <!-- BEGIN Displays the current user vote -->
+    <?php if ( claro_get_current_user_id() && $this->userVote->load()->voteExists() ) : ?>
             <tr id="current" >
                 <th><?php echo get_lang( 'Your vote' ); ?></th>
-                <?php foreach ( $this->userVote->getVote( true ) as $vote ) : ?>
-                    <?php if ( $vote == UserVote::CHECKED ) : ?>
+        <?php foreach ( $this->userVote->getVote( true ) as $vote ) : ?>
+            <?php if ( $vote == UserVote::CHECKED ) : ?>
                 <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
-                    <?php elseif ( $vote == UserVote::NOTCHECKED ) : ?>
+            <?php elseif ( $vote == UserVote::NOTCHECKED ) : ?>
                 <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
-                    <?php else : ?>
+            <?php else : ?>
                 <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            </tr>
             <?php endif; ?>
-            <!-- END Displays the current user vote -->
+        <?php endforeach; ?>
+            </tr>
+    <?php endif; ?>
+    <!-- END Displays the current user vote -->
+    <!-- BEGIN Displays the option list -->
             <tr>
                 <th class="invisible">
                 <?php echo get_lang( 'Choices' ); ?>
                 </th>
-            <?php foreach ( $this->poll->getChoiceList() as $label ) : ?>
+    <?php foreach ( $this->poll->getChoiceList() as $label ) : ?>
                 <th class="option"><?php echo htmlspecialchars( $label ); ?></th>
-            <?php endforeach; ?>
+    <?php endforeach; ?>
             </tr>
         </thead>
-        <!-- END Displays the option list -->
-        
+    <!-- END Displays the option list -->
         <tbody>
             <!-- BEGIN Displays the statistics -->
-            <?php if ( $this->userRights[ 'see_stats' ] ) : ?>
+    <?php if ( $this->userRights[ 'see_stats' ] ) : ?>
             <tr class="stats">
                 <th class="name">Statistiques</th>
-                <?php foreach ( $this->pollStat->getResult() as $optionVoteCount ) : ?>
+        <?php foreach ( $this->pollStat->getResult() as $optionVoteCount ) : ?>
                 <td><?php echo $optionVoteCount; ?></td>
-                <?php endforeach; ?>
+        <?php endforeach; ?>
             </tr>
-            <?php endif; ?>
+    <?php endif; ?>
             <!-- END Displays the statistics -->
             <!-- BEGIN Displays the poll votes -->
-            <?php if ( $this->poll->getAllVoteList() ) : ?>
-                <?php if ( $this->userRights[ 'see_names' ] ) : ?>
-                    <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $vote ) : ?>
+    <?php if ( $this->poll->getAllVoteList() ) : ?>
+        <?php if ( $this->userRights[ 'see_names' ] ) : ?>
+             <?php foreach ( $this->voteList->getPage( $this->pageNb ) as $vote ) : ?>
             <tr>
                 <th class="name">
-                    <?php echo $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ]; ?>
-                    <?php if ( claro_is_platform_admin() ) : ?>
+            <?php echo $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ]; ?>
+                <?php if ( claro_is_platform_admin() ) : ?>
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteVote&pollId='. $this->poll->getId() . '&userId=' . $vote[ 'user_id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete user\'s vote' ); ?>"/>
                         </a>
-                    <?php endif; ?>
-                </th>
-                        <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
-                            <?php if ( ! isset( $vote[ $choiceId ] ) ) : ?>
-                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
-                            <?php elseif ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
-                <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
-                            <?php elseif ( $vote[ $choiceId ] == UserVote::NOTCHECKED ) : ?>
-                <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
-                            <?php else: ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-            </tr>
-                    <?php endforeach; ?>
                 <?php endif; ?>
-            <?php else : ?>
+                </th>
+                <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
+                    <?php if ( ! isset( $vote[ $choiceId ] ) ) : ?>
+                <td class="disabled"><?php echo get_lang( 'No vote' ); ?></td>
+                    <?php elseif ( $vote[ $choiceId ]  == UserVote::CHECKED ) : ?>
+                <td class="checked"><?php echo get_lang( 'YES' ); ?></td>
+                    <?php elseif ( $vote[ $choiceId ] == UserVote::NOTCHECKED ) : ?>
+                <td class="notchecked"><?php echo get_lang( 'NO' ); ?></td>
+                    <?php else: ?>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    <?php else : ?>
             <tr>
                 <td class="novote" colspan="<?php echo count( $this->poll->getChoiceList() ) + 1; ?>"><?php echo get_lang( 'No vote' ); ?></td>
             </tr>
-            <?php endif; ?>
+    <?php endif; ?>
             <!-- END Displays the poll votes -->
         </tbody>
     </table>
@@ -151,17 +138,17 @@
             </a>
         </span>
         <span class="pagerPages">
-            <?php for ( $i = $this->pageNb - 3; $i <= $this->pageNb + 3; $i++ ) : ?>
-                <?php if ( $i >= 0 && $i < $this->voteList->getPageCount() ) : ?>
-                    <?php if ( $this->pageNb != $i ) : ?>
+        <?php for ( $i = $this->pageNb - 3; $i <= $this->pageNb + 3; $i++ ) : ?>
+            <?php if ( $i >= 0 && $i < $this->voteList->getPageCount() ) : ?>
+                <?php if ( $this->pageNb != $i ) : ?>
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
                 <?php echo $i + 1; ?>
             </a>
-                    <?php else : ?>
+                <?php else : ?>
             <b><?php echo $i + 1; ?></b>
-                    <?php endif; ?>
                 <?php endif; ?>
-            <?php endfor; ?>
+            <?php endif; ?>
+        <?php endfor; ?>
         </span>
         <span class="pagerAfter">
             <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
@@ -173,7 +160,6 @@
         </span>
     </div>
     <?php endif; ?>
-
 <?php else: ?>
 <h3><?php echo get_lang( 'No option for this poll yet' ); ?></h3>
 <?php endif; ?>
