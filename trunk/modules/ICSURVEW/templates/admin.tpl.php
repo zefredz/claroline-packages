@@ -20,14 +20,14 @@
                     <?php echo $survey['title']; ?></td>
                 </a>
         <?php if( $survey['id'] == $this->activeId ) : ?>
-            <td>
+            <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDeactivate&surveyId='. $survey['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'on' ); ?>"
                          alt="<?php echo get_lang( 'enabled' ); ?>" />
                 </a>
             </td>
         <?php else : ?>
-            <td>
+            <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&surveyId='. $survey['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'off' ); ?>"
                          alt="<?php echo get_lang( 'disabled' ); ?>" />
