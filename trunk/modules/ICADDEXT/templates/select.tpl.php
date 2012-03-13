@@ -1,3 +1,11 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#selectAll" ).click(function(){
+            var is_checked=$(this).attr('checked');
+            $(".itemSelect").attr('checked',is_checked);
+        });
+    });
+</script>
 <form method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exAdd' ) ); ?>" >
@@ -6,7 +14,7 @@
         <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
-                    <th align="center"><?php echo get_lang( 'select' ); ?></th>
+                    <th align="center"><!--<?php echo get_lang( 'Select' ); ?>--><input id="selectAll" type="checkbox" checked="checked" /></th>
                 <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
                     <th align="center"><?php echo get_lang( $field ); ?></th>
                 <?php endforeach; ?>
@@ -16,7 +24,8 @@
                 <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
                 <tr>
                     <td align="center">
-                        <input type="checkbox"
+                        <input class="itemSelect"
+                               type="checkbox"
                                name="selected[<?php echo $index; ?>]"
                                checked="checked" />
                     </td>
