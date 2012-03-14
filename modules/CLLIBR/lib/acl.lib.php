@@ -56,7 +56,7 @@ class CLLIBR_ACL
     public function accessGranted( $resourceId , $access = self::ACCESS_SEARCH )
     {
         return $this->is_platform_admin
-            || $this->in_bookmark( $resourceId )
+            //|| $this->in_bookmark( $resourceId )
             || $this->in_bibliography( $resourceId )
             || $this->in_library( $resourceId , $access )
             || $this->in_course_library( $resourceId );
