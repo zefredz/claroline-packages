@@ -254,6 +254,8 @@ class StoredResource
                 'mka'   => 'audio/x-matroska',
                 'mid'   => 'audio/midi',
                 'mp3'   => 'audio/mpeg',
+                'wma'   => 'audio/x-ms-wma',
+                'aac'   => 'audio/aac',
                 # Streaming
                 'm3u'   => 'audio/x-mpegurl',
                 'ra'    => 'audio/x-realaudio',
