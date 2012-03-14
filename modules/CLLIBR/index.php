@@ -532,20 +532,15 @@ try
                     }
                     
                     if ( ! $errorMsg
-                      && $storedResource->validate( $file[ 'name' ] ) )
-                    {
-                        $storedResource->delete();
-                        $resource->setName( $file[ 'name' ] );
-                    }
-                    else
+                      && ! $storedResource->validate( $file[ 'name' ] ) )
                     {
                         $errorMsg = get_lang( 'Invalid file' );
                     }
                     
                     if ( ! $errorMsg
-                      && ! $storedResource->store( $file ) )
+                      && ! $storedResource->update( $file ) )
                     {
-                        $errorMsg = getlang( 'File cannot be stored' );
+                        $errorMsg = get_lang( 'File cannot be stored' );
                     }
                 }
                 elseif( $resource->getStorageType() == Resource::TYPE_URL )
