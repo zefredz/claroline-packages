@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -66,6 +66,23 @@ class StoredResource
     }
     
     /**
+     * Updates a file
+     * @param $_FILES[ 'uploadedFile' ] $file
+     * @return boolean true on success
+     */
+    public function update( $file )
+    {
+        $oldFileName = $this->location . $this->generateStoredName();
+        
+        if( $this->validate( $file[ 'name' ] )
+            && $this->resource->setName( $file[ 'name' ] )
+            && $this->store( $file ) )
+        {
+            return $this->delete( $oldFileName );
+        }
+    }
+    
+    /**
      * Gets the stored file (download)
      */
     public function getFile( $access = self::DOWNLOAD_ACCESS )
@@ -101,10 +118,15 @@ class StoredResource
      * Deletes the file
      * @return boolean true on success
      */
-    public function delete()
+    public function delete( $fileName = null )
     {
-        return file_exists( $this->location . $this->generateStoredName() )
-            && unlink( $this->location . $this->generateStoredName() );
+        if( ! $fileName )
+        {
+            $fileName = $this->location . $this->generateStoredName();
+        }
+        
+        return file_exists( $fileName )
+            && unlink( $fileName );
     }
     
     /**
