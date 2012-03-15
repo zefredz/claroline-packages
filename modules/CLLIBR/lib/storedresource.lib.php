@@ -40,20 +40,6 @@ class StoredResource
     }
     
     /**
-     * Generates a stored name
-     * @param string $fileName
-     * @return string $storedName
-     */
-    public function generateStoredName()
-    {
-        return md5( $this->resource->getName()
-                  . $this->resource->getDate()
-                  . $this->encryptionKey )
-             . '-'
-             . md5( $this->resource->getDate() );
-    }
-    
-    /**
      * Stores a file
      * @param $_FILES[ 'uploadedFile' ] $file
      * @return boolean true on success
@@ -106,24 +92,6 @@ class StoredResource
     }
     
     /**
-     * Gets file name
-     * @return string $fileName
-     */
-    public function getFileName()
-    {
-        return $this->resource->getName();
-    }
-    
-    /**
-     * Gets file location
-     * @return string $location
-     */
-    private function getFileLocation()
-    {
-        return $this->location . $this->generateStoredName();
-    }
-    
-    /**
      * Deletes the file
      * @param string $fileLocation
      * @return boolean true on success
@@ -148,6 +116,38 @@ class StoredResource
     {
         return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
                        , $this->authorizedFileList );
+    }
+    
+    /**
+     * Gets file name
+     * @return string $fileName
+     */
+    public function getFileName()
+    {
+        return $this->resource->getName();
+    }
+    
+    /**
+     * Gets file location
+     * @return string $location
+     */
+    private function getFileLocation()
+    {
+        return $this->location . $this->generateStoredName();
+    }
+    
+    /**
+     * Generates a stored name
+     * @param string $fileName
+     * @return string $storedName
+     */
+    private function generateStoredName()
+    {
+        return md5( $this->resource->getName()
+                  . $this->resource->getDate()
+                  . $this->encryptionKey )
+             . '-'
+             . md5( $this->resource->getDate() );
     }
     
     /**
@@ -266,6 +266,7 @@ class StoredResource
                 'mp3'   => 'audio/mpeg',
                 'wma'   => 'audio/x-ms-wma',
                 'aac'   => 'audio/aac',
+                'xm'    => 'audio/module-xm',
                 # Streaming
                 'm3u'   => 'audio/x-mpegurl',
                 'ra'    => 'audio/x-realaudio',
