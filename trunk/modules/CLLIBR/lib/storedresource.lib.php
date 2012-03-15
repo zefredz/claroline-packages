@@ -46,7 +46,7 @@ class StoredResource
      */
     public function store( $file )
     {
-        return move_uploaded_file( $file[ 'tmp_name' ] , $this->getFileLocation() );
+        return move_uploaded_file( $file[ 'tmp_name' ] , $this->getFilePath() );
     }
     
     /**
@@ -57,14 +57,14 @@ class StoredResource
     public function update( $file )
     {
         $oldFileName = $this->getFileName();
-        $oldLocation = $this->getFileLocation();
+        $oldFilePath = $this->getFilePath();
         
         if( $this->validate( $file[ 'name' ] )
             && $this->resource->setName( $file[ 'name' ] )
             && $this->store( $file ) )
         {
             return $oldFileName == $this->getFileName()
-                || $this->delete( $oldLocation );
+                || $this->delete( $oldFilePath );
         }
     }
     
@@ -73,7 +73,7 @@ class StoredResource
      */
     public function getFile( $access = self::DOWNLOAD_ACCESS )
     {
-        $filePath = $this->getFileLocation();
+        $filePath = $this->getFilePath();
         
         if ( $access == self::DOWNLOAD_ACCESS )
         {
@@ -93,18 +93,18 @@ class StoredResource
     
     /**
      * Deletes the file
-     * @param string $fileLocation
+     * @param string $filePath
      * @return boolean true on success
      */
-    public function delete( $fileLocation = null )
+    public function delete( $filePath = null )
     {
-        if( ! $fileLocation )
+        if( ! $filePath )
         {
-            $fileLocation = $this->getFileLocation();
+            $filePath = $this->getFilePath();
         }
         
-        return file_exists( $fileLocation )
-            && unlink( $fileLocation );
+        return file_exists( $filePath )
+            && unlink( $filePath );
     }
     
     /**
@@ -131,7 +131,7 @@ class StoredResource
      * Gets file location
      * @return string $location
      */
-    private function getFileLocation()
+    private function getFilePath()
     {
         return $this->location . $this->generateStoredName();
     }
