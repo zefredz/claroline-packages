@@ -56,8 +56,13 @@ class ICSURVEW_Answer
      * @param array $filter
      * @return array $courseList
      */
-    public function getCourseList( $filter = null )
+    public function getCourseList( $filter = null , $force = false )
     {
+        if( $force )
+        {
+            $this->loadCourseList();
+        }
+        
         if ( $filter )
         {
             $courseList = array();
@@ -121,8 +126,13 @@ class ICSURVEW_Answer
     /**
      * Getter for $this->answerList
      */
-    public function getAnswerList()
+    public function getAnswerList( $force = false )
     {
+        if( $force )
+        {
+            $this->loadAnswerList();
+        }
+        
         return $this->answerList;
     }
     
