@@ -60,9 +60,7 @@ class StoredResource
      */
     public function store( $file )
     {
-        $target_path = $this->location . $this->generateStoredName();
-        
-        return move_uploaded_file( $file[ 'tmp_name' ] , $target_path );
+        return move_uploaded_file( $file[ 'tmp_name' ] , $this->getFileLocation() );
     }
     
     /**
@@ -72,14 +70,14 @@ class StoredResource
      */
     public function update( $file )
     {
-        $oldFileName = $this->resource->getName();
-        $oldLocation = $this->location . $this->generateStoredName();
+        $oldFileName = $this->getFileName();
+        $oldLocation = $this->getFileLocation();
         
         if( $this->validate( $file[ 'name' ] )
             && $this->resource->setName( $file[ 'name' ] )
             && $this->store( $file ) )
         {
-            return $oldFileName == $this->resource->getName()
+            return $oldFileName == $this->getFileName()
                 || $this->delete( $oldLocation );
         }
     }
@@ -89,12 +87,12 @@ class StoredResource
      */
     public function getFile( $access = self::DOWNLOAD_ACCESS )
     {
-        $filePath = $this->location . $this->generateStoredName();
+        $filePath = $this->getFileLocation();
         
         if ( $access == self::DOWNLOAD_ACCESS )
         {
-            header('Content-type: ' . self::getMimeType( $this->resource->getName() ) );
-            header('Content-Disposition: attachment; filename="' . $this->resource->getName() . '"');
+            header('Content-type: ' . self::getMimeType( $this->getFileName() ) );
+            header('Content-Disposition: attachment; filename="' . $this->getFileName() . '"');
             readfile( $filePath );
         }
         elseif( $access == self::RAW_ACCESS )
@@ -117,18 +115,28 @@ class StoredResource
     }
     
     /**
+     * Gets file location
+     * @return string $location
+     */
+    private function getFileLocation()
+    {
+        return $this->location . $this->generateStoredName();
+    }
+    
+    /**
      * Deletes the file
+     * @param string $fileLocation
      * @return boolean true on success
      */
-    public function delete( $fileName = null )
+    public function delete( $fileLocation = null )
     {
-        if( ! $fileName )
+        if( ! $fileLocation )
         {
-            $fileName = $this->location . $this->generateStoredName();
+            $fileLocation = $this->getFileLocation();
         }
         
-        return file_exists( $fileName )
-            && unlink( $fileName );
+        return file_exists( $fileLocation )
+            && unlink( $fileLocation );
     }
     
     /**
