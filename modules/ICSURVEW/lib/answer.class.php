@@ -220,30 +220,33 @@ class ICSURVEW_Answer
     
     private function loadAnswerList()
     {
-        $result = Claroline::getDatabase()->query( "
-            SELECT
-                course_id,
-                question_id,
-                choice_id,
-                user_id
-            FROM
-                `{$this->tbl['ICSURVEW_answer']}`
-            WHERE
-                course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')" );
-        
-        $this->answerList = array();
-        $this->answeredNb = 0;
-        
-        foreach( $result as $line )
+        if( ! empty( $this->courseList ) )
         {
-            $questionId = $line[ 'question_id' ];
-            $courseId = $line[ 'course_id' ];
+            $result = Claroline::getDatabase()->query( "
+                SELECT
+                    course_id,
+                    question_id,
+                    choice_id,
+                    user_id
+                FROM
+                    `{$this->tbl['ICSURVEW_answer']}`
+                WHERE
+                    course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')" );
             
-            if ( array_key_exists( $questionId , $this->questionList )
-              && array_key_exists( $courseId , $this->courseList ) )
+            $this->answerList = array();
+            $this->answeredNb = 0;
+            
+            foreach( $result as $line )
             {
-                $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];
-                $this->answeredNb++;
+                $questionId = $line[ 'question_id' ];
+                $courseId = $line[ 'course_id' ];
+                
+                if ( array_key_exists( $questionId , $this->questionList )
+                  && array_key_exists( $courseId , $this->courseList ) )
+                {
+                    $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];
+                    $this->answeredNb++;
+                }
             }
         }
     }
