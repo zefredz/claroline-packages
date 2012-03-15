@@ -72,13 +72,15 @@ class StoredResource
      */
     public function update( $file )
     {
-        $oldFileName = $this->location . $this->generateStoredName();
+        $oldFileName = $this->resource->getName();
+        $oldLocation = $this->location . $this->generateStoredName();
         
         if( $this->validate( $file[ 'name' ] )
             && $this->resource->setName( $file[ 'name' ] )
             && $this->store( $file ) )
         {
-            return $this->delete( $oldFileName );
+            return $oldFileName == $this->resource->getName()
+                || $this->delete( $oldLocation );
         }
     }
     
