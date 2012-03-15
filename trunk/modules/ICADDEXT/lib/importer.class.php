@@ -120,20 +120,7 @@ class ICADDEXT_Importer
                 if( $this->_insert( $userData , 'user' ) )
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
-                    
-                    // to manage encrypted passwords -->
-                    $data = $userData;
-                    
-                    if( get_conf('userPasswordCrypted') )
-                    {
-                        $data[ 'password' ] = md5( $data[ 'password' ] );
-                    }
-                    
-                    $data[ 'date_ajout' ] = date( 'Y-m-d H:m:s' );
-                    $this->_insert( $data , 'user_added' );
-                    // <-- to manage encrypted passwords
-                    
-                    //$this->_insert( $userData , 'user_added' );
+                    $this->_insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
                     if(   $send_mail
