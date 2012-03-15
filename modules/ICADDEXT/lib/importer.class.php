@@ -123,8 +123,8 @@ class ICADDEXT_Importer
                     $this->_insert( $userData , 'user_added' );
                     $this->output[ 'success' ][] = $userData;
                     
-                    if(   $send_mail
-                       && user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
+                    if( $send_mail
+                    &&  user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
                     {
                         $this->database->exec( "
                             UPDATE
