@@ -143,6 +143,7 @@ class ICADDEXT_Importer
                             UPDATE
                                 `{$this->userAddedTbl}`
                             SET
+                                actif = 1,
                                 mail_envoye = 1
                             WHERE
                                 user_id = " . $userData[ 'user_id' ] );
@@ -328,22 +329,10 @@ class ICADDEXT_Importer
         }
         
         $sql = "INSERT INTO `{$tbl}` SET \n";
-        return $this->database->exec( $sql . self::_sqlString( $data , $fields ) );
+        return $this->database->exec( $sql . self::_sqlString( $data , $fields , get_conf('userPasswordCrypted') ) );
     }
     
-    /**
-     * Replaces accented chars with their equivalent unaccented ones
-     * @param string $string
-     * @return string : the "cleaned up" string
-     */
-    static public function unaccent( $string )
-    {
-        return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
-                                       , '$1'
-                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
-    }
-    
-    static private function _sqlString( $data , $allowed_fields = null )
+    static private function _sqlString( $data , $allowed_fields = null , $encrypt = false )
     {
         if( ! $allowed_fields )
         {
@@ -356,6 +345,11 @@ class ICADDEXT_Importer
         {
             if( in_array( $field , $allowed_fields ) )
             {
+                if( $field == 'password' && $encrypt )
+                {
+                    $value = md5( $value );
+                }
+                
                 $sqlArray[] = $field . " = '" . $value . "'";
             }
         }
@@ -425,5 +419,17 @@ class ICADDEXT_Importer
         }
         
         return $passwd_str;
+    }
+    
+    /**
+     * Replaces accented chars with their equivalent unaccented ones
+     * @param string $string
+     * @return string : the "cleaned up" string
+     */
+    static public function unaccent( $string )
+    {
+        return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
+                                       , '$1'
+                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
     }
 }
