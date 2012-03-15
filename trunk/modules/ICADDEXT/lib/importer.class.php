@@ -317,11 +317,13 @@ class ICADDEXT_Importer
         {
             $tbl = $this->userTbl;
             $fields = self::$user_tbl_fields;
+            $encrypt = get_conf('userPasswordCrypted');
         }
         elseif( $mode == 'user_added' )
         {
             $tbl = $this->userAddedTbl;
             $fields = self::$user_added_tbl_fields;
+            $encrypt = false;
         }
         else
         {
@@ -329,7 +331,7 @@ class ICADDEXT_Importer
         }
         
         $sql = "INSERT INTO `{$tbl}` SET \n";
-        return $this->database->exec( $sql . self::_sqlString( $data , $fields , get_conf('userPasswordCrypted') ) );
+        return $this->database->exec( $sql . self::_sqlString( $data , $fields , $encrypt ) );
     }
     
     static private function _sqlString( $data , $allowed_fields = null , $encrypt = false )
