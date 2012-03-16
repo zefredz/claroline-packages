@@ -549,7 +549,7 @@ try
                     
                     if ( $resourceName )
                     {
-                        $resource->setName( $resourceName );
+                        $resource->updateResource( $resourceName );
                     }
                     else
                     {
