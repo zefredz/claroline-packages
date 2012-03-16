@@ -186,6 +186,17 @@ class Resource
     {
         return $this->creationDate = $date ? $date : date( 'Y-m-d H:i:s' );
     }
+	
+	/** 
+	 * Sets a new name and update the date
+	 * @param string $fileName
+	 * @return boolean true on success
+	 */
+	public function updateFile( $fileName )
+	{
+		return $this->setName( $fileName )
+		    && $this->setDate();
+	}
     
     /**
      * Deletes the resource from platform
