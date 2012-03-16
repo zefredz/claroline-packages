@@ -60,7 +60,7 @@ class StoredResource
         $oldFilePath = $this->getFilePath();
         
         if( $this->validate( $file[ 'name' ] )
-            && $this->resource->updateFile( $file[ 'name' ] )
+            && $this->resource->updateResource( $file[ 'name' ] )
             && $this->store( $file ) )
         {
             return $oldFilePath == $this->getFilePath()
