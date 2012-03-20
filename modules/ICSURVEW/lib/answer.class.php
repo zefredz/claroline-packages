@@ -8,6 +8,7 @@ class ICSURVEW_Answer
     protected $answerList;
     protected $answeredNb;
     protected $itemNb;
+    protected $otherAnswer = array();
     
     /**
      * Constructor
@@ -35,12 +36,21 @@ class ICSURVEW_Answer
     }
     
     /**
+     * Gets the numbers of answers needed to cmplete the survey
+     * @return int
+     */
+    public function getAnswerCount()
+    {
+        return count( (array)$this->questionList ) * count( $this->courseList );
+    }
+    
+    /**
      * Verifies if user has answered to the survey
      * @return boolean
      */
     public function hasAnswered()
     {
-        return $this->answeredNb == count( (array)$this->questionList ) * count( $this->courseList );
+        return $this->answeredNb == $this->getAnswerCount();
     }
     
     /**
@@ -201,6 +211,14 @@ class ICSURVEW_Answer
         }
     }
     
+    public function otherAnswered()
+    {
+        if( ! empty( $this->otherAnswer ) )
+        {
+            return $this->otherAnswer;
+        }
+    }
+    
     private function loadCourseList()
     {
         $result = Claroline::getDatabase()->query( "
@@ -250,12 +268,18 @@ class ICSURVEW_Answer
             {
                 $questionId = $line[ 'question_id' ];
                 $courseId = $line[ 'course_id' ];
+                $userId = $line[ 'user_id' ];
                 
                 if ( array_key_exists( $questionId , $this->questionList )
                   && array_key_exists( $courseId , $this->courseList ) )
                 {
                     $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];
                     $this->answeredNb++;
+                }
+                
+                if( $userId != $this->userId )
+                {
+                    $this->otherAnswer[ $courseId ][] = $userId;
                 }
             }
         }
