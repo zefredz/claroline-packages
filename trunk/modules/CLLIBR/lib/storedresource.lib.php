@@ -147,7 +147,8 @@ class StoredResource
                   . $this->resource->getDate()
                   . $this->encryptionKey )
              . '-'
-             . md5( $this->resource->getDate() );
+             . substr( md5( $this->resource->getName() )
+                     , substr( $this->resource->getDate() , 11 , 2 ) , 8 );
     }
     
     /**
