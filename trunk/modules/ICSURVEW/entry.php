@@ -32,27 +32,28 @@ $answer = new ICSURVEW_Answer( $userId , $survey->get() );
 $userInput = Claro_UserInput::getInstance();
 $dialogBox = new DialogBox();
 
-$success = false;
-
 try
 {
     switch( $_SESSION[ 'ICSURVEW_STAGE' ] )
     {
         case 0:
         case 1:
-            $submission = $userInput->get( 'answer' );
             $cmd = $userInput->get( 'cmd' );
+            $submission = $userInput->get( 'answer' );
             
-            if ( $cmd == 'accept' && $_SESSION[ 'ICSURVEW_STAGE' ] == 0 )
+            if ( $cmd == 'accept' )
             {
-                $success = true;
-                break;
+                $_SESSION[ 'ICSURVEW_STAGE' ] = 1;
+                
+                if( $answer->otherAnswered() )
+                {
+                    $dialogBox->info( get_lang( '_other_answered' ) );
+                }
             }
             elseif( $cmd == 'later' && get_conf( 'ICSURVEW_postpone_allowed' ) )
             {
                 $_SESSION[ 'ICSURVEW_LATER' ] = true;
                 claro_redirect( get_path( 'url' ) );
-                die();
             }
             
             if ( $submission )
@@ -65,14 +66,12 @@ try
                     }
                 }
                 
-                if ( $answer->hasAnswered() )
-                {
-                    $success = true;
-                }
-                else
+                /*if ( ! $answer->hasAnswered() )
                 {
                     $dialogBox->error( get_lang( '_not_complete' ) );
-                }
+                }*/
+                
+                $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
             }
             
             break;
@@ -93,10 +92,14 @@ try
                         $course->save();
                     }
                 }
-                
-                $success = true;
             }
             
+            if( ! $answer->hasAnswered() )
+            {
+                $dialogBox->info( get_lang( '_not_finished' ) );
+            }
+            
+            $_SESSION[ 'ICSURVEW_STAGE' ] = 3;
             break;
         
         case 3:
@@ -105,11 +108,6 @@ try
         
         default:
             throw new Exception( 'Error' );
-    }
-    
-    if ( $success )
-    {
-        $_SESSION[ 'ICSURVEW_STAGE' ]++;
     }
     
     CssLoader::getInstance()->load( 'style' , 'screen' );
