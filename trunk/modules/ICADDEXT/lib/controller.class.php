@@ -70,7 +70,7 @@ class ICADDEXT_Controller
             
             if( is_array( $userData ) )
             {
-                $data = self::_flush( $userData );
+                $data = self::_flush( $userData[0] );
                 $this->importer->csvParser->data = array( $data );
                 $this->importer->csvParser->titles = array_keys( $data );
             }
@@ -81,16 +81,29 @@ class ICADDEXT_Controller
         }
         
         $this->importer->probe();
-        $this->status_ok = $this->importer->toAdd;
+        $this->status_ok = $this->importer->toAdd || $this->importer->conflict;
     }
     
     private function _exAdd()
     {
-        $selected = $this->userInput->get( 'selected' );
         $userData = $this->userInput->get( 'userData' );
+        $selected = $this->userInput->get( 'selected' );
+        $toForce = $this->userInput->get( 'toForce' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
+        if( !empty( $toForce ) )
+        {
+            foreach( $toForce as $index => $data )
+            {
+                foreach( $data as $field => $value )
+                {
+                    $userData[ $index ][ $field ] = $value;
+                }
+            }
+        }
+        
         $toAdd = array_intersect_key( $userData , $selected );
+        
         $this->status_ok = $this->importer->add( $toAdd , $send_mail );
     }
     

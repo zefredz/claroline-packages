@@ -7,6 +7,7 @@ $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
 $_lang['fail_message'] = 'Erreur';
 $_lang['first_name'] = 'Prénom';
+$_lang['force'] = 'Forcer';
 $_lang['institute'] = 'Institution';
 $_lang['invalid_csv'] = 'Le fichier soumis n\'est pas un CSV valide';
 $_lang['invalid_data'] = 'Le format des données fournies n\'est pas valide';
