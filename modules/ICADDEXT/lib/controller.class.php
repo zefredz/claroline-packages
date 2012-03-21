@@ -102,9 +102,15 @@ class ICADDEXT_Controller
             }
         }
         
-        $toAdd = array_intersect_key( $userData , $selected );
-        
-        $this->status_ok = $this->importer->add( $toAdd , $send_mail );
+        if( ! empty( $selected ) )
+        {
+            $toAdd = array_intersect_key( $userData , $selected );
+            $this->status_ok = $this->importer->add( $toAdd , $send_mail );
+        }
+        else
+        {
+            $this->message = array( 'type' => 'error' , 'text' => 'no_user_selected' );
+        }
     }
     
     /**
@@ -130,20 +136,23 @@ class ICADDEXT_Controller
      */
     private function _output()
     {
-        if( ! $this->is_ok() )
+        if( ! $this->message )
         {
-            $msg = '';
-            
-            foreach( $this->importer->output as $error => $data )
+            if( $this->is_ok() )
             {
-                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
+                $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
             }
-            
-            $this->message = array( 'type' => 'error' , 'text' => $msg );
-        }
-        elseif( $this->is_ok() == 1 )
-        {
-            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
+            else
+            {
+                $msg = '';
+                
+                foreach( $this->importer->output as $error => $data )
+                {
+                    $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
+                }
+                
+                $this->message = array( 'type' => 'error' , 'text' => $msg );
+            }
         }
     }
 }
