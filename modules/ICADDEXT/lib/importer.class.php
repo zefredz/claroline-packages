@@ -76,6 +76,7 @@ class ICADDEXT_Importer
     public $csvParser;
     
     public $toAdd = array();
+    
     public $conflict = array();
     
     /**
@@ -100,9 +101,8 @@ class ICADDEXT_Importer
     {
         if ( is_array( $toAdd ) )
         {
-            $userData = array_values( $toAdd );
-            $this->csvParser->data = $userData;
-            $this->csvParser->titles = array_keys( $userData[ 0 ] );
+            $this->csvParser->data = $toAdd;
+            $this->csvParser->titles = array_keys( current( $toAdd ) );
         }
         else
         {
@@ -171,12 +171,8 @@ class ICADDEXT_Importer
     /**
      * Calls two private functions
      */
-    public function probe( $data = null )
+    public function probe()
     {
-        if( $data )
-        {
-            $this->csvParser->data = $data;
-        }
         return $this->_checkRequiredFields()
             && $this->_trackDuplicates();
     }
@@ -203,7 +199,7 @@ class ICADDEXT_Importer
      * then moves the incriminated lines in a separated array
      * @param array $data
      */
-    private function _trackDuplicates()
+    private function _trackDuplicates( $force = false )
     {
         foreach( $this->csvParser->data as $index => $line )
         {
@@ -276,6 +272,8 @@ class ICADDEXT_Importer
             $userData[ 'password' ] = self::mk_password();
         }
         
+        $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
+        
         return $userData;
     }
     
@@ -291,7 +289,7 @@ class ICADDEXT_Importer
             FROM
                 `{$this->userAddedTbl}`
             WHERE
-                date_ajout LIKE " . $this->database->quote( '%' . date( 'Y-m-d' ) . '%' )
+                officialCode LIKE " . $this->database->quote( '%' . date( 'Ymd' ) . '%' )
         )->numRows();
     }
     
@@ -418,7 +416,7 @@ class ICADDEXT_Importer
     static public function unaccent( $string )
     {
         return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
-                                       , '$1'
-                                       , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
+                            , '$1'
+                            , htmlentities( $string , ENT_QUOTES , 'UTF-8' ) );
     }
 }

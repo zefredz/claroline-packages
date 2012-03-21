@@ -12,7 +12,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[nom]"
+                       name="userData[0][nom]"
                        value="" />
             </dd>
             <dt>
@@ -23,7 +23,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[prenom]"
+                       name="userData[0][prenom]"
                        value="" />
             </dd>
             <dt>
@@ -34,7 +34,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[email]"
+                       name="userData[0][email]"
                        value="" />
             </dd>
             <dt>
@@ -42,7 +42,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[officialCode]"
+                       name="userData[0][officialCode]"
                        value="" />
             </dd>
             <dt>
@@ -50,7 +50,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[username]"
+                       name="userData[0][username]"
                        value="" />
             </dd>
             <dt>
@@ -58,7 +58,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[password]"
+                       name="userData[0][password]"
                        value="" />
             </dd>
             <dt>
@@ -66,7 +66,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[institution]"
+                       name="userData[0][institution]"
                        value="" />
             </dd>
             <dt>
@@ -82,7 +82,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[phoneNumber]"
+                       name="userData[0][phoneNumber]"
                        value="" />
             </dd>
             <dt>
@@ -90,7 +90,7 @@
             </dt>
             <dd>
                 <input type="text"
-                       name="userData[remarques]"
+                       name="userData[0][remarques]"
                        value="" />
             </dd>
         </dl>
