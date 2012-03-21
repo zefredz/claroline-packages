@@ -417,6 +417,6 @@ class ICADDEXT_Importer
     {
         return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
                             , '$1'
-                            , htmlentities( utf8_encode( $string ) , ENT_QUOTES , 'UTF-8' ) );
+                            , htmlentities( claro_utf8_encode( $string ) , ENT_QUOTES , 'UTF-8' ) );
     }
 }
