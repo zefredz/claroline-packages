@@ -3,7 +3,7 @@
 class ICADDEXT_Controller
 {
     public $importer;
-    protected $status_ok = -1;
+    protected $status_ok = true;
     
     public $message = null;
     
@@ -91,7 +91,7 @@ class ICADDEXT_Controller
         $toForce = $this->userInput->get( 'toForce' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
-        if( !empty( $toForce ) )
+        if( ! empty( $toForce ) )
         {
             foreach( $toForce as $index => $data )
             {
@@ -110,6 +110,11 @@ class ICADDEXT_Controller
         else
         {
             $this->message = array( 'type' => 'error' , 'text' => 'no_user_selected' );
+        }
+        
+        if( ! $this->importer->getNotAdded() )
+        {
+            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
         }
     }
     
@@ -136,23 +141,21 @@ class ICADDEXT_Controller
      */
     private function _output()
     {
-        if( ! $this->message )
+        if( ! $this->message && ! empty( $this->importer->output ) )
         {
-            if( $this->is_ok() )
+            $msg = '';
+            
+            foreach( $this->importer->output as $error => $data )
             {
-                $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
+                $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data ) . '<br />';
             }
-            else
+            
+            if( ! $msg )
             {
-                $msg = '';
-                
-                foreach( $this->importer->output as $error => $data )
-                {
-                    $msg .= '<strong>' . get_lang( $error ) . ' :</strong> ' . implode( ', ' , $data );
-                }
-                
-                $this->message = array( 'type' => 'error' , 'text' => $msg );
+                $msg = 'undefined_error';
             }
+            
+            $this->message = array( 'type' => 'error' , 'text' => $msg );
         }
     }
 }
