@@ -47,7 +47,7 @@ try
     $controller = new ICADDEXT_Controller( $importer , $userInput );
     $view = new ICADDEXT_View( $cmd , $controller );
     
-    if ( $msg = $controller->message )
+    foreach( $controller->message as $msg )
     {
         $dialogBox->{$msg[ 'type' ]}( get_lang( $msg[ 'text' ] ) );
     }
