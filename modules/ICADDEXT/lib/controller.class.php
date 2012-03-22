@@ -5,7 +5,7 @@ class ICADDEXT_Controller
     public $importer;
     protected $status_ok = true;
     
-    public $message = null;
+    public $message = array();
     
     /**
      * Contructor
@@ -39,8 +39,8 @@ class ICADDEXT_Controller
         }
         else
         {
-            $this->message = array( 'type' => 'error'
-                                  , 'text' => 'invalid_command' );
+            $this->message[] = array( 'type' => 'error'
+                                    , 'text' => 'invalid_command' );
         }
     }
     
@@ -61,7 +61,7 @@ class ICADDEXT_Controller
             }
             else
             {
-                $this->message = array( 'type' => 'error' , 'text' => 'invalid_csv' );
+                $this->message[] = array( 'type' => 'error' , 'text' => 'invalid_csv' );
             }
         }
         else
@@ -76,7 +76,7 @@ class ICADDEXT_Controller
             }
             else
             {
-                $this->message = array( 'type' => 'error' , 'text' => 'invalid_data' );
+                $this->message[] = array( 'type' => 'error' , 'text' => 'invalid_data' );
             }
         }
         
@@ -109,12 +109,12 @@ class ICADDEXT_Controller
         }
         else
         {
-            $this->message = array( 'type' => 'error' , 'text' => 'no_user_selected' );
+            $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
         
-        if( ! $this->importer->getNotAdded() )
+        if( $this->status_ok )
         {
-            $this->message = array( 'type' => 'success' , 'text' => 'success_message' );
+            $this->message[] = array( 'type' => 'success' , 'text' => 'success_message' );
         }
     }
     
@@ -155,7 +155,7 @@ class ICADDEXT_Controller
                 $msg = 'undefined_error';
             }
             
-            $this->message = array( 'type' => 'error' , 'text' => $msg );
+            $this->message[] = array( 'type' => 'error' , 'text' => $msg );
         }
     }
 }
