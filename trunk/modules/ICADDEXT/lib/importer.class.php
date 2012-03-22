@@ -2,6 +2,9 @@
 
 class ICADDEXT_Importer
 {
+    const MODE_PROBE = 'conflict_found';
+    const MODE_ADD = 'not_added';
+    
     protected static $required_fields = array(
           'prenom'
         , 'nom'
@@ -77,6 +80,8 @@ class ICADDEXT_Importer
     
     public $toAdd = array();
     
+    public $added = array();
+    
     public $conflict = array();
     
     /**
@@ -109,7 +114,7 @@ class ICADDEXT_Importer
             throw new Exception( 'Invalid data' );
         }
         
-        if( $this->probe() )
+        if( $this->probe( self::MODE_ADD ) )
         {
             $this->addedNb = $this->_countAddedToday();
             
@@ -121,7 +126,7 @@ class ICADDEXT_Importer
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
                     $this->_insert( $userData , 'user_added' );
-                    $this->output[ 'success' ][] = $userData;
+                    $this->added[] = $userData;
                     
                     if( $send_mail
                     &&  user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
@@ -147,7 +152,7 @@ class ICADDEXT_Importer
             }
         }
         
-        return array_key_exists( 'success' , $this->output );
+        return ( ! empty( $this->added ) );
     }
     
     /**
@@ -155,8 +160,8 @@ class ICADDEXT_Importer
      */
     public function getReport()
     {
-        return $this->csvParser->unparse( $this->output[ 'success' ]
-                                        , array_keys( $this->output[ 'success' ][ 0 ] ) );
+        return $this->csvParser->unparse( $this->added
+                                        , array_keys( $this->added[ 0 ] ) );
     }
     
     /**
@@ -164,17 +169,29 @@ class ICADDEXT_Importer
      */
     public function getConflictFields()
     {
-        return array_intersect( self::$check_conflict_fields
-                            ,   $this->csvParser->titles );
+        return self::$check_conflict_fields;
+        /*return array_intersect( self::$check_conflict_fields
+                            ,   $this->csvParser->titles );*/
+    }
+    
+    /**
+     *
+     */
+    public function getNotAdded()
+    {
+        if( array_key_exists( self::MODE_ADD , $this->output ) )
+        {
+            return implode( ',' , $this->output[ self::MODE_ADD ] );
+        }
     }
     
     /**
      * Calls two private functions
      */
-    public function probe()
+    public function probe( $mode = self::MODE_PROBE )
     {
         return $this->_checkRequiredFields()
-            && $this->_trackDuplicates();
+            && $this->_trackDuplicates( $mode );
     }
     
     /**
@@ -199,14 +216,68 @@ class ICADDEXT_Importer
      * then moves the incriminated lines in a separated array
      * @param array $data
      */
-    private function _trackDuplicates( $force = false )
+    private function _trackDuplicates( $mode )
     {
         foreach( $this->csvParser->data as $index => $line )
         {
             $line[ 'username' ] = array_key_exists( 'username' , $line )
                                 ? $line[ 'username' ]
-                                : '';
+                                : self::username( $line[ 'prenom' ]
+                                                , $line[ 'nom' ] );
             
+            if( $mode == self::MODE_PROBE
+            &&  $this->database->query( "
+                SELECT
+                    user_id
+                FROM
+                    `{$this->userTbl}`
+                WHERE
+                    nom = " . $this->database->quote( $line[ 'nom' ] ) . "
+                AND
+                    prenom = " . $this->database->quote( $line[ 'prenom' ] )
+                )->numRows() )
+            {
+                $this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
+                $this->conflict[ $index ][ 'prenom' ] = $line[ 'prenom' ];
+            }
+            
+            if( $this->database->query( "
+                SELECT
+                    user_id
+                FROM
+                    `{$this->userTbl}`
+                WHERE
+                    username = " . $this->database->quote( $line[ 'username' ] )
+                )->numRows() )
+            {
+                $this->conflict[ $index ][ 'username' ] = $line[ 'username' ];
+            }
+            
+            if( $this->database->query( "
+                SELECT
+                    user_id
+                FROM
+                    `{$this->userTbl}`
+                WHERE
+                    email = " . $this->database->quote( $line[ 'email' ] )
+                )->numRows() )
+            {
+                $this->conflict[ $index ][ 'email' ] = $line[ 'email' ];
+            }
+            
+            if( ! empty( $this->conflict[ $index ] ) )
+            {
+                $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                
+                if( $mode == self::MODE_PROBE )
+                {
+                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
+                }
+                
+                $this->output[ $mode ][] = $reportLine;
+            }
+            
+            /*
             $result = $this->database->query( "
                 SELECT
                     nom,
@@ -228,13 +299,16 @@ class ICADDEXT_Importer
             if( ! empty( $result ) )
             {
                 $this->conflict[ $index ] = array_intersect_assoc( $line , $result );
-                $this->output[ 'conflict_found' ][] = $line[ 'prenom' ]
-                                                    . ' '
-                                                    . $line[ 'nom' ]
-                                                    . ' ('
-                                                    . implode( ', ' , array_keys( $this->conflict[ $index ] ) )
-                                                    . ')';
+                $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                
+                if( $mode == self::MODE_PROBE )
+                {
+                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
+                }
+                
+                $this->output[ $mode ][] = $reportLine;
             }
+            */
         }
         
         $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
@@ -262,9 +336,7 @@ class ICADDEXT_Importer
         
         if( ! array_key_exists( 'username' , $userData ) )
         {
-            $userData[ 'username' ] = strtolower( self::unaccent( $userData[ 'prenom' ] ) )
-                                    . '.'
-                                    . strtolower( self::unaccent( $userData[ 'nom' ] ) );
+            $userData[ 'username' ] = self::username( $userData[ 'prenom' ] , $userData[ 'nom' ] );
         }
         
         if( ! array_key_exists( 'password' , $userData ) )
@@ -418,5 +490,28 @@ class ICADDEXT_Importer
         return preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
                             , '$1'
                             , htmlentities( claro_utf8_encode( $string ) , ENT_QUOTES , 'UTF-8' ) );
+    }
+    
+    static public function clean( $string )
+    {
+        $string = str_replace( ' ' , '' , $string );
+        
+        if( strlen( $string ) > 12 )
+        {
+            $string = substr( $string , 12 );
+        }
+        
+        return strtolower( self::unaccent( $string ) );
+    }
+    
+    /**
+     * Generates username
+     * @param string $firstName
+     * @param string $lastName
+     * @return string username
+     */
+    static public function username( $firstName , $lastName )
+    {
+        return self::clean( $firstName ) . '.' . self::clean( $lastName );
     }
 }

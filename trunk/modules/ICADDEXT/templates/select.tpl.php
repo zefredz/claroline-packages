@@ -20,7 +20,7 @@
     <?php if( $this->controller->importer->conflict ) : ?>
     <br />
     <fieldset>
-        <legend><?php echo get_lang( 'conflict_found' ); ?> :</legend>
+        <legend><?php echo get_lang( 'force_conflict' ); ?> :</legend>
         <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
@@ -38,15 +38,17 @@
                                name="selected[<?php echo $index; ?>]" />
                     </td>
                     <?php foreach( $this->controller->importer->getConflictFields() as $field ) : ?>
-                        <?php if( array_key_exists( $field , $userData ) ) : ?>
                     <td>
+                        <?php if( array_key_exists( $field , $userData ) ) : ?>
                         <input type="text"
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $userData[ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
+                        <?php elseif( $field == 'username' ) : ?>
+                            <?php echo ICADDEXT_Importer::username( $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
+                                                                  , $this->controller->importer->csvParser->data[ $index ][ 'nom' ] ); ?>
                         <?php else : ?>
-                    <td>
-                        <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                            <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
                         <?php endif; ?>
                     </td>
                     <?php endforeach; ?>
