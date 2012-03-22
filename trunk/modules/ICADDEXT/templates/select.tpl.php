@@ -45,10 +45,12 @@
                                value="<?php echo $userData[ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php elseif( $field == 'username' ) : ?>
+                        <strong>
                             <?php echo ICADDEXT_Importer::username( $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
                                                                   , $this->controller->importer->csvParser->data[ $index ][ 'nom' ] ); ?>
+                        </strong>
                         <?php else : ?>
-                            <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        <strong><?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?></strong>
                         <?php endif; ?>
                     </td>
                     <?php endforeach; ?>

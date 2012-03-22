@@ -74,6 +74,8 @@ class ICADDEXT_Importer
         , 'password' => 'password'
         , 'email' => 'email' );
     
+    protected $codeIncrement;
+    
     public $output = array();
     
     public $csvParser;
@@ -116,7 +118,7 @@ class ICADDEXT_Importer
         
         if( $this->probe( self::MODE_ADD ) )
         {
-            $this->addedNb = $this->_countAddedToday();
+            $this->codeIncrement = $this->_codeIncrement();
             
             foreach( $this->toAdd as $userData )
             {
@@ -332,7 +334,7 @@ class ICADDEXT_Importer
         $userData[ 'officialCode' ] .= '-'
                                     . date( 'Ymd' )
                                     . '-'
-                                    . str_pad( ++$this->addedNb , 3 , '0', STR_PAD_LEFT );
+                                    . str_pad( ++$this->codeIncrement , 3 , '0', STR_PAD_LEFT );
         
         if( ! array_key_exists( 'username' , $userData ) )
         {
@@ -353,16 +355,37 @@ class ICADDEXT_Importer
      * Counts the number of external users added today
      * @return int
      */
-    private function _countAddedToday()
+    private function _codeIncrement()
     {
-        return $this->database->query( "
+        $addedToday = $this->database->query( "
+            SELECT
+                officialCode
+            FROM
+                `{$this->userAddedTbl}`
+            WHERE
+                officialCode LIKE " . $this->database->quote( '%' . date( 'Ymd' ) . '%' ) );
+        
+        $codeIncrement = 0;
+        
+        foreach( $addedToday as $fgs )
+        {
+            $codeExt = (int)substr( $fgs[ 'officialCode' ] , -3 );
+            if( $codeExt > $codeIncrement )
+            {
+                $codeIncrement = $codeExt;
+            }
+        }
+        
+        return $codeIncrement;
+        
+        /*return $this->database->query( "
             SELECT
                 id
             FROM
                 `{$this->userAddedTbl}`
             WHERE
                 officialCode LIKE " . $this->database->quote( '%' . date( 'Ymd' ) . '%' )
-        )->numRows();
+        )->numRows();*/
     }
     
     /**
@@ -498,7 +521,7 @@ class ICADDEXT_Importer
         
         if( strlen( $string ) > 12 )
         {
-            $string = substr( $string , 12 );
+            $string = substr( $string , 0 , 12 );
         }
         
         return strtolower( self::unaccent( $string ) );

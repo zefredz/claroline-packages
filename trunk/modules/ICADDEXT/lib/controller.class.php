@@ -141,7 +141,7 @@ class ICADDEXT_Controller
      */
     private function _output()
     {
-        if( ! $this->message && ! empty( $this->importer->output ) )
+        if( ! empty( $this->importer->output ) )
         {
             $msg = '';
             
