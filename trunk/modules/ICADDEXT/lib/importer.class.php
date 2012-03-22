@@ -216,12 +216,14 @@ class ICADDEXT_Importer
     /**
      * Checks for duplicates: firstname+lastname, username or mail
      * then moves the incriminated lines in a separated array
-     * @param array $data
+     * @param string $mode self::MODE_PROBE|self::MODE_ADD
      */
     private function _trackDuplicates( $mode )
     {
         foreach( $this->csvParser->data as $index => $line )
         {
+            self::flush( $line );
+            
             $line[ 'username' ] = array_key_exists( 'username' , $line )
                                 ? $line[ 'username' ]
                                 : self::username( $line[ 'prenom' ]
@@ -536,5 +538,23 @@ class ICADDEXT_Importer
     static public function username( $firstName , $lastName )
     {
         return self::clean( $firstName ) . '.' . self::clean( $lastName );
+    }
+    
+    /**
+     * Removes empty fields from an array
+     * @param array $array
+     * @return array : the cleaned up array
+     */
+    static public function flush( $array )
+    {
+        foreach( $array as $key => $value )
+        {
+            if( ! $value )
+            {
+                unset( $array[ $key ] );
+            }
+        }
+        
+        return $array;
     }
 }

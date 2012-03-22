@@ -70,7 +70,7 @@ class ICADDEXT_Controller
             
             if( is_array( $userData ) )
             {
-                $data = self::_flush( $userData[0] );
+                $data = ICADDEXT_Importer::flush( $userData[0] );
                 $this->importer->csvParser->data = array( $data );
                 $this->importer->csvParser->titles = array_keys( $data );
             }
@@ -116,24 +116,6 @@ class ICADDEXT_Controller
         {
             $this->message[] = array( 'type' => 'success' , 'text' => 'success_message' );
         }
-    }
-    
-    /**
-     * Removes empty fields from an array
-     * @param array $array
-     * @return array : the cleaned up array
-     */
-    private static function _flush( $array )
-    {
-        foreach( $array as $key => $value )
-        {
-            if( ! $value )
-            {
-                unset( $array[ $key ] );
-            }
-        }
-        
-        return $array;
     }
     
     /**
