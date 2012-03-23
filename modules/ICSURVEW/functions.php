@@ -30,6 +30,7 @@ if ( Claro_KernelHook_Lock::lockAvailable() )
             }
             else
             {
+                $_SESSION[ 'ICSURVEW_LATER' ] = true;
                 Claro_KernelHook_Lock::releaseLock();
             }
         }
