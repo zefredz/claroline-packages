@@ -518,14 +518,15 @@ class ICADDEXT_Importer
     
     static public function clean( $string )
     {
-        $string = str_replace( ' ' , '' , $string );
+        $string = preg_replace( '~[^\w]~' , '' , self::unaccent( $string ) );
+        //$string = str_replace( ' ' , '' , $string );
         
         if( strlen( $string ) > 12 )
         {
             $string = substr( $string , 0 , 12 );
         }
         
-        return strtolower( self::unaccent( $string ) );
+        return strtolower( $string );
     }
     
     /**
