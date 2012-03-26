@@ -433,7 +433,7 @@ class ICADDEXT_Importer
                     $value = md5( $value );
                 }
                 
-                $sqlArray[] = $field . " = '" . $value . "'";
+                $sqlArray[] = $field . " = " . Claroline::getDatabase()->quote( $value );
             }
         }
         
