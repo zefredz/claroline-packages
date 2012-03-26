@@ -42,10 +42,9 @@ class ICADDEXT_Importer
         , 'prenom'
         , 'email'
         , 'date_de_naissance'
+        , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
-        , 'username'
-        , 'password'
         , 'officialCode'
         , 'date_ajout'
         , 'remarques' );
