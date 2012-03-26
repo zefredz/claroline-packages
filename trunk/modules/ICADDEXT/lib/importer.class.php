@@ -518,7 +518,10 @@ class ICADDEXT_Importer
     
     static public function clean( $string )
     {
-        $string = preg_replace( '~[^\w]~' , '' , $string );
+        $string = str_replace( ' ' , '' , $string );
+        $string = str_replace( '\'' , '' , $string );
+        $string = str_replace( '"' , '' , $string );
+        
         $string = self::unaccent( $string );
         
         if( strlen( $string ) > 12 )
