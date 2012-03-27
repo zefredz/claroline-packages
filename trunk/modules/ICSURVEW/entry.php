@@ -16,6 +16,8 @@ From::Module( 'ICSURVEW' )->uses( 'answer.class',
                                   'survey.class',
                                   'surveylist.class' );
 
+$postpone_allowed = get_conf( 'ICSURVEW_postpone_allowed' );
+
 if ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] ) )
 {
     $_SESSION[ 'ICSURVEW_STAGE' ] = 0;
@@ -50,7 +52,7 @@ try
                     $dialogBox->info( get_lang( '_other_answered' ) );
                 }
             }
-            elseif( $cmd == 'later' && get_conf( 'ICSURVEW_postpone_allowed' ) )
+            elseif( $cmd == 'later' && $postpone_allowed )
             {
                 $_SESSION[ 'ICSURVEW_LATER' ] = true;
                 claro_redirect( get_path( 'url' ) );
@@ -66,7 +68,7 @@ try
                     }
                 }
                 
-                if ( ! $answer->hasAnswered() && ! get_conf( 'ICSURVEW_postpone_allowed' ) )
+                if ( ! $answer->hasAnswered() && ! $postpone_allowed )
                 {
                     $dialogBox->error( get_lang( '_not_complete' ) );
                 }
@@ -75,7 +77,7 @@ try
                 {
                     $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
                 }
-                elseif( get_conf( 'ICSURVEW_postpone_allowed' ) )
+                elseif( $postpone_allowed )
                 {
                     $_SESSION[ 'ICSURVEW_STAGE' ] = 3;
                 }

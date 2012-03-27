@@ -2,7 +2,7 @@
 
 $_lang['_intro_text'] = '<h3>Enquête sur l\'utilisation des cours sur iCampus</h3>
 Afin de détecter les cours non utilisés sur iCampus et de mieux cerner les utilisations des cours, nous vous demandons de répondre à une enquête qui comporte deux questions et une vérification.<br />
-Vos réponses sont attentdues avant le 30 septembre.<br />
+Vos réponses sont attendues avant le 5 juillet 2012.<br />
 Cette enquête est réalisée à la demande du prorecteur à la formation et à l\'enseignement.';
 $_lang['_not_complete'] = 'Vous n\'avez pas rempli tous les champs!';
 $_lang['_course_code_verification'] = '<h3>Vérification de la composition des codes cours des cours officiels</h3>
