@@ -1,4 +1,4 @@
-<?php if( $this->controller->is_ok() ) : ?>
+<?php if( $this->controller->is_ok() && $this->controller->importer->getReport() ) : ?>
 <h3><?php echo get_lang( 'added_message' ); ?></h3>
 <textarea rows="<?php echo count( $this->controller->importer->added ) + 1; ?>" style="width: 100%;">
     <?php echo $this->controller->importer->getReport(); ?>
