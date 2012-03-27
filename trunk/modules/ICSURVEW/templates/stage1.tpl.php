@@ -20,7 +20,7 @@
             var checkCount = $(":radio:checked").length;
             
             if(checkCount==answerCount){
-                $("#ICSURVEW_submit").attr({value:"<?php echo get_lang( 'Send' ); ?>"});
+                $("#ICSURVEW_submit").attr({value:"<?php echo get_lang( '_send' ); ?>"});
             }else{
                 $("#ICSURVEW_submit").attr({value:"<?php echo get_lang( '_send_and_quit' ); ?>"});
             }
@@ -64,6 +64,12 @@
             </tbody>
         </table>
         <div class="ICSURVEW_nav">
+            <?php if( $questionNb != 0 ) : ?>
+            <input type="button"
+                   id="nav_prev_<?php echo $questionNb+1; ?>"
+                   class="ICSURVEW_prev"
+                   value="<?php echo get_lang( '_back' ); ?>" />
+            <?php endif; ?>
             <?php if( $questionNb < count( (array)$this->answer->getQuestionList() ) - 1 ) : ?>
             <input type="button"
                    id="nav_next_<?php echo $questionNb+1; ?>"
