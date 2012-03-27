@@ -161,8 +161,12 @@ class ICADDEXT_Importer
      */
     public function getReport()
     {
-        return $this->csvParser->unparse( $this->added
-                                        , array_keys( $this->added[ 0 ] ) );
+        if( ! empty( $this->csvParser->data )
+        &&  ! empty( $this->csvparser->titles ) )
+        {
+            return $this->csvParser->unparse( $this->added
+                                            , array_keys( $this->added[ 0 ] ) );
+        }
     }
     
     /**
