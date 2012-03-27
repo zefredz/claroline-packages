@@ -112,7 +112,7 @@ class ICADDEXT_Controller
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
         
-        if( $this->status_ok )
+        if( $this->status_ok && $this->importer->getReport() )
         {
             $this->message[] = array( 'type' => 'success' , 'text' => 'success_message' );
         }
