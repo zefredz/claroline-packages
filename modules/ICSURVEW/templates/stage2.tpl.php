@@ -26,6 +26,6 @@
             </tbody>
         <?php endforeach; ?>
         </table>
-        <input type="submit" value="<?php echo get_lang( 'Done' ); ?>" />
+        <input type="submit" value="<?php echo get_lang( '_finish' ); ?>" />
     </div>
 </form>
