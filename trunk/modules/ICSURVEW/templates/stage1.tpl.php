@@ -16,6 +16,9 @@
         });
         var answerCount = <?php echo $this->answer->getAnswerCount(); ?>;
         
+    <?php if ( ! get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
+        $("#ICSURVEW_buttons").hide();
+    <?php endif; ?>
         $(":radio").click(function(){
             var checkCount = $(":radio:checked").length;
     <?php if ( get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
@@ -26,7 +29,7 @@
             }
     <?php else : ?>
             if(checkCount==answerCount){
-                $("#ICSURVEW_buttons").append("<input id=\"ICSURVEW_submit\" type=\"submit\" name=\"\" value=\"<?php echo get_lang( '_send' ); ?>\" />");
+                $("#ICSURVEW_buttons").show()
             }
     <?php endif; ?>
         });
@@ -85,11 +88,11 @@
     </div>
     <?php endforeach; ?>
     <div id="ICSURVEW_buttons">
-    <?php if( get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
         <input id="ICSURVEW_submit"
                type="submit"
                name=""
                value="<?php echo get_lang( '_send_and_quit' ); ?>" />
+    <?php if( get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
             <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
     <?php endif; ?>
     </div>
