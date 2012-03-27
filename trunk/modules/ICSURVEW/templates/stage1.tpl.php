@@ -61,23 +61,18 @@
             </tbody>
         </table>
         <div class="ICSURVEW_nav">
-            <?php if( $questionNb != 0 ) : ?>
-            <input type="button"
-                   id="nav_prev_<?php echo $questionNb+1; ?>"
-                   class="ICSURVEW_prev"
-                   value="<?php echo get_lang( 'Previous' ); ?>" />
-            <?php endif; ?>
             <?php if( $questionNb < count( (array)$this->answer->getQuestionList() ) - 1 ) : ?>
             <input type="button"
                    id="nav_next_<?php echo $questionNb+1; ?>"
                    class="ICSURVEW_next"
-                   value="<?php echo get_lang( 'Next' ); ?>" />
+                   value="<?php echo get_lang( '_next' ); ?>" />
             <?php endif; ?>
         </div>
     </div>
     <?php endforeach; ?>
     <input id="ICSURVEW_submit"
            type="submit"
-           name=""
-           value="<?php echo get_lang( 'Submit' ); ?>" />
+           name="<?php echo get_lang( '_send' ); ?>"
+           value="<?php echo get_lang( '_send' ); ?>" />
+    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
 </form>
