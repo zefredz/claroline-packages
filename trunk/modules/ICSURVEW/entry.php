@@ -66,10 +66,10 @@ try
                     }
                 }
                 
-                /*if ( ! $answer->hasAnswered() )
+                if ( ! $answer->hasAnswered() && ! get_conf( 'ICSURVEW_postpone_allowed' ) )
                 {
                     $dialogBox->error( get_lang( '_not_complete' ) );
-                }*/
+                }
                 
                 $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
             }
