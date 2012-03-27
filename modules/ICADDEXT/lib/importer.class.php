@@ -162,7 +162,7 @@ class ICADDEXT_Importer
     public function getReport()
     {
         if( ! empty( $this->csvParser->data )
-        &&  ! empty( $this->csvparser->titles ) )
+        &&  ! empty( $this->csvParser->titles ) )
         {
             return $this->csvParser->unparse( $this->added
                                             , array_keys( $this->added[ 0 ] ) );
