@@ -18,12 +18,17 @@
         
         $(":radio").click(function(){
             var checkCount = $(":radio:checked").length;
-            
+    <?php if ( get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
             if(checkCount==answerCount){
                 $("#ICSURVEW_submit").attr({value:"<?php echo get_lang( '_send' ); ?>"});
             }else{
                 $("#ICSURVEW_submit").attr({value:"<?php echo get_lang( '_send_and_quit' ); ?>"});
             }
+    <?php else : ?>
+            if(checkCount==answerCount){
+                $("#ICSURVEW_buttons").append("<input id=\"ICSURVEW_submit\" type=\"submit\" name=\"\" value=\"<?php echo get_lang( '_send' ); ?>\" />");
+            }
+    <?php endif; ?>
         });
     });
 </script>
@@ -79,9 +84,13 @@
         </div>
     </div>
     <?php endforeach; ?>
-    <input id="ICSURVEW_submit"
-           type="submit"
-           name=""
-           value="<?php echo get_lang( '_send_and_quit' ); ?>" />
-    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
+    <div id="ICSURVEW_buttons">
+    <?php if( get_conf( 'ICSURVEW_postpone_allowed' ) ) : ?>
+        <input id="ICSURVEW_submit"
+               type="submit"
+               name=""
+               value="<?php echo get_lang( '_send_and_quit' ); ?>" />
+            <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
+    <?php endif; ?>
+    </div>
 </form>
