@@ -71,7 +71,14 @@ try
                     $dialogBox->error( get_lang( '_not_complete' ) );
                 }
                 
-                $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
+                if( $answer->hasAnswered() )
+                {
+                    $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
+                }
+                else
+                {
+                    $_SESSION[ 'ICSURVEW_STAGE' ] = 3;
+                }
             }
             
             break;
