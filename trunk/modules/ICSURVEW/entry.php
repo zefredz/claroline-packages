@@ -75,7 +75,7 @@ try
                 {
                     $_SESSION[ 'ICSURVEW_STAGE' ] = 2;
                 }
-                else
+                elseif( get_conf( 'ICSURVEW_postpone_allowed' ) )
                 {
                     $_SESSION[ 'ICSURVEW_STAGE' ] = 3;
                 }
