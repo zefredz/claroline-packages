@@ -65,7 +65,7 @@ class ICADDEXT_Importer
           'authSource' => 'external'
         , 'isPlatformAdmin' => 0
         , 'isCourseCreator' => 0
-        , 'officialCode' => 'EXT' );
+        /*, 'officialCode' => 'EXT'*/ );
     protected static $mail_infos = array(
           'prenom' => 'firstname'
         , 'nom' => 'lastname'
@@ -85,6 +85,8 @@ class ICADDEXT_Importer
     
     public $conflict = array();
     
+    public $incomplete = array();
+    
     /**
      * Constructor
      * @param ParseCsv object $csvParser
@@ -98,6 +100,7 @@ class ICADDEXT_Importer
         $this->userTbl = $tbl[ 'user' ];
         $this->userAddedTbl = $tbl[ 'ICADDEXT_user_added' ];;
         $this->database = Claroline::getDatabase();
+        $this->codeIncrement = $this->_codeIncrement();
     }
     
     /**
@@ -117,12 +120,8 @@ class ICADDEXT_Importer
         
         if( $this->probe( self::MODE_ADD ) )
         {
-            $this->codeIncrement = $this->_codeIncrement();
-            
             foreach( $this->toAdd as $userData )
             {
-                $userData = $this->_addMissingFields( $userData );
-                
                 if( $this->_insert( $userData , 'user' ) )
                 {
                     $userData[ 'user_id' ] = $this->database->insertId();
@@ -196,12 +195,15 @@ class ICADDEXT_Importer
     public function probe( $mode = self::MODE_PROBE )
     {
         return $this->_checkRequiredFields()
-            && $this->_trackDuplicates( $mode );
+            && $this->_checkMissingValues()
+            && $this->_trackDuplicates( $mode )
+            && $this->_fillMissingValues( $mode )
+            ;
     }
     
     /**
      * Checks for existence of required fields
-     * @return array with missing fields
+     * @return boolena true if OK
      */
     private function _checkRequiredFields()
     {
@@ -217,6 +219,29 @@ class ICADDEXT_Importer
     }
     
     /**
+     * Checks for lines with missing values
+     * @return boolean true if OK
+     */
+    private function _checkMissingValues()
+    {
+        foreach( $this->csvParser->data as $index => $userData )
+        {
+            foreach( self::$required_fields as $required_field )
+            {
+                if( ! array_key_exists( $required_field , $userData ) || empty( $userData[ $required_field ] ) )
+                {
+                    $this->output[ 'missing_values' ][ $index ] = $required_field;
+                    $this->incomplete[ $index ] = $userData;
+                    unset( $this->csvParser->data[ $index ] );
+                }
+            }
+        }
+        
+        //return empty( $this->output );
+        return true;
+    }
+    
+    /**
      * Checks for duplicates: firstname+lastname, username or mail
      * then moves the incriminated lines in a separated array
      * @param string $mode self::MODE_PROBE|self::MODE_ADD
@@ -225,13 +250,6 @@ class ICADDEXT_Importer
     {
         foreach( $this->csvParser->data as $index => $line )
         {
-            self::flush( $line );
-            
-            $line[ 'username' ] = array_key_exists( 'username' , $line )
-                                ? $line[ 'username' ]
-                                : self::username( $line[ 'prenom' ]
-                                                , $line[ 'nom' ] );
-            
             if( $mode == self::MODE_PROBE
             &&  $this->database->query( "
                 SELECT
@@ -244,8 +262,10 @@ class ICADDEXT_Importer
                     prenom = " . $this->database->quote( $line[ 'prenom' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
-                $this->conflict[ $index ][ 'prenom' ] = $line[ 'prenom' ];
+                //$this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
+                //$this->conflict[ $index ][ 'prenom' ] = $line[ 'prenom' ];
+                $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
             if( $this->database->query( "
@@ -283,44 +303,27 @@ class ICADDEXT_Importer
                 
                 $this->output[ $mode ][] = $reportLine;
             }
-            
-            /*
-            $result = $this->database->query( "
-                SELECT
-                    nom,
-                    prenom,
-                    email,
-                    username
-                FROM
-                    `{$this->userTbl}`
-                WHERE
-                    ( nom = " . $this->database->quote( $line[ 'nom' ] ) . "
-                AND
-                    prenom = " . $this->database->quote( $line[ 'prenom' ] ) . " )
-                OR
-                    email = " . $this->database->quote( $line[ 'email' ] ) . "
-                OR
-                    username = " . $this->database->quote( $line[ 'username' ] )
-            )->fetch( Database_ResultSet::FETCH_ASSOC );
-            
-            if( ! empty( $result ) )
-            {
-                $this->conflict[ $index ] = array_intersect_assoc( $line , $result );
-                $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                
-                if( $mode == self::MODE_PROBE )
-                {
-                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
-                }
-                
-                $this->output[ $mode ][] = $reportLine;
-            }
-            */
         }
         
         $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
         
         return ! empty( $this->toAdd );
+    }
+    
+    /**
+     *
+     */
+    private function _fillMissingValues( $mode = self::MODE_PROBE )
+    {
+        $filledData = array();
+        
+        foreach( $this->toAdd as $index => $userData )
+        {
+            $userData = self::flush( $userData );
+            $filledData[ $index ] = self::_addMissingFields( $userData , $mode );
+        }
+        
+        return $this->toAdd = $filledData;
     }
     
     /*
@@ -329,13 +332,22 @@ class ICADDEXT_Importer
      * - generates official code with the following format: XXX-YYYYMMDD-NNN
      * - generates username (if does not exist) in the following format: firstname.lastname
      * @param array $userData
-     * @return array : modified arrat
+     * @return array : modified array
      */
-    private function _addMissingFields( $userData )
+    private function _addMissingFields( $userData , $mode = self::MODE_PROBE )
     {
-        $userData = array_merge( self::$default_fields , $userData );
+        if( $mode == self::MODE_ADD )
+        {
+            $userData = array_merge( self::$default_fields , $userData );
+            $userData[ 'creatorId' ] = claro_get_current_user_id();
+            $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
+        }
         
-        $userData[ 'creatorId' ]     = claro_get_current_user_id();
+        if( ! array_key_exists( 'officialCode' , $userData ) )
+        {
+            $userData[ 'officialCode' ] = 'EXT';
+        }
+        
         $userData[ 'officialCode' ] .= '-'
                                     . date( 'Ymd' )
                                     . '-'
@@ -351,9 +363,16 @@ class ICADDEXT_Importer
             $userData[ 'password' ] = self::mk_password();
         }
         
-        $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
-        
         return $userData;
+        
+        $filledData = array();
+        
+        foreach( $this->csvParser->titles as $title )
+        {
+            $filledData[ $title ] = $userData[ $title ];
+        }
+        
+        return $filledData;
     }
     
     /**
@@ -382,15 +401,6 @@ class ICADDEXT_Importer
         }
         
         return $codeIncrement;
-        
-        /*return $this->database->query( "
-            SELECT
-                id
-            FROM
-                `{$this->userAddedTbl}`
-            WHERE
-                officialCode LIKE " . $this->database->quote( '%' . date( 'Ymd' ) . '%' )
-        )->numRows();*/
     }
     
     /**

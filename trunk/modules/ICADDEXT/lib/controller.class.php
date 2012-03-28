@@ -81,7 +81,14 @@ class ICADDEXT_Controller
         }
         
         $this->importer->probe();
-        $this->status_ok = $this->importer->toAdd || $this->importer->conflict;
+        $this->status_ok = $this->importer->toAdd
+                        || $this->importer->conflict
+                        || $this->importer->incomplete;
+        /*var_dump( $this->importer->csvParser->data,
+                  $this->importer->output,
+                  $this->importer->toAdd,
+                  $this->importer->conflict,
+                  $this->importer->incomplete );*/
     }
     
     private function _exAdd()

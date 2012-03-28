@@ -17,6 +17,48 @@
         <?php endforeach; ?>
     <?php endforeach; ?>
     
+    <?php if( $this->controller->importer->incomplete ) : ?>
+    <br />
+    <fieldset>
+        <legend><?php echo get_lang( 'missing_values' ); ?> :</legend>
+        <table class="claroTable emphaseLine" style="width: 100%;">
+            <thead>
+                <tr class="headerX">
+                    <th><?php echo get_lang( 'force' ); ?></th>
+                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                    <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach( $this->controller->importer->incomplete as $index => $userData ) : ?>
+                <tr>
+                    <td align="center">
+                        <input type="checkbox"
+                               name="selected[<?php echo $index; ?>]" />
+                    </td>
+                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                    <td>
+                        <?php if( empty( $userData[ $field ] ) ) : ?>
+                        <input type="text"
+                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               value="<?php echo $userData[ $field ]; ?>" />
+                        <?php else : ?>
+                        <input type="hidden"
+                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               value="<?php echo $userData[ $field ]; ?>" />
+                        <?php echo $userData[ $field ]; ?>
+                        <?php endif; ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </fieldset>
+    <br />
+    <?php endif; ?>
+    
     <?php if( $this->controller->importer->conflict ) : ?>
     <br />
     <fieldset>
@@ -83,9 +125,9 @@
                                name="selected[<?php echo $index; ?>]"
                                checked="checked" />
                     </td>
-                    <?php foreach( $userData as $value ) : ?>
+                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
                     <td>
-                        <?php echo $value; ?>
+                        <?php echo $userData[ $field ]; ?>
                     </td>
                     <?php endforeach; ?>
                 </tr>
