@@ -250,8 +250,8 @@ class ICADDEXT_Importer
     {
         foreach( $this->csvParser->data as $index => $line )
         {
-            if( $mode == self::MODE_PROBE
-            &&  $this->database->query( "
+            if( /*$mode == self::MODE_PROBE
+            &&  */$this->database->query( "
                 SELECT
                     user_id
                 FROM
@@ -296,12 +296,12 @@ class ICADDEXT_Importer
             {
                 $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
                 
-                if( $mode == self::MODE_PROBE )
+                if( true || $mode == self::MODE_PROBE )
                 {
                     $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
                 }
                 
-                $this->output[ $mode ][] = $reportLine;
+                $this->output[ /*$mode*/ 'conflict_found' ][] = $reportLine;
             }
         }
         
