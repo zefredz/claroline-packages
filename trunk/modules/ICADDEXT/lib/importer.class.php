@@ -262,8 +262,6 @@ class ICADDEXT_Importer
                     prenom = " . $this->database->quote( $line[ 'prenom' ] )
                 )->numRows() )
             {
-                //$this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
-                //$this->conflict[ $index ][ 'prenom' ] = $line[ 'prenom' ];
                 $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
                 $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
@@ -364,15 +362,6 @@ class ICADDEXT_Importer
         }
         
         return $userData;
-        
-        $filledData = array();
-        
-        foreach( $this->csvParser->titles as $title )
-        {
-            $filledData[ $title ] = $userData[ $title ];
-        }
-        
-        return $filledData;
     }
     
     /**
@@ -426,6 +415,7 @@ class ICADDEXT_Importer
         }
         
         $sql = "INSERT INTO `{$tbl}` SET \n";
+        
         return $this->database->exec( $sql . self::_sqlString( $data , $fields , $encrypt ) );
     }
     
