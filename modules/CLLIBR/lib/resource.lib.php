@@ -66,15 +66,15 @@ class Resource
             FROM
                 `{$this->tbl['library_resource']}`
             WHERE
-                id = " . $this->database->escape( $this->id )
-            )->fetch( Database_ResultSet::FETCH_ASSOC );
+                id = " . $this->database->escape( $this->id ) );
         
-        if ( count( $result ) )
+        if ( $result->numRows() )
         {
-            $this->creationDate = $result[ 'creation_date' ];
-            $this->storageType = $result[ 'storage_type' ];
-            $this->resourceType = $result[ 'resource_type' ];
-            $this->resourceName = $result[ 'resource_name' ];
+            $data = $result->fetch( Database_ResultSet::FETCH_ASSOC );
+            $this->creationDate = $data[ 'creation_date' ];
+            $this->storageType = $data[ 'storage_type' ];
+            $this->resourceType = $data[ 'resource_type' ];
+            $this->resourceName = $data[ 'resource_name' ];
         }
         else
         {
