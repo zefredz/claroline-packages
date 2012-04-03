@@ -121,8 +121,9 @@ try
     
     CssLoader::getInstance()->load( 'style' , 'screen' );
     $pageTitle = array( 'mainTitle' => get_lang( 'iCampus Course Survey' ) );
-    $pageTitle[ 'subTitle' ] = get_lang( 'Stage %_stage : %_description' , array( '%_stage' => $_SESSION[ 'ICSURVEW_STAGE' ] + 1
-                                                                                , '%_description' => get_lang( '_description_stage_' . $_SESSION[ 'ICSURVEW_STAGE' ] ) ) );
+    $pageTitle[ 'subTitle' ] = get_lang( 'Stage %_stage' , array( '%_stage' => $_SESSION[ 'ICSURVEW_STAGE' ] + 1 ) )
+                             . ' : '
+                             . get_lang( '_description_stage_' . $_SESSION[ 'ICSURVEW_STAGE' ] );
     
     $template = new ModuleTemplate( 'ICSURVEW' , 'stage' . $_SESSION[ 'ICSURVEW_STAGE' ] . '.tpl.php' );
     $template->assign( 'answer' , $answer );
