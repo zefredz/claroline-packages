@@ -9,6 +9,10 @@ $_lang['_course_code_verification'] = '<h3>Vérification de la composition des co
 Depuis septembre 2010, les cours intégrés à un programme officiel UCL ont un code cours qui commence par l\'initiale du site de l\'entité responsable: L pour Louvain-la-Neuve, W pour Woluwé et depuis septembre 2011, M pour Mons.<br />
 Pour que les étudiants trouvent votre cours sans difficulté dans la liste des cours, nous vous suggérons de modifier les codes de vos cours officiels si nécessaire :';
 $_lang['_back'] = 'Revenir à la question précédente';
+$_lang['_description_stage_0'] = 'Bienvenue';
+$_lang['_description_stage_1'] = 'Questionnaire principal';
+$_lang['_description_stage_2'] = 'Revue des codes cours';
+$_lang['_description_stage_3'] = 'Fin';
 $_lang['_exit_message' ] = 'Merci pour votre collaboration et bon travail sur iCampus ...';
 $_lang['_finish'] = 'Terminer l\'enquête';
 $_lang['_later'] = 'Répondre plus tard';
