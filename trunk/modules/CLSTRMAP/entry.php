@@ -12,28 +12,22 @@
 
 $url = get_conf( 'clustrMapsUrl' );
 
-$html = '<div id="clustrmaps-widget"></div>
+$html = '<a href="http://www2.clustrmaps.com/counter/maps.php?url=' . $url .'" id="clustrMapsLink">
+         <img src="http://www2.clustrmaps.com/counter/index2.php?url=' . $url .'" 
+            style="border:0px;" 
+            alt="Locations of visitors to this page" 
+            title="Locations of visitors to this page" 
+            id="clustrMapsImg" />
+        </a>
         <script type="text/javascript">
-            var _clustrmaps = {\'url\' : \'' . $url . '\',
-                              \'user\' : 1002043,
-                              \'server\' : \'3\',
-                              \'id\' : \'clustrmaps-widget\',
-                              \'version\' : 1,
-                              \'date\' : \'2012-04-06\',
-                              \'lang\' : \'fr\',
-                              \'corners\' : \'square\' };
-            (function (){ var s = document.createElement(\'script\');
-            s.type = \'text/javascript\';
-            s.async = true;
-            s.src = \'http://www3.clustrmaps.com/counter/map.js\';
-            var x = document.getElementsByTagName(\'script\')[0];
-            x.parentNode.insertBefore(s, x);})();
-        </script>
-        <noscript>
-            <a href="http://www3.clustrmaps.com/user/e1ff4a3b">
-                <img src="http://www3.clustrmaps.com/stats/maps-no_clusters/ucline.uclouvain.be-thumb.jpg"
-                     alt="Locations of visitors to this page" />
-            </a>
-        </noscript>';
-    
+            function cantload() {
+                img = document.getElementById("clustrMapsImg");
+                img.onerror = null;
+                img.src = "http://clustrmaps.com/images/clustrmaps-back-soon.jpg";
+                document.getElementById("clustrMapsLink").href = "http://clustrmaps.com";
+            }
+            img = document.getElementById("clustrMapsImg");
+            img.onerror = cantload;
+        </script>';
+
 $claro_buffer->append( $html );
