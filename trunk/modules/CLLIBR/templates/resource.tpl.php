@@ -92,9 +92,7 @@
         <input type="hidden"
                name="resourceId"
                value="<?php echo $this->resourceId; ?>" />
-        <textarea rows="20" name="content">
-            <?php echo $this->userNote; ?>
-        </textarea>
+        <textarea rows="20" name="content"><?php echo $this->userNote; ?></textarea>
         <br />
         <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Save' ); ?>" />
     </form>
