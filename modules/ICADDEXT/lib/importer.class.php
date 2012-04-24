@@ -185,10 +185,29 @@ class ICADDEXT_Importer
      */
     public function probe( $mode = self::MODE_PROBE )
     {
-        return $this->_checkRequiredFields()
-            && $this->_checkMissingValues()
-            && $this->_trackDuplicates( $mode )
+        if( $mode == self::MODE_ADD )
+        {
+            $ok =  $this->_checkRequiredFields()
+                && $this->_checkMissingValues()
+                && $this->_trackDuplicates();
+        }
+        
+        return $ok
+            && $this->_toAdd()
             && $this->_fillMissingValues( $mode );
+    }
+    
+    /**
+     *
+     */
+    private function _toAdd()
+    {
+        if( empty( $this->toAdd ) )
+        {
+            $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
+        }
+        
+        return $this->toAdd;
     }
     
     /**
@@ -234,14 +253,12 @@ class ICADDEXT_Importer
     /**
      * Checks for duplicates: firstname+lastname, username or mail
      * then moves the incriminated lines in a separated array
-     * @param string $mode self::MODE_PROBE|self::MODE_ADD
      */
-    private function _trackDuplicates( $mode )
+    private function _trackDuplicates()
     {
         foreach( $this->csvParser->data as $index => $line )
         {
-            if( /*$mode == self::MODE_PROBE
-            &&  */$this->database->query( "
+            if( $this->database->query( "
                 SELECT
                     user_id
                 FROM
@@ -291,13 +308,11 @@ class ICADDEXT_Importer
                     $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
                 }
                 
-                $this->output[ /*$mode*/ 'conflict_found' ][] = $reportLine;
+                $this->output[ 'conflict_found' ][] = $reportLine;
             }
         }
         
-        $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
-        
-        return ! empty( $this->toAdd );
+        return $this->conflict;
     }
     
     /**
