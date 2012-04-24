@@ -263,6 +263,8 @@ class ICADDEXT_Importer
                 )->numRows() )
             {
                 $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                //$this->conflict[ $index ][ 'prénom' ] = $line[ 'prenom' ];
+                //$this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
                 $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
