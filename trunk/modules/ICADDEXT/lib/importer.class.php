@@ -104,6 +104,15 @@ class ICADDEXT_Importer
     }
     
     /**
+     * Checks submitted data and prepares the list of users to add
+     */
+    public function check()
+    {
+        return $this->probe()
+            && $this->bake( self::MODE_PROBE );
+    }
+    
+    /**
      * Adds selected users
      */
     public function add( $toAdd , $send_mail = true )
@@ -118,7 +127,7 @@ class ICADDEXT_Importer
             throw new Exception( 'Invalid data' );
         }
         
-        if( $this->probe( self::MODE_ADD ) )
+        if( $this->bake( self::MODE_ADD ) )
         {
             foreach( $this->toAdd as $userData )
             {
@@ -180,24 +189,22 @@ class ICADDEXT_Importer
     }
     
     /**
-     * Calls two private functions
+     * Check submitted data
      */
-    public function probe( $mode = self::MODE_PROBE )
+    public function probe()
     {
-        $ok = true;
-        
-        if( $mode == self::MODE_PROBE )
-        {
-            $ok =  $this->_checkRequiredFields()
+        return  $this->_checkRequiredFields()
                 && $this->_checkMissingValues()
                 && $this->_trackDuplicates();
-        }
-        
-        if( $ok )
-        {
-            return $this->_toAdd()
-                && $this->_fillMissingValues( $mode );
-        }
+    }
+    
+    /**
+     * Prepares the data for users to add
+     */
+    public function bake( $mode = self::MODE_PROBE )
+    {
+        return $this->_toAdd()
+            && $this->_fillMissingValues( $mode );
     }
     
     /**
