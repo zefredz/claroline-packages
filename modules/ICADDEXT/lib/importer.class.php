@@ -118,8 +118,7 @@ class ICADDEXT_Importer
             throw new Exception( 'Invalid data' );
         }
         
-        if( $this->_fillMissingValues( self::MODE_ADD ) )
-        //if( $this->probe( self::MODE_ADD ) )
+        if( $this->probe( self::MODE_ADD ) )
         {
             foreach( $this->toAdd as $userData )
             {
@@ -185,9 +184,9 @@ class ICADDEXT_Importer
      */
     public function probe( $mode = self::MODE_PROBE )
     {
-        $ok = false;
+        $ok = true;
         
-        if( $mode == self::MODE_ADD )
+        if( $mode == self::MODE_PROBE )
         {
             $ok =  $this->_checkRequiredFields()
                 && $this->_checkMissingValues()
