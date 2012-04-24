@@ -42,7 +42,8 @@
                         <?php if( empty( $userData[ $field ] ) ) : ?>
                         <input type="text"
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
-                               value="<?php echo $userData[ $field ]; ?>" />
+                               value="<?php echo get_lang( 'missing_value' ); ?>"
+                               style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <input type="hidden"
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
@@ -84,13 +85,12 @@
                         <?php if( array_key_exists( $field , $userData ) ) : ?>
                         <input type="text"
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
-                               value="<?php echo $userData[ $field ]; ?>"
+                               value="<?php echo $field == 'username'
+                                                        ? ICADDEXT_Importer::username(
+                                                                    $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
+                                                                  , $this->controller->importer->csvParser->data[ $index ][ 'nom' ] )
+                                                        : $userData[ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
-                        <?php elseif( $field == 'username' ) : ?>
-                        <strong>
-                            <?php echo ICADDEXT_Importer::username( $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
-                                                                  , $this->controller->importer->csvParser->data[ $index ][ 'nom' ] ); ?>
-                        </strong>
                         <?php else : ?>
                         <strong><?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?></strong>
                         <?php endif; ?>
