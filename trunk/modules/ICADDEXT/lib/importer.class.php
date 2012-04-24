@@ -185,6 +185,8 @@ class ICADDEXT_Importer
      */
     public function probe( $mode = self::MODE_PROBE )
     {
+        $ok = false;
+        
         if( $mode == self::MODE_ADD )
         {
             $ok =  $this->_checkRequiredFields()
@@ -192,9 +194,11 @@ class ICADDEXT_Importer
                 && $this->_trackDuplicates();
         }
         
-        return $ok
-            && $this->_toAdd()
-            && $this->_fillMissingValues( $mode );
+        if( $ok )
+        {
+            return $this->_toAdd()
+                && $this->_fillMissingValues( $mode );
+        }
     }
     
     /**
