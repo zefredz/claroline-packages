@@ -2,8 +2,8 @@
 
 class ICADDEXT_Importer
 {
-    const MODE_PROBE = 'conflict_found';
-    const MODE_ADD = 'not_added';
+    const MODE_PROBE = 'probe';
+    const MODE_ADD = 'add';
     
     protected static $required_fields = array(
           'prenom'
@@ -118,7 +118,8 @@ class ICADDEXT_Importer
             throw new Exception( 'Invalid data' );
         }
         
-        if( $this->probe( self::MODE_ADD ) )
+        if( $this->_fillMissingValues( self::MODE_ADD ) )
+        //if( $this->probe( self::MODE_ADD ) )
         {
             foreach( $this->toAdd as $userData )
             {
@@ -179,17 +180,6 @@ class ICADDEXT_Importer
     }
     
     /**
-     *
-     */
-    public function getNotAdded()
-    {
-        if( array_key_exists( self::MODE_ADD , $this->output ) )
-        {
-            return implode( ',' , $this->output[ self::MODE_ADD ] );
-        }
-    }
-    
-    /**
      * Calls two private functions
      */
     public function probe( $mode = self::MODE_PROBE )
@@ -197,8 +187,7 @@ class ICADDEXT_Importer
         return $this->_checkRequiredFields()
             && $this->_checkMissingValues()
             && $this->_trackDuplicates( $mode )
-            && $this->_fillMissingValues( $mode )
-            ;
+            && $this->_fillMissingValues( $mode );
     }
     
     /**
