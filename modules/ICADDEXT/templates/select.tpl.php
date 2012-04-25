@@ -9,7 +9,7 @@
 <form method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exAdd' ) ); ?>" >
-    <?php foreach( $this->controller->importer->csvParser->data as $index => $userData ) : ?>
+    <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
            name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
@@ -25,7 +25,7 @@
             <thead>
                 <tr class="headerX">
                     <th><?php echo get_lang( 'force' ); ?></th>
-                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                    <?php foreach( ICADDEXT_Importer::$check_conflict_fields as $field ) : ?>
                     <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
                     <?php endforeach; ?>
                 </tr>
@@ -37,7 +37,7 @@
                         <input type="checkbox"
                                name="selected[<?php echo $index; ?>]" />
                     </td>
-                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                    <?php foreach( ICADDEXT_Importer::$check_conflict_fields as $field ) : ?>
                     <td>
                         <?php if( empty( $userData[ $field ] ) ) : ?>
                         <input type="text"
@@ -68,7 +68,7 @@
             <thead>
                 <tr class="headerX">
                     <th><?php echo get_lang( 'force' ); ?></th>
-                    <?php foreach( $this->controller->importer->getConflictFields() as $field ) : ?>
+                    <?php foreach( ICADDEXT_Importer::$check_conflict_fields as $field ) : ?>
                     <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
                     <?php endforeach; ?>
                 </tr>
@@ -80,7 +80,7 @@
                         <input type="checkbox"
                                name="selected[<?php echo $index; ?>]" />
                     </td>
-                    <?php foreach( $this->controller->importer->getConflictFields() as $field ) : ?>
+                    <?php foreach( ICADDEXT_Importer::$check_conflict_fields as $field ) : ?>
                     <td>
                         <?php if( array_key_exists( $field , $userData ) ) : ?>
                         <input type="text"
