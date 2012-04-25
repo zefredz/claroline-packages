@@ -181,11 +181,14 @@ class ICADDEXT_Importer
      */
     public function probe()
     {
-        $this->_checkRequiredFields();
-        $this->_checkMissingValues();
-        $this->_trackDuplicates();
-        $this->_toAdd();
-        $this->_fillMissingValues();
+        if( $this->_checkRequiredFields() )
+        {
+            $this->_checkRequiredFields();
+            $this->_checkMissingValues();
+            $this->_trackDuplicates();
+            $this->_toAdd();
+            $this->_fillMissingValues();
+        }
     }
     
     /**
@@ -218,6 +221,8 @@ class ICADDEXT_Importer
                 $this->output[ 'missing_fields' ][] = $required_field;
             }
         }
+        
+        return empty( $this->output );
     }
     
     /**
