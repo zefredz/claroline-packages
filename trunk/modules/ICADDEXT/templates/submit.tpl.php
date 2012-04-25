@@ -46,6 +46,14 @@
                        value="" />
             </dd>
             <dt>
+                <label for="resourceType"><?php echo get_lang( 'official_code_prefix' ); ?> :</label>
+            </dt>
+            <dd>
+                <input type="text"
+                       name="userData[0][officialCodePrefix]"
+                       value="" />
+            </dd>
+            <dt>
                 <label for="resourceType"><?php echo get_lang( 'username' ); ?> :</label>
             </dt>
             <dd>
@@ -93,6 +101,15 @@
                        name="userData[0][remarques]"
                        value="" />
             </dd>
+            <dt>
+                <label for="resourceType"><?php echo get_lang( 'auth_source' ); ?> :</label>
+            </dt>
+            <dd>
+                <select name="userData[0][authSource]">
+                    <option value="external">external</option>
+                    <option value="mailbox">mailbox</option>
+                </select>
+            </dd>
         </dl>
     </fieldset>
     <fieldset>
@@ -104,6 +121,23 @@
             <dd>
                 <input type="file"
                        name="CsvFile" />
+            </dd>
+            <dt>
+                <label for="resourceType"><?php echo get_lang( 'official_code_prefix' ); ?> :</label>
+            </dt>
+            <dd>
+                <input type="text"
+                       name="officialCodePrefix"
+                       value="" />
+            </dd>
+            <dt>
+                <label for="resourceType"><?php echo get_lang( 'auth_source' ); ?> :</label>
+            </dt>
+            <dd>
+                <select name="authSource">
+                    <option value="external">external</option>
+                    <option value="mailbox">mailbox</option>
+                </select>
             </dd>
         </dl>
     </fieldset>

@@ -53,6 +53,12 @@ class ICADDEXT_Controller
     {
         if ( $_FILES && $_FILES[ 'CsvFile' ][ 'size' ] != 0 )
         {
+            $authSource = $this->userInput->get( 'authSource' );
+            $codePrefix = $this->userInput->get( 'officialCodePrefix' , 'EXT' );
+            
+            if( $authSource ) ICADDEXT_Importer::$default_fields[ 'authSource' ] = $authSource;
+            if( $codePrefix ) ICADDEXT_Importer::$default_fields[ 'officialCodePrefix' ] = $codePrefix;
+            
             $file = $_FILES['CsvFile']['tmp_name'];
             
             if( $this->importer->csvParser->auto( $file ) )

@@ -3,6 +3,7 @@
 $_lang['add_from_csv'] = 'Ajouter une liste d\'utilisateur à partir d\'un fichier CSV';
 $_lang['add_single_user'] = 'Ajouter un utilisateur';
 $_lang['added_message'] = 'Les utilisateurs suivant ont été ajoutés :';
+$_lang['auth_source'] = 'Source d\'authentification';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
 $_lang['fail_message'] = 'Erreur';
@@ -23,7 +24,8 @@ $_lang['no_user_selected'] = 'Vous n\'avez sélectionné aucun utilisateur!';
 $_lang['not_added'] = 'Les utilisateurs suivants n\'ont pas pu être ajoutés';
 $_lang['password'] = 'Mot de passe';
 $_lang['phone_number'] = 'Numéro de téléphone';
-$_lang['official_code'] = 'Préfixe du code officiel (de 3 à 5 lettres)';
+$_lang['official_code'] = "Code officiel";
+$_lang['official_code_prefix'] = 'Préfixe du code officiel (de 3 à 5 lettres)';
 $_lang['ready_to_add'] = 'Prêts à être ajoutés';
 $_lang['select'] = 'Sélectionner';
 $_lang['send_mail'] = 'Envoyer l\'identifiant et le mot de passe par mail';

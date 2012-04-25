@@ -2,14 +2,12 @@
 
 class ICADDEXT_Importer
 {
-    const MODE_PROBE = 'probe';
-    const MODE_ADD = 'add';
-    
-    protected static $required_fields = array(
+    public static $required_fields = array(
           'prenom'
         , 'nom'
         , 'email' );
-    protected static $allowed_fields = array(
+    
+    public static $allowed_fields = array(
           'username'
         , 'password'
         , 'officialCode'
@@ -19,8 +17,10 @@ class ICADDEXT_Importer
         , 'date_naissance'
         , 'institution'
         , 'annee_etude'
-        , 'remarques' );
-    protected static $user_tbl_fields = array(
+        , 'remarques'
+        , 'authSource' );
+    
+    public static $user_tbl_fields = array(
           'nom'
         , 'prenom'
         , 'username'
@@ -35,7 +35,8 @@ class ICADDEXT_Importer
         , 'creatorId'
         , 'isPlatformAdmin'
         , 'isCourseCreator' );
-    protected static $user_added_tbl_fields = array(
+    
+    public static $user_added_tbl_fields = array(
           'actif'
         , 'mail_envoye'
         , 'user_id'
@@ -51,7 +52,8 @@ class ICADDEXT_Importer
         , 'officialCode'
         , 'date_ajout'
         , 'remarques' );
-    protected static $report_fields = array(
+    
+    public static $report_fields = array(
           'nom'
         , 'prenom'
         , 'officialCode'
@@ -59,24 +61,27 @@ class ICADDEXT_Importer
         , 'username'
         , 'password'
         , 'user_id' );
-    protected static $check_conflict_fields = array(
+    
+    public static $check_conflict_fields = array(
           'nom'
         , 'prenom'
         , 'email'
         , 'username' );
-    protected static $default_fields = array(
+    
+    public static $default_fields = array(
           'authSource' => 'external'
         , 'isPlatformAdmin' => 0
         , 'isCourseCreator' => 0
-        /*, 'officialCode' => 'EXT'*/ );
-    protected static $mail_infos = array(
+        , 'officialCodePrefix' => 'EXT' );
+    
+    public static $mail_infos = array(
           'prenom' => 'firstname'
         , 'nom' => 'lastname'
         , 'username' => 'username'
         , 'password' => 'password'
         , 'email' => 'email' );
     
-    protected $codeIncrement;
+    public $codeIncrement;
     
     public $output = array();
     
@@ -118,7 +123,7 @@ class ICADDEXT_Importer
             throw new Exception( 'Invalid data' );
         }
         
-        $this->_fillMissingValues( $toAdd , self::MODE_ADD );
+        $this->_fillMissingValues( $toAdd );
         
         foreach( $this->toAdd as $userData )
         {
@@ -167,23 +172,12 @@ class ICADDEXT_Importer
     }
     
     /**
-     *
-     */
-    public function getConflictFields()
-    {
-        return self::$check_conflict_fields;
-        /*return array_intersect( self::$check_conflict_fields
-                            ,   $this->csvParser->titles );*/
-    }
-    
-    /**
      * Check submitted data
      */
     public function probe()
     {
         if( $this->_checkRequiredFields() )
         {
-            $this->_checkRequiredFields();
             $this->_checkMissingValues();
             $this->_trackDuplicates();
             $this->_toAdd();
@@ -263,8 +257,6 @@ class ICADDEXT_Importer
                 )->numRows() )
             {
                 $this->conflictFields[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                //$this->conflict[ $index ][ 'prénom' ] = $line[ 'prenom' ];
-                //$this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
                 $this->conflictFields[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
@@ -296,12 +288,7 @@ class ICADDEXT_Importer
             if( ! empty( $this->conflictFields[ $index ] ) )
             {
                 $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                
-                if( true || $mode == self::MODE_PROBE )
-                {
-                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflictFields[ $index ] ) ) . ')';
-                }
-                
+                $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflictFields[ $index ] ) ) . ')';
                 $this->output[ 'conflict_found' ][] = $reportLine;
             }
         }
@@ -312,7 +299,7 @@ class ICADDEXT_Importer
     /**
      *
      */
-    private function _fillMissingValues( $dataList = null , $mode = self::MODE_PROBE )
+    private function _fillMissingValues( $dataList = null )
     {
         $filledData = array();
         
@@ -325,7 +312,13 @@ class ICADDEXT_Importer
         {
             $userData = self::flush( $userData );
             
-            $filledData[ $index ] = self::_addMissingFields( $userData , $mode );
+            $filledData[ $index ] = self::_addMissingFields( $userData );
+        }
+        
+        if( in_array( 'officialCodePrefix' , $this->csvParser->titles ) )
+        {
+            unset( $this->csvParser->titles[ array_search( 'officialCodePrefix'
+                                                          , $this->csvParser->titles ) ] );
         }
         
         $this->toAdd = $filledData;
@@ -338,24 +331,20 @@ class ICADDEXT_Importer
      * - generates username (if does not exist) in the following format: firstname.lastname
      * @param array $userData
      */
-    private function _addMissingFields( $userData , $mode = self::MODE_PROBE )
+    private function _addMissingFields( $userData )
     {
-        if( $mode == self::MODE_ADD )
-        {
-            $userData = array_merge( self::$default_fields , $userData );
-            $userData[ 'creatorId' ] = claro_get_current_user_id();
-            $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
-        }
+        $userData = array_merge( self::$default_fields , $userData );
+        $userData[ 'creatorId' ] = claro_get_current_user_id();
+        $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
         
         if( ! array_key_exists( 'officialCode' , $userData ) )
         {
-            $userData[ 'officialCode' ] = 'EXT';
+            $userData[ 'officialCode' ] = $userData[ 'officialCodePrefix' ]
+                                        . '-'
+                                        . date( 'Ymd' )
+                                        . '-'
+                                        . str_pad( ++$this->codeIncrement , 3 , '0', STR_PAD_LEFT );
         }
-        
-        $userData[ 'officialCode' ] .= '-'
-                                    . date( 'Ymd' )
-                                    . '-'
-                                    . str_pad( ++$this->codeIncrement , 3 , '0', STR_PAD_LEFT );
         
         if( ! array_key_exists( 'username' , $userData ) )
         {
@@ -366,6 +355,8 @@ class ICADDEXT_Importer
         {
             $userData[ 'password' ] = self::mk_password();
         }
+        
+        unset( $userData[ 'officialCodePrefix' ] );
         
         return $userData;
     }
