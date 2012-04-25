@@ -80,7 +80,8 @@ class ICADDEXT_Controller
             }
         }
         
-        $this->importer->check();
+        $this->importer->probe();
+        
         $this->status_ok = $this->importer->toAdd
                         || $this->importer->conflict
                         || $this->importer->incomplete;

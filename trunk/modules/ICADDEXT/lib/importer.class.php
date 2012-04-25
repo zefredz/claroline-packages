@@ -13,6 +13,7 @@ class ICADDEXT_Importer
           'username'
         , 'password'
         , 'officialCode'
+        , 'officialCodePrefix'
         , 'officialEmail'
         , 'phoneNumber'
         , 'date_naissance'
@@ -42,6 +43,8 @@ class ICADDEXT_Importer
         , 'prenom'
         , 'email'
         , 'date_de_naissance'
+        , 'username'
+        , 'password'
         , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
@@ -85,6 +88,8 @@ class ICADDEXT_Importer
     
     public $conflict = array();
     
+    public $conflictFields = array();
+    
     public $incomplete = array();
     
     /**
@@ -104,60 +109,45 @@ class ICADDEXT_Importer
     }
     
     /**
-     * Checks submitted data and prepares the list of users to add
-     */
-    public function check()
-    {
-        return $this->probe()
-            && $this->bake( self::MODE_PROBE );
-    }
-    
-    /**
      * Adds selected users
      */
     public function add( $toAdd , $send_mail = true )
     {
-        if ( is_array( $toAdd ) )
-        {
-            $this->csvParser->data = $toAdd;
-            $this->csvParser->titles = array_keys( current( $toAdd ) );
-        }
-        else
+        if ( ! is_array( $toAdd ) )
         {
             throw new Exception( 'Invalid data' );
         }
         
-        if( $this->bake( self::MODE_ADD ) )
+        $this->_fillMissingValues( $toAdd , self::MODE_ADD );
+        
+        foreach( $this->toAdd as $userData )
         {
-            foreach( $this->toAdd as $userData )
+            if( $this->_insert( $userData , 'user' ) )
             {
-                if( $this->_insert( $userData , 'user' ) )
+                $userData[ 'user_id' ] = $this->database->insertId();
+                $this->_insert( $userData , 'user_added' );
+                $this->added[] = $userData;
+                
+                if( $send_mail
+                &&  user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
                 {
-                    $userData[ 'user_id' ] = $this->database->insertId();
-                    $this->_insert( $userData , 'user_added' );
-                    $this->added[] = $userData;
-                    
-                    if( $send_mail
-                    &&  user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
-                    {
-                        $this->database->exec( "
-                            UPDATE
-                                `{$this->userAddedTbl}`
-                            SET
-                                actif = 1,
-                                mail_envoye = 1
-                            WHERE
-                                user_id = " . $userData[ 'user_id' ] );
-                    }
-                    else
-                    {
-                        $this->output[ 'mail_failed' ][] = $userData[ 'email' ];
-                    }
+                    $this->database->exec( "
+                        UPDATE
+                            `{$this->userAddedTbl}`
+                        SET
+                            actif = 1,
+                            mail_envoye = 1
+                        WHERE
+                            user_id = " . $userData[ 'user_id' ] );
                 }
                 else
                 {
-                    $this->output[ 'failed' ][] = $userData[ 'username' ];
+                    $this->output[ 'mail_failed' ][] = $userData[ 'email' ];
                 }
+            }
+            else
+            {
+                $this->output[ 'failed' ][] = $userData[ 'username' ];
             }
         }
         
@@ -169,9 +159,7 @@ class ICADDEXT_Importer
      */
     public function getReport()
     {
-        if( ! empty( $this->csvParser->data )
-        &&  ! empty( $this->csvParser->titles )
-        &&  ! empty( $this->added ) )
+        if( ! empty( $this->added ) )
         {
             return $this->csvParser->unparse( $this->added
                                             , array_keys( $this->added[ 0 ] ) );
@@ -193,18 +181,11 @@ class ICADDEXT_Importer
      */
     public function probe()
     {
-        return  $this->_checkRequiredFields()
-                && $this->_checkMissingValues()
-                && $this->_trackDuplicates();
-    }
-    
-    /**
-     * Prepares the data for users to add
-     */
-    public function bake( $mode = self::MODE_PROBE )
-    {
-        return $this->_toAdd()
-            && $this->_fillMissingValues( $mode );
+        $this->_checkRequiredFields();
+        $this->_checkMissingValues();
+        $this->_trackDuplicates();
+        $this->_toAdd();
+        $this->_fillMissingValues();
     }
     
     /**
@@ -212,17 +193,21 @@ class ICADDEXT_Importer
      */
     private function _toAdd()
     {
-        if( empty( $this->toAdd ) )
+        $this->toAdd = $this->csvParser->data;
+        
+        if( ! empty( $this->conflict ) )
         {
-            $this->toAdd = array_diff_key( $this->csvParser->data , $this->conflict );
+            $this->toAdd = array_diff_key( $this->toAdd , $this->conflict );
         }
         
-        return $this->toAdd;
+        if( ! empty( $this->incomplete ) )
+        {
+            $this->toAdd = array_diff_key( $this->toAdd , $this->incomplete );
+        }
     }
     
     /**
      * Checks for existence of required fields
-     * @return boolena true if OK
      */
     private function _checkRequiredFields()
     {
@@ -233,13 +218,10 @@ class ICADDEXT_Importer
                 $this->output[ 'missing_fields' ][] = $required_field;
             }
         }
-        
-        return empty( $this->output );
     }
     
     /**
      * Checks for lines with missing values
-     * @return boolean true if OK
      */
     private function _checkMissingValues()
     {
@@ -251,13 +233,9 @@ class ICADDEXT_Importer
                 {
                     $this->output[ 'missing_values' ][ $index ] = $required_field;
                     $this->incomplete[ $index ] = $userData;
-                    unset( $this->csvParser->data[ $index ] );
                 }
             }
         }
-        
-        //return empty( $this->output );
-        return true;
     }
     
     /**
@@ -279,13 +257,14 @@ class ICADDEXT_Importer
                     prenom = " . $this->database->quote( $line[ 'prenom' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $this->conflictFields[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
                 //$this->conflict[ $index ][ 'prénom' ] = $line[ 'prenom' ];
                 //$this->conflict[ $index ][ 'nom' ] = $line[ 'nom' ];
-                $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
+                $this->conflictFields[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
-            if( $this->database->query( "
+            if( array_key_exists( 'username' , $line )
+               && $this->database->query( "
                 SELECT
                     user_id
                 FROM
@@ -294,7 +273,7 @@ class ICADDEXT_Importer
                     username = " . $this->database->quote( $line[ 'username' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'username' ] = $line[ 'username' ];
+                $this->conflictFields[ $index ][ 'username' ] = $line[ 'username' ];
             }
             
             if( $this->database->query( "
@@ -306,39 +285,45 @@ class ICADDEXT_Importer
                     email = " . $this->database->quote( $line[ 'email' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'email' ] = $line[ 'email' ];
+                $this->conflictFields[ $index ][ 'email' ] = $line[ 'email' ];
             }
             
-            if( ! empty( $this->conflict[ $index ] ) )
+            if( ! empty( $this->conflictFields[ $index ] ) )
             {
                 $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
                 
                 if( true || $mode == self::MODE_PROBE )
                 {
-                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
+                    $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflictFields[ $index ] ) ) . ')';
                 }
                 
                 $this->output[ 'conflict_found' ][] = $reportLine;
             }
         }
         
-        return $this->conflict;
+        $this->conflict = array_intersect_key( $this->csvParser->data , $this->conflictFields );
     }
     
     /**
      *
      */
-    private function _fillMissingValues( $mode = self::MODE_PROBE )
+    private function _fillMissingValues( $dataList = null , $mode = self::MODE_PROBE )
     {
         $filledData = array();
         
-        foreach( $this->toAdd as $index => $userData )
+        if( empty( $dataList ) )
+        {
+            $dataList = $this->toAdd;
+        }
+        
+        foreach( $dataList as $index => $userData )
         {
             $userData = self::flush( $userData );
+            
             $filledData[ $index ] = self::_addMissingFields( $userData , $mode );
         }
         
-        return $this->toAdd = $filledData;
+        $this->toAdd = $filledData;
     }
     
     /*
@@ -347,7 +332,6 @@ class ICADDEXT_Importer
      * - generates official code with the following format: XXX-YYYYMMDD-NNN
      * - generates username (if does not exist) in the following format: firstname.lastname
      * @param array $userData
-     * @return array : modified array
      */
     private function _addMissingFields( $userData , $mode = self::MODE_PROBE )
     {
@@ -580,5 +564,18 @@ class ICADDEXT_Importer
         }
         
         return $array;
+    }
+    
+    /**
+     * Verifies if mail is valid
+     * Nasty! Must be improved!!!
+     */
+    static public function is_mail( $string )
+    {
+        $strArray = explode( ' ' , $string );
+        $nbOk = count( $strArray ) == 1;
+        $atOk = count( explode( '@' , $strArray[0] ) ) == 2;
+        
+        return $nbOk && $atOk;
     }
 }
