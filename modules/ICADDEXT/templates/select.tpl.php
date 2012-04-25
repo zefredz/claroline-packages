@@ -17,7 +17,7 @@
         <?php endforeach; ?>
     <?php endforeach; ?>
     
-    <?php if( $this->controller->importer->incomplete ) : ?>
+    <?php if( ! empty( $this->controller->importer->incomplete ) ) : ?>
     <br />
     <fieldset>
         <legend><?php echo get_lang( 'missing_values' ); ?> :</legend>
@@ -60,7 +60,7 @@
     <br />
     <?php endif; ?>
     
-    <?php if( $this->controller->importer->conflict ) : ?>
+    <?php if( ! empty( $this->controller->importer->conflict ) ) : ?>
     <br />
     <fieldset>
         <legend><?php echo get_lang( 'force_conflict' ); ?> :</legend>
@@ -74,7 +74,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach( $this->controller->importer->conflict as $index => $userData ) : ?>
+                <?php foreach( $this->controller->importer->conflictFields as $index => $userData ) : ?>
                 <tr>
                     <td align="center">
                         <input type="checkbox"
@@ -87,12 +87,12 @@
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $field == 'username'
                                                         ? ICADDEXT_Importer::username(
-                                                                    $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
-                                                                  , $this->controller->importer->csvParser->data[ $index ][ 'nom' ] )
+                                                                    $this->controller->importer->conflict[ $index ][ 'prenom' ]
+                                                                  , $this->controller->importer->conflict[ $index ][ 'nom' ] )
                                                         : $userData[ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
-                        <strong><?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?></strong>
+                        <strong><?php echo $this->controller->importer->conflict[ $index ][ $field ]; ?></strong>
                         <?php endif; ?>
                     </td>
                     <?php endforeach; ?>
@@ -104,7 +104,7 @@
     <br />
     <?php endif; ?>
     
-    <?php if( $this->controller->importer->toAdd ) : ?>
+    <?php if( ! empty( $this->controller->importer->toAdd ) ) : ?>
     <fieldset>
         <legend><?php echo get_lang( 'ready_to_add' ); ?> :</legend>
         <table class="claroTable emphaseLine" style="width: 100%;">
