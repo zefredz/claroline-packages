@@ -53,14 +53,13 @@ class ICADDEXT_Importer
         , 'date_ajout'
         , 'remarques' );
     
-    public static $report_fields = array(
+    public static $display_fields = array(
           'nom'
         , 'prenom'
-        , 'officialCode'
         , 'email'
+        , 'officialCode'
         , 'username'
-        , 'password'
-        , 'user_id' );
+        , 'password' );
     
     public static $check_conflict_fields = array(
           'nom'
