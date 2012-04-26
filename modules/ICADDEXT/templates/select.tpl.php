@@ -111,7 +111,7 @@
             <thead>
                 <tr class="headerX">
                     <th align="center"><!--<?php echo get_lang( 'Select' ); ?>--><input id="selectAll" type="checkbox" checked="checked" /></th>
-                <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <th align="center"><?php echo get_lang( $field ); ?></th>
                 <?php endforeach; ?>
                 </tr>
@@ -125,7 +125,7 @@
                                name="selected[<?php echo $index; ?>]"
                                checked="checked" />
                     </td>
-                    <?php foreach( $this->controller->importer->csvParser->titles as $field ) : ?>
+                    <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <td>
                         <?php echo $userData[ $field ]; ?>
                     </td>
