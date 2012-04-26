@@ -4,6 +4,7 @@ $_lang['add_from_csv'] = 'Ajouter une liste d\'utilisateur à partir d\'un fichie
 $_lang['add_single_user'] = 'Ajouter un utilisateur';
 $_lang['added_message'] = 'Les utilisateurs suivant ont été ajoutés :';
 $_lang['auth_source'] = 'Source d\'authentification';
+$_lang['auto_generated'] = 'généré automatiquement';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
 $_lang['fail_message'] = 'Erreur';

@@ -128,6 +128,9 @@
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <td>
                         <?php echo $userData[ $field ]; ?>
+                        <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
+                        <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
+                        <?php endif; ?>
                     </td>
                     <?php endforeach; ?>
                 </tr>
