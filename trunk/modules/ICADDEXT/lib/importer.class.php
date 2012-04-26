@@ -96,6 +96,8 @@ class ICADDEXT_Importer
     
     public $incomplete = array();
     
+    public $autoGen = array();
+    
     /**
      * Constructor
      * @param ParseCsv object $csvParser
@@ -182,6 +184,15 @@ class ICADDEXT_Importer
             $this->_toAdd();
             $this->_fillMissingValues();
         }
+    }
+    
+    /**
+     *
+     */
+    public function isAutoGen( $field , $user )
+    {
+        return array_key_exists( $field , $this->autoGen )
+            && in_array( $user , $this->autoGen[ $field ] );
     }
     
     /**
@@ -300,27 +311,18 @@ class ICADDEXT_Importer
      */
     private function _fillMissingValues( $dataList = null )
     {
-        $filledData = array();
-        
         if( empty( $dataList ) )
         {
             $dataList = $this->toAdd;
         }
         
-        foreach( $dataList as $index => $userData )
-        {
-            $userData = self::flush( $userData );
-            
-            $filledData[ $index ] = self::_addMissingFields( $userData );
-        }
+        $this->toAdd = self::_addMissingFields( $dataList );
         
         if( in_array( 'officialCodePrefix' , $this->csvParser->titles ) )
         {
             unset( $this->csvParser->titles[ array_search( 'officialCodePrefix'
                                                           , $this->csvParser->titles ) ] );
         }
-        
-        $this->toAdd = $filledData;
     }
     
     /*
@@ -330,34 +332,49 @@ class ICADDEXT_Importer
      * - generates username (if does not exist) in the following format: firstname.lastname
      * @param array $userData
      */
-    private function _addMissingFields( $userData )
+    private function _addMissingFields( $dataList )
     {
-        $userData = array_merge( self::$default_fields , $userData );
-        $userData[ 'creatorId' ] = claro_get_current_user_id();
-        $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
+        $filledData = array();
         
-        if( ! array_key_exists( 'officialCode' , $userData ) )
+        foreach( $dataList as $index => $userData )
         {
-            $userData[ 'officialCode' ] = $userData[ 'officialCodePrefix' ]
-                                        . '-'
-                                        . date( 'Ymd' )
-                                        . '-'
-                                        . str_pad( ++$this->codeIncrement , 3 , '0', STR_PAD_LEFT );
+            $userData = self::flush( $userData );
+            
+            $userData = array_merge( self::$default_fields , $userData );
+            $userData[ 'creatorId' ] = claro_get_current_user_id();
+            $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
+            
+            if( ! array_key_exists( 'officialCode' , $userData ) )
+            {
+                $userData[ 'officialCode' ] = $userData[ 'officialCodePrefix' ]
+                                            . '-'
+                                            . date( 'Ymd' )
+                                            . '-'
+                                            . str_pad( ++$this->codeIncrement , 3 , '0', STR_PAD_LEFT );
+                
+                $this->autoGen['officialCode'][] = $index;
+            }
+            
+            if( ! array_key_exists( 'username' , $userData ) )
+            {
+                $userData[ 'username' ] = self::username( $userData[ 'prenom' ] , $userData[ 'nom' ] );
+                
+                $this->autoGen['username'][] = $index;
+            }
+            
+            if( ! array_key_exists( 'password' , $userData ) )
+            {
+                $userData[ 'password' ] = self::mk_password();
+                
+                $this->autoGen['password'][] = $index;
+            }
+            
+            unset( $userData[ 'officialCodePrefix' ] );
+            
+            $filledData[ $index ] = $userData;
         }
         
-        if( ! array_key_exists( 'username' , $userData ) )
-        {
-            $userData[ 'username' ] = self::username( $userData[ 'prenom' ] , $userData[ 'nom' ] );
-        }
-        
-        if( ! array_key_exists( 'password' , $userData ) )
-        {
-            $userData[ 'password' ] = self::mk_password();
-        }
-        
-        unset( $userData[ 'officialCodePrefix' ] );
-        
-        return $userData;
+        return $filledData;
     }
     
     /**
