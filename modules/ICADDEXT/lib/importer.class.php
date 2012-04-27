@@ -61,12 +61,6 @@ class ICADDEXT_Importer
         , 'username'
         , 'password' );
     
-    public static $check_conflict_fields = array(
-          'nom'
-        , 'prenom'
-        , 'email'
-        , 'username' );
-    
     public static $default_fields = array(
           'authSource' => 'external'
         , 'isPlatformAdmin' => 0
@@ -80,11 +74,11 @@ class ICADDEXT_Importer
         , 'password' => 'password'
         , 'email' => 'email' );
     
+    public $csvParser;
+    
     public $codeIncrement;
     
     public $output = array();
-    
-    public $csvParser;
     
     public $toAdd = array();
     
@@ -92,9 +86,9 @@ class ICADDEXT_Importer
     
     public $conflict = array();
     
-    public $conflictFields = array();
-    
     public $incomplete = array();
+    
+    public $invalid = array();
     
     public $autoGen = array();
     
@@ -126,7 +120,7 @@ class ICADDEXT_Importer
         
         $this->_fillMissingValues( $toAdd );
         
-        foreach( $this->toAdd as $userData )
+        foreach( $this->csvParser->data as $userData )
         {
             if( $this->_insert( $userData , 'user' ) )
             {
@@ -180,9 +174,10 @@ class ICADDEXT_Importer
         if( $this->_checkRequiredFields() )
         {
             $this->_checkMissingValues();
+            $this->_checkInvalidMails();
             $this->_trackDuplicates();
-            $this->_toAdd();
             $this->_fillMissingValues();
+            $this->_toAdd();
         }
     }
     
@@ -210,6 +205,11 @@ class ICADDEXT_Importer
         if( ! empty( $this->incomplete ) )
         {
             $this->toAdd = array_diff_key( $this->toAdd , $this->incomplete );
+        }
+        
+        if( ! empty( $this->invalid ) )
+        {
+            $this->toAdd = array_diff_key( $this->toAdd , $this->invalid );
         }
     }
     
@@ -241,8 +241,22 @@ class ICADDEXT_Importer
                 if( ! array_key_exists( $required_field , $userData ) || empty( $userData[ $required_field ] ) )
                 {
                     $this->output[ 'missing_values' ][ $index ] = $required_field;
-                    $this->incomplete[ $index ] = $userData;
+                    $this->incomplete[ $index ] = true;
                 }
+            }
+        }
+    }
+    
+    /**
+     * Checks for invalid values
+     */
+    private function _checkInvalidMails()
+    {
+        foreach( $this->csvParser->data as $index => $userData )
+        {
+            if( ! self::is_mail( $userData[ 'email' ] ) )
+            {
+                $this->invalid[ $index ] = true;
             }
         }
     }
@@ -266,8 +280,8 @@ class ICADDEXT_Importer
                     prenom = " . $this->database->quote( $line[ 'prenom' ] )
                 )->numRows() )
             {
-                $this->conflictFields[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                $this->conflictFields[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
+                $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
             if( array_key_exists( 'username' , $line )
@@ -280,7 +294,7 @@ class ICADDEXT_Importer
                     username = " . $this->database->quote( $line[ 'username' ] )
                 )->numRows() )
             {
-                $this->conflictFields[ $index ][ 'username' ] = $line[ 'username' ];
+                $this->conflict[ $index ][ 'username' ] = $line[ 'username' ];
             }
             
             if( $this->database->query( "
@@ -292,18 +306,16 @@ class ICADDEXT_Importer
                     email = " . $this->database->quote( $line[ 'email' ] )
                 )->numRows() )
             {
-                $this->conflictFields[ $index ][ 'email' ] = $line[ 'email' ];
+                $this->conflict[ $index ][ 'email' ] = $line[ 'email' ];
             }
             
-            if( ! empty( $this->conflictFields[ $index ] ) )
+            if( ! empty( $this->conflict[ $index ] ) )
             {
                 $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflictFields[ $index ] ) ) . ')';
+                $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
                 $this->output[ 'conflict_found' ][] = $reportLine;
             }
         }
-        
-        $this->conflict = array_intersect_key( $this->csvParser->data , $this->conflictFields );
     }
     
     /**
@@ -313,10 +325,10 @@ class ICADDEXT_Importer
     {
         if( empty( $dataList ) )
         {
-            $dataList = $this->toAdd;
+            $dataList = $this->csvParser->data;
         }
         
-        $this->toAdd = self::_addMissingFields( $dataList );
+        $this->csvParser->data = self::_addMissingFields( $dataList );
         
         if( in_array( 'officialCodePrefix' , $this->csvParser->titles ) )
         {
@@ -580,14 +592,32 @@ class ICADDEXT_Importer
     
     /**
      * Verifies if mail is valid
-     * Nasty! Must be improved!!!
      */
     static public function is_mail( $string )
     {
-        $strArray = explode( ' ' , $string );
-        $nbOk = count( $strArray ) == 1;
-        $atOk = count( explode( '@' , $strArray[0] ) ) == 2;
+        /* Nasty, but works! ;-)
         
-        return $nbOk && $atOk;
+        $strPart = explode( ' ' , $string );
+        $nbOk = count( $strPart ) == 1;
+        $mlPart = explode( '@' , $strPart[0] );
+        $atOk = count( $mlPart ) == 2;
+        $unOk = ! empty( $mlPart[0] );
+        $dnPart = explode( '.' , $mlPart[1] );
+        $dnOk = ! empty( $mlPart[1] )
+            && count( $dnPart ) == 2
+            && ! empty( $dnPart[0] )
+            && ! empty( $dnPart[1] );
+        
+        return $nbOk && $atOk && $unOk && $dnOk;
+        */
+        
+        if( function_exists( 'filter_var' ) ) // PHP >= 5.2
+        {
+            return filter_var( $string , FILTER_VALIDATE_EMAIL );
+        }
+        else // PHP < 5.2
+        {
+            return preg_match( '#^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$#' , $string ); 
+        }
     }
 }
