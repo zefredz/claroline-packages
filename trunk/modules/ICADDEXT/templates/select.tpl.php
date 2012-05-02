@@ -44,6 +44,11 @@
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo get_lang( 'missing_value' ); ?>"
                                style="color: #f00; width: 300px;" />
+                        <?php elseif( $field == 'email' && ! ICADDEXT_Importer::is_mail( $this->controller->importer->csvParser->data[$index][ $field ] ) ) : ?>
+                        <input type="text"
+                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>"
+                               style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <input type="hidden"
                                name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
