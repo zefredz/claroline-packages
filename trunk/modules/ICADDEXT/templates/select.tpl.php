@@ -147,6 +147,9 @@
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                            <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
+                        <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <?php endforeach; ?>
