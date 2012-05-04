@@ -4,6 +4,7 @@ $tlabelReq = 'LVSURVEY';
 
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+FromKernel::uses('language.lib');
 From::module('LVSURVEY')->uses('controller/surveyPage.class');
 
 
