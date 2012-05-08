@@ -36,7 +36,8 @@ CssLoader::getInstance()->load( 'icaddext' , 'screen' );
 try
 {
     $actionList = array( 'rqAdd'
-                       , 'rqSelect'
+                       , 'rqFix'
+                       , 'exFix'
                        , 'exAdd' );
     $userInput = Claro_UserInput::getInstance();
     $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
@@ -44,8 +45,8 @@ try
     
     $csvParser = new ParseCsv();
     $importer = new ICADDEXT_Importer( $csvParser );
-    $controller = new ICADDEXT_Controller( $importer , $userInput );
-    $view = new ICADDEXT_View( $cmd , $controller );
+    $controller = new ICADDEXT_Controller( $importer , $userInput , $cmd );
+    $view = new ICADDEXT_View( $controller );
     
     foreach( $controller->message as $msg )
     {

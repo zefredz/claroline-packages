@@ -109,6 +109,16 @@ class ICADDEXT_Importer
     }
     
     /**
+     * verifies if all is ok
+     */
+    public function is_ok()
+    {
+        return empty( $this->incomplete )
+            && empty( $this->invalid )
+            && empty( $this->conflict );
+    }
+    
+    /**
      * Adds selected users
      */
     public function add( $toAdd , $send_mail = true )
@@ -169,8 +179,14 @@ class ICADDEXT_Importer
     /**
      * Check submitted data
      */
-    public function probe()
+    public function probe( $data = null )
     {
+        if( ! empty( $data ) )
+        {
+            $this->csvParser->data = $data;
+            $this->csvParser->titles = array_keys( $data[0] );
+        }
+        
         if( $this->_checkRequiredFields() )
         {
             $this->_checkMissingValues();

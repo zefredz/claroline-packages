@@ -2,7 +2,7 @@
     <label>ICADDEXT</label>
     <name>Add external users</name>
     <description><![CDATA[ A tool specifically written for iCampus (http://icampus.uclouvain.be) which allows platform administrator to create externals accounts]]></description>
-    <version>1.1</version>
+    <version>1.2</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>admin</type>
