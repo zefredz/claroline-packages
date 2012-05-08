@@ -3,19 +3,23 @@
 class ICADDEXT_Controller
 {
     public $importer;
-    protected $status_ok = true;
     
+    public $mode;
+    public $cmd;
     public $message = array();
+    
+    protected $status_ok = true;
     
     /**
      * Contructor
      * @param Importer object $importer
      * @param UserInput object $userInput
      */
-    public function __construct( $importer , $userInput )
+    public function __construct( $importer , $userInput , $cmd )
     {
         $this->importer = $importer;
         $this->userInput = $userInput;
+        $this->cmd = $cmd;
     }
     
     /**
@@ -30,11 +34,11 @@ class ICADDEXT_Controller
     /**
      * Executes command
      */
-    public function execute( $cmd )
+    public function execute()
     {
-        if( method_exists( $this , '_' . $cmd ) )
+        if( method_exists( $this , '_' . $this->cmd ) )
         {
-            $this->{'_' . $cmd}();
+            $this->{'_' . $this->cmd}();
             $this->_output();
         }
         else
@@ -44,12 +48,18 @@ class ICADDEXT_Controller
         }
     }
     
+    /**
+     * default command... does nothing
+     */
     private function _rqAdd()
     {
         return;
     }
     
-    private function _rqSelect()
+    /**
+     * CSV file or form submission
+     */
+    private function _rqFix()
     {
         if ( $_FILES && $_FILES[ 'CsvFile' ][ 'size' ] != 0 )
         {
@@ -93,6 +103,35 @@ class ICADDEXT_Controller
                         || $this->importer->incomplete;
     }
     
+    /**
+     * Correcting parsed datas
+     */
+    private function _exFix()
+    {
+        $userData = $this->userInput->get( 'userData' );
+        $selected = $this->userInput->get( 'selected' );
+        $toFix = $this->userInput->get( 'toFix' );
+        $send_mail = $this->userInput->get( 'send_mail' );
+        
+        $userData = array_intersect_key( (array)$userData , (array)$selected );
+        $toFix = array_intersect_key( (array)$toFix , (array)$selected );
+        
+        $toAdd = array_merge( $userData , $toFix );
+        
+        if( ! empty( $toAdd ) )
+        {
+            $this->importer->probe( $toAdd );
+            $this->status_ok = true;
+        }
+        else
+        {
+            $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
+        }
+    }
+    
+    /**
+     * Adding users
+     */
     private function _exAdd()
     {
         $userData = $this->userInput->get( 'userData' );
@@ -100,20 +139,13 @@ class ICADDEXT_Controller
         $toForce = $this->userInput->get( 'toForce' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
-        if( ! empty( $toForce ) )
-        {
-            foreach( $toForce as $index => $data )
-            {
-                foreach( $data as $field => $value )
-                {
-                    $userData[ $index ][ $field ] = $value;
-                }
-            }
-        }
+        $userData = array_intersect_key( (array)$userData , (array)$selected );
+        $toForce = array_intersect_key( (array)$toForce , (array)$selected );
         
-        if( ! empty( $selected ) )
+        $toAdd = array_merge( $userData , $toForce );
+        
+        if( ! empty( $toAdd ) )
         {
-            $toAdd = array_intersect_key( $userData , $selected );
             $this->status_ok = $this->importer->add( $toAdd , $send_mail );
         }
         else

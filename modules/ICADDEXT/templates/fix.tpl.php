@@ -6,9 +6,10 @@
         });
     });
 </script>
+<?php $cmd = $this->controller->importer->is_ok() ? 'exAdd' : 'exFix'; ?>
 <form method="post"
       enctype="multipart/form-data"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exAdd' ) ); ?>" >
+      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
     <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
@@ -24,7 +25,7 @@
         <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
-                    <th><?php echo get_lang( 'force' ); ?></th>
+                    <th><?php echo get_lang( 'fix' ); ?></th>
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
                     <?php endforeach; ?>
@@ -41,17 +42,17 @@
                     <td>
                         <?php if( empty( $this->controller->importer->csvParser->data[$index][ $field ] ) ) : ?>
                         <input type="text"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo get_lang( 'missing_value' ); ?>"
                                style="color: #f00; width: 300px;" />
                         <?php elseif( $field == 'email' && ! ICADDEXT_Importer::is_mail( $this->controller->importer->csvParser->data[$index][ $field ] ) ) : ?>
                         <input type="text"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <input type="hidden"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>" />
                         <?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>
                             <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
@@ -75,7 +76,7 @@
         <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
-                    <th><?php echo get_lang( 'force' ); ?></th>
+                    <th><?php echo get_lang( 'fix' ); ?></th>
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
                     <?php endforeach; ?>
@@ -92,12 +93,12 @@
                     <td>
                         <?php if( $field == 'email' ) : ?>
                         <input type="text"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <input type="hidden"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>" />
                         <?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>
                             <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
@@ -117,11 +118,11 @@
     <?php if( ! empty( $this->controller->importer->conflict ) ) : ?>
     <br />
     <fieldset>
-        <legend><?php echo get_lang( 'force_conflict' ); ?> :</legend>
+        <legend><?php echo get_lang( 'conflict_found' ); ?> :</legend>
         <table class="claroTable emphaseLine" style="width: 100%;">
             <thead>
                 <tr class="headerX">
-                    <th><?php echo get_lang( 'force' ); ?></th>
+                    <th><?php echo get_lang( 'fix' ); ?></th>
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
                     <?php endforeach; ?>
@@ -138,7 +139,7 @@
                     <td>
                         <?php if( array_key_exists( $field , $userData ) ) : ?>
                         <input type="text"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
                                value="<?php echo $field == 'username'
                                                         ? ICADDEXT_Importer::username(
                                                                     $this->controller->importer->csvParser->data[ $index ][ 'prenom' ]
@@ -147,6 +148,9 @@
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
                         <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        <input type="hidden"
+                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               value="<?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>" />
                             <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
                         <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
                             <?php endif; ?>
@@ -201,7 +205,9 @@
         <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
         <?php echo get_lang( 'autogen' ); ?>
     </p>
+    <?php if( $this->controller->importer->is_ok() ) : ?>
     <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
+    <?php endif; ?>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
        href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
