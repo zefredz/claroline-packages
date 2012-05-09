@@ -46,6 +46,9 @@
                         <?php else : ?>
                         <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
                         <?php endif; ?>
+                        <input type="hidden"
+                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
+                               value="<?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>" />
                     </td>
                     <?php endforeach; ?>
                 </tr>
@@ -91,8 +94,10 @@
     <br />
     <?php endif; ?>
     
+    <?php if ( ! empty( $this->controller->importer->conflict ) || ! empty( $this->controller->importer->toAdd ) ) : ?>
     <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
+    <?php endif; ?>
     <a style="text-decoration: none;"
        href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
