@@ -17,6 +17,74 @@
         <?php endforeach; ?>
     <?php endforeach; ?>
     
+    <?php if( ! empty( $this->controller->importer->incomplete ) ) : ?>
+    <br />
+    <fieldset>
+        <legend><?php echo get_lang( 'missing_values' ); ?> :</legend>
+        <table class="claroTable emphaseLine" style="width: 100%;">
+            <thead>
+                <tr class="headerX">
+                    <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
+                    <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach( $this->controller->importer->incomplete as $index => $userData ) : ?>
+                <tr>
+                    <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
+                    <td>
+                        <?php if( array_key_exists( $field , $userData ) ) : ?>
+                        <span style="color: #f00; width: 300px;">
+                            <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        </span>
+                        <?php else : ?>
+                        <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        <?php endif; ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </fieldset>
+    <br />
+    <?php endif; ?>
+    
+    <?php if( ! empty( $this->controller->importer->invalid ) ) : ?>
+    <br />
+    <fieldset>
+        <legend><?php echo get_lang( 'invalid_mail' ); ?> :</legend>
+        <table class="claroTable emphaseLine" style="width: 100%;">
+            <thead>
+                <tr class="headerX">
+                    <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
+                    <th align="center"><?php echo ucwords( get_lang( $field ) ); ?></th>
+                    <?php endforeach; ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach( array_keys( $this->controller->importer->invalid ) as $index ) : ?>
+                <tr>
+                    <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
+                    <td>
+                        <?php if( $field == 'email' ) : ?>
+                        <span style="color: #f00; width: 300px;">
+                            <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        </span>
+                        <?php else : ?>
+                        <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
+                        <?php endif; ?>
+                    </td>
+                    <?php endforeach; ?>
+                </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </fieldset>
+    <br />
+    <?php endif; ?>
+    
     <?php if( ! empty( $this->controller->importer->conflict ) ) : ?>
     <br />
     <fieldset>
