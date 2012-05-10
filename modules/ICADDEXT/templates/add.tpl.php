@@ -151,7 +151,6 @@
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <td>
                         <?php echo $userData[ $field ]; ?>
-                        <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
                     </td>
                     <?php endforeach; ?>
                 </tr>

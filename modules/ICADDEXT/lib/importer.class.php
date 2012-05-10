@@ -44,8 +44,6 @@ class ICADDEXT_Importer
         , 'prenom'
         , 'email'
         , 'date_de_naissance'
-        , 'username'
-        , 'password'
         , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
