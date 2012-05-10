@@ -136,21 +136,23 @@ class ICADDEXT_Importer
                 $this->_insert( $userData , 'user_added' );
                 $this->added[] = $userData;
                 
-                if( $send_mail
-                &&  user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
+                if( $send_mail )
                 {
-                    $this->database->exec( "
-                        UPDATE
-                            `{$this->userAddedTbl}`
-                        SET
-                            actif = 1,
-                            mail_envoye = 1
-                        WHERE
-                            user_id = " . $userData[ 'user_id' ] );
-                }
-                else
-                {
-                    $this->output[ 'mail_failed' ][] = $userData[ 'email' ];
+                    if( user_send_registration_mail( $userData[ 'user_id' ] , self::_mailInfos( $userData ) ) )
+                    {
+                        $this->database->exec( "
+                            UPDATE
+                                `{$this->userAddedTbl}`
+                            SET
+                                actif = 1,
+                                mail_envoye = 1
+                            WHERE
+                                user_id = " . $userData[ 'user_id' ] );
+                    }
+                    else
+                    {
+                        $this->output[ 'mail_failed' ][] = $userData[ 'email' ];
+                    }
                 }
             }
             else

@@ -156,6 +156,7 @@ class ICADDEXT_Controller
         if( $this->importer->getReport() )
         {
             $this->message[] = array( 'type' => 'success' , 'text' => 'success_message' );
+            $this->message[] = array( 'type' => 'info' , 'text' => $send_mail ? 'mail_sent' : 'mail_not_sent' );
         }
         else
         {
