@@ -382,6 +382,12 @@ class ICADDEXT_Importer
                 
                 $this->autoGen['officialCode'][] = $index;
             }
+            elseif( $userData[ 'officialCodePrefix' ] != 'EXT' )
+            {
+                $userData[ 'officialCode' ] = $userData[ 'officialCodePrefix' ]
+                                            . '-'
+                                            . $userData[ 'officialCode' ];
+            }
             
             if( ! array_key_exists( 'username' , $userData ) )
             {
