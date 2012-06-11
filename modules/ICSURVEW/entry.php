@@ -55,7 +55,7 @@ try
             elseif( $cmd == 'later' && $postpone_allowed )
             {
                 $_SESSION[ 'ICSURVEW_LATER' ] = true;
-                claro_redirect( get_path( 'url' ) );
+                claro_redirect( get_path( 'rootWeb' ) );
             }
             
             if ( $submission )
