@@ -45,19 +45,18 @@ class MultiSearch extends Search
         {
             $resultSet = $this->database->query( "
                 SELECT
-                    R.id             AS id,
+                    M.resource_id    AS id,
                     T.metadata_value AS title,
                     M.metadata_name  AS name,
                     M.metadata_value AS value
                 FROM
-                    `{$this->tbl['library_resource']}` AS R,
                     `{$this->tbl['library_metadata']}` AS M
                 INNER JOIN
                     `{$this->tbl['library_metadata']}` AS T
                 ON
                     M.resource_id = T.resource_id
                 WHERE
-                    T.resource_id = R.id
+                    T.resource_id = M.resource_id
                 AND
                     T.metadata_name = 'title'
                 AND
