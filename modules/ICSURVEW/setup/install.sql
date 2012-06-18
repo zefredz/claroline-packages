@@ -26,9 +26,3 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICSURVEW_answer`(
     choice_id INT(11) NOT NULL,
     PRIMARY KEY(user_id,course_id,question_id)
 ) ENGINE=MyISAM;
-
-CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICSURVEW_stage`(
-    user_id INT(11) NOT NULL,
-    stage INT(1),
-    PRIMARY KEY(user_id)
-) ENGINE=MyISAM;
