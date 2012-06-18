@@ -181,6 +181,8 @@ class ICSURVEW_Report
             }
         }
         
+        $xml .= '        </userStat>' . "\n";
+        $xml .= '        <courseStat>' . "\n";
         foreach( $this->courseStat as $question )
         {
             foreach( $question as $choiceId => $count )
@@ -192,7 +194,7 @@ class ICSURVEW_Report
             }
         }
         
-        $xml .= '        </userStat>' . "\n";
+        $xml .= '        </courseStat>' . "\n";
         $xml .= '    </report>' . "\n";
         $xml .= '</SurveyReport>';
         
