@@ -92,7 +92,7 @@
 <?php $index = 0; ?>
 
 <?php foreach( $this->metadataList as $name => $value ): ?>
-    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION ) : ?>
+    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::COLLECTION && $name != Metadata::TYPE ) : ?>
         <dt id="label<?php echo $index; ?>">
             <label><?php echo get_lang( ucwords( $name ) ); ?> :</label>
             <input id="metadata<?php echo $index; ?>"

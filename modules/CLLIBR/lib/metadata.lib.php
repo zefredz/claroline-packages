@@ -25,6 +25,7 @@ class Metadata
     const COLLECTION = 'collection';
     const TITLE = 'title';
     const DESCRIPTION = 'description';
+    const TYPE = 'type';
     
     protected $resourceId;
     protected $metadataList = array();
@@ -209,6 +210,16 @@ class Metadata
     }
     
     /**
+     * Helper to set type
+     * @param string type
+     * @return boolean true on success
+     */
+    public function setType( $type )
+    {
+        return $this->set( self::TYPE , $type );
+    }
+    
+    /**
      * Get the values for a specified metadata
      * @param string $name
      * @return array $values
@@ -219,6 +230,24 @@ class Metadata
         {
             return $this->metadataList[ $name ];;
         }
+    }
+    
+    /**
+     * Helpers
+     */
+    public function getType()
+    {
+        return $this->get( self::TYPE );
+    }
+    
+    public function getTitle()
+    {
+        return $this->get( self::TITLE );
+    }
+    
+    public function getDescription()
+    {
+        return $this->get( self::DESCRIPTION );
     }
     
     /**
