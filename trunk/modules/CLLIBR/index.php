@@ -509,6 +509,7 @@ try
                 $execution_ok = ! $errorMsg
                                && $resourceSet->add( $resource->save() )
                                && $metadata->setResourceId( $resource->getId() )
+                               && $metadata->setType( $type )
                                && $metadata->setTitle( $title )
                                && $metadata->setDescription( $description );
                 break;
@@ -589,6 +590,11 @@ try
                 if ( $description )
                 {
                     $metadata->setDescription( $description );
+                }
+                
+                if( $type )
+                {
+                    $metadata->setType( $type );
                 }
                 
                 if ( is_array( $names ) )
@@ -1204,7 +1210,7 @@ try
                 $template->assign( 'propertyList' , $metadata->getAllProperties() );
                 $template->assign( 'tagCloud' , $tagCloud->render() );
                 $template->assign( 'typeList' , $resourceTypeList->getResourceTypeList() );
-                $template->assign( 'resourceType' , $resource->getType() );
+                $template->assign( 'resourceType' , $metadata->getType() );
                 $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )
                                                          ? $resourceTypeList->get( $type )->getDefaultMetadataList()
                                                          : array() );

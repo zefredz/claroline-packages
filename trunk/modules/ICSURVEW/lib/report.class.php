@@ -183,6 +183,7 @@ class ICSURVEW_Report
         
         $xml .= '        </userStat>' . "\n";
         $xml .= '        <courseStat>' . "\n";
+        
         foreach( $this->courseStat as $question )
         {
             foreach( $question as $choiceId => $count )

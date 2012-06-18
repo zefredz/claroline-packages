@@ -49,7 +49,7 @@
             <?php echo isset( $this->metadataList[ 'description' ] ) ? $this->metadataList[ 'description' ] : ''; ?>
         </dd>
 <?php foreach( $this->metadataList as $name => $value ): ?>
-    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD ) : ?>
+    <?php if ( $name != Metadata::TITLE && $name != Metadata::DESCRIPTION && $name != Metadata::KEYWORD && $name != Metadata::TYPE ) : ?>
         <dt>
             <?php echo get_lang( ucwords( $name ) ); ?> :
         </dt>
