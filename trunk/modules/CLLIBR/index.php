@@ -1096,10 +1096,13 @@ try
                 
                 if ( $edit_allowed )
                 {
-                    $cmdList[] = array( 'img'  => 'book',
-                                        'name' => get_lang( 'Add to the course\'s bibliography' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                                  .'/index.php?cmd=exAdd&resourceId=' . $resourceId ) ) );
+                    if( $courseId )
+                    {
+                        $cmdList[] = array( 'img'  => 'book',
+                                            'name' => get_lang( 'Add to the course\'s bibliography' ),
+                                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                      .'/index.php?cmd=exAdd&resourceId=' . $resourceId ) ) );
+                    }
                     $cmdList[] = array( 'img'  => 'edit',
                                         'name' => get_lang( 'Edit resource\'s metadatas' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
