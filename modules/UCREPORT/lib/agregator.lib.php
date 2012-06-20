@@ -198,22 +198,12 @@ class Agregator
         
         foreach( $this->itemList as $item )
         {
-            if ( $item[ 'selected' ] )
-            {
-                $weightSum += $item[ 'weight' ];
-            }
+            $weightSum += $item[ 'weight' ];
         }
         
         foreach( array_keys( $this->itemList  ) as $itemId )
         {
-            if ( $this->itemList[ $itemId ][ 'selected' ] )
-            {
-                $proportionalWeight = round( $this->itemList[ $itemId ][ 'weight' ] / $weightSum , 2 );
-            }
-            else
-            {
-                $proportionalWeight = 0;
-            }
+            $proportionalWeight = round( $this->itemList[ $itemId ][ 'weight' ] / $weightSum , 2 );
             $this->itemList[ $itemId ][ 'proportional_weight' ] = $proportionalWeight;
         }
     }
