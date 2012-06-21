@@ -58,7 +58,7 @@ class MultiSearch extends Search
                 WHERE
                     T.resource_id = M.resource_id
                 AND
-                    T.metadata_name = 'title'
+                    T.metadata_name = " . $this->database->quote( Metadata::TITLE ) . "
                 AND
                     M.metadata_name = " . $this->database->quote( $item[ 'name' ] ) . "
                 AND

@@ -39,6 +39,8 @@ class FulltextSearch extends Search
             WHERE
                 T.resource_id = M.resource_id
             AND
+                T.metadata_name = " . $this->database->quote( Metadata::TITLE ) . "
+            AND
                 MATCH (M.metadata_name,M.metadata_value) AGAINST ("
                 . $this->database->quote( $searchString ) . ")"
         );
