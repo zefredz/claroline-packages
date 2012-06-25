@@ -20,10 +20,15 @@ if ( Claro_KernelHook_Lock::getLock() )
             $survey = new ICSURVEW_Survey( $surveyId );
             $answer = new ICSURVEW_Answer( $userId , $survey->get() );
             
-            if ( ! ( $answer->hasAnswered()
+            /*if ( ! ( $answer->hasAnswered()
                 && ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] )
-                    || $_SESSION[ 'ICSURVEW_STAGE' ] == 4 ) )
-                && ! isset( $_SESSION[ 'ICSURVEW_LATER' ] ) )
+                    || $_SESSION[ 'ICSURVEW_STAGE' ] == 3 ) )
+                && ! isset( $_SESSION[ 'ICSURVEW_LATER' ] ) )*/
+            
+            if( ! $answer->hasAnswered()
+               && ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] )
+                    || $_SESSION[ 'ICSURVEW_STAGE' ] == 3 )
+               && ! isset( $_SESSION[ 'ICSURVEW_LATER' ] ) )
             {
                 $uriParts = explode( '?' , $_SERVER['REQUEST_URI'] );
                 
