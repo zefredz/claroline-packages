@@ -93,7 +93,7 @@
                type="submit"
                name=""
                value="<?php echo get_lang( '_send_and_quit' ); ?>" />
-            <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
+        <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=later' ) ) , get_lang( '_escape' ) ); ?>
     <?php else : ?>
         <input id="ICSURVEW_submit"
                type="submit"
