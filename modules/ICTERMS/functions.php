@@ -14,15 +14,13 @@
  * @package     icterms
  */
 
-if ( Claro_KernelHook_Lock::lockAvailable() )
+if ( Claro_KernelHook_Lock::getLock( 'ICTERMS' ) )
 {
     require_once dirname(__FILE__).'/lib/icterms.lib.php';
     
     language::load_module_translation('ICTERMS');
     load_module_config('ICTERMS');
     
-    if( Claro_KernelHook_Lock::getLock( 'ICTERMS' ) )
-    {
         if ( claro_is_user_authenticated() /* only when user is logged in */
             && icterms_user_must_accept_terms( claro_get_current_user_id() ) /* do not ask terms acceptance on every user login */
             && !icterms_terms_acceptance_in_progress() /* do not loop infinitely here */
@@ -31,16 +29,20 @@ if ( Claro_KernelHook_Lock::lockAvailable() )
         {
             $_SESSION['icterms_acceptance_in_progress'] = true;
             
-            claro_redirect(
-                get_module_url('ICTERMS')
-                .'/index.php?cmd=rqAcceptTerms'
-            ); // redirect to form
+            $uriParts = explode( '?' , $_SERVER['REQUEST_URI'] );
             
-            die();
+            if( $uriParts[0] != get_module_url('ICTERMS').'/index.php' )
+            {
+                claro_redirect(
+                    get_module_url('ICTERMS')
+                    .'/index.php?cmd=rqAcceptTerms'
+                ); // redirect to form
+                
+                die();
+            }
         }
         else
         {
             Claro_KernelHook_Lock::releaseLock( 'ICTERMS' );
         }
-    }
 }

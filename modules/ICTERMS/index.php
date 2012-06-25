@@ -15,7 +15,7 @@
 
 try
 {
-    $tlabelReq = 'ICTERMS';
+    //$tlabelReq = 'ICTERMS';
     
     $cidReset = true;
     $cidReq = false;
