@@ -27,7 +27,7 @@ if ( Claro_KernelHook_Lock::getLock() )
             
             if( ! $answer->hasAnswered()
                && ( ! isset( $_SESSION[ 'ICSURVEW_STAGE' ] )
-                    || $_SESSION[ 'ICSURVEW_STAGE' ] == 3 )
+                    || $_SESSION[ 'ICSURVEW_STAGE' ] != 3 )
                && ! isset( $_SESSION[ 'ICSURVEW_LATER' ] ) )
             {
                 $uriParts = explode( '?' , $_SERVER['REQUEST_URI'] );
