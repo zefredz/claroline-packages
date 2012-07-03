@@ -1,0 +1,22 @@
+<module>
+    <label>CLMEETNG</label>
+    <name>Online Meetings</name>
+    <description><![CDATA[ A module for OpenMeetings integration into Claroline ]]></description>
+    <version>0.2.0</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>tool</type>
+    <context>course</context>
+    <context>group</context>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.11</version>
+        </claroline>
+    </requirements>
+</module>
