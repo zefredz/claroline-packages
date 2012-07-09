@@ -39,6 +39,6 @@ $_lang['success_message'] = 'L\'opération s\'est déroulée avec succès';
 $_lang['study_year'] = 'Année d\'étude';
 $_lang['toFix'] = 'Corriger';
 $_lang['toForce'] = 'Forcer';
-$_lang['upload_file'] = 'Soumettre un fichier';
+$_lang['upload_file'] = 'Soumettre un fichier (en ISO8859-1)';
 $_lang['undefined_error'] = 'Une erreur est survenue!';
 $_lang['username'] = 'Identifiant';
