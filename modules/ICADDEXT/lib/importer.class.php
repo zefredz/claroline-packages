@@ -300,7 +300,7 @@ class ICADDEXT_Importer
                     prenom = " . $this->database->quote( $line[ 'prenom' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $this->conflict[ $index ][ 'nom et prenom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
             }
             
             if( $this->database->query( "
