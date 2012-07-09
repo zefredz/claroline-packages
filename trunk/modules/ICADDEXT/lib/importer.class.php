@@ -285,6 +285,10 @@ class ICADDEXT_Importer
     {
         foreach( $this->csvParser->data as $index => $line )
         {
+            $userName = array_key_exists( 'username' , $line )
+                    ? $line[ 'username' ]
+                    : self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
+            
             if( $this->database->query( "
                 SELECT
                     user_id
@@ -297,20 +301,18 @@ class ICADDEXT_Importer
                 )->numRows() )
             {
                 $this->conflict[ $index ][ 'nom et prénom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
-                $this->conflict[ $index ][ 'username' ] = self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
             }
             
-            if( array_key_exists( 'username' , $line )
-               && $this->database->query( "
+            if( $this->database->query( "
                 SELECT
                     user_id
                 FROM
                     `{$this->userTbl}`
                 WHERE
-                    username = " . $this->database->quote( $line[ 'username' ] )
+                    username = " . $this->database->quote( $userName )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'username' ] = $line[ 'username' ];
+                $this->conflict[ $index ][ 'username' ] = $userName;
             }
             
             if( $this->database->query( "
