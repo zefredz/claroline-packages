@@ -14,11 +14,23 @@ class Record
     protected $session;
     protected $selectedSlotList = array();
     
-    public function __construct( $session )
+    public function __construct( $session , $userId = null , $groupId = null )
     {
-        $this->session = $session;
+        if ( ! $userId && ! $groupId )
+        {
+            throw new Exception( 'User id and goup id cannot be null together' );
+        }
         
-        $this->tbl = get_module_course_tbl( array( 'ICSUBSCR_record' ) );
+        if( (int)$userId && (int)$groupId )
+        {
+            throw new Exception( 'User id and goup id cannot be defined together' );
+        }
+        
+        $this->session = $session;
+        $this->userId = $userId;
+        $this->groupId = $groupId;
+        
+        $this->tbl = get_module_course_tbl( array( 'icsubscr_record' ) );
     }
     
     public function choose( $slotId )
@@ -31,18 +43,39 @@ class Record
         }
     }
     
+    public function unchoose( $slotId )
+    {
+        unset( $this->selectedSlotList[ $slotId ] );
+    }
+    
+    public function wipe()
+    {
+        if( Claroline::getDatabase()->exec( "
+            DELETE FROM
+                `{$this->tbl['icsubscr_record']}`
+            WHERE
+                sessionId = " . Claroline::getDatabase()->escape( $this->session->getId() ) . "
+            AND
+                userId = " . Claroline::getDatabase()->escape( $this->userId ) . "
+            AND
+                groupId = " . Claroline::getDatabase()->escape( $this->groupId ) ) )
+        {
+            return $this->selectedSlotList = array();
+        }
+    }
+    
     public function save()
     {
         $sql1 = "INSERT INTO
-                `{$this->tbl['ICSUBSCR_record']}` (userId, groupId, sessionId, slotId, rank))
+                `{$this->tbl['icsubscr_record']}` (userId, groupId, sessionId, slotId, rank))
             VALUES";
         
         foreach( $this->selectedSlotList as $rank => $slotId )
         {
             
             $sqlArray[] = "\n("
-                . Claroline::getDatabase()->escape( claro_get_current_user_id() ) . ", "
-                . Claroline::getDatabase()->escape( claro_get_current_group_id() ) . ", "
+                . Claroline::getDatabase()->escape( $this->userId ) . ", "
+                . Claroline::getDatabase()->escape( $this->groupId ) . ", "
                 . Claroline::getDatabase()->escape( $this->session->getId() ) .", "
                 . Claroline::getDatabase()->escape( $slotId ) . ", "
                 . Claroline::getDatabase()->escape( $rank )
