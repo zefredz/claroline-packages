@@ -17,6 +17,8 @@ class SessionList
     const PARAM_STATUS = 'status';
     const PARAM_RANK = 'rank';
     const PARAM_VISIBILITY = 'visibility';
+    const ENUM_CONTEXT_USER = 'user';
+    const ENUM_CONTEXT_GROUP = 'group';
     const ENUM_STATUS_OPEN = 'open';
     const ENUM_STATUS_CLOSED = 'closed';
     const ENUM_VISIBILITY_VISIBLE = 'visible';
@@ -33,7 +35,7 @@ class SessionList
     {
         $this->context = $context;
         
-        $this->tbl = get_module_course_tbl( array( 'ICSUBSCR_session' ) );
+        $this->tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
         $this->load();
     }
     
@@ -50,7 +52,7 @@ class SessionList
                 rank,
                 visibility
             FROM
-                `{$this->tbl['ICSUBSCR_session']}`
+                `{$this->tbl['icsubscr_session']}`
             WHERE
                 context = " . Claroline::getDatabase()->quote( $this->context ) . "
             ORDER BY rank"
@@ -176,6 +178,11 @@ class SessionList
     
     public function save( $sessionId )
     {
+        if( ! array_key_exists( $sessionId , $this->sessionList ) )
+        {
+            throw new Exception( 'Invalid session id' );
+        }
+        
         $sessionData = array();
         
         foreach( $this->sessionList[ $sessionId ] as $data => $value )
@@ -187,7 +194,7 @@ class SessionList
         
         return Claroline::getDatabase()->exec( "
             UPDATE
-                `{$this->tbl['ICSUBSCR_session']}`
+                `{$this->tbl['icsubscr_session']}`
             SET
                 " . $sessionData . "
             WHERE
@@ -197,7 +204,7 @@ class SessionList
     public function create( $title , $description = null , $type = null , $startDate = null , $endDate = null )
     {
         $sql = "INSERT INTO
-            `{$this->tbl['ICSUBSCR_session']}`
+            `{$this->tbl['icsubscr_session']}`
         SET
             title = " . Claroline::getDatabase()->quote( $title ) . "
             context = " . Claroline::getDatabase()->quote( $this->context ) . "
@@ -226,5 +233,19 @@ class SessionList
         Claroline::getDatabase()->exec( $sql );
         
         return Claroline::getDatabase()->insertId();
+    }
+    
+    public function delete( $sessionId )
+    {
+        return Claroline::getDatabase()->exec( "
+            DELETE FROM
+                `{$this->tbl['icsubscr_session']}`
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $sessionId ) );
+    }
+    
+    public function getSession( $sessionId )
+    {
+        return new Session( $sessionId );
     }
 }

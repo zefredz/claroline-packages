@@ -20,14 +20,84 @@ FromKernel::uses(
     'utils/validator.lib',
     'display/layout.lib' );
 
-From::Module( 'CLMEETNG' )->uses(
-    'subscription.lib' );
+From::Module( 'ICSUBSCR' )->uses(
+    'pluginloader.lib',
+    'plugincontroller.lib',
+    'record.lib',
+    'session.lib',
+    'sessionlist.lib' );
 
 $dialogBox = new DialogBox();
 
 try
 {
+    $courseData = claro_get_current_course_data();
+    $lang = $courseData[ 'language' ];
     
+    $userId = claro_get_current_user_id();
+    $courseId = claro_get_current_course_id();
+    $groupId = claro_get_current_group_id();
+    $is_courseAllowed = claro_is_course_allowed();
+    $is_groupAllowed = claro_is_group_allowed();
+    $is_allowed_to_edit = claro_is_allowed_to_edit();
+    
+    $pluginRepository = get_module_path( 'ICSUBSCR' ) . '/plugins/';
+    $pluginList = new PluginLoader( $pluginRepository , $lang );
+    
+    $sessionList = new SessionList( $groupId ? 'group' : 'user' );
+    
+    $actionList = array( 'rqShowSessionList' );
+    
+    if( $is_allowed_to_edit )
+    {
+        $restrictedActionList = array( 'excreateSession' );
+        
+        $actionList = array_merge( $actionList , $restrictedActionList );
+    }
+    
+    $userInput = Claro_UserInput::getInstance();
+    $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
+    
+    $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
+    $sessionId = $userInput->get( 'sessionId' );
+    
+    switch( $cmd )
+    {
+        case 'rqShowSessionList':
+            break;
+        
+        case 'rqViewSession':
+        {
+            $sessionType = $sessionList->get( $sessionId , 'type' );
+            $session = $pluginLoader->get( $sessionType );
+            break;
+        }
+        
+        case 'exCreateSession':
+        {
+            $startTime = $userInput->get( 'startTime' );
+            $endTime = $userInput->get( 'endTime' );
+            $sliceNb = $userInput->get( 'sliceNb' , '1' );
+            
+            if( ! empty( $startTime ) && ! empty( $endTime ) && (int)$sliceNb != 0 )
+            {
+                if( $startStamp = strtotime( $startTime ) !== false
+                   && $endStamp = strtotime( $endTime ) !== false )
+                {
+                    $slotList = array();
+                    $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
+                    
+                    for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
+                    {
+                        $slot = new Slot();
+                        $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
+                        $slotList[] = $slot;
+                    }
+                }
+            }
+            break;
+        }
+    }
 }
 catch( Exception $e )
 {
