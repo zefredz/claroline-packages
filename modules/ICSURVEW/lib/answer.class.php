@@ -185,8 +185,7 @@ class ICSURVEW_Answer
      */
     public function save( $courseId , $questionId , $choiceId )
     {
-        if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] )
-            && $this->answerList[ $courseId ][ $questionId ] != $choiceId )
+        if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
         {
             return Claroline::getDatabase()->exec( "
                 UPDATE
