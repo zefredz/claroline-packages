@@ -2,14 +2,14 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.1 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class SessionList
+class SessionList extends Lister
 {
     const PARAM_CONTEXT = 'context';
     const PARAM_START_DATE = 'startDate';
@@ -24,88 +24,62 @@ class SessionList
     const ENUM_VISIBILITY_VISIBLE = 'visible';
     const ENUM_VISIBILITY_INVISIBLE = 'invisible';
     
-    protected $context;
-    protected $sessionList;
-    
     /**
      * Constructor
      * @param string $context : the actual context
      */
     public function __construct( $context = self::ENUM_CONTEXT_USER )
     {
-        $this->context = $context;
+        $tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
         
-        $this->tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
-        $this->load();
+        parent::__construct( $tbl[ 'icsubscr_session' ] , array( 'context' => $context ) );
     }
     
-    public function load()
-    {
-        $sessionList = Claroline::getDatabase()->query( "
-            SELECT
-                id,
-                title,
-                description,
-                type,
-                startDate,
-                status,
-                rank,
-                visibility
-            FROM
-                `{$this->tbl['icsubscr_session']}`
-            WHERE
-                context = " . Claroline::getDatabase()->quote( $this->context ) . "
-            ORDER BY rank"
-        );
-        
-        $this->sessionList = array();
-        
-        foreach( $sessionList as $sessionData )
-        {
-            $sessionId = $sessionData[ 'id' ];
-            $this->sessionList[ $sessionId ] = $sessionData;
-        }
-    }
-    
-    public function getSessionList( $force = false )
-    {
-        if( $force )
-        {
-            $this->load();
-        }
-        
-        return $this->sessionList;
-    }
-    
-    public function get( $sessionId , $param )
-    {
-        if( array_key_exists( $sessionId , $this->sessionList )
-           && isset( $this->sessionList[ $sessionId ][ $param ] ) )
-        {
-            return $this->sessionList[ $sessionId ][ $param ];
-        }
-    }
-    
+    /**
+     * Helper for getting start date
+     * @param int $sessionId : the session id
+     * @return string : start date
+     */
     public function getStartDate( $sessionId )
     {
         return $this->get( $sessionId , self::PARAM_START_DATE );
     }
     
+    /**
+     * Helper for getting end date
+     * @param int $sessionId : the session id
+     * @return string : end date
+     */
     public function getEndDate( $sessionId )
     {
         return $this->get( $sessionId , self::PARAM_END_DATE );
     }
     
+    /**
+     * Helper for verifying if session is open
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function isOpen( $sessionId )
     {
         return $this->get( $sessionId , self::PARAM_STATUS ) == self::ENUM_STATUS_OPEN;
     }
     
+    /**
+     * Helper for verifying if session is visible
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function isVisible( $sessionId )
     {
         return $this->get( $sessionId , self::PARAM_VISIBILITY ) == self::ENUM_VISIBILITY_VISIBLE;
     }
     
+    /**
+     * Helper for verifying if session is available
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function isAvailable( $sessionId )
     {
         $now = new date( 'Y-m-d H:i:s' );
@@ -116,14 +90,11 @@ class SessionList
             && ( ! $this->getEndDate() || $this->getEndDate( $sessionId ) > $now );
     }
     
-    public function set( $sessionId , $param , $value )
-    {
-        if( array_key_exists( $sessionId , $this->sessionList ) )
-        {
-            return $this->sessionList[ $sessionId ][ $param ] = $value;
-        }
-    }
-    
+    /**
+     * Helper for setting session visible
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setVisible( $sessionId )
     {
         return $this->set( $sessionId
@@ -131,6 +102,11 @@ class SessionList
                         , self::ENUM_VISIBILITY_VISIBLE );
     }
     
+    /**
+     * Helper for setting session invisible
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setInvisible( $sessionId )
     {
         return $this->set( $sessionId
@@ -138,6 +114,11 @@ class SessionList
                         , self::ENUM_VISIBILITY_INVISIBLE );
     }
     
+    /**
+     * Helper for setting session open
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setOpen( $sessionId )
     {
         return $this->set( $sessionId
@@ -145,6 +126,11 @@ class SessionList
                         , self::ENUM_STATUS_OPEN );
     }
     
+    /**
+     * Helper for setting session closed
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setClosed( $sessionId )
     {
         return $this->set( $sessionId
@@ -152,6 +138,11 @@ class SessionList
                         , self::ENUM_STATUS_CLOSED );
     }
     
+    /**
+     * Helper for setting start date of a session
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setStartDate( $sessionId , $date )
     {
         return $this->set( $sessionId
@@ -159,6 +150,11 @@ class SessionList
                         , $date );
     }
     
+    /**
+     * Helper for setting end date of a session
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function setEndDate( $sessionId , $date )
     {
         return $this->set( $sessionId
@@ -166,6 +162,11 @@ class SessionList
                         , $date );
     }
     
+    /**
+     * Helper for unsetting dates of a session
+     * @param int $sessionId : the session id
+     * @return boolean
+     */
     public function unsetDate( $sessionId )
     {
         return $this->set( $sessionId
@@ -174,78 +175,5 @@ class SessionList
             &&  $this->set( $sessionId
                             , self::PARAM_END_DATE
                             , null );
-    }
-    
-    public function save( $sessionId )
-    {
-        if( ! array_key_exists( $sessionId , $this->sessionList ) )
-        {
-            throw new Exception( 'Invalid session id' );
-        }
-        
-        $sessionData = array();
-        
-        foreach( $this->sessionList[ $sessionId ] as $data => $value )
-        {
-            $sessionData[] = $data . " = " . claroline::getDatabase()->quote( $value );
-        }
-        
-        $sqlString = implode( "AND\n" , $sessionData );
-        
-        return Claroline::getDatabase()->exec( "
-            UPDATE
-                `{$this->tbl['icsubscr_session']}`
-            SET
-                " . $sessionData . "
-            WHERE
-                sessionId = " . Claroline::getDatabase()->escape( $sessionId ) );
-    }
-    
-    public function create( $title , $description = null , $type = null , $startDate = null , $endDate = null )
-    {
-        $sql = "INSERT INTO
-            `{$this->tbl['icsubscr_session']}`
-        SET
-            title = " . Claroline::getDatabase()->quote( $title ) . "
-            context = " . Claroline::getDatabase()->quote( $this->context ) . "
-            rank = " . Claroline::getDatabase()->escape( count( $this->sessionRank ) + 1 );
-        
-        if( $description )
-        {
-            $sql .= ",\ndescription = " . Claroline::getDatabase()->quote( $description );
-        }
-        
-        if( $type )
-        {
-            $sql .= ",\ntype = " . Claroline::getDatabase()->quote( $type );
-        }
-        
-        if( $startDate)
-        {
-            $sql .= ",\nstartDate = " . Claroline::getDatabase()->quote( $startDate );
-        }
-        
-        if( $description )
-        {
-            $sql .= ",\nenddate = " . Claroline::getDatabase()->quote( $description );
-        }
-        
-        Claroline::getDatabase()->exec( $sql );
-        
-        return Claroline::getDatabase()->insertId();
-    }
-    
-    public function delete( $sessionId )
-    {
-        return Claroline::getDatabase()->exec( "
-            DELETE FROM
-                `{$this->tbl['icsubscr_session']}`
-            WHERE
-                id = " . Claroline::getDatabase()->escape( $sessionId ) );
-    }
-    
-    public function getSession( $sessionId )
-    {
-        return new Session( $sessionId );
     }
 }

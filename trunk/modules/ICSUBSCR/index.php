@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.1 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -21,6 +21,7 @@ FromKernel::uses(
     'display/layout.lib' );
 
 From::Module( 'ICSUBSCR' )->uses(
+    'lister.lib',
     'pluginloader.lib',
     'plugincontroller.lib',
     'record.lib',
@@ -61,43 +62,76 @@ try
     $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
     $sessionId = $userInput->get( 'sessionId' );
     
-    switch( $cmd )
+    if( array_key_exists( $cmd , $actionList ) )
     {
-        case 'rqShowSessionList':
-            break;
-        
-        case 'rqViewSession':
+        switch( $cmd )
         {
-            $sessionType = $sessionList->get( $sessionId , 'type' );
-            $session = $pluginLoader->get( $sessionType );
-            break;
-        }
-        
-        case 'exCreateSession':
-        {
-            $startTime = $userInput->get( 'startTime' );
-            $endTime = $userInput->get( 'endTime' );
-            $sliceNb = $userInput->get( 'sliceNb' , '1' );
+            // CONTROLLER
+            case 'rqShowSessionList':
+                break;
             
-            if( ! empty( $startTime ) && ! empty( $endTime ) && (int)$sliceNb != 0 )
+            case 'rqViewSession':
             {
-                if( $startStamp = strtotime( $startTime ) !== false
-                   && $endStamp = strtotime( $endTime ) !== false )
+                $sessionType = $sessionList->get( $sessionId , 'type' );
+                $session = $pluginLoader->get( $sessionType );
+                break;
+            }
+            
+            case 'exCreateSession':
+            {
+                $startTime = $userInput->get( 'startTime' );
+                $endTime = $userInput->get( 'endTime' );
+                $sliceNb = $userInput->get( 'sliceNb' , '1' );
+                
+                if( ! empty( $startTime ) && ! empty( $endTime ) && (int)$sliceNb != 0 )
                 {
-                    $slotList = array();
-                    $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
-                    
-                    for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
+                    if( $startStamp = strtotime( $startTime ) !== false
+                       && $endStamp = strtotime( $endTime ) !== false )
                     {
-                        $slot = new Slot();
-                        $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
-                        $slotList[] = $slot;
+                        $slotList = array();
+                        $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
+                        
+                        for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
+                        {
+                            $slot = new Slot();
+                            $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
+                            $slotList[] = $slot;
+                        }
                     }
                 }
+                break;
             }
-            break;
+            
+            default:
+            {
+                $session->execute( $cmd );
+            }
+        }
+        
+        //VIEW
+        CssLoader::getInstance()->load( 'main' , 'screen' );
+        
+        switch( $cmd )
+        {
+            case 'rqShowSessionList':
+            {
+                $template = new ModuleTemplate( 'ICSUBSCR' , 'sessionlist.tpl.php' );
+                $template->assign( 'sessionList' , $sessionList->getItemList() );
+                break;
+            }
+            
+            default:
+            {
+                $output = $session->output();
+            }
         }
     }
+    else
+    {
+        throw new Exception( 'bad command' );
+    }
+    
+    Claroline::getInstance()->display->body->appendContent( $template->render() );
 }
 catch( Exception $e )
 {
