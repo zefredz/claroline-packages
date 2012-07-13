@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class GenericSession extends PLuginController
+class GenericSession extends PluginController
 {
     
 }

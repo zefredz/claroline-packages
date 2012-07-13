@@ -11,6 +11,12 @@
 
 abstract class PluginController
 {
+    private static $templateList = array( 'subscribe' , 'edit' , 'result' );
+    
+    protected $output = array();
+    protected $selectedView = -1;
+    
+    
     public function __construct( $session )
     {
         $this->session = $session;
@@ -23,23 +29,65 @@ abstract class PluginController
     {
         if( method_exists( $this , '_' . $cmd ) )
         {
-            $this->{'_' . $cmd}();
-            $this->_output();
+            $this->output( $this->{'_' . $cmd}() );
         }
         else
         {
-            $this->message[] = array( 'type' => 'error'
-                                    , 'text' => 'invalid_command' );
+            $this->output[] = array(
+                'type' => 'error',
+                'text' => 'invalid_command' );
         }
+    }
+    
+    public function getMessage()
+    {
+        return $this->output;
+    }
+    
+    public function getView()
+    {
+        if( array_key_exists( $this->selectedView , self::$templateList ) )
+        {
+            $view = new PhpTemplate( get_module_path( 'ICSUBSCR' )
+                . '/plugins/icsubscr.' . $label
+                . '.plugin/templates/'. self::$templateList[ $this->selectedView ] );
+            $view->assign( 'model' , $this->session );
+            $view->assign( 'controller' , $this->output );
+        }
+        
+        return $view;
     }
     
     /**
      * Output
      */
-    private function _output()
+    public function output()
     {
-        $view = new PhpTemplate( get_module_path($moduleLabel)
-                                . '/plugins/icsubscr.' . $label
-                                . '.plugin/templates/'. $template );
+        $output = '';
+        
+        if( ! empty( $this->output ) )
+        {
+            $dialogBox = new DialogBox();
+            
+            foreach( $this->output as $type => $msg )
+            {
+                $dialogBox->{$type}( $msg );
+            }
+            
+            $output = $dialogBox->render();
+        }
+        
+        if( array_key_exists( $this->selectedView , self::$templateList ) )
+        {
+            $view = new PhpTemplate( get_module_path( 'ICSUBSCR' )
+                . '/plugins/icsubscr.' . $label
+                . '.plugin/templates/'. self::$templateList[ $this->selectedView ] );
+            $view->assign( 'model' , $this->session );
+            $view->assign( 'controller' , $this->output );
+            
+            $output .= $view->render();
+        }
+        
+        return $output;
     }
 }
