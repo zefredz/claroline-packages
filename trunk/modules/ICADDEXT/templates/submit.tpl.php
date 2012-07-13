@@ -94,6 +94,14 @@
                        value="" />
             </dd>
             <dt>
+                <label for="resourceType"><?php echo get_lang( 'birthdate' ); ?> :</label>
+            </dt>
+            <dd>
+                <input type="text"
+                       name="userData[0][date_naissance]"
+                       value="" />
+            </dd>
+            <dt>
                 <label for="resourceType"><?php echo get_lang( 'comment' ); ?> :</label>
             </dt>
             <dd>
