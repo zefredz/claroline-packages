@@ -6,6 +6,7 @@ $_lang['added_message'] = 'Les utilisateurs suivant ont été ajoutés :';
 $_lang['auth_source'] = 'Source d\'authentification';
 $_lang['auto_generated'] = 'généré automatiquement';
 $_lang['autogen'] = 'indique les valeurs générées automatiquement par le système';
+$_lang['birthdate'] = 'Date de naissance';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
 $_lang['fail_message'] = 'Erreur';
