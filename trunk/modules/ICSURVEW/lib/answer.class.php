@@ -185,7 +185,19 @@ class ICSURVEW_Answer
      */
     public function save( $courseId , $questionId , $choiceId )
     {
-        if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
+        //if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
+        if( Claroline::getDatabase()->query( "
+            SELECT * FROM
+                `{$this->tbl['ICSURVEW_answer']}`
+            WHERE
+                choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
+            AND
+                user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
+            AND
+                course_id = " . Claroline::getDatabase()->quote( $courseId ) . "
+            AND
+                question_id = " . Claroline::getDatabase()->escape( $questionId )
+            )->numRows() )
         {
             return Claroline::getDatabase()->exec( "
                 UPDATE
