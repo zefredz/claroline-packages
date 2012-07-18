@@ -185,7 +185,6 @@ class ICSURVEW_Answer
      */
     public function save( $courseId , $questionId , $choiceId )
     {
-        //if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
         if( Claroline::getDatabase()->query( "
             SELECT * FROM
                 `{$this->tbl['ICSURVEW_answer']}`
@@ -198,6 +197,12 @@ class ICSURVEW_Answer
             AND
                 question_id = " . Claroline::getDatabase()->escape( $questionId )
             )->numRows() )
+        {
+            Console::warning( "value already exists : userId={$this->userId} courseId={$courseId} questionId={$questionId} choiceId={$choiceId}" );
+            return;
+        }
+        
+        if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
         {
             return Claroline::getDatabase()->exec( "
                 UPDATE
