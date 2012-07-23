@@ -50,7 +50,7 @@ class ICSURVEW_Answer
      */
     public function hasAnswered()
     {
-        return $this->answeredNb == $this->getAnswerCount();
+        return $this->answeredNb >= $this->getAnswerCount();
     }
     
     /**
@@ -185,23 +185,6 @@ class ICSURVEW_Answer
      */
     public function save( $courseId , $questionId , $choiceId )
     {
-        if( Claroline::getDatabase()->query( "
-            SELECT * FROM
-                `{$this->tbl['ICSURVEW_answer']}`
-            WHERE
-                choice_id = " . Claroline::getDatabase()->escape( $choiceId ) . "
-            AND
-                user_id = " . Claroline::getDatabase()->escape( $this->userId ) . "
-            AND
-                course_id = " . Claroline::getDatabase()->quote( $courseId ) . "
-            AND
-                question_id = " . Claroline::getDatabase()->escape( $questionId )
-            )->numRows() )
-        {
-            Console::warning( "value already exists : userId={$this->userId} courseId={$courseId} questionId={$questionId} choiceId={$choiceId}" );
-            return;
-        }
-        
         if ( isset( $this->answerList[ $courseId ][ $questionId ] ) )
         {
             return Claroline::getDatabase()->exec( "
