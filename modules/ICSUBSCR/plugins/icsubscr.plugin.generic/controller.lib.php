@@ -11,5 +11,27 @@
 
 class GenericSession extends PluginController
 {
-    
+    private function exCreateSlot( $data )
+    {
+        $startTime = $data['startTime'];
+        $endTime = $data['endTime'];
+        $sliceNb = (int)$data['sliceNb'];
+        
+        if( ! empty( $data['startTime'] ) && ! empty( $data['endTime'] ) && $sliceNb > 0 )
+        {
+            if( $startStamp = strtotime( $startTime ) !== false
+               && $endStamp = strtotime( $endTime ) !== false )
+            {
+                $slotList = array();
+                $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
+                
+                for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
+                {
+                    $slot = new Slot();
+                    $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
+                    $slotList[] = $slot;
+                }
+            }
+        }
+    }
 }

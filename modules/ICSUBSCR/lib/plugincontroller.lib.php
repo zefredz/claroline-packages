@@ -25,11 +25,11 @@ abstract class PluginController
     /**
      * Executes command
      */
-    public function execute( $cmd )
+    public function execute( $cmd , $data = null )
     {
-        if( method_exists( $this , '_' . $cmd ) )
+        if( method_exists( $this , $cmd ) )
         {
-            $this->output( $this->{'_' . $cmd}() );
+            $this->output( $this->{$cmd}( $data ) );
         }
         else
         {
@@ -89,5 +89,22 @@ abstract class PluginController
         }
         
         return $output;
+    }
+    
+    private function rqShowSession()
+    {
+        $this->selectedView = 0;
+    }
+    
+    private function exSubcribe( $slotList , $userId = null , $groupId = null )
+    {
+        $record = new Record( $this->session , $userId , $groupId );
+        
+        if( ! $record->subscribe( $slotList ) )
+        {
+            $this->output[] = array( 'error' => 'Cannot save subscription' );
+        }
+        
+        $this->selectedView = 0;
     }
 }

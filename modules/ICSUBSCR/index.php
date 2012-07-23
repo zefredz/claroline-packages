@@ -51,23 +51,34 @@ try
     
     if( $is_allowed_to_edit )
     {
-        $restrictedActionList = array( 'excreateSession' );
+        $restrictedActionList = array(
+            'rqCreateSession',
+            'exCreateSession',
+            'rqEditSession',
+            'exEditsession',
+            'rqDeleteSession',
+            'exDeleteSession',
+            'exHide',
+            'exShow',
+            'exLock',
+            'exUnlock' );
         
         $actionList = array_merge( $actionList , $restrictedActionList );
     }
     
     $userInput = Claro_UserInput::getInstance();
-    $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
     
     $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
     $sessionId = $userInput->get( 'sessionId' );
+    $msg = array();
     
-    if( array_key_exists( $cmd , $actionList ) )
+    if( in_array( $cmd , $actionList ) )
     {
         switch( $cmd )
         {
             // CONTROLLER
             case 'rqShowSessionList':
+            case 'rqCreateSession' :
                 break;
             
             case 'rqViewSession':
@@ -79,25 +90,15 @@ try
             
             case 'exCreateSession':
             {
-                $startTime = $userInput->get( 'startTime' );
-                $endTime = $userInput->get( 'endTime' );
-                $sliceNb = $userInput->get( 'sliceNb' , '1' );
+                $data = $userInput->data;
                 
-                if( ! empty( $startTime ) && ! empty( $endTime ) && (int)$sliceNb != 0 )
+                if( $sessionList->add( $data) )
                 {
-                    if( $startStamp = strtotime( $startTime ) !== false
-                       && $endStamp = strtotime( $endTime ) !== false )
-                    {
-                        $slotList = array();
-                        $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
-                        
-                        for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
-                        {
-                            $slot = new Slot();
-                            $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
-                            $slotList[] = $slot;
-                        }
-                    }
+                    $msg['success'] = 'Session successfully created';
+                }
+                else
+                {
+                    $msg['error'] = 'Session cannot be created';
                 }
                 break;
             }
@@ -109,29 +110,64 @@ try
         }
         
         //VIEW
+        $pageTitle = array( 'mainTitle' => get_lang( 'Subscriptions' ) );
+        $cmdList = array();
+        
         CssLoader::getInstance()->load( 'main' , 'screen' );
+        
         
         switch( $cmd )
         {
             case 'rqShowSessionList':
+            case 'exCreateSession':
             {
                 $template = new ModuleTemplate( 'ICSUBSCR' , 'sessionlist.tpl.php' );
                 $template->assign( 'sessionList' , $sessionList->getItemList() );
+                
+                if ( $is_allowed_to_edit )
+                {
+                    $cmdList[] = array(
+                        'img'  => 'new',
+                        'name' => get_lang( 'Create a new session' ),
+                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
+                                .'/index.php?cmd=rqCreateSession' ) ) );
+                }
+                
                 break;
             }
             
-            default:
+            case 'rqCreateSession':
             {
-                $output = $session->output();
+                $template = new ModuleTemplate( 'ICSUBSCR' , 'createsession.tpl.php' );
+                
+                $cmdList[] = array(
+                    'img'  => 'back',
+                    'name' => get_lang( 'Back to the session list' ),
+                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
+                            .'/index.php?cmd=rqShowSessionList' ) ) );
             }
         }
+        
+        foreach( $msg as $type => $content )
+        {
+            $dialogBox->{$type}($content);
+        }
+        
+        $output = $dialogBox->render() . $template->render();
+    }
+    elseif( isset( $session ) && method_exists( $cmd , $session ) )
+    {
+        $session->execute( $cmd );
+        $pageTitle['subTitle'] = $session->getTitle();
+        $cmdList = $session->getCmdList();
+        $output = $session->output();
     }
     else
     {
-        throw new Exception( 'bad command' );
+        throw new Exception( 'bad command :' . $cmd );
     }
     
-    Claroline::getInstance()->display->body->appendContent( $template->render() );
+    Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList ) . $output );
 }
 catch( Exception $e )
 {
