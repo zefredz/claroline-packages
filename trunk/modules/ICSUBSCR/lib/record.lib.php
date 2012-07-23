@@ -84,4 +84,14 @@ class Record
         
         return Claroline::getDatabase()->exec( $sql . implode( ',' , $sqlArray ) );
     }
+    
+    public function subscribe( $slotList )
+    {
+        foreach( $slotList as $slotId )
+        {
+            $this->choose( $slotId );
+        }
+        
+        return $this->save();
+    }
 }
