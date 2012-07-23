@@ -202,7 +202,7 @@ class ICSURVEW_Answer
             return;
         }
         
-        if ( isset( $this->answerList[ $courseId ][ $questionId ][ $choiceId ] ) )
+        if ( isset( $this->answerList[ $courseId ][ $questionId ] ) )
         {
             return Claroline::getDatabase()->exec( "
                 UPDATE
