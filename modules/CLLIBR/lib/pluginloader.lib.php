@@ -53,16 +53,22 @@ class PluginLoader
         
         foreach( $pluginsRepository as $plugin )
         {
-            if ( ! $plugin->isDir() && ! $plugin->isDot() )
+            if( ! $plugin->isDot() )
             {
                 $fileName = $plugin->getFileName();
                 $part = explode( '.' , $fileName );
+                $pluginEntry = $this->pluginDir . $fileName;
                 
-                if ( count( $part ) == 4 && $part[ 2 ] == 'plugin' && $part[ 3 ] == 'php' )
+                if( $plugin->isDir() )
+                {
+                    $pluginEntry .= '/entry.php';
+                }
+                
+                if ( $part[ 2 ] == 'plugin' )
                 {
                     try
                     {
-                        require( $this->pluginDir . $fileName );
+                        require( $pluginEntry );
                         
                         $pluginName = $part[ 1 ];
                         $pluginType = $part[ 0 ];
