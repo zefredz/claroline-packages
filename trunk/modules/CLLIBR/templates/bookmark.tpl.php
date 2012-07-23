@@ -11,6 +11,7 @@
 
 <?php include( 'selector.tpl.php' ); ?>
 
+<?php if( $this->userId ) : ?>
 <?php if ( isset( $this->in_portlet ) ) : ?>
 <span> 
     <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowLibrarylist' ) ); ?>">
@@ -92,3 +93,4 @@
     </div>
     <?php endif; ?>
 </form>
+<?php endif; ?>

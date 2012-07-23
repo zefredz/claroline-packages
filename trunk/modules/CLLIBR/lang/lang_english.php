@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -152,7 +152,8 @@ $_lang[ 'Update resource' ] = 'Update resource';
 
 // Messages
 $_lang[ 'Access denied' ] = 'Access denied';
-$_lang[ 'A library must have at least one librarian' ] ='A library must have at least one librarian';
+$_lang[ 'A library must have at least one librarian' ] = 'A library must have at least one librarian';
+$_lang[ 'Bookmarking is not allowed to anonymous users' ] = 'Bookmarking is not allowed to anonymous users';
 $_lang[ 'Choose a title for this link to the library' ] = 'Choose a title for this link to the library';
 $_lang[ 'Do you really want to delete this library?' ] = 'Do you really want to delete this library?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Do you really want to delete this resource?';

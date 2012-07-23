@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -28,14 +28,16 @@
                         <?php echo get_lang( 'Author(s)' ); ?>
                         </a>
                     </th>
-                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                <?php if( $this->userId ) : ?>
+                    <?php if ( count( $this->resourceList ) > 1 ) : ?>
                     <th>
                         <input id="selectAll" type="checkbox" />
                     </th>
-                <?php endif; ?>
+                    <?php endif; ?>
                     <th>
                         <?php echo get_lang( 'Actions' ); ?>
                     </th>
+                <?php endif; ?>
         <?php if ( $this->edit_allowed ) : ?>
                     <th>
                         <?php echo get_lang( 'Visibility' ); ?>
@@ -56,38 +58,38 @@
                     <td> 
                         <?php echo $resource[ 'author' ]; ?>
                     </td>
-                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                    <?php if( $this->userId ) : ?>
+                        <?php if ( count( $this->resourceList ) > 1 ) : ?>
                     <td align="center">
                         <input class="resourceSelect" type="checkbox" name="resource[<?php echo $resource[ 'id' ]; ?>]" />
                     </td>
-                <?php endif; ?>
+                        <?php endif; ?>
                     <td align="center">
-                    <?php if ( $this->userId ) : ?>
                         <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
                         </a>
-                    <?php endif; ?>
                         <!--
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exExport&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                         </a>
                         -->
-                    <?php if ( $this->edit_allowed ) : ?>
+                        <?php if ( $this->edit_allowed ) : ?>
                         <a title="<?php echo get_lang( 'Remove' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemove&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Remove' ); ?>"/>
                         </a>
                     </td>
                     <td align="center">
-                        <?php if ( $resource[ 'is_visible' ] ) : ?>
+                            <?php if ( $resource[ 'is_visible' ] ) : ?>
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exInvisible&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible' ); ?>"/>
                         </a>
-                        <?php else : ?>
+                            <?php else : ?>
                         <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exVisible&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>"/>
                         </a>
-                        <?php endif; ?>
+                            <?php endif; ?>
                     </td>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </tr>
                 <?php endif; ?>

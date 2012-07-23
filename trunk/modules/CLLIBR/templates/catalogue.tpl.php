@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.7 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -29,14 +29,16 @@
                         <?php echo get_lang( 'Author(s)' ); ?>
                         </a>
                     </th>
-                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                <?php if( $this->userId ) : ?>
+                    <?php if ( count( $this->resourceList ) > 1 ) : ?>
                     <th>
                         <input id="selectAll" type="checkbox" />
                     </th>
-                <?php endif; ?>
+                    <?php endif; ?>
                     <th>
                         <?php echo get_lang( 'Actions' ); ?>
                     </th>
+                <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -51,17 +53,18 @@
                     <td> 
                         <?php echo $resource[ 'author' ]; ?>
                     </td>
-                <?php if ( count( $this->resourceList ) > 1 ) : ?>
+                <?php if( $this->userId ) : ?>
+                    <?php if ( count( $this->resourceList ) > 1 ) : ?>
                     <td align="center">
                         <input class="resourceSelect" type="checkbox" name="resource[<?php echo $resource[ 'id' ]; ?>]" />
                     </td>
-                <?php endif; ?>
+                    <?php endif; ?>
                     <td align="center">
-                        <?php if ( $this->courseId && $this->edit_allowed ) : ?>
+                    <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                         <a title="<?php echo get_lang( 'Add to the course\'s bibliography' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exAdd&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'book' ); ?>" alt="<?php echo get_lang( 'Add to the course\'s bibliography' ); ?>"/>
                         </a>
-                        <?php endif; ?>
+                    <?php endif; ?>
                         <a title="<?php echo get_lang( 'Add to my bookmark' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exBookmark&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'bookmark' ); ?>" alt="<?php echo get_lang( 'Add to my bookmark' ); ?>"/>
                         </a>
@@ -70,7 +73,7 @@
                             <img src="<?php echo get_icon_url( 'export' ); ?>" alt="<?php echo get_lang( 'Export' ); ?>"/>
                         </a>
                         -->
-                <?php if ( $this->edit_allowed ) : ?>
+                    <?php if ( $this->edit_allowed ) : ?>
                         <a title="<?php echo get_lang( 'Move this resource to another library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&option=move&libraryId=' . $this->libraryId . '&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'move' ); ?>" alt="<?php echo get_lang( 'Move' ); ?>"/>
                         </a>
@@ -80,8 +83,9 @@
                         <a title="<?php echo get_lang( 'Edit resource\'s metadatas' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $resource[ 'id' ] . '&libraryId=' . $this->libraryId ) );?>">
                             <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                         </a>
-                <?php endif; ?>
+                    <?php endif; ?>
                     </td>
+                <?php endif; ?>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
@@ -91,11 +95,11 @@
         <?php endif; ?>
             </tbody>
         </table>
-        <?php if ( count( $this->resourceList ) > 1 ) : ?>
+        <?php if ( $this->userId && count( $this->resourceList ) > 1 ) : ?>
         <div id="onSelected">
             <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
             <select name="cmd">
-            <?php if ( $this->courseId ) : ?>
+            <?php if ( $this->courseId && $this->edit_allowed ) : ?>
                 <option value="exAdd"><?php echo get_lang( 'Add to the course\'s bibliography' ); ?></option>
             <?php endif; ?>
                 <option value="exBookmark"><?php echo get_lang( 'Add to my bookmark' ); ?></option>
