@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.8 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -318,23 +318,27 @@ try
             
             case 'exBookmark':
             {
-                $bookmark = new Collection( $database , 'bookmark' , $userId );
-                
-                foreach( array_keys( $resourceList ) as $resourceId )
+                if( $userId )
                 {
-                    if ( ! $bookmark->resourceExists( $resourceId ) )
+                    $bookmark = new Collection( $database , 'bookmark' , $userId );
+                    
+                    foreach( array_keys( $resourceList ) as $resourceId )
                     {
-                        $bookmark->add( $resourceId );
-                        $userNote = new UserNote( $database , $userId , $resourceId );
-                        $userNote->create();
-                    }
-                    else
-                    {
-                        $errorMsg = count( $resourceList ) == 1
-                                  ? get_lang( 'This resource is already bookmarked' )
-                                  : get_lang( 'Some of your selected resources were already bookmarked' );
+                        if ( ! $bookmark->resourceExists( $resourceId ) )
+                        {
+                            $bookmark->add( $resourceId );
+                            $userNote = new UserNote( $database , $userId , $resourceId );
+                            $userNote->create();
+                        }
+                        else
+                        {
+                            $errorMsg = count( $resourceList ) == 1
+                                      ? get_lang( 'This resource is already bookmarked' )
+                                      : get_lang( 'Some of your selected resources were already bookmarked' );
+                        }
                     }
                 }
+                else $errorMsg = get_lang( 'Bookmarking is not allowed to anonymous users' );
                 
                 $execution_ok = ! $errorMsg;
                 break;

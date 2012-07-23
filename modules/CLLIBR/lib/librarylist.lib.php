@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.1 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -35,7 +35,7 @@ class LibraryList
         $this->database = $database;
         $this->tbl = get_module_main_tbl( array( 'library_library' , 'library_librarian' , 'user' ) );
         
-        $this->userId = $userId;
+        $this->userId = (int)$userId;
         $this->is_admin = $is_admin;
         //$this->load( true );
     }
