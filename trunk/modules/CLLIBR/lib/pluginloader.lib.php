@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.3.6 $Revision$ - Claroline 1.9
+ * @version     CLLIBR 1.0.2 $Revision$ - Claroline 1.9
  * @copyright   2001-2011 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -64,7 +64,7 @@ class PluginLoader
                     $pluginEntry .= '/entry.php';
                 }
                 
-                if ( $part[ 2 ] == 'plugin' )
+                if ( count( $part ) > 2 && $part[ 2 ] == 'plugin' )
                 {
                     try
                     {
