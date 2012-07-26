@@ -9,9 +9,10 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class SessionList extends Lister
+class SessionList extends FilteredLister
 {
-    const PARAM_CONTEXT = 'context';
+    const DEFAULT_TYPE = 'generic';
+    const PARAM_TYPE = 'type';
     const PARAM_START_DATE = 'startDate';
     const PARAM_END_DATE = 'endDate';
     const PARAM_STATUS = 'status';
@@ -24,6 +25,17 @@ class SessionList extends Lister
     const ENUM_VISIBILITY_VISIBLE = 'visible';
     const ENUM_VISIBILITY_INVISIBLE = 'invisible';
     
+    protected static $allowedFields = array(
+        'type' => self::DEFAULT_TYPE,
+        'context' => self::ENUM_CONTEXT_USER,
+        'title' => '',
+        'description' => '',
+        'startDate' => null,
+        'endDate' => null,
+        'status' => self::ENUM_STATUS_OPEN,
+        'visibility' => self::ENUM_VISIBILITY_VISIBLE,
+        'rank' => null );
+    
     /**
      * Constructor
      * @param string $context : the actual context
@@ -33,6 +45,16 @@ class SessionList extends Lister
         $tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
         
         parent::__construct( $tbl[ 'icsubscr_session' ] , array( 'context' => $context ) );
+    }
+    
+    /**
+     * Helper for getting session type
+     * @param int $sessionId : the session id
+     * @return string : session type
+     */
+    public function getType( $sessionId )
+    {
+        return $this->get( $sessionId , self::PARAM_TYPE );
     }
     
     /**
