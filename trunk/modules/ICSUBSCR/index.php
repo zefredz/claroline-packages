@@ -21,7 +21,10 @@ FromKernel::uses(
     'display/layout.lib' );
 
 From::Module( 'ICSUBSCR' )->uses(
+    'controller.lib',
+    'defaultcontroller.lib',
     'lister.lib',
+    'filteredlister.lib',
     'pluginloader.lib',
     'plugincontroller.lib',
     'record.lib',
@@ -43,7 +46,7 @@ try
     $is_allowed_to_edit = claro_is_allowed_to_edit();
     
     $pluginRepository = get_module_path( 'ICSUBSCR' ) . '/plugins/';
-    $pluginList = new PluginLoader( $pluginRepository , $lang );
+    $pluginLoader = new PluginLoader( $pluginRepository , $lang );
     
     $sessionList = new SessionList( $groupId ? 'group' : 'user' );
     
@@ -70,6 +73,7 @@ try
     
     $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
     $sessionId = $userInput->get( 'sessionId' );
+    $data = $userINput->get( 'data' );
     $msg = array();
     
     if( in_array( $cmd , $actionList ) )
@@ -79,6 +83,8 @@ try
             // CONTROLLER
             case 'rqShowSessionList':
             case 'rqCreateSession' :
+            case 'rqEditSession' :
+            case 'rqDeleteSession' :
                 break;
             
             case 'rqViewSession':
@@ -90,9 +96,9 @@ try
             
             case 'exCreateSession':
             {
-                $data = $userInput->data;
+                $data = $userInput->get( 'data' );
                 
-                if( $sessionList->add( $data) )
+                if( $sessionId = $sessionList->add( $data ) )
                 {
                     $msg['success'] = 'Session successfully created';
                 }
@@ -100,12 +106,80 @@ try
                 {
                     $msg['error'] = 'Session cannot be created';
                 }
+                
                 break;
             }
             
-            default:
+            case 'exEditSession' :
             {
-                $session->execute( $cmd );
+                $data = $userInput->get( 'data' );
+                
+                $sessionList->modify( $sessionId , $data );
+                
+                if( $sessionList->save( $sessionId ) )
+                {
+                    $msg['success'] = 'Session successfully modified';
+                }
+                else
+                {
+                    $msg['error'] = 'Session cannot be modified';
+                }
+                
+                break;
+            }
+            
+            case 'exDeleteSession' :
+            {
+                if( $sessionList->delete( $sessionId ) )
+                {
+                    $msg['success'] = 'Session successfully deleted';
+                }
+                else
+                {
+                    $msg['error'] = 'An error occur while deleting session';
+                }
+                
+                break;
+            }
+            
+            case 'exHide' :
+            {
+                if( ! $sessionList->setInvisible( $sessionId ) )
+                {
+                    $msg['error'] = 'An error occur';
+                }
+                
+                break;
+            }
+            
+            case 'exShow' :
+            {
+                if( ! $sessionList->setVisible( $sessionId ) )
+                {
+                    $msg['error'] = 'An error occur';
+                }
+                
+                break;
+            }
+            
+            case 'exLock' :
+            {
+                if( ! $sessionList->setClosed( $sessionId ) )
+                {
+                    $msg['error'] = 'An error occur';
+                }
+                
+                break;
+            }
+            
+            case 'exUnlock' :
+            {
+                if( ! $sessionList->setOpen( $sessionId ) )
+                {
+                    $msg['error'] = 'An error occur';
+                }
+                
+                break;
             }
         }
         
@@ -139,12 +213,15 @@ try
             case 'rqCreateSession':
             {
                 $template = new ModuleTemplate( 'ICSUBSCR' , 'createsession.tpl.php' );
+                $template->assign( 'pluginList' , $pluginLoader->getPluginList() );
                 
                 $cmdList[] = array(
                     'img'  => 'back',
                     'name' => get_lang( 'Back to the session list' ),
                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
                             .'/index.php?cmd=rqShowSessionList' ) ) );
+                
+                break;
             }
         }
         
@@ -155,8 +232,10 @@ try
         
         $output = $dialogBox->render() . $template->render();
     }
-    elseif( isset( $session ) && method_exists( $cmd , $session ) )
+    elseif( $sessionId )
     {
+        $type = $sessionList->getType( $sessionId );
+        $session = $pluginList->get( $type );
         $session->execute( $cmd );
         $pageTitle['subTitle'] = $session->getTitle();
         $cmdList = $session->getCmdList();

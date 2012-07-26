@@ -84,13 +84,28 @@ class Lister
      * @param int $itemId : the id of the item
      * @param string $name : the name of the parameter
      * @param string : the value of the parameter
-     * @return boolean
+     * @return void
      */
     public function set( $itemId , $name , $value )
     {
-        if( array_key_exists( $name , $this->itemList[ 'item_' . $itemId ] ) )
+        if( array_key_exists( 'item_' . $itemId , $this->itemList )
+        &&  array_key_exists( $name , $this->itemList[ 'item_' . $itemId ] ) )
         {
-            return $this->itemList[ 'item_' . $itemId ][ $name ] = $value;
+            $this->itemList[ 'item_' . $itemId ][ $name ] = $value;
+        }
+    }
+    
+    /**
+     * Sets a bunch of parameter
+     * @param int $itemId : the item's id
+     * @param array $data : the parameter's data
+     * @return void
+     */
+    public function modify( $itemId , $data )
+    {
+        foreach( $data as $name => $value )
+        {
+            $this->set( $itemId , $name , $value );
         }
     }
     
@@ -177,8 +192,14 @@ class Lister
      * @param array $data : the data of the item
      * @return int : the new item's id
      */
-    public function add( $data )
+    public function add( $data , $allowedFields = null )
     {
+        if( is_array( $allowedFields ) && ! empty( $allowedFields ) )
+        {
+            $data = array_merge( $allowedFields , $data ); // fill missing fields with default values
+            $data = array_intersect_key( $data , $allowedFields ); // removed unwanted fields
+        }
+        
         $data[ 'rank' ] = ++$this->maxRank;
         
         $sql = "INSERT INTO `{$this->tbl}` SET\n";
