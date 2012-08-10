@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class SessionList extends FilteredLister
+class SessionList extends Lister
 {
     const DEFAULT_TYPE = 'generic';
     const PARAM_TYPE = 'type';
@@ -25,26 +25,38 @@ class SessionList extends FilteredLister
     const ENUM_VISIBILITY_VISIBLE = 'visible';
     const ENUM_VISIBILITY_INVISIBLE = 'invisible';
     
-    protected static $allowedFields = array(
-        'type' => self::DEFAULT_TYPE,
-        'context' => self::ENUM_CONTEXT_USER,
-        'title' => '',
-        'description' => '',
-        'startDate' => null,
-        'endDate' => null,
-        'status' => self::ENUM_STATUS_OPEN,
-        'visibility' => self::ENUM_VISIBILITY_VISIBLE,
-        'rank' => null );
+    protected $typeList;
     
     /**
      * Constructor
      * @param string $context : the actual context
      */
-    public function __construct( $context = self::ENUM_CONTEXT_USER )
+    public function __construct( $typeList , $context = self::ENUM_CONTEXT_USER )
     {
+        $this->typeList = $typeList;
+        
         $tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
         
-        parent::__construct( $tbl[ 'icsubscr_session' ] , array( 'context' => $context ) );
+        $allowedFields = array(
+            'type' => self::DEFAULT_TYPE,
+            'context' => self::ENUM_CONTEXT_USER,
+            'title' => '',
+            'description' => '',
+            'startDate' => null,
+            'endDate' => null,
+            'status' => self::ENUM_STATUS_OPEN,
+            'visibility' => self::ENUM_VISIBILITY_VISIBLE,
+            'rank' => null );
+        
+        parent::__construct( $tbl[ 'icsubscr_session' ] , array( 'context' => $context ) , $allowedFields );
+    }
+    
+    /**
+     *
+     */
+    public function getTypeList()
+    {
+        return $this->typeList;
     }
     
     /**

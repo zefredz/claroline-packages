@@ -11,21 +11,12 @@
 
 abstract class PluginController extends ICSUBSCR_Controller
 {
-    protected static $templateList = array( 'subscribe' , 'edit' , 'result' );
-    
-    public function __construct( $session )
-    {
-        parent::__construct( $session );
-        
-        $this->templatePath = '/plugins/icsubscr.' . get_class() . '.plugin/';
-    }
-    
-    private function rqShowSession()
+    public function rqShowSession()
     {
         $this->selectedView = 0;
     }
     
-    private function exSubcribe( $slotList , $userId = null , $groupId = null )
+    public function exSubcribe( $slotList , $userId = null , $groupId = null )
     {
         $record = new Record( $this->model , $userId , $groupId );
         

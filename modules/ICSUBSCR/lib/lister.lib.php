@@ -13,6 +13,7 @@ class Lister
 {
     protected $tbl;
     protected $cond = array();
+    protected $allowedFields = array();
     protected $maxRank = 0;
     
     protected $itemList = array();
@@ -23,13 +24,18 @@ class Lister
      * @param array $cond : the condition that must be added to loading quiery
      * @return void
      */
-    public function __construct( $tbl , $cond = null )
+    public function __construct( $tbl , $cond = null , $allowedFields = null )
     {
         $this->tbl = $tbl;
         
         if( is_array( $cond ) )
         {
             $this->cond = $cond;
+        }
+        
+        if( is_array( $allowedFields ) )
+        {
+            $this->allowedFields = $allowedFields;
         }
         
         $this->load();
@@ -48,6 +54,15 @@ class Lister
         }
         
         return $this->itemList;
+    }
+    
+    /**
+     * Verifies id item list is not empty
+     * @return boolean : true if not
+     */
+    public function notEmpty()
+    {
+        return ! empty( $this->itemList );
     }
     
     /**
@@ -75,7 +90,7 @@ class Lister
     {
         if( array_key_exists( 'item_' . $itemId , $this->itemList ) )
         {
-            return $this->itemList[ 'item_' . $itemId ][ $name ];
+            return $this->itemList[ 'item_' . $itemId ];
         }
     }
     
@@ -116,7 +131,11 @@ class Lister
      */
     public function load()
     {
-        $sql = "SELECT * FROM `{$this->tbl}`";
+        $fieldList = ! empty( $this->allowedFields )
+            ? 'id, ' . implode( ',' , array_keys( $this->allowedFields ) )
+            : "*";
+        
+        $sql = "SELECT {$fieldList} FROM `{$this->tbl}`";
         
         if( ! empty( $this->cond ) )
         {
@@ -171,12 +190,12 @@ class Lister
             
             foreach( $item as $name => $value )
             {
-                $sqlData[] = $name . " = '" . $value;
+                $sqlData[] = $name . " = '" . $value . "'";
             }
             
             $sql .= implode( ",\n" , $sqlData );
             
-            $sql .= "\n WHERE id = " . $item[ 'id' ];
+            $sql .= "\n WHERE id = " . $itemId;
             
             if( Claroline::getDatabase()->exec( $sql ) )
             {
@@ -192,12 +211,12 @@ class Lister
      * @param array $data : the data of the item
      * @return int : the new item's id
      */
-    public function add( $data , $allowedFields = null )
+    public function add( $data )
     {
-        if( is_array( $allowedFields ) && ! empty( $allowedFields ) )
+        if( ! empty( $this->allowedFields ) )
         {
-            $data = array_merge( $allowedFields , $data ); // fill missing fields with default values
-            $data = array_intersect_key( $data , $allowedFields ); // removed unwanted fields
+            $data = array_merge( $this->allowedFields , $data ); // fills missing fields with default values
+            $data = array_intersect_key( $data , $this->allowedFields ); // removes unwanted fields
         }
         
         $data[ 'rank' ] = ++$this->maxRank;
@@ -218,7 +237,7 @@ class Lister
             $itemId = Claroline::getDatabase()->insertId();
             $this->itemList[ 'item_' . $itemId ] = $data;
             
-            return $slotId;
+            return $itemId;
         }
     }
     
