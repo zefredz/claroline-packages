@@ -104,7 +104,7 @@ claro_set_display_mode_available(false);
 
 if( $path->isVisible() || claro_is_allowed_to_edit() )
 {
-    $claroline->setDisplayType( CL_FRAMESET );
+    $claroline->setDisplayType( Claroline::FRAMESET );
 
     $jsloader = JavascriptLoader::getInstance();
     $jsloader->load('jquery');

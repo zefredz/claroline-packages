@@ -155,10 +155,7 @@ $out = '';
 $out .= $dialogBox->render()
 .       $content;
 
-$claroline->setDisplayType( CL_FRAME );
+$claroline->setDisplayType( Claroline::FRAME );
 $claroline->display->body->appendContent($out);
 
 echo $claroline->display->render();
-
-
-?>
