@@ -25,7 +25,7 @@ class CLMEETNG_OpenMeetingsClient
         'Interview',
         'Custom' );
     
-static public $langList = array(
+    static public $langList = array(
         '+error+',
         'en',
         'de',

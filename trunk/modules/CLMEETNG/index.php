@@ -121,12 +121,23 @@ try
             
             $meeting = new CLMEETNG_Meeting( $client , $userId , $courseId , $groupId , $is_allowed_to_edit );
             
-            //$data['date_from'] = $data['date'] . ' ' . $data['hour_from'] . ':00';
-            //$data['date_to'] = $data['date'] . ' ' . $data['hour_to'] . ':00';
-            //unset( $data['date'] );
+            /*$datePart = explode( '/' , $data['date'] );
+            $dateArray = array();
             
-            $dateConverter = new CLMEETNG_DateConverter( get_lang( 'date_format' ) );
-            $data = $dateConverter->in( $data );
+            foreach( explode( '/' , get_lang('_date' ) ) as $index => $formatPart )
+            {
+                $dateArray[ $formatPart ] = $datePart[ $index ];
+            }
+            
+            $date = $dateArray['Y'] . '-' . $dateArray['m'] . $dateArray['d'];
+            $data['date_from'] = $date . ' ' . $data['hour_from'] . ':00';
+            $data['date_to'] = $date . ' ' . $data['hour_to'] . ':00';
+            unset( $data['date'] );*/
+            
+            $dateConverter = new CLMEETNG_DateConverter( get_lang( '_date' ) );
+            $data['date_from'] = $dateConverter->in( $data['date'] , $data['hour_from'] );
+            $data['date_to'] = $dateConverter->in( $data['date'] , $data['hour_to'] );
+            
             $meeting->setData( $data );
             
             if( empty( $data['title'] )

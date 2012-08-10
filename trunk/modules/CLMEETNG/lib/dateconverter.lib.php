@@ -14,41 +14,59 @@ class CLMEETNG_DateConverter
     const MODE_IN = 'IN';
     const MODE_OUT = 'OUT';
     
-    static $translator = array( 'MM' => 'm',
-                                'DD' => 'd',
-                                'YYYY' => 'Y' );
-    
     protected $dateFormat;
     
-    public function __construct( $dateFormat = 'MM/DD/YYYY' )
+    public function __construct( $dateFormat = 'm/d/Y' )
     {
-        $this->dateFormat = $this->_translate( $dateFormat );
+        $this->dateFormat = $dateFormat;
     }
     
-    public function in( $data )
-    {
-        
-    }
-    
-    public function out( $date = null )
+    public function in( $date = null , $hour = null )
     {
         if( ! $date )
         {
-            $date = date( 'Y-m-d H:i:s' );
+            $dateTime = date( 'Y-m-d H:i:s' , time() + $offset );
         }
+        else
+        {
+            $datePart = explode( '/' , $date );
+            $date = array();
+            $format = explode( '/' , $this->dateFormat );
+            
+            foreach( $format as $index => $formatPart )
+            {
+                $date[ $formatPart ] = $datePart[ $index ];
+            }
+            
+            if( ! $hour )
+            {
+                $hour = '00:00';
+            }
+            
+            $dateTime = $date['Y'] . '-' . $date['m'] . '-' . $date['d'] . ' ' . $hour . ':00' ;
+        }
+        
+        return $dateTime;
     }
     
-    private function _translate( $date , $mode = self::MODE_IN )
+    public function out( $dateTime = null
+        , $secOffset = 0
+        , $minOffset = 0
+        , $hourOffset = 0
+        , $dayOffset = 0
+        , $weekOffset = 0 )
     {
-        $glue = $mode == self::MODE_IN ? '/' : ':';
+        $offset = $secOffset + $minOffset*60 + $hourOffset*3600 + $dayOffset*86400 + $weekOffset*604800;
         
-        $explTpl = explode( $glue , $data );
-        
-        foreach( $explTpl as $index => $part )
+        if( ! $dateTime )
         {
-            $explTpl[ $index ] = $mode == self::MODE_IN
-                                ? self::$translator[ $part ]
-                                : array_search( $part , self::$translator );
+            $dateTime = date( 'Y-m-d H:i:s' , time() + $offset );
         }
+        
+        $time = strtotime( $dateTime ) + $offset;
+        $date = date( $this->dateFormat , $time );
+        $hour = date( 'H:i' , $time );
+        
+        return array( 'date' => $date , 'hour' => $hour );
     }
 }
