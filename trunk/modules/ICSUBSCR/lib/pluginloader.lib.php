@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.1 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -66,9 +66,8 @@ class PluginLoader
                 {
                     try
                     {
-                        //$entry = $part[ 2 ] . '.lib.php';
-                        //require( $this->pluginDir . $pluginName . '/' . $entry );
                         require( $this->pluginDir . $pluginName . '/controller.lib.php' );
+                        require( $this->pluginDir . $pluginName . '/view.lib.php' );
                         $this->pluginList[] =  $part[ 2 ];
                     }
                     catch( Exception $e )
@@ -85,7 +84,7 @@ class PluginLoader
      * @param string or int $plugin
      * @return plugged in objet $plugin
      */
-    public function get( $plugin )
+    public function get( $plugin , $param = null )
     {
         if( is_int( $plugin )
            && array_key_exists( $plugin , $this->pluginList ) )
@@ -98,7 +97,7 @@ class PluginLoader
                 . '/plugins/icsubscr.plugin.'
                 . $plugin . '/lang/lang_' . $this->lang . 'php';
             
-            return new $plugin;
+            return new $plugin( $param );
         }
     }
 }

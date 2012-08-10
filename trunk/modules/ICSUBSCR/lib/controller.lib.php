@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -11,23 +11,35 @@
 
 abstract class ICSUBSCR_Controller
 {
-    const DEFAULT_SUCCESS_MESSAGE = 'success';
-    const DEFAULT_ERROR_MESSAGE = 'error';
+    const ERROR = 'error';
+    const SUCCESS = 'success';
+    const INFO = 'info';
     
     protected $model;
+    protected $view;
+    protected $id;
+    protected $allowedToEdit;
     
     protected $output = array();
-    protected $templatePath = '';
-    protected $selectedView = -1;
-    
     
     /**
      * Constructor
      * @param Session objet $session
      */
-    public function __construct( $model )
+    public function __construct( $model , $id = null , $allowedToEdit = false )
     {
         $this->model = $model;
+        $this->id = $id;
+        $this->allowedToEdit = $allowedToEdit;
+    }
+    
+    /**
+     * Getter for id
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
     
     /**
@@ -37,26 +49,22 @@ abstract class ICSUBSCR_Controller
      * @param string $successMsg
      * @param string $errorMsg
      */
-    public function execute( $cmd
-        , $data = null
-        , $successMsg = self::DEFAULT_SUCCESS_MESSAGE
-        , $errorMsg = self::DEFAULT_ERROR_MESSAGE )
+    public function execute( $cmd , $id = null , $param = null )
     {
         if( method_exists( $this , $cmd ) )
         {
-            $this->output = $this->{$cmd}( $data )
-                ? array(
-                    'type' => 'success',
-                    'text' => $successMsg )
-                : array(
-                    'type' => 'error',
-                    'text' => $errorMsg );
+            if( $id )
+            {
+                $this->{$cmd}( $id , $param );
+            }
+            else
+            {
+                $this->{$cmd}( $param );
+            }
         }
         else
         {
-            $this->output[] = array(
-                'type' => 'error',
-                'text' => 'invalid_command' );
+            $this->addMsg( self::ERROR , 'Invalid command' );
         }
     }
     
@@ -75,17 +83,11 @@ abstract class ICSUBSCR_Controller
      */
     public function getView()
     {
-        if( array_key_exists( $this->selectedView , self::$templateList ) )
-        {
-            $view = new PhpTemplate( get_module_path( 'ICSUBSCR' )
-                . $this->templatePath
-                . 'templates/'
-                . self::$templateList[ $this->selectedView ] );
-            $view->assign( 'model' , $this->model );
-            $view->assign( 'controller' , $this->output );
-            
-            return $view;
-        }
+        $view = $this->view->get();
+        $view->assign( 'model' , $this->model );
+        $view->assign( 'id' , $this->getId() );
+        
+        return $view;
     }
     
     /**
@@ -94,18 +96,18 @@ abstract class ICSUBSCR_Controller
      */
     public function output()
     {
-        $output = '';
+        $output = $this->view->getToolTitle()->render();
         
         if( ! empty( $this->output ) )
         {
             $dialogBox = new DialogBox();
             
-            foreach( $this->output as $type => $msg )
+            foreach( $this->output as $line )
             {
-                $dialogBox->{$type}( $msg );
+                $dialogBox->{$line['type']}( $line['msg'] );
             }
             
-            $output = $dialogBox->render();
+            $output .= $dialogBox->render();
         }
         
         if( $view = $this->getView() )
@@ -114,5 +116,21 @@ abstract class ICSUBSCR_Controller
         }
         
         return $output;
+    }
+    
+    /**
+     * Adds a mesage into the output
+     * @param string $type : success, error or info
+     * @param string $content : the message itself
+     * @return void
+     */
+    protected function addMsg( $type , $content = '' )
+    {
+        if( $type != self::SUCCESS && $type != self::ERROR && $type != self::INFO )
+        {
+            throw new Exception( 'Invalid message type');
+        }
+        
+        $this->output[] = array( 'type' => $type , 'msg' => $content ? $content : $type );
     }
 }
