@@ -14,7 +14,7 @@ abstract class pluginView extends ICSUBSCR_View
     public function __construct( $cmdList )
     {
         $templateList = array( 'subscribe' , 'edit' , 'result' );
-        $templatePath = '/plugins/icsubscr.' . get_class() . '.plugin/';
+        $templatePath = '/plugins/icsubscr.plugin.' . strtolower( substr( get_class( $this ) , 0 , -4 ) );
         
         parent::__construct( $templateList , $cmdList , $templatePath );
     }

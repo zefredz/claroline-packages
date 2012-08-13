@@ -54,7 +54,7 @@
                         type="text"
                         lang="<?php echo get_lang( '_lang_code' ); ?>"
                         name="data[startDate]"
-                        value="<?php echo date( get_lang( '_date' ) , strtotime( $this->id ? $this->model->get( $this->id , 'startDate' ) : 'now' ) ); ?>"
+                        value="<?php echo date( get_lang( '_date' ) , strtotime( $this->model->get( $this->id , 'startDate' ) ? $this->model->get( $this->id , 'startDate' ) : 'now' ) ); ?>"
                         size="8" />
             </dd>
         </dl>
@@ -66,7 +66,7 @@
                         type="text"
                         lang="<?php echo get_lang( '_lang_code' ); ?>"
                         name="data[endDate]"
-                        value="<?php echo date( get_lang( '_date' ) , strtotime( $this->id ? $this->model->get( $this->id , 'endDate' ) : '+1 month' ) ); ?>"
+                        value="<?php echo date( get_lang( '_date' ) , strtotime( $this->model->get( $this->id , 'endDate' ) ? $this->model->get( $this->id , 'endDate' ) : '+1 month' ) ); ?>"
                         size="8" />
             </dd>
         </dl>

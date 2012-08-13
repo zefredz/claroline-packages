@@ -11,6 +11,14 @@
 
 abstract class PluginController extends ICSUBSCR_Controller
 {
+    public function __construct( $model , $sessionId = null , $allowedToEdit = false )
+    {
+        parent::__construct( $model , $sessionId , $allowedToEdit );
+        
+        $this->defaultCmd = 'rqView';
+        //$this->dateUtil = new DateUtil( get_lang( '_date' ) );
+    }
+    
     public function rqShowSession()
     {
         $this->selectedView = 0;
@@ -27,4 +35,6 @@ abstract class PluginController extends ICSUBSCR_Controller
         
         $this->selectedView = 0;
     }
+    
+    abstract public function rqView();
 }
