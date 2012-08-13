@@ -75,7 +75,7 @@ class Lister
     {
         $itemData = $this->getData( $itemId );
         
-        if( array_key_exists( $name , $itemData ) )
+        if( $itemData && array_key_exists( $name , $itemData ) )
         {
             return $itemData[ $name ];
         }
