@@ -95,9 +95,19 @@ class PluginLoader
         {
             include get_module_path( 'ICSUBSCR' )
                 . '/plugins/icsubscr.plugin.'
-                . $plugin . '/lang/lang_' . $this->lang . 'php';
+                . $plugin . '/lang/lang_' . $this->lang . '.php';
             
-            return new $plugin( $param );
+            $className = $plugin . 'Controller';
+            
+            return new $className( $param );
         }
+    }
+    
+    /**
+     *
+     */
+    public function pluginExists( $plugin )
+    {
+        return in_array( $plugin , $this->getPluginList() );
     }
 }

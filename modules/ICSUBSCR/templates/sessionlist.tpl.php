@@ -4,14 +4,16 @@
             <th><?php echo get_lang( 'Session' ); ?></th>
             <th><?php echo get_lang( 'Start date' ); ?></th>
             <th><?php echo get_lang( 'End date' ); ?></th>
+        <?php if( claro_is_allowed_tool_edit() ) : ?>
             <th><?php echo get_lang( 'Actions' ); ?></th>
+        <?php endif; ?>
         </tr>
     </thead>
     <tbody>
     <?php if( $this->model->notEmpty() ) : ?>
         <?php foreach( $this->model->getItemList() as $session ) : ?>
         <tr>
-            <td><?php echo $session['title']; ?></td>
+            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session['id'] . '&sessionType=' . $session['type'] ) );?>"><?php echo $session['title']; ?></a></td>
             <td><?php echo $session['startDate']; ?></td>
             <td><?php echo $session['endDate']; ?></td>
             <?php if( claro_is_allowed_to_edit() ) : ?>
@@ -23,11 +25,11 @@
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
                 </a>
                     <?php if ( $this->model->isVisible( $session['id'] ) ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exShow&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                 </a>
                     <?php else: ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exHide&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
                 </a>
                     <?php endif; ?>

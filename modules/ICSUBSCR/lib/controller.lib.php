@@ -9,12 +9,13 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-abstract class ICSUBSCR_Controller
+class ICSUBSCR_Controller
 {
     const ERROR = 'error';
     const SUCCESS = 'success';
     const INFO = 'info';
     
+    protected $defaultCmd;
     protected $model;
     protected $view;
     protected $id;
@@ -31,6 +32,9 @@ abstract class ICSUBSCR_Controller
         $this->model = $model;
         $this->id = $id;
         $this->allowedToEdit = $allowedToEdit;
+        
+        $viewName = substr( get_class( $this ) , 0 , -10 ) . 'View';
+        $this->view = new $viewName;
     }
     
     /**
@@ -49,8 +53,13 @@ abstract class ICSUBSCR_Controller
      * @param string $successMsg
      * @param string $errorMsg
      */
-    public function execute( $cmd , $id = null , $param = null )
+    public function execute( $cmd = null , $id = null , $param = null )
     {
+        if( ! $cmd )
+        {
+            $cmd = $this->defaultCmd;
+        }
+        
         if( method_exists( $this , $cmd ) )
         {
             if( $id )
@@ -86,6 +95,7 @@ abstract class ICSUBSCR_Controller
         $view = $this->view->get();
         $view->assign( 'model' , $this->model );
         $view->assign( 'id' , $this->getId() );
+        $view->assign( 'dateUtil' , new DateUtil( get_lang( '_date' ) ) );
         
         return $view;
     }

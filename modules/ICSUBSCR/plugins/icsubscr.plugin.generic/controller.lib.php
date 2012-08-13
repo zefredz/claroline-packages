@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class GenericSession extends PluginController
+class GenericController extends PluginController
 {
     private function exCreateSlot( $data )
     {
@@ -33,5 +33,10 @@ class GenericSession extends PluginController
                 }
             }
         }
+    }
+    
+    public function rqView()
+    {
+        return;
     }
 }

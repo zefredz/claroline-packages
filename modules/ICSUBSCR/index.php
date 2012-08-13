@@ -26,9 +26,11 @@ From::Module( 'ICSUBSCR' )->uses(
     'lister.lib',
     'pluginloader.lib',
     'plugincontroller.lib',
+    'pluginview.lib',
     'record.lib',
     'session.lib',
-    'sessionlist.lib' );
+    'sessionlist.lib',
+    'dateutil.lib' );
 
 CssLoader::getInstance()->load( 'kalendae' , 'screen' );
 JavascriptLoader::getInstance()->load('kalendae');
@@ -54,14 +56,16 @@ else
     
     $userInput = Claro_UserInput::getInstance();
     
-    $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
+    $cmd = $userInput->get( 'cmd' );
     $sessionId = $userInput->get( 'sessionId' );
-    $data = $userInput->get( 'data' );
     $sessionType = $userInput->get( 'sessionType' );
+    $data = $userInput->get( 'data' );
     
-    $controller = $sessionType
+    $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
         ? $pluginLoader->get( $sessionType , new Session( $sessionId ) , claro_is_allowed_to_edit() )
-        : new DefaultController( new SessionList( $pluginLoader->getPluginList() , $groupId ? 'group' : 'user' ) , $sessionId , claro_is_allowed_to_edit() );
+        : new DefaultController( new SessionList( $pluginLoader->getPluginList() , $groupId ? 'group' : 'user' )
+            , $sessionId
+            , claro_is_allowed_to_edit() );
     
     $controller->execute( $cmd , $data );
     $output = $controller->output();

@@ -47,6 +47,10 @@ class DateUtil
             
             $dateTime = $date['Y'] . '-' . $date['m'] . '-' . $date['d'] . ' ' . $hour . ':00' ;
         }
+        else
+        {
+            $dateTime = 'invalid date';
+        }
         
         return $dateTime;
     }
@@ -79,7 +83,7 @@ class DateUtil
     {
         switch( $type )
         {
-            case self::DATE:
+            case self::DATETIME:
                 return date( 'Y-m-d H:i:s' , strtotime( $string ) ) == $string;
             
             case self::HOUR:
@@ -110,15 +114,15 @@ class DateUtil
                     switch( $this->dateFields[ $index ] )
                     {
                         case 'Y':
-                            if( strlen( $datePart[ $index ] ) != 4 ) return false;
+                            if( strlen( $dateParts[ $index ] ) != 4 ) return false;
                             break;
                         
                         case 'm':
-                            if( strlen( $datePart[ $index ] ) != 2 && (int)$dateParts[ $index ] > 12 ) return false;
+                            if( strlen( $dateParts[ $index ] ) != 2 && (int)$dateParts[ $index ] > 12 ) return false;
                             break;
                         
                         case 'd':
-                            if( strlen( $datePart[ $index ] ) != 2 && (int)$dateParts[ $index ] > 31 ) return false;
+                            if( strlen( $dateParts[ $index ] ) != 2 && (int)$dateParts[ $index ] > 31 ) return false;
                             break;
                         
                         default:

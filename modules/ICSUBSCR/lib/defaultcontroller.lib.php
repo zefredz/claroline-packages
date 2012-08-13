@@ -15,7 +15,9 @@ class DefaultController extends ICSUBSCR_Controller
     {
         parent::__construct( $model , $sessionId , $allowedToEdit );
         
-        $this->view = new DefaultView();
+        $this->defaultCmd = 'rqShowSessionList';
+        $this->dateUtil = new DateUtil( get_lang( '_date' ) );
+        
     }
     
     public function rqShowSessionList()
@@ -44,6 +46,9 @@ class DefaultController extends ICSUBSCR_Controller
             return;
         }
         
+        $data['starDate'] = $this->dateUtil->in( $data['starDate'] );
+        $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        
         if( $this->id = $this->model->add( $data ) )
         {
             $this->addMsg( self::SUCCESS , 'Session successfully created' );
@@ -63,6 +68,9 @@ class DefaultController extends ICSUBSCR_Controller
     
     public function exEditSession( $data )
     {
+        $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
+        $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        
         $this->model->modify( $this->id , $data );
         
         if( $this->model->save( $this->id ) )
