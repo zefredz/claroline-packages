@@ -1,7 +1,7 @@
 <module>
   <label>CLPING</label>
   <name>Ping service</name>
-  <version>1.0 $Revision$</version> 
+  <version>1.0</version> 
   <license>GPL</license>
   <type>applet</type>
   <icon>icon.png</icon>
