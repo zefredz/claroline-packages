@@ -106,7 +106,7 @@ class Lister
         if( array_key_exists( 'item_' . $itemId , $this->itemList )
         &&  array_key_exists( $name , $this->itemList[ 'item_' . $itemId ] ) )
         {
-            $this->itemList[ 'item_' . $itemId ][ $name ] = $value;
+            return $this->itemList[ 'item_' . $itemId ][ $name ] = $value;
         }
     }
     
@@ -120,7 +120,7 @@ class Lister
     {
         foreach( $data as $name => $value )
         {
-            $this->set( $itemId , $name , $value );
+            return $this->set( $itemId , $name , $value );
         }
     }
     

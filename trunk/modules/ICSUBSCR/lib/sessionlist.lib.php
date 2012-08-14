@@ -133,7 +133,8 @@ class SessionList extends Lister
     {
         return $this->set( $sessionId
                         , self::PARAM_VISIBILITY
-                        , self::ENUM_VISIBILITY_VISIBLE );
+                        , self::ENUM_VISIBILITY_VISIBLE )
+        && $this->save( $sessionId );
     }
     
     /**
@@ -145,7 +146,8 @@ class SessionList extends Lister
     {
         return $this->set( $sessionId
                         , self::PARAM_VISIBILITY
-                        , self::ENUM_VISIBILITY_INVISIBLE );
+                        , self::ENUM_VISIBILITY_INVISIBLE )
+        && $this->save( $sessionId );
     }
     
     /**
@@ -157,7 +159,8 @@ class SessionList extends Lister
     {
         return $this->set( $sessionId
                         , self::PARAM_STATUS
-                        , self::ENUM_STATUS_OPEN );
+                        , self::ENUM_STATUS_OPEN )
+        && $this->save( $sessionId );
     }
     
     /**
@@ -169,7 +172,8 @@ class SessionList extends Lister
     {
         return $this->set( $sessionId
                         , self::PARAM_STATUS
-                        , self::ENUM_STATUS_CLOSED );
+                        , self::ENUM_STATUS_CLOSED )
+        && $this->save( $sessionId );
     }
     
     /**
