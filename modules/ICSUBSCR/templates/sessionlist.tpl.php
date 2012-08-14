@@ -14,8 +14,8 @@
         <?php foreach( $this->model->getItemList() as $session ) : ?>
         <tr>
             <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session['id'] . '&sessionType=' . $session['type'] ) );?>"><?php echo $session['title']; ?></a></td>
-            <td><?php echo $session['startDate']; ?></td>
-            <td><?php echo $session['endDate']; ?></td>
+            <td><?php echo claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['startDate'] ) ); ?></td>
+            <td><?php echo claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['endDate'] ) ); ?></td>
             <?php if( claro_is_allowed_to_edit() ) : ?>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditSession&sessionId='. $session['id'] ) );?>">
@@ -24,12 +24,21 @@
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteSession&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
                 </a>
+                    <?php if ( $this->model->isOpen( $session['id'] ) ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exLock&sessionId='. $session['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'lock'); ?>"/>
+                </a>
+                    <?php else: ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exUnlock&sessionId='. $session['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Unlock'); ?>"/>
+                </a>
+                    <?php endif; ?>
                     <?php if ( $this->model->isVisible( $session['id'] ) ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exShow&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exHide&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                 </a>
                     <?php else: ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exHide&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exShow&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
                 </a>
                     <?php endif; ?>

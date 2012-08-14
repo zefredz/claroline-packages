@@ -85,9 +85,9 @@ class DefaultController extends ICSUBSCR_Controller
         $this->view->selectedView = 0;
     }
     
-    public function exDeleteSession( $sessionId )
+    public function exDeleteSession()
     {
-        if( $this->model->delete( $sessionId ) )
+        if( $this->model->delete( $this->id) )
         {
             $this->addMsg( self::SUCCESS , 'Session successfully deleted' );
         }
@@ -99,41 +99,41 @@ class DefaultController extends ICSUBSCR_Controller
         $this->view->selectedView = 0;
     }
     
-    public function exHide( $sessionId )
+    public function exHide()
     {
-        if( ! $this->model->setInvisible( $sessionId ) )
+        if( ! $this->model->setInvisible( $this->id ) )
         {
-            $this->addMsg( self::ERROR , 'An error occur' );
+            $this->addMsg( self::ERROR , 'An error occured' );
         }
         
         $this->view->selectedView = 0;
     }
     
-    public function exShow( $sessionId )
+    public function exShow()
     {
-        if( ! $sessionList->setVisible( $sessionId ) )
+        if( ! $this->model->setVisible( $this->id ) )
         {
-            $this->addMsg( self::ERROR , 'An error occur' );
+            $this->addMsg( self::ERROR , 'An error occured' );
         }
         
         $this->view->selectedView = 0;
     }
     
-    public function exLock( $sessionId )
+    public function exLock()
     {
-        if( ! $sessionList->setClosed( $sessionId ) )
+        if( ! $this->model->setClosed( $this->id ) )
         {
-            $this->addMsg( self::ERROR , 'An error occur' );
+            $this->addMsg( self::ERROR , 'An error occured' );
         }
         
         $this->view->selectedView = 0;
     }
     
-    public function exUnlock( $sessionId )
+    public function exUnlock()
     {
-        if( ! $sessionList->setOpen( $sessionId ) )
+        if( ! $this->model->setOpen( $this->id ) )
         {
-            $this->addMsg( self::ERROR , 'An error occur' );
+            $this->addMsg( self::ERROR , 'An error occured' );
         }
         
         $this->view->selectedView = 0;
