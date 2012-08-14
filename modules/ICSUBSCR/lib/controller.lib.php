@@ -14,6 +14,7 @@ class ICSUBSCR_Controller
     const ERROR = 'error';
     const SUCCESS = 'success';
     const INFO = 'info';
+    const QUESTION = 'question';
     
     protected $defaultCmd;
     protected $model;
@@ -134,13 +135,13 @@ class ICSUBSCR_Controller
      * @param string $content : the message itself
      * @return void
      */
-    protected function addMsg( $type , $content = '' )
+    protected function addMsg( $type , $content )
     {
-        if( $type != self::SUCCESS && $type != self::ERROR && $type != self::INFO )
+        if( $type != self::SUCCESS && $type != self::ERROR && $type != self::INFO && $type != self::QUESTION )
         {
             throw new Exception( 'Invalid message type');
         }
         
-        $this->output[] = array( 'type' => $type , 'msg' => $content ? $content : $type );
+        $this->output[] = array( 'type' => $type , 'msg' => $content );
     }
 }
