@@ -6,6 +6,8 @@
             <th><?php echo get_lang( 'End date' ); ?></th>
         <?php if( claro_is_allowed_tool_edit() ) : ?>
             <th><?php echo get_lang( 'Actions' ); ?></th>
+        <?php else : ?>
+            <th><?php echo get_lang( 'Status' ); ?></th>
         <?php endif; ?>
         </tr>
     </thead>
@@ -19,29 +21,37 @@
             <?php if( claro_is_allowed_to_edit() ) : ?>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditSession&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                 </a>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteSession&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
                     <?php if ( $this->model->isOpen( $session['id'] ) ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exLock&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'lock'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'lock' ); ?>"/>
                 </a>
                     <?php else: ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exUnlock&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Unlock'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Unlock' ); ?>"/>
                 </a>
                     <?php endif; ?>
                     <?php if ( $this->model->isVisible( $session['id'] ) ) : ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exHide&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible' ); ?>"/>
                 </a>
                     <?php else: ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exShow&sessionId='. $session['id'] ) );?>">
-                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
+                    <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>"/>
                 </a>
                     <?php endif; ?>
+            </td>
+            <?php else : ?>
+            <td align="center">
+                <?php if( $this->model->isAvailable( $session['id'] ) ) : ?>
+                <img src="<?php echo get_icon_url( 'unlock' ); ?>" alt="<?php echo get_lang( 'Open' ); ?>"/>
+                <?php else : ?>
+                <img src="<?php echo get_icon_url( 'locked' ); ?>" alt="<?php echo get_lang( 'Closed' ); ?>"/>
+                <?php endif; ?>
             </td>
             <?php endif; ?>
         </tr>
