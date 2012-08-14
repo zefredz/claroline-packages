@@ -6,6 +6,7 @@
             <th><?php echo get_lang( 'End date' ); ?></th>
         <?php if( claro_is_allowed_tool_edit() ) : ?>
             <th><?php echo get_lang( 'Actions' ); ?></th>
+            <th><?php echo get_lang( 'Rank' ); ?></th>
         <?php else : ?>
             <th><?php echo get_lang( 'Status' ); ?></th>
         <?php endif; ?>
@@ -42,6 +43,18 @@
                     <?php else: ?>
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exShow&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible' ); ?>"/>
+                </a>
+                    <?php endif; ?>
+            </td>
+            <td align="center">
+                    <?php if( $session['rank'] != 1 ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMoveUp&sessionId='. $session['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'move_up' ); ?>" alt="<?php echo get_lang( 'Move up' ); ?>"/>
+                </a>
+                    <?php endif; ?>
+                    <?php if( $session['rank'] != $this->model->getMaxRank() ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMoveDown&sessionId='. $session['id'] ) );?>">
+                    <img src="<?php echo get_icon_url( 'move_down' ); ?>" alt="<?php echo get_lang( 'Move down' ); ?>"/>
                 </a>
                     <?php endif; ?>
             </td>
