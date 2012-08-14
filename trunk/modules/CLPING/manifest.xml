@@ -1,0 +1,23 @@
+<module>
+  <label>CLPING</label>
+  <name>Ping service</name>
+  <version>1.0 $Revision$</version> 
+  <license>GPL</license>
+  <type>applet</type>
+  <icon>icon.png</icon>
+  <default_dock></default_dock>
+   
+  <description>This plugin executes a ping on the server</description>
+  
+  <author>
+     <name>Frederic Minne</name>
+     <email>zefredz@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+        <version>1.11</version>
+    </claroline>
+ </requirements>
+</module>
