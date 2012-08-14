@@ -63,7 +63,7 @@ else
     
     $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
         ? $pluginLoader->get( $sessionType , new Session( $sessionId ) , claro_is_allowed_to_edit() )
-        : new DefaultController( new SessionList( $pluginLoader->getPluginList() , $groupId ? 'group' : 'user' )
+        : new DefaultController( new SessionList( $pluginLoader->getPluginList() , $groupId ? 'group' : 'user' , claro_is_allowed_to_edit() )
             , $sessionId
             , claro_is_allowed_to_edit() );
     

@@ -11,6 +11,7 @@
 
 class SessionList extends Lister
 {
+    const CONTEXT = 'context';
     const DEFAULT_TYPE = 'generic';
     const PARAM_TYPE = 'type';
     const PARAM_START_DATE = 'startDate';
@@ -31,7 +32,7 @@ class SessionList extends Lister
      * Constructor
      * @param string $context : the actual context
      */
-    public function __construct( $typeList , $context = self::ENUM_CONTEXT_USER )
+    public function __construct( $typeList , $context = self::ENUM_CONTEXT_USER , $allowedToEdit = false )
     {
         $this->typeList = $typeList;
         
@@ -48,7 +49,14 @@ class SessionList extends Lister
             'visibility' => self::ENUM_VISIBILITY_VISIBLE,
             'rank' => null );
         
-        parent::__construct( $tbl[ 'icsubscr_session' ] , array( 'context' => $context ) , $allowedFields );
+        $filter = array( self::CONTEXT => $context );
+        
+        if( ! $allowedToEdit )
+        {
+            $filter[ self::PARAM_VISIBILITY ] = self::ENUM_VISIBILITY_VISIBLE; 
+        }
+        
+        parent::__construct( $tbl[ 'icsubscr_session' ] , $filter , $allowedFields );
     }
     
     /**
@@ -116,12 +124,12 @@ class SessionList extends Lister
      */
     public function isAvailable( $sessionId )
     {
-        $now = new date( 'Y-m-d H:i:s' );
+        $now = date( 'Y-m-d H:i:s' );
         
         return $this->isOpen( $sessionId )
             && $this->isVisible( $sessionId )
-            && ( ! $this->getStartDate() || $this->getStartDate( $sessionId ) < $now )
-            && ( ! $this->getEndDate() || $this->getEndDate( $sessionId ) > $now );
+            && ( ! $this->getStartDate( $sessionId ) || $this->getStartDate( $sessionId ) < $now )
+            && ( ! $this->getEndDate( $sessionId ) || $this->getEndDate( $sessionId ) > $now );
     }
     
     /**

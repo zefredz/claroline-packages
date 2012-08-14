@@ -120,7 +120,7 @@ class Lister
     {
         foreach( $data as $name => $value )
         {
-            return $this->set( $itemId , $name , $value );
+            $this->set( $itemId , $name , $value );
         }
     }
     
@@ -148,7 +148,7 @@ class Lister
                 $sqlCond[] = $name . " = '" . $value . "'";
             }
             
-            $sql .= implode( "\nAND" , $sqlCond );
+            $sql .= implode( "\nAND " , $sqlCond );
         }
         
         $sql .= "\nORDER BY rank ASC";
@@ -250,11 +250,13 @@ class Lister
     {
         if( array_key_exists( 'item_' . $itemId , $this->itemList ) )
         {
+            unset( $this->itemList[ 'item_' . $itemId ] );
+            
             return Claroline::getDatabase()->exec( "
                 DELETE FROM
                     `{$this->tbl}`
                 WHERE
-                    id = " . (int)$itemId  );
+                    id = " . (int)$itemId );
         }
     }
     

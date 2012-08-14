@@ -55,7 +55,7 @@ class DefaultController extends ICSUBSCR_Controller
             return;
         }
         
-        $data['starDate'] = $this->dateUtil->in( $data['starDate'] );
+        $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
         $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
         
         if( $this->id = $this->model->add( $data ) )
