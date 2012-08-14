@@ -38,6 +38,15 @@ class DefaultController extends ICSUBSCR_Controller
         }
     }
     
+    public function rqDeleteSession()
+    {
+        $question = $this->view->question( get_lang( 'delete this session?' )
+                                        , 'exDeleteSession'
+                                        , array( 'sessionId' => $this->id ) ) ;
+        $this->addMsg( self::QUESTION , $question );
+        $this->view->selectedView = 0;
+    }
+    
     public function exCreateSession( $data )
     {
         if( ! $data['title'] || ! $data['description'] || ! $data['type'] )

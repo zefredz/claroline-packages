@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_session` (
     `optionList` TEXT,
     `startDate` DATETIME,
     `endDate` DATETIME,
-    `status` ENUM('open','close') NOT NULL default 'open',
+    `status` ENUM('open','closed') NOT NULL default 'open',
     `rank` INT(3),
     `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
     PRIMARY KEY(`id`)

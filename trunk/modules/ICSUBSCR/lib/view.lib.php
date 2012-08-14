@@ -48,6 +48,16 @@ abstract class ICSUBSCR_View
             . '.tpl.php' );
     }
     
+    public function question( $msg , $cmd , $xid = array() )
+    {
+        $question = new ModuleTemplate( 'ICSUBSCR' , 'question.tpl.php' );
+        $question->assign( 'msg' , $msg );
+        $question->assign( 'cmd' , $cmd );
+        $question->assign( 'xid' , $xid );
+        
+        return $question->render();
+    }
+    
     protected function addCmd( $index )
     {
         $this->activeCmdList[] = $this->cmdList[ $index ];
