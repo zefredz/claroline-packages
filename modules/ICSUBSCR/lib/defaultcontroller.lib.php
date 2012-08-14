@@ -147,4 +147,24 @@ class DefaultController extends ICSUBSCR_Controller
         
         $this->view->selectedView = 0;
     }
+    
+    public function exMoveUp()
+    {
+        if( ! $this->model->up( $this->id ) )
+        {
+            $this->addMsg( self::ERROR , 'An error occured' );
+        }
+        
+        $this->view->selectedView = 0;
+    }
+    
+    public function exMoveDown()
+    {
+        if( ! $this->model->down( $this->id ) )
+        {
+            $this->addMsg( self::ERROR , 'An error occured' );
+        }
+        
+        $this->view->selectedView = 0;
+    }
 }

@@ -132,7 +132,7 @@ class Lister
     public function load()
     {
         $fieldList = ! empty( $this->allowedFields )
-            ? 'id, ' . implode( ',' , array_keys( $this->allowedFields ) )
+            ? 'id, rank, ' . implode( ',' , array_keys( $this->allowedFields ) )
             : "*";
         
         $sql = "SELECT {$fieldList} FROM `{$this->tbl}`";
@@ -190,18 +190,25 @@ class Lister
             
             foreach( $item as $name => $value )
             {
-                $sqlData[] = $name . " = '" . $value . "'";
+                if( $name != 'id' )
+                {
+                    $sqlData[] = $name . " = '" . $value . "'";
+                }
             }
             
             $sql .= implode( ",\n" , $sqlData );
             
-            $sql .= "\n WHERE id = " . $itemId;
+            $id = $itemId ? $itemId : $item['id'];
+            $sql .= "\n WHERE id = " . $id;
+            
             
             if( Claroline::getDatabase()->exec( $sql ) )
             {
                 $nbRows++;
             }
         }
+        
+        $this->load();
         
         return $nbRows;
     }
@@ -281,6 +288,15 @@ class Lister
     }
     
     /**
+     * Gets max rank
+     * @return int
+     */
+    public function getMaxRank()
+    {
+        return $this->maxRank;
+    }
+    
+    /**
      * Moves an item (private function)
      * @param int $itemId : the id of the item
      * @param int $direction : 1 for up, -1 for down
@@ -298,11 +314,11 @@ class Lister
             $oldRank = $this->itemList[ 'item_' . $itemId ][ 'rank' ];
             $newRank = $oldRank - $direction;
             
-            $this->slotList[ 'item_' . $itemId ][ 'rank' ] = $newRank;
+            $this->itemList[ 'item_' . $itemId ][ 'rank' ] = $newRank;
             
             foreach( $this->itemList as $item )
             {
-                if( $slot[ 'id' ] != $itemId && $item[ 'rank' ] == $rank )
+                if( $item[ 'id' ] != $itemId && $item[ 'rank' ] == $newRank )
                 {
                     $this->itemList[ 'item_' . $item[ 'id' ] ][ 'rank' ] = $oldRank;
                 }
