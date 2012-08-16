@@ -17,8 +17,8 @@
         <?php foreach( $this->model->getItemList() as $session ) : ?>
         <tr>
             <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session['id'] . '&sessionType=' . $session['type'] ) );?>"><?php echo $session['title']; ?></a></td>
-            <td><?php echo claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['startDate'] ) ); ?></td>
-            <td><?php echo claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['endDate'] ) ); ?></td>
+            <td><?php echo $this->model->getStartDate( $session['id'] ) ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['startDate'] ) ) : 'no date'; ?></td>
+            <td><?php echo $this->model->getEndDate( $session['id'] ) ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session['endDate'] ) ) : 'no date'; ?></td>
             <?php if( claro_is_allowed_to_edit() ) : ?>
             <td align="center">
                 <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditSession&sessionId='. $session['id'] ) );?>">

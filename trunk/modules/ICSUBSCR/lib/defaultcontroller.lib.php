@@ -55,8 +55,15 @@ class DefaultController extends ICSUBSCR_Controller
             return;
         }
         
-        $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
-        $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        if( $data['startDate'] )
+        {
+           $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
+        }
+        
+        if( $data['endDate'] )
+        {
+            $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        }
         
         if( $this->id = $this->model->add( $data ) )
         {
@@ -77,8 +84,15 @@ class DefaultController extends ICSUBSCR_Controller
     
     public function exEditSession( $data )
     {
-        $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
-        $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        if( $data['startDate'] )
+        {
+           $data['startDate'] = $this->dateUtil->in( $data['startDate'] );
+        }
+        
+        if( $data['endDate'] )
+        {
+            $data['endDate'] = $this->dateUtil->in( $data['endDate'] );
+        }
         
         $this->model->modify( $this->id , $data );
         
