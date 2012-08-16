@@ -10,7 +10,7 @@
  */
 
 $_lang['_lang_code'] = 'en';
-$_lang['_date'] = 'd/m/Y';
+$_lang['_date'] = 'm/d/Y';
 $_lang['_date_format'] = 'JJ/MM/AAAA';
 $_lang['_hour_format'] = 'hh:mm';
 $_lang['_date_output_format %part1 %part2 %part3'] = '%part3-%part1-%part2';
