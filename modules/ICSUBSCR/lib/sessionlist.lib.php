@@ -84,7 +84,12 @@ class SessionList extends Lister
      */
     public function getStartDate( $sessionId )
     {
-        return $this->get( $sessionId , self::PARAM_START_DATE );
+        $startDate = $this->get( $sessionId , self::PARAM_START_DATE );
+        
+        if( $startDate != '0000-00-00 00:00:00' )
+        {
+            return $startDate;
+        }
     }
     
     /**
@@ -94,7 +99,12 @@ class SessionList extends Lister
      */
     public function getEndDate( $sessionId )
     {
-        return $this->get( $sessionId , self::PARAM_END_DATE );
+        $endDate = $this->get( $sessionId , self::PARAM_END_DATE );
+        
+        if( $endDate != '0000-00-00 00:00:00' )
+        {
+            return $endDate;
+        }
     }
     
     /**
