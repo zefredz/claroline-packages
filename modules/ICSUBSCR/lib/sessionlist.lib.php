@@ -13,6 +13,7 @@ class SessionList extends Lister
 {
     const CONTEXT = 'context';
     const DEFAULT_TYPE = 'generic';
+    const OPTION_LIST = 'optionList';
     const PARAM_TYPE = 'type';
     const PARAM_START_DATE = 'startDate';
     const PARAM_END_DATE = 'endDate';
@@ -231,5 +232,21 @@ class SessionList extends Lister
             &&  $this->set( $sessionId
                             , self::PARAM_END_DATE
                             , null );
+    }
+    
+    /**
+     * Getter for option value
+     * @param int $sessionId : the session id
+     * @param string $option : the name of the option
+     * @return string : the value associated with the option
+     */
+    public function getOption( $sessionId , $option )
+    {
+        $optionList = $this->get( $sessionId , self::OPTION_LIST );
+        
+        if( ! empty( $optionList ) && array_key_exists( $option , $optionList ) )
+        {
+            return $optionList[ $option ];
+        }
     }
 }

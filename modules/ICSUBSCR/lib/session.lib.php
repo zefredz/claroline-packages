@@ -11,6 +11,14 @@
 
 class Session
 {
+    const OPTION_USER_NAME_VISIBLE = 'user_name_visible';
+    const OPTION_UNSUBSCRIBE_ALLOWED = 'unsubscribe_allowed';
+    const OPTION_VOTE_MODIFICATION_ALLOWED = 'vote_modification_allowed';
+    const OPTION_BLANK_VOTE_ENABLED = 'blank_vote_enabled';
+    const OPTION_PREFERENCE_ENABLED = 'preference_enabled';
+    const OPTION_MINIMUM_NUMBER_OF_VOTE = 'minimum_number_of_vote';
+    const OPTION_MAXIMUM_NUMBER_OF_VOTE = 'maximum_number_of_vote';
+    
     protected $id;
     protected $optionList = array();
     protected $slotList;
