@@ -192,6 +192,11 @@ class Lister
             {
                 if( $name != 'id' )
                 {
+                    if( is_array( $value ) )
+                    {
+                        $value = serialize( $value );
+                    }
+                    
                     $sqlData[] = $name . " = '" . $value . "'";
                 }
             }
