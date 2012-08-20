@@ -11,10 +11,22 @@
 
 abstract class pluginView extends ICSUBSCR_View
 {
-    public function __construct( $cmdList )
+    public function __construct()
     {
         $templateList = array( 'subscribe' , 'edit' , 'result' );
         $templatePath = '/plugins/icsubscr.plugin.' . strtolower( substr( get_class( $this ) , 0 , -4 ) );
+        
+        $cmdList = array(
+            array(
+                'img'  => 'new',
+                'name' => get_lang( 'Edit choices' ),
+                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
+                        .'/index.php?cmd=rqEditSlot' ) ) ),
+            array(
+                'img'  => 'back',
+                'name' => get_lang( 'Add a new choice' ),
+                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
+                        .'/index.php?cmd=rqAddSlot' ) ) ) );
         
         parent::__construct( $templateList , $cmdList , $templatePath );
     }
