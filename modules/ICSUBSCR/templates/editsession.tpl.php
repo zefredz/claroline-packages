@@ -118,28 +118,28 @@
             <dl>
                 <dt><?php echo get_lang( 'Global options' ); ?></dt>
                 <dd>
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_USER_NAME_VISIBLE ) ) echo 'checked="checked"'; ?> name="data[option[<?php echo Session::OPTION_USER_NAME_VISIBLE; ?>]]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_USER_NAME_VISIBLE ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_USER_NAME_VISIBLE; ?>]" />
                     <label><?php echo get_lang( 'Users can see the name of the others voters' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_UNSUBSCRIBE_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[option[<?php echo Session::OPTION_UNSUBSCRIBE_ALLOWED; ?>]]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_UNSUBSCRIBE_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_UNSUBSCRIBE_ALLOWED; ?>]" />
                     <label><?php echo get_lang( 'Users cans delete their vote' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_VOTE_MODIFICATION_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[option[<?php echo Session::OPTION_VOTE_MODIFICATION_ALLOWED; ?>]]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_VOTE_MODIFICATION_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_VOTE_MODIFICATION_ALLOWED; ?>]" />
                     <label><?php echo get_lang( 'Users can modify their choice' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_BLANK_VOTE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[option[<?php echo Session::OPTION_BLANK_VOTE_ENABLED; ?>]]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_BLANK_VOTE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_BLANK_VOTE_ENABLED; ?>]" />
                     <label><?php echo get_lang( 'Blank vote enabled (adds a choice)' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_PREFERENCE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[option[<?php echo Session::OPTION_PREFERENCE_ENABLED; ?>]]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_PREFERENCE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_PREFERENCE_ENABLED; ?>]" />
                     <label><?php echo get_lang( 'Subscription with preferences' ); ?></label><br />
                 </dd>
             </dl>
             <dl>
                 <dt><?php echo get_lang( 'Number of vote required' ); ?></dt>
                 <dd>
-                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[option[<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]]" />
+                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
             <dl>
                 <dt><?php echo get_lang( 'Number of vote allowed' ); ?></dt>
                 <dd>
-                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[option[<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]]" />
+                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
         </div>

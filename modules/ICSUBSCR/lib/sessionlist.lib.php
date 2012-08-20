@@ -43,6 +43,7 @@ class SessionList extends Lister
             'type' => self::DEFAULT_TYPE,
             'context' => self::ENUM_CONTEXT_USER,
             'title' => '',
+            'optionList' => null,
             'description' => '',
             'startDate' => null,
             'endDate' => null,
@@ -242,7 +243,7 @@ class SessionList extends Lister
      */
     public function getOption( $sessionId , $option )
     {
-        $optionList = $this->get( $sessionId , self::OPTION_LIST );
+        $optionList = unserialize( $this->get( $sessionId , self::OPTION_LIST ) );
         
         if( ! empty( $optionList ) && array_key_exists( $option , $optionList ) )
         {
