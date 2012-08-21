@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -178,7 +178,8 @@ class Lister
     {
         $nbRows = 0;
         
-        $itemList = $itemId && array_key_exists( 'item_' . $itemId , $this->itemList )
+        $itemList = $itemId
+                    && array_key_exists( 'item_' . $itemId , $this->itemList )
                 ? array( $this->itemList[ 'item_' . $itemId ] )
                 : $this->itemList;
         

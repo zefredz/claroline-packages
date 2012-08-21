@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -47,7 +47,8 @@ class Session
             $this->id = $id;
             $this->load();
             
-            $this->slotList = new Lister( $this->tbl['icsubscr_slot'] , array( 'sessionId' => $id ) );
+            $this->slotList = new Lister( $this->tbl['icsubscr_slot']
+                                        , array( 'sessionId' => $id ) );
         }
     }
     
@@ -152,7 +153,11 @@ class Session
      * @param int availableSpace
      * @return int : the slot's id
      */
-    public function addSlot( $title , $description, $startDate = null , $endDate = null , $availableSpace = 1 )
+    public function addSlot( $title
+                            , $description
+                            , $startDate = null
+                            , $endDate = null
+                            , $availableSpace = 1 )
     {
         $data = array( 'title' => $title
                       , 'description' => $description

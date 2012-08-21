@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -45,7 +45,10 @@ class DateUtil
                 $hour = '00:00';
             }
             
-            $dateTime = $date['Y'] . '-' . $date['m'] . '-' . $date['d'] . ' ' . $hour . ':00' ;
+            $dateTime = $date['Y']
+                . '-' . $date['m']
+                . '-' . $date['d']
+                . ' ' . $hour . ':00' ;
         }
         else
         {
@@ -64,7 +67,11 @@ class DateUtil
     {
         if( $this->validate( $dateTime , self::DATETIME ) )
         {
-            $offset = $secOffset + $minOffset*60 + $hourOffset*3600 + $dayOffset*86400 + $weekOffset*604800;
+            $offset = $secOffset
+                + $minOffset*60
+                + $hourOffset*3600
+                + $dayOffset*86400
+                + $weekOffset*604800;
             
             if( ! $dateTime )
             {
@@ -89,15 +96,21 @@ class DateUtil
             case self::HOUR:
                 $hourParts = explode( ':' , $string );
                 
-                if( count( $hourParts ) != 2 ) return false;
+                if( count( $hourParts ) != 2 )
+                    return false;
                 
                 foreach( $hourparts as $index => $part )
                 {
                     $max = $index == 0 ? 24 : 60;
                     
-                    if( ! is_numeric( $parts ) ) return false;
-                    if( strlen( $part ) != 2 ) return false;
-                    if( (int)$part > $max ) return false;
+                    if( ! is_numeric( $parts ) )
+                        return false;
+                    
+                    if( strlen( $part ) != 2 )
+                        return false;
+                    
+                    if( (int)$part > $max )
+                        return false;
                 }
                 
                 return true;
@@ -114,16 +127,18 @@ class DateUtil
                     switch( $this->dateFields[ $index ] )
                     {
                         case 'Y':
-                            if( strlen( $dateParts[ $index ] ) != 4 ) return false;
-                            break;
+                            if( strlen( $dateParts[ $index ] ) != 4 )
+                                return false;
                         
                         case 'm':
-                            if( strlen( $dateParts[ $index ] ) != 2 && (int)$dateParts[ $index ] > 12 ) return false;
-                            break;
+                            if( strlen( $dateParts[ $index ] ) != 2
+                                && (int)$dateParts[ $index ] > 12 )
+                                return false;
                         
                         case 'd':
-                            if( strlen( $dateParts[ $index ] ) != 2 && (int)$dateParts[ $index ] > 31 ) return false;
-                            break;
+                            if( strlen( $dateParts[ $index ] ) != 2
+                                && (int)$dateParts[ $index ] > 31 )
+                                return false;
                         
                         default:
                             throw new Exception( 'Error while parsing date' );

@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -36,5 +36,51 @@ abstract class PluginController extends ICSUBSCR_Controller
         $this->selectedView = 0;
     }
     
-    abstract public function rqView();
+    public function rqView()
+    {
+        $this->view->selectedView = 0;
+    }
+    
+    public function rqCreateSlot()
+    {
+        if( $this->allowedToEdit )
+        {
+            $this->view->selectedView = 1;
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Not allowed' );
+            $this->view->selectedView = 0;
+        }
+    }
+    
+    public function rqEditSlot()
+    {
+        if( $this->allowedToEdit )
+        {
+            $this->view->selectedView = 1;
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Not allowed' );
+            $this->view->selectedView = 0;
+        }
+    }
+    
+    public function rqDeleteSlot()
+    {
+        $question = $this->view->question( get_lang( 'delete this session?' )
+                                        , 'exDeleteSlot'
+                                        , array( 'slotId' => $this->id ) ) ;
+        $this->addMsg( self::QUESTION , $question );
+        $this->view->selectedView = 0;
+    }
+    
+    public function exDeleteSlot()
+    {
+        
+    }
+    
+    abstract public function exCreateSlot( $data );
+    abstract public function exEditSlot( $data );
 }

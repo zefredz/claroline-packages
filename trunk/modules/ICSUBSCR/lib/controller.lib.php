@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -137,7 +137,10 @@ class ICSUBSCR_Controller
      */
     protected function addMsg( $type , $content )
     {
-        if( $type != self::SUCCESS && $type != self::ERROR && $type != self::INFO && $type != self::QUESTION )
+        if( $type != self::SUCCESS
+            && $type != self::ERROR
+            && $type != self::INFO
+            && $type != self::QUESTION )
         {
             throw new Exception( 'Invalid message type');
         }
