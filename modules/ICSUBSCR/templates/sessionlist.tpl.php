@@ -4,7 +4,7 @@
             <th><?php echo get_lang( 'Session' ); ?></th>
             <th><?php echo get_lang( 'Start date' ); ?></th>
             <th><?php echo get_lang( 'End date' ); ?></th>
-        <?php if( claro_is_allowed_tool_edit() ) : ?>
+        <?php if( claro_is_allowed_to_edit() ) : ?>
             <th><?php echo get_lang( 'Actions' ); ?></th>
             <th><?php echo get_lang( 'Rank' ); ?></th>
         <?php else : ?>
@@ -71,7 +71,7 @@
         <?php endforeach; ?>
     <?php else : ?>
         <tr>
-            <td colspan="4"  align="center"><span class="empty"><?php echo get_lang( 'Empty' ); ?></span></td>
+            <td colspan="<?php echo claro_is_allowed_to_edit() ? 5 : 3; ?>"  align="center"><span class="empty"><?php echo get_lang( 'Empty' ); ?></span></td>
         </tr>
     <?php endif; ?>
     </tbody>

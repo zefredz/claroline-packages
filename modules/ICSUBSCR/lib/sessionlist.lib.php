@@ -243,7 +243,12 @@ class SessionList extends Lister
      */
     public function getOption( $sessionId , $option )
     {
-        $optionList = unserialize( $this->get( $sessionId , self::OPTION_LIST ) );
+        $optionList = $this->get( $sessionId , self::OPTION_LIST );
+        
+        if( is_string( $optionList ) )
+        {
+            $optionList = $optionList != '' ? unserialize( $optionList ) : array();
+        }
         
         if( ! empty( $optionList ) && array_key_exists( $option , $optionList ) )
         {

@@ -93,9 +93,15 @@ class PluginLoader
         }
         elseif( in_array( $plugin , $this->pluginList ) )
         {
+            $lang = file_exists( get_module_path( 'ICSUBSCR' )
+                . '/plugins/icsubscr.plugin.'
+                . $plugin . '/lang/lang_' . $this->lang . '.php')
+                ? $this->lang
+                : 'english';
+                
             include get_module_path( 'ICSUBSCR' )
                 . '/plugins/icsubscr.plugin.'
-                . $plugin . '/lang/lang_' . $this->lang . '.php';
+                . $plugin . '/lang/lang_' . $lang . '.php';
             
             $className = $plugin . 'Controller';
             
