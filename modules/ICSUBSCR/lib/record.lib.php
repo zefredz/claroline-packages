@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.1 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -37,7 +37,8 @@ class Record
     {
         if( ! in_array( $slotId , $this->selectedSlotList )
            && array_key_exists( $slotId , $this->session->slotList )
-           && count( $this->selectedSlotList ) < $this->session->slotList[ $slotId ][ Slot::AVAILABLE_SPACE ] )
+           && count( $this->selectedSlotList )
+                < $this->session->slotList[ $slotId ][ Slot::AVAILABLE_SPACE ] )
         {
             $this->selectedSlotList[] = $slotId;
         }

@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -140,8 +140,10 @@ class SessionList extends Lister
         
         return $this->isOpen( $sessionId )
             && $this->isVisible( $sessionId )
-            && ( ! $this->getStartDate( $sessionId ) || $this->getStartDate( $sessionId ) < $now )
-            && ( ! $this->getEndDate( $sessionId ) || $this->getEndDate( $sessionId ) > $now );
+            && ( ! $this->getStartDate( $sessionId )
+                || $this->getStartDate( $sessionId ) < $now )
+            && ( ! $this->getEndDate( $sessionId )
+                || $this->getEndDate( $sessionId ) > $now );
     }
     
     /**

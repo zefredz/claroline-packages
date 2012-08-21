@@ -70,7 +70,7 @@
                 <select id="type"
                         name="data[type]" >
                     <?php foreach( $this->model->getTypeList() as $type ) : ?>
-                    <option value="<?php echo $type; ?>"><?php echo $type; ?></option>
+                    <option value="<?php echo $type; ?>" <?php if( $type == 'generic' ) echo 'selected="selected"'; ?>><?php echo $type; ?></option>
                     <?php endforeach; ?>
                 </select>
             </dd>

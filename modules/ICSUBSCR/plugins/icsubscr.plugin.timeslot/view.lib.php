@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class GenericView extends PluginView
+class TimeSlotView extends PluginView
 {
     public function __construct()
     {

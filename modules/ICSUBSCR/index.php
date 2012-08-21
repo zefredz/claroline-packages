@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.0.2 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -41,7 +41,9 @@ $userId = claro_get_current_user_id();
 $courseId = claro_get_current_course_id();
 $groupId = claro_get_current_group_id();
 
-if( ! claro_is_in_a_course() || ! claro_is_course_allowed() || ( $groupId && ! claro_is_group_allowed() ) )
+if( ! claro_is_in_a_course()
+    || ! claro_is_course_allowed()
+    || ( $groupId && ! claro_is_group_allowed() ) )
 {
     $dialogBox->error( 'Not allowed' );
     $output = $dialogBox->render();
@@ -62,8 +64,14 @@ else
     $data = $userInput->get( 'data' );
     
     $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
-        ? $pluginLoader->get( $sessionType , new Session( $sessionId ) , claro_is_allowed_to_edit() )
-        : new DefaultController( new SessionList( $pluginLoader->getPluginList() , $groupId ? 'group' : 'user' , claro_is_allowed_to_edit() )
+        ? $pluginLoader->get( $sessionType
+            , new Session( $sessionId )
+            , claro_is_allowed_to_edit() )
+        : new DefaultController(
+            new SessionList(
+                $pluginLoader->getPluginList()
+                , $groupId ? 'group' : 'user'
+                , claro_is_allowed_to_edit() )
             , $sessionId
             , claro_is_allowed_to_edit() );
     
