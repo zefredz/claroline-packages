@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -26,6 +26,7 @@ class Resource
     const TYPE_URL = 'url';
     
     protected $id;
+    protected $submitterId;
     protected $storageType;
     protected $resourceType;
     
@@ -59,6 +60,7 @@ class Resource
     {
         $result = $this->database->query( "
             SELECT
+                submitter_id,
                 creation_date,
                 storage_type,
                 resource_type,
@@ -75,6 +77,7 @@ class Resource
             $this->storageType = $data[ 'storage_type' ];
             $this->resourceType = $data[ 'resource_type' ];
             $this->resourceName = $data[ 'resource_name' ];
+            $this->submitterId = $data[ 'submitter_id' ];
         }
         else
         {
@@ -187,6 +190,19 @@ class Resource
         return $this->creationDate = $date ? $date : date( 'Y-m-d H:i:s' );
     }
     
+    /**
+     * setter for submitter id
+     * @param int : $userId
+     * @return boolean true on succes
+     */
+    public function setSubmitterId( $userId )
+    {
+        if( ! $this->submitterId )
+        {
+            return $this->submitterId = $userId;
+        }
+    }
+    
     /** 
      * Sets a new name and update the date
      * @param string $fileName
@@ -235,6 +251,7 @@ class Resource
     {
         return "\n   `{$this->tbl['library_resource']}`
                 SET
+                    submitter_id = " . $this->database->quote( $this->submitterId ) . ",
                     storage_type = " . $this->database->quote( $this->storageType ) . ",
                     resource_type = " . $this->database->quote( $this->resourceType ) . ",
                     resource_name = " . $this->database->quote( $this->resourceName ) . ",

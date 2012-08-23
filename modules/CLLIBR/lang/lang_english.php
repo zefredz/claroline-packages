@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -83,6 +83,7 @@ $_lang[ 'Relevancy' ] = 'Relevancy';
 $_lang[ 'Resource' ] = 'Resource';
 $_lang[ 'Resource type' ] = 'Resource type';
 $_lang[ 'Resource type definitions' ] = 'Resource type definitions';
+$_lang[ 'Restricted rights for resource deletion' ] = 'Restricted rights for resource deletion';
 $_lang[ 'Search result' ] = 'Search result';
 $_lang[ 'Selected' ] = 'Selected';
 $_lang[ 'Storage type' ] = 'Storage type';
@@ -155,6 +156,7 @@ $_lang[ 'Access denied' ] = 'Access denied';
 $_lang[ 'A library must have at least one librarian' ] = 'A library must have at least one librarian';
 $_lang[ 'Bookmarking is not allowed to anonymous users' ] = 'Bookmarking is not allowed to anonymous users';
 $_lang[ 'Choose a title for this link to the library' ] = 'Choose a title for this link to the library';
+$_lang[ 'Deletion not allowed' ] = 'Deletion not allowed';
 $_lang[ 'Do you really want to delete this library?' ] = 'Do you really want to delete this library?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Do you really want to delete this resource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Do you really want to remove this librarian?';
@@ -183,8 +185,10 @@ $_lang[ 'This resource is already added' ] = 'This resource is already added';
 $_lang[ 'This resource is already bookmarked' ] = 'This resource is already bookmarked';
 $_lang[ 'Uploading file' ] = 'Uploading file';
 $_lang[ 'Url missing' ] = 'Url missing';
+$_lang[ 'Users can only delete resources they submitted themselves' ] = 'Users can only delete resources they submitted themselves';
 $_lang[ 'Warning : this library is not empty! First, you must delete or move all the resources within' ] = 'Warning : this library is not empty! First, you must delete or move all the resources within';
 $_lang[ 'Warning : this resource is in use' ] = 'Warning : this resource is in use';
+$_lang[ 'You are not allowed to delete this resource!'] = 'You are not allowed to delete this resource!';
 $_lang[ 'You can copy/paste this line into you word processing software' ] = 'You can copy/paste this line into you word processing software';
 $_lang[ 'You must fill all the fields' ] = 'You must fill all the fields';
 $_lang[ 'You are not allowed to access this resource!' ] = 'You are not allowed to access this resource!';
