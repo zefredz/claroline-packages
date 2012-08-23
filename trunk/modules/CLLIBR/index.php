@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.11
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -164,19 +164,23 @@ try
     
     $library = new Library( $database , $libraryId );
     $resource = new Resource( $database , $resourceId );
-    $metadata = new Metadata( $database , $resourceId );
     
-    $exporterList = array();
-    
-    if ( array_key_exists( 'metadataview' , $pluginList ) )
+    if( $cmd != 'rqDeleteResource' && $cmd != 'rqMove' )
     {
-        foreach( $pluginList[ 'metadataview' ] as $pluginName )
+        $metadata = new Metadata( $database , $resourceId );
+        
+        $exporterList = array();
+        
+        if ( array_key_exists( 'metadataview' , $pluginList ) )
         {
-            $exporter = new $pluginName( $metadata->getMetadataList() );
-            
-            if ( is_a( $exporter , 'MetadataExport' ) )
+            foreach( $pluginList[ 'metadataview' ] as $pluginName )
             {
-                $exporterList[ $pluginName ] = $exporter;
+                $exporter = new $pluginName( $metadata->getMetadataList() );
+                
+                if ( is_a( $exporter , 'MetadataExport' ) )
+                {
+                    $exporterList[ $pluginName ] = $exporter;
+                }
             }
         }
     }
@@ -457,6 +461,7 @@ try
                     $resource = new Resource( $database );
                     $metadata = new Metadata( $database );
                     
+                    $resource->setSubmitterId( $userId );
                     $resource->setType( $type );
                     $resource->setStorageType( $storage );
                     $resource->setDate();
@@ -688,30 +693,35 @@ try
             
             case 'exDeleteResource':
             {
-                $resource = new Resource( $database , $resourceId );
-                $catalogue = new Collection( $database , 'catalogue' , $libraryId );
+                $execution_ok = false;
                 
-                $execution_ok = $catalogue->removeResource( $resourceId )
-                             && $resource->delete();
-                
-                if( $execution_ok )
+                if( $acl->deletionGranted( $resourceId ) )
                 {
-                    $collectionList = $resourceSet->getCollectionList( $resourceId );
+                    $resource = new Resource( $database , $resourceId );
+                    $catalogue = new Collection( $database , 'catalogue' , $libraryId );
                     
-                    if ( isset( $collectionList[ Collection::USER_COLLECTION ] ) )
+                    $execution_ok = $catalogue->removeResource( $resourceId )
+                                 && $resource->delete();
+                    
+                    if( $execution_ok )
                     {
-                        $metadata->remove( Metadata::KEYWORD );
+                        $collectionList = $resourceSet->getCollectionList( $resourceId );
+                        
+                        if ( isset( $collectionList[ Collection::USER_COLLECTION ] ) )
+                        {
+                            $metadata->remove( Metadata::KEYWORD );
+                        }
+                        else
+                        {
+                            $metadata->removeAll();
+                        }
                     }
-                    else
+                    
+                    if ( $execution_ok && $resource->getStorageType() == 'file' )
                     {
-                        $metadata->removeAll();
+                        $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
+                        $execution_ok = $storedResource->delete();
                     }
-                }
-                
-                if ( $execution_ok && $resource->getStorageType() == 'file' )
-                {
-                    $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
-                    $execution_ok = $storedResource->delete();
                 }
                 break;
             }
@@ -876,7 +886,7 @@ try
         $cmdList = array();
         $warning = new DialogBox();
         
-        if ( $metadata->getResourceId() )
+        if ( isset( $metadata) && $metadata->getResourceId() )
         {
             $pageTitle[ 'subTitle' ] = $metadata->get( Metadata::TITLE );
         }
@@ -894,11 +904,17 @@ try
         $template->assign( 'edit_allowed' , $edit_allowed );
         $template->assign( 'is_platform_admin' , $is_platform_admin );
         $template->assign( 'userId' , $userId );
-        $template->assign( 'libraryId' , $libraryId );
         $template->assign( 'courseId' , $courseId );
         $template->assign( 'icon' , get_icon_url( 'icon' ) );
         $template->assign( 'tagCloud' , $tagCloud->render() );
         $template->assign( 'subTitle' , $pageTitle[ 'subTitle' ] );
+        $template->assign( 'acl' , $acl );
+        
+        if( $libraryId )
+        {
+            $template->assign( 'is_librarian' , $librarian->isLibrarian( $libraryId ) );
+            $template->assign( 'libraryId' , $libraryId );
+        }
         
         if ( $context == 'resourcetype' )
         {
@@ -957,7 +973,8 @@ try
             array_unshift( $cmdList , array( 'img'  => 'back',
                                              'name' => get_lang( 'Back to the resource type list' ),
                                              'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                                       .'/index.php?cmd=rqShowResourceType' ) ) ) );
+                                                       .'/index.php?cmd=rqShowCatalogue&libraryId='
+                                                       . $libraryId ) ) ) );
         }
         
         switch( $cmd )
@@ -1263,28 +1280,35 @@ try
             
             case 'rqDeleteResource':
             {
-                $collectionList = $resourceSet->getCollectionList( $resourceId );
-                
-                if ( isset( $collectionList[ 'bibliography' ] ) || isset( $collectionList[ 'bookmark' ] ) )
+                if( $acl->deletionGranted( $resourceId ) )
                 {
-                    $warningMsg = '<strong>' . get_lang( 'Warning : this resource is in use' ) . ': <br /><br />';
-                    $warningMsg .= isset( $collectionList[ 'bibliography' ] )
-                                ?'- ' . count( $collectionList[ 'bibliography' ] ) . ' ' . get_lang( 'bibliographies' ) . '<br />'
-                                : '';
-                    $warningMsg .= isset( $collectionList[ 'bookmark' ] )
-                                ? '- ' . count( $collectionList[ 'bookmark' ] ) . ' ' . get_lang( 'bookmarks' ) . '<br />'
-                                : '';
-                    $warningMsg .= '<br />'
-                                .  get_lang( 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' )
-                                .  '</strong>';
+                    $collectionList = $resourceSet->getCollectionList( $resourceId );
+                    
+                    if ( isset( $collectionList[ 'bibliography' ] ) || isset( $collectionList[ 'bookmark' ] ) )
+                    {
+                        $warningMsg = '<strong>' . get_lang( 'Warning : this resource is in use' ) . ': <br /><br />';
+                        $warningMsg .= isset( $collectionList[ 'bibliography' ] )
+                                    ?'- ' . count( $collectionList[ 'bibliography' ] ) . ' ' . get_lang( 'bibliographies' ) . '<br />'
+                                    : '';
+                        $warningMsg .= isset( $collectionList[ 'bookmark' ] )
+                                    ? '- ' . count( $collectionList[ 'bookmark' ] ) . ' ' . get_lang( 'bookmarks' ) . '<br />'
+                                    : '';
+                        $warningMsg .= '<br />'
+                                    .  get_lang( 'It\'s not advised to remove this resource unless you are sure it will not cause problems!' )
+                                    .  '</strong>';
+                    }
+                    
+                    $msg = get_lang( 'Do you really want to delete this resource?' );
+                    $urlAction = 'exDeleteResource';
+                    $urlCancel = 'rqShowCatalogue&libraryId='.$libraryId;
+                    $xid = array( 'resourceId' => $resourceId
+                                , 'context' => 'catalogue'
+                                , 'libraryId' => $libraryId );
                 }
-                
-                $msg = get_lang( 'Do you really want to delete this resource?' );
-                $urlAction = 'exDeleteResource';
-                $urlCancel = 'rqShowCatalogue&libraryId='.$libraryId;
-                $xid = array( 'resourceId' => $resourceId
-                            , 'context' => 'catalogue'
-                            , 'libraryId' => $libraryId );
+                else
+                {
+                    $dialogBox->error( get_lang( 'You are not allowed to delete this resource!' ) );
+                }
                 break;
             }
             

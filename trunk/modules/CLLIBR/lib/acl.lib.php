@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.5.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -36,7 +36,8 @@ class CLLIBR_ACL
     public function __construct( $database , $userId , $is_course_creator = false , $is_platform_admin = false )
     {
         $this->database = $database;
-        $this->tbl = get_module_main_tbl( array ( 'library_collection'
+        $this->tbl = get_module_main_tbl( array ( 'library_resource'
+                                                , 'library_collection'
                                                 , 'library_library'
                                                 , 'library_librarian'
                                                 , 'library_course_library'
@@ -72,6 +73,19 @@ class CLLIBR_ACL
     {
         return $this->is_platform_admin
             || $this->is_librarian( $resourceId );
+    }
+    
+    /**
+     * Controls if user is allowed to delete the specifier resource
+     * @param int $resourceId
+     * @return boolean
+     */
+    public function deletionGranted( $resourceId )
+    {
+        return $this->is_platform_admin
+            || ( $this->is_librarian( $resourceId )
+              && ( ! get_conf( 'CLLIBR_restricted_deletion' )
+                || $this->is_submitter( $resourceId ) ) );
     }
     
     /**
@@ -214,6 +228,24 @@ class CLLIBR_ACL
                 C.collection_type = 'catalogue'
             AND
                 C.resource_id = " . $this->database->escape( $resourceId )
+        )->numRows();
+    }
+    
+    /**
+     * Controls if current user is the actual resource's submitter
+     * @return boolean
+     */
+    private function is_submitter( $resourceId )
+    {
+        return $this->database->query( "
+            SELECT
+                id
+            FROM
+                `{$this->tbl['library_resource']}`
+            WHERE
+                id = " . $this->database->escape( $resourceId ) . "
+            AND
+                submitter_id = " . $this->database->escape( $this->userId )
         )->numRows();
     }
 }

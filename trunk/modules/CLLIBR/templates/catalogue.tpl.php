@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -77,9 +77,13 @@
                         <a title="<?php echo get_lang( 'Move this resource to another library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&option=move&libraryId=' . $this->libraryId . '&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'move' ); ?>" alt="<?php echo get_lang( 'Move' ); ?>"/>
                         </a>
+                        <?php if( $this->acl->deletionGranted( $resource['id'] ) ) : ?>
                         <a title="<?php echo get_lang( 'Delete this resource' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteResource&libraryId=' . $this->libraryId . '&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                         </a>
+                        <?php else: ?>
+                            <img src="<?php echo get_icon_url( 'delete_disabled' ); ?>" alt="<?php echo get_lang( 'Deletion not allowed' ); ?>"/>
+                        <?php endif; ?>
                         <a title="<?php echo get_lang( 'Edit resource\'s metadatas' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResource&resourceId='. $resource[ 'id' ] . '&libraryId=' . $this->libraryId ) );?>">
                             <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                         </a>
@@ -99,10 +103,14 @@
         <div id="onSelected">
             <span class="claroCmd"><?php echo get_lang( 'On selected items' ); ?>:</span>
             <select name="cmd">
-            <?php if ( $this->courseId && $this->edit_allowed ) : ?>
+            <?php if ( $this->courseId ) : ?>
                 <option value="exAdd"><?php echo get_lang( 'Add to the course\'s bibliography' ); ?></option>
             <?php endif; ?>
                 <option value="exBookmark"><?php echo get_lang( 'Add to my bookmark' ); ?></option>
+            <?php if( $this->is_librarian ) : ?>
+                <option value="rqMove"><?php echo get_lang( 'Move this resource to another library' ); ?></option>
+                <option value="rqDeleteResource"><?php echo get_lang( 'Delete this resource' ); ?></option>
+            <?php endif; ?>
             </select>
             <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
         </div>

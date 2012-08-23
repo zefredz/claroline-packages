@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.0.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -83,6 +83,7 @@ $_lang[ 'Relevancy' ] = 'Pertinence';
 $_lang[ 'Resource' ] = 'Ressource';
 $_lang[ 'Resource type' ] = 'Type de ressource';
 $_lang[ 'Resource type definitions' ] = 'Types de ressources';
+$_lang[ 'Restricted rights for resource deletion' ] = 'Droit restreint pour la suppression des ressources ';
 $_lang[ 'Search result' ] = 'Résultat de la recherche';
 $_lang[ 'Selected' ] = 'Sélectionné';
 $_lang[ 'Storage type' ] = 'Stockage';
@@ -155,6 +156,7 @@ $_lang[ 'Access denied' ] = 'Accès non autorisé';
 $_lang[ 'A library must have at least one librarian' ] = 'Une bibliothèque doit avoir au moins un bibliothécaire';
 $_lang[ 'Bookmarking is not allowed to anonymous users' ] = 'Les utilisateurs anonymes ne peuvent effectuer cette opération';
 $_lang[ 'Choose a title for this link to the library' ] = 'Donnez un titre au lien vers cette bibliothèque';
+$_lang[ 'Deletion not allowed' ] = 'Supression non autorisée';
 $_lang[ 'Do you really want to delete this library?' ] = 'Voulez-vous réellement suprimer cette bibliothèque?';
 $_lang[ 'Do you really want to delete this resource?' ] = 'Voulez-vous réellement supprimer cette ressource?';
 $_lang[ 'Do you really want to remove this librarian?' ] = 'Voulez-vous réellement congédier ce bibliothécaire?';
@@ -183,8 +185,10 @@ $_lang[ 'This resource is already added' ] = 'Cette ressource avait déjà été ajo
 $_lang[ 'This resource is already bookmarked' ] = 'Vous aviez déjà mis cette ressource dans votre liste de lecture';
 $_lang[ 'Uploading file' ] = 'Transfert du fichier: veuillez patentiez!';
 $_lang[ 'Url missing' ] = 'Vous avez oublié de spécifier l\'Url';
+$_lang[ 'Users can only delete resources they submitted themselves' ] = 'Les utilisateurs ne peuvent supprimer que les ressources qu\'ils ont eux-même soumis';
 $_lang[ 'Warning : this library is not empty! First, you must delete or move all the resources within' ] = 'ATTENTION: cette bibliothèque n\'est pas vide! Vous devez d\' abord supprimer ou déplacer toutes les ressources qu\'elle contient';
 $_lang[ 'Warning : this resource is in use' ] = 'ATTENTION: cette ressource est utilisée ailleurs';
+$_lang[ 'You are not allowed to delete this resource!'] = 'Vous n\'êtes pas autorisé à supprimer cette ressource!';
 $_lang[ 'You can copy/paste this line into you word processing software' ] = 'Vous pouvez copier/coller cette ligne dans votre traitement de texte';
 $_lang[ 'You must fill all the fields' ] = 'Vous avez oublié de remplir un (ou plusieurs) champs';
 $_lang[ 'You are not allowed to access this resource!' ] = 'Vous n\'êtes pas autorisé à accéder à cette ressource!';
