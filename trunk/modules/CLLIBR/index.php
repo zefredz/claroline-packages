@@ -905,6 +905,7 @@ try
         $template->assign( 'is_platform_admin' , $is_platform_admin );
         $template->assign( 'userId' , $userId );
         $template->assign( 'courseId' , $courseId );
+        $template->assign( 'libraryId' , $libraryId );
         $template->assign( 'icon' , get_icon_url( 'icon' ) );
         $template->assign( 'tagCloud' , $tagCloud->render() );
         $template->assign( 'subTitle' , $pageTitle[ 'subTitle' ] );
@@ -913,7 +914,6 @@ try
         if( $libraryId )
         {
             $template->assign( 'is_librarian' , $librarian->isLibrarian( $libraryId ) );
-            $template->assign( 'libraryId' , $libraryId );
         }
         
         if ( $context == 'resourcetype' )
