@@ -5,8 +5,7 @@ class ICADDEXT_Importer
     public static $required_fields = array(
           'prenom'
         , 'nom'
-        , 'email'
-        , 'date_naissance' );
+        , 'email' );
     
     public static $allowed_fields = array(
           'username'
@@ -17,6 +16,7 @@ class ICADDEXT_Importer
         , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
+        , 'date_naissance'
         , 'remarques'
         , 'authSource' );
     
@@ -89,6 +89,8 @@ class ICADDEXT_Importer
     public $invalid = array();
     
     public $autoGen = array();
+    
+    public $fromForm = false;
     
     /**
      * Constructor
@@ -242,6 +244,11 @@ class ICADDEXT_Importer
             }
         }
         
+        if( $this->fromForm && ! in_array( 'date_naissance' , $this->csvParser->titles ) )
+        {
+            $this->output[ 'missing_fields' ][] = 'date_naissance';
+        }
+        
         return empty( $this->output );
     }
     
@@ -272,6 +279,7 @@ class ICADDEXT_Importer
         {
             if( ! self::is_mail( $userData[ 'email' ] ) )
             {
+                $this->output[ 'invalid_mail' ][ $index ] = $userData[ 'nom' ] . ' (' . $userData[ 'email' ] . ')';
                 $this->invalid[ $index ] = true;
             }
         }
@@ -373,6 +381,11 @@ class ICADDEXT_Importer
             $userData = array_merge( self::$default_fields , $userData );
             $userData[ 'creatorId' ] = claro_get_current_user_id();
             $userData[ 'date_ajout' ] = date( 'Y-m-d H:i:s' );
+            
+            if( ! $this->fromForm && ! array_key_exists( 'remarques' , $userData ) )
+            {
+                $userData[ 'remarques' ] = get_lang( 'from_CSV' );
+            }
             
             if( ! array_key_exists( 'officialCode' , $userData ) )
             {

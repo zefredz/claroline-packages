@@ -87,6 +87,7 @@ class ICADDEXT_Controller
             if( is_array( $userData ) )
             {
                 $data = ICADDEXT_Importer::flush( $userData[0] );
+                $this->importer->fromForm = true;
                 $this->importer->csvParser->data = array( $data );
                 $this->importer->csvParser->titles = array_keys( $data );
             }
