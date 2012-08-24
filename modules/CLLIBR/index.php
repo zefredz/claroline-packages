@@ -526,49 +526,54 @@ try
             
             case 'exUpdateResource':
             {
-                if ( $resource->getStorageType() == Resource::TYPE_FILE )
-                {
-                    $resourceType = $resourceTypeList->get( $resource->getType() );
-                    $authorizedFileList = $resourceType->getAuthorizedFileList();
-                    $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
-                    
-                    if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
-                    {
-                        $file = $_FILES[ 'uploadedFile' ];
-                    }
-                    else
-                    {
-                        $errorMsg = get_lang( 'File missing' );
-                    }
-                    
-                    if ( ! $errorMsg
-                      && ! $storedResource->validate( $file[ 'name' ] ) )
-                    {
-                        $errorMsg = get_lang( 'Invalid file' );
-                    }
-                    
-                    if ( ! $errorMsg
-                      && ! $storedResource->update( $file ) )
-                    {
-                        $errorMsg = get_lang( 'File cannot be stored' );
-                    }
-                }
-                elseif( $resource->getStorageType() == Resource::TYPE_URL )
-                {
-                    $resourceName = $userInput->get( 'resourceUrl' );
-                    
-                    if ( $resourceName )
-                    {
-                        $resource->updateResource( $resourceName );
-                    }
-                    else
-                    {
-                        $errorMsg = get_lang( 'Url missing' );
-                    }
-                }
+                $execution_ok = false;
                 
-                $execution_ok = ! $errorMsg
-                               && $resource->save();
+                if( $acl->deletionGranted( $resourceId ) )
+                {
+                    if ( $resource->getStorageType() == Resource::TYPE_FILE )
+                    {
+                        $resourceType = $resourceTypeList->get( $resource->getType() );
+                        $authorizedFileList = $resourceType->getAuthorizedFileList();
+                        $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
+                        
+                        if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
+                        {
+                            $file = $_FILES[ 'uploadedFile' ];
+                        }
+                        else
+                        {
+                            $errorMsg = get_lang( 'File missing' );
+                        }
+                        
+                        if ( ! $errorMsg
+                          && ! $storedResource->validate( $file[ 'name' ] ) )
+                        {
+                            $errorMsg = get_lang( 'Invalid file' );
+                        }
+                        
+                        if ( ! $errorMsg
+                          && ! $storedResource->update( $file ) )
+                        {
+                            $errorMsg = get_lang( 'File cannot be stored' );
+                        }
+                    }
+                    elseif( $resource->getStorageType() == Resource::TYPE_URL )
+                    {
+                        $resourceName = $userInput->get( 'resourceUrl' );
+                        
+                        if ( $resourceName )
+                        {
+                            $resource->updateResource( $resourceName );
+                        }
+                        else
+                        {
+                            $errorMsg = get_lang( 'Url missing' );
+                        }
+                    }
+                    
+                    $execution_ok = ! $errorMsg
+                                   && $resource->save();
+                }
                 break;
             }
             
@@ -591,12 +596,12 @@ try
                 
                 $resource->setType( $type );
                 
-                if ( $title )
+                if( $title )
                 {
                     $metadata->setTitle( $title );
                 }
                 
-                if ( $description )
+                if( $description )
                 {
                     $metadata->setDescription( $description );
                 }
@@ -606,7 +611,7 @@ try
                     $metadata->setType( $type );
                 }
                 
-                if ( is_array( $names ) )
+                if( is_array( $names ) )
                 {
                     foreach( $names as $id => $name )
                     {
@@ -884,6 +889,7 @@ try
         // VIEW
         CssLoader::getInstance()->load( 'cllibr' , 'screen' );
         $cmdList = array();
+        $advancedCmdList = array();
         $warning = new DialogBox();
         
         if ( isset( $metadata) && $metadata->getResourceId() )
@@ -1124,14 +1130,19 @@ try
                                             'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                       .'/index.php?cmd=exAdd&resourceId=' . $resourceId ) ) );
                     }
+                    
                     $cmdList[] = array( 'img'  => 'edit',
                                         'name' => get_lang( 'Edit resource\'s metadatas' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqEditResource&resourceId=' . $resourceId ) ) );
-                    $cmdList[] = array( 'img'  => 'edit',
-                                        'name' => get_lang( 'Update resource' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                                  .'/index.php?cmd=rqUpdateResource&resourceId=' . $resourceId ) ) );
+                    
+                    if( $acl->deletionGranted( $resourceId ) )
+                    {
+                        $cmdList[] = array( 'img'  => 'edit',
+                                            'name' => get_lang( 'Update resource' ),
+                                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                      .'/index.php?cmd=rqUpdateResource&resourceId=' . $resourceId ) ) );
+                    }
                 }
                 
                 if ( $userId )
@@ -1144,7 +1155,7 @@ try
                 
                 foreach( $exporterList as $name => $exporter )
                 {
-                    $cmdList[] = array( 'img'  => 'export',
+                    $advancedCmdList[] = array( 'img'  => 'export',
                                         'name' => get_lang( 'Export metadatas' ) . ' ( ' . $name . ' ) ',
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=exExport&format='. $name
@@ -1159,7 +1170,7 @@ try
                 }
                 else
                 {
-                    $cmdList[] = array( 'img'  => 'biblio',
+                    $advancedCmdList[] = array( 'img'  => 'biblio',
                                         'name' => get_lang( 'Generate a bibliographic citation' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=exCite&resourceId=' . $resourceId ) ) );
@@ -1412,7 +1423,7 @@ try
         }
         
         ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
-        Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList )
+        Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , null , $cmdList , $advancedCmdList )
                                                                 . $warning->render()
                                                                 . $dialogBox->render()
                                                                 . $template->render() );
