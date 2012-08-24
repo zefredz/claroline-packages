@@ -7,7 +7,7 @@
             <dt>
                 <label for="resourceType">
                     <?php echo get_lang( 'last_name' ); ?>
-                    <span class="required">*</span></label>&nbsp;:
+                    <span class="required">*</span>&nbsp;:
                 </label>
             </dt>
             <dd>
@@ -18,7 +18,7 @@
             <dt>
                 <label for="resourceType">
                     <?php echo get_lang( 'first_name' ); ?>
-                    <span class="required">*</span></label>&nbsp;:
+                    <span class="required">*</span>&nbsp;:
                 </label>
             </dt>
             <dd>
@@ -29,7 +29,7 @@
             <dt>
                 <label for="resourceType">
                     <?php echo get_lang( 'email' ); ?>
-                    <span class="required">*</span></label>&nbsp;:
+                    <span class="required">*</span>&nbsp;:
                 </label>
             </dt>
             <dd>
@@ -38,8 +38,10 @@
                        value="" />
             </dd>
             <dt>
-                <label for="resourceType"><?php echo get_lang( 'birthdate' ); ?>
-                <span class="required">*</span></label>&nbsp;:
+                <label for="resourceType">
+                    <?php echo get_lang( 'birthdate' ); ?>
+                    <span class="required">*</span>&nbsp;:
+                </label>
             </dt>
             <dd>
                 <input type="text"
@@ -106,9 +108,10 @@
                 <label for="resourceType"><?php echo get_lang( 'comment' ); ?> :</label>
             </dt>
             <dd>
-                <input type="text"
-                       name="userData[0][remarques]"
-                       value="" />
+                <textarea cols="60"
+                          rows="10"
+                          name="userData[0][remarques]">
+                </textarea>
             </dd>
             <dt>
                 <label for="resourceType"><?php echo get_lang( 'auth_source' ); ?> :</label>
@@ -156,3 +159,4 @@
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
 </form>
+<p><small><?php echo get_lang( '<span class="required">*</span> denotes required field' ); ?></small></p>

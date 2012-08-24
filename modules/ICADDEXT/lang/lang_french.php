@@ -13,6 +13,7 @@ $_lang['fail_message'] = 'Erreur';
 $_lang['first_name'] = 'Prénom';
 $_lang['fix'] = 'Corriger';
 $_lang['force'] = 'Forcer';
+$_lang['from_CSV'] = 'Utilisateur ajouté à partir d\'un fichier CSV';
 $_lang['conflict_found'] = 'Utilisateurs présentant des conflits';
 $_lang['institute'] = 'Institution';
 $_lang['invalid_csv'] = 'Le fichier soumis n\'est pas un CSV valide';

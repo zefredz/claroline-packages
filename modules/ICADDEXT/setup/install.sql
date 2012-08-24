@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICADDEXT_user_added`(
     prenom VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     phoneNumber VARCHAR(32) NOT NULL,
-    date_naissance VARCHAR(64) NOT NULL,
+    date_naissance VARCHAR(64) NOT NULL DEFAULT 'champ manquant',
     institution VARCHAR(64) DEFAULT NULL,
     annee_etude VARCHAR(32) DEFAULT NULL,
     officialCode VARCHAR(32) NOT NULL,
