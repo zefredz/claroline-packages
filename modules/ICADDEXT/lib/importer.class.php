@@ -5,7 +5,8 @@ class ICADDEXT_Importer
     public static $required_fields = array(
           'prenom'
         , 'nom'
-        , 'email' );
+        , 'email'
+        , 'date_naissance' );
     
     public static $allowed_fields = array(
           'username'
@@ -14,7 +15,6 @@ class ICADDEXT_Importer
         , 'officialCodePrefix'
         , 'officialEmail'
         , 'phoneNumber'
-        , 'date_naissance'
         , 'institution'
         , 'annee_etude'
         , 'remarques'
@@ -43,7 +43,7 @@ class ICADDEXT_Importer
         , 'nom'
         , 'prenom'
         , 'email'
-        , 'date_de_naissance'
+        , 'date_naissance'
         , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
