@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -130,6 +130,8 @@ $_lang[ 'Add to the course\'s bibliography' ] = 'Ajouter à la bibliographie du c
 $_lang[ 'Add selection in course\'s bibliography' ] = 'Ajouter la sélection à la bibliographie du cours';
 $_lang[ 'Add selection to my bookmark' ] = 'Ajouter la sélection à mes lectures';
 $_lang[ 'Back to the catalogue' ] = 'Retour au catalogue de la bibliothèque';
+$_lang[ 'Back to the course\'s bibliography' ] = 'Retour à la bibiographie du cours';
+$_lang[ 'Back to the resource\'s page' ] = 'Retour vers la page de la ressource';
 $_lang[ 'Back to the resource type list' ] = 'retour à la liste';
 $_lang[ 'Create a new library' ] = 'Créer une nouvelle bibliothèque';
 $_lang[ 'Define a new metadata' ] = 'Définir une nouvelle méta-données';
