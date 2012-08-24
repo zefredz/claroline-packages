@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.2 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -1023,7 +1023,7 @@ try
                 
                 if ( $is_platform_admin )
                 {
-                    $cmdList[] = array( 'img'  => 'xml',
+                    $advancedCmdList[] = array( 'img'  => 'xml',
                                         'name' => get_lang( 'Resource type definitions' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqShowResourceType' ) ) );
@@ -1182,6 +1182,11 @@ try
                                                      'name' => get_lang( 'Back to the catalogue' ),
                                                      'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                                .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
+                }elseif( $courseId )
+                {
+                    array_unshift( $cmdList , array( 'img'  => 'back',
+                                                     'name' => get_lang( 'Back to the course\'s bibliography' ),
+                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
                 }
                 break;
             }
@@ -1213,6 +1218,19 @@ try
                 $template->assign( 'libraryId' , $libraryId );
                 $template->assign( 'typeList' , $resourceTypeList->getResourceTypeList() );
                 $template->assign( 'urlAction' , 'ex' . substr( $cmd , 2 ) );
+                
+                if ( $libraryId )
+                {
+                    array_unshift( $cmdList , array( 'img'  => 'back',
+                                                     'name' => get_lang( 'Back to the catalogue' ),
+                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                               .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
+                }elseif( $courseId )
+                {
+                    array_unshift( $cmdList , array( 'img'  => 'back',
+                                                     'name' => get_lang( 'Back to the course\'s bibliography' ),
+                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
+                }
                 break;
             }
             
@@ -1222,6 +1240,11 @@ try
                 $template = new ModuleTemplate( 'CLLIBR' , 'updateresource.tpl.php' );
                 $template->assign( 'userId' , $userId );
                 $template->assign( 'resource' , $resource );
+                
+                array_unshift( $cmdList , array( 'img'  => 'back',
+                                                 'name' => get_lang( 'Back to the resource\'s page' ),
+                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                           .'/index.php?cmd=rqView&resourceId=' . $resourceId ) ) ) );
                 break;
             }
             
@@ -1249,6 +1272,11 @@ try
                 $template->assign( 'defaultMetadataList' , $resourceTypeList->get( $type )
                                                          ? $resourceTypeList->get( $type )->getDefaultMetadataList()
                                                          : array() );
+                
+                array_unshift( $cmdList , array( 'img'  => 'back',
+                                                 'name' => get_lang( 'Back to the resource\'s page' ),
+                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                           .'/index.php?cmd=rqView&resourceId=' . $resourceId ) ) ) );
                 break;
             }
             
