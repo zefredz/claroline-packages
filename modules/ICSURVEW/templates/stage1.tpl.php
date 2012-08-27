@@ -57,6 +57,7 @@
         <?php $color = -$color; ?>
                 <tr class="ICSURVEW_<?php echo $color > 0 ? 'dark' : 'light'; ?>">
                 <td>
+                    <img src="<?php echo get_icon_url( $this->answer->get( $courseId , $question['id'] ) ? 'success' : 'important' ); ?>" />
                     <?php echo $course[ 'code' ]; ?><br />
                     <span class="ICSURVEW_courseTitle"><?php echo $course[ 'title' ]; ?></span><br />
                     <span class="ICSURVEW_courseManager"><?php echo get_lang( 'Manager' ) . ' : ' . $course[ 'manager' ]; ?></span>
