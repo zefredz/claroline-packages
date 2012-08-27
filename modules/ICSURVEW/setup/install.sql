@@ -20,9 +20,11 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICSURVEW_choice`(
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__ICSURVEW_answer`(
+    id INT(11) NOT NULL,
     user_id INT(11) NOT NULL,
     course_id VARCHAR(16) NOT NULL,
     question_id INT(11) NOT NULL,
     choice_id INT(11) NOT NULL,
-    PRIMARY KEY(course_id,question_id)
+    PRIMARY KEY (id),
+    UNIQUE KEY course_question (course_id,question_id)
 ) ENGINE=MyISAM;
