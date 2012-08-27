@@ -279,7 +279,8 @@ class ICSURVEW_Answer
                 FROM
                     `{$this->tbl['ICSURVEW_answer']}`
                 WHERE
-                    course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')" );
+                    course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')
+                ORDER BY id" );
             
             $this->answerList = array();
             $this->answeredNb = 0;
@@ -293,8 +294,12 @@ class ICSURVEW_Answer
                 if ( array_key_exists( $questionId , $this->questionList )
                   && array_key_exists( $courseId , $this->courseList ) )
                 {
+                    if( ! isset( $this->answerList[ $courseId ][ $questionId ] ) )
+                    {
+                        $this->answeredNb++;
+                    }
+
                     $this->answerList[ $courseId ][ $questionId ] = $line[ 'choice_id' ];
-                    $this->answeredNb++;
                 }
                 
                 if( $userId != $this->userId )
