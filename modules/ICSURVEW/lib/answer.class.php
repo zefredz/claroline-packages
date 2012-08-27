@@ -279,8 +279,7 @@ class ICSURVEW_Answer
                 FROM
                     `{$this->tbl['ICSURVEW_answer']}`
                 WHERE
-                    course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')
-                ORDER BY id" );
+                    course_id IN ('" . implode( "','" , array_keys( $this->courseList ) ) . "')" );
             
             $this->answerList = array();
             $this->answeredNb = 0;
