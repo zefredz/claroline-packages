@@ -54,6 +54,25 @@ class ICSURVEW_Answer
     }
     
     /**
+     * Gets the number of pending answers
+     * @return int
+     */
+    public function pending()
+    {
+        return $this->getAnswerCount() - $this->answeredNb;
+    }
+    
+    /**
+     * Gets the number of given answers
+     * @return int
+     */
+    public function getAnswerNb()
+    {
+        return $this->answeredNb;
+    }
+    
+    
+    /**
      * Getter for $this->questionList
      */
     public function getQuestionList()

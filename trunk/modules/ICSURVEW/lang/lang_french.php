@@ -19,6 +19,7 @@ $_lang['_later'] = 'Répondre plus tard';
 $_lang['_next'] = 'Passer à la question suivante >';
 $_lang['_not_finished'] = '<strong>Vous n\'avez pas répondus à toutes les questions. Lors de votre prochaine connexion, il vous sera à nouveau demandé de compléter le questionnaire</strong>';
 $_lang['_other_answered'] = '<span style="color: red; font-weight: bold;">Attention : L\'un des vos co-gestionnaires a déjà dépondu à certaines questions!</span>';
+$_lang['_pending_answer : %pendingNb'] = 'Vous n\'avez pas répondu à l\'entièreté du sondage. Il nous manque encore %pendingNb réponse(s).';
 $_lang['_now'] = 'Répondre maintenant';
 $_lang['_send'] = 'Passer à l\'étape suivante';
 $_lang['_send_and_quit'] = 'Quitter et enregister';
