@@ -650,7 +650,14 @@ class ICADDEXT_Importer
         
         if( function_exists( 'filter_var' ) ) // PHP >= 5.2
         {
-            return filter_var( $string , FILTER_VALIDATE_EMAIL );
+            if( filter_var( $string , FILTER_VALIDATE_EMAIL ) === false )
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         else // PHP < 5.2
         {
