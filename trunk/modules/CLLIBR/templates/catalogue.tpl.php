@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.0 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -108,7 +108,7 @@
             <?php endif; ?>
                 <option value="exBookmark"><?php echo get_lang( 'Add to my bookmark' ); ?></option>
             <?php if( $this->is_librarian ) : ?>
-                <option value="rqMove"><?php echo get_lang( 'Move this resource to another library' ); ?></option>
+                <option value="rqMoveResource"><?php echo get_lang( 'Move this resource to another library' ); ?></option>
                 <option value="rqDeleteResource"><?php echo get_lang( 'Delete this resource' ); ?></option>
             <?php endif; ?>
             </select>

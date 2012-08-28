@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.1 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
+ * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -60,7 +60,7 @@
                     <?php echo get_lang( ucwords( $library[ 'status' ] ) ); ?>
                 </td>
                 <td align="center">
-                <?php if ( $this->courseId ) : ?>
+                <?php if ( $this->courseId && claro_is_allowed_to_edit() ) : ?>
                     <?php if ( isset( $this->courseLibraryList[ $libraryId ] ) ) : ?>
                     <img src="<?php echo get_icon_url( 'add_disabled' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     <?php else : ?>
