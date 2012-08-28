@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.2 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -112,6 +112,7 @@ try
                                  , 'exAddResource'
                                  , 'exEditResource'
                                  , 'exDeleteResource'
+                                 , 'rqMoveResource'
                                  , 'exMoveResource'
                                  , 'rqUpdateResource'
                                  , 'exUpdateResource'
@@ -298,7 +299,8 @@ try
         switch( $cmd )
         {
             case 'rqShowBookmark':
-            case 'rqShowBibliography';
+            case 'rqShowBibliography':
+            case 'rqShowCatalogue':
             case 'rqShowLibrarylist':
             case 'rqDeleteLibrary':
             case 'rqAddLibrary':
@@ -306,6 +308,7 @@ try
             case 'rqDownload':
             case 'rqAddResource':
             case 'rqEditResource':
+            case 'rqMoveResource':
             case 'rqDeleteResource':
             case 'rqUpdateResource' :
             case 'rqRemove':
@@ -692,7 +695,17 @@ try
             
             case 'exMoveResource':
             {
-                $execution_ok = $resourceSet->moveResource( $resourceId , $libraryId );
+                $execution_ok = false;
+                
+                if( isset( $librarian) && $librarian->isLibrarian( $userId ) )
+                {
+                    $execution_ok = true;
+                    
+                    foreach( array_keys( $resourceList ) as $resourceId )
+                    {
+                        $execution_ok = $execution_ok && $resourceSet->moveResource( $resourceId , $libraryId );
+                    }
+                }
                 break;
             }
             
@@ -756,15 +769,6 @@ try
                 break;
             }
             
-            case 'rqShowCatalogue':
-            {
-                if ( $option == 'move' )
-                {
-                    $libraryList = new LibraryList( $database , $userId , $edit_allowed );
-                }
-                break;
-            }
-            
             case 'exAddLibrarian':
             {
                 $userToAdd = $userInput->get( 'userId' );
@@ -775,7 +779,7 @@ try
             case 'exAddLibrary':
             {
                 $title = $userInput->get( 'title' );
-                $execution_ok = $courseLibraryList->add( $libraryId , $title );
+                $execution_ok = claro_is_allowed_to_edit() && $courseLibraryList->add( $libraryId , $title );
                 break;
             }
             
@@ -995,6 +999,15 @@ try
                 break;
             }
             
+            case 'rqMoveResource':
+            {
+                $libraryList = new LibraryList( $database , $userId , $edit_allowed );
+                $form = new ModuleTemplate( 'CLLIBR' , 'moveresource.tpl.php' );
+                $form->assign( 'resourceList' , $resourceList );
+                $form->assign( 'libraryList' , $libraryList->getResourceList( true ) );
+                $dialogBox->form( $form->render() );
+            }
+            
             case 'rqShowCatalogue':
             {
                 if ( $edit_allowed )
@@ -1011,12 +1024,15 @@ try
                                                   . $libraryId ) ) );
                 }
                 
-                if ( $edit_allowed && $courseId && ! $courseLibraryList->libraryExists( $libraryId ) )
+                if ( claro_is_allowed_to_edit()
+                    && $edit_allowed
+                    && $courseId
+                    && ! $courseLibraryList->libraryExists( $libraryId ) )
                 {
                     $cmdList[] = array( 'img'  => 'add',
                                         'name' => get_lang( 'Link this library to your course\'s bibliography' ),
                                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                                  .'/index.php?cmd=exAddLibrary&libraryId='
+                                                  .'/index.php?cmd=rqAddLibrary&libraryId='
                                                   . $libraryId ) ) );
                 }
                 
@@ -1039,7 +1055,7 @@ try
                     $form = new ModuleTemplate( 'CLLIBR' , 'form.tpl.php');
                     $form->assign( 'message' , get_lang( 'Choose a title for this link to the library' ) );
                     $form->assign( 'urlAction' , 'exAddLibrary' );
-                    $form->assign( 'urlCancel' , 'rqShowLibraryList' );
+                    $form->assign( 'urlCancel' , 'rqShowLibrarylist' );
                     $form->assign( 'xid' , array( array( 'type'  => 'hidden'
                                                        , 'name'  => 'libraryId'
                                                        , 'value' => $library->getId() )
@@ -1412,14 +1428,6 @@ try
             $form = new ModuleTemplate( 'CLLIBR' , 'addlibrarian.tpl.php' );
             $form->assign( 'libraryId' , $libraryId );
             $form->assign( 'searchResult' , $searchResult );
-            $dialogBox->form( $form->render() );
-        }
-        
-        if ( $option == 'move' )
-        {
-            $form = new ModuleTemplate( 'CLLIBR' , 'moveresource.tpl.php' );
-            $form->assign( 'resourceId' , $resourceId );
-            $form->assign( 'libraryList' , $libraryList->getResourceList( true ) );
             $dialogBox->form( $form->render() );
         }
         
