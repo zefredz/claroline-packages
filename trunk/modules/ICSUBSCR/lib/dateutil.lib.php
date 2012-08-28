@@ -129,16 +129,19 @@ class DateUtil
                         case 'Y':
                             if( strlen( $dateParts[ $index ] ) != 4 )
                                 return false;
+                            break;
                         
                         case 'm':
                             if( strlen( $dateParts[ $index ] ) != 2
                                 && (int)$dateParts[ $index ] > 12 )
                                 return false;
+                            break;
                         
                         case 'd':
                             if( strlen( $dateParts[ $index ] ) != 2
                                 && (int)$dateParts[ $index ] > 31 )
                                 return false;
+                            break;
                         
                         default:
                             throw new Exception( 'Error while parsing date' );

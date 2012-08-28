@@ -41,42 +41,59 @@ $userId = claro_get_current_user_id();
 $courseId = claro_get_current_course_id();
 $groupId = claro_get_current_group_id();
 
-if( ! claro_is_in_a_course()
-    || ! claro_is_course_allowed()
-    || ( $groupId && ! claro_is_group_allowed() ) )
+try
 {
-    $dialogBox->error( 'Not allowed' );
-    $output = $dialogBox->render();
-}
-else
-{
-    $courseData = claro_get_current_course_data();
-    $lang = $courseData[ 'language' ];
-    
-    $pluginRepository = get_module_path( 'ICSUBSCR' ) . '/plugins/';
-    $pluginLoader = new PluginLoader( $pluginRepository , $lang );
-    
-    $userInput = Claro_UserInput::getInstance();
-    
-    $cmd = $userInput->get( 'cmd' );
-    $sessionId = $userInput->get( 'sessionId' );
-    $sessionType = $userInput->get( 'sessionType' );
-    $data = $userInput->get( 'data' );
-    
-    $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
-        ? $pluginLoader->get( $sessionType
-            , new Session( $sessionId )
-            , claro_is_allowed_to_edit() )
-        : new DefaultController(
-            new SessionList(
-                $pluginLoader->getPluginList()
-                , $groupId ? 'group' : 'user'
+    if( ! claro_is_in_a_course()
+        || ! claro_is_course_allowed()
+        || ( $groupId && ! claro_is_group_allowed() ) )
+    {
+        $dialogBox->error( 'Not allowed' );
+        $output = $dialogBox->render();
+    }
+    else
+    {
+        $courseData = claro_get_current_course_data();
+        $lang = $courseData[ 'language' ];
+        
+        $pluginRepository = get_module_path( 'ICSUBSCR' ) . '/plugins/';
+        $pluginLoader = new PluginLoader( $pluginRepository , $lang );
+        
+        $userInput = Claro_UserInput::getInstance();
+        
+        $cmd = $userInput->get( 'cmd' );
+        $sessionId = $userInput->get( 'sessionId' );
+        $sessionType = $userInput->get( 'sessionType' );
+        $data = $userInput->get( 'data' );
+        
+        $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
+            ? $pluginLoader->get( $sessionType
+                , new Session( $sessionId )
                 , claro_is_allowed_to_edit() )
-            , $sessionId
-            , claro_is_allowed_to_edit() );
+            : new DefaultController(
+                new SessionList(
+                    $pluginLoader->getPluginList()
+                    , $groupId ? 'group' : 'user'
+                    , claro_is_allowed_to_edit() )
+                , $sessionId
+                , claro_is_allowed_to_edit() );
+        
+        $controller->execute( $cmd , $data );
+        $output = $controller->output();
+    }
+}
+catch( Exception $e )
+{
+    if ( claro_debug_mode() )
+    {
+        $errorMsg = '<pre>' . $e->__toString() . '</pre>';
+    }
+    else
+    {
+        $errorMsg = $e->getMessage();
+    }
     
-    $controller->execute( $cmd , $data );
-    $output = $controller->output();
+    $dialogBox->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
+    $output = $dialogBox->render();
 }
 
 CssLoader::getInstance()->load( 'main' , 'screen' );
