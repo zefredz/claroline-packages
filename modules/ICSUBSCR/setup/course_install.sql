@@ -35,6 +35,6 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_record` (
     `groupId` INT(11),
     `sessionId` INT(11) NOT NULL,
     `slotId` INT(11) NOT NULL,
-    `rank` INT(3),
+    `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
