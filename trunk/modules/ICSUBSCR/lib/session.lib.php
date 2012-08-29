@@ -84,7 +84,7 @@ class Session
      * @param boolean $force : to force reload
      * @return array : the option list
      */
-    public function getOptionList( $force )
+    public function getOptionList( $force = false )
     {
         if( $force )
         {

@@ -11,12 +11,11 @@
 
 abstract class PluginController extends ICSUBSCR_Controller
 {
-    public function __construct( $model , $sessionId = null , $allowedToEdit = false )
+    public function __construct( $model , $slotId = null , $allowedToEdit = false )
     {
-        parent::__construct( $model , $sessionId , $allowedToEdit );
+        parent::__construct( $model , $slotId , $allowedToEdit );
         
         $this->defaultCmd = 'rqView';
-        //$this->dateUtil = new DateUtil( get_lang( '_date' ) );
     }
     
     public function rqShowSession()
