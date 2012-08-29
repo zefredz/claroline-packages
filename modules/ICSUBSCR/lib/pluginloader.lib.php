@@ -84,14 +84,9 @@ class PluginLoader
      * @param string or int $plugin
      * @return plugged in objet $plugin
      */
-    public function get( $plugin , $param = null )
+    public function get( $plugin , $model , $id = null , $allowedToEdit = false )
     {
-        if( is_int( $plugin )
-           && array_key_exists( $plugin , $this->pluginList ) )
-        {
-            return new $this->pluginList[ $plugin ];
-        }
-        elseif( in_array( $plugin , $this->pluginList ) )
+        if( in_array( $plugin , $this->pluginList ) )
         {
             $lang = file_exists( get_module_path( 'ICSUBSCR' )
                 . '/plugins/icsubscr.plugin.'
@@ -105,7 +100,7 @@ class PluginLoader
             
             $className = $plugin . 'Controller';
             
-            return new $className( $param );
+            return new $className( $model , $id , $allowedToEdit );
         }
     }
     

@@ -62,20 +62,23 @@ try
         
         $cmd = $userInput->get( 'cmd' );
         $sessionId = $userInput->get( 'sessionId' );
+        $slotId = $userInput->get( 'slotId' );
         $sessionType = $userInput->get( 'sessionType' );
         $data = $userInput->get( 'data' );
         
         $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
-            ? $pluginLoader->get( $sessionType
-                , new Session( $sessionId )
-                , claro_is_allowed_to_edit() )
+            ? $pluginLoader->get(
+                $sessionType,
+                new Session( $sessionId ),
+                $slotId,
+                claro_is_allowed_to_edit() )
             : new DefaultController(
                 new SessionList(
-                    $pluginLoader->getPluginList()
-                    , $groupId ? 'group' : 'user'
-                    , claro_is_allowed_to_edit() )
-                , $sessionId
-                , claro_is_allowed_to_edit() );
+                    $pluginLoader->getPluginList(),
+                    $groupId ? 'group' : 'user',
+                    claro_is_allowed_to_edit() ),
+                $sessionId,
+                claro_is_allowed_to_edit() );
         
         $controller->execute( $cmd , $data );
         $output = $controller->output();
