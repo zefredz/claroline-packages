@@ -11,34 +11,63 @@
 
 class Record
 {
+    const CONTEXT_USER = 'user_id';
+    const CONTEXT_GROUP = 'group_id';
+    
     protected $session;
+    protected $result = array();
     protected $selectedSlotList = array();
+    protected $context;
+    protected $subscriberId = null;
     
     public function __construct( $session , $userId = null , $groupId = null )
     {
-        if ( ! $userId && ! $groupId )
+        if( $groupId )
         {
-            throw new Exception( 'User id and goup id cannot be null together' );
+            $this->context = self::CONTEXT_GROUP;
+            $this->subscriberId = $groupId;
         }
-        
-        if( (int)$userId && (int)$groupId )
+        elseif( $userId )
         {
-            throw new Exception( 'User id and goup id cannot be defined together' );
+            $this->context = self::CONTEXT_USER;
+            $this->subscriberId = $userId;
         }
         
         $this->session = $session;
-        $this->userId = $userId;
-        $this->groupId = $groupId;
         
         $this->tbl = get_module_course_tbl( array( 'icsubscr_record' ) );
+    }
+    
+    public function load()
+    {
+        $result = Claroline::getDatabase()->query( "
+                SELECT
+                    userId,
+                    groupId,
+                    slotId,
+                    rank
+                FROM
+                    `{$this->tbl['icsubscr_record']}`
+                WHERE
+                    sessionId = " . Claroline::getDatabase()->escape( $this->session->getId() ) );
+        
+        foreach( $result as $record )
+        {
+            $subscriberId = $this->context == self::CONTEXT_GROUP ? $record[ 'groupId' ] : $record[ 'userId' ];
+            $this->result[ $record[ 'slotId' ] ][ $subscriberId ] = $record[ 'rank' ];
+        }
+    }
+    
+    public function getResult()
+    {
+        return $this->result;
     }
     
     public function choose( $slotId )
     {
         if( ! in_array( $slotId , $this->selectedSlotList )
            && array_key_exists( $slotId , $this->session->slotList )
-           && count( $this->selectedSlotList )
-                < $this->session->slotList[ $slotId ][ Slot::AVAILABLE_SPACE ] )
+           && $this->spaceAvailable( $slotId ) )
         {
             $this->selectedSlotList[] = $slotId;
         }
@@ -73,7 +102,6 @@ class Record
         
         foreach( $this->selectedSlotList as $rank => $slotId )
         {
-            
             $sqlArray[] = "\n("
                 . Claroline::getDatabase()->escape( $this->userId ) . ", "
                 . Claroline::getDatabase()->escape( $this->groupId ) . ", "
@@ -94,5 +122,10 @@ class Record
         }
         
         return $this->save();
+    }
+    
+    public function spaceAvailable( $slotId )
+    {
+        return count( $this->result[ $slotId ] ) < $this->session->getOption( Session::OPTION_AVAILABLE_SPACE );
     }
 }
