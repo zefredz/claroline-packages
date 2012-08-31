@@ -13,11 +13,41 @@ class GenericController extends PluginController
 {
     public function exCreateSlot( $data )
     {
-        return;
+        $this->view->selectedView = 1;
+        
+        if( empty( $data['title'] ) )
+        {
+            $this->addMsg( self::ERROR , 'Missing Title' );
+            return;
+        }
+        
+        if( $this->session->addSlot( $data ) )
+        {
+            $this->addMsg( self::SUCCESS , 'Slot successfully created' );
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Slot cannot be created' );
+        }
     }
     
     public function exEditSlot( $data )
     {
-        return;
+        $this->view->selectedView = 1;
+        
+        if( empty( $data['title'] ) )
+        {
+            $this->addMsg( self::ERROR , 'Missing Title' );
+            return;
+        }
+        
+        if( $this->session->mofifySlot( $this->id , $data ) )
+        {
+            $this->addMsg( self::SUCCESS , 'Slot successfully modified' );
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Slot changes failed' );
+        }
     }
 }
