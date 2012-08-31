@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_slot` (
     `description` TEXT,
     `startDate` DATETIME,
     `endDate` DATETIME,
-    `availableSpace` INT(3) NOT NULL DEFAULT 1,
+    `availableSpace` INT(3) NOT NULL DEFAULT 0,
     `rank` INT(3),
     `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
     PRIMARY KEY(`id`)

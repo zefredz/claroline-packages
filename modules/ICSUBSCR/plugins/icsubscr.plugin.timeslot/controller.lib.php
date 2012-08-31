@@ -13,30 +13,106 @@ class TimeSlotController extends PluginController
 {
     public function exCreateSlot( $data )
     {
-        $startTime = $data['startTime'];
-        $endTime = $data['endTime'];
+        $this->view->selectedView = 1;
+        
+        $data = $this->_validate( $data );
+        
         $sliceNb = (int)$data['sliceNb'];
         
-        if( ! empty( $data['startTime'] ) && ! empty( $data['endTime'] ) && $sliceNb > 0 )
+        if( $sliceNb > 1 )
         {
-            if( $startStamp = strtotime( $startTime ) !== false
-               && $endStamp = strtotime( $endTime ) !== false )
+            if( $startStamp = strtotime( $data['startDate'] ) !== false
+                && $endStamp = strtotime( $data['endDate'] ) !== false )
             {
                 $slotList = array();
                 $slotTimeLapse = ( (int)$endStamp - (int)$startStamp ) / (int)$sliceNb;
+                $slotIndex = 1;
+                $errorList = array();
                 
                 for( $i = $startStamp; $i += $slotTimeLapse; $i < $endStamp )
                 {
-                    $slot = new Slot();
-                    $slot->setDate( date( 'Y-m-d h:i:s' , $i ) );
-                    $slotList[] = $slot;
+                    $slotTitle = $data['title'] . ' ' . $slotIndex++;
+                    $startDate = date( 'Y-m-d h:i:s' , $i );
+                    $endDate = date( 'Y-m-d h:i:s' , $i + $slotTimeLapse );
+                    $description = get_lang(
+                        'From %startDate to %endDate',
+                        array( '%startDate' => $startDate , '%endDate' => $endDate ) );
+                    
+                    if( ! $this->session->addSlot(
+                        $slotTitle,
+                        $description,
+                        $startDate,
+                        $endDate,
+                        $availableSpace ) )
+                    {
+                        $this->addMsg(
+                            self::ERROR,
+                            'Error while creating the following slots : ' . $description );
+                        return;
+                    }
                 }
+                
+                $this->addMsg( self::SUCCESS , 'Slots successfully created' );
             }
+        }
+        elseif( $this->session->addSlot(
+            $slotTitle,
+            $description,
+            $startDate,
+            $endDate,
+            $availableSpace ) )
+        {
+            $this->addMsg( self::SUCCESS , 'Slot successfully created' );
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Slot cannot be created' );
         }
     }
     
     public function exEditSlot( $data )
     {
-        return;
+        $this->selectedView = 1;
+        
+        $data = $this->_validate( $data );
+        
+        if( $this->session->modifySlot( $data ) )
+        {
+            $this->addMsg( self::SUCCESS , 'Slot successfully mpdified' );
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Slot changes failed' );
+        }
+    }
+    
+    private function _validate( $date )
+    {
+        if( empty( $data['title'] ) )
+        {
+            $this->addMsg( self::ERROR , 'Missing Title' );
+            return;
+        }
+        
+        $date = $data['date'];
+        $startHour = $data['startHour'];
+        $endTHour = $data['endHour'];
+        
+        $startDate = $this->dateUtil->in( $date , $startHour );
+        $endDate = $this->dateUtil->in( $date , $endDate );
+        
+        if( ! $startDate || ! $endDate )
+        {
+            $this->addMsg( self::ERROR , 'Invalid date' );
+            return;
+        }
+        else
+        {
+            $data['startDate'] = $startDate;
+            $data['endDate'] = $endDate;
+            unset( $data['date'] , $data['startHour'] , $data['endHour'] );
+        }
+        
+        return $data;
     }
 }

@@ -52,7 +52,7 @@ class DateUtil
         }
         else
         {
-            $dateTime = 'invalid date';
+            $dateTime = false;
         }
         
         return $dateTime;

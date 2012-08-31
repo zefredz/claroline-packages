@@ -19,12 +19,12 @@ abstract class pluginView extends ICSUBSCR_View
         
         $cmdList = array(
             array(
-                'img'  => 'new',
+                'img'  => 'edit',
                 'name' => get_lang( 'Edit choices' ),
                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
                         .'/index.php?cmd=rqEditSlot' ) ) ),
             array(
-                'img'  => 'back',
+                'img'  => 'new',
                 'name' => get_lang( 'Add a new choice' ),
                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'ICSUBSCR' )
                         .'/index.php?cmd=rqAddSlot' ) ) ) );

@@ -13,11 +13,13 @@ class GenericView extends PluginView
 {
     public function __construct()
     {
-        parent::__construct( array() );
+        $additionalCmdList = array();
+        
+        parent::__construct( $additionalCmdList );
     }
     
-    protected function setCmdList()
+    public function setCmdList()
     {
-        return '';
+        return;
     }
 }
