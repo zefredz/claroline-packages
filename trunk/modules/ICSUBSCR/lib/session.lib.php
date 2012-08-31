@@ -48,7 +48,7 @@ class Session
             $this->id = $id;
             $this->load();
             
-            $this->slotList = new Lister( $this->tbl['icsubscr_slot']
+            $this->slotList = new slotList( $this->tbl['icsubscr_slot']
                                         , array( 'sessionId' => $id ) );
         }
     }
@@ -136,7 +136,7 @@ class Session
     }
     
     /**
-     * Gets the datas for an given slot
+     * Gets the datas for an given slot (helper method)
      * @param int $slotId
      * @return array
      */
@@ -146,7 +146,7 @@ class Session
     }
     
     /**
-     * Adds a slot
+     * Adds a slot (helper method)
      * @param string $title
      * @param string $description
      * @param string $startDate
@@ -154,17 +154,54 @@ class Session
      * @param int availableSpace
      * @return int : the slot's id
      */
-    public function addSlot( $title
-                            , $description
-                            , $startDate = null
-                            , $endDate = null
-                            , $availableSpace = 1 )
+    public function addSlot(
+        $title,
+        $description,
+        $startDate = null,
+        $endDate = null,
+        $availableSpace = 1 )
     {
         $data = array( 'title' => $title
                       , 'description' => $description
                       , 'startDate' => $startDate
                       , 'endDate' => $endDate
                       , 'availableSpace' => $availableSpace );
-        return $this->addSlot->add( $data );
+        
+        return $this->slotList->add( $data );
+    }
+    
+    /**
+     * Modifies a slot (helper method)
+     * @param string $title
+     * @param string $description
+     * @param string $startDate
+     * @param string $endDate
+     * @param int availableSpace
+     * @return int : the slot's id
+     */
+    public function modifySlot(
+        $title,
+        $description,
+        $startDate = null,
+        $endDate = null,
+        $availableSpace = 1 )
+    {
+        $data = array( 'title' => $title
+                      , 'description' => $description
+                      , 'startDate' => $startDate
+                      , 'endDate' => $endDate
+                      , 'availableSpace' => $availableSpace );
+        
+        return $this->slotList->modify( $this->id , $data );
+    }
+    
+    /**
+     * Deletes a slot (helper method)
+     * @param int $slotId
+     * @return boolean
+     */
+    public function deleteSlot( $slotId )
+    {
+        return $this->slotList->delete( $slotId );
     }
 }

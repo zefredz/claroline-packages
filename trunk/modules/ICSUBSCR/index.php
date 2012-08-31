@@ -24,11 +24,13 @@ From::Module( 'ICSUBSCR' )->uses(
     'view.lib',
     'defaultview.lib',
     'lister.lib',
+    'datedlister.lib',
     'pluginloader.lib',
     'plugincontroller.lib',
     'pluginview.lib',
     'record.lib',
     'session.lib',
+    'slotlist.lib',
     'sessionlist.lib',
     'dateutil.lib' );
 
@@ -69,7 +71,7 @@ try
         $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
             ? $pluginLoader->get(
                 $sessionType,
-                new Session( $sessionId ),
+                new Record( new Session( $sessionId ) , $userId , $groupId ),
                 $slotId,
                 claro_is_allowed_to_edit() )
             : new DefaultController(

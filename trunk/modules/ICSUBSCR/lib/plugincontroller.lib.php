@@ -15,6 +15,9 @@ abstract class PluginController extends ICSUBSCR_Controller
     {
         parent::__construct( $model , $slotId , $allowedToEdit );
         
+        $this->record = &$this->model;
+        $this->session = &$this->model->session;
+        
         $this->defaultCmd = 'rqView';
     }
     
@@ -23,11 +26,9 @@ abstract class PluginController extends ICSUBSCR_Controller
         $this->selectedView = 0;
     }
     
-    public function exSubcribe( $slotList , $userId = null , $groupId = null )
+    public function exSubcribe( $slotList )
     {
-        $record = new Record( $this->model , $userId , $groupId );
-        
-        if( ! $record->subscribe( $slotList ) )
+        if( ! $this->record->subscribe( $slotList ) )
         {
             $this->output[] = array( 'error' => 'Cannot save subscription' );
         }
@@ -77,7 +78,12 @@ abstract class PluginController extends ICSUBSCR_Controller
     
     public function exDeleteSlot()
     {
+        if( ! $this->session->deleteSlot( $this->id ) )
+        {
+            $this->output[] = array( 'error' => 'Cannot delete slot' );
+        }
         
+        $this->selectedView = 0;
     }
     
     abstract public function exCreateSlot( $data );

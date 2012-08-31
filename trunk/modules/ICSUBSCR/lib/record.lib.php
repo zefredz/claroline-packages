@@ -14,7 +14,8 @@ class Record
     const CONTEXT_USER = 'user_id';
     const CONTEXT_GROUP = 'group_id';
     
-    protected $session;
+    public $session;
+    
     protected $result = array();
     protected $selectedSlotList = array();
     protected $context;

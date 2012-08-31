@@ -18,6 +18,6 @@ class TimeSlotView extends PluginView
     
     protected function setCmdList()
     {
-        return '';
+        return;
     }
 }
