@@ -78,7 +78,7 @@ class TimeSlotController extends PluginController
         
         if( $this->session->modifySlot( $data ) )
         {
-            $this->addMsg( self::SUCCESS , 'Slot successfully mpdified' );
+            $this->addMsg( self::SUCCESS , 'Slot successfully modified' );
         }
         else
         {
