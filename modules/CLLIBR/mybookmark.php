@@ -33,6 +33,6 @@ $portlet = new ModuleTemplate( 'CLLIBR' , 'bookmark.tpl.php' );
 $portlet->assign( 'in_portlet' , true );
 $portlet->assign( 'resourceList' , $myBookmark->getResourceList() );
 $portlet->assign( 'userId' , $userId );
-$portlet->assign( 'icon' , get_path( 'rootWeb' ) . 'module/CLLIBR/icon.png' );
+$portlet->assign( 'icon' , get_module_icon_url( 'CLLIBR' ) );
 
 echo claro_utf8_encode( $portlet->render() );
