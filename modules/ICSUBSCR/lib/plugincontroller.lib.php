@@ -23,7 +23,7 @@ abstract class PluginController extends ICSUBSCR_Controller
     
     public function rqShowSession()
     {
-        $this->selectedView = 0;
+        $this->view->selectedView = 0;
     }
     
     public function exSubcribe( $slotList )
@@ -33,7 +33,7 @@ abstract class PluginController extends ICSUBSCR_Controller
             $this->output[] = array( 'error' => 'Cannot save subscription' );
         }
         
-        $this->selectedView = 0;
+        $this->view->selectedView = 0;
     }
     
     public function rqView()
@@ -83,7 +83,7 @@ abstract class PluginController extends ICSUBSCR_Controller
             $this->output[] = array( 'error' => 'Cannot delete slot' );
         }
         
-        $this->selectedView = 0;
+        $this->view->selectedView = 0;
     }
     
     abstract public function exCreateSlot( $data );
