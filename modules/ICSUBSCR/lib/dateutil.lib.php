@@ -122,24 +122,25 @@ class DateUtil
                 
                 foreach( $dateParts as $index => $field )
                 {
-                    if( ! is_numeric( $field ) ) return false;
+                    if( ! is_numeric( $field )
+                        || (int)$field == 0 ) return false;
                     
                     switch( $this->dateFields[ $index ] )
                     {
                         case 'Y':
-                            if( strlen( $dateParts[ $index ] ) != 4 )
+                            if( strlen( $field ) != 4 )
                                 return false;
                             break;
                         
                         case 'm':
-                            if( strlen( $dateParts[ $index ] ) != 2
-                                && (int)$dateParts[ $index ] > 12 )
+                            if( strlen( $field ) != 2
+                                && (int)$field > 12 )
                                 return false;
                             break;
                         
                         case 'd':
-                            if( strlen( $dateParts[ $index ] ) != 2
-                                && (int)$dateParts[ $index ] > 31 )
+                            if( strlen( $field ) != 2
+                                && (int)$field > 31 )
                                 return false;
                             break;
                         
