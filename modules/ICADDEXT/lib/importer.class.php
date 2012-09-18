@@ -173,7 +173,11 @@ class ICADDEXT_Importer
     {
         if( ! empty( $this->added ) )
         {
-            unset( $this->added[ 'remarques' ] );
+            foreach( array_keys( $this->added ) as $index )
+            {
+                unset( $this->added[ $index ][ 'remarques' ] );
+            }
+            
             return $this->csvParser->unparse( $this->added
                                             , array_keys( $this->added[ 0 ] ) );
         }
