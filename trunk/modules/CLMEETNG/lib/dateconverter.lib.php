@@ -11,39 +11,48 @@
 
 class CLMEETNG_DateConverter
 {
-    const MODE_IN = 'IN';
-    const MODE_OUT = 'OUT';
+    const INPUT_DATE = 'input_date';
+    const HOUR = 'hour';
+    const DATETIME = 'datetime';
     
     protected $dateFormat;
+    protected $dateFields;
     
     public function __construct( $dateFormat = 'm/d/Y' )
     {
         $this->dateFormat = $dateFormat;
+        $this->dateFields = explode( '/' , $dateFormat );
     }
     
     public function in( $date = null , $hour = null )
     {
         if( ! $date )
         {
-            $dateTime = date( 'Y-m-d H:i:s' , time() + $offset );
+            $dateTime = date( 'Y-m-d H:i:s' );
         }
-        else
+        elseif( $this->validate( $date , self::INPUT_DATE ) )
         {
             $datePart = explode( '/' , $date );
             $date = array();
-            $format = explode( '/' , $this->dateFormat );
             
-            foreach( $format as $index => $formatPart )
+            foreach( $this->dateFields as $index => $formatPart )
             {
                 $date[ $formatPart ] = $datePart[ $index ];
             }
             
-            if( ! $hour )
+            if( ! $hour || ! $this->validate( $hour , self::HOUR ) )
             {
                 $hour = '00:00';
             }
             
-            $dateTime = $date['Y'] . '-' . $date['m'] . '-' . $date['d'] . ' ' . $hour . ':00' ;
+            $dateTime = $date['Y']
+                . '-' . $date['m']
+                . '-' . $date['d']
+                . ' ' . $hour . ':00' ;
+        }
+        else
+        {
+            $dateTime = false;
         }
         
         return $dateTime;
@@ -56,17 +65,94 @@ class CLMEETNG_DateConverter
         , $dayOffset = 0
         , $weekOffset = 0 )
     {
-        $offset = $secOffset + $minOffset*60 + $hourOffset*3600 + $dayOffset*86400 + $weekOffset*604800;
-        
-        if( ! $dateTime )
+        if( $this->validate( $dateTime , self::DATETIME ) )
         {
-            $dateTime = date( 'Y-m-d H:i:s' , time() + $offset );
+            $offset = $secOffset
+                + $minOffset*60
+                + $hourOffset*3600
+                + $dayOffset*86400
+                + $weekOffset*604800;
+            
+            if( ! $dateTime )
+            {
+                $dateTime = date( 'Y-m-d H:i:s' , time() + $offset );
+            }
+            
+            $time = strtotime( $dateTime ) + $offset;
+            $date = date( $this->dateFormat , $time );
+            $hour = date( 'H:i' , $time );
+            
+            return array( 'date' => $date , 'hour' => $hour );
         }
-        
-        $time = strtotime( $dateTime ) + $offset;
-        $date = date( $this->dateFormat , $time );
-        $hour = date( 'H:i' , $time );
-        
-        return array( 'date' => $date , 'hour' => $hour );
+    }
+    
+    public function validate( $string , $type )
+    {
+        switch( $type )
+        {
+            case self::DATETIME:
+                return date( 'Y-m-d H:i:s' , strtotime( $string ) ) == $string;
+            
+            case self::HOUR:
+                $hourParts = explode( ':' , $string );
+                
+                if( count( $hourParts ) != 2 )
+                    return false;
+                
+                foreach( $hourparts as $index => $part )
+                {
+                    $max = $index == 0 ? 24 : 60;
+                    
+                    if( ! is_numeric( $parts ) )
+                        return false;
+                    
+                    if( strlen( $part ) != 2 )
+                        return false;
+                    
+                    if( (int)$part > $max )
+                        return false;
+                }
+                
+                return true;
+            
+            case self::INPUT_DATE:
+                $dateParts = explode( '/' , $string );
+                
+                if( count( $dateParts ) != 3 ) return false;
+                
+                foreach( $dateParts as $index => $field )
+                {
+                    if( ! is_numeric( $field )
+                        || (int)$field == 0 ) return false;
+                    
+                    switch( $this->dateFields[ $index ] )
+                    {
+                        case 'Y':
+                            if( strlen( $field ) != 4 )
+                                return false;
+                            break;
+                        
+                        case 'm':
+                            if( strlen( $field ) != 2
+                                && (int)$field > 12 )
+                                return false;
+                            break;
+                        
+                        case 'd':
+                            if( strlen( $field ) != 2
+                                && (int)$field > 31 )
+                                return false;
+                            break;
+                        
+                        default:
+                            throw new Exception( 'Error while parsing date' );
+                    }
+                }
+                
+                return true;
+            
+            default:
+                throw new Exception('Bad date string type');
+        }
     }
 }
