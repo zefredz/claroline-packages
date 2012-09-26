@@ -108,10 +108,7 @@
                 <label for="resourceType"><?php echo get_lang( 'comment' ); ?> :</label>
             </dt>
             <dd>
-                <textarea cols="60"
-                          rows="10"
-                          name="userData[0][remarques]">
-                </textarea>
+                <textarea cols="60" rows="10" name="userData[0][remarques]"></textarea>
             </dd>
             <dt>
                 <label for="resourceType"><?php echo get_lang( 'auth_source' ); ?> :</label>
