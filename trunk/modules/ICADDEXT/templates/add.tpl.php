@@ -87,6 +87,15 @@
     
     <?php if( ! empty( $this->controller->importer->conflict ) ) : ?>
     <br />
+    <?php foreach( array_intersect_key( $this->controller->importer->csvParser->data , $this->controller->importer->conflict ) as $index => $userData ) : ?>
+        <?php foreach( $userData as $field => $value ) : ?>
+            <?php if( ! array_key_exists( $field , ICADDEXT_Importer::$display_fields ) ) : ?>
+    <input type="hidden"
+           name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
+           value="<?php echo htmlspecialchars( $value ); ?>" />
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endforeach; ?>
     <fieldset>
         <legend><?php echo get_lang( 'conflict_found' ); ?> :</legend>
         <table class="claroTable emphaseLine" style="width: 100%;">
@@ -114,9 +123,6 @@
                         <?php else : ?>
                         <?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>
                         <?php endif; ?>
-                        <input type="hidden"
-                               name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
-                               value="<?php echo $this->controller->importer->csvParser->data[ $index ][ $field ]; ?>" />
                     </td>
                     <?php endforeach; ?>
                 </tr>
