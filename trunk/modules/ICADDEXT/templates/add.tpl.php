@@ -91,7 +91,7 @@
         <?php foreach( $userData as $field => $value ) : ?>
             <?php if( ! array_key_exists( $field , ICADDEXT_Importer::$display_fields ) ) : ?>
     <input type="hidden"
-           name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
+           name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
            value="<?php echo htmlspecialchars( $value ); ?>" />
             <?php endif; ?>
         <?php endforeach; ?>
