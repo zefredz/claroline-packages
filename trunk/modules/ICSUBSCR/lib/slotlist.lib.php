@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class SlotList extends DatedLister
+class SlotList extends DatedListable
 {
     const SESSION_ID = 'sessionId';
     const VISIBLE = 'visible';

@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.9
+ * @version     ICSUBSCR 0.4 $Revision$ - Claroline 1.9
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -11,12 +11,14 @@
 
 class Lister
 {
-    protected $tbl;
-    protected $cond = array();
-    protected $allowedFields = array();
-    protected $maxRank = 0;
+    const PARAM_RANK = 'rank';
+    const UP = -1;
+    const DOWN = 1;
     
+    protected $ListedObject;
+    protected $cond = array();
     protected $itemList = array();
+    protected $maxRank;
     
     /**
      * Constructor
@@ -24,18 +26,13 @@ class Lister
      * @param array $cond : the condition that must be added to loading quiery
      * @return void
      */
-    public function __construct( $tbl , $cond = null , $allowedFields = null )
+    public function __construct( $listedObject , $cond = null )
     {
-        $this->tbl = $tbl;
+        $this->listedObject = $listedObject;
         
         if( is_array( $cond ) )
         {
             $this->cond = $cond;
-        }
-        
-        if( is_array( $allowedFields ) )
-        {
-            $this->allowedFields = $allowedFields;
         }
         
         $this->load();
@@ -56,6 +53,14 @@ class Lister
         return $this->itemList;
     }
     
+    public function getItem( $itemId )
+    {
+        if( array_key_exists( $itemId , $this->itemList ) )
+        {
+            return $this->itemList[ $itemId ];
+        }
+    }
+    
     /**
      * Verifies id item list is not empty
      * @return boolean : true if not
@@ -66,76 +71,13 @@ class Lister
     }
     
     /**
-     * Gets the value of an item's parameter
-     * @param int $itemId : the id of the item
-     * @param string $name : the name of the parameter
-     * @return string : the value of the parameter
-     */
-    public function get( $itemId , $name )
-    {
-        $itemData = $this->getData( $itemId );
-        
-        if( $itemData && array_key_exists( $name , $itemData ) )
-        {
-            return $itemData[ $name ];
-        }
-    }
-    
-    /**
-     * Gets all the data of an item
-     * @param int $itemId : the id of the item
-     * @return : array : the datas of the item
-     */
-    public function getData( $itemId )
-    {
-        if( array_key_exists( 'item_' . $itemId , $this->itemList ) )
-        {
-            return $this->itemList[ 'item_' . $itemId ];
-        }
-    }
-    
-    /**
-     * Sets the value of an item's parameter
-     * @param int $itemId : the id of the item
-     * @param string $name : the name of the parameter
-     * @param string : the value of the parameter
-     * @return void
-     */
-    public function set( $itemId , $name , $value )
-    {
-        if( array_key_exists( 'item_' . $itemId , $this->itemList )
-        &&  array_key_exists( $name , $this->itemList[ 'item_' . $itemId ] ) )
-        {
-            return $this->itemList[ 'item_' . $itemId ][ $name ] = $value;
-        }
-    }
-    
-    /**
-     * Sets a bunch of parameter
-     * @param int $itemId : the item's id
-     * @param array $data : the parameter's data
-     * @return void
-     */
-    public function modify( $itemId , $data )
-    {
-        foreach( $data as $name => $value )
-        {
-            $this->set( $itemId , $name , $value );
-        }
-    }
-    
-    /**
      * Loads item list from database
      * This method is called by the constructor
      * @return void
      */
     public function load()
     {
-        $fieldList = ! empty( $this->allowedFields )
-            ? 'id, rank, ' . implode( ',' , array_keys( $this->allowedFields ) )
-            : "*";
-        
-        $sql = "SELECT {$fieldList} FROM `{$this->tbl}`";
+        $sql = "SELECT id FROM `{$this->listedObject->getTbl()}`";
         
         if( ! empty( $this->cond ) )
         {
@@ -151,7 +93,7 @@ class Lister
             $sql .= implode( "\nAND " , $sqlCond );
         }
         
-        $sql .= "\nORDER BY rank ASC";
+        $sql .= "\nORDER BY " . self::PARAM_RANK . " ASC";
         
         $itemList = Claroline::getDatabase()->query( $sql );
         
@@ -162,144 +104,62 @@ class Lister
             foreach( $itemList as $itemData )
             {
                 $itemId = $itemData[ 'id' ];
-                $this->itemList[ 'item_' . $itemId ] = $itemData;
+                $this->itemList[ $itemId ] = $this->listedObject->getInstance( $itemId );
             }
-            
-            $this->maxRank = $itemData[ 'rank' ];
         }
     }
     
-    /**
-     * Saves datas in database
-     * @param int $itemId : the item's id - if null, saves all the list
-     * @return boolean
-     */
-    public function save( $itemId = null )
-    {
-        $nbRows = 0;
-        
-        $itemList = $itemId
-                    && array_key_exists( 'item_' . $itemId , $this->itemList )
-                ? array( $this->itemList[ 'item_' . $itemId ] )
-                : $this->itemList;
-        
-        foreach( $itemList as $item )
-        {
-            $sql = "UPDATE `{$this->tbl}` SET ";
-            
-            $sqlData = array();
-            
-            foreach( $item as $name => $value )
-            {
-                if( $name != 'id' )
-                {
-                    if( is_array( $value ) )
-                    {
-                        $value = serialize( $value );
-                    }
-                    
-                    $sqlData[] = $name . " = '" . $value . "'";
-                }
-            }
-            
-            $sql .= implode( ",\n" , $sqlData );
-            
-            $id = $itemId ? $itemId : $item['id'];
-            $sql .= "\n WHERE id = " . $id;
-            
-            
-            if( Claroline::getDatabase()->exec( $sql ) )
-            {
-                $nbRows++;
-            }
-        }
-        
-        $this->load();
-        
-        return $nbRows;
-    }
-    
-    /**
-     * Adds an item
-     * @param array $data : the data of the item
-     * @return int : the new item's id
-     */
-    public function add( $data )
-    {
-        if( ! empty( $this->allowedFields ) )
-        {
-            $data = array_merge( $this->allowedFields , $data ); // fills missing fields with default values
-            $data = array_intersect_key( $data , $this->allowedFields ); // removes unwanted fields
-        }
-        
-        $data[ 'rank' ] = ++$this->maxRank;
-        
-        $sql = "INSERT INTO `{$this->tbl}` SET\n";
-        
-        $sqlArray = array();
-        
-        foreach( $data as $name => $value )
-        {
-            $sqlArray[] = $name . " = '" . $value . "'";
-        }
-        
-        $sql .= implode( "\n," , $sqlArray );
-        
-        if( Claroline::getDatabase()->exec( $sql ) )
-        {
-            $itemId = Claroline::getDatabase()->insertId();
-            $this->itemList[ 'item_' . $itemId ] = $data;
-            
-            return $itemId;
-        }
-    }
-    
-    /**
-     * Deletes an item
-     * @param int $itemId : the id of the item
-     * @return : boolean
-     */
     public function delete( $itemId )
     {
-        if( array_key_exists( 'item_' . $itemId , $this->itemList ) )
+        $itemRank = $this->getRank( $itemId );
+        
+        if( $this->itemList[$itemId]->delete() )
         {
-            unset( $this->itemList[ 'item_' . $itemId ] );
-            
             return Claroline::getDatabase()->exec( "
-                DELETE FROM
-                    `{$this->tbl}`
+                UPDATE
+                    `{$this->listedObject->getTbl()}`
+                SET
+                    rank = rank - 1
                 WHERE
-                    id = " . (int)$itemId );
+                    rank >" . Claroline::getDatabase()->escape( $itemRank ) );
         }
     }
     
-    /**
-     * Moves item up in the list (helper)
-     * @param int $itemId : the id of the item
-     * @return : boolean
-     */
+    public function getRank( $itemId )
+    {
+        return Claroline::getDatabase()->query( "
+            SELECT rank FROM
+                `{$this->listedObject->getTbl()}`
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $itemId )
+        )->fetch( Database_ResultSet::FETCH_VALUE );
+    }
+    
+    public function getMaxRank( $force = false )
+    {
+        if( is_null( $this->maxRank ) || $force )
+        {
+            $this->maxRank = Claroline::getDatabase()->query( "
+                SELECT MAX( rank ) FROM `{$this->listedObject->getTbl()}`"
+            )->fetch( Database_ResultSet::FETCH_VALUE );
+        }
+        
+        if( $this->maxRank != count( $this->itemList ) )
+        {
+            $this->repairRank();
+        }
+        
+        return count( $this->itemList );
+    }
+    
     public function up( $itemId )
     {
-        return $this->move( $itemId , 1 );
+        return $this->move( $itemId , self::UP );
     }
     
-    /**
-     * Moves item down in the list (helper)
-     * @param int $itemId : the id of the item
-     * @return : boolean
-     */
     public function down( $itemId )
     {
-        return $this->move( $itemId , -1 );
-    }
-    
-    /**
-     * Gets max rank
-     * @return int
-     */
-    public function getMaxRank()
-    {
-        return $this->maxRank;
+        return $this->move( $itemId , self::DOWN );
     }
     
     /**
@@ -308,29 +168,61 @@ class Lister
      * @param int $direction : 1 for up, -1 for down
      * @return : boolean
      */
-    private function move( $itemId , $direction = 1 )
+    private function move( $itemId , $direction )
     {
-        if( abs( $direction ) != 1 )
+        if( $direction != self::UP && $direction != self::DOWN )
         {
-            throw new Exception( 'Invalid value for direction: must be +1 for up, -1 for down' );
+            throw new Exception( 'Invalid value for direction' );
         }
         
-        if( array_key_exists( 'item_' . $itemId , $this->itemList ) )
+        if( array_key_exists( $itemId , $this->itemList ) )
         {
-            $oldRank = $this->itemList[ 'item_' . $itemId ][ 'rank' ];
-            $newRank = $oldRank - $direction;
+            $oldRank = $this->getRank( $itemId );
+            $newRank = $oldRank + $direction;
             
-            $this->itemList[ 'item_' . $itemId ][ 'rank' ] = $newRank;
-            
-            foreach( $this->itemList as $item )
+            if( $newRank > 0 && $newRank <= $this->getMaxRank() )
             {
-                if( $item[ 'id' ] != $itemId && $item[ 'rank' ] == $newRank )
-                {
-                    $this->itemList[ 'item_' . $item[ 'id' ] ][ 'rank' ] = $oldRank;
-                }
+                $swapId = Claroline::getDatabase()->query( "
+                    SELECT id FROM `{$this->listedObject->getTbl()}`
+                    WHERE rank = " . Claroline::getDatabase()->escape( $newRank )
+                )->fetch( Database_ResultSet::FETCH_VALUE );
+                
+                return $this->setRank( $itemId , $newRank )
+                    && $this->setRank( $swapId , $oldRank );
             }
         }
+    }
+    
+    public function create( $data )
+    {
+        $this->listedObject->set( $data );
+        $this->listedObject->set( self::PARAM_RANK , $this->getMaxRank() );
+        $itemId = $this->listedObject->save();
         
-        return $this->save();
+        if( $itemId )
+        {
+            $this->setRank( $itemId , $this->getMaxRank() + 1 );
+        }
+    }
+    
+    private function setRank( $itemId , $rank )
+    {
+        return Claroline::getDatabase()->exec( "
+            UPDATE
+                `{$this->listedObject->getTbl()}`
+            SET
+                rank = " . Claroline::getDatabase()->escape( $rank ) . "
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $itemId ) );
+    }
+    
+    private function repairRank()
+    {
+        $rank = 1;
+        
+        foreach( array_keys( $this->itemList ) as $itemId )
+        {
+            $this->setRank( $itemId , $rank++ );
+        }
     }
 }

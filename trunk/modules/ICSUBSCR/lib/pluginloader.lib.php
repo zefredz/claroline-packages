@@ -68,7 +68,7 @@ class PluginLoader
                     {
                         require( $this->pluginDir . $pluginName . '/controller.lib.php' );
                         require( $this->pluginDir . $pluginName . '/view.lib.php' );
-                        $this->pluginList[] =  $part[ 2 ];
+                        $this->pluginList[] = $part[ 2 ];
                     }
                     catch( Exception $e )
                     {
@@ -84,7 +84,7 @@ class PluginLoader
      * @param string or int $plugin
      * @return plugged in objet $plugin
      */
-    public function get( $plugin , $model , $id = null , $allowedToEdit = false )
+    public function get( $plugin )
     {
         if( in_array( $plugin , $this->pluginList ) )
         {
@@ -100,7 +100,7 @@ class PluginLoader
             
             $className = $plugin . 'Controller';
             
-            return new $className( $model , $id , $allowedToEdit );
+            return new $className();
         }
     }
     
