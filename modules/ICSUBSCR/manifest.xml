@@ -1,7 +1,7 @@
 <module>
     <label>ICSUBSCR</label>
     <name>Subscriptions</name>
-    <version>0.1</version>
+    <version>0.4</version>
     <license>GPL</license>
     <type>tool</type>
     <entry>index.php</entry>

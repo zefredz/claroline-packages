@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.4 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -22,6 +22,7 @@ class ICSUBSCR_Controller
     protected $id;
     protected $allowedToEdit;
     
+    protected $resetView = false;
     protected $output = array();
     
     /**
@@ -97,6 +98,7 @@ class ICSUBSCR_Controller
         $view->assign( 'model' , $this->model );
         $view->assign( 'id' , $this->getId() );
         $view->assign( 'dateUtil' , new DateUtil( get_lang( '_date' ) ) );
+        $view->assign( 'resetView' , $this->resetView );
         
         return $view;
     }

@@ -2,14 +2,14 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.3 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class DatedLister extends Lister
+class DatedListable extends Listable
 {
     const PARAM_START_DATE = 'startDate';
     const PARAM_END_DATE = 'endDate';
@@ -19,9 +19,9 @@ class DatedLister extends Lister
      * @param int $sessionId : the session id
      * @return string : start date
      */
-    public function getStartDate( $sessionId )
+    public function getStartDate()
     {
-        $startDate = $this->get( $sessionId , self::PARAM_START_DATE );
+        $startDate = $this->get( self::PARAM_START_DATE );
         
         if( $startDate != '0000-00-00 00:00:00' )
         {
@@ -34,9 +34,9 @@ class DatedLister extends Lister
      * @param int $sessionId : the session id
      * @return string : end date
      */
-    public function getEndDate( $sessionId )
+    public function getEndDate()
     {
-        $endDate = $this->get( $sessionId , self::PARAM_END_DATE );
+        $endDate = $this->get( self::PARAM_END_DATE );
         
         if( $endDate != '0000-00-00 00:00:00' )
         {
@@ -49,11 +49,9 @@ class DatedLister extends Lister
      * @param int $sessionId : the session id
      * @return boolean
      */
-    public function setStartDate( $sessionId , $date )
+    public function setStartDate( $date )
     {
-        return $this->set( $sessionId
-                        , self::PARAM_START_DATE
-                        , $date );
+        return $this->set( self::PARAM_START_DATE , $date );
     }
     
     /**
@@ -61,11 +59,9 @@ class DatedLister extends Lister
      * @param int $sessionId : the session id
      * @return boolean
      */
-    public function setEndDate( $sessionId , $date )
+    public function setEndDate( $date )
     {
-        return $this->set( $sessionId
-                        , self::PARAM_END_DATE
-                        , $date );
+        return $this->set( self::PARAM_END_DATE , $date );
     }
     
     /**
@@ -73,13 +69,9 @@ class DatedLister extends Lister
      * @param int $sessionId : the session id
      * @return boolean
      */
-    public function unsetDate( $sessionId )
+    public function unsetDate()
     {
-        return $this->set( $sessionId
-                            , self::PARAM_START_DATE
-                            , null )
-            &&  $this->set( $sessionId
-                            , self::PARAM_END_DATE
-                            , null );
+        return $this->set( self::PARAM_START_DATE , null )
+            &&  $this->set( self::PARAM_END_DATE , null );
     }
 }

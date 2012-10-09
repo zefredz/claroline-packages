@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.4 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -20,13 +20,14 @@ FromKernel::uses(
 
 From::Module( 'ICSUBSCR' )->uses(
     'controller.lib',
-    'defaultcontroller.lib',
+    'frontcontroller.lib',
+    'sessioncontroller.lib',
     'view.lib',
     'defaultview.lib',
+    'listable.lib',
     'lister.lib',
-    'datedlister.lib',
+    'datedlistable.lib',
     'pluginloader.lib',
-    'plugincontroller.lib',
     'pluginview.lib',
     'record.lib',
     'session.lib',
@@ -74,12 +75,13 @@ try
                 new Record( new Session( $sessionId ) , $userId , $groupId ),
                 $slotId,
                 claro_is_allowed_to_edit() )
-            : new DefaultController(
+            : new FrontController(
                 new SessionList(
-                    $pluginLoader->getPluginList(),
                     $groupId ? 'group' : 'user',
+                    $pluginLoader->getPluginList(),
                     claro_is_allowed_to_edit() ),
                 $sessionId,
+                $pluginLoader->getPluginList(),
                 claro_is_allowed_to_edit() );
         
         $controller->execute( $cmd , $data );

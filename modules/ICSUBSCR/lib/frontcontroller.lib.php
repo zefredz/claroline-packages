@@ -9,17 +9,15 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class DefaultController extends ICSUBSCR_Controller
+class FrontController extends ICSUBSCR_Controller
 {
-    protected $typeList;
-    
-    public function __construct( $sessionList , $sessionId = null , $allowedToEdit = false )
+    public function __construct( $model , $id = null , $allowedToEdit = false )
     {
-        parent::__construct( $sessionList , $sessionId , $allowedToEdit );
+        parent::__construct( $model , $sessionId , $allowedToEdit );
         
         $this->sessionList = &$this->model;
-        
         $this->defaultCmd = 'rqShowSessionList';
+        $this->dateUtil = new DateUtil( get_lang( '_date' ) );
     }
     
     public function rqShowSessionList()

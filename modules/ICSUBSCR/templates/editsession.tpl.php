@@ -8,7 +8,7 @@
         }
         $("#hasStartDate").click(function(){
             if($("#hasStartDate").attr("checked")){
-                $("#startDate").val('<?php echo date( get_lang( '_date' ) , strtotime( $this->model->getStartDate( $this->id ) ? $this->model->getStartDate( $this->id ) : 'now' ) ); ?>');
+                $("#startDate").val('<?php echo date( get_lang( '_date' ) , strtotime( $this->model->getItem( $this->id )->getStartDate() ? $this->model->getItem( $this->id )->getStartDate() : 'now' ) ); ?>');
                 $("#startDate").show();
             }else{
                 $("#startDate").hide();
@@ -17,7 +17,7 @@
         });
         $("#hasEndDate").click(function(){
             if($("#hasEndDate").attr("checked")){
-                $("#endDate").val('<?php echo date( get_lang( '_date' ) , strtotime( $this->model->getEndDate( $this->id ) ? $this->model->getEndDate( $this->id ) : '+1 month' ) ); ?>');
+                $("#endDate").val('<?php echo date( get_lang( '_date' ) , strtotime( $this->model->getItem( $this->id )->getEndDate() ? $this->model->getItem( $this->id )->getEndDate() : '+1 month' ) ); ?>');
                 $("#endDate").show();
             }else{
                 $("#endDate").hide();
@@ -37,10 +37,10 @@
     <?php endif; ?>
     <input type="hidden"
            name="data[status]"
-           value="<?php echo $this->id ? $this->model->get( $this->id , 'status' ) :'open'; ?>" />
+           value="<?php echo $this->id ? $this->model->getItem( $this->id )->get( 'status' ) :'open'; ?>" />
     <input type="hidden"
            name="data[visibility]"
-           value="<?php echo $this->id ? $this->model->get( $this->id , 'visibility' ) :'visible'; ?>" />
+           value="<?php echo $this->id ? $this->model->getItem( $this->id )->get( 'visibility' ) :'visible'; ?>" />
     
     <fieldset id="sessionProperties">
         <legend><?php echo get_lang( 'Session properties' ); ?></legend>
@@ -50,7 +50,7 @@
                 <input  id="title"
                         type="text"
                         name="data[title]"
-                        value="<?php echo $this->id ? $this->model->get( $this->id , 'title' ) : ''; ?>"
+                        value="<?php echo $this->id ? $this->model->getItem( $this->id )->get( 'title' ) : ''; ?>"
                         size="40" />
             </dd>
         </dl>
@@ -60,7 +60,7 @@
                 <input  id="description"
                         type="text"
                         name="data[description]"
-                        value="<?php echo $this->id ? $this->model->get( $this->id , 'description' ) : ''; ?>"
+                        value="<?php echo $this->id ? $this->model->getItem( $this->id )->get( 'description' ) : ''; ?>"
                         size="80" />
             </dd>
         </dl>
@@ -69,7 +69,7 @@
             <dd>
                 <select id="type"
                         name="data[type]" >
-                    <?php foreach( $this->model->getTypeList() as $type ) : ?>
+                    <?php foreach( $this->model->typeList as $type ) : ?>
                     <option value="<?php echo $type; ?>" <?php if( $type == 'generic' ) echo 'selected="selected"'; ?>><?php echo $type; ?></option>
                     <?php endforeach; ?>
                 </select>
@@ -80,7 +80,7 @@
             <dd>
                 <input id="hasStartDate"
                        type="checkbox"
-                       <?php if( $this->model->getStartDate( $this->id ) ) : ?>
+                       <?php if( $this->model->getItem( $this->id )->getStartDate() ) : ?>
                        checked="checked"
                        <?php endif; ?>/>
                 <input  id="startDate"
@@ -88,7 +88,7 @@
                         type="text"
                         lang="<?php echo get_lang( '_lang_code' ); ?>"
                         name="data[startDate]"
-                        value="<?php echo $this->model->getStartDate( $this->id ) ? date( get_lang( '_date' ) , strtotime( $this->model->get( $this->id , 'startDate' ) ) ) : ''; ?>"
+                        value="<?php echo $this->model->getItem( $this->id )->getStartDate() ? date( get_lang( '_date' ) , strtotime( $this->model->getItem( $this->id )->get( 'startDate' ) ) ) : ''; ?>"
                         size="8" />
             </dd>
         </dl>
@@ -97,7 +97,7 @@
             <dd>
                 <input id="hasEndDate"
                        type="checkbox"
-                       <?php if( $this->model->getEndDate( $this->id ) ) : ?>
+                       <?php if( $this->model->getItem( $this->id )->getEndDate() ) : ?>
                        checked="checked"
                        <?php endif; ?>/>
                 <input  id="endDate"
@@ -105,7 +105,7 @@
                         type="text"
                         lang="<?php echo get_lang( '_lang_code' ); ?>"
                         name="data[endDate]"
-                        value="<?php echo $this->model->getEndDate( $this->id ) ? date( get_lang( '_date' ) , strtotime( $this->model->get( $this->id , 'endDate' ) ) ) : ''; ?>"
+                        value="<?php echo $this->model->getItem( $this->id )->getEndDate() ? date( get_lang( '_date' ) , strtotime( $this->model->getItem( $this->id )->get( 'endDate' ) ) ) : ''; ?>"
                         size="8" />
             </dd>
         </dl>
@@ -118,28 +118,28 @@
             <dl>
                 <dt><?php echo get_lang( 'Global options' ); ?></dt>
                 <dd>
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_USER_NAME_VISIBLE ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_USER_NAME_VISIBLE; ?>]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_USER_NAME_VISIBLE ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_USER_NAME_VISIBLE; ?>]" />
                     <label><?php echo get_lang( 'Users can see the name of the others voters' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_UNSUBSCRIBE_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_UNSUBSCRIBE_ALLOWED; ?>]" />
-                    <label><?php echo get_lang( 'Users cans delete their vote' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_VOTE_MODIFICATION_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_VOTE_MODIFICATION_ALLOWED; ?>]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_UNSUBSCRIBE_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_UNSUBSCRIBE_ALLOWED; ?>]" />
+                    <label><?php echo get_lang( 'Users can delete their vote' ); ?></label><br />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_VOTE_MODIFICATION_ALLOWED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_VOTE_MODIFICATION_ALLOWED; ?>]" />
                     <label><?php echo get_lang( 'Users can modify their choice' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_BLANK_VOTE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_BLANK_VOTE_ENABLED; ?>]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_BLANK_VOTE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_BLANK_VOTE_ENABLED; ?>]" />
                     <label><?php echo get_lang( 'Blank vote enabled (adds a choice)' ); ?></label><br />
-                    <input type="checkbox" <?php if( $this->id && $this->model->getOption( $this->id , Session::OPTION_PREFERENCE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_PREFERENCE_ENABLED; ?>]" />
+                    <input type="checkbox" <?php if( $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_PREFERENCE_ENABLED ) ) echo 'checked="checked"'; ?> name="data[optionList][<?php echo Session::OPTION_PREFERENCE_ENABLED; ?>]" />
                     <label><?php echo get_lang( 'Subscription with preferences' ); ?></label><br />
                 </dd>
             </dl>
             <dl>
                 <dt><?php echo get_lang( 'Number of vote required' ); ?></dt>
                 <dd>
-                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]" />
+                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->model->getItem( $this->id )->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
             <dl>
                 <dt><?php echo get_lang( 'Number of vote allowed' ); ?></dt>
                 <dd>
-                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->model->getOption( $this->id , Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]" />
+                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->id && $this->model->getItem( $this->id )->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->model->getItem( $this->id )->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
         </div>

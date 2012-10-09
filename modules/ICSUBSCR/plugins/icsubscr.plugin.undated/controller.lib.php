@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class GenericController extends PluginController
+class UndatedController extends SessionController
 {
     public function exCreateSlot( $data )
     {
