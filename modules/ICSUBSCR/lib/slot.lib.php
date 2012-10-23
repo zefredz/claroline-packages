@@ -2,243 +2,118 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.2 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class Session
+class Slot
 {
-    const OPTION_USER_NAME_VISIBLE = 'user_name_visible';
-    const OPTION_UNSUBSCRIBE_ALLOWED = 'unsubscribe_allowed';
-    const OPTION_VOTE_MODIFICATION_ALLOWED = 'vote_modification_allowed';
-    const OPTION_BLANK_VOTE_ENABLED = 'blank_vote_enabled';
-    const OPTION_PREFERENCE_ENABLED = 'preference_enabled';
-    const OPTION_MINIMUM_NUMBER_OF_VOTE = 'minimum_number_of_vote';
-    const OPTION_MAXIMUM_NUMBER_OF_VOTE = 'maximum_number_of_vote';
-    const OPTION_AVAILABLE_SPACE = 'available_space';
-    
     protected $id;
-    protected $data = array();
-    protected $optionList = array();
-    protected $slotList = array();
+    protected $sessionId;
+    protected $label;
+    protected $startDate;
+    protected $endDate;
+    protected $availableSpace;
+    protected $recordList;
+    protected $tbl;
     
-    private static $slotOptionList = array(
-        'title',
-        'description',
-        'availableSpace',
-        'startDate',
-        'endDate',
-        'visibility' );
-    
-    private static $propertyList = array(
-        'title',
-        'description',
-        'type',
-        'subType',
-        'startDate',
-        'endDate'
-    );
-    
-    /**
-     * Constructor
-     * @param int $id
-     */
-    public function __construct( $id = null )
+    public function __construct( $sessionId , $id = null )
     {
-        $this->tbl = get_module_course_tbl(
-            array(
-                'icsubscr_session',
-                'icsubscr_slot' ) );
+        $tbl = get_module_course_tbl( array( 'icsubscr_slot' ) );
+        $this->tbl = $tbl[ 'icsubscr_slot' ];
+        
+        $this->sessionId = $sessionId;
         
         if( $id )
         {
-            $this->id = $id;
-            $this->load();
-            
-            $this->slotList = new slotList( $this->tbl['icsubscr_slot']
-                                        , array( 'sessionId' => $id ) );
+            $this->load( $id );
         }
     }
     
-    /**
-     * Loads data from database
-     * This method is called by the constructor
-     */
-    public function load( $id = null )
+    public function load( $id )
     {
-        if( ! $this->id && (int)$id )
+        if( $this->id )
         {
+            $id = $this->id;
+        }
+        elseif( ! $this->id )
+        {
+            throw new Exception( 'Needs id' );
+        }
+        
+        $data = Claroline::getDatabase()->query( "
+            SELECT
+                label,
+                startDate,
+                endDate,
+                availableSpace
+            FROM
+                `{$this->tbl}`
+            WHERE
+                id = " . Claroline::getDatabase()->escape( $id )
+        )->fetch( Database_ResultSet::FETCH_VALUE );
+        
+        if( ! empty( $data ) )
+        {
+            $this->label = $data[ 'label' ];
+            $this->startDate = $data[ 'startDate' ];
+            $this->endDate = $data[ 'endDate' ];
+            $this->availableSpace = $data[ 'availableSpace' ];
             $this->id = $id;
+        }
+    }
+    
+    public function getId() { return $this->id; }
+    public function getStartDate() { return $this->startDate; }
+    public function getEndDate() { return $this->endDate; }
+    public function getLabel() { return $this->label; }
+    public function getAvailableSpace() { return $this->availableSpace; }
+    
+    public function setStartDate( $date )
+    {
+        $this->startDate = $date;
+    }
+    
+    public function setEndDate( $date )
+    {
+        $this->endDate = $date;
+    }
+    
+    public function save()
+    {
+        $sqlData = "title = " . Claroline::getDatabase()->quote( $this->title ) . "\n"
+            . "description = " . Claroline::getDatabase()->quote( $this->description ) . "\n"
+            . "context = " . Claroline::getDatabase()->quote( $this->context ) . "\n"
+            . "type = " . Claroline::getDatabase()->quote( $this->type ) . "\n"
+            . "openingDate" . Claroline::getDatabase()->quote( $this->openingDate ) . "\n"
+            . "closingDate" . Claroline::getDatabase()->quote( $this->closingDate ) . "\n";
+        
+        if( $this->id )
+        {
+            Claroline::getDatabase()->exec( "
+                UPDATE `{$this->tbl}`
+                SET\n" . $sqlData
+                . "WHERE id = " . Claroline::getDatabase()->escape( $this->id ) );
         }
         else
         {
-            return false;
+            Claroline::getDatabase()->exec( "
+                INSERT INTO `{$this->tbl}`
+                SET\n" . $sqlData );
+            
+            $this->id = Claroline::getDatabase()->insertId();
         }
         
-        $this->data = Claroline::getDatabase()->query( "
-                SELECT
-                    title,
-                    description,
-                    context,
-                    type,
-                    subType,
-                    startDate,
-                    endDate,
-                    status
-                FROM
-                    `{$this->tbl['icsubscr_session']}`
-                WHERE
-                    id = " . Claroline::getDatabase()->escape( $this->id )
-        )->fetch( Database_ResultSet::FETCH_ASSOC );
-        
-        $this->optionList = unserialize(
-            Claroline::getDatabase()->query( "
-                SELECT
-                    optionList
-                FROM
-                    `{$this->tbl['icsubscr_session']}`
-                WHERE
-                    id = " . Claroline::getDatabase()->escape( $this->id )
-        )->fetch( Database_ResultSet::FETCH_VALUE ) );
-        
-        return ! empty( $this->data );
+        return $this->id;
     }
     
-    /**
-     * Gets slot list (helper)
-     * @param boolean $force : to force reload
-     * @return array : the slot list
-     */
-    public function getSlotList( $force = false )
+    public function delete()
     {
-        return $this->slotList->getItemList( $force );
-    }
-    
-    /**
-     * Gets option list
-     * @param boolean $force : to force reload
-     * @return array : the option list
-     */
-    public function getOptionList( $force = false )
-    {
-        if( $force )
-        {
-            $this->load();
-        }
-        
-        return $this->optionList;
-    }
-    
-    /**
-     * Gets the value of an given option
-     * @param string $option
-     * @return string
-     */
-    public function getOption( $option )
-    {
-        if( array_key_exists( $option , $this->optionList ) )
-        {
-            return $this->optionList[ $option ];
-        }
-    }
-    
-    /**
-     * Sets the value for an option
-     * @param string $option
-     * @param string $value
-     * @return void
-     */
-    public function setOption( $option , $value )
-    {
-        $this->optionList[ $option ] = $value;
-    }
-    
-    /**
-     * Saves option list
-     * @return boolean
-     */
-    public function save()
-    {
-        return Claroline::getDatabase()->query( "
-                UPDATE
-                    `{$this->tbl['icsubscr_session']}`
-                SET
-                    optionList = " . Claroline::getDatabase()->quote( serialize( $this->optionList ) ) . "
-                WHERE
-                    id = " . Claroline::getDatabase()->escape( $this->id )
-        );
-    }
-    
-    /**
-     * Gets the datas for an given slot (helper method)
-     * @param int $slotId
-     * @return array
-     */
-    public function getSlotData( $slotId )
-    {
-        return $this->slotList->getData( $slotId );
-    }
-    
-    /**
-     * Adds a slot (helper method)
-     * @param string $title
-     * @param string $description
-     * @param string $startDate
-     * @param string $endDate
-     * @param int availableSpace
-     * @return int : the slot's id
-     */
-    public function addSlot(
-        $title,
-        $description,
-        $startDate = null,
-        $endDate = null,
-        $availableSpace = 1 )
-    {
-        $data = array( 'title' => $title
-                      , 'description' => $description
-                      , 'startDate' => $startDate
-                      , 'endDate' => $endDate
-                      , 'availableSpace' => $availableSpace );
-        
-        return $this->slotList->add( $data );
-    }
-    
-    /**
-     * Modifies a slot (helper method)
-     * @param string $title
-     * @param string $description
-     * @param string $startDate
-     * @param string $endDate
-     * @param int availableSpace
-     * @return int : the slot's id
-     */
-    public function modifySlot(
-        $title,
-        $description,
-        $startDate = null,
-        $endDate = null,
-        $availableSpace = 1 )
-    {
-        $data = array( 'title' => $title
-                      , 'description' => $description
-                      , 'startDate' => $startDate
-                      , 'endDate' => $endDate
-                      , 'availableSpace' => $availableSpace );
-        
-        return $this->slotList->modify( $this->id , $data );
-    }
-    
-    /**
-     * Deletes a slot (helper method)
-     * @param int $slotId
-     * @return boolean
-     */
-    public function deleteSlot( $slotId )
-    {
-        return $this->slotList->delete( $slotId );
+        return Claroline::getDatabase()->exec( "
+            DELETE FROM `{$this->tbl}`
+            WHERE id = " . Claroline::getDatabase()->escape( $this->id ) );
     }
 }

@@ -7,35 +7,34 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_session` (
     `description` TEXT,
     `context` ENUM('user','group') NOT NULL DEFAULT 'user',
     `type` ENUM('undated','dated','timeslot') NOT NULL DEFAULT 'undated',
-    `subType` VARCHAR(32) NOT NULL DEFAULT 'generic',
     `optionList` TEXT,
-    `startDate` DATETIME,
-    `endDate` DATETIME,
-    `status` ENUM('open','closed') NOT NULL default 'open',
-    `rank` INT(3),
-    `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
+    `openingDate` DATETIME,
+    `closingDate` DATETIME,
+    `is_open` TINYINT(1) NOT NULL DEFAULT 1,
+    `is_visible` TINYINT(1) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_slot` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `sessionId` INT(11) NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `description` TEXT,
+    `label` VARCHAR(255) NOT NULL,
     `startDate` DATETIME,
     `endDate` DATETIME,
     `availableSpace` INT(3) NOT NULL DEFAULT 0,
-    `rank` INT(3),
-    `visibility` ENUM('visible','invisible') NOT NULL DEFAULT 'visible',
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_record` (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `userId` INT(11),
+    `userId` INT(11) NOT NULL,
     `groupId` INT(11),
-    `sessionId` INT(11) NOT NULL,
     `slotId` INT(11) NOT NULL,
-    `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_list` (
+    `itemId` INT(11) NOT NULL,
+    `parentId` INT(11) NOT NULL DEFAULT 0,
+    `itemType` ENUM('session','slot','record') NOT NULL DEFAULT 'session',
+    `rank` INT(3) NOT NULL DEFAULT 1,
+    PRIMARY KEY(`itemId`,`itemType`)
 ) ENGINE=MyISAM;

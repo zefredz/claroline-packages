@@ -1,39 +1,47 @@
-<?php // $Id$
-/**
- * Subscriptions for Claroline
- *
- * @version     ICSUBSCR 0.4 $Revision$ - Claroline 1.11
- * @copyright   2001-2012 Universite catholique de Louvain (UCL)
- * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- * @package     ICSUBSCR
- * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
- */
+<?php
 
-class SessionList extends Lister
+class SessionList
 {
-    const CONTEXT = 'context';
-    const ENUM_CONTEXT_USER = 'user';
-    const ENUM_CONTEXT_GROUP = 'group';
+    const CONTEXT_USER = 'user';
+    const CONTEXT_GROUP = 'group';
     
-    public $typeList;
+    protected $tbl;
+    protected $context;
+    protected $allowedToEdit;
+    protected $sessionList;
     
-    /**
-     * Constructor
-     * @param string $context : the actual context
-     */
-    public function __construct( $context = self::ENUM_CONTEXT_USER , $typeList , $allowedToEdit = false )
+    public function __construct( $context = self::USER )
     {
         $tbl = get_module_course_tbl( array( 'icsubscr_session' ) );
+        $this->tbl = $tbl[ 'icsubscr_session' ];
         
-        $this->typeList = $typeList;
+        $this->context = $context;
+        $this->allowedToEdit = $allowedToEdit;
         
-        $filter = array( self::CONTEXT => $context );
+        $this->load();
+    }
+    
+    public function load()
+    {
+        $sessionList = Claroline::getDatabase()->query( "
+            SELECT id, rank
+            FROM `{$this->tbl}`
+            WHERE context = " . Claroline::getDatabase()->quote( $this->context ) . "
+            SORT BY rank ASC" );
         
-        if( ! $allowedToEdit )
+        foreach( $sessionList as $session )
         {
-            $filter[ self::PARAM_VISIBILITY ] = self::ENUM_VISIBILITY_VISIBLE; 
+            $sessionId = $session['id'];
+            
+            $this->sessionList[ $sessionId ] = new Session( $sessionId );
         }
-        
-        parent::__construct( new Session , $filter );
+    }
+    
+    public function get( $sessionId )
+    {
+        if( array_key_exists( $sessionId , $this->sessionList ) )
+        {
+            return $this->sessionList[ $sessionId ];
+        }
     }
 }
