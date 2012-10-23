@@ -20,18 +20,25 @@ try
     require dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
     
     Fromkernel::uses('utils/input.lib','utils/validator.lib');
-    From::Module('CLKRNG')->uses('keyring.lib');
     
     $userInput = Claro_userInput::getInstance();
     
-    // Check access
+    /* 
+     * Check access rights against the keyring module 
+     * 
+     * You must add an entry for each of the clients in the keyring module
+     */
+    From::Module('CLKRNG')->uses('keyring.lib');
     Keyring::checkForService('iccrslst');
     
     $cmd = $userInput->get('cmd','list');
     
-    // get list
+    // get the course list for a given user
     if ( 'list' == $cmd )
     {
+        // get the user based on the id passed in the HTTP request
+        // this id can be the officialCode (LDAP employee number), 
+        // claroline username, claroline userid or email address
         $officialCode = trim( $userInput->get( 'officialCode' ) );
         
         if ( empty( $officialCode ) )
@@ -127,7 +134,7 @@ try
         $user = $res->fetch();
         
         // if user found
-        
+        // retrieve the user's course list
         if ( $user )
         {
             $courses = Claroline::getDatabase()->query(
@@ -143,6 +150,7 @@ try
             
             header("Content-type: text/xml; charset=utf-8");
             
+            // use a template to render XML
             $tpl = new ModuleTemplate( 'ICCRSLST', 'courselist.xml.php' );
             $tpl->assign( 'user', $user ); 
             $tpl->assign( 'courses', $courses );
