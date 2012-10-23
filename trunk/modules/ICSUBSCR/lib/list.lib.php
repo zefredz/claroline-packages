@@ -190,16 +190,7 @@ class ICSUBSCR_List
                     WHERE
                         itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
                     AND
-           <?php // $Id$
-/**
- * Subscriptions for Claroline
- *
- * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
- * @copyright   2001-2012 Universite catholique de Louvain (UCL)
- * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
- * @package     ICSUBSCR
- * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
- */             parentId = " . Claroline::getDatabase()->escape( $this->parentId ) . "
+                        parentId = " . Claroline::getDatabase()->escape( $this->parentId ) . "
                     AND
                         rank = " . Claroline::getDatabase()->escape( $newRank )
                 )->fetch( Database_ResultSet::FETCH_VALUE );
