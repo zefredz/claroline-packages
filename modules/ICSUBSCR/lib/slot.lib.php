@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class Slot
+class Slot extends Hidable
 {
     protected $id;
     protected $sessionId;
@@ -84,12 +84,10 @@ class Slot
     
     public function save()
     {
-        $sqlData = "title = " . Claroline::getDatabase()->quote( $this->title ) . "\n"
-            . "description = " . Claroline::getDatabase()->quote( $this->description ) . "\n"
-            . "context = " . Claroline::getDatabase()->quote( $this->context ) . "\n"
-            . "type = " . Claroline::getDatabase()->quote( $this->type ) . "\n"
-            . "openingDate" . Claroline::getDatabase()->quote( $this->openingDate ) . "\n"
-            . "closingDate" . Claroline::getDatabase()->quote( $this->closingDate ) . "\n";
+        $sqlData = "label = " . Claroline::getDatabase()->quote( $this->label ) . "\n"
+            . "startDate" . Claroline::getDatabase()->quote( $this->startDate ) . "\n"
+            . "endDate" . Claroline::getDatabase()->quote( $this->endDate ) . "\n"
+            . "availableSpace = " . Claroline::getDatabase()->quote( $this->description ) . "\n";
         
         if( $this->id )
         {

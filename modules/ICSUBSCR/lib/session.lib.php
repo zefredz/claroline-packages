@@ -9,13 +9,21 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class Session
+class Session extends Hidable
 {
     const CONTEXT_USER = 'user';
     const CONTEXT_GROUP = 'group';
     const TYPE_UNDATED = 'undated';
     const TYPE_DATED = 'dated';
     const TYPE_TIMESLOT = 'timeslot';
+    const OPTION_USER_NAME_VISIBLE = 'user_name_visible';
+    const OPTION_UNSUBSCRIBE_ALLOWED = 'unsubscribe_allowed';
+    const OPTION_VOTE_MODIFICATION_ALLOWED = 'vote_modification_allowed';
+    const OPTION_BLANK_VOTE_ENABLED = 'blank_vote_enabled';
+    const OPTION_PREFERENCE_ENABLED = 'preference_enabled';
+    const OPTION_MINIMUM_NUMBER_OF_VOTE = 'minimum_number_of_vote';
+    const OPTION_MAXIMUM_NUMBER_OF_VOTE = 'maximum_number_of_vote';
+    const OPTION_AVAILABLE_SPACE = 'available_space';
     
     protected $id;
     protected $title;
@@ -24,10 +32,10 @@ class Session
     protected $type;
     protected $openingDate;
     protected $closingDate;
-    protected $optionList;
-    protected $slotList;
-    protected $is_visible;
-    protected $is_open;
+    protected $optionList = array();
+    protected $slotList = array();
+    protected $is_visible = 1;
+    protected $is_open = 1;
     protected $tbl;
     
     public function __construct( $id = null )
@@ -72,7 +80,9 @@ class Session
         
         if( ! empty( $data ) )
         {
-            $this->optionList = unserialize( $data['optionList'] );
+            $optionList = unserialize( $data['optionList'] );
+            $this->optionList = is_array( $optionList ) ? $optionList : array();
+            
             $this->title = $data[ 'title' ];
             $this->description = $data[ 'description' ];
             $this->context = $data[ 'context' ];
@@ -90,45 +100,17 @@ class Session
     public function getDescription() { return $this->description; }
     public function getContext() { return $this->constext; }
     public function getType() { return $this->type; }
-    public function getOpeningdate() { return $this->openingDate; }
-    public function getClosingdate() { return $this->closingdate; }
+    public function getOpeningDate() { return $this->openingDate; }
+    public function getClosingDate() { return $this->closingDate; }
     
     public function getSlotList()
     {
         return $this->slotList->getItemList();
     }
     
-    public function isVisible()
+    public function getSlot( $slotId )
     {
-        return $this->is_visible === true;
-    }
-    
-    public function show()
-    {
-        return $this->setVisibility( true );
-    }
-    
-    public function hide()
-    {
-        return $this->setVisibility( false );
-    }
-    
-    private function setVisibility( $is_visible = false )
-    {
-        if( $this->id )
-        {
-            throw new Exception( 'Session does not exist' );
-        }
-        
-        $visibility = $is_visible === true ? 0 : 1;
-        
-        return Claroline::getDatabase()->exec( "
-            UPDATE
-                `{$this->tbl}`
-            SET
-                is_visible = " . Claroline::getDatabase()->escape( $visibility ) ) . "
-            WHERE
-                id = " . Claroline::getDatabase()->escape( $this->id );
+        $this->slotList->getItem( $slotId );
     }
     
     public function isOpen()
@@ -234,5 +216,59 @@ class Session
                 || $this->openingDate < $now )
             && ( ! $this->closingDate
                 || $this->closingDate > $now );
+    }
+    
+    /**
+     * Gets the value of an given option
+     * @param string $option
+     * @return string
+     */
+    public function getOption( $option )
+    {
+        if( array_key_exists( $option , $this->optionList ) )
+        {
+            return $this->optionList[ $option ];
+        }
+    }
+    
+    /**
+     * Sets the value for an option
+     * @param string $option
+     * @param string $value
+     * @return void
+     */
+    public function setOption( $option , $value )
+    {
+        $this->optionList[ $option ] = $value;
+        
+        return $this->saveOptionList();
+    }
+    
+    public function removeOption( $option )
+    {
+        unset( $this->optionList[ $option ] );
+    }
+    
+    public function resetOptionList()
+    {
+        $this->optionList = array();
+        
+        return $this->saveOptionList();
+    }
+    
+    /**
+     * Saves option list
+     * @return boolean
+     */
+    public function saveOptionList()
+    {
+        return Claroline::getDatabase()->query( "
+                UPDATE
+                    `{$this->tbl}`
+                SET
+                    optionList = " . Claroline::getDatabase()->quote( serialize( $this->optionList ) ) . "
+                WHERE
+                    id = " . Claroline::getDatabase()->escape( $this->id )
+        );
     }
 }

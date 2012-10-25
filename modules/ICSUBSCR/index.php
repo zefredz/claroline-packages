@@ -2,7 +2,7 @@
 /**
  * Subscriptions for Claroline
  *
- * @version     ICSUBSCR 0.4 $Revision$ - Claroline 1.11
+ * @version     ICSUBSCR 0.1 $Revision$ - Claroline 1.11
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICSUBSCR
@@ -19,74 +19,138 @@ FromKernel::uses(
     'display/layout.lib' );
 
 From::Module( 'ICSUBSCR' )->uses(
-    'controller.lib',
-    'frontcontroller.lib',
-    'sessioncontroller.lib',
-    'view.lib',
-    'defaultview.lib',
-    'listable.lib',
-    'lister.lib',
-    'datedlistable.lib',
-    'pluginloader.lib',
-    'pluginview.lib',
-    'record.lib',
+    'list.lib',
+    'hidable.lib',
     'session.lib',
-    'slotlist.lib',
-    'sessionlist.lib',
+    'slot.lib',
+    'subscription.lib',
+    'result.lib',
+    //'layout.lib',
     'dateutil.lib' );
-
-CssLoader::getInstance()->load( 'kalendae' , 'screen' );
-JavascriptLoader::getInstance()->load('kalendae');
-
-$dialogBox = new DialogBox();
-
-$userId = claro_get_current_user_id();
-$courseId = claro_get_current_course_id();
-$groupId = claro_get_current_group_id();
 
 try
 {
-    if( ! claro_is_in_a_course()
-        || ! claro_is_course_allowed()
-        || ( $groupId && ! claro_is_group_allowed() ) )
+    ////////////////
+    // CONTROLLER //
+    ////////////////
+    
+    $actionList = array(
+        'rqShowSessionList',
+        'rqShowSession',
+        'exSubscribe',
+        'rqUnsubscribe',
+        'exUnsubscribe' );
+    
+    if( claro_is_allowed_to_edit() )
     {
-        $dialogBox->error( 'Not allowed' );
-        $output = $dialogBox->render();
+        $restrictedActionList = array(
+            'rqCreateSession',
+            'exCreateSession',
+            'rqModifySession',
+            'exModifySession',
+            'rqDeleteSession',
+            'exdeleteSession',
+            'exMoveSessionUp',
+            'exMoveSessionDown',
+            'exOpenSession',
+            'exCloseSession',
+            'exShowSession',
+            'exHideSession',
+            'rqCreateSlot',
+            'exCreateSlot',
+            'rqModifySlot',
+            'exModifySlot',
+            'rqDeleteSlot',
+            'exDeleteSlot',
+            'exMoveSlotUp',
+            'exMoveSlotDown',
+            'rqShowSessionResult' );
+        
+        $actionList = array_merge( $restrictedActionList , $actionList );
     }
-    else
+    
+    $userInput = Claro_UserInput::getInstance();
+    $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
+    $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
+    $sessionId = $userInput->get( 'sessionId' , null );
+    
+    $sessionList = new ICSUBSCR_List();
+    $session = new Session( $sessionId );
+    
+    switch( $cmd )
     {
-        $courseData = claro_get_current_course_data();
-        $lang = $courseData[ 'language' ];
+        case 'rqShowSessionList':
+        case 'rqShowSession':
+        case 'rqUnsubscribe':
+        case 'rqCreateSession':
+        case 'rqModifySession':
+        case 'rqDeleteSession':
+        case 'rqCreateSlot':
+        case 'rqModifySlot':
+        case 'rqDeleteSlot':
+        case 'rqShowSessionResult':
+            break;
         
-        $pluginRepository = get_module_path( 'ICSUBSCR' ) . '/plugins/';
-        $pluginLoader = new PluginLoader( $pluginRepository , $lang );
-        
-        $userInput = Claro_UserInput::getInstance();
-        
-        $cmd = $userInput->get( 'cmd' );
-        $sessionId = $userInput->get( 'sessionId' );
-        $slotId = $userInput->get( 'slotId' );
-        $sessionType = $userInput->get( 'sessionType' );
-        $data = $userInput->get( 'data' );
-        
-        $controller = $sessionType && $pluginLoader->pluginExists( $sessionType )
-            ? $pluginLoader->get(
-                $sessionType,
-                new Record( new Session( $sessionId ) , $userId , $groupId ),
-                $slotId,
-                claro_is_allowed_to_edit() )
-            : new FrontController(
-                new SessionList(
-                    $groupId ? 'group' : 'user',
-                    $pluginLoader->getPluginList(),
-                    claro_is_allowed_to_edit() ),
-                $sessionId,
-                $pluginLoader->getPluginList(),
-                claro_is_allowed_to_edit() );
-        
-        $controller->execute( $cmd , $data );
-        $output = $controller->output();
+        default:
+        {
+            throw new Exception( 'bad command' );
+        }
     }
+    
+    //////////
+    // VIEW //
+    //////////
+    
+    CssLoader::getInstance()->load( 'kalendae' , 'screen' );
+    CssLoader::getInstance()->load( 'main' , 'screen' );
+    
+    JavascriptLoader::getInstance()->load('kalendae');
+    JavascriptLoader::getInstance()->load('dateutil');
+    
+    $dialogBox = new DialogBox();
+    
+    $pageTitle = array( 'mainTitle' => get_lang( 'Subscriptions' ) );
+    $cmdList = array();
+    $advancedCmdList = array();
+    $template = 'sessionlist';
+    $assignList = array( 'sessionList' => $sessionList );
+    
+    switch( $cmd )
+    {
+        case 'rqShowSessionList':
+            $template = 'sessionlist';
+            
+            if( claro_is_allowed_to_edit() )
+            {
+                $cmdList[] = array( 'img'  => 'new',
+                        'name' => get_lang( 'create a new session' ),
+                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
+                                  .'/index.php?cmd=rqCreateSession' ) ) );
+            }
+            break;
+        
+        case 'rqCreateSession':
+            $template = 'sessionedit';
+            $assignList = array( 'session' => $session );
+            break;
+        
+        default:
+        {
+            throw new Exception( 'bad command' );
+        }
+    }
+    
+    $view = new ModuleTemplate( $tlabelReq , $template . '.tpl.php' );
+    
+    foreach( $assignList as $assignedName => $assign )
+    {
+        $view->assign( $assignedName , $assign );
+    }
+    
+    Claroline::getInstance()->display->body->appendContent(
+        claro_html_tool_title( $pageTitle , null , $cmdList , $advancedCmdList )
+        . $dialogBox->render()
+        . $view->render() );
 }
 catch( Exception $e )
 {
@@ -99,11 +163,9 @@ catch( Exception $e )
         $errorMsg = $e->getMessage();
     }
     
-    $dialogBox->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
-    $output = $dialogBox->render();
+    $errorReport = new DialogBox();
+    $errorReport->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
+    Claroline::getInstance()->display->body->appendContent( $errorReport->render() );
 }
-
-CssLoader::getInstance()->load( 'main' , 'screen' );
-Claroline::getInstance()->display->body->appendContent( $output );
 
 echo Claroline::getInstance()->display->render();
