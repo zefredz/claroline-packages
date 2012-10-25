@@ -13,7 +13,7 @@ class ICSUBSCR_List
 {
     const ITEM_TYPE_SESSION = 'session';
     const ITEM_TYPE_SLOT = 'slot';
-    const ITEM_TYPE_RECORD = 'record';
+    
     const UP = -1;
     const DOWN = 1;
     
@@ -26,17 +26,12 @@ class ICSUBSCR_List
     public function __construct( $itemType = self::ITEM_TYPE_SESSION , $parentId = null )
     {
         if( $itemType != self::ITEM_TYPE_SESSION
-            && $itemType != self::ITEM_TYPE_SLOT
-            && $itemType != self::ITEM_TYPE_RECORD )
+            && $itemType != self::ITEM_TYPE_SLOT )
         {
             throw new Exception( 'Invalid item type' );
         }
         
-        if( $itemType == self::ITEM_TYPE_SESSION )
-        {
-            $parentId = 0;
-        }
-        elseif( is_null( $parentId ) || (int)$parentId == 0 )
+        if( $itemType == self::ITEM_TYPE_SLOT && ! $parentId )
         {
             throw new Exception( 'Missing parent id' );
         }
@@ -45,8 +40,8 @@ class ICSUBSCR_List
         $this->parentId = $parentId;
         $this->itemClassName = ucwords( $itemType );
         
-        $tbl = get_module_course_tbl( array( 'icsubscr_list' ) );
-        $this->tbl = $tbl[ 'icsubscr_session' ];
+        $tbl = get_module_course_tbl( array( 'icsubscr_' . $itemType ) );
+        $this->tbl = $tbl[ 'icsubscr_' . $itemType ];
         
         $this->load();
     }
@@ -58,17 +53,16 @@ class ICSUBSCR_List
      */
     public function load()
     {
-        $itemList = Claroline::getDatabase()->query( "
-            SELECT
-                itemId
-            FROM
-                `{$this->tbl}`
-            WHERE
-                itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
-            AND
-                parentId = " . Claroline::getDatabase()->escape( $this->parentId ) . "
-            ORDER BY
-                rank ASC" );
+        $sql = "SELECT id FROM `{$this->tbl}` ";
+        
+        if( $this->parentId )
+        {
+            $sql .= "\nWHERE sessionId = " . Claroline::getDatabase()->escape( $this->parentId );
+        }
+        
+        $sql .= "\nORDER BY rank ASC";
+        
+        $itemList = Claroline::getDatabase()->query( $sql );
         
         if( $itemList->numRows() )
         {
@@ -76,7 +70,7 @@ class ICSUBSCR_List
             
             foreach( $itemList as $itemData )
             {
-                $itemId = $itemData[ 'itemId' ];
+                $itemId = $itemData[ 'id' ];
                 $this->itemList[ $itemId ] = new $this->itemClassName( $itemId );
             }
         }
@@ -122,9 +116,7 @@ class ICSUBSCR_List
             FROM
                 `{$this->tbl}`
             WHERE
-                itemId = " . Claroline::getDatabase()->escape( $itemId ) . "
-            AND
-                itemType = " . Claroline::getDatabase()->escape( $this->itemType )
+                id = " . Claroline::getDatabase()->escape( $itemId )
         )->fetch( Database_ResultSet::FETCH_VALUE );
     }
     
@@ -132,16 +124,14 @@ class ICSUBSCR_List
     {
         if( is_null( $this->maxRank ) || $force )
         {
-            $this->maxRank = Claroline::getDatabase()->query( "
-                SELECT
-                    MAX( rank )
-                FROM
-                    `{$this->tbl}`
-                WHERE
-                    itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
-                AND
-                    parentId = " . Claroline::getDatabase()->escape( $this->parentId )
-            )->fetch( Database_ResultSet::FETCH_VALUE );
+            $sql = "SELECT MAX( rank ) FROM `{$this->tbl}`";
+            
+            if( $this->parentId )
+            {
+                $sql .= "\nWHERE sessionId = " . Claroline::getDatabase()->escape( $this->parentId );
+            }
+            
+            $this->maxRank = Claroline::getDatabase()->query( $sql )->fetch( Database_ResultSet::FETCH_VALUE );
         }
         
         if( $this->maxRank != count( $this->itemList ) )
@@ -182,18 +172,16 @@ class ICSUBSCR_List
             
             if( $newRank > 0 && $newRank <= $this->getMaxRank() )
             {
-                $swapId = Claroline::getDatabase()->query( "
-                    SELECT
-                        itemId
-                    FROM
-                        `{$this->tbl}`
-                    WHERE
-                        itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
-                    AND
-                        parentId = " . Claroline::getDatabase()->escape( $this->parentId ) . "
-                    AND
-                        rank = " . Claroline::getDatabase()->escape( $newRank )
-                )->fetch( Database_ResultSet::FETCH_VALUE );
+                $sql = "SELECT id FROM `{$this->tbl}` ";
+                
+                if( $this->parentId )
+                {
+                    $sql .= "\nWHERE sessionId = " . Claroline::getDatabase()->escape( $this->parentId );
+                }
+                
+                $sql .= "\nAND rank = " . Claroline::getDatabase()->escape( $newRank );
+                
+                $swapId = Claroline::getDatabase()->query( $sql )->fetch( Database_ResultSet::FETCH_VALUE );
                 
                 return $this->setRank( $itemId , $newRank )
                     && $this->setRank( $swapId , $oldRank );
@@ -205,29 +193,11 @@ class ICSUBSCR_List
     {
         if( is_a( $item , $this->itemClassName ) && $item->getId() )
         {
-            return Claroline::getDatabase()->exec( "
-                INSERT INTO `{$this->tbl}` SET
-                itemId = " . Claroline::getDatabase()->escape( $item->getId() ) . "
-                parentId = " . Claroline::getDatabase()->escape( $this->parentId ) . "
-                itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
-                rank = " . Claroline::getDatabase()->escape( $this->getMaxRank() +1 ) );
-        }
-        else
-        {
-            throw new Exception( 'Invalid object' );
-        }
-    }
-    
-    public function remove( $item )
-    {
-        if( is_a( $item , $this->itemClassName ) && $item->getId() )
-        {
-            return Claroline::getDatabase()->exec( "
-                DELETE FROM `{$this->tbl}`
-                WHERE
-                    itemId = " . Claroline::getDatabase()->escape( $item->getId() ) . "
-                AND
-                    itemType = " . Claroline::getDatabase()->quote( $this->itemType ) );
+            $sql = "UPDATE `{$this->tbl}`\nSET rank = "
+                . Claroline::getDatabase()->escape( $this->getMaxRank() +1 )
+                . "\nWHERE id = " . Claroline::getDatabase()->escape( $item->getId() );
+                
+            return Claroline::getDatabase()->exec( $sql );
         }
         else
         {
@@ -243,9 +213,7 @@ class ICSUBSCR_List
             SET
                 rank = " . Claroline::getDatabase()->escape( $rank ) . "
             WHERE
-                itemType = " . Claroline::getDatabase()->quote( $this->itemType ) . "
-            AND
-                itemId = " . Claroline::getDatabase()->escape( $itemId ) );
+                id = " . Claroline::getDatabase()->escape( $itemId ) );
     }
     
     private function repairRank()
