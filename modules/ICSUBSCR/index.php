@@ -26,7 +26,10 @@ From::Module( 'ICSUBSCR' )->uses(
     'subscription.lib',
     'result.lib',
     //'layout.lib',
-    'dateutil.lib' );
+    'dateutil.lib',
+    'message.lib' );
+
+$message = new Message();
 
 try
 {
@@ -73,6 +76,7 @@ try
     $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
     $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
     $sessionId = $userInput->get( 'sessionId' , null );
+    $data = $userInput->get( 'data' );
     
     $sessionList = new ICSUBSCR_List();
     $session = new Session( $sessionId );
@@ -91,6 +95,43 @@ try
         case 'rqShowSessionResult':
             break;
         
+        case 'exCreateSession':
+            if( ! $data['title'] || ! $data['description'] || ! $data['type'] )
+            {
+                $message->addMsg( 'error' , 'Missing fields' );
+                return;
+            }
+            
+            if( $data['type'] != Session::TYPE_UNDATED && ! $data['openingDate'] )
+            {
+                $message->addMsg( 'error' , 'missing opening date' );
+            }
+            
+            if( $data['type'] == Session::TYPE_TIMESLOT && ! $data['closingDate' ] )
+            {
+                $message->addMsg( 'error' , 'missing closing date' );
+            }
+            
+            if( $data['openingDate'] )
+            {
+               $data['openingDate'] = $this->dateUtil->in( $data['openingDate'] );
+            }
+            
+            if( $data['closingDate'] )
+            {
+                $data['closingDate'] = $this->dateUtil->in( $data['closingDate'] );
+            }
+            
+            if( $session->add( $data ) )
+            {
+                $message->addMsg( 'success' , 'Session successfully created' );
+            }
+            else
+            {
+                $message->addMsg( 'error' , 'Session cannot be created' );
+            }
+            break;
+        
         default:
         {
             throw new Exception( 'bad command' );
@@ -106,8 +147,6 @@ try
     
     JavascriptLoader::getInstance()->load('kalendae');
     JavascriptLoader::getInstance()->load('dateutil');
-    
-    $dialogBox = new DialogBox();
     
     $pageTitle = array( 'mainTitle' => get_lang( 'Subscriptions' ) );
     $cmdList = array();
@@ -163,8 +202,7 @@ catch( Exception $e )
         $errorMsg = $e->getMessage();
     }
     
-    $errorReport = new DialogBox();
-    $errorReport->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
+    $message->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
     Claroline::getInstance()->display->body->appendContent( $errorReport->render() );
 }
 

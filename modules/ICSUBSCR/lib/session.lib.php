@@ -271,4 +271,19 @@ class Session extends Hidable
                     id = " . Claroline::getDatabase()->escape( $this->id )
         );
     }
+    
+    static public function add( $data )
+    {
+        $session = new self();
+        
+        foreach( $data as $property => $value )
+        {
+            $this->{$property} = $value;
+        }
+        
+        if( $this->save() && $this->saveOptionList() )
+        {
+            return $session->getId();
+        }
+    }
 }
