@@ -13,10 +13,10 @@
         </tr>
     </thead>
     <tbody>
-    <?php if( ! empty( $this->sessionList ) ) : ?>
-        <?php foreach( $this->sessionList as $session ) : ?>
+    <?php if( count( $this->sessionList->getItemList( true ) ) ) : ?>
+        <?php foreach( $this->sessionList->getItemList() as $session ) : ?>
         <tr>
-            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session->getId() . '&sessionType=' . $session->get( 'type' ) ) );?>"><?php echo $session->getTitle(); ?></a></td>
+            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session->getId() . '&sessionType=' . $session->getType() ) );?>"><?php echo $session->getTitle(); ?></a></td>
             <td><?php echo $session->getOpeningDate() ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session->getOpeningDate() ) ) : 'no date'; ?></td>
             <td><?php echo $session->getClosingDate() ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session->getClosingDate() ) ) : 'no date'; ?></td>
             <?php if( claro_is_allowed_to_edit() ) : ?>

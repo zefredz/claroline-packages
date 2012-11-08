@@ -25,9 +25,19 @@ class Message extends DialogBox
      * @param string $content : the message itself
      * @return void
      */
-    public function addMsg( $type , $content )
+    public function addMsg( $type , $content , $action = null , $xid = null , $cancel = null )
     {
         $this->validate( $type );
+        
+        if( $type == self::QUESTION )
+        {
+            $template = new ModuleTemplate( 'ICSUBSCR' , 'question.tpl.php' );
+            $template->assign( 'urlAction' , $action );
+            $template->assign( 'xid' , $xid );
+            $template->assign( 'urlCancel' , $cancel );
+            $content .= $template->render();
+        }
+        
         $this->output[ $type ][] = $content;
         $this->{$type}( $content );
     }

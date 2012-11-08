@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_session` (
     `optionList` TEXT,
     `openingDate` DATETIME,
     `closingDate` DATETIME,
-    `is_open` TINYINT(1) NOT NULL DEFAULT 1,
-    `is_visible` TINYINT(1) NOT NULL DEFAULT 1,
+    `is_open` BOOLEAN NOT NULL DEFAULT TRUE,
+    `is_visible` BOOLEAN NOT NULL DEFAULT TRUE,
     `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_slot` (
     `startDate` DATETIME,
     `endDate` DATETIME,
     `availableSpace` INT(3) NOT NULL DEFAULT 0,
-    `is_visible` TINYINT(1) NOT NULL DEFAULT 1,
+    `is_visible` BOOLEAN NOT NULL DEFAULT TRUE,
     `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
