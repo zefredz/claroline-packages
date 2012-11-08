@@ -28,12 +28,12 @@ class Hidable
     
     private function setVisibility( $is_visible = false )
     {
-        if( $this->id )
+        if( ! $this->id )
         {
             throw new Exception( 'Session does not exist' );
         }
         
-        $visibility = $is_visible === true ? 0 : 1;
+        $visibility = $is_visible === true ? false : true;
         
         return Claroline::getDatabase()->exec( "
             UPDATE

@@ -11,6 +11,7 @@
 
 class Session extends Hidable
 {
+    const NULL_DATE = '0000-00-00 00:00:00';
     const CONTEXT_USER = 'user';
     const CONTEXT_GROUP = 'group';
     const TYPE_UNDATED = 'undated';
@@ -76,7 +77,7 @@ class Session extends Hidable
                 `{$this->tbl}`
             WHERE
                 id = " . Claroline::getDatabase()->escape( $id )
-        )->fetch( Database_ResultSet::FETCH_VALUE );
+        )->fetch( Database_ResultSet::FETCH_ASSOC );
         
         if( ! empty( $data ) )
         {
@@ -100,8 +101,22 @@ class Session extends Hidable
     public function getDescription() { return $this->description; }
     public function getContext() { return $this->constext; }
     public function getType() { return $this->type; }
-    public function getOpeningDate() { return $this->openingDate; }
-    public function getClosingDate() { return $this->closingDate; }
+    
+    public function getOpeningDate()
+    {
+        if( $this->openingDate != self::NULL_DATE )
+        {
+            return $this->openingDate;
+        }
+    }
+    
+    public function getClosingDate()
+    {
+        if( $this->closingDate != self::NULL_DATE )
+        {
+            return $this->closingDate;
+        }
+    }
     
     public function getSlotList()
     {
@@ -130,12 +145,12 @@ class Session extends Hidable
     
     private function setOpen( $is_open = false )
     {
-        if( $this->id )
+        if( ! $this->id )
         {
             throw new Exception( 'Session does not exist' );
         }
         
-        $open = $is_open === true ? 0 : 1;
+        $open = $is_open === true ? false : true;
         
         return Claroline::getDatabase()->exec( "
             UPDATE
@@ -169,12 +184,12 @@ class Session extends Hidable
     
     public function save()
     {
-        $sqlData = "title = " . Claroline::getDatabase()->quote( $this->title ) . "\n"
-            . "description = " . Claroline::getDatabase()->quote( $this->description ) . "\n"
-            . "context = " . Claroline::getDatabase()->quote( $this->context ) . "\n"
-            . "type = " . Claroline::getDatabase()->quote( $this->type ) . "\n"
-            . "openingDate" . Claroline::getDatabase()->quote( $this->openingDate ) . "\n"
-            . "closingDate" . Claroline::getDatabase()->quote( $this->closingDate ) . "\n";
+        $sqlData = "title = " . Claroline::getDatabase()->quote( $this->title ) . ",\n"
+            . "description = " . Claroline::getDatabase()->quote( $this->description ) . ",\n"
+            . "context = " . Claroline::getDatabase()->quote( $this->context ) . ",\n"
+            . "type = " . Claroline::getDatabase()->quote( $this->type ) . ",\n"
+            . "openingDate = " . Claroline::getDatabase()->quote( $this->openingDate ) . ",\n"
+            . "closingDate = " . Claroline::getDatabase()->quote( $this->closingDate ) . "\n";
         
         if( $this->id )
         {
@@ -272,10 +287,8 @@ class Session extends Hidable
         );
     }
     
-    static public function add( $data )
+    public function modify( $data )
     {
-        $session = new self();
-        
         foreach( $data as $property => $value )
         {
             $this->{$property} = $value;
@@ -283,7 +296,14 @@ class Session extends Hidable
         
         if( $this->save() && $this->saveOptionList() )
         {
-            return $session->getId();
+            return $this->getId();
         }
+    }
+    
+    static public function add( $data )
+    {
+        $session = new self();
+        
+        return $session->modify( $data );
     }
 }

@@ -25,7 +25,7 @@
                 <input  id="title"
                         type="text"
                         name="data[title]"
-                        value="<?php $this->session->getTitle(); ?>"
+                        value="<?php echo $this->session->getTitle(); ?>"
                         size="40" />
             </dd>
         </dl>
@@ -39,6 +39,18 @@
                         size="80" />
             </dd>
         </dl>
+        <?php if( ! $this->session->getId() ) : ?>
+        <dl>
+            <dt><label for="context" ><?php echo get_lang( 'Context' ); ?><span class="required">*</span></label>&nbsp;:</dt>
+            <dd>
+                <select id="context"
+                        name="data[context]" >
+                    <option value="user" selected="selected"><?php echo get_lang( 'individual' ); ?></option>
+                    <option value="group"><?php echo get_lang( 'group' ); ?></option>
+                </select>
+            </dd>
+        </dl>
+        <?php endif; ?>
         <dl>
             <dt><label for="type" ><?php echo get_lang( 'Session type' ); ?><span class="required">*</span></label>&nbsp;:</dt>
             <dd>
@@ -108,13 +120,13 @@
             <dl>
                 <dt><?php echo get_lang( 'Number of vote required' ); ?></dt>
                 <dd>
-                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->session->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->model->getItem( $this->id )->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]" />
+                    <input id="min_num_vote" type="text" size="2" value="<?php echo $this->session->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) ? $this->session->getOption( Session::OPTION_MINIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MINIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
             <dl>
                 <dt><?php echo get_lang( 'Number of vote allowed' ); ?></dt>
                 <dd>
-                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->session->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->model->getItem( $this->id )->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]" />
+                    <input id="max_num_vote" type="text" size="2" value="<?php echo $this->session->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) ? $this->session->getOption( Session::OPTION_MAXIMUM_NUMBER_OF_VOTE ) : 1; ?>" name="data[optionList][<?php echo Session::OPTION_MAXIMUM_NUMBER_OF_VOTE; ?>]" />
                 </dd>
             </dl>
         </div>

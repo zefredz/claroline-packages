@@ -21,6 +21,7 @@ class ICSUBSCR_List
     protected $parentId;
     protected $itemClassName;
     protected $itemList;
+    protected $maxRank;
     protected $tbl;
     
     public function __construct( $itemType = self::ITEM_TYPE_SESSION , $parentId = null )

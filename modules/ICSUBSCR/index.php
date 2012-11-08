@@ -52,7 +52,7 @@ try
             'rqModifySession',
             'exModifySession',
             'rqDeleteSession',
-            'exdeleteSession',
+            'exDeleteSession',
             'exMoveSessionUp',
             'exMoveSessionDown',
             'exOpenSession',
@@ -78,6 +78,7 @@ try
     $sessionId = $userInput->get( 'sessionId' , null );
     $data = $userInput->get( 'data' );
     
+    $dateUtil = new DateUtil( get_lang( '_date' ) );
     $sessionList = new ICSUBSCR_List();
     $session = new Session( $sessionId );
     
@@ -88,14 +89,19 @@ try
         case 'rqUnsubscribe':
         case 'rqCreateSession':
         case 'rqModifySession':
-        case 'rqDeleteSession':
         case 'rqCreateSlot':
         case 'rqModifySlot':
         case 'rqDeleteSlot':
         case 'rqShowSessionResult':
             break;
         
+        case 'rqDeleteSession':
+            $xid = array( 'sessionId' => $sessionId );
+            $message->addMsg( 'question' , 'Delete this session?' , 'exDeleteSession' , $xid );
+            break;
+        
         case 'exCreateSession':
+        case 'exModifySession':
             if( ! $data['title'] || ! $data['description'] || ! $data['type'] )
             {
                 $message->addMsg( 'error' , 'Missing fields' );
@@ -114,22 +120,75 @@ try
             
             if( $data['openingDate'] )
             {
-               $data['openingDate'] = $this->dateUtil->in( $data['openingDate'] );
+               $data['openingDate'] = $dateUtil->in( $data['openingDate'] );
             }
             
             if( $data['closingDate'] )
             {
-                $data['closingDate'] = $this->dateUtil->in( $data['closingDate'] );
+                $data['closingDate'] = $dateUtil->in( $data['closingDate'] );
             }
             
-            if( $session->add( $data ) )
+            if( $session->getId() )
             {
-                $message->addMsg( 'success' , 'Session successfully created' );
+                if( $session->modify( $data ) )
+                {
+                    $message->addMsg( 'success' , 'Session successfully modified' );
+                }
+                else
+                {
+                    $message->addMsg( 'error' , 'Session cannot be modifieded' );
+                }
             }
             else
             {
-                $message->addMsg( 'error' , 'Session cannot be created' );
+                if( $session->add( $data ) )
+                {
+                    $message->addMsg( 'success' , 'Session successfully created' );
+                }
+                else
+                {
+                    $message->addMsg( 'error' , 'Session cannot be created' );
+                }
             }
+            break;
+        
+        case 'exDeleteSession':
+            if( $session->delete() )
+                {
+                    $message->addMsg( 'success' , 'Session successfully deleted' );
+                }
+                else
+                {
+                    $message->addMsg( 'error' , 'Session cannot be deleted' );
+                }
+            break;
+        
+        case 'exCloseSession':
+            if( ! $session->close() )
+                {
+                    $message->addMsg( 'error' , 'Session cannot be closed' );
+                }
+            break;
+        
+        case 'exOpenSession':
+            if( ! $session->open() )
+                {
+                    $message->addMsg( 'error' , 'Session cannot be opened' );
+                }
+            break;
+        
+        case 'exShowSession':
+            if( ! $session->show() )
+                {
+                    $message->addMsg( 'error' , 'Cannot change the visibility' );
+                }
+            break;
+        
+        case 'exHideSession':
+            if( ! $session->hide() )
+                {
+                    $message->addMsg( 'error' , 'Cannot change the visibility' );
+                }
             break;
         
         default:
@@ -157,6 +216,14 @@ try
     switch( $cmd )
     {
         case 'rqShowSessionList':
+        case 'exCreateSession':
+        case 'exModifySession':
+        case 'rqDeleteSession':
+        case 'exDeleteSession':
+        case 'exOpenSession':
+        case 'exCloseSession':
+        case 'exShowSession':
+        case 'exHideSession':
             $template = 'sessionlist';
             
             if( claro_is_allowed_to_edit() )
@@ -169,6 +236,7 @@ try
             break;
         
         case 'rqCreateSession':
+        case 'rqModifySession':
             $template = 'sessionedit';
             $assignList = array( 'session' => $session );
             break;
@@ -188,7 +256,7 @@ try
     
     Claroline::getInstance()->display->body->appendContent(
         claro_html_tool_title( $pageTitle , null , $cmdList , $advancedCmdList )
-        . $dialogBox->render()
+        . $message->render()
         . $view->render() );
 }
 catch( Exception $e )
@@ -203,7 +271,7 @@ catch( Exception $e )
     }
     
     $message->error( '<strong>' . get_lang( 'Error' ) . ' : </strong>' . $errorMsg );
-    Claroline::getInstance()->display->body->appendContent( $errorReport->render() );
+    Claroline::getInstance()->display->body->appendContent( $message->render() );
 }
 
 echo Claroline::getInstance()->display->render();
