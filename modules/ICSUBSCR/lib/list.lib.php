@@ -64,11 +64,10 @@ class ICSUBSCR_List
         $sql .= "\nORDER BY rank ASC";
         
         $itemList = Claroline::getDatabase()->query( $sql );
+        $this->itemList = array();
         
         if( $itemList->numRows() )
         {
-            $this->itemList = array();
-            
             foreach( $itemList as $itemData )
             {
                 $itemId = $itemData[ 'id' ];
@@ -173,14 +172,8 @@ class ICSUBSCR_List
             
             if( $newRank > 0 && $newRank <= $this->getMaxRank() )
             {
-                $sql = "SELECT id FROM `{$this->tbl}` ";
-                
-                if( $this->parentId )
-                {
-                    $sql .= "\nWHERE sessionId = " . Claroline::getDatabase()->escape( $this->parentId );
-                }
-                
-                $sql .= "\nAND rank = " . Claroline::getDatabase()->escape( $newRank );
+                $sql = "SELECT id FROM `{$this->tbl}`\nWHERE rank = "
+                    . Claroline::getDatabase()->escape( $newRank );
                 
                 $swapId = Claroline::getDatabase()->query( $sql )->fetch( Database_ResultSet::FETCH_VALUE );
                 
