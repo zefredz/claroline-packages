@@ -102,10 +102,19 @@ try
         
         case 'exCreateSession':
         case 'exModifySession':
+            if( $data['openingDate'] )
+            {
+               $data['openingDate'] = $dateUtil->in( $data['openingDate'] );
+            }
+            
+            if( $data['closingDate'] )
+            {
+                $data['closingDate'] = $dateUtil->in( $data['closingDate'] );
+            }
+            
             if( ! $data['title'] || ! $data['description'] || ! $data['type'] )
             {
                 $message->addMsg( 'error' , 'Missing fields' );
-                return;
             }
             
             if( $data['type'] != Session::TYPE_UNDATED && ! $data['openingDate'] )
@@ -118,36 +127,29 @@ try
                 $message->addMsg( 'error' , 'missing closing date' );
             }
             
-            if( $data['openingDate'] )
+            if( ! $message->hasError() )
             {
-               $data['openingDate'] = $dateUtil->in( $data['openingDate'] );
-            }
-            
-            if( $data['closingDate'] )
-            {
-                $data['closingDate'] = $dateUtil->in( $data['closingDate'] );
-            }
-            
-            if( $session->getId() )
-            {
-                if( $session->modify( $data ) )
+                if( $session->getId() )
                 {
-                    $message->addMsg( 'success' , 'Session successfully modified' );
+                    if( $session->modify( $data ) )
+                    {
+                        $message->addMsg( 'success' , 'Session successfully modified' );
+                    }
+                    else
+                    {
+                        $message->addMsg( 'error' , 'Session cannot be modified' );
+                    }
                 }
                 else
                 {
-                    $message->addMsg( 'error' , 'Session cannot be modifieded' );
-                }
-            }
-            else
-            {
-                if( $session->add( $data ) )
-                {
-                    $message->addMsg( 'success' , 'Session successfully created' );
-                }
-                else
-                {
-                    $message->addMsg( 'error' , 'Session cannot be created' );
+                    if( $session->add( $data ) )
+                    {
+                        $message->addMsg( 'success' , 'Session successfully created' );
+                    }
+                    else
+                    {
+                        $message->addMsg( 'error' , 'Session cannot be created' );
+                    }
                 }
             }
             break;
@@ -191,6 +193,20 @@ try
                 }
             break;
         
+        case 'exMoveSessionUp':
+            if( ! $sessionList->up( $sessionId ) )
+                {
+                    $message->addMsg( 'error' , 'Cannot change the rank' );
+                }
+            break;
+        
+        case 'exMoveSessionDown':
+            if( ! $sessionList->down( $sessionId ) )
+                {
+                    $message->addMsg( 'error' , 'Cannot change the rank' );
+                }
+            break;
+        
         default:
         {
             throw new Exception( 'bad command' );
@@ -224,6 +240,8 @@ try
         case 'exCloseSession':
         case 'exShowSession':
         case 'exHideSession':
+        case 'exMoveSessionUp':
+        case 'exMoveSessionDown':
             $template = 'sessionlist';
             
             if( claro_is_allowed_to_edit() )
