@@ -185,17 +185,18 @@ class ICSUBSCR_List
     
     public function add( $item )
     {
-        if( is_a( $item , $this->itemClassName ) && $item->getId() )
+        if( ! is_a( $item , $this->itemClassName ) )
+        {
+            throw new Exception( 'Invalid object' );
+        }
+        
+        if( $item->save() )
         {
             $sql = "UPDATE `{$this->tbl}`\nSET rank = "
                 . Claroline::getDatabase()->escape( $this->getMaxRank() +1 )
                 . "\nWHERE id = " . Claroline::getDatabase()->escape( $item->getId() );
                 
             return Claroline::getDatabase()->exec( $sql );
-        }
-        else
-        {
-            throw new Exception( 'Invalid object' );
         }
     }
     

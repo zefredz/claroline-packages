@@ -61,6 +61,11 @@ class Message extends DialogBox
         return $this->has();
     }
     
+    public function hasSuccess()
+    {
+        return $this->has( self::DIALOG_SUCCESS );
+    }
+    
     private function validate( $type )
     {
         if( $type != self::SUCCESS

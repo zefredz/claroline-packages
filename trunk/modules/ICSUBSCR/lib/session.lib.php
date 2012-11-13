@@ -182,7 +182,7 @@ class Session extends Hidable
         }
     }
     
-    public function save()
+    public function saveData()
     {
         $sqlData = "title = " . Claroline::getDatabase()->quote( $this->title ) . ",\n"
             . "description = " . Claroline::getDatabase()->quote( $this->description ) . ",\n"
@@ -287,23 +287,19 @@ class Session extends Hidable
         );
     }
     
-    public function modify( $data )
+    public function save()
     {
-        foreach( $data as $property => $value )
-        {
-            $this->{$property} = $value;
-        }
-        
-        if( $this->save() && $this->saveOptionList() )
+        if( $this->saveData() && $this->saveOptionList() )
         {
             return $this->getId();
         }
     }
     
-    static public function add( $data )
+    public function setData( $data )
     {
-        $session = new self();
-        
-        return $session->modify( $data );
+        foreach( $data as $property => $value )
+        {
+            $this->{$property} = $value;
+        }
     }
 }

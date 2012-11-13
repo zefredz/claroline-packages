@@ -82,9 +82,13 @@ try
     $sessionList = new ICSUBSCR_List();
     $session = new Session( $sessionId );
     
+    $template = 'sessionlist';
+    
     switch( $cmd )
     {
         case 'rqShowSessionList':
+            break;
+        
         case 'rqShowSession':
         case 'rqUnsubscribe':
         case 'rqCreateSession':
@@ -93,6 +97,7 @@ try
         case 'rqModifySlot':
         case 'rqDeleteSlot':
         case 'rqShowSessionResult':
+            $template = 'sessionedit';
             break;
         
         case 'rqDeleteSession':
@@ -127,11 +132,13 @@ try
                 $message->addMsg( 'error' , 'missing closing date' );
             }
             
+            $session->setData( $data );
+            
             if( ! $message->hasError() )
             {
                 if( $session->getId() )
                 {
-                    if( $session->modify( $data ) )
+                    if( $session->save( $data ) )
                     {
                         $message->addMsg( 'success' , 'Session successfully modified' );
                     }
@@ -142,7 +149,7 @@ try
                 }
                 else
                 {
-                    if( $session->add( $data ) )
+                    if( $sessionList->add( $session ) )
                     {
                         $message->addMsg( 'success' , 'Session successfully created' );
                     }
@@ -151,6 +158,10 @@ try
                         $message->addMsg( 'error' , 'Session cannot be created' );
                     }
                 }
+            }
+            else
+            {
+                $template = 'sessionedit';
             }
             break;
         
@@ -226,42 +237,27 @@ try
     $pageTitle = array( 'mainTitle' => get_lang( 'Subscriptions' ) );
     $cmdList = array();
     $advancedCmdList = array();
-    $template = 'sessionlist';
     $assignList = array( 'sessionList' => $sessionList );
     
-    switch( $cmd )
+    switch( $template )
     {
-        case 'rqShowSessionList':
-        case 'exCreateSession':
-        case 'exModifySession':
-        case 'rqDeleteSession':
-        case 'exDeleteSession':
-        case 'exOpenSession':
-        case 'exCloseSession':
-        case 'exShowSession':
-        case 'exHideSession':
-        case 'exMoveSessionUp':
-        case 'exMoveSessionDown':
-            $template = 'sessionlist';
-            
+        case 'sessionlist':
             if( claro_is_allowed_to_edit() )
             {
                 $cmdList[] = array( 'img'  => 'new',
                         'name' => get_lang( 'create a new session' ),
                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
-                                  .'/index.php?cmd=rqCreateSession' ) ) );
+                                .'/index.php?cmd=rqCreateSession' ) ) );
             }
             break;
         
-        case 'rqCreateSession':
-        case 'rqModifySession':
-            $template = 'sessionedit';
+        case 'sessionedit':
             $assignList = array( 'session' => $session );
             break;
         
         default:
         {
-            throw new Exception( 'bad command' );
+            throw new Exception( 'bad template name or template not defined' );
         }
     }
     
