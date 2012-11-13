@@ -114,4 +114,9 @@ class Slot extends Hidable
             DELETE FROM `{$this->tbl}`
             WHERE id = " . Claroline::getDatabase()->escape( $this->id ) );
     }
+    
+    protected function getTbl()
+    {
+        return $this->tbl;
+    }
 }

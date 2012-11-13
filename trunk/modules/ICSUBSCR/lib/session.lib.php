@@ -302,4 +302,9 @@ class Session extends Hidable
             $this->{$property} = $value;
         }
     }
+    
+    protected function getTbl()
+    {
+        return $this->tbl;
+    }
 }

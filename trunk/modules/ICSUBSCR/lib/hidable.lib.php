@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class Hidable
+abstract class Hidable
 {
     public function isVisible()
     {
@@ -37,10 +37,13 @@ class Hidable
         
         return Claroline::getDatabase()->exec( "
             UPDATE
-                `{$this->tbl}`
+                `{$this->getTbl()}`
             SET
                 is_visible = " . Claroline::getDatabase()->escape( $visibility ) ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape( $this->id );
+                id = " . Claroline::getDatabase()->escape( $this->getId() );
     }
+    
+    abstract protected function getTbl();
+    abstract public function getId();
 }

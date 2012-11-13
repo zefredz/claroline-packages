@@ -20,6 +20,7 @@ FromKernel::uses(
 
 From::Module( 'ICSUBSCR' )->uses(
     'list.lib',
+    'sessionlist.lib',
     'hidable.lib',
     'session.lib',
     'slot.lib',
@@ -80,7 +81,7 @@ try
     
     $dateUtil = new DateUtil( get_lang( '_date' ) );
     $session = new Session( $sessionId );
-    $sessionList = new ICSUBSCR_List( $session );
+    $sessionList = new SessionList();
     
     $template = 'sessionlist';
     
@@ -138,25 +139,22 @@ try
             {
                 if( $session->getId() )
                 {
-                    if( $session->save( $data ) )
-                    {
-                        $message->addMsg( 'success' , 'Session successfully modified' );
-                    }
-                    else
-                    {
-                        $message->addMsg( 'error' , 'Session cannot be modified' );
-                    }
+                    $action = 'modified';
+                    $ok = $session->save( $data );
                 }
                 else
                 {
-                    if( $sessionList->add( $session ) )
-                    {
-                        $message->addMsg( 'success' , 'Session successfully created' );
-                    }
-                    else
-                    {
-                        $message->addMsg( 'error' , 'Session cannot be created' );
-                    }
+                    $action = 'created';
+                    $ok = $session->save( $data ) && $sessionList->add( $session->getId() );
+                }
+                
+                if( $ok )
+                {
+                    $message->addMsg( 'success' , 'Session successfully ' . $action );
+                }
+                else
+                {
+                    $message->addMsg( 'error' , 'Session cannot be ' . $action );
                 }
             }
             else
@@ -166,7 +164,7 @@ try
             break;
         
         case 'exDeleteSession':
-            if( $session->delete() )
+            if( $sessionList->remove( $session->getId() ) && $session->delete() )
                 {
                     $message->addMsg( 'success' , 'Session successfully deleted' );
                 }
