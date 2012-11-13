@@ -56,7 +56,7 @@ class ICSUBSCR_List
      */
     public function load()
     {
-        $sql = "SELECT id FROM `{$this->tbl}`"
+        $sql = "SELECT itemId FROM `{$this->tbl}`"
             . "\nWHERE itemType = "
             . Claroline::getDatabase()->quote( $this->itemType );
         

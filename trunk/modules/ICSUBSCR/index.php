@@ -79,8 +79,8 @@ try
     $data = $userInput->get( 'data' );
     
     $dateUtil = new DateUtil( get_lang( '_date' ) );
-    $sessionList = new ICSUBSCR_List();
     $session = new Session( $sessionId );
+    $sessionList = new ICSUBSCR_List( $session );
     
     $template = 'sessionlist';
     
