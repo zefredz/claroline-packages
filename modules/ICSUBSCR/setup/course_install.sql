@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_record` (
 ) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_list` (
-    `itemType` ENUM('session','slot') NOT NULL DEFAULT 'session'
+    `itemType` ENUM('session','slot') NOT NULL DEFAULT 'session',
     `parentId`INT(11) NOT NULL DEFAULT 0,
     `itemId` INT(11) NOT NULL,
     `rank`INT(3) NOT NULL DEFAULT 1,
