@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_session` (
     `closingDate` DATETIME,
     `is_open` BOOLEAN NOT NULL DEFAULT TRUE,
     `is_visible` BOOLEAN NOT NULL DEFAULT TRUE,
-    `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
 
@@ -24,7 +23,6 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_slot` (
     `endDate` DATETIME,
     `availableSpace` INT(3) NOT NULL DEFAULT 0,
     `is_visible` BOOLEAN NOT NULL DEFAULT TRUE,
-    `rank` INT(3) NOT NULL DEFAULT 1,
     PRIMARY KEY(`id`)
 ) ENGINE=MyISAM;
 
@@ -35,4 +33,12 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_record` (
     `groupId` INT(11),
     PRIMARY KEY(`userId`,`groupId`,`slotId`),
     UNIQUE KEY(`groupId`,`slotId`)
+) ENGINE=MyISAM;
+
+CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_list` (
+    `itemType` ENUM('session','slot') NOT NULL DEFAULT 'session'
+    `parentId`INT(11) NOT NULL DEFAULT 0,
+    `itemId` INT(11) NOT NULL,
+    `rank`INT(3) NOT NULL DEFAULT 1,
+    PRIMARY KEY(`parentId`,`itemId`)
 ) ENGINE=MyISAM;
