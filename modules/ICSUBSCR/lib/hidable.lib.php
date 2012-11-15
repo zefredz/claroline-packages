@@ -28,20 +28,18 @@ abstract class Hidable
     
     private function setVisibility( $is_visible = false )
     {
-        if( ! $this->id )
+        if( ! $this->getId() )
         {
             throw new Exception( 'Session does not exist' );
         }
-        
-        $visibility = $is_visible === true ? false : true;
         
         return Claroline::getDatabase()->exec( "
             UPDATE
                 `{$this->getTbl()}`
             SET
-                is_visible = " . Claroline::getDatabase()->escape( $visibility ) ) . "
+                is_visible = " . Claroline::getDatabase()->quote( (boolean)$is_visible ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape( $this->getId() );
+                id = " . Claroline::getDatabase()->escape( $this->getId() ) );
     }
     
     abstract protected function getTbl();

@@ -150,15 +150,13 @@ class Session extends Hidable
             throw new Exception( 'Session does not exist' );
         }
         
-        $open = $is_open === true ? false : true;
-        
         return Claroline::getDatabase()->exec( "
             UPDATE
                 `{$this->tbl}`
             SET
-                is_open = " . Claroline::getDatabase()->escape( $open ) ) . "
+                is_open = " . Claroline::getDatabase()->quote( (boolean)$is_open ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape( $this->id );
+                id = " . Claroline::getDatabase()->escape( $this->id ) );
     }
     
     public function setContext( $context = self::CONTEXT_USER )
