@@ -99,7 +99,7 @@ class Session extends Hidable
     public function getId() { return $this->id; }
     public function getTitle() { return $this->title; }
     public function getDescription() { return $this->description; }
-    public function getContext() { return $this->constext; }
+    public function getContext() { return $this->context; }
     public function getType() { return $this->type; }
     
     public function getOpeningDate()
@@ -225,9 +225,9 @@ class Session extends Hidable
         
         return $this->isOpen()
             && $this->isVisible()
-            && ( ! $this->openingDate
+            && ( ! $this->type != self::TYPE_UNDATED
                 || $this->openingDate < $now )
-            && ( ! $this->closingDate
+            && ( ! $this->type == self::TYPE_TIMESLOT
                 || $this->closingDate > $now );
     }
     

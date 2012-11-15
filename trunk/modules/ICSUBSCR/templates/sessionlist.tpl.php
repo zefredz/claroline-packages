@@ -2,6 +2,10 @@
     <thead>
         <tr class="headerX">
             <th><?php echo get_lang( 'Session' ); ?></th>
+        <?php if( claro_is_allowed_to_edit() ) : ?>
+            <th><?php echo get_lang( 'Context' ); ?></th>
+            <th><?php echo get_lang( 'Session type' ); ?></th>
+        <?php endif; ?>
             <th><?php echo get_lang( 'Start date' ); ?></th>
             <th><?php echo get_lang( 'End date' ); ?></th>
         <?php if( claro_is_allowed_to_edit() ) : ?>
@@ -15,8 +19,23 @@
     <tbody>
     <?php if( count( $this->sessionList->getItemList( true ) ) ) : ?>
         <?php foreach( $this->sessionList->getItemList() as $session ) : ?>
+        <?php if( $session->isVisible() || claro_is_allowed_to_edit() ) : ?>
         <tr>
-            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session->getId() . '&sessionType=' . $session->getType() ) );?>"><?php echo $session->getTitle(); ?></a></td>
+            <td>
+            <?php if( claro_is_allowed_to_edit() || $session->isAvailable() ) : ?>
+                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?sessionId='. $session->getId() . '&sessionType=' . $session->getType() ) );?>"><?php echo $session->getTitle(); ?></a>
+            <?php else : ?>
+                <?php echo $session->getTitle(); ?> <em>(<?php echo get_lang( 'Unavailable' ); ?>)</em>
+            <?php endif; ?>
+            </td>
+            <?php if( claro_is_allowed_to_edit() ) : ?>
+            <td align="center">
+                <img src="<?php echo get_icon_url( $session->getContext() == Session::CONTEXT_GROUP ? 'group' : 'user' ); ?>" alt="<?php echo get_lang( $session->getContext() ); ?>" />
+            </td>
+            <td>
+                <?php echo get_lang( $session->getType() ); ?>
+            </td>
+            <?php endif; ?>
             <td><?php echo $session->getOpeningDate() ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session->getOpeningDate() ) ) : 'no date'; ?></td>
             <td><?php echo $session->getClosingDate() ? claro_html_localised_date( '%a %d %b %Y' , strtotime( $session->getClosingDate() ) ) : 'no date'; ?></td>
             <?php if( claro_is_allowed_to_edit() ) : ?>
@@ -68,10 +87,11 @@
             </td>
             <?php endif; ?>
         </tr>
+        <?php endif; ?>
         <?php endforeach; ?>
     <?php else : ?>
         <tr>
-            <td colspan="<?php echo claro_is_allowed_to_edit() ? 5 : 3; ?>"  align="center"><span class="empty"><?php echo get_lang( 'Empty' ); ?></span></td>
+            <td colspan="<?php echo claro_is_allowed_to_edit() ? 7 : 5; ?>"  align="center"><span class="empty"><?php echo get_lang( 'Empty' ); ?></span></td>
         </tr>
     <?php endif; ?>
     </tbody>
