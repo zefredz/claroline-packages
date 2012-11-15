@@ -282,7 +282,8 @@ class ICADDEXT_Importer
     {
         foreach( $this->csvParser->data as $index => $userData )
         {
-            if( ! self::is_mail( $userData[ 'email' ] ) )
+            if( ! array_key_exists( $index , $this->output[ 'missing_values' ] )
+                && ! self::is_mail( $userData[ 'email' ] ) )
             {
                 $this->output[ 'invalid_mail' ][ $index ] = $userData[ 'nom' ] . ' (' . $userData[ 'email' ] . ')';
                 $this->invalid[ $index ] = true;
