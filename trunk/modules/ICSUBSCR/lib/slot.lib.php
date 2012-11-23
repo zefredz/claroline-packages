@@ -82,6 +82,16 @@ class Slot extends Hidable
         $this->endDate = $date;
     }
     
+    public function setLabel( $label )
+    {
+        $this->label = $label;
+    }
+    
+    public function setAvailableSpace( $asnb = 0 )
+    {
+        $this->availableSpace = $asnb;
+    }
+    
     public function save()
     {
         $sqlData = "label = " . Claroline::getDatabase()->quote( $this->label ) . "\n"
@@ -115,7 +125,60 @@ class Slot extends Hidable
             WHERE id = " . Claroline::getDatabase()->escape( $this->id ) );
     }
     
-    protected function getTbl()
+    public function setData( $data )
+    {
+        foreach( $data as $property => $value )
+        {
+            $this->{$property} = $value;
+        }
+    }
+    
+    public function rqCreateSlot()
+    {
+        if( $this->allowedToEdit )
+        {
+            $this->view->selectedView = 1;
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Not allowed' );
+            $this->view->selectedView = 0;
+        }
+    }
+    
+    public function rqEditSlot()
+    {
+        if( $this->allowedToEdit )
+        {
+            $this->view->selectedView = 1;
+        }
+        else
+        {
+            $this->addMsg( self::ERROR , 'Not allowed' );
+            $this->view->selectedView = 0;
+        }
+    }
+    
+    public function rqDeleteSlot()
+    {
+        $question = $this->view->question( get_lang( 'delete this session?' )
+                                        , 'exDeleteSlot'
+                                        , array( 'slotId' => $this->id ) ) ;
+        $this->addMsg( self::QUESTION , $question );
+        $this->view->selectedView = 0;
+    }
+    
+    public function exDeleteSlot()
+    {
+        if( ! $this->session->deleteSlot( $this->id ) )
+        {
+            $this->output[] = array( 'error' => 'Cannot delete slot' );
+        }
+        
+        $this->view->selectedView = 0;
+    }
+    
+    protected function getDatabaseTable()
     {
         return $this->tbl;
     }

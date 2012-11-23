@@ -51,6 +51,7 @@
             </dd>
         </dl>
         <?php endif; ?>
+        <?php if( ! $this->session->getId() ) : ?>
         <dl>
             <dt><label for="type" ><?php echo get_lang( 'Session type' ); ?><span class="required">*</span></label>&nbsp;:</dt>
             <dd>
@@ -62,6 +63,7 @@
                 </select>
             </dd>
         </dl>
+        <?php endif; ?>
         <dl>
             <dt><label for="startDate" ><?php echo get_lang( 'Opening date' ); ?></label>&nbsp;:</dt>
             <dd>
@@ -139,3 +141,9 @@
     </dl>
 </form>
 <p><small><?php echo get_lang( '<span class="required">*</span> denotes required field' ); ?></small></p>
+<?php if( $this->session->getId() ) : ?>
+<fieldset id="slotProperties">
+    <legend><?php echo get_lang( 'Slots properties' ); ?></legend>
+    <?php include( $this->session->getType() . 'edit.tpl.php' ); ?>
+</fieldset>
+<?php endif; ?>

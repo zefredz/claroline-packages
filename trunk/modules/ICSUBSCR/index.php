@@ -26,9 +26,11 @@ From::Module( 'ICSUBSCR' )->uses(
     'slot.lib',
     'subscription.lib',
     'result.lib',
-    //'layout.lib',
     'dateutil.lib',
-    'message.lib' );
+    'message.lib',
+    'undatedslotlist.lib',
+    'datedslotlist.lib',
+    'timeslotslotlist.lib' );
 
 $message = new Message();
 
@@ -73,6 +75,7 @@ try
         $actionList = array_merge( $restrictedActionList , $actionList );
     }
     
+    //$userGroupList = get_user_group_list( claro_get_current_user_id() );
     $userInput = Claro_UserInput::getInstance();
     $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
     $cmd = $userInput->get( 'cmd' , 'rqShowSessionList' );
@@ -123,14 +126,9 @@ try
                 $message->addMsg( 'error' , 'Missing fields' );
             }
             
-            if( $data['type'] != Session::TYPE_UNDATED && ! $data['openingDate'] )
+            if( $session->getId() )
             {
-                $message->addMsg( 'error' , 'missing opening date' );
-            }
-            
-            if( $data['type'] == Session::TYPE_TIMESLOT && ! $data['closingDate' ] )
-            {
-                $message->addMsg( 'error' , 'missing closing date' );
+                $data['type'] = $session->getType();
             }
             
             $session->setData( $data );
@@ -214,6 +212,63 @@ try
                 {
                     $message->addMsg( 'error' , 'Cannot change the rank' );
                 }
+            break;
+        
+        case 'exCreateSlot':
+        case 'exModifySlot':
+            if( $data['startDate'] )
+            {
+               $data['startDate'] = $dateUtil->in( $data['startDate'] );
+            }
+            
+            if( $data['endDate'] )
+            {
+                $data['endDate'] = $dateUtil->in( $data['endDate'] );
+            }
+            
+            if( $data['label'] )
+            {
+                $message->addMsg( 'error' , 'Missing slot label' );
+            }
+            
+            if( $session->getType() != Session::TYPE_UNDATED && ! $data['startDate'] )
+            {
+                $message->addMsg( 'error' , 'missing start date' );
+            }
+            
+            if( $session->getType() == Session::TYPE_TIMESLOT && ! $data['endDate' ] )
+            {
+                $message->addMsg( 'error' , 'missing end date' );
+            }
+            
+            $slot->setData( $data );
+            
+            if( ! $message->hasError() )
+            {
+                if( $session->getId() )
+                {
+                    $action = 'modified';
+                    $ok = $slot->save( $data );
+                }
+                else
+                {
+                    $action = 'created';
+                    $ok = $slot->save( $data ) && $session->addSlot( $slot->getId() );
+                }
+                
+                if( $ok )
+                {
+                    $message->addMsg( 'success' , 'Session successfully ' . $action );
+                }
+                else
+                {
+                    $message->addMsg( 'error' , 'Session cannot be ' . $action );
+                }
+            }
+            else
+            {
+                $template = 'sessionedit';
+            }
             break;
         
         default:

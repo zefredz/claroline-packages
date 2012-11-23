@@ -35,13 +35,13 @@ abstract class Hidable
         
         return Claroline::getDatabase()->exec( "
             UPDATE
-                `{$this->getTbl()}`
+                `{$this->getDatabaseTable()}`
             SET
                 is_visible = " . Claroline::getDatabase()->quote( (boolean)$is_visible ) . "
             WHERE
                 id = " . Claroline::getDatabase()->escape( $this->getId() ) );
     }
     
-    abstract protected function getTbl();
+    abstract protected function getDatabaseTable();
     abstract public function getId();
 }

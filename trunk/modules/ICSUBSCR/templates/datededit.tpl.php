@@ -1,0 +1,1 @@
+Ceci est une session avec slots datés
