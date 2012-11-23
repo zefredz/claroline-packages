@@ -34,7 +34,7 @@ class Session extends Hidable
     protected $openingDate;
     protected $closingDate;
     protected $optionList = array();
-    protected $slotList = array();
+    protected $slotList;
     protected $is_visible = 1;
     protected $is_open = 1;
     protected $tbl;
@@ -47,7 +47,8 @@ class Session extends Hidable
         if( $id )
         {
             $this->load( $id );
-            $this->slotList = new ICSUBSCR_List( 'slot' , $id );
+            $slotListType = $this->getType() . 'SlotList';
+            $this->slotList = new $slotListType( 'slot' , $id );
         }
     }
     
@@ -120,7 +121,10 @@ class Session extends Hidable
     
     public function getSlotList()
     {
-        return $this->slotList->getItemList();
+        if( $this->id )
+        {
+            return $this->slotList->getItemList();
+        }
     }
     
     public function getSlot( $slotId )
@@ -301,7 +305,7 @@ class Session extends Hidable
         }
     }
     
-    protected function getTbl()
+    protected function getDatabaseTable()
     {
         return $this->tbl;
     }

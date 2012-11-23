@@ -7,7 +7,6 @@
     <entry>index.php</entry>
     <icon>icon.png</icon>  
     <context>course</context>
-    <context>group</context>
     
     <description>
         <![CDATA[ A multiple purpose subscription tool ]]>
