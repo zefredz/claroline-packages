@@ -1,5 +1,7 @@
 <form   method="post"
         action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=excreateSlot&sessionId=' . $this->session->getId() ) ); ?>" >
+
+<?php if( $this->session->getType() == Session::TYPE_TIMESLOT ) : ?>
         Pour le jour suivant : <input  id="day"
         class="auto-kal"
         type="text"
@@ -25,5 +27,12 @@ en
        name="sliceNb"
        size="2"
        value="1" /> plages
+       
+<?php elseif( $this->session->getType() == Session::TYPE_DATED ) : ?>
+
+<?php else: ?>
+
+<?php endif; ?>
+
     <input id="submitSlice" type="submit" name="submitSlice" value="<?php echo get_lang( 'Create' ); ?>" />
 </form>

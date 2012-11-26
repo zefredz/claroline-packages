@@ -47,8 +47,6 @@ class Session extends Hidable
         if( $id )
         {
             $this->load( $id );
-            $slotListType = $this->getType();
-            $this->slotList = new $slotListType( 'slot' , $id );
         }
     }
     
@@ -57,6 +55,7 @@ class Session extends Hidable
         if( $this->id )
         {
             $id = $this->id;
+            $this->slotList = new ICSUBSCR_List( 'slot' , $id );
         }
         elseif( ! $id )
         {
@@ -119,10 +118,15 @@ class Session extends Hidable
         }
     }
     
-    public function getSlotList()
+    public function getSlotList( $force = false )
     {
         if( $this->id )
         {
+            if( $force )
+            {
+                $this->load();
+            }
+            
             return $this->slotList->getItemList();
         }
     }
