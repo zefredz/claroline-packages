@@ -142,8 +142,8 @@
 </form>
 <p><small><?php echo get_lang( '<span class="required">*</span> denotes required field' ); ?></small></p>
 <?php if( $this->session->getId() ) : ?>
-<fieldset id="slotProperties">
-    <legend><?php echo get_lang( 'Slots properties' ); ?></legend>
-    <?php include( $this->session->getType() . 'edit.tpl.php' ); ?>
+<fieldset id="slotList">
+    <legend><?php echo get_lang( 'Slot list' ); ?></legend>
+    <?php include( 'slotlist.tpl.php' ); ?>
 </fieldset>
 <?php endif; ?>

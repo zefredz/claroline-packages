@@ -28,9 +28,10 @@ From::Module( 'ICSUBSCR' )->uses(
     'result.lib',
     'dateutil.lib',
     'message.lib',
-    'undatedslotlist.lib',
-    'datedslotlist.lib',
-    'timeslotslotlist.lib' );
+    'slotlist.lib',
+    'undated.lib',
+    'dated.lib',
+    'timeslot.lib' );
 
 $message = new Message();
 
@@ -155,10 +156,8 @@ try
                     $message->addMsg( 'error' , 'Session cannot be ' . $action );
                 }
             }
-            else
-            {
-                $template = 'sessionedit';
-            }
+            
+            $template = 'sessionedit';
             break;
         
         case 'exDeleteSession':
@@ -305,6 +304,11 @@ try
             break;
         
         case 'sessionedit':
+            $cmdList[] = array( 'img'  => 'new',
+                    'name' => get_lang( 'create new slots' ),
+                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
+                            .'/index.php?cmd=rqCreateSlot' ) ) );
+            
             $assignList = array( 'session' => $session );
             break;
         

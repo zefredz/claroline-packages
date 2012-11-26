@@ -1,1 +1,1 @@
-Ceci est une session standard (slots non datés)
+Ceci est une session standard (slots non dat&eacute;s)
