@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class UndatedSlotList extends ICSUBSCR_List
+class Undated extends ICSUBSCR_List
 {
     public function __contruct( $sessionId )
     {

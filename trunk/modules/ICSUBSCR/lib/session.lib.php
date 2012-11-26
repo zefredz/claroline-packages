@@ -47,7 +47,7 @@ class Session extends Hidable
         if( $id )
         {
             $this->load( $id );
-            $slotListType = $this->getType() . 'SlotList';
+            $slotListType = $this->getType();
             $this->slotList = new $slotListType( 'slot' , $id );
         }
     }

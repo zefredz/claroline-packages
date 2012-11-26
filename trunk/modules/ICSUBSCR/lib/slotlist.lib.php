@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class DatedSlotList extends ICSUBSCR_List
+class SlotList extends ICSUBSCR_List
 {
     public function __contruct( $sessionId )
     {

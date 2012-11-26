@@ -1,1 +1,1 @@
-Ceci est une session avec slots datés
+Ceci est une session avec slots dat&eacute;s
