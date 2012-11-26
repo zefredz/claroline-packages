@@ -27,11 +27,7 @@ From::Module( 'ICSUBSCR' )->uses(
     'subscription.lib',
     'result.lib',
     'dateutil.lib',
-    'message.lib',
-    'slotlist.lib',
-    'undated.lib',
-    'dated.lib',
-    'timeslot.lib' );
+    'message.lib' );
 
 $message = new Message();
 
@@ -98,7 +94,6 @@ try
         case 'rqUnsubscribe':
         case 'rqCreateSession':
         case 'rqModifySession':
-        case 'rqCreateSlot':
         case 'rqModifySlot':
         case 'rqDeleteSlot':
         case 'rqShowSessionResult':
@@ -122,7 +117,7 @@ try
                 $data['closingDate'] = $dateUtil->in( $data['closingDate'] );
             }
             
-            if( ! $data['title'] || ! $data['description'] || ! $data['type'] )
+            if( ! $data['title'] || ! $data['description'] )
             {
                 $message->addMsg( 'error' , 'Missing fields' );
             }
@@ -270,6 +265,10 @@ try
             }
             break;
         
+        case 'rqCreateSlot':
+            $template = 'createslot';
+            break;
+        
         default:
         {
             throw new Exception( 'bad command' );
@@ -289,11 +288,13 @@ try
     $pageTitle = array( 'mainTitle' => get_lang( 'Subscriptions' ) );
     $cmdList = array();
     $advancedCmdList = array();
-    $assignList = array( 'sessionList' => $sessionList );
+    $assignList = array();
     
     switch( $template )
     {
         case 'sessionlist':
+            $assignList[ 'sessionList' ] = $sessionList;
+            
             if( claro_is_allowed_to_edit() )
             {
                 $cmdList[] = array( 'img'  => 'new',
@@ -304,12 +305,25 @@ try
             break;
         
         case 'sessionedit':
-            $cmdList[] = array( 'img'  => 'new',
-                    'name' => get_lang( 'create new slots' ),
-                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
-                            .'/index.php?cmd=rqCreateSlot' ) ) );
+            $assignList[ 'session' ] = $session;
             
-            $assignList = array( 'session' => $session );
+            if( $session->getId() )
+            {
+                $cmdList[] = array( 'img'  => 'new',
+                        'name' => get_lang( 'create new slots' ),
+                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
+                                .'/index.php?cmd=rqCreateSlot&sessionId=' . $session->getId() ) ) );
+            }
+            break;
+        
+        case 'createslot':
+            $assignList[ 'sessionId' ] = $session->getId();
+            $assignList[ 'sessionType' ] = $session->getType();
+            
+            $cmdList[] = array( 'img'  => 'back',
+                    'name' => get_lang( 'Back' ),
+                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
+                            .'/index.php?cmd=rqModifySession&sessionId=' . $session->getId() ) ) );
             break;
         
         default:

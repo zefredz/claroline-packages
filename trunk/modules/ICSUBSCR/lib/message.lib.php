@@ -15,9 +15,12 @@ class Message extends DialogBox
     const ERROR = 'error';
     const INFO = 'info';
     const QUESTION = 'question';
+    const FORM = 'form';
     const WARNING = 'warning';
+    const QUESTION_TPL = 'question.tpl.php';
     
     protected $output = array();
+    protected $template = false;
     
     /**
      * Adds a mesage into the output
@@ -31,7 +34,17 @@ class Message extends DialogBox
         
         if( $type == self::QUESTION )
         {
-            $template = new ModuleTemplate( 'ICSUBSCR' , 'question.tpl.php' );
+            $this->template = self::QUESTION_TPL;
+        }
+        
+        if( $type == self::FORM )
+        {
+            $this->template = $content;
+        }
+        
+        if( $this->template )
+        {
+            $template = new ModuleTemplate( 'ICSUBSCR' , $this->template );
             $template->assign( 'urlAction' , $action );
             $template->assign( 'xid' , $xid );
             $template->assign( 'urlCancel' , $cancel );
