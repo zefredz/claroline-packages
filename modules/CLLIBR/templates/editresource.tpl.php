@@ -21,8 +21,8 @@
                         " <?php echo get_lang( 'Delete' ); ?>"+
                         "<\/a></dd>"+
                         "<script>"+
-                        "    $(\"#delx"+nbToAdd+"\").click(function(){'"+
-                        "    $(this).parent().remove();'"+
+                        "    $(\"#delx"+nbToAdd+"\").click(function(){"+
+                        "    $(this).parent().remove();"+
                         "    });"+
                         "<\/script>";
             
