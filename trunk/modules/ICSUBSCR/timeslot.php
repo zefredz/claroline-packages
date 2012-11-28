@@ -84,6 +84,7 @@ try
     
     $view = new ModuleTemplate( $tlabelReq , 'timeslot' . $step . '.tpl.php' );
     $view->assign( 'data' , $data );
+    $view->assign( 'sessionId' , $sessionId );
     
     Claroline::getInstance()->display->body->appendContent(
         claro_html_tool_title( $pageTitle , null , $cmdList )
