@@ -75,7 +75,7 @@
                 <input  id="startDate"
                         class="auto-kal"
                         type="text"
-                        lang="<?php echo get_lang( '_lang_code' ); ?>"
+                        data-kal="lang: '<?php echo get_lang( '_lang_code' ); ?>'"
                         name="data[openingDate]"
                         value="<?php echo $this->session->getOpeningDate() ? date( get_lang( '_date' ) , strtotime( $this->session->getOpeningDate() ) ) : ''; ?>"
                         size="8" />
@@ -92,7 +92,7 @@
                 <input  id="endDate"
                         class="auto-kal"
                         type="text"
-                        lang="<?php echo get_lang( '_lang_code' ); ?>"
+                        data-kal="lang: '<?php echo get_lang( '_lang_code' ); ?>'"
                         name="data[closingDate]"
                         value="<?php echo $this->session->getClosingDate() ? date( get_lang( '_date' ) , strtotime( $this->session->getClosingDate() ) ) : ''; ?>"
                         size="8" />

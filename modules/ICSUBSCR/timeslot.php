@@ -53,10 +53,12 @@ try
             break;
         
         case '1':
+        var_dump( $data );
             break;
         
         case '2':
             break;
+        
         default:
         {
             throw new Exception( 'bad command' );
