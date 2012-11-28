@@ -3,6 +3,21 @@
     visibility: hidden;
 }
 
+#datePicker
+{
+    float: left;
+}
+
+#dateList
+{
+    float: right;
+}
+
+#nextStep
+{
+    clear: left;
+}
+
 .empty
 {
     color: grey;
