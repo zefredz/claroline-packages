@@ -134,12 +134,12 @@ try
                 if( $session->getId() )
                 {
                     $action = 'modified';
-                    $ok = $session->save( $data );
+                    $ok = $session->save();
                 }
                 else
                 {
                     $action = 'created';
-                    $ok = $session->save( $data ) && $sessionList->add( $session->getId() );
+                    $ok = $session->save() && $sessionList->add( $session->getId() );
                 }
                 
                 if( $ok )
@@ -210,58 +210,60 @@ try
         
         case 'exCreateSlot':
         case 'exModifySlot':
-            if( $data['startDate'] )
-            {
-               $data['startDate'] = $dateUtil->in( $data['startDate'] );
-            }
+            $ok = true;
             
-            if( $data['endDate'] )
+            foreach( $data as $slotData )
             {
-                $data['endDate'] = $dateUtil->in( $data['endDate'] );
-            }
-            
-            if( $data['label'] )
-            {
-                $message->addMsg( 'error' , 'Missing slot label' );
-            }
-            
-            if( $session->getType() != Session::TYPE_UNDATED && ! $data['startDate'] )
-            {
-                $message->addMsg( 'error' , 'missing start date' );
-            }
-            
-            if( $session->getType() == Session::TYPE_TIMESLOT && ! $data['endDate' ] )
-            {
-                $message->addMsg( 'error' , 'missing end date' );
-            }
-            
-            $slot->setData( $data );
-            
-            if( ! $message->hasError() )
-            {
-                if( $session->getId() )
+                if( $slotData['startDate'] )
                 {
-                    $action = 'modified';
-                    $ok = $slot->save( $data );
-                }
-                else
-                {
-                    $action = 'created';
-                    $ok = $slot->save( $data ) && $session->addSlot( $slot->getId() );
+                   $slotData['startDate'] = $dateUtil->in( $slotdata['startDate'] );
                 }
                 
-                if( $ok )
+                if( $slotData['endDate'] )
                 {
-                    $message->addMsg( 'success' , 'Session successfully ' . $action );
+                    $slotData['endDate'] = $dateUtil->in( $slotData['endDate'] );
                 }
-                else
+                
+                if( $slotData['label'] )
                 {
-                    $message->addMsg( 'error' , 'Session cannot be ' . $action );
+                    $message->addMsg( 'error' , 'Missing slot label' );
                 }
+                
+                if( $session->getType() != Session::TYPE_UNDATED && ! $slotData['startDate'] )
+                {
+                    $message->addMsg( 'error' , 'missing start date' );
+                }
+                
+                if( $session->getType() == Session::TYPE_TIMESLOT && ! $slotData['endDate' ] )
+                {
+                    $message->addMsg( 'error' , 'missing end date' );
+                }
+                
+                $slot = new Slot( $sessionId );
+                $slot->setData( $slotData );
+                
+                if( ! $message->hasError() )
+                {
+                    if( $session->getId() )
+                    {
+                        $action = 'modified';
+                        $ok = $slot->save( $slotData );
+                    }
+                    else
+                    {
+                        $action = 'created';
+                        $ok = $slot->save() && $session->addSlot( $slot->getId() ) && $ok;
+                    }
+                }
+            }
+            
+            if( $ok )
+            {
+                $message->addMsg( 'success' , 'Slot successfully ' . $action );
             }
             else
             {
-                $template = 'sessionedit';
+                $message->addMsg( 'error' , 'Slot cannot be ' . $action );
             }
             break;
         
@@ -312,7 +314,7 @@ try
                 $cmdList[] = array( 'img'  => 'new',
                         'name' => get_lang( 'create new slots' ),
                         'url'  => htmlspecialchars( Url::Contextualize( get_module_url( $tlabelReq )
-                                .'/index.php?cmd=rqCreateSlot&sessionId=' . $session->getId() ) ) );
+                                .'/' . $session->getType() . '.php?sessionId=' . $session->getId() ) ) );
             }
             break;
         

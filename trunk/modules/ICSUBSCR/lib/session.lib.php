@@ -108,6 +108,10 @@ class Session extends Hidable
         {
             return $this->openingDate;
         }
+        else
+        {
+            return null;
+        }
     }
     
     public function getClosingDate()
@@ -115,6 +119,10 @@ class Session extends Hidable
         if( $this->closingDate != self::NULL_DATE )
         {
             return $this->closingDate;
+        }
+        else
+        {
+            return null;
         }
     }
     
@@ -128,6 +136,10 @@ class Session extends Hidable
             }
             
             return $this->slotList->getItemList();
+        }
+        else
+        {
+            return null;
         }
     }
     
@@ -186,6 +198,8 @@ class Session extends Hidable
         {
             throw new Exception( 'Invalid type' );
         }
+        
+        $this->type = $type;
     }
     
     public function saveData()
@@ -249,6 +263,10 @@ class Session extends Hidable
         if( array_key_exists( $option , $this->optionList ) )
         {
             return $this->optionList[ $option ];
+        }
+        else
+        {
+            return null;
         }
     }
     
