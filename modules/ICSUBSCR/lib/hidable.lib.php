@@ -33,13 +33,22 @@ abstract class Hidable
             throw new Exception( 'Session does not exist' );
         }
         
-        return Claroline::getDatabase()->exec( "
+        if( Claroline::getDatabase()->exec( "
             UPDATE
                 `{$this->getDatabaseTable()}`
             SET
                 is_visible = " . Claroline::getDatabase()->quote( (boolean)$is_visible ) . "
             WHERE
-                id = " . Claroline::getDatabase()->escape( $this->getId() ) );
+                id = " . Claroline::getDatabase()->escape( $this->getId() ) ) )
+        {
+            $this->is_visible = $is_visible;
+            
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     
     abstract protected function getDatabaseTable();
