@@ -40,5 +40,5 @@ CREATE TABLE IF NOT EXISTS `__CL_COURSE__icsubscr_list` (
     `itemType` ENUM('session','slot') NOT NULL DEFAULT 'session',
     `itemId` INT(11) NOT NULL,
     `rank`INT(3) NOT NULL DEFAULT 1,
-    PRIMARY KEY(`parentId`,`itemId`)
+    PRIMARY KEY(`listId`,`itemId`)
 ) ENGINE=MyISAM;
