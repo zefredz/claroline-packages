@@ -17,7 +17,7 @@ D&eacute;couper la p&eacute;riode de
        size="4" /> heures &agrave
 <input id="end"
        type="text"
-       name="startHour"
+       name="endHour"
        value="00:00"
        size="4" /> heures
 
