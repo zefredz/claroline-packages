@@ -15,16 +15,16 @@
         var nbToAdd=0;
         $("#addMetadata").click(function(){
             nbToAdd++;
-            var content="<dt><input id=\"newName"+nbToAdd+"\" type=\"text\" name=\"newName["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
+            var content="<dl><dt><input id=\"newName"+nbToAdd+"\" type=\"text\" name=\"newName["+nbToAdd+"]\" value=\"\" size=\"32\" \/></dt>"+
                         "<dd><input id=\"value"+nbToAdd+"\" type=\"text\" name=\"value["+nbToAdd+"]\" value=\"\" size=\"32\" \/>"+
                         "<a id=\"delx"+nbToAdd+"\" class=\"claroCmd\" href=\"#delx"+nbToAdd+"\">"+
                         " <?php echo get_lang( 'Delete' ); ?>"+
                         "<\/a></dd>"+
                         "<script>"+
                         "    $(\"#delx"+nbToAdd+"\").click(function(){"+
-                        "    $(this).parent().remove();"+
+                        "    $(this).parent().parent().remove();"+
                         "    });"+
-                        "<\/script>";
+                        "<\/script></dl>";
             
             $(".invisible").show();
             $("#metadataList").append(content);
@@ -139,7 +139,8 @@
     <?php $index++; ?>
     <?php endif; ?>
 <?php endforeach; ?>
-
+    </dl>
+    <dl>
         <dt>
             <a id="addMetadata" href="#claroBody">
             <span class="claroCmd"><?php echo get_lang( 'Add a new metadata' ); ?></span>
