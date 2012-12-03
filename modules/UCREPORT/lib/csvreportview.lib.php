@@ -54,7 +54,7 @@ class CsvReportView extends ReportView
         {
             $name = $reportDatas[ 'users' ][ $userId ][ 'lastname' ]
                   . ' '
-                  . $reportDatas[ 'users' ][ $userId ][ 'lastname' ];
+                  . $reportDatas[ 'users' ][ $userId ][ 'firstname' ];
             $nameList[ $name ] = $userId;
         }
         
