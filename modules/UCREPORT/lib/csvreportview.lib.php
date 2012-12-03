@@ -39,7 +39,7 @@ class CsvReportView extends ReportView
     {
         
         $csv = get_lang( 'Student\'s name' );
-        $reportDatas = $this->report->getDatas();
+        $reportDatas = $this->report->export();
         
         foreach( $reportDatas[ 'items' ] as $item )
         {
