@@ -52,7 +52,7 @@
             <strong><?php echo $this->datas[ 'average' ]; ?></strong>
         </td>
     </tr>
-    <?php foreach( $this->datas[ 'report' ] as $userId => $userReport ) : ?>
+    <?php foreach( $this->datas[ 'users' ] as $userId => $userDatas ) : ?>
         <?php if ( $userId == claro_get_current_user_id() || claro_is_allowed_to_edit() || $this->is_public ) : ?>
         <tr>
             <td>
@@ -65,8 +65,8 @@
             <?php foreach( $this->datas[ 'items' ] as $id  => $item ) : ?>
                 <?php if ( $item[ 'selected' ] ) : ?>
             <td>
-                    <?php if ( isset( $userReport[ $id ] ) ) : ?>
-                <?php echo $userReport[ $id ]; ?>
+                    <?php if ( isset( $this->datas[ 'report' ][ $userId ][ $id ] ) ) : ?>
+                <?php echo $this->datas[ 'report' ][ $userId ][ $id ]; ?>
                     <?php else :?>
                 <span style="color: silver; font-style: italic;"><?php echo get_lang( 'empty' ); ?></span>
                     <?php endif; ?>
