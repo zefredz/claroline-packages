@@ -471,7 +471,7 @@ try
                     
                     if ( $storage == 'file' )
                     {
-                        $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
+                        $storedResource = new StoredResource( $repository , $resource , $authorizedFileList , $secretKey );
                         
                         if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
                         {
@@ -537,7 +537,7 @@ try
                     {
                         $resourceType = $resourceTypeList->get( $resource->getType() );
                         $authorizedFileList = $resourceType->getAuthorizedFileList();
-                        $storedResource = new StoredResource( $repository , $authorizedFileList , $resource , $secretKey );
+                        $storedResource = new StoredResource( $repository , $resource , $authorizedFileList , $secretKey );
                         
                         if ( $_FILES && $_FILES[ 'uploadedFile' ][ 'size' ] != 0 )
                         {
@@ -737,7 +737,7 @@ try
                     
                     if ( $execution_ok && $resource->getStorageType() == 'file' )
                     {
-                        $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
+                        $storedResource = new StoredResource( $repository , $resource , null , $secretKey );
                         $execution_ok = $storedResource->delete();
                     }
                 }
@@ -983,8 +983,7 @@ try
             array_unshift( $cmdList , array( 'img'  => 'back',
                                              'name' => get_lang( 'Back to the resource type list' ),
                                              'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
-                                                       .'/index.php?cmd=rqShowCatalogue&libraryId='
-                                                       . $libraryId ) ) ) );
+                                                       .'/index.php?cmd=rqShowResourceType' ) ) ) );
         }
         
         switch( $cmd )
@@ -1209,7 +1208,7 @@ try
             
             case 'rqDownload':
             {
-                $storedResource = new StoredResource( $repository , null , $resource , $secretKey );
+                $storedResource = new StoredResource( $repository , $resource , null , $secretKey );
                 $storedResource->getFile();
                 break;
             }
