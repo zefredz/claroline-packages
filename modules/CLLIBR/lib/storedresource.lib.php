@@ -31,7 +31,7 @@ class StoredResource
     /**
      * Constructor
      */
-    public function __construct( $location , $authorizedFileList , $resource , $encryptionKey = '' )
+    public function __construct( $location , $resource , $authorizedFileList = array() , $encryptionKey = '' )
     {
         $this->location = $location;
         $this->authorizedFileList = $authorizedFileList;
@@ -114,8 +114,9 @@ class StoredResource
      */
     public function validate( $fileName )
     {
-        return in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
-                       , $this->authorizedFileList );
+        return empty( $this->authorizedFileList )
+            || in_array( strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) )
+                , $this->authorizedFileList );
     }
     
     /**
