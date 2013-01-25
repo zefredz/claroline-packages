@@ -5,10 +5,11 @@ class CLLP_ResourceLinker extends ResourceLinker
     /**
      * Redefines renderLinkerBlock while ResourceLinker::renderLinkerBlock do not allow to pass 
      * bacend url as argument
+     * @param string $backendUrl IGNORED !
      *
      * @return unknown
      */
-    public static function renderLinkerBlock()
+    public static function renderLinkerBlock( $backendUrl = null )
     {
         parent::init();
         
