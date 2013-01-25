@@ -65,7 +65,7 @@ class CLLP_Resolver implements ModuleResourceResolver
     
                         return $itemUrl = $scormBaseUrl . $item->getSysPath();
                     }
-                    brak;
+                    break;
                 }
                 
             }
