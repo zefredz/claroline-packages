@@ -12,7 +12,7 @@
 <?php if ( claro_is_allowed_to_edit() ) : ?>
 
 <p>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
+    <a class="claroCmd" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
     <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
     <?php echo get_lang( 'Add a podcast' ); ?>
     </a>
@@ -32,36 +32,36 @@
             
             <?php if ( $currentPodcast['visibility'] == 'visible'): ?>
             
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) );?>">
-                <?php echo htmlspecialchars($currentPodcast['title']); ?>
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) );?>">
+                <?php echo claro_htmlspecialchars($currentPodcast['title']); ?>
                 </a>
             
             <?php else: ?>
             
-                <a class="invisible" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) );?>">
-                <?php echo htmlspecialchars($currentPodcast['title']); ?>
+                <a class="invisible" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=visit&podcastId='.(int)$currentPodcast['id'] ) );?>">
+                <?php echo claro_htmlspecialchars($currentPodcast['title']); ?>
                 </a>
             
             <?php endif;?>
             
             <?php if (claro_is_allowed_to_edit()): ?>
             
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
                 <img src="<?php echo get_icon_url('feed_edit'); ?>" alt="<?php echo get_lang( 'Edit feed' ); ?>" />'
                 </a>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeletePodcast&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
                 <img src="<?php echo get_icon_url('feed_delete'); ?>" alt="<?php echo get_lang( 'Delete feed' ); ?>" />'
                 </a>
                 
                 <?php if ($currentPodcast['visibility'] == 'visible'): ?>
             
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
+                    <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
                     <img src="<?php echo get_icon_url('visible'); ?>" alt="" />'
                     </a>
             
                 <?php else: ?>
             
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
+                    <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&podcastId='.(int)$currentPodcast['id'] ) ); ?>">
                     <img src="<?php echo get_icon_url('invisible'); ?>" alt="" />'
                     </a>
             
@@ -80,7 +80,7 @@
     <?php if ( claro_is_allowed_to_edit() && count($this->podcasts) > 10 ): ?>
 
     <p>
-        <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
+        <a class="claroCmd" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
         <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />
         <?php echo get_lang( 'Add a podcast'); ?>
         </a>

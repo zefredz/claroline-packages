@@ -12,10 +12,10 @@
 <form 
     name="editPodcast" 
     action="<?php
-        // use htmlspecialchars to protect url from XSS
+        // use claro_htmlspecialchars to protect url from XSS
         // use Url::Contextualize to add context information (course, group...) 
         // to the url
-        echo htmlspecialchars( Url::Contextualize( $this->actionUrl ) ); 
+        echo claro_htmlspecialchars( Url::Contextualize( $this->actionUrl ) ); 
     ?>" 
     method="post">
     
