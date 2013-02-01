@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.1 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -39,7 +39,7 @@
         <?php if ( $report['visibility'] == AssetList::VISIBLE || $this->is_allowed_to_edit ) : ?>
         <tr>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqView&id='. $report['id'] ) );?>">
                     <?php echo $report[ 'title' ]; ?>
                 </a>
             </td>
@@ -48,18 +48,18 @@
             </td>
                 <?php if ( $this->is_allowed_to_edit ) : ?>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
                 </a>
             </td>
                     <?php if ( get_conf( 'UCREPORT_public_allowed' ) ) : ?>
             <td align="center">
                         <?php if ( $report['confidentiality'] == AssetList::ACCESS_PRIVATE ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPublic&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPublic&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'Private : click to open' ); ?>"/>
                 </a>
                         <?php else: ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPrivate&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkPrivate&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'group' ); ?>" alt="<?php echo get_lang( 'Public : click to close' ); ?>"/>
                 </a>
                         <?php endif; ?>
@@ -67,11 +67,11 @@
                     <?php endif; ?>
             <td align="center">
                     <?php if ( $report['visibility'] == AssetList::VISIBLE ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                 </a>
                     <?php else: ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&id='. $report['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&id='. $report['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
                 </a>
                     <?php endif; ?>

@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -31,7 +31,7 @@
     <tbody>
     <?php if ( ! $this->id ) : ?>
     <form method="post"
-          action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActualize' ) );?>" />
+          action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActualize' ) );?>" />
     <?php endif; ?>
     <tr class="average">
         <td class="cell">
@@ -39,7 +39,7 @@
         </td>
         <?php if ( ! $this->id ) : ?>
         <td class="cell">
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exReset' ) );?>">
+            <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exReset' ) );?>">
                 [<?php echo get_lang( 'Reset' ); ?>]
             </a>
         </td>
@@ -65,7 +65,7 @@
             </td>
             <?php if ( ! $this->id ) : ?>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&userId='. $userId . '&active=' . ! $userDatas[ 'active' ] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivate&userId='. $userId . '&active=' . ! $userDatas[ 'active' ] ) );?>">
                     <?php if ( $userDatas[ 'active' ] ) : ?>
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                     <?php else: ?>

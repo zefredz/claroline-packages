@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.4.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -46,8 +46,8 @@ else
                     : '<span style="color: #888888; text-align: center; font-style: italic;">' . get_lang( 'incomplete' ) . '</span>';
         $output .= '        <tr>' . "\n"
                 .  '            <td>' . $report[ 'course_code' ] . '</td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
-                .  '            <td><a href="' . htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqView&cidReq=' . $report[ 'course_code' ] . '&id=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
+                .  '            <td><a href="' . claro_htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cidReq=' . $report[ 'course_code' ] ) . '">' . claro_utf8_encode( $report[ 'course_title' ] ) . '</a></td>' . "\n"
+                .  '            <td><a href="' . claro_htmlspecialchars( get_module_url( 'UCREPORT' ) . '/report.php?cmd=rqView&cidReq=' . $report[ 'course_code' ] . '&id=' . $id ) . '">' . $report[ 'title' ] . '</a></td>' . "\n"
                 .  '            <td align="center">'. $report[ 'date' ] . '</td>' . "\n"
                 .  '            <td align="center">'. $finalScore . '</td>' . "\n"
                 .  '        </tr>' . "\n";

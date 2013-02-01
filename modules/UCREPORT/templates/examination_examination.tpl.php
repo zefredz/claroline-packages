@@ -10,7 +10,7 @@
  */ ?>
 
 <?php if ( claro_is_allowed_to_edit() ) : ?>
-<form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exModifyMark&sessionId=' . $this->examination->getSessionId() ) ); ?>" >
+<form method="post" action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exModifyMark&sessionId=' . $this->examination->getSessionId() ) ); ?>" >
     <table class="claroTable emphaseLine" style="width: 100%;">
         <thead>
             <tr class="headerX">
@@ -38,7 +38,7 @@
         </tbody>
     </table>
     <input id="submit" type="submit" name="submitReport" value="<?php echo get_lang( 'OK' ); ?>" />
-    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
+    <?php echo claro_html_button( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
 </form>
 <?php else : ?>
     <?php if ( isset( $this->markList[ $this->currentUserId ] ) ) : ?>
