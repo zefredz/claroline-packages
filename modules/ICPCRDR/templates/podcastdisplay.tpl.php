@@ -10,11 +10,11 @@
     * @package     ICPCRDR
 -->
 <h3 class="channelTitle">
-    <?php echo htmlspecialchars(claro_utf8_decode($this->channel['title']));?>
+    <?php echo claro_htmlspecialchars(claro_utf8_decode($this->channel['title']));?>
 </h3>
 
 <p>
-    <a href="<?php echo htmlspecialchars($this->url);?>">
+    <a href="<?php echo claro_htmlspecialchars($this->url);?>">
         <img src="<?php echo get_icon_url('feed'); ?>" alt="rss" /> 
         <?php echo get_lang('Suscribe to podcast');?>
     </a>
@@ -22,12 +22,12 @@
 
 <p>
     <?php if( $this->rsort ) : ?>
-    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&podcastId=' . $this->id ) );?>">
+    <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&podcastId=' . $this->id ) );?>">
         <img src="<?php echo get_icon_url('go_up'); ?>" alt="up" /> 
         <?php echo get_lang('Sort items in rss order (the newest ones first)');?>
     </a>
     <?php else : ?>
-    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&sort=chrono&podcastId=' . $this->id ) );?>">
+    <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] . '?cmd=visit&sort=chrono&podcastId=' . $this->id ) );?>">
         <img src="<?php echo get_icon_url('go_down'); ?>" alt="down" /> 
         <?php echo get_lang('Sort items in chronological order (the oldest ones first)');?>
     </a>
@@ -35,7 +35,7 @@
 </p>
 
 <p class="channelPubDate">
-        <?php echo htmlspecialchars($this->channel['pubDate']);?>
+        <?php echo claro_htmlspecialchars($this->channel['pubDate']);?>
 </p>
 
 <p class="channelDescription">
@@ -50,11 +50,11 @@
  ?>
 
         <h4 class="itemTitle">
-            <?php echo htmlspecialchars( claro_utf8_decode($item->metadata['title']) ); ?>
+            <?php echo claro_htmlspecialchars( claro_utf8_decode($item->metadata['title']) ); ?>
         </h4>
 
         <p class="itemPubDate">
-            <?php echo htmlspecialchars( $item->metadata['pubDate'] ); ?>
+            <?php echo claro_htmlspecialchars( $item->metadata['pubDate'] ); ?>
         </p>
         
         <p class="itemDescription">
@@ -62,7 +62,7 @@
         </p>
         
         <a
-            href="<?php echo htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
+            href="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
             style="display:block;width:400px;height:300px"
             id="player<?php echo "_{$videoId}"?>">
         </a>
@@ -125,7 +125,7 @@
             </em>
             <br />
             <em>
-                <a href="<?php echo htmlspecialchars( $item->enclosure['url'] );?>">
+                <a href="<?php echo claro_htmlspecialchars( $item->enclosure['url'] );?>">
                     <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
                     <?php echo get_lang( 'Download this video' ); ?>
                 </a>

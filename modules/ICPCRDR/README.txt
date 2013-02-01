@@ -135,7 +135,7 @@ folder of our module (In our case PodcastCollection and PodcastParser).
     the template file
 * use get_lang() to get the translation for your strings
 * use get_icon_url() to get the url of an icon by just providing its name
-* use htmlspecialchars when outputing untrusted strings to avoid XSS
+* use claro_htmlspecialchars when outputing untrusted strings to avoid XSS
 * use $this->variableName to access assigned variables
 * use alternative PHP syntax (with no brackets) 
     see http://php.net/manual/en/control-structures.alternative-syntax.php
