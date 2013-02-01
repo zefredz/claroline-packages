@@ -15,16 +15,16 @@
         <?php echo get_lang( 'Platform' ); ?>
       </td>
       <td style="text-align: center;" headers="c1">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_add'); ?>" alt="<?php echo get_lang('Generate language files'); ?>" title="<?php echo get_lang('Generate language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_add'); ?>" alt="<?php echo get_lang('Generate language files'); ?>" title="<?php echo get_lang('Generate language files'); ?>" /></a>
       </td>
       <td style="text-align: center;" headers="c2">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqCompare&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_compare'); ?>" alt="<?php echo get_lang('Compare script and language files'); ?>" title="<?php echo get_lang('Compare script and language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqCompare&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_compare'); ?>" alt="<?php echo get_lang('Compare script and language files'); ?>" title="<?php echo get_lang('Compare script and language files'); ?>" /></a>
       </td>
       <!--td style="text-align: center;" headers="c3">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqEdit&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_edit'); ?>" alt="<?php echo get_lang('Edit language files'); ?>" title="<?php echo get_lang('Edit language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqEdit&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_edit'); ?>" alt="<?php echo get_lang('Edit language files'); ?>" title="<?php echo get_lang('Edit language files'); ?>" /></a>
       </td-->
       <td style="text-align: center;" headers="c4">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqProgression&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_progression'); ?>" alt="<?php echo get_lang('Progression'); ?>" title="<?php echo get_lang('Progression'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqProgression&module=PLATFORM' ) ); ?>"><img src="<?php echo get_icon('translate_progression'); ?>" alt="<?php echo get_lang('Progression'); ?>" title="<?php echo get_lang('Progression'); ?>" /></a>
       </td>
 <?php
 if( !empty( $this->moduleList ) ) :
@@ -36,16 +36,16 @@ foreach( $this->moduleList as $id => $module) :
       <?php echo $module['name']; ?>
       </td>
       <td style="text-align: center;" headers="c1">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $id) ); ?>"><img src="<?php echo get_icon('translate_add'); ?>" alt="<?php echo get_lang('Generate language files'); ?>" title="<?php echo get_lang('Generate language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $id) ); ?>"><img src="<?php echo get_icon('translate_add'); ?>" alt="<?php echo get_lang('Generate language files'); ?>" title="<?php echo get_lang('Generate language files'); ?>" /></a>
       </td>
       <td style="text-align: center;" headers="c2">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqCompare&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_compare'); ?>" alt="<?php echo get_lang('Compare script and language files'); ?>" title="<?php echo get_lang('Compare script and language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqCompare&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_compare'); ?>" alt="<?php echo get_lang('Compare script and language files'); ?>" title="<?php echo get_lang('Compare script and language files'); ?>" /></a>
       </td>
       <!--td style="text-align: center;" headers="c3">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqEdit&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_edit'); ?>" alt="<?php echo get_lang('Edit language files'); ?>" title="<?php echo get_lang('Edit language files'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqEdit&module=' . $id ) ); ?>"><img src="<?php echo get_icon('translate_edit'); ?>" alt="<?php echo get_lang('Edit language files'); ?>" title="<?php echo get_lang('Edit language files'); ?>" /></a>
       </td-->
       <td style="text-align: center;" headers="c4">
-        <a href="<?php echo htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqProgression&module=' . $id) ); ?>"><img src="<?php echo get_icon('translate_progression'); ?>" alt="<?php echo get_lang('Progression'); ?>" title="<?php echo get_lang('Progression'); ?>" /></a>
+        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize($_SERVER['PHP_SELF'] . '?cmd=rqProgression&module=' . $id) ); ?>"><img src="<?php echo get_icon('translate_progression'); ?>" alt="<?php echo get_lang('Progression'); ?>" title="<?php echo get_lang('Progression'); ?>" /></a>
       </td>
     </tr>
 <?php

@@ -72,11 +72,11 @@ try {
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         if( $moduleLabel == 'PLATFORM' )
         {
-          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
         }
         else
         {
-          ClaroBreadCrumbs::getInstance()->append( $moduleList[$moduleLabel]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[$moduleLabel]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         }
         
         // get existing $_lang for existing language files
@@ -124,11 +124,11 @@ try {
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         if( $moduleLabel == 'PLATFORM' )
         {
-          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
         }
         else
         {
-          ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[$_REQUEST['module']]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $_REQUEST['module'] ) ) );
         }
         
         $_SESSION['CLL10N']['langs'] = array();
@@ -144,7 +144,7 @@ try {
         {
           $dialogBox->question( get_lang( 'The script found %langsNb strings in this module files.', array( '%langsNb' => count($_SESSION['CLL10N']['langs']))) . '<br /><br />' ."\n\n"
           . get_lang( 'Do you want to export it ?') . '<br />' . "\n"
-          . '<a href="'. htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] .'?cmd=exGenerate&module='. $_REQUEST['module'])) .'">' . get_lang( 'Yes' ) . '</a>'
+          . '<a href="'. claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] .'?cmd=exGenerate&module='. $_REQUEST['module'])) .'">' . get_lang( 'Yes' ) . '</a>'
           . ' | '
           . '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang( 'No' ) . '</a>'
           );
@@ -163,11 +163,11 @@ try {
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         if( $moduleLabel == 'PLATFORM' )
         {
-          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
         }
         else
         {
-          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         }
         
         $progression = $manage->getModuleProgression( $moduleLabel );
@@ -197,11 +197,11 @@ try {
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         if( $moduleLabel == 'PLATFORM' )
         {
-          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
         }
         else
         {
-          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         }
         
         $outdatedLangs = $manage->compareLang( $moduleLabel, $lang );
@@ -221,11 +221,11 @@ try {
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
         if( $moduleLabel == 'PLATFORM' )
         {
-          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
+          ClaroBreadCrumbs::getInstance()->append( get_lang('Platform' ), claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=PLATFORM' ) ) );
         }
         else
         {
-          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+          ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         }
         
         $availableLanguages = $manage->availableLanguages( $moduleLabel );
@@ -252,7 +252,7 @@ try {
         }
         
         ClaroBreadCrumbs::getInstance()->append( get_lang( 'Translations'), get_module_url('CLL10N') );
-        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
+        ClaroBreadCrumbs::getInstance()->append( $moduleList[ $moduleLabel ]['name'], claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ) );
         
         if( $manage->cleanLangFile( $moduleLabel, $lang ) )
         {
