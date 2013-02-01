@@ -60,8 +60,8 @@ class TranslationRenderer{
   {
     $tpl = new PhpTemplate( dirname(__FILE__) . '/../templates/moduleProgression.tpl.php' );
     
-    $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ), '<img src="' . get_icon('translate') . '" alt="" />' . get_lang('Go back to the list'));
-    $cmdMenu[] = claro_html_cmd_link( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ), '<img src="' . get_icon('translate_add') . '" alt="" />' . get_lang('Generate language files'));
+    $cmdMenu[] = claro_html_cmd_link( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ), '<img src="' . get_icon('translate') . '" alt="" />' . get_lang('Go back to the list'));
+    $cmdMenu[] = claro_html_cmd_link( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqGenerate&module=' . $moduleLabel ) ), '<img src="' . get_icon('translate_add') . '" alt="" />' . get_lang('Generate language files'));
     
     $tpl->assign( 'cmdMenu', $cmdMenu);
     $tpl->assign( 'progression', $progression);

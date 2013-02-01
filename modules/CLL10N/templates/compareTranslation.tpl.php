@@ -3,7 +3,7 @@
   <br />
   <?php echo get_lang( 'It will show you which variable can be deleted in your language file.'); ?>
 </p>
-<form name="selectLang" id="selectLang" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exCompare&module=' . $this->moduleLabel ) ); ?>" method="post" >
+<form name="selectLang" id="selectLang" action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exCompare&module=' . $this->moduleLabel ) ); ?>" method="post" >
   <p>
     <?php echo get_lang( 'Select language you want to compare :' ); ?>
     <?php echo claro_html_form_select( 'lang', $this->availableLanguages, $this->selectedLanguage, array('id' => 'selectLangOptions'), true); ?>
@@ -22,7 +22,7 @@ if( !is_null( $this->outdatedLangs ) && is_array( $this->outdatedLangs ) ) :
   else :
     $this->dialogBox->question( get_lang( 'These language variables seem not used anymore in the module.' ) );
     $this->dialogBox->question( get_lang( 'Do you want to clean the file ? This will remove deprecated variables in the file.' ) . '<br />' . "\n"
-    . '<a href="'. htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] .'?cmd=exCleanLangFile&module='. $this->moduleLabel .'&lang='.$this->selectedLanguage )) .'">' . get_lang( 'Yes' ) . '</a>'
+    . '<a href="'. claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] .'?cmd=exCleanLangFile&module='. $this->moduleLabel .'&lang='.$this->selectedLanguage )) .'">' . get_lang( 'Yes' ) . '</a>'
     . ' | '
     . '<a href="' . $_SERVER['PHP_SELF'] . '">' . get_lang( 'No' ) . '</a>' );
     echo $this->dialogBox->render();
