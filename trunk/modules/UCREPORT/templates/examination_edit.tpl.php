@@ -2,15 +2,15 @@
 /**
  * Examination report
  *
- * @version     UCREPORT 2.1.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */ ?>
 
 <?php if ( isset( $this->sessionId ) ) : ?>
-<form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEdit' ) ); ?>">
+<form method="post" action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEdit' ) ); ?>">
     <input type="hidden" name="sessionId" value="<?php echo $this->sessionId; ?>" />
     <table>
         <tr>
@@ -23,7 +23,7 @@
         </tr>
     </table>
 <?php else : ?>
-<form method="post" action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exCreate' ) ); ?>">
+<form method="post" action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exCreate' ) ); ?>">
     <table>
         <tr>
             <td><?php echo get_lang( 'Title' ); ?> :</td>
@@ -36,5 +36,5 @@
     </table>
 <?php endif; ?>
     <input id="submit" type="submit" name="submitReport" value="<?php echo get_lang( 'OK' ); ?>" />
-    <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
+    <?php echo claro_html_button( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
 </form>

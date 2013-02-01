@@ -2,8 +2,8 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.2.2 $Revision$ - Claroline 1.11
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -20,7 +20,7 @@
 
 <form id="itemSelection"
       method="post"
-      action="<?php echo htmlspecialchars( 'report.php?cmd=exGenerate' ); ?>">
+      action="<?php echo claro_htmlspecialchars( 'report.php?cmd=exGenerate' ); ?>">
     <table class="claroTable emphaseLine" style="width: 100%;">
         <thead>
             <tr class="headerX">
@@ -60,6 +60,6 @@
     </table>
     <div class="rightSubmit">
         <input type="submit" name="" value="<?php echo get_lang( 'Import' ); ?>" />
-        <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
+        <?php echo claro_html_button( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
     </div>
 </form>

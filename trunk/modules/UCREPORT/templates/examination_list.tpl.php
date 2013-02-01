@@ -2,7 +2,7 @@
 /**
  * Examination report
  *
- * @version     UCREPORT 2.2.0 $Revision$ - Claroline 1.9
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2009 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCEXAM/UCREPORT
@@ -34,28 +34,28 @@
         <?php if ( $session['visibility'] == AssetList::VISIBLE || claro_is_allowed_to_edit() == true ) : ?>
         <tr>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShow&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShow&sessionId='. $session['id'] ) );?>">
                     <?php echo $session[ 'title' ]; ?>
                 </a>
             </td>
                 <?php if ( claro_is_allowed_to_edit() ) : ?>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEdit&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEdit&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Modify'); ?>"/>
                 </a>
             </td>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDelete&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete'); ?>"/>
                 </a>
             </td>
             <td align="center">
                     <?php if ( $session['visibility'] == AssetList::VISIBLE ) : ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkInvisible&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'visible' ); ?>" alt="<?php echo get_lang( 'Visible'); ?>"/>
                 </a>
                     <?php else: ?>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&sessionId='. $session['id'] ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMkVisible&sessionId='. $session['id'] ) );?>">
                     <img src="<?php echo get_icon_url( 'invisible' ); ?>" alt="<?php echo get_lang( 'Invisible'); ?>"/>
                 </a>
                     <?php endif; ?>

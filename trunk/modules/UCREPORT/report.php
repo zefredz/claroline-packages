@@ -2,7 +2,7 @@
 /**
  * Student Report for Claroline
  *
- * @version     UCREPORT 2.4.0 $Revision$ - Claroline 1.10
+ * @version     UCREPORT 2.4.3 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2010 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     UCREPORT
@@ -313,7 +313,7 @@ try
             {
                 $cmdList[] = array( 'img'  => 'new_exam',
                                     'name' => get_lang( 'Create a new report' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ) );
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqCreate') ) );
             }
             
             $cmdList[] = array( 'img'  => 'exam',
@@ -325,7 +325,7 @@ try
             {
                 $cmdList[] = array( 'img'  => 'plugin_edit',
                                     'name' => get_lang( 'Manage plugins' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPlugins') ) );
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditPlugins') ) );
             }
             
             break;
@@ -383,21 +383,21 @@ try
                 {
                     $cmdList[] = array( 'img'  => 'export_list',
                                         'name' => get_lang( 'Publish the report' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPublish') ) );
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqPublish') ) );
                 }
                 
                 $cmdList[] = array( 'img'  => 'export',
                                     'name' => get_lang( 'Export to MS-Excel xlsx file' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2xml&id=' . $id ) ) );
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2xml&id=' . $id ) ) );
                 
                 $cmdList[] = array( 'img'  => 'export',
                                     'name' => get_lang( 'Export to csv' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2csv&id=' . $id ) ) );
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2csv&id=' . $id ) ) );
             }
             
             $cmdList[] = array( 'img'  => 'export',
                                 'name' => get_lang( 'Export to pdf' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2pdf&id=' . $id ) ) );
+                                'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=ex' . ( $id ? 'Re' : 'Ex' ) . 'port2pdf&id=' . $id ) ) );
             break;
         }
         
@@ -489,7 +489,7 @@ try
     }
     
     ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ]
-                                           , htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
+                                           , claro_htmlspecialchars( Url::Contextualize( $_SERVER[ 'PHP_SELF' ] ) ) );
     Claroline::getInstance()->display->body->appendContent( claro_html_tool_title( $pageTitle , $helpUrl , $cmdList )
                                                           . $dialogBox->render()
                                                           . $reportView->render() );
