@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.8 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -20,11 +20,11 @@
     </div>
     <?php endif; ?>
     <?php if ( $this->storageType == 'file' ) : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
+    <a class="claroCmd" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDownload&resourceId='. $this->resourceId ) );?>">
         <?php echo get_lang( 'Download' ); ?>
     </a>
     <?php else : ?>
-    <a class="claroCmd" href="<?php echo htmlspecialchars( $this->url ); ?>">
+    <a class="claroCmd" href="<?php echo claro_htmlspecialchars( $this->url ); ?>">
         <?php echo get_lang( 'Link' ); ?>
     </a>
     <?php endif; ?>
@@ -59,7 +59,7 @@
         <?php elseif ( isset( $this->defaultmetadataList[ $name ] ) && $this->defaultMetadataList[ $name ] == ResourceType::TYPE_URL ) : ?>
             <a href="<?php echo $value; ?>"><?php echo $value; ?></a>
         <?php else : ?>
-            <?php echo htmlspecialchars( is_array( $value ) ? implode( ',' , $value ) : $value ); ?>
+            <?php echo claro_htmlspecialchars( is_array( $value ) ? implode( ',' , $value ) : $value ); ?>
         <?php endif; ?>
         </dd>
     <?php endif; ?>
@@ -72,7 +72,7 @@
         </dt>
         <dd>
     <?php foreach( $this->metadataList[ Metadata::KEYWORD ] as $keyword ) : ?>
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
+            <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqSearch&keyword=' . $keyword ) ); ?>">
                 <?php echo $keyword; ?>
             </a>&nbsp;
     <?php endforeach; ?>
@@ -85,7 +85,7 @@
 <fieldset id="userNote">
     <legend><?php echo get_lang( 'My personnal notes' ); ?></legend>
     <form method="post"
-          action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exNote' ) ); ?>" >
+          action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exNote' ) ); ?>" >
         <input type="hidden"
                name="userId"
                value="<?php echo $this->userId; ?>" />

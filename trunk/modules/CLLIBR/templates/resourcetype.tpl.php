@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -40,7 +40,7 @@
 
 <form method="post"
       enctype="multipart/form-data"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEditResourceType' ) ); ?>">
+      action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exEditResourceType' ) ); ?>">
     <fieldset>
         <legend>
         <?php if ( $this->typeName ) : ?>
@@ -102,7 +102,7 @@
         </dl>
     </fieldset>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
-    <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+    <a style="text-decoration: none;" href="<?php echo claro_htmlspecialchars( Url::Contextualize(
         $_SERVER['PHP_SELF'] . '?cmd=rqShowResourceType' ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
@@ -114,7 +114,7 @@
     <legend>
         <?php echo ucwords( get_lang( $this->typeName ) ); ?>
     <?php if ( $this->edit_allowed ) : ?>
-        <a title="<?php echo get_lang( 'Edit resource type definition' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResourceType&typeName='. $this->typeName ) );?>">
+        <a title="<?php echo get_lang( 'Edit resource type definition' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResourceType&typeName='. $this->typeName ) );?>">
             <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
         </a>
     <?php endif; ?>
@@ -149,13 +149,13 @@
     <tbody>
     <?php foreach( $this->resourceTypeList as $name ) : ?>
         <tr>
-            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowResourceType&typeName=' . $name ) ); ?>"><?php echo get_lang( $name ); ?></a></td>
+            <td><a href="<?php echo claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) .'/index.php?cmd=rqShowResourceType&typeName=' . $name ) ); ?>"><?php echo get_lang( $name ); ?></a></td>
         <?php if ( $this->edit_allowed ) :?>
             <td align="center">
-                <a title="<?php echo get_lang( 'Delete this resource type' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteResourceType&typeName=' . $name ) );?>">
+                <a title="<?php echo get_lang( 'Delete this resource type' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteResourceType&typeName=' . $name ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
-                <a title="<?php echo get_lang( 'Edit resource type definition' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResourceType&typeName='. $name ) );?>">
+                <a title="<?php echo get_lang( 'Edit resource type definition' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditResourceType&typeName='. $name ) );?>">
                     <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                 </a>
             </td>

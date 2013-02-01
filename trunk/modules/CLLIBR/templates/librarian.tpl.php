@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.8.2 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -23,7 +23,7 @@
             <?php echo $librarian; ?>
             </td>
             <td align="center">
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemoveLibrarian&libraryId='. $this->libraryId . '&librarianId=' . $librarianId ) );?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqRemoveLibrarian&libraryId='. $this->libraryId . '&librarianId=' . $librarianId ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
             </td>

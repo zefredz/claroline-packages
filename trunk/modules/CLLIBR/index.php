@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.5
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -821,7 +821,7 @@ try
                               : 'DublinCore';
                 if ( array_key_exists( $exportFormat , $exporterList ) )
                 {
-                    $url = htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                    $url = claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                          . '/index.php?cmd=rqView&resourceId=' . $resourceId ) );
                     $fileName = $exporterList[ $exportFormat ]->getFileName( $resourceId );
                     header("Content-type: " . StoredResource::getMimeType( $fileName ) );
@@ -934,7 +934,7 @@ try
             
             $cmdList[] = array( 'img'  => 'new_xml',
                                 'name' => get_lang( 'Add a new type' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=rqAddResourceType' ) ) );
         }
         else
@@ -967,11 +967,11 @@ try
         {
             $cmdList[] = array( 'img'  => 'icon',
                                 'name' => get_lang( 'Libraries' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=rqShowLibrarylist' ) ) );
             $cmdList[] = array( 'img'  => 'bookmark',
                                 'name' => get_lang( 'My bookmark' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                           .'/index.php?cmd=rqShowBookmark') ) );
         }
         
@@ -982,7 +982,7 @@ try
             
             array_unshift( $cmdList , array( 'img'  => 'back',
                                              'name' => get_lang( 'Back to the resource type list' ),
-                                             'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                             'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                        .'/index.php?cmd=rqShowResourceType' ) ) ) );
         }
         
@@ -1013,12 +1013,12 @@ try
                 {
                     $cmdList[] = array( 'img'  => 'librarian',
                                         'name' => get_lang( 'Manage librarians' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqShowLibrarian&libraryId='
                                                   . $libraryId ) ) );
                     $cmdList[] = array( 'img'  => 'new_book',
                                         'name' => get_lang( 'Add a resource' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqAddResource&libraryId='
                                                   . $libraryId ) ) );
                 }
@@ -1030,7 +1030,7 @@ try
                 {
                     $cmdList[] = array( 'img'  => 'add',
                                         'name' => get_lang( 'Link this library to your course\'s bibliography' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqAddLibrary&libraryId='
                                                   . $libraryId ) ) );
                 }
@@ -1040,7 +1040,7 @@ try
                 {
                     $advancedCmdList[] = array( 'img'  => 'xml',
                                         'name' => get_lang( 'Resource type definitions' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqShowResourceType' ) ) );
                 }
                 break;
@@ -1068,7 +1068,7 @@ try
                 {
                     $cmdList[] = array( 'img'  => 'new_book',
                                         'name' => get_lang( 'Create a new library' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqCreateLibrary' ) ) );
                 }
                 break;
@@ -1078,11 +1078,11 @@ try
             {
                 $cmdList[] = array( 'img'  => 'add_librarian',
                                     'name' => get_lang( 'Add a librarian' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                               .'/index.php?cmd=rqShowLibrarian&option=add&libraryId=' . $libraryId ) ) );
                 array_unshift( $cmdList , array( 'img'  => 'back',
                                                  'name' => get_lang( 'Back to the catalogue' ),
-                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                 'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                            .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
                 break;
             }
@@ -1142,20 +1142,20 @@ try
                     {
                         $cmdList[] = array( 'img'  => 'book',
                                             'name' => get_lang( 'Add to the course\'s bibliography' ),
-                                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                            'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                       .'/index.php?cmd=exAdd&resourceId=' . $resourceId ) ) );
                     }
                     
                     $cmdList[] = array( 'img'  => 'edit',
                                         'name' => get_lang( 'Edit resource\'s metadatas' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=rqEditResource&resourceId=' . $resourceId ) ) );
                     
                     if( $acl->deletionGranted( $resourceId ) )
                     {
                         $cmdList[] = array( 'img'  => 'edit',
                                             'name' => get_lang( 'Update resource' ),
-                                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                            'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                       .'/index.php?cmd=rqUpdateResource&resourceId=' . $resourceId ) ) );
                     }
                 }
@@ -1164,7 +1164,7 @@ try
                 {
                     $cmdList[] = array( 'img'  => 'bookmark',
                                         'name' => get_lang( 'Add to my bookmark' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=exBookmark&resourceId=' . $resourceId ) ) );
                 }
                 
@@ -1172,7 +1172,7 @@ try
                 {
                     $advancedCmdList[] = array( 'img'  => 'export',
                                         'name' => get_lang( 'Export metadatas' ) . ' ( ' . $name . ' ) ',
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=exExport&format='. $name
                                                   . '&resourceId=' . $resourceId ) ) );
                 }
@@ -1187,7 +1187,7 @@ try
                 {
                     $advancedCmdList[] = array( 'img'  => 'biblio',
                                         'name' => get_lang( 'Generate a bibliographic citation' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                   .'/index.php?cmd=exCite&resourceId=' . $resourceId ) ) );
                 }
                 
@@ -1195,13 +1195,13 @@ try
                 {
                     array_unshift( $cmdList , array( 'img'  => 'back',
                                                      'name' => get_lang( 'Back to the catalogue' ),
-                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                     'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                                .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
                 }elseif( $courseId )
                 {
                     array_unshift( $cmdList , array( 'img'  => 'back',
                                                      'name' => get_lang( 'Back to the course\'s bibliography' ),
-                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
+                                                     'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
                 }
                 break;
             }
@@ -1238,13 +1238,13 @@ try
                 {
                     array_unshift( $cmdList , array( 'img'  => 'back',
                                                      'name' => get_lang( 'Back to the catalogue' ),
-                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                     'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                                .'/index.php?cmd=rqShowCatalogue&libraryId=' . $libraryId ) ) ) );
                 }elseif( $courseId )
                 {
                     array_unshift( $cmdList , array( 'img'  => 'back',
                                                      'name' => get_lang( 'Back to the course\'s bibliography' ),
-                                                     'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
+                                                     'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' ) ) ) ) );
                 }
                 break;
             }
@@ -1258,7 +1258,7 @@ try
                 
                 array_unshift( $cmdList , array( 'img'  => 'back',
                                                  'name' => get_lang( 'Back to the resource\'s page' ),
-                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                 'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                            .'/index.php?cmd=rqView&resourceId=' . $resourceId ) ) ) );
                 break;
             }
@@ -1290,7 +1290,7 @@ try
                 
                 array_unshift( $cmdList , array( 'img'  => 'back',
                                                  'name' => get_lang( 'Back to the resource\'s page' ),
-                                                 'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
+                                                 'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'CLLIBR' )
                                                            .'/index.php?cmd=rqView&resourceId=' . $resourceId ) ) ) );
                 break;
             }

@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.5
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -14,7 +14,7 @@
     <?php foreach( $this->libraryList[ 'user' ] as $id => $datas ) : ?>
     <form id="moveForm<?php echo $id; ?>"
           method="post"
-          action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMoveResource&libraryId=' . $id ) );?>">
+          action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exMoveResource&libraryId=' . $id ) );?>">
         <?php echo $datas[ 'title' ]; ?>
         <?php foreach( array_keys( $this->resourceList ) as $resourceId ) : ?>
         <input type="hidden" name="resource[<?php echo $resourceId; ?>]" value="on" />
