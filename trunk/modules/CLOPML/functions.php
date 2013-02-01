@@ -24,7 +24,7 @@ if ( claro_is_user_authenticated() )
     $GLOBALS['htmlHeadXtra'][] = '<link rel="alternate"'
         . ' type="text/x-opml"'
         . ' title="'.get_lang('List of RSS from all my courses').'"'
-        . ' href="'. htmlspecialchars( URL::Contextualize( get_module_url('CLOPML')
+        . ' href="'. claro_htmlspecialchars( URL::Contextualize( get_module_url('CLOPML')
         . '/index.php?userId=' . claro_get_current_user_id() ) ).'" />'
         ;
 }

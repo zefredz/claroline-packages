@@ -29,19 +29,19 @@ class Opml
             . '<opml version="1.1">' . "\n"
             . '<head>' . "\n"
             . ( array_key_exists( 'title', $data )
-                ? '<title>'.htmlspecialchars($data['title']).'</title>'
+                ? '<title>'.claro_htmlspecialchars($data['title']).'</title>'
                 : '' )
             . ( array_key_exists( 'dateCreated', $data )
-                ? '<dateCreated>'.htmlspecialchars($data['dateCreated']).'</dateCreated>'
+                ? '<dateCreated>'.claro_htmlspecialchars($data['dateCreated']).'</dateCreated>'
                 : '' )
             . ( array_key_exists( 'dateModified', $data )
-                ? '<dateModified>'.htmlspecialchars($data['dateModified']).'</dateModified>'
+                ? '<dateModified>'.claro_htmlspecialchars($data['dateModified']).'</dateModified>'
                 : '' )
             . ( array_key_exists( 'ownerName', $data )
-                ? '<ownerName>'.htmlspecialchars($data['ownerName']).'</ownerName>'
+                ? '<ownerName>'.claro_htmlspecialchars($data['ownerName']).'</ownerName>'
                 : '' )
             . ( array_key_exists( 'ownerEmail', $data )
-                ? '<ownerEmail>'.htmlspecialchars($data['ownerEmail']).'</ownerEmail>'
+                ? '<ownerEmail>'.claro_htmlspecialchars($data['ownerEmail']).'</ownerEmail>'
                 : '' )
             . '</head>' . "\n"
             . '<body>' ."\n"
@@ -54,12 +54,12 @@ class Opml
             {
                 $opml .= '<outline type="rss"'
                     . ( array_key_exists ( 'text', $outline )
-                        ? ' text="'.htmlspecialchars($outline['text']).'"'
+                        ? ' text="'.claro_htmlspecialchars($outline['text']).'"'
                         : '' )
                     . ( array_key_exists ( 'count', $outline )
                         ? ' count="'.(int)$outline['count'].'"'
                         : '' )
-                    . ' xmlUrl="' . htmlspecialchars($outline['xmlUrl']) . '"/>'
+                    . ' xmlUrl="' . claro_htmlspecialchars($outline['xmlUrl']) . '"/>'
                     ;
             }
         }
