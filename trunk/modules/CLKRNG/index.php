@@ -71,13 +71,13 @@ if ('exDelete' == $cmd)
         {
             $keyring->delete( $serviceName, $serviceHost);
             $successMessage = get_lang('Service %service deleted',
-                array( '%service' => htmlspecialchars($serviceName.':'.$serviceHost) ) );
+                array( '%service' => claro_htmlspecialchars($serviceName.':'.$serviceHost) ) );
             $cmd = 'list';
         }
         catch(Exception $e)
         {
             $errorMessage = get_lang('Cannot delete service %service',
-                array( '%service' => htmlspecialchars($serviceName.':'.$serviceHost) ) );
+                array( '%service' => claro_htmlspecialchars($serviceName.':'.$serviceHost) ) );
             $cmd = 'list';
         }
     }
@@ -100,12 +100,12 @@ if ( 'rqDelete' == $cmd)
     {
 
         $confirmMessage = get_lang('Delete service %service ?',
-            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service', claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
 
         $form = new Form;
         $form->addElement( new InputHidden( 'cmd', 'exDelete' ) );
-        $form->addElement( new InputHidden( 'serviceName', htmlspecialchars($serviceName) ) );
-        $form->addElement( new InputHidden( 'serviceHost', htmlspecialchars($serviceHost) ) );
+        $form->addElement( new InputHidden( 'serviceName', claro_htmlspecialchars($serviceName) ) );
+        $form->addElement( new InputHidden( 'serviceHost', claro_htmlspecialchars($serviceHost) ) );
         $form->addElement( new InputSubmit( 'submit', get_lang('Yes') ) );
         $form->addElement( new InputCancel( 'cancel', get_lang('No'), $_SERVER['PHP_SELF'] ) );
     }
@@ -139,20 +139,20 @@ if ( 'rqAdd' == $cmd )
 if ( ('rqEdit' == $cmd || 'rqAdd' == $cmd) && !$error )
 {
     $form = new Form;
-    $input = new InputText('serviceName', htmlspecialchars($service['serviceName']) );
+    $input = new InputText('serviceName', claro_htmlspecialchars($service['serviceName']) );
     $input->setLabel( get_lang('Service name') . ':' );
     $form->addElement( $input, true );
-    $input = new InputText( 'serviceHost', htmlspecialchars($service['serviceHost']) );
+    $input = new InputText( 'serviceHost', claro_htmlspecialchars($service['serviceHost']) );
     $input->setLabel( get_lang( 'Service host' )  . ':' );
     $form->addElement( $input, true );
-    $input = new InputText( 'serviceKey', htmlspecialchars($service['serviceKey']) );
+    $input = new InputText( 'serviceKey', claro_htmlspecialchars($service['serviceKey']) );
     $input->setLabel( get_lang('Service key') . ':' );
     $form->addElement( $input, true );
 
     if ( 'rqEdit' == $cmd )
     {
-        $form->addElement( new InputHidden( 'oldServiceName', htmlspecialchars($serviceName) ) );
-        $form->addElement( new InputHidden( 'oldServiceHost', htmlspecialchars($serviceHost) ) );
+        $form->addElement( new InputHidden( 'oldServiceName', claro_htmlspecialchars($serviceName) ) );
+        $form->addElement( new InputHidden( 'oldServiceHost', claro_htmlspecialchars($serviceHost) ) );
     }
 
     $form->addElement( new InputHidden( 'cmd', ( $cmd == 'rqAdd' ? 'exAdd' : 'exEdit' ) ) );
@@ -198,7 +198,7 @@ if('exAdd'== $cmd)
     if($keyring->check($serviceName, $serviceHost, $serviceKey))
     {
         $errorMessage = get_lang('Key already exist for service %service',
-            array( '%service' => htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service' => claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $ok = false;
     }
 
@@ -207,13 +207,13 @@ if('exAdd'== $cmd)
         $error = true;
 
         $form = new Form;
-        $input = new InputText('serviceName', htmlspecialchars($serviceName) );
+        $input = new InputText('serviceName', claro_htmlspecialchars($serviceName) );
         $input->setLabel(get_lang('Service name') . ':' );
         $form->addElement( $input, true );
-        $input = new InputText( 'serviceHost', htmlspecialchars($serviceHost) );
+        $input = new InputText( 'serviceHost', claro_htmlspecialchars($serviceHost) );
         $input->setLabel( get_lang( 'Service host' )  . ':' );
         $form->addElement( $input, true );
-        $input = new InputText( 'serviceKey', htmlspecialchars($serviceKey) );
+        $input = new InputText( 'serviceKey', claro_htmlspecialchars($serviceKey) );
         $input->setLabel( get_lang('Service key') . ':' );
         $form->addElement( $input, true );
 
@@ -226,7 +226,7 @@ if('exAdd'== $cmd)
     {
         $keyring->add( $serviceName, $serviceHost, $serviceKey );
         $successMessage = get_lang('Service key added for service %service',
-            array( '%service' => htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service' => claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $cmd = 'list';
     }    
 }
@@ -256,7 +256,7 @@ if ('exEdit' == $cmd)
     {
         $keyring->update( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey );
         $successMessage = get_lang('Service key changed for service %service',
-            array( '%service', htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service', claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $cmd = 'list';
     }
 }
