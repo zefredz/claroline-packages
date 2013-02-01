@@ -1131,15 +1131,15 @@ class PathScormExport
         $metaData = '<metadata>
             <schema>ADL SCORM</schema>
             <schemaversion>2004 3rd Edition</schemaversion>
-            <title><![CDATA['. htmlspecialchars( $this->path->getTitle() ) .']]></title>
-            <description><![CDATA['. htmlspecialchars( $this->path->getDescription() ) .']]></description>
+            <title><![CDATA['. claro_htmlspecialchars( $this->path->getTitle() ) .']]></title>
+            <description><![CDATA['. claro_htmlspecialchars( $this->path->getDescription() ) .']]></description>
         </metadata>
         ';
         
         $organizations = '<organizations default="A1">
             <organization identifier="A1">
-                <title>' . htmlspecialchars( $this->path->getTitle() ) . '</title>
-                <description>' . htmlspecialchars( $this->path->getDescription() ) . '</description>
+                <title>' . claro_htmlspecialchars( $this->path->getTitle() ) . '</title>
+                <description>' . claro_htmlspecialchars( $this->path->getDescription() ) . '</description>
                 ';
         $resources = '<resources>
         ';
@@ -1194,8 +1194,8 @@ class PathScormExport
             
         $_item = '<item identifier="I_'.$thisItem->getId().'" identifierref="R_'.$thisItem->getId().'"
             adlcp:completionThreshold="'.$thisItem->getCompletionThreshold().'" isvisible="'.($thisItem->isVisible() ? 'true' : 'false' ).'">
-            <title><![CDATA['.htmlspecialchars($thisItem->getTitle()).']]></title>
-            <description><![CDATA[' . htmlspecialchars($thisItem->getDescription()) . ']]></description>';
+            <title><![CDATA['.claro_htmlspecialchars($thisItem->getTitle()).']]></title>
+            <description><![CDATA[' . claro_htmlspecialchars($thisItem->getDescription()) . ']]></description>';
         if( $item['type'] == 'CONTAINER' && isset($item['children']) && !empty( $item['children']) )
         {
             foreach( $item['children'] as $itemChild )

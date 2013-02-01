@@ -303,7 +303,7 @@ if( $cmd == 'rqToc' )
     .    '<div id="progress">' . claro_html_progress_bar($thisAttempt->getProgress(), 1) . '&nbsp;'.$thisAttempt->getProgress().'%</div>' . "\n"
     .    '<div id="table_of_content_inner" >' . "\n";
 
-    $html .= '<h3>'.htmlspecialchars($path->getTitle()).'</h3>' . "\n";
+    $html .= '<h3>'.claro_htmlspecialchars($path->getTitle()).'</h3>' . "\n";
     
     $is_authenticated = claro_is_user_authenticated();
     
@@ -498,7 +498,7 @@ if( $cmd == 'createBranchCondition' )
     $options = '<option value="0"></option>' . "\n";
     foreach( $itemListArray as $anItem )
     {
-        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.htmlspecialchars( $anItem['title'] ).'</option>' . "\n";
+        $options .= '<option value="'. $anItem['id'] .'" style="padding-left:'.(5 + $anItem['deepness']*10).'px;" '.($anItem['type'] == 'CONTAINER' ? 'disabled="disabled"' : '').'>'.claro_htmlspecialchars( $anItem['title'] ).'</option>' . "\n";
     }
     $out .= $options;
     $out .= '</select>'

@@ -189,10 +189,10 @@ if( $cmd == 'rqEdit' )
 
     // title
     .     '<label for="title">' . get_lang('Title') . '</label>&nbsp;<span class="required">*</span><br />' . "\n"
-    .     '<input type="text" name="title" id="title" maxlength="255" value="'.htmlspecialchars($path->getTitle()).'" /><br />' . "\n"
+    .     '<input type="text" name="title" id="title" maxlength="255" value="'.claro_htmlspecialchars($path->getTitle()).'" /><br />' . "\n"
     // description
     .     '<label for="title">' . get_lang('Description') . '</label><br />' . "\n"
-    .     '<textarea name="description" id="description" cols="50" rows="5">'.htmlspecialchars($path->getDescription()).'</textarea><br />'
+    .     '<textarea name="description" id="description" cols="50" rows="5">'.claro_htmlspecialchars($path->getDescription()).'</textarea><br />'
     /*
     // allow reinit : TODO
     .     get_lang('Allow reinit') . '&nbsp;<span class="required">*</span><br />' . "\n"
@@ -353,7 +353,7 @@ if( $cmd == 'rqAddContainer' )
     .    '<input type="hidden" name="claroFormId" value="'.uniqid('').'" />'."\n"
     .    '<label for="title">' . get_lang('Title') . ' : </label>' . "\n"
     .    '<br />' . "\n"
-    .    '<input type="text" name="title" id="title" maxlength="255" value="' . htmlspecialchars($item->getTitle()). '" />' . "\n"
+    .    '<input type="text" name="title" id="title" maxlength="255" value="' . claro_htmlspecialchars($item->getTitle()). '" />' . "\n"
     .    '<br /><br />' . "\n"
     .    '<input type="hidden" name="cmd" value="exAddContainer" />' . "\n"
     .    '<input type="submit" value="' . get_lang('Ok') . '" />&nbsp;' . "\n"
@@ -381,7 +381,7 @@ if( $cmd == 'exDelete' )
 if( $cmd == 'rqDelete' )
 {
 
-    $htmlConfirmDelete = get_lang('Are you sure to delete item "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+    $htmlConfirmDelete = get_lang('Are you sure to delete item "%itemTitle" ?', array('%itemTitle' => claro_htmlspecialchars($item->getTitle()) ))
     .     '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDelete&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'
@@ -495,7 +495,7 @@ if( $cmd == 'rqPrereq' )
         
         $blockcond = new blockingcondition( $itemId );
         
-        $htmlPrereqContainer = '<strong>' . htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
+        $htmlPrereqContainer = '<strong>' . claro_htmlspecialchars( $item->getTitle() ) . '</strong><br /><br />' . "\n\n";
         
         // load blocking conditions dependencies
         if ( $item->getParentId() > 0 )
@@ -511,7 +511,7 @@ if( $cmd == 'rqPrereq' )
                    {
                         $blockconds = $dependency['data'];
                         $htmlPrereqContainer .= '<div>' . "\n"
-                        .    '<strong><a href="'. $_SERVER['PHP_SELF'] . '?&cmd=rqPrereq&pathId='.$pathId.'&itemId='.$dependency['id']. '">'. htmlspecialchars($dependency['title']) .'</a></strong>';
+                        .    '<strong><a href="'. $_SERVER['PHP_SELF'] . '?&cmd=rqPrereq&pathId='.$pathId.'&itemId='.$dependency['id']. '">'. claro_htmlspecialchars($dependency['title']) .'</a></strong>';
                         foreach( $blockconds['item'] as $key => $value)
                         {
                              $htmlPrereqContainer .= '<div>' . "\n";
@@ -629,7 +629,7 @@ if( $cmd == 'exDeletePrereq' )
 }
 if ( $cmd == 'rqDeletePrereq' )
 {
-    $htmlPrereqContainer = get_lang('Are you sure that you want to delete prerequisites for "%itemTitle" ?', array('%itemTitle' => htmlspecialchars($item->getTitle()) ))
+    $htmlPrereqContainer = get_lang('Are you sure that you want to delete prerequisites for "%itemTitle" ?', array('%itemTitle' => claro_htmlspecialchars($item->getTitle()) ))
     .     '<br /><br />'
     .    '<a href="' . $_SERVER['PHP_SELF'] . '?cmd=exDeletePrereq&amp;pathId='.$pathId.'&amp;itemId='.$itemId.'">' . get_lang('Yes') . '</a>'
     .    '&nbsp;|&nbsp;'
@@ -691,7 +691,7 @@ $out = '';
 
 $nameTools = get_lang('Learning path');
 $toolTitle['mainTitle'] = $nameTools;
-$toolTitle['subTitle'] = htmlspecialchars($path->getTitle());
+$toolTitle['subTitle'] = claro_htmlspecialchars($path->getTitle());
 
 $out .= claro_html_tool_title($toolTitle);
 
@@ -707,7 +707,7 @@ if( $is_allowedToEdit && !is_null($pathId) )
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'].'?cmd=rqAddItem&amp;pathId=' . $pathId . claro_url_relay_context('&amp;'), '<img src="' . get_icon_url('item_add') . '" border="0" alt="" />' . get_lang('Add item(s)'));
 }
 
-$out .= '<p><small>' . htmlspecialchars($path->getDescription()). '</small></p>' . "\n";
+$out .= '<p><small>' . claro_htmlspecialchars($path->getDescription()). '</small></p>' . "\n";
 $out .= '<p>'
 .    claro_html_menu_horizontal( $cmdMenu )
 .    '</p>'
@@ -757,7 +757,7 @@ if( !empty($itemListArray) && is_array($itemListArray) )
         // title
         $out .= '<td align="left" style="padding-left:'.(5 + $anItem['deepness']*10).'px;">'
         .    '<img src="'.(($anItem['type'] == 'CONTAINER')? get_icon_url('chapter'): get_icon_url('item')).'" alt="" />'
-        .    '&nbsp;' . htmlspecialchars( claro_utf8_decode( $anItem['title'], get_conf('charset') ) )
+        .    '&nbsp;' . claro_htmlspecialchars( claro_utf8_decode( $anItem['title'], get_conf('charset') ) )
         .    '</td>' . "\n";
 
         // edit

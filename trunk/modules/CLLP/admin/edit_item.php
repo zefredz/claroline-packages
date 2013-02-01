@@ -188,9 +188,9 @@ $out = '';
 
 $nameTools = get_lang('Learning path');
 $toolTitle['mainTitle'] = $nameTools;
-$toolTitle['subTitle'] = '<a href="'.$_SERVER['PHP_SELF'] .'?pathId='. $pathId.'">' . htmlspecialchars($path->getTitle()) . '</a>'
+$toolTitle['subTitle'] = '<a href="'.$_SERVER['PHP_SELF'] .'?pathId='. $pathId.'">' . claro_htmlspecialchars($path->getTitle()) . '</a>'
 .   '<br />'
-.   '<a href="'. $_SERVER['PHP_SELF'] .'?pathId='. $pathId .'&itemId='. $itemId .'">' . htmlspecialchars($item->getTitle()) . '</a>';
+.   '<a href="'. $_SERVER['PHP_SELF'] .'?pathId='. $pathId .'&itemId='. $itemId .'">' . claro_htmlspecialchars($item->getTitle()) . '</a>';
 
 
 $out .= claro_html_tool_title($toolTitle);
@@ -209,7 +209,7 @@ if( $item->load( $itemId ) )
         .        '<legend>' . get_lang( 'Edit item' ) . '</legend>' . "\n"
         .        '<dl>' . "\n"
         .        '<dt><label for="title">' . get_lang( 'Title' ) . '&nbsp;:</label></dt>'
-    .   '<dd><input type="text" name="title" id="title" value="' . htmlspecialchars( $item->getTitle() ) . '" style="width: 700px;" /></dd>' . "\n"
+    .   '<dd><input type="text" name="title" id="title" value="' . claro_htmlspecialchars( $item->getTitle() ) . '" style="width: 700px;" /></dd>' . "\n"
         .        '<dt><label for="description">' . get_lang( 'Description' ) . '&nbsp;:</label></dt>' . "\n"
         .        '<dd>' . "\n"
         .   '<div style="width: 700px;">' . claro_html_textarea_editor('description', $item->getDescription()) . '</div>' . "\n"
@@ -219,7 +219,7 @@ if( $item->load( $itemId ) )
         if( $item->getType() != 'CONTAINER' )
         {
             $htmlEditForm .=        '<dt><label for="completionThreshold">' . get_lang( 'Completion threshold' ). '&nbsp;:</label></dt>'
-            .        '<dd><input type="text" name="completionThreshold" id="completionThreshold" value="' . htmlspecialchars( $item->getCompletionThreshold() ) . '" style="width: 60px; text-align: right;" />%</dd>' . "\n"
+            .        '<dd><input type="text" name="completionThreshold" id="completionThreshold" value="' . claro_htmlspecialchars( $item->getCompletionThreshold() ) . '" style="width: 60px; text-align: right;" />%</dd>' . "\n"
             .        '<dt><label for="newWindow">' . get_lang( 'Open in a new window' ). '&nbsp;:</label></dt>'
             .        '<dd><input type="checkbox" id="newWindow" name="newWindow" value="1" ' . ( $item->getNewWindow() ? 'checked="checked"' : '' ) . ' />'
             .        '<dt><label for="branchConditions">' . get_lang( 'Branching conditions' ) . '&nbsp;:</label></dt>'

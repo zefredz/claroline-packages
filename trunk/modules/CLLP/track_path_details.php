@@ -135,7 +135,7 @@ else
     ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools, './track_path.php?pathId=' . $pathId.claro_url_relay_context('&amp;') );
     
     $titleTab['mainTitle'] = $nameTools;
-    $titleTab['subTitle'] = htmlspecialchars( $path->getTitle() );
+    $titleTab['subTitle'] = claro_htmlspecialchars( $path->getTitle() );
     
     $out .= claro_html_tool_title($titleTab);
 

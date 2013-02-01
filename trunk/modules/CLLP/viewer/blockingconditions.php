@@ -83,7 +83,7 @@ else
         {
           $blockconds = $dependency['data'];
           $htmlPrereqContainer .= '<div>' . "\n"
-          .    '<strong>'. htmlspecialchars($dependency['title']) .'</strong>';
+          .    '<strong>'. claro_htmlspecialchars($dependency['title']) .'</strong>';
           foreach( $blockconds['item'] as $key => $value)
           {
             $htmlPrereqContainer .= '<div>' . "\n";
