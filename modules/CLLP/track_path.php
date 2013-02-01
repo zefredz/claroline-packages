@@ -59,7 +59,7 @@ else
     ClaroBreadCrumbs::getInstance()->setCurrent( $nameTools, './track_path.php?pathId='.$pathId.claro_url_relay_context('&amp;') );
     
     $titleTab['mainTitle'] = $nameTools;
-    $titleTab['subTitle'] = htmlspecialchars( $path->getTitle() );
+    $titleTab['subTitle'] = claro_htmlspecialchars( $path->getTitle() );
     
     $out .= claro_html_tool_title($titleTab);
 
@@ -95,7 +95,7 @@ else
         $out .= '<tr>'
         .   '<td>'
         .   '<a href="track_path_details.php?pathId='.  $pathId .'&userId='. $user['user_id'] .'">'
-        .   htmlspecialchars(get_lang('%firstname %lastname', array( '%firstname' => $user['prenom'], '%lastname' => $user['nom'])))
+        .   claro_htmlspecialchars(get_lang('%firstname %lastname', array( '%firstname' => $user['prenom'], '%lastname' => $user['nom'])))
         .   '</a></td>';
         
         // load user progression path

@@ -75,7 +75,7 @@ else
         $out .= '<tr>'
         .   '<td>'
         .   '<a href="../../claroline/tracking/userReport.php?userId='. $user['user_id'] .'">'
-        .   htmlspecialchars(get_lang('%firstname %lastname', array( '%firstname' => $user['prenom'], '%lastname' => $user['nom'])))
+        .   claro_htmlspecialchars(get_lang('%firstname %lastname', array( '%firstname' => $user['prenom'], '%lastname' => $user['nom'])))
         .   '</a></td>';
         
         // load user progression path
