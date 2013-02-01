@@ -60,7 +60,7 @@
             <td align="center"><?php echo $user[ 'id' ]; ?></td>
         <?php endif; ?>
             <?php if ( claro_is_platform_admin() ) : ?>
-            <td><a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/admin/admin_profile.php?uidToEdit=' . $user[ 'id' ] ) ); ?>"><?php echo $user[ 'lastname' ]; ?></a></td>
+            <td><a href="<?php echo claro_htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/admin/admin_profile.php?uidToEdit=' . $user[ 'id' ] ) ); ?>"><?php echo $user[ 'lastname' ]; ?></a></td>
             <?php else : ?>
             <td><?php echo $user[ 'lastname' ]; ?></td>
             <?php endif; ?>
@@ -79,7 +79,7 @@
         <?php endif; ?>
         <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <td>
-                <a href="<?php echo htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
+                <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
                     <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
                 </a>
             </td>

@@ -1,7 +1,7 @@
 <module>
     <label>UCONLINE</label>
     <name>Who is onlin@</name>
-    <version>1.2.8</version>
+    <version>1.2.9</version>
     <license>GPL</license>
     <default_dock>userBannerRight</default_dock>
     <type>applet</type>
