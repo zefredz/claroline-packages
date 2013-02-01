@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -73,7 +73,7 @@ class TagCloud
             {
                 $size = round( 20 * $count / $this->nbMax );
                 $html .= '<a href="'
-                       . htmlspecialchars( $this->cmd .'&keyword=' . $tag )
+                       . claro_htmlspecialchars( $this->cmd .'&keyword=' . $tag )
                        . '" style="font-size: ' . $size . 'pt; margin: 5px;">'
                        . $tag . '</a>' . "\n";
             }

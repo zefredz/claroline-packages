@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.7.0 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -33,7 +33,7 @@
 </script>
 <strong><?php echo get_lang( 'Advanced search' ); ?>:</strong><br />
 <form id="multiSearch" class="multisearch"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqSearch' ) ); ?>"
+      action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqSearch' ) ); ?>"
       method="post">
     <div id="items">
         <select id="item0" name="searchQuery[0][name]" >
@@ -52,7 +52,7 @@
     </a>
     <br />
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
-    <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+    <a style="text-decoration: none;" href="<?php echo claro_htmlspecialchars( Url::Contextualize(
         $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarylist' ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>

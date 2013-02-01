@@ -2,7 +2,7 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 1.1.3 $Revision$ - Claroline 1.11
+ * @version     CLLIBR 1.1.5
  * @copyright   2001-2012 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
@@ -39,7 +39,7 @@
         <?php foreach ( $resourceList as $libraryId => $library ) : ?>
             <tr>
                 <td>
-                    <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $libraryId ) );?>">
+                    <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&libraryId='. $libraryId ) );?>">
                         <?php echo $library[ 'title' ]; ?>
                     </a>
                 </td>
@@ -47,7 +47,7 @@
             <?php if ( ! empty( $library[ 'librarianList' ] ) ) : ?>
                 <?php echo implode( ', ' , $library[ 'librarianList' ] ); ?>
                 <?php if ( $this->is_platform_admin ) : ?>
-                <a title="<?php echo get_lang( 'Manage librarians' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId='. $libraryId ) );?>">
+                <a title="<?php echo get_lang( 'Manage librarians' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowLibrarian&libraryId='. $libraryId ) );?>">
                     <img src="<?php echo get_icon_url( 'librarian' ); ?>" alt="<?php echo get_lang( 'Manage librarians' ); ?>"/>
                 </a>
                 <?php endif; ?>
@@ -64,15 +64,15 @@
                     <?php if ( isset( $this->courseLibraryList[ $libraryId ] ) ) : ?>
                     <img src="<?php echo get_icon_url( 'add_disabled' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     <?php else : ?>
-                    <a title="<?php echo get_lang( 'Add a library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Add a library' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'add' ); ?>" alt="<?php echo get_lang( 'Add a library' ); ?>"/>
                     </a>
                     <?php endif; ?>
                 <?php endif; ?>
-                    <a title="<?php echo get_lang( 'Delete this library' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Delete this library' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                     </a>
-                    <a title="<?php echo get_lang( 'Edit' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrary&libraryId='. $libraryId ) );?>">
+                    <a title="<?php echo get_lang( 'Edit' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditLibrary&libraryId='. $libraryId ) );?>">
                         <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                     </a>
                 </td>

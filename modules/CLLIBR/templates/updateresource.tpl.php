@@ -2,8 +2,8 @@
 /**
  * Online library for Claroline
  *
- * @version     CLLIBR 0.9.6 $Revision$ - Claroline 1.9
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     CLLIBR 1.1.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     CLLIBR
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -13,7 +13,7 @@
       class="msform"
       method="post"
       enctype="multipart/form-data"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exUpdateResource' ) ); ?>" >
+      action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exUpdateResource' ) ); ?>" >
     <input type="hidden"
            name="userId"
            value="<?php echo $this->userId; ?>" />
@@ -61,7 +61,7 @@
     
     <div id="update">
         <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
-        <a style="text-decoration: none;" href="<?php echo htmlspecialchars( Url::Contextualize(
+        <a style="text-decoration: none;" href="<?php echo claro_htmlspecialchars( Url::Contextualize(
             $_SERVER['PHP_SELF'].'?cmd=rqView&resourceId='. $this->resource->getId() ) ); ?>">
             <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
         </a>
