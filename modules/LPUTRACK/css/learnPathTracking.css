@@ -1,0 +1,30 @@
+td
+{
+    text-align: center;
+    white-space: nowrap;
+}
+
+th
+{
+    text-align: center;
+}
+
+td.warning
+{
+    color: green;
+}
+
+td.bigCell, td.biggerCell, td.biggestCell
+{
+    font-weight: bold;
+}
+
+td.biggerCell
+{
+    font-size: large;
+}
+
+td.biggestCell
+{
+    font-size: x-large;
+}

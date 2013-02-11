@@ -1,0 +1,25 @@
+<module>
+    <label>LPUTRACK</label>
+    <name>Learnpath user tracking export</name>
+    <version>1.0</version>
+    <license>GPL</license>
+    <type>admin</type>
+    <entry>index.php</entry>
+    <icon>icon.png</icon>
+    
+    <description>
+        A tool detailing user activities in the learnpath module
+    </description>
+    
+    <author>
+        <name>Anh Thao PHAM</name>
+        <email>anhthao.pham@claroline.net</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    
+    <requirements>
+        <claroline>
+            <version>1.11</version>
+        </claroline>
+    </requirements>
+</module>
