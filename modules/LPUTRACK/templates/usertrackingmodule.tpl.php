@@ -3,7 +3,7 @@
     <form action="" method="post">
         <input type="Submit" name="excelexport" value="<?php echo get_lang( 'xls export' ) ?>">
     </form>
-    </br>
+    <br />
 
     <a href="
        <?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
@@ -12,8 +12,8 @@
     ">
         <?php echo get_lang( 'Class view' ); ?>
     </a>
-    </br>
-    </br>
+    <br />
+    <br />
 
     <a href="
        <?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
@@ -22,7 +22,7 @@
     ">
         <?php echo get_lang( 'Course' ); ?>
     </a>
-    </br>
+    <br />
     <a href="
        <?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                 . "?cmd=userViewTrackLearnPath"
@@ -30,8 +30,8 @@
     ">
         <?php echo get_lang( 'LearnPath' ); ?>
     </a>
-    </br>
-    </br>
+    <br />
+    <br />
 
     <div> <?php echo get_lang( 'Detail level' ); ?> </div>
     <?php if( $this->mode != 1 ) : ?>
@@ -43,7 +43,7 @@
     ">
         <?php echo get_lang( 'General tracking' ); ?>
     </a>
-    </br>
+    <br />
     <?php endif; ?>
     <?php if( $this->mode != 2 ) : ?>
     <a href="
@@ -54,7 +54,7 @@
     ">
         <?php echo get_lang( 'Daily tracking' ); ?>
     </a>
-    </br>
+    <br />
     <?php endif; ?>
     <?php if( $this->mode != 3 ) : ?>
     <a href="
@@ -65,9 +65,9 @@
     ">
         <?php echo get_lang( 'Complete tracking' ); ?>
     </a>
-    </br>
+    <br />
     <?php endif; ?>
-    </br>
+    <br />
 
 <?php endif; ?>
 
