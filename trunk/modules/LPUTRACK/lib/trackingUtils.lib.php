@@ -48,7 +48,7 @@ class TrackingUtils
             {
                 if( preg_match( "/^\d{1}$/", $sessionTimeDetails[3] ) )
                 {
-                    $tempTime[3] = isset( $tempTime[3] ) ? ( $tempTime[3] + (int)$sessionTimeDetails[3] * 10 ) : (int)$sessionTimeDetails[3];
+                    $tempTime[3] = isset( $tempTime[3] ) ? ( $tempTime[3] + (int)$sessionTimeDetails[3] * 10 ) : (int)( $sessionTimeDetails[3] * 10 );
                 }
                 elseif( preg_match( "/^\d{2}$/", $sessionTimeDetails[3] ) )
                 {
@@ -74,42 +74,49 @@ class TrackingUtils
             }
             
             $resultTime = "";
-            if( $tempTime[0] > 10000 )
+            if( $tempTime[0] > 9999 )
             {
-                $resultTime .= 9999;
-            }
-            elseif( $tempTime[0] < 10 )
-            {
-                $resultTime .= "0" . $tempTime[0];
-            }
-            
-            if( $tempTime[1] < 10 )
-            {
-                $resultTime .= ":0$tempTime[1]";
+                $resultTime .= '9999:59:59.99';
             }
             else
             {
-                $resultTime .= ":$tempTime[1]";
-            }
-            
-            if( $tempTime[2] < 10 )
-            {
-                $resultTime .= ":0$tempTime[2]";
-            }
-            else
-            {
-                $resultTime .= ":$tempTime[2]";
-            }
-            
-            if( isset( $tempTime[3] ) && $tempTime[3] > 0 )
-            {
-                if( $tempTime[3] < 10 )
+                if( $tempTime[0] < 10 )
                 {
-                    $resultTime .= ".0$tempTime[3]";
+                    $resultTime .= "0" . $tempTime[0];
                 }
                 else
                 {
-                    $resultTime .= ".$tempTime[3]";
+                    $resultTime .= $tempTime[0];
+                }
+
+                if( $tempTime[1] < 10 )
+                {
+                    $resultTime .= ":0$tempTime[1]";
+                }
+                else
+                {
+                    $resultTime .= ":$tempTime[1]";
+                }
+
+                if( $tempTime[2] < 10 )
+                {
+                    $resultTime .= ":0$tempTime[2]";
+                }
+                else
+                {
+                    $resultTime .= ":$tempTime[2]";
+                }
+
+                if( isset( $tempTime[3] ) && $tempTime[3] > 0 )
+                {
+                    if( $tempTime[3] < 10 )
+                    {
+                        $resultTime .= ".0$tempTime[3]";
+                    }
+                    else
+                    {
+                        $resultTime .= ".$tempTime[3]";
+                    }
                 }
             }
         }
