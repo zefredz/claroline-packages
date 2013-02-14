@@ -217,7 +217,7 @@ class ResourceType
         $xml .= '    </defaultMetadataList>' . "\n";
         $xml .= '</documentType>';
         
-        $xmlElement = new SimpleXMLElement( $xml );
+        $xmlElement = new SimpleXMLElement( claro_utf8_encode( $xml ) );
         $xmlElement->asXML( $fileName ? $fileName : $this->fileName );
     }
 }
