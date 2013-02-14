@@ -62,7 +62,7 @@ class ResourceType
         
         foreach( $xmlElement->defaultMetadataList[0] as $metadata )
         {
-            $this->defaultMetadataList[ (string)$metadata->name ] = (string)$metadata->type;
+            $this->defaultMetadataList[ claro_utf8_decode( (string)$metadata->name ) ] = (string)$metadata->type;
         }
     }
     
