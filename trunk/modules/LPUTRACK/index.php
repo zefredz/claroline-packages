@@ -38,6 +38,11 @@ try
         claro_die( get_lang( 'Not allowed' ) );
     }
     
+    ClaroHeader::getInstance()->setTitle( get_lang( 'LearnPath tracking' ) );
+    $breadCrumbs = ClaroBreadCrumbs::getInstance();
+    $breadCrumbs->append( get_lang('Administration'), get_path('rootAdminWeb') );
+    $breadCrumbs->append( get_lang('LearnPath tracking'), 'index.php' );
+    
     CssLoader::getInstance()->load( 'learnPathTracking', 'all' );
     
     $trackingController = new TrackingController();
@@ -86,6 +91,8 @@ try
             {
                 $trackingData->addUser( $infoUser->getUserId() );
             }
+            $breadCrumbs->append( $infoClass->getClassName(),
+                                  'index.php?cmd=classViewTrackCourse&classId=' . $classId );
             
             break;
         default :
@@ -219,6 +226,8 @@ try
             break;
         
         case 'classViewTrackLearnPath' :
+            $breadCrumbs->append( $infoCourse->getCourseName(),
+                                  "index.php?cmd=classViewTrackLearnPath&classId=$classId&courseCode=" . $infoCourse->getCourseCode() );
             $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackinglearnpath.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
@@ -240,6 +249,12 @@ try
             break;
         
         case 'classViewTrackModule' :
+            $breadCrumbs->append( $infoCourse->getCourseName(),
+                                  "index.php?cmd=classViewTrackLearnPath&classId=$classId&courseCode=" . $infoCourse->getCourseCode() );
+            $breadCrumbs->append( $infoLearnPath->getLearnPathName(),
+                                  "index.php?cmd=classViewTrackModule&classId=$classId&courseCode="
+                                  . $infoCourse->getCourseCode()
+                                  . "&learnPathId=" . $infoLearnPath->getLearnPathId() );
             $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingmodule.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
@@ -265,6 +280,8 @@ try
         
         
         case 'userViewTrackCourse' :
+            $breadCrumbs->append( get_lang( 'Course' ),
+                                  'index.php?cmd=userViewTrackCourse&classId=' . $classId );
             $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingcourse.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
@@ -280,6 +297,10 @@ try
             break;
         
         case 'userViewTrackLearnPath' :
+            $breadCrumbs->append( get_lang( 'Course' ),
+                                  'index.php?cmd=userViewTrackCourse&classId=' . $classId );
+            $breadCrumbs->append( get_lang( 'LearnPath' ),
+                                  'index.php?cmd=userViewTrackLearnPath&classId=' . $classId );
             $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackinglearnpath.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
@@ -295,6 +316,12 @@ try
             break;
         
         case 'userViewTrackModule' :
+            $breadCrumbs->append( get_lang( 'Course' ),
+                                  'index.php?cmd=userViewTrackCourse&classId=' . $classId );
+            $breadCrumbs->append( get_lang( 'LearnPath' ),
+                                  'index.php?cmd=userViewTrackLearnPath&classId=' . $classId );
+            $breadCrumbs->append( get_lang( 'Module' ),
+                                  'index.php?cmd=userViewTrackModule&classId=' . $classId );
             $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingmodule.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
