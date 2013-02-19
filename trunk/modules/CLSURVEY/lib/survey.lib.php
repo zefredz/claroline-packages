@@ -28,7 +28,7 @@
 */
 function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=null)
 {
-    $tbl = claro_sql_get_tbl('survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
 
     if ( $cmd == 'DOWN' )
     {
@@ -105,7 +105,7 @@ function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=
 */
 function move_survey($item_id, $cmd, $context=null,$cid)
 {
-    $tbl = claro_sql_get_tbl('survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
 
     if ( $cmd == 'DOWN' )
     {
@@ -168,7 +168,7 @@ function move_survey($item_id, $cmd, $context=null,$cid)
 
 function move_question($item_id, $cmd,$id_survey, $context=null)
 {
-    $tbl = claro_sql_get_tbl('survey_question', $context);
+    $tbl = get_module_main_tbl(array('survey_question'));
 
     if ( $cmd == 'DOWN' )
     {
@@ -242,10 +242,10 @@ function move_question($item_id, $cmd,$id_survey, $context=null)
 */
 function delete_question_survey($questionId,$context=null)
 {
-    $tbl = claro_sql_get_tbl(array( 'survey_question'
+    $tbl = get_module_main_tbl(array( 'survey_question'
                                   , 'survey_question_list'
                                   , 'survey_answer'
-                                  , 'survey_user'), $context);
+                                  , 'survey_user') );
     if ( $questionId <> '' )
     {
         $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
@@ -277,7 +277,8 @@ function delete_question_survey($questionId,$context=null)
 
 function survey_get_survey_visibility($surveyId, $context=null)
 {
-    $tbl = claro_sql_get_tbl( 'survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
+    
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT `visibility`
             FROM `" . $tbl['survey_list'] . "`
@@ -299,7 +300,7 @@ function survey_get_survey_visibility($surveyId, $context=null)
  */
 function get_survey_list($context)
 {
-    $tbl = claro_sql_get_tbl('survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT `id_survey`,
@@ -324,7 +325,7 @@ function get_survey_list($context)
 
 function get_survey_question_list($surveyId, $context)
 {
-    $tbl = claro_sql_get_tbl('survey_question', $context);
+    $tbl = get_module_main_tbl(array('survey_question'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
                 SELECT `id_question` AS questionId
@@ -344,7 +345,7 @@ function get_survey_question_list($surveyId, $context)
  */
 function delete_survey($surveyId, $context)
 {
-    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_user' ) , $context);
+    $tbl = get_module_main_tbl(array( 'survey_list' , 'survey_user' ));
     $questionList = get_survey_question_list($surveyId, $context);
     
     if (count($questionList))
@@ -374,7 +375,8 @@ function delete_survey($surveyId, $context)
 function is_survey_completed_by_user($surveyId, $userId=null)
 {
     if (is_null($userId) ) $userId = claro_get_current_user_id();
-    $tbl = claro_sql_get_tbl('survey_user');
+    
+    $tbl = get_module_main_tbl(array('survey_user'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
          SELECT count(`id_survey`)
@@ -387,7 +389,9 @@ function is_survey_completed_by_user($surveyId, $userId=null)
 function is_survey_started_by_user($surveyId, $userId=null)
 {
     if (is_null($userId) ) $userId = claro_get_current_user_id();
-    $tbl = claro_sql_get_tbl( 'survey_user');
+    
+    $tbl = get_module_main_tbl(array('survey_user'));
+    
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
         SELECT count(`id_survey`)
         FROM `" . $tbl['survey_user'] . "`
@@ -405,7 +409,7 @@ function is_survey_started_by_user($surveyId, $userId=null)
  */
 function survey_get_survey_question_data($questionId, $context=null)
 {
-    $tbl = claro_sql_get_tbl( 'survey_question_list' , $context);
+    $tbl = get_module_main_tbl(array('survey_question_list'));
 
     $cid = get_init('_cid');
 
@@ -431,7 +435,7 @@ function survey_get_survey_question_data($questionId, $context=null)
  */
 function survey_get_survey_data($id_survey, $context=null)
 {
-    $tbl = claro_sql_get_tbl( 'survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
 
     $courseId = (is_array($context) && array_key_exists(CLARO_CONTEXT_COURSE,$context))
     ? $context[CLARO_CONTEXT_COURSE]
@@ -473,7 +477,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
         : claro_get_current_course_id();
     }
 
-    $tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list'), $context);
+    $tbl = get_module_main_tbl(array('survey_question', 'survey_question_list'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT Q.`id_question` AS questionId,
@@ -502,7 +506,7 @@ function survey_get_questions_of_survey($surveyId,$context=null)
  */
  function survey_count_question_in_survey($surveyId, $context=null)
  {
-    $tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list'), $context);
+    $tbl = get_module_main_tbl(array('survey_question', 'survey_question_list'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
         SELECT count(`id_question`)
@@ -523,13 +527,12 @@ function survey_get_questions_of_survey($surveyId,$context=null)
   */
  function survey_set_vote_status_for_user($surveyId, $userId, $context=null)
  {
-     $tbl = claro_sql_get_tbl(array('survey_user'), $context);
-     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
-             INSERT INTO `" . $tbl['survey_user'] . "`
-             SET `id_survey` = " . (int) $surveyId . "
-             ,   `id_user`   = " . (int) $userId;
-     return  claro_sql_query($sql);
-
+    $tbl = get_module_main_tbl(array('survey_user'));
+    $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
+            INSERT INTO `" . $tbl['survey_user'] . "`
+            SET `id_survey` = " . (int) $surveyId . "
+            ,   `id_user`   = " . (int) $userId;
+    return  claro_sql_query($sql);
  }
 
 /**
@@ -552,7 +555,8 @@ function survey_save_user_answer($surveyId, $answer, $context=null)
                   ? $context[CLARO_CONTEXT_COURSE]
                   : claro_get_current_course_id();
     }
-    $tbl = claro_sql_get_tbl( 'survey_answer', $context);
+    
+    $tbl = get_module_main_tbl(array('survey_answer'));
 
     $sqlLineTemplate  = "# QUESTION = #ID_QUESTION# " . "\n"
                       . "( " . (int) $surveyId
@@ -601,7 +605,7 @@ function survey_empty_votes($surveyId, $context=null)
         : claro_get_current_course_id();
     }
 
-    $tbl = claro_sql_get_tbl(array('survey_answer', 'survey_user'), $context);
+    $tbl = get_module_main_tbl(array('survey_answer', 'survey_user'));
 
     $sql = "DELETE FROM `" . $tbl['survey_user'] . "`
                  WHERE `id_survey` = " . (int) $surveyId;
@@ -639,7 +643,7 @@ function survey_votes_for_survey($surveyId, $context=null)
     }
 
 
-    $tbl = claro_sql_get_tbl('survey_answer', $context);
+    $tbl = get_module_main_tbl(array('survey_answer'));
 
     $sql = "# " . basename(__FILE__) . " func " . __FUNCTION__ . "()
             SELECT id_question AS questionId,
@@ -671,7 +675,7 @@ function survey_votes_for_survey($surveyId, $context=null)
 function get_answer_by_question($questionId, $context)
 {
     if (!is_array($context) || ! array_key_exists(CLARO_CONTEXT_COURSE,$context)) return claro_failure::set_failure('Need course context');
-    $tbl = claro_sql_get_tbl( 'survey_answer', $context);
+    $tbl = get_module_main_tbl(array('survey_answer'));
     $sql = "# function get_answer_by_question()
              SELECT answer,
                    count(*) as qty
@@ -691,8 +695,7 @@ function get_answer_by_question($questionId, $context)
  */
 function get_survey_data($surveyId,$context=null)
 {
-
-    $tbl = claro_sql_get_tbl('survey_list', $context);
+    $tbl = get_module_main_tbl(array('survey_list'));
     $sql = "SELECT `title`,
                `description`
         FROM `" . $tbl['survey_list'] . "`
@@ -707,7 +710,7 @@ function get_survey_data($surveyId,$context=null)
  */
 function exportSurvey( $surveyId )
 {
-    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
+    $tbl = get_module_main_tbl(array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
     
     $result = Claroline::getDatabase()->query("
         SELECT
@@ -796,7 +799,8 @@ function createSurvey( $title , $description , $data )
     }
     
     $courseId = claro_get_current_course_id();
-    $tbl = claro_sql_get_tbl( array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
+    
+    $tbl = get_module_main_tbl(array( 'survey_list' , 'survey_question' , 'survey_question_list' ) );
     
     Claroline::getDatabase()->exec( "
         INSERT INTO
