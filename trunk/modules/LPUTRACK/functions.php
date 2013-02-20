@@ -6,3 +6,4 @@
     
     $learnPathTrackingListener = new LearnPathTrackingListerner();
     $learnPathTrackingListener->addListener( 'lp_user_module_progress_modified', 'updateModuleTracking' );
+    $learnPathTrackingListener->addListener( 'lp_document_time_update', 'updateDocumentTrackingTime' );
