@@ -136,12 +136,12 @@ class TrackingUtils
      */
     public static function getModuleFromLearnPath( $courseCode, $learnPathId )
     {
-        $tbl = get_module_course_tbl( array( 'lp_rel_learnpath_module', 'lp_module' ), $courseCode );
+        $tbl = get_module_course_tbl( array( 'lp_rel_learnPath_module', 'lp_module' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tm.module_id, tm.name, tm.contentType, trlpm.rank
                FROM `{$tbl['lp_module']}` AS tm
-         INNER JOIN `{$tbl['lp_rel_learnpath_module']}` AS trlpm
+         INNER JOIN `{$tbl['lp_rel_learnPath_module']}` AS trlpm
                  ON tm.module_id = trlpm.module_id
               WHERE trlpm.learnPath_id = " . Claroline::getDatabase()->escape( (int)$learnPathId ) . "
                 AND tm.contentType IN ( 'DOCUMENT', 'EXERCISE', 'SCORM' )
@@ -352,11 +352,11 @@ class TrackingUtils
     public static function getNbModuleInLearnPath( $courseCode, $learnPathId )
     {
         $nbModule = 0;
-        $tbl = get_module_course_tbl( array( 'lp_rel_learnpath_module', 'lp_module' ), $courseCode );
+        $tbl = get_module_course_tbl( array( 'lp_rel_learnPath_module', 'lp_module' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( trlm.module_id )
-               FROM `{$tbl['lp_rel_learnpath_module']}` AS trlm
+               FROM `{$tbl['lp_rel_learnPath_module']}` AS trlm
          INNER JOIN `{$tbl['lp_module']}` AS tm
                  ON trlm.module_id = tm.module_id
               WHERE trlm.learnPath_id = " . Claroline::getDatabase()->escape( (int)$learnPathId ) . "
@@ -414,7 +414,7 @@ class TrackingUtils
     }
     
     /**
-     * Get the Id of the learnPath associated to an entry of the 'lp_rel_learnpath_module' table
+     * Get the Id of the learnPath associated to an entry of the 'lp_rel_learnPath_module' table
      * @param string $courseCode
      * @param int $learnPathModuleId
      * @return int Id of the associated learnPath
@@ -422,11 +422,11 @@ class TrackingUtils
     public static function getLearnPathIdFromRelLearnPathModuleId( $courseCode, $learnPathModuleId )
     {
         $learnPathId = null;
-        $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnpath_module' ), $courseCode );
+        $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnPath_module' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT learnPath_id
-               FROM `{$tblRelLearnPathModule['lp_rel_learnpath_module']}`
+               FROM `{$tblRelLearnPathModule['lp_rel_learnPath_module']}`
               WHERE learnPath_module_id = " . Claroline::getDatabase()->escape( (int)$learnPathModuleId )
         );
         if( !$resultSet->isEmpty() )
@@ -438,7 +438,7 @@ class TrackingUtils
     }
     
     /**
-     * Get the Id of the module associated to an entry of the 'lp_rel_learnpath_module' table
+     * Get the Id of the module associated to an entry of the 'lp_rel_learnPath_module' table
      * @param string $courseCode
      * @param int $learnPathModuleId
      * @return int Id of the associated module
@@ -446,11 +446,11 @@ class TrackingUtils
     public static function getModuleIdFromRelLearnPathModuleId( $courseCode, $learnPathModuleId )
     {
         $moduleId = null;
-        $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnpath_module' ), $courseCode );
+        $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnPath_module' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT module_id
-               FROM `{$tblRelLearnPathModule['lp_rel_learnpath_module']}`
+               FROM `{$tblRelLearnPathModule['lp_rel_learnPath_module']}`
               WHERE learnPath_module_id = " . Claroline::getDatabase()->escape( (int)$learnPathModuleId )
         );
         if( !$resultSet->isEmpty() )
@@ -510,7 +510,7 @@ class TrackingUtils
      */
     public static function getCourseTrackingFromUserModuleProgress( $userId, $courseCode )
     {
-        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnpath_module' ), $courseCode );
+        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnPath_module' ), $courseCode );
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tump.user_id,
                     tump.learnPath_id,
@@ -521,7 +521,7 @@ class TrackingUtils
                     tump.lesson_status,
                     trlm.module_id
                FROM `{$tbl['lp_user_module_progress']}` AS tump
-         INNER JOIN `{$tbl['lp_rel_learnpath_module']}` AS trlm
+         INNER JOIN `{$tbl['lp_rel_learnPath_module']}` AS trlm
                  ON tump.learnPath_module_id = trlm.learnPath_module_id
               WHERE tump.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
            ORDER BY tump.user_id"
@@ -539,7 +539,7 @@ class TrackingUtils
      */
     public static function getLearnPathTrackingFromUserModuleProgress( $userId, $courseCode, $learnPathId )
     {
-        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnpath_module' ), $courseCode );
+        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnPath_module' ), $courseCode );
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tump.user_id,
                     tump.learnPath_id,
@@ -550,7 +550,7 @@ class TrackingUtils
                     tump.lesson_status,
                     trlm.module_id
                FROM `{$tbl['lp_user_module_progress']}` AS tump
-         INNER JOIN `{$tbl['lp_rel_learnpath_module']}` AS trlm
+         INNER JOIN `{$tbl['lp_rel_learnPath_module']}` AS trlm
                  ON tump.learnPath_module_id = trlm.learnPath_module_id
               WHERE tump.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
                 AND tump.learnPath_id = " . Claroline::getDatabase()->escape( (int)$learnPathId ) . "
@@ -570,7 +570,7 @@ class TrackingUtils
      */
     public static function getModuleTrackingFromUserModuleProgress( $userId, $courseCode, $learnPathId, $moduleId )
     {
-        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnpath_module' ), $courseCode );
+        $tbl = get_module_course_tbl( array( 'lp_user_module_progress', 'lp_rel_learnPath_module' ), $courseCode );
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tump.user_id,
                     tump.learnPath_id,
@@ -581,7 +581,7 @@ class TrackingUtils
                     tump.lesson_status,
                     trlm.module_id
                FROM `{$tbl['lp_user_module_progress']}` AS tump
-         INNER JOIN `{$tbl['lp_rel_learnpath_module']}` AS trlm
+         INNER JOIN `{$tbl['lp_rel_learnPath_module']}` AS trlm
                  ON tump.learnPath_module_id = trlm.learnPath_module_id
               WHERE tump.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
                 AND tump.learnPath_id = " . Claroline::getDatabase()->escape( (int)$learnPathId ) . "
