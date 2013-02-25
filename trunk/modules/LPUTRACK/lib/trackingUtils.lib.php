@@ -813,6 +813,26 @@ class TrackingUtils
         }
         return $oldestDate;
     }
+    
+    /**
+     * Get path of a module
+     * @param string $courseCode
+     * @param int $moduleId
+     */
+    public static function getPathFromModule( $courseCode, $moduleId )
+    {
+        $tbl = get_module_course_tbl( array( 'lp_module', 'lp_asset' ), $courseCode );
+        
+        $modulePath = Claroline::getDatabase()->query(
+            "SELECT asset.path
+               FROM `{$tbl['lp_asset']}` AS asset
+         INNER JOIN `{$tbl['lp_module']}` AS module
+                 ON asset.module_id = module.module_id
+              WHERE module.module_id = " . Claroline::getDatabase()->escape( (int)$moduleId )
+        );
+        
+        return $modulePath->fetch( Database_ResultSet::FETCH_VALUE );
+    }
 }
 
 ?>

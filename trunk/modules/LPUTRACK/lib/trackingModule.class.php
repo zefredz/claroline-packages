@@ -281,6 +281,15 @@ class TrackingModule
             }
         }
     }
+    
+    /**
+     * Get path of a module
+     * @return string
+     */
+    public function getModulePath()
+    {
+        return TrackingUtils::getPathFromModule( $this->courseCode, $this->moduleId );
+    }
 }
 
 ?>

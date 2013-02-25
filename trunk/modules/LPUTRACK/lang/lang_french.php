@@ -31,5 +31,6 @@
     $_lang['Daily tracking'] = 'Suivi journalier';
     $_lang['Complete tracking'] = 'Suivi complet';
     $_lang['xls export'] = 'Exporter en xls';
+    $_lang['My learnPath tracking'] = 'Mon suivi des parcours pédagogiques';
 
 ?>
