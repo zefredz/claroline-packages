@@ -310,11 +310,11 @@ class TrackingUtils
      */
     public static function getLearnPathFromCourse( $courseCode )
     {
-        $tblLearnPath = get_module_course_tbl( array( 'lp_learnpath' ), $courseCode );
+        $tblLearnPath = get_module_course_tbl( array( 'lp_learnPath' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT learnPath_id, name, rank
-               FROM `{$tblLearnPath['lp_learnpath']}`
+               FROM `{$tblLearnPath['lp_learnPath']}`
            ORDER BY rank"
         );
                
@@ -329,11 +329,11 @@ class TrackingUtils
     public static function getNbLearnPathInCourse( $courseCode )
     {
         $nbLearnPath = 0;
-        $tblLearnPath = get_module_course_tbl( array( 'lp_learnpath' ), $courseCode );
+        $tblLearnPath = get_module_course_tbl( array( 'lp_learnPath' ), $courseCode );
         
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( learnPath_id )
-               FROM `{$tblLearnPath['lp_learnpath']}`"
+               FROM `{$tblLearnPath['lp_learnPath']}`"
         );
         if( !$resultSet->isEmpty() )
         {
