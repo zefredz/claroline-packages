@@ -9,7 +9,7 @@ th
     text-align: center;
 }
 
-td.warning
+td.warning, span.warning
 {
     color: green;
 }
@@ -27,4 +27,15 @@ td.biggerCell
 td.biggestCell
 {
     font-size: x-large;
+}
+
+td.learnpathLabel, td.moduleLabel, th.trackingLabel, td.trackingValue
+{
+    text-align: left;
+    white-space: normal;
+}
+
+table.courseTrackingSummary
+{
+    border-spacing: 10px 0;
 }
