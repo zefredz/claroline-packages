@@ -29,13 +29,23 @@ td.biggestCell
     font-size: x-large;
 }
 
-td.learnpathLabel, td.moduleLabel, th.trackingLabel, td.trackingValue
+td.courseLabel, td.learnpathLabel, td.moduleLabel, th.trackingLabel, td.trackingValue, td.simpleLabel
 {
     text-align: left;
     white-space: normal;
 }
 
+td.userLabel
+{
+    text-align: left;
+}
+
 table.courseTrackingSummary
 {
     border-spacing: 10px 0;
+}
+
+td.detailTable
+{
+    vertical-align: top;
 }
