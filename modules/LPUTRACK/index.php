@@ -5,6 +5,7 @@ $cidReq = null;
 $cidReset = true;
 
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
+require_once dirname(__FILE__) . '/../../claroline/inc/lib/fileDisplay.lib.php';
 
 FromKernel::uses(
 //    'utils/input.lib',
@@ -211,7 +212,7 @@ try
             break;
 
         case 'classViewTrackCourse' :
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingcourse.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingcourse3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'className', $infoClass->getClassName() );
@@ -228,7 +229,7 @@ try
         case 'classViewTrackLearnPath' :
             $breadCrumbs->append( $infoCourse->getCourseName(),
                                   "index.php?cmd=classViewTrackLearnPath&classId=$classId&courseCode=" . $infoCourse->getCourseCode() );
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackinglearnpath.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackinglearnpath3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'nbLearnPath', $infoCourse->getNbLearnPath() );
@@ -255,7 +256,7 @@ try
                                   "index.php?cmd=classViewTrackModule&classId=$classId&courseCode="
                                   . $infoCourse->getCourseCode()
                                   . "&learnPathId=" . $infoLearnPath->getLearnPathId() );
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingmodule.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingmodule3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'courseCode', $infoCourse->getCourseCode() );
@@ -282,7 +283,7 @@ try
         case 'userViewTrackCourse' :
             $breadCrumbs->append( get_lang( 'Course' ),
                                   'index.php?cmd=userViewTrackCourse&classId=' . $classId );
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingcourse.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingcourse3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'className', $infoClass->getClassName() );
@@ -301,7 +302,7 @@ try
                                   'index.php?cmd=userViewTrackCourse&classId=' . $classId );
             $breadCrumbs->append( get_lang( 'LearnPath' ),
                                   'index.php?cmd=userViewTrackLearnPath&classId=' . $classId );
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackinglearnpath.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackinglearnpath3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'className', $infoClass->getClassName() );
@@ -322,7 +323,7 @@ try
                                   'index.php?cmd=userViewTrackLearnPath&classId=' . $classId );
             $breadCrumbs->append( get_lang( 'Module' ),
                                   'index.php?cmd=userViewTrackModule&classId=' . $classId );
-            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingmodule.tpl.php' );
+            $trackingClassDisplay = new ModuleTemplate( 'LPUTRACK', 'usertrackingmodule3.tpl.php' );
             $trackingClassDisplay->assign( 'classId', $classId );
             $trackingClassDisplay->assign( 'mode', $mode );
             $trackingClassDisplay->assign( 'className', $infoClass->getClassName() );

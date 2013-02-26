@@ -32,5 +32,6 @@
     $_lang['Complete tracking'] = 'Suivi complet';
     $_lang['xls export'] = 'Exporter en xls';
     $_lang['My learnPath tracking'] = 'Mon suivi des parcours pédagogiques';
+    $_lang['View type'] = 'Type de vue';
 
 ?>
