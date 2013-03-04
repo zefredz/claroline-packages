@@ -12,7 +12,7 @@
 
 FromKernel::uses( 'csv.class' );
 
-class Poll2Csv extends csv
+class Poll2Csv extends CsvRecordlistExporter
 {
     public function loadDataList( $poll )
     {
