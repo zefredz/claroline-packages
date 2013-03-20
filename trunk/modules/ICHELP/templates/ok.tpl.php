@@ -1,0 +1,1 @@
+<?php echo claro_html_button( claro_htmlspecialchars( $this->backUrl ) , get_lang( 'OK' ) ); ?>

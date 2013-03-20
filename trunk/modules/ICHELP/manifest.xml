@@ -1,0 +1,25 @@
+<module>
+  <label>ICHELP</label>
+  <name>Online Help Form</name>
+  <version>0.4</version> 
+  <license>GPL</license>
+  <type>applet</type>
+  <icon>icon.png</icon>
+  <default_dock>campusBannerRight</default_dock>
+   
+  <description>
+    ![CDATA[ Formulaire permetant à un utilisateur rencontrant des difficultés sur iCampus de décrire son problème, de rassembler des informations le concernant et d'envoyer un mail vers le service idoïne ]]
+  </description>
+  
+  <author>
+     <name>Frederic Fervaille</name>
+     <email>frederic.fervaille@uclouvain.be</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>
+    <claroline>
+        <version>1.11.5</version>
+    </claroline>
+ </requirements>
+</module>
