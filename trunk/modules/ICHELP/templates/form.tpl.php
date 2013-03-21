@@ -5,32 +5,27 @@
         <legend><?php echo get_lang( 'Personnal infos' ); ?> :</legend>
         <dl>
     <?php if( empty( $this->userData[ 'firstName' ] )  ) : ?>
-            <dt><strong><?php echo get_lang( 'First name' ); ?></strong><span class="required">*</span>&nbsp;
-            </dt>
+            <dt><strong><?php echo get_lang( 'First name' ); ?></strong><span class="required">*</span>&nbsp;</dt>
             <dd><input type="text" name="data[firstName]" value="" /></dd>
     <?php endif; ?>
     
     <?php if( empty( $this->userData[ 'lastName' ] )  ) : ?>
-            <dt><strong><?php echo get_lang( 'Last name' ); ?></strong><span class="required">*</span>&nbsp;
-            </dt>
+            <dt><strong><?php echo get_lang( 'Last name' ); ?></strong><span class="required">*</span>&nbsp;</dt>
             <dd><input type="text" name="data[lastName]" value="" /></dd>
     <?php endif; ?>
     
     <?php if( empty( $this->userData[ 'mail' ] )  ) : ?>
-            <dt><strong><?php echo get_lang( 'eMail' ); ?></strong><span class="required">*</span>&nbsp;
-            </dt>
+            <dt><strong><?php echo get_lang( 'eMail' ); ?></strong><span class="required">*</span>&nbsp;</dt>
             <dd><input type="text" name="data[mail]" value="" /></dd>
     <?php endif; ?>
 
     <?php if( empty( $this->userData[ 'username' ] )  ) : ?>
-            <dt><strong><?php echo get_lang( 'Username' ); ?></strong>
-            </dt>
+            <dt><strong><?php echo get_lang( 'Username' ); ?></strong></dt>
             <dd><input type="text" name="data[username]" value="" /></dd>
     <?php endif; ?>
     
     <?php if( empty( $this->userData[ 'officialCode' ] )  ) : ?>
-            <dt><strong><?php echo get_lang( 'FGS' ); ?></strong> <span style="font-size: small; color: grey; font-style : italic;">(<?php echo get_lang( 'useful for authentification problem' ); ?>)</span>
-            </dt>
+            <dt><strong><?php echo get_lang( 'FGS' ); ?></strong> <span style="font-size: small; color: grey; font-style : italic;">(<?php echo get_lang( 'useful for authentification problem' ); ?>)</span></dt>
             <dd><input type="text" name="data[officialCode]" value="" /></dd>
     <?php endif; ?>
 
@@ -89,7 +84,7 @@
                        value="<?php echo $this->courseId; ?>"</dd>
         </dl>
         <dl>
-            <dt><strong><?php echo get_lang( 'Describe your problem' ); ?></strong></dt>
+            <dt><strong><?php echo get_lang( 'Describe your problem' ); ?></strong><span class="required">*</span>&nbsp;</dt>
             <dd>
                 <textarea   type="text"
                             rows="20"

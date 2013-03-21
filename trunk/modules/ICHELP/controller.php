@@ -34,11 +34,12 @@ JavascriptLoader::getInstance()->load('ichelp_form');
 
 try
 {
-    include dirname(__FILE__) . '/checklist.php';
+    include dirname(__FILE__) . '/locale.inc.php';
     
     $ticket = new TicketManager();
     $userData = claro_get_current_user_data();
     $view = null;
+    $autoAnswer = null;
     
     if( ! $userData )
     {
@@ -106,7 +107,10 @@ try
                 if( $mailTpl )
                 {
                     $autoMail = new ModuleTemplate( 'ICHELP' , $mailTpl . '.tpl.php' );
-                    $mailSent = claro_mail( 'Re:' . $subject , $autoMail->render() , $mailFrom , $nameFrom , $mailTo , $nameTo );
+                    $autoAnswer = $autoMail->render();
+                    $MailContent = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
+                    
+                    $mailSent = claro_mail( 'Re:' . $subject , $content , $mailFrom , $nameFrom , $mailTo , $nameTo );
                     $ticket->set( 'autoMailSent' , $mailSent );
                 }
                 
@@ -130,6 +134,11 @@ try
         {
             $dialogBox->error( '<span style="color: red; font-weight: bold;">' . $error . '</span>' );
         }
+        
+        if( $autoAnswer )
+        {
+            $dialogBox->info( $autoAnswer );
+        }
     }
     else
     {
@@ -145,9 +154,10 @@ try
         $view->assign( 'courseId' , $courseId );
     }
     
-    $cmdList[] = array( 'img'  => 'back',
-                    'name' => get_lang( 'back' ),
-                    'url'  => claro_htmlspecialchars( $ticket->get( 'httpReferer' ) ) );
+    $cmdList[] = array(
+        'img'  => 'back',
+        'name' => get_lang( 'back' ),
+        'url'  => claro_htmlspecialchars( $ticket->get( 'httpReferer' ) ) );
     
     Claroline::getInstance()->display->body->appendContent(
         claro_html_tool_title( $pageTitle , null , $cmdList ) .
