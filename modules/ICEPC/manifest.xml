@@ -1,0 +1,28 @@
+<module>
+    
+    <label>ICEPC</label>
+    <name>EPC</name>
+
+    <entry>index.php</entry>
+    <icon>icon.png</icon> 
+    
+    <type>crsmanage</type>
+    <context>course</context>
+    
+    <version>0.1</version>
+    <license>GPL</license>
+    
+    <description>Import users from EPC</description>
+    <author>
+        <name>Frederic Minne</name>
+        <email>frederic.minne@uclouvain.be</email>
+        <web>http://www.uclouvain.be/ipm</web>
+    </author>
+
+    <requirements>
+        <claroline>
+            <version>1.11.4</version>
+        </claroline>
+    </requirements>
+    
+</module>
