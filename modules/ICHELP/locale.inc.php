@@ -92,3 +92,22 @@ $checkList = array(
         'description' => 'Autre...',
         'mailTpl' => null )
 );
+
+$header = "=================================================================\n"
+    . "Attention : ceci est une première réponse envoyée automatiquement\n"
+    . "par le système sur base des données que vous nous avez envoyées.\n"
+    . "=================================================================\n\n"
+    . "Bonjour,\n\n";
+
+$footer = "Bien à vous,\n"
+    . "L'équipe iCampus\n\n"
+    . "--\n"
+    . "Consultez aussi notre manuel iCampus en ligne !\n"
+    . "http://blogs.uclouvain.be/aideicampus/\n\n"
+    . "------------- iCampus ----------------\n"
+    . "mail: icampus@uclouvain.be\n"
+    . "UCL-IPM, 54 Grand-rue, bte L1.06.01,\n"
+    . "1348 Louvain-la Neuve, Belgique\n"
+    . "http://www.uclouvain.be/ipm\n"
+    . "http://icampus.uclouvain.be\n"
+    . "--------------------------------------";
