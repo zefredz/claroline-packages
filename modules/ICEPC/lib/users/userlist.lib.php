@@ -752,7 +752,7 @@ class Claro_CourseUserList
 
             $this->courseUserIdList = array ( );
 
-            foreach ( $resultSet as $user_id => $user_id )
+            foreach ( $resultSet as $user_id => $user )
             {
                 $this->courseUserIdList[ $user_id ] = $user_id;
             }
