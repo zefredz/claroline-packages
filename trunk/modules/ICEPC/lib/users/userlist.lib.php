@@ -661,6 +661,9 @@ class Claro_PlatformUserList
  */
 class Claro_CourseUserList
 {
+    const
+        USE_KEY_USERID = 'user_id',
+        USE_KEY_USERNAME = 'username';
 
     protected $cid, $course, $database;
     protected $courseUserList, $courseUserIdList;
@@ -688,13 +691,33 @@ class Claro_CourseUserList
     {
         if ( !is_array ( $this->courseUserList ) || $forceRefresh )
         {
-            $tbl_mdb_names = claro_sql_get_main_tbl ();
-            $tbl_user = $tbl_mdb_names[ 'user' ];
-            $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
+            $resultSet = $this->getUserListIteratorUsingKey( self::USE_KEY_USERID );
 
-            $cid = $this->database->quote ( $this->cid );
+            $this->courseUserList = array ( );
 
-            $resultSet = $this->database->query ( "
+            foreach ( $resultSet as $userId => $user )
+            {
+                $this->courseUserList[ $userId ] = $user;
+            }
+        }
+
+        return $this->courseUserList;
+    }
+    
+    protected function getUserListIteratorUsingKey( $key )
+    {
+        if ( $key != self::USE_KEY_USERID && $key != self::USE_KEY_USERNAME )
+        {
+            throw new Exception('Invalid key : must be Claro_CourseUserList::USE_KEY_USERID or Claro_CourseUserList::USE_KEY_USERNAME');
+        }
+        
+        $tbl_mdb_names = claro_sql_get_main_tbl ();
+        $tbl_user = $tbl_mdb_names[ 'user' ];
+        $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
+
+        $cid = $this->database->quote ( $this->cid );
+
+        $resultSet = $this->database->query ( "
             SELECT 
                 u.username, 
                 cu.user_id, 
@@ -708,19 +731,11 @@ class Claro_CourseUserList
                 cu.user_id = u.user_id
             WHERE
                 cu.code_cours = {$cid}
-         " );
+        " );
 
-            $resultSet->useId ( 'user_id' );
-
-            $this->courseUserList = array ( );
-
-            foreach ( $resultSet as $userId => $user )
-            {
-                $this->courseUserList[ $userId ] = $user;
-            }
-        }
-
-        return $this->courseUserList;
+        $resultSet->useId ( $key );
+        
+        return $resultSet;
     }
     
     /**
@@ -759,6 +774,13 @@ class Claro_CourseUserList
         }
 
         return $this->courseUserIdList;
+    }
+    
+    public function is_userIdAlreadyInCourse( $userId )
+    {
+        $userIdList = $this->getUserIdList();
+        
+        return isset( $userIdList[$userId] ) ? true : false;
     }
 
 }
