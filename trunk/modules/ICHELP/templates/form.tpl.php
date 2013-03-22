@@ -1,6 +1,14 @@
 <form method="post"
       enctype="multipart/form-data"
       action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>" >
+    <input type="hidden"
+           name="data[jsEnabled]"
+           value="1" />
+    <noscript>
+        <input type="hidden"
+               name="data[jsEnabled]"
+               value="0" />
+    </noscript>
     <fieldset>
         <legend><?php echo get_lang( 'Personnal infos' ); ?> :</legend>
         <dl>
@@ -31,12 +39,14 @@
 
             <dt><strong><?php echo get_lang( 'UCL member' ) . ' ?'; ?></strong></dt>
             <dd>
-                <input  type="radio"
+                <input  id = "isMember"
+                        type="radio"
                         name="data[UCLMember]"
                         value="1"
                         <?php if ( substr( $this->userData[ 'mail' ] , -12 ) == 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
                 <?php echo get_lang( 'Yes' ); ?>
-                <input  type="radio"
+                <input  id = "notMember"
+                        type="radio"
                         name="data[UCLMember]"
                         value="0"
                         <?php if ( substr( $this->userData[ 'mail' ] , -12 ) != 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>

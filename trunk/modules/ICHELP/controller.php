@@ -49,7 +49,8 @@ try
             'lastName' => null,
             'mail' => null,
             'username' => null,
-            'officialCode' => null );
+            'officialCode' => null,
+            'jsEnabled' => null );
     }
     
     $userInput = Claro_UserInput::getInstance();
@@ -89,16 +90,18 @@ try
             $mailBody->assign( 'ticket' , $ticket );
             $mailBody->assign( 'autoMail' , (boolean)$mailTpl );
             
-            $mailTo = 'icampus@uclouvain.be';
+            $mailTo = 'icampus@uclouvain.be';   // <- l'adresse iCampus
             $nameTo = 'Support iCampus';
             
+            // REDIRECTION VERS LE SERVICE DESK ===>
             if( (int)$userData['UCLMember']
                 && ( array_key_exists( 'firstAccessProblem' , $userData[ 'issueType' ] )
                     || array_key_exists( 'accessProblem' , $userData[ 'issueType' ] ) ) )
             {
-                $mailTo = 'frederic.fervaille@uclouvain.be';
+                $mailTo = 'frederic.fervaille@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
             }
+            // <=== REDIRECTION VERS LE SERVICE DESK
             
             if( claro_mail( $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {
@@ -107,8 +110,12 @@ try
                 if( $mailTpl )
                 {
                     $autoMail = new ModuleTemplate( 'ICHELP' , $mailTpl . '.tpl.php' );
+                    
+                    /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
                     $autoAnswer = $autoMail->render();
                     $MailContent = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
+                    */
+                    $MailContent = $header . $autoMail->render() . $footer;
                     
                     $mailSent = claro_mail( 'Re:' . $subject , $content , $mailFrom , $nameFrom , $mailTo , $nameTo );
                     $ticket->set( 'autoMailSent' , $mailSent );
@@ -135,10 +142,12 @@ try
             $dialogBox->error( '<span style="color: red; font-weight: bold;">' . $error . '</span>' );
         }
         
+        /* Affiche également le contenu du mail envoyé directement dans la page
         if( $autoAnswer )
         {
             $dialogBox->info( $autoAnswer );
         }
+        */
     }
     else
     {

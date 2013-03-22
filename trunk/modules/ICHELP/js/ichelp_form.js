@@ -13,4 +13,19 @@ $(document).ready(function(){
     $("#notManager").click(function(){
         $(".issueType2").hide();
     });
+    
+    if( $('#isMember').attr('checked') )
+    {
+        $(".issueType0").show();
+    }
+    else
+    {
+        $(".issueType0").hide();
+    }
+    $("#isMember").click(function(){
+        $(".issueType0").show();
+    });
+    $("#notMember").click(function(){
+        $(".issueType0").hide();
+    });
 });
