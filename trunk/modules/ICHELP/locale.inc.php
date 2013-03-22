@@ -20,7 +20,7 @@ $checkList = array(
     'firstAccessProblem' => array(
         'issueCategory' => 0,
         'description' => 'J\'ai activé mon compte global, pourtant je n\'arrive pas à entrer sur iCampus',
-        'mailTpl' => '' ),
+        'mailTpl' => null ),
     
     'accessProblem' => array(
         'issueCategory' => 1,
@@ -34,7 +34,7 @@ $checkList = array(
     
     'courseDisappeared' => array(
         'issueCategory' => 1,
-        'description' => 'Des cours ont disparus de ma liste de cours',
+        'description' => 'Des cours ont disparu de ma liste de cours',
         'mailTpl' => '' ),
     
     'moreSpaceNeeded' => array(
@@ -70,12 +70,12 @@ $checkList = array(
     'bugReport' => array(
         'issueCategory' => 1,
         'description' => 'Je voudrais vous faire part d\'un bug ou d\'un comportement étrange de l\'application',
-        'mailTpl' => '' ),
+        'mailTpl' => null ),
     
     'podcastProblem' => array(
         'issueCategory' => 1,
         'description' => 'Les vidéos ne s\'affichent pas correctement',
-        'mailTpl' => '' ),
+        'mailTpl' => null ),
     
     'useQuestion' => array(
         'issueCategory' => 1,

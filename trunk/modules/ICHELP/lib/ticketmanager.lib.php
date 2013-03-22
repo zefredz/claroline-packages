@@ -28,8 +28,8 @@ class TicketManager
             $this->data[ 'submissionDate' ] = date( 'Y-m-d H:i:s' );
             $this->data[ 'userAgent' ] = $_SERVER['HTTP_USER_AGENT'];
             $this->data[ 'httpReferer' ] = $_SERVER['HTTP_REFERER'];
+            //$this->data[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
             $this->data[ 'mailSent' ] = 0;
-            $this->data[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
             
             $this->data[ 'ticketId' ] = md5(
                 $this->data[ 'userAgent' ] .
