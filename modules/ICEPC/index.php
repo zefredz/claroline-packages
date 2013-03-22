@@ -20,9 +20,9 @@ try
     require_once dirname ( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
     // to put into config
-    $GLOBALS[ '_conf' ][ 'epcServiceUrl' ] = 'https://dev.epc.uclouvain.be/WebApi/resources/EtudInsc';
+    /*$GLOBALS[ '_conf' ][ 'epcServiceUrl' ] = 'https://dev.epc.uclouvain.be/WebApi/resources/EtudInsc';
     $GLOBALS[ '_conf' ][ 'epcServiceUser' ] = 'icampus';
-    $GLOBALS[ '_conf' ][ 'epcServicePassword' ] = '1ntelIgent';
+    $GLOBALS[ '_conf' ][ 'epcServicePassword' ] = '1ntelIgent';*/
 
     FromKernel::uses (
         'utils/iterators.lib', 
