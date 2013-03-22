@@ -31,7 +31,6 @@ try
     );
 
     From::Module ( 'ICEPC' )->uses (
-        'utils/iterators.lib',
         'users/userlist.lib', 
         'users/claroclass.lib',
         'users/classutils.lib.php',
