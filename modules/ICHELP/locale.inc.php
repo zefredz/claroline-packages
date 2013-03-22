@@ -15,17 +15,17 @@ $checkList = array(
     'accountCreation' => array(
         'issueCategory' => 0,
         'description' => 'Je ne me suis jamais connecté sur iCampus et je ne sais pas comment entrer',
-        'mailTpl' => '' ),
+        'mailTpl' => 'accountcreation' ),
     
     'firstAccessProblem' => array(
         'issueCategory' => 0,
         'description' => 'J\'ai activé mon compte global, pourtant je n\'arrive pas à entrer sur iCampus',
-        'mailTpl' => null ),
+        'mailTpl' => 'firstaccessproblem' ),
     
     'accessProblem' => array(
         'issueCategory' => 1,
         'description' => 'J\'ai déjà un compte sur iCampus, mais je n\'arrive plus à me connecter',
-        'mailTpl' => '' ),
+        'mailTpl' => 'accessproblem' ),
     
     'courseNotFound' => array(
         'issueCategory' => 1,
@@ -93,14 +93,15 @@ $checkList = array(
         'mailTpl' => null )
 );
 
-$header = "=================================================================\n"
+$header = "Bonjour,\n\n";
+
+$footer = "\n\nBien à vous,\n"
+    . "L'équipe iCampus\n\n"
+    . "=================================================================\n"
     . "Attention : ceci est une première réponse envoyée automatiquement\n"
     . "par le système sur base des données que vous nous avez envoyées.\n"
+    . "Une réponse personnalisée vous parviendra très prochainement.\n"
     . "=================================================================\n\n"
-    . "Bonjour,\n\n";
-
-$footer = "Bien à vous,\n"
-    . "L'équipe iCampus\n\n"
     . "--\n"
     . "Consultez aussi notre manuel iCampus en ligne !\n"
     . "http://blogs.uclouvain.be/aideicampus/\n\n"
@@ -111,3 +112,12 @@ $footer = "Bien à vous,\n"
     . "http://www.uclouvain.be/ipm\n"
     . "http://icampus.uclouvain.be\n"
     . "--------------------------------------";
+
+$defaultUserData = array(
+    'userId' => null,
+    'firstName' => null,
+    'lastName' => null,
+    'mail' => null,
+    'username' => null,
+    'officialCode' => null,
+    'jsEnabled' => null );
