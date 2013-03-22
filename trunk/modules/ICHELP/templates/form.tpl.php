@@ -12,30 +12,20 @@
     <fieldset>
         <legend><?php echo get_lang( 'Personnal infos' ); ?> :</legend>
         <dl>
-    <?php if( empty( $this->userData[ 'firstName' ] )  ) : ?>
             <dt><strong><?php echo get_lang( 'First name' ); ?></strong><span class="required">*</span>&nbsp;</dt>
-            <dd><input type="text" name="data[firstName]" value="" /></dd>
-    <?php endif; ?>
-    
-    <?php if( empty( $this->userData[ 'lastName' ] )  ) : ?>
+            <dd><input type="text" name="data[firstName]" value="<?php echo $this->userData[ 'firstName' ]; ?>" /></dd>
+            
             <dt><strong><?php echo get_lang( 'Last name' ); ?></strong><span class="required">*</span>&nbsp;</dt>
-            <dd><input type="text" name="data[lastName]" value="" /></dd>
-    <?php endif; ?>
+            <dd><input type="text" name="data[lastName]" value="<?php echo $this->userData[ 'lastName' ]; ?>" /></dd>
     
-    <?php if( empty( $this->userData[ 'mail' ] )  ) : ?>
             <dt><strong><?php echo get_lang( 'eMail' ); ?></strong><span class="required">*</span>&nbsp;</dt>
-            <dd><input type="text" name="data[mail]" value="" /></dd>
-    <?php endif; ?>
+            <dd><input type="text" name="data[mail]" value="<?php echo $this->userData[ 'mail' ]; ?>" /></dd>
 
-    <?php if( empty( $this->userData[ 'username' ] )  ) : ?>
             <dt><strong><?php echo get_lang( 'Username' ); ?></strong></dt>
-            <dd><input type="text" name="data[username]" value="" /></dd>
-    <?php endif; ?>
+            <dd><input type="text" name="data[username]" value="<?php echo $this->userData[ 'username' ]; ?>" /></dd>
     
-    <?php if( empty( $this->userData[ 'officialCode' ] )  ) : ?>
             <dt><strong><?php echo get_lang( 'FGS' ); ?></strong> <span style="font-size: small; color: grey; font-style : italic;">(<?php echo get_lang( 'useful for authentification problem' ); ?>)</span></dt>
-            <dd><input type="text" name="data[officialCode]" value="" /></dd>
-    <?php endif; ?>
+            <dd><input type="text" name="data[officialCode]" value="<?php echo $this->userData[ 'officialCode' ]; ?>" /></dd>
 
             <dt><strong><?php echo get_lang( 'UCL member' ) . ' ?'; ?><span class="required">*</span>&nbsp;</strong></dt>
             <dd>
@@ -79,8 +69,9 @@
             <?php foreach( $this->checkList as $index => $check ) : ?>
                 <?php if( (int)$check[ 'issueCategory' ] != 0 || ! $this->userData[ 'userId' ] ) : ?>
                 <li class="issueType<?php echo $check[ 'issueCategory' ]; ?>">
-                    <input type="checkbox"
-                           name="data[issueType][<?php echo $index; ?>]" />
+                    <input type="radio"
+                           name="data[issueType]"
+                           value="<?php echo $index; ?>" />
                     <?php echo $check[ 'description' ]; ?>
                 <?php endif; ?>
             </li>
@@ -91,7 +82,7 @@
             <dt><strong><?php echo get_lang( 'Related course code (if relevant)' ); ?></strong></dt>
             <dd><input type="text"
                        name="data[courseId]"
-                       value="<?php echo $this->courseId; ?>"</dd>
+                       value="<?php echo $this->userData[ 'courseId' ]; ?>"</dd>
         </dl>
         <dl>
             <dt><strong><?php echo get_lang( 'Describe your problem' ); ?></strong><span class="required">*</span>&nbsp;</dt>

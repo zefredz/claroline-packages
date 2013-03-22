@@ -19,7 +19,7 @@ class TicketManager
         $this->tbl = $tbl[ 'ichelp_log' ];
         
         if( isset( $_SESSION[ 'ICHELP_data' ] )
-            && ! empty($_SESSION[ 'ICHELP_data' ] ) )
+            && ! empty( $_SESSION[ 'ICHELP_data' ] ) )
         {
             $this->data = $_SESSION[ 'ICHELP_data' ];
         }
@@ -52,8 +52,6 @@ class TicketManager
         if( Claroline::getDatabase()->exec( "
                 INSERT INTO `{$this->tbl}`" . $sql ) )
         {
-            $this->flush();
-            
             return $this->get( 'ticketId' );
         }
         else

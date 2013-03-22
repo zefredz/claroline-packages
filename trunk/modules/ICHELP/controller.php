@@ -50,7 +50,13 @@ try
             'mail' => null,
             'username' => null,
             'officialCode' => null,
-            'jsEnabled' => null );
+            'jsEnabled' => null,
+            'courseId' => null );
+    }
+    
+    if ( $courseId )
+    {
+        $userData[ 'courseId' ] = $courseId;
     }
     
     $userInput = Claro_UserInput::getInstance();
@@ -78,7 +84,7 @@ try
             
             if( array_key_exists( 'issueType' , $userData ) )
             {
-                $issueType = current( array_keys( $userData[ 'issueType' ] ) );
+                $issueType = $userData[ 'issueType' ];
                 $subject = get_lang( $checkList[ $issueType ][ 'description' ] );
                 $mailTpl = $checkList[ $issueType ][ 'mailTpl' ];
             }
@@ -98,8 +104,8 @@ try
             
             // REDIRECTION VERS LE SERVICE DESK ===>
             if( (int)$userData['UCLMember']
-                && ( array_key_exists( 'firstAccessProblem' , $userData[ 'issueType' ] )
-                    || array_key_exists( 'accessProblem' , $userData[ 'issueType' ] ) ) )
+                && ( $userData[ 'issueType' ] == 'firstAccessProblem'
+                    || $userData[ 'issueType' ] == 'accessProblem' ) )
             {
                 $mailTo = 'frederic.fervaille@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
@@ -112,13 +118,13 @@ try
                 
                 if( $mailTpl )
                 {
-                    $autoMail = new ModuleTemplate( 'ICHELP' , $mailTpl . '.tpl.php' );
+                    $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
                     
                     /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
                     $autoAnswer = $autoMail->render();
-                    $MailContent = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
+                    $content = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
                     */
-                    $MailContent = $header . $autoMail->render() . $footer;
+                    $content = $header . $autoMail->render() . $footer;
                     
                     $mailSent = claro_mail( 'Re:' . $subject , $content , $mailFrom , $nameFrom , $mailTo , $nameTo );
                     $ticket->set( 'autoMailSent' , $mailSent );
@@ -163,7 +169,6 @@ try
         $view->assign( 'userData' , $userData );
         $view->assign( 'ticket' , $ticket );
         $view->assign( 'checkList' , $checkList );
-        $view->assign( 'courseId' , $courseId );
     }
     
     $cmdList[] = array(
@@ -175,6 +180,11 @@ try
         claro_html_tool_title( $pageTitle , null , $cmdList ) .
         $dialogBox->render() .
         $view->render() );
+    
+    if( $ticket->get( 'mailSent' ) )
+    {
+        $ticket->flush();
+    }
 }
 catch( Exception $e )
 {
