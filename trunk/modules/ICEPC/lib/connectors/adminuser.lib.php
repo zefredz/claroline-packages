@@ -5,12 +5,32 @@
  */
 interface Module_AdminUser
 {
+    /**
+     * Delete user tracking data in course
+     * @param int $userId
+     * @param string $courseCode
+     */
     public function deleteUserCourseTrackingData( $userId, $courseCode );
     
+    /**
+     * Delete resources posted by user in course
+     * @param int $userId
+     * @param string $courseCode
+     */
     public function deleteUserCourseResources( $userId, $courseCode );
     
+    /**
+     * Delete tracking data in course for the list of users
+     * @param int $userIdList list of user ids
+     * @param string $courseCode
+     */
     public function deleteUserListCourseTrackingData( $userIdList, $courseCode );
     
+    /**
+     * Delete resources posted in course by the users in the list
+     * @param int $userIdList list of user ids
+     * @param string $courseCode
+     */
     public function deleteUserListCourseResources( $userIdList, $courseCode );
 }
 
@@ -25,8 +45,19 @@ abstract class GenericModule_AdminUser implements Module_AdminUser
     {
         $this->database = $database ? $database : Claroline::getDatabase ();
     }
+    
+    /**
+     * Return the list of tracking tables
+     * @param string $courseCode
+     * @return array ( table_name => user_id_field_name
+     */
     abstract public function getCourseTrackingTables( $courseCode );
     
+    /**
+     * Return the list of resource tables
+     * @param string $courseCode
+     * @return array ( table_name => user_id_field_name
+     */
     abstract public function getCourseResourceTables( $courseCode );
     
     public function deleteUserListCourseTrackingData ( $userIdList, $courseCode )
