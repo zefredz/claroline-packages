@@ -37,7 +37,7 @@
             <dd><input type="text" name="data[officialCode]" value="" /></dd>
     <?php endif; ?>
 
-            <dt><strong><?php echo get_lang( 'UCL member' ) . ' ?'; ?></strong></dt>
+            <dt><strong><?php echo get_lang( 'UCL member' ) . ' ?'; ?><span class="required">*</span>&nbsp;</strong></dt>
             <dd>
                 <input  id = "isMember"
                         type="radio"
@@ -50,10 +50,11 @@
                         name="data[UCLMember]"
                         value="0"
                         <?php if ( substr( $this->userData[ 'mail' ] , -12 ) != 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
-                <?php echo get_lang( 'No' ); ?></strong><span class="required">*</span>&nbsp;
+                <?php echo get_lang( 'No' ); ?></strong>
             </dd>
             
-            <dt><strong><?php echo get_lang( 'Course manager' ) . ' ?'; ?></strong></dt>
+            <dt><strong><?php echo get_lang( 'Course manager' ) . ' ?'; ?></strong><span class="required">*</span>&nbsp;
+            </dd></dt>
             <dd>
                 <input  id="isManager"
                         type="radio"
@@ -66,8 +67,7 @@
                         name="data[courseManager]"
                         value="0"
                         <?php if ( substr( $this->userData[ 'mail' ] , -13 ) != '@uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
-                <?php echo get_lang( 'No' ); ?></strong><span class="required">*</span>&nbsp;
-            </dd>
+                <?php echo get_lang( 'No' ); ?></strong>
         </dl>
     </fieldset>
     

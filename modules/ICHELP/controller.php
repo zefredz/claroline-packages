@@ -71,13 +71,16 @@ try
         }
         else
         {
+            $userData[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
+            
             $mailFrom = $userData[ 'mail' ];
             $nameFrom = $userData[ 'firstName' ] . ' ' . $userData[ 'lastName' ];
             
             if( array_key_exists( 'issueType' , $userData ) )
             {
-                $subject = get_lang( $checkList[ current( array_keys( $userData[ 'issueType' ] ) ) ][ 'description' ] );
-                $mailTpl = $checkList[ $userData[ 'issueType' ] ][ 'mailTpl' ];
+                $issueType = current( array_keys( $userData[ 'issueType' ] ) );
+                $subject = get_lang( $checkList[ $issueType ][ 'description' ] );
+                $mailTpl = $checkList[ $issueType ][ 'mailTpl' ];
             }
             else
             {

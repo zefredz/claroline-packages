@@ -41,7 +41,7 @@ Infos système (OS, navigateur) : <?php echo $this->ticket->get( 'userAgent' ); ?
 Javascript activé : <?php echo $this->userData[ 'jsEnabled' ] ? 'Oui' : 'NON'; ?>
 
 
-Cookies acceptés : <?php echo $this->ticket->get( 'cookieEnabled' ) ? 'Oui' : 'NON'; ?>
+Cookies acceptés : <?php echo $this->userData[ 'cookieEnabled' ] ? 'Oui' : 'NON'; ?>
 
 
 <?php if( $this->userData[ 'courseId' ] ) : ?>
