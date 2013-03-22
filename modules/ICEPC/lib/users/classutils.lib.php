@@ -1,14 +1,11 @@
-<?php
+<?php //$Id$
 
 /**
- * Get the number of users in a class, including sublclasses
- *
- * @author Guillaume Lederer
- * @param  id of the (parent) class ffrom which we want to know the number of users
- * @return (int) number of users in this class and its subclasses
- *
+ * Get the number of users in a class. 
+ * @param int $class_id id of the class
+ * @param bool $include_children if set to true recursively count users in subclasses
+ * @return int
  */
-
 function class_get_number_of_users( $class_id, $include_children = true )
 {
     $tbl_mdb_names  = claro_sql_get_main_tbl();
@@ -44,18 +41,29 @@ function class_get_number_of_users( $class_id, $include_children = true )
     return $qty_user;
 }
 
+/**
+ * Count the number of student in both the given course and the given class
+ * @param string $course_id
+ * @param int $class_id
+ * @param bool $include_children recursively count students from subclasses
+ * @return int
+ */
 function class_get_number_of_users_in_course( $course_id, $class_id, $include_children = true )
 {
     $tbl_mdb_names  = claro_sql_get_main_tbl();
     $tbl_class_user = $tbl_mdb_names['rel_class_user'];
     $tbl_class      = $tbl_mdb_names['class'];
     $tbl_course_user = $tbl_mdb_names['rel_course_user' ];
+    
+    $sqlCourseId = Claroline::getDatabase()->quote( $course_id );
+    
     //1- get class users number
 
     $sqlcount = "SELECT COUNT(clu.`user_id`) AS qty_user
                  FROM `{$tbl_class_user}` AS clu
                  INNER JOIN `{$tbl_course_user}` AS cu 
                  ON `cu`.`user_id` = `clu`.`user_id`
+                 AND `cu`.`code_cours` = {$sqlCourseId}
                  WHERE clu.`class_id` = " . (int) $class_id;
 
     $qty_user =  Claroline::getDatabase()->query($sqlcount)->setFetchMode ( Database_ResultSet::FETCH_VALUE )->fetch();

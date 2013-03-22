@@ -13,6 +13,10 @@
  *
  */
 
+/**
+ * Get current academic year start year (ex.: 2012 if we are between 1st september 2012 and 31 august 2013)
+ * @return string
+ */
 function epc_get_current_acad_year()
 {
     $currentMonth = (int) date ( 'n' );
@@ -31,41 +35,5 @@ function epc_get_current_acad_year()
         {
             return date ( 'Y' );
         }
-    }
-}
-
-function epc_add_userlist_helper( $epcSearchFor, $epcAcadYear, $epcSearchString )
-{
-    $epcService = new EpcStudentListService (
-            get_conf ( 'epcServiceUrl' ),
-            get_conf ( 'epcServiceUser' ),
-            get_conf ( 'epcServicePassword' )
-    );
-    
-    if ( 'course' == $epcSearchFor )
-    {
-        $users = $epcService->getStudentsInCourse ( $epcAcadYear, $epcSearchString ); // LBIO1111A' );
-    }
-    else
-    {
-        $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
-    }
-    
-    if ( !empty ( $users ) )
-    {
-    
-        $platformUserList = new Claro_PlatformUserList();
-        $platformUserList->registerUserList($users->getIterator());
-
-        $epcClass = new EpcClass("epc_{$epcSearchFor}{$epcAcadYear}{$epcSearchString}");
-
-        if ( !$epcClass->associatedClassExists() )
-        {
-            $epcClass->createAssociatedClass();
-        }
-       
-        $claroClass = $epcClass->getAssociatedClass();
-        
-        class_add_userlist_helper( $platformUserList->getValidUserIdList () , $claroClass, true );
     }
 }
