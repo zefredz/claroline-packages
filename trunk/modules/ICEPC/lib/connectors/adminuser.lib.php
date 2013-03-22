@@ -1,6 +1,7 @@
 <?php // $Id$
 
 /**
+ * User administration connector
  * @since Claroline 1.11.6
  */
 interface Module_AdminUser
@@ -35,6 +36,7 @@ interface Module_AdminUser
 }
 
 /**
+ * Abstract generic User administration connector
  * @since Claroline 1.11.6
  */
 abstract class GenericModule_AdminUser implements Module_AdminUser

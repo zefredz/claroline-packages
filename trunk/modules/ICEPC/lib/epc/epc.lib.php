@@ -14,12 +14,22 @@
  *              GNU GENERAL PUBLIC LICENSE version 2 or later
  * @package     ucl.epc
  */
+
 define ( 'EPC_TYPE_COURSE', 'course' );
 define ( 'EPC_TYPE_PROGRAM', 'program' );
 
+/**
+ * Convert course or program code to EPC query
+ */
 class EpcCodeToQuery
 {
-
+    /**
+     * Convert UCL course code to EPC query
+     * @param string $courseCode format SSSSSNNNND (ex.: LBIO1111A, LMAPR2016)
+     * @param string $year optional format YYYY
+     * @return string
+     * @throws Exception
+     */
     public static function getCourseQuery ( $courseCode, $year = null )
     {
         $matches = array ( );
@@ -46,7 +56,14 @@ class EpcCodeToQuery
             throw new Exception ( "Wrong course code {$courseCode}" );
         }
     }
-
+    
+    /**
+     * Convert UCL course code to EPC query
+     * @param string $programCode format SSSSCNLF/OR (ex.: BIRA21MS/G, BIR13BA)
+     * @param string $year optional YYYY
+     * @return string
+     * @throws Exception
+     */
     public static function getProgramQuery ( $programCode, $year = null )
     {
         $matches = array ( );
@@ -79,7 +96,7 @@ class EpcCodeToQuery
 }
 
 /**
- * BAsic class to execute queries against the EPC REST web service 
+ * Basic class to execute queries against the EPC REST web service 
  */
 class EpcServiceQuery
 {
@@ -157,9 +174,17 @@ class EpcServiceQuery
 
 }
 
+/**
+ * Helper to easily call EPC service
+ */
 class EpcQueryHelper extends EpcServiceQuery
 {
-
+    /**
+     * Get the list of students in a course
+     * @param string $year YYYY
+     * @param string $courseCode format SSSSSNNNND (ex.: LBIO1111A, LMAPR2016)
+     * @return mixed query response
+     */
     public function getStudentsInCourse ( $year, $courseCode )
     {
 
@@ -172,7 +197,13 @@ class EpcQueryHelper extends EpcServiceQuery
             return $this->getInfo ();
         }
     }
-
+    
+    /**
+     * Get the list of students in a program
+     * @param string $year YYYY
+     * @param string $programCode format SSSSCNLF/OR (ex.: BIRA21MS/G, BIR13BA)
+     * @return mixed query response
+     */
     public function getStudentsInProgram ( $year, $programCode )
     {
 
@@ -193,26 +224,57 @@ class EpcQueryHelper extends EpcServiceQuery
 
 }
 
+/**
+ * EPC XML Response wrapper
+ */
 abstract class EpcServiceXmlResponse
 {
 
-    protected $xml;
-
+    protected $xml, $students = null, $studentsCount = null;
+    
+    /**
+     * Wrap the given xml response
+     * @param string $queryResponse
+     */
     public function __construct ( $queryResponse )
     {
         $this->xml = simplexml_load_string ( $queryResponse );
     }
-
+    
+    /**
+     * Get students
+     * @return array of SimpleXmlElement
+     */
     public function getStudents ()
     {
-        return $this->xml->xpath ( 'etudiant' );
+        // hydrate
+        if ( is_null( $this->students ) )
+        {
+            $this->students = $this->xml->xpath ( 'etudiant' );
+        }
+        
+        return $this->students;
     }
-
+    
+    /**
+     * Get the number of returned students
+     * @return int
+     */
     public function getNumberOfRecords ()
     {
-        return count ( $this->getStudents () );
+        // hydrate
+        if ( is_null ( $this->studentsCount ) )
+        {
+            $this->studentsCount = count ( $this->getStudents () );
+        }
+        
+        return $this->studentsCount;
     }
-
+    
+    /**
+     * Get an iterator for the returned student list
+     * @return \EpcServiceStudentsIterator
+     */
     public function getIterator ()
     {
         return new EpcServiceStudentsIterator ( $this->getStudents () );
@@ -223,12 +285,10 @@ abstract class EpcServiceXmlResponse
 
 class EpcServiceStudentsInCourse extends EpcServiceXmlResponse
 {
-
-    public function __construct ( $queryResponse )
-    {
-        parent::__construct ( $queryResponse );
-    }
-
+    /**
+     * Get informations about the response
+     * @return array ( courseNumber, courseInitials, courseSubdivision, courseValidity, numberOfStudents )
+     */
     public function getInfo ()
     {
         return array (
@@ -244,12 +304,10 @@ class EpcServiceStudentsInCourse extends EpcServiceXmlResponse
 
 class EpcServiceStudentsInProgram extends EpcServiceXmlResponse
 {
-
-    public function __construct ( $queryResponse )
-    {
-        parent::__construct ( $queryResponse );
-    }
-
+    /**
+     * Get informations about the response
+     * @return array ( programCycle, programLevel, programOrientation, programInitials, programValidity, programSuffix, numberOfStudents )
+     */
     public function getInfo ()
     {
         return array (
@@ -265,17 +323,29 @@ class EpcServiceStudentsInProgram extends EpcServiceXmlResponse
 
 }
 
+/**
+ * Student record wrapper
+ */
 class EpcServiceStudentRecord
 {
 
     protected $xmlRecord;
-
+    
+    /**
+     * Wrap a user
+     * @param SimpleXmlElement $xmlRecord
+     */
     public function __construct ( $xmlRecord )
     {
         $this->xmlRecord = $xmlRecord;
     }
 
     // Let's do some magic here :)
+    /**
+     * Translate EPC student record property to Claroline user property by using some black magic
+     * @param string $name
+     * @return mixed
+     */
     public function __get ( $name )
     {
         if ( $name == 'username' )
@@ -318,7 +388,11 @@ class EpcServiceStudentRecord
             }
         }
     }
-
+    
+    /**
+     * Get the FGS matricule as officialCode
+     * @return string
+     */
     protected function getOfficialCode ()
     {
         return ltrim ( '0', (string) $this->xmlRecord->matriculeFgs );
@@ -326,9 +400,15 @@ class EpcServiceStudentRecord
 
 }
 
+/**
+ * Iterator to convert array of EPC students (SimpleXmlElement) to EpcServiceStudentRecord instances
+ */
 class EpcServiceStudentsIterator extends RowToObjectArrayIterator
 {
-
+    /**
+     * Get current item as EpcServiceStudentRecord instance
+     * @return \EpcServiceStudentRecord
+     */
     public function current ()
     {
         return new EpcServiceStudentRecord ( $this->collection[ $this->key () ] );
@@ -336,6 +416,9 @@ class EpcServiceStudentsIterator extends RowToObjectArrayIterator
 
 }
 
+/**
+ * EPC service client for course and program student lists
+ */
 class EpcStudentListService
 {
 
@@ -344,7 +427,13 @@ class EpcStudentListService
         $username = '',
         $password = '',
         $epcQuery;
-
+    
+    /**
+     * 
+     * @param string $baseUrl url of the service
+     * @param string $username service user login
+     * @param string $password service user password
+     */
     public function __construct ( $baseUrl, $username = '', $password = '' )
     {
         $this->baseUrl  = $baseUrl;
@@ -353,7 +442,14 @@ class EpcStudentListService
 
         $this->epcQuery = new EpcQueryHelper ( $baseUrl, $username, $password );
     }
-
+    
+    /**
+     * Get list of students in a course  for a given academic year
+     * @param string $year start year of academic year format YYYY (ex.: 2012 for 2012-2013)
+     * @param string $courseCode format SSSSSNNNND (ex.: LBIO1111A, LMAPR2016)
+     * @return \EpcServiceStudentsInCourse
+     * @throws Exception
+     */
     public function getStudentsInCourse ( $year, $courseCode )
     {
         if ( !$this->epcQuery->getStudentsInCourse ( $year, $courseCode ) )
@@ -366,7 +462,14 @@ class EpcStudentListService
 
         return new EpcServiceStudentsInCourse ( $this->epcQuery->getResponse () );
     }
-
+    
+    /**
+     * Get the list of students in a program for a given academic year
+     * @param string $year start year of academic year format YYYY (ex.: 2012 for 2012-2013)
+     * @param string $programCode  format SSSSCNLF/OR (ex.: BIRA21MS/G, BIR13BA)
+     * @return \EpcServiceStudentsInProgram
+     * @throws Exception
+     */
     public function getStudentsInProgram ( $year, $programCode )
     {
         if ( !$this->epcQuery->getStudentsInProgram ( $year, $programCode ) )
@@ -379,15 +482,22 @@ class EpcStudentListService
 
         return new EpcServiceStudentsInProgram ( $this->epcQuery->getResponse () );
     }
-
+    
+    /**
+     * Information about the response
+     * @return array
+     */
     public function getInfo ()
     {
         return $this->epcQuery->getInfo ();
     }
-
+    
+    /**
+     * Get the XML response for debug purpose or for other usage
+     * @return string
+     */
     public function getRawResponse ()
     {
         return $this->epcQuery->getResponse ();
     }
-
 }

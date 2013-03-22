@@ -324,7 +324,9 @@ class Claro_Class
     }
     
     /**
-     * 
+     * Add the class (but not its users) to the given course
+     * @param string $courseId course code
+     * @return bool
      */
     public function registerToCourse( $courseId )
     {
@@ -339,6 +341,11 @@ class Claro_Class
         ");
     }
     
+    /**
+     * Remove the class (but not its users) from the given course
+     * @param string $courseId course code
+     * @return bool
+     */
     public function unregisterFromCourse( $courseId )
     {
         $tbl  = claro_sql_get_main_tbl();
@@ -353,6 +360,11 @@ class Claro_Class
         ");
     }
     
+    /**
+     * Check if the class is registered to the given course
+     * @param string $courseId course code
+     * @return bool
+     */
     public function isRegisteredToCourse( $courseId )
     {
         $tbl  = claro_sql_get_main_tbl();
@@ -605,7 +617,9 @@ class Claro_ClassUserList
     }
     
     /**
-     * 
+     * Get the iterator for the users registered in the class
+     * @param bool $forceRefresh
+     * @return Iterator Countable
      */
     public function getClassUserListIterator ( $forceRefresh = false )
     {
@@ -641,7 +655,9 @@ class Claro_ClassUserList
     }
     
     /**
-     *     
+     * Get the list of user in class. Can be used as a set.
+     * @param type $forceRefresh
+     * @return array of user_id => user(username, firstname, lastname, email, user_id)
      */
     public function getClassUserList( $forceRefresh = false )
     {
@@ -649,6 +665,7 @@ class Claro_ClassUserList
 
         foreach ( $this->getClassUserIdListIterator ( $forceRefresh ) as $user )
         {
+            // use the user id as key to allow to use this list as a set
             $classUserList[ $user['user_id'] ] = $user;
         }
 
