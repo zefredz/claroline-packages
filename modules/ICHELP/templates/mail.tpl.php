@@ -38,6 +38,9 @@ Page d'origine de la demande : <?php echo $this->ticket->get( 'httpReferer' ); ?
 Infos système (OS, navigateur) : <?php echo $this->ticket->get( 'userAgent' ); ?>
 
 
+Javascript activé : <?php echo $this->userData[ 'jsEnabled' ] ? 'Oui' : 'Non'; ?>
+
+
 <?php if( $this->userData[ 'courseId' ] ) : ?>
 Code cours concerné : <?php echo $this->userData[ 'courseId' ]; ?>
 <?php endif; ?>

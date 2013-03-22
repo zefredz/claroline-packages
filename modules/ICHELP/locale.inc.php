@@ -23,7 +23,7 @@ $checkList = array(
         'mailTpl' => '' ),
     
     'accessProblem' => array(
-        'issueCategory' => 0,
+        'issueCategory' => 1,
         'description' => 'J\'ai déjà un compte sur iCampus, mais je n\'arrive plus à me connecter',
         'mailTpl' => '' ),
     
