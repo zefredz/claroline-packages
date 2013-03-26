@@ -175,7 +175,7 @@ $(function(){
             get_conf ( 'epcServicePassword' )
         );
         
-        if ( 'course' == $epcSearchFor )
+        /*if ( 'course' == $epcSearchFor )
         {
             $users = $epcService->getStudentsInCourse ( $epcAcadYear, $epcSearchString ); // LBIO1111A' );
         }
@@ -262,7 +262,16 @@ $(function(){
         else
         {
             Claroline::getDisplay ()->body->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
-        }
+        }*/
+        
+        $epcAjaxWrapper = new ModuleTemplate( 'ICEPC', 'epc_ajax_container.tpl.php' );
+        $epcAjaxWrapper->assign ( 'epcSearchString', $epcSearchString );
+        $epcAjaxWrapper->assign ( 'epcAcadYear', $epcAcadYear );
+        $epcAjaxWrapper->assign ( 'epcSearchFor', $epcSearchFor );
+        $epcAjaxWrapper->assign ( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+        $epcAjaxWrapper->assign ( 'cmd', $cmd );
+        
+        Claroline::getDisplay()->body->appendContent( $epcAjaxWrapper->render() );
     }
     elseif ( $cmd == 'exUnreg' )
     {
