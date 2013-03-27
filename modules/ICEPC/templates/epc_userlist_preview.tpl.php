@@ -1,6 +1,4 @@
-<pre>
-<?php var_dump( $this->responseInfo ); ?>
-</pre>
+<?php echo $this->responseInfo ; ?>
 
 <p><?php echo get_lang('You are going to import the following students in your course'); ?></p>
 
@@ -35,7 +33,7 @@
     <?php endforeach; ?>
     <?php endif; ?>
     <?php if ( ! $lineAdded ): ?>
-        <tr><td colspan="5"><?php echo get_lang("No student to import"); ?></td></tr>
+        <tr><td colspan="5"><?php echo get_lang("All students are already enrolled to your course"); ?></td></tr>
     <?php endif; ?>
     </tbody>
 </table>
