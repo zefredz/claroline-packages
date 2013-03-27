@@ -691,7 +691,7 @@ class Claro_CourseUserList
     /**
      * Get the list of users registered in the course
      * @param bool $forceRefresh
-     * @return array of user_id => user (username, user_id, count_user_enrol, count_class_enrol)
+     * @return array of user_id => (username,user_id,count_user_enrol,count_class_enrol,isPending)
      */
     public function getUserList ( $forceRefresh = false )
     {
@@ -728,7 +728,8 @@ class Claro_CourseUserList
                 u.username, 
                 cu.user_id, 
                 cu.count_user_enrol, 
-                cu.count_class_enrol
+                cu.count_class_enrol,
+                cu.isPending
             FROM
                 `{$tbl_rel_course_user}` AS cu
             JOIN
@@ -782,6 +783,11 @@ class Claro_CourseUserList
         return $this->courseUserIdList;
     }
     
+    /**
+     * Get the list of the usernames of the users registered in the course
+     * @param bool $forceRefresh
+     * @return array of username => (username,user_id,count_user_enrol,count_class_enrol,isPending)
+     */
     public function getUsernameList( $forceRefresh = false )
     {
         if ( !is_array ( $this->courseUserList ) || $forceRefresh )
