@@ -101,8 +101,12 @@ try
             $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
             $courseUserListToUpdate = $epcLinkExistingStudentsToClass == 'yes' ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator () ) : array();
             
+            $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
+            $queryInfoTpl->assign( 'info', $users->getInfo() );
+            $queryInfoTpl->assign( 'type', $epcSearchFor );
+            
             $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
-            $userListTpl->assign( 'responseInfo', $users->getInfo () );
+            $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
             $userListTpl->assign( 'userListIterator', $users->getIterator() );
             $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ) );
             $userListTpl->assign( 'epcSearchString', $epcSearchString );
