@@ -76,7 +76,7 @@ $(function(){
     $toolTitle = new ToolTitle( get_lang('Manage student lists from EPC') );
 
     
-    if ( $cmd == 'rqImport' || $cmd == 'exImport' )
+    if ( $cmd == 'rqImport' || $cmd == 'preview' || $cmd == 'exImport' )
     {
         $breadcrumbs->append( get_lang('Import students from EPC') );
         
@@ -84,6 +84,7 @@ $(function(){
         $epcAcadYear = $userInput->get ( 'epcAcadYear', epc_get_current_acad_year () );
         $epcSearchFor = $userInput->get ( 'epcSearchFor', 'course' );
         $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     
     if ( $cmd == 'exSync' )
@@ -106,6 +107,7 @@ $(function(){
         $epcSearchFor = $className->getEpcClassType();
         $epcSearchString = $className->getEpcCourseOrProgramCode();
         $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     
     if ( $cmd == 'dispUserList' )
@@ -163,112 +165,19 @@ $(function(){
         $form->assign ( 'epcAcadYear', $epcAcadYear );
         $form->assign ( 'epcSearchFor', $epcSearchFor );
         $form->assign ( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+        $form->assign ( 'epcValidatePendingUsers', $epcValidatePendingUsers );
         
         Claroline::getDisplay ()->body->appendContent ( $form->render () );
     }
     // check before import/sync
-    elseif ( $cmd == 'exImport' || $cmd == 'exSync' )
+    elseif ( $cmd == 'preview' || $cmd == 'exImport' || $cmd == 'exSync' )
     {
-        $epcService = new EpcStudentListService (
-            get_conf ( 'epcServiceUrl' ),
-            get_conf ( 'epcServiceUser' ),
-            get_conf ( 'epcServicePassword' )
-        );
-        
-        /*if ( 'course' == $epcSearchFor )
-        {
-            $users = $epcService->getStudentsInCourse ( $epcAcadYear, $epcSearchString ); // LBIO1111A' );
-        }
-        else
-        {
-            $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
-        }
-
-        if ( !empty ( $users ) )
-        {
-            Claroline::getDisplay ()->body->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
-
-            Claroline::getDisplay ()->body->appendContent ( '<pre>' . var_export ( $users->getInfo (), true ) . '</pre>' );
-
-            $platformUserList = new Claro_PlatformUserList();
-            $platformUserList->registerUserList( $users->getIterator(), 'ldap', true );
-            
-            Claroline::getDisplay ()->body->appendContent ( '<pre>Number of valid users : ' . count ( $platformUserList->getValidUserIdList ()) . '</pre>' );
-            Claroline::getDisplay ()->body->appendContent ( '<pre>Number inserted : ' . count ( $platformUserList->getInsertedUserIdList ()) . '</pre>' );
-            Claroline::getDisplay ()->body->appendContent ( '<pre>Failed insertions : ' . var_export ( $platformUserList->getFailedUserInsertionList (), true ) . '</pre>' );
-            
-            $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
-            $epcClass = new EpcClass($epcClassName);
-            
-            // BEFORE : class could exist or not in the course and user can be enroled or not
-            
-            if ( !$epcClass->associatedClassExists() )
-            {
-                Claroline::getDisplay ()->body->appendContent ( '<pre>Create associated class for ' . $epcClass->getName() . '</pre>' );
-                $epcClass->createAssociatedClass();
-                
-                $claroClass = $epcClass->getAssociatedClass();
-                
-                // add class to current course
-            }
-            else
-            {
-                $claroClass = $epcClass->getAssociatedClass();
-                // add class to current course if not already there
-                // .. this method should take an argument saying whether an existing 
-                // .. user not related to the class must me enrolled twice or only 
-                // .. once (the latter will cause the user registration to be change 
-                // .. to a class registration)
-            }
-            
-            // AFTER : class registered in course with previous user list enroled in course
-            
-            Claroline::getDisplay ()->body->appendContent ( '<pre>Associated class : ' . var_export ( $claroClass, true ) . '</pre>' );
-            
-            // BEFORE : class registered in course with previous user list enroled in course
-            
-            // add valid new EPC users to class
-            
-            $claroClassUserList = new Claro_ClassUserList( $claroClass );
-            $claroClassUserList->addUserIdList( $platformUserList->getValidUserIdList () );
-            
-            Claroline::getDisplay ()->body->appendContent ( '<pre>Valid users added to class</pre>' );
-            
-            if ( ! $claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
-            {
-                $claroClass->registerToCourse( claro_get_current_course_id () );
-                Claroline::getDisplay ()->body->appendContent ( '<pre>Class registrered to current course</pre>' );
-            }
-            
-            $courseList = $claroClass->getClassCourseList();
-    
-            foreach ( $courseList as $course )
-            {
-                $courseObj = new Claro_Course( $course['code'] );
-                $courseObj->load();
-                Claroline::getDisplay ()->body->appendContent ( '<pre>Register class users in course '.$course['code'].'</pre>' );
-                $courseUserList = new Claro_BatchCourseRegistration($courseObj);
-                
-                if ( $claroClass->isRegisteredToCourse ( $courseObj->courseId ) )
-                {
-                    $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
-                }
-                
-                $courseUserList->addUserIdListToCourse( $claroClassUserList->getClassUserIdList (), true, $epcLinkExistingStudentsToClass == 'yes', $userAlreadyInClass );
-            }
-            
-            // AFTER : new valid user list from EPC added to class and enrolled to course
-        }
-        else
-        {
-            Claroline::getDisplay ()->body->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
-        }*/
-        
         $epcAjaxWrapper = new ModuleTemplate( 'ICEPC', 'epc_ajax_container.tpl.php' );
         $epcAjaxWrapper->assign ( 'epcSearchString', $epcSearchString );
         $epcAjaxWrapper->assign ( 'epcAcadYear', $epcAcadYear );
         $epcAjaxWrapper->assign ( 'epcSearchFor', $epcSearchFor );
         $epcAjaxWrapper->assign ( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+        $epcAjaxWrapper->assign ( 'epcValidatePendingUsers', $epcValidatePendingUsers );
         $epcAjaxWrapper->assign ( 'cmd', $cmd );
         
         Claroline::getDisplay()->body->appendContent( $epcAjaxWrapper->render() );

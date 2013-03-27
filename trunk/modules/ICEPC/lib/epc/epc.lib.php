@@ -508,7 +508,7 @@ class EpcCourseUserListInfo
     
     public function __construct ( $courseId, $database = null)
     {
-        $this->course = $courseId;
+        $this->courseId = $courseId;
         $this->database = $database ? $database : Claroline::getDatabase();
     }
     
@@ -532,7 +532,8 @@ class EpcCourseUserListInfo
                 u.username, 
                 cu.user_id, 
                 cu.count_user_enrol, 
-                cu.count_class_enrol
+                cu.count_class_enrol,
+                cu.isPending
             FROM
                 `{$tbl_rel_course_user}` AS cu
             JOIN
@@ -543,10 +544,12 @@ class EpcCourseUserListInfo
                 u.username IN (".implode(',',$usernameList).")
             WHERE
                 cu.code_cours = {$cid}
-            AND
-                cu.count_user_enrol < 1
+            AND (
+                    cu.count_class_enrol < 1
+                OR 
+                    cu.isPending = 1 )
         " );
-
+                
         $resultSet->useId ( 'username' );
         
         $usernameListToUpdate = array();
