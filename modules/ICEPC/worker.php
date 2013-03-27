@@ -96,12 +96,16 @@ try
         {
             $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
         }
+        
+        /* $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' ); */
 
-        if ( !empty ( $users ) )
+        if ( count ( $users ) )
         {
             $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
             $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
-            $courseUserListToUpdate = ($epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator () ) : array();
+            $courseUserListToUpdate = ( $epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) 
+                ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator (), $epcLinkExistingStudentsToClass == 'yes', $epcValidatePendingUsers == 'yes' ) 
+                : array();
             
             $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
             $queryInfoTpl->assign( 'info', $users->getInfo() );
@@ -143,7 +147,7 @@ try
             $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
         }
 
-        if ( !empty ( $users ) )
+        if ( count( $users ) )
         {
             $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
 
