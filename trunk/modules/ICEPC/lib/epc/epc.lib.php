@@ -512,8 +512,13 @@ class EpcCourseUserListInfo
         $this->database = $database ? $database : Claroline::getDatabase();
     }
     
-    public function getUsernameListToUpdate( $userList )
+    public function getUsernameListToUpdate( $userList, $askForClassRegistrationToForce = true, $askForPendingEnrollment = true )
     {
+        if ( !count( $userList ) )
+        {
+            return array();
+        }
+        
         $usernameList = array();
         
         foreach ( $userList as $user )
@@ -526,6 +531,26 @@ class EpcCourseUserListInfo
         $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
 
         $cid = $this->database->quote ( $this->courseId );
+        
+        if ( $askForClassRegistrationToForce && $askForPendingEnrollment )
+        {
+            $condition = " AND 
+                (cu.count_class_enrol < 1  OR cu.isPending = 1 )";
+        }
+        elseif ( $askForClassRegistrationToForce )
+        {
+            $condition = "AND
+                cu.count_class_enrol < 1";
+        }
+        elseif ( $askForPendingEnrollment )
+        {
+            $condition = "AND
+                cu.isPending = 1";
+        }
+        else
+        {
+            $condition = "";
+        }
 
         $resultSet = $this->database->query ( "
             SELECT 
@@ -544,10 +569,7 @@ class EpcCourseUserListInfo
                 u.username IN (".implode(',',$usernameList).")
             WHERE
                 cu.code_cours = {$cid}
-            AND (
-                    cu.count_class_enrol < 1
-                OR 
-                    cu.isPending = 1 )
+            {$condition}
         " );
                 
         $resultSet->useId ( 'username' );
