@@ -1,7 +1,7 @@
 <form class="msform" action="<?php echo $this->actionUrl; ?>" method="post" id="epcQueryForm">
     <?php echo claro_form_relay_context (); ?>
     <input type="hidden" id="csrf_token" name="csrf_token" value="<?php echo $_SESSION[ 'csrf_token' ]; ?>" />
-    <input type="hidden" id="cmd" name="cmd" value="exImport" />
+    <input type="hidden" id="cmd" name="cmd" value="preview" />
     <fieldset id="epcStudentSearch">
         <legend>
             <?php echo get_lang ( 'Search for students in EPC' ); ?>
@@ -89,6 +89,28 @@ Sample program codes : BIRA21MS/G, BIR13BA' ); ?>
                     <?php echo $this->epcLinkExistingStudentsToClass == 'no' ? 'checked="checked"' : ''; ?>
                     value="no" /> 
                 <label for="epcLinkExistingStudentsToClass_No"><?php echo get_lang ( 'No' ); ?></label>
+            </dd>
+            <dt><?php echo get_lang ( 'Validate pending user enrollments' ); ?></dt>
+            <dd>
+                <em>
+                    <?php echo get_lang( 'Imported users already in your course but with a pending enrollment (i.e. not validated yet) will have their enrollment validated.' ); ?>
+                </em>
+            </dd>
+            <dt>&nbsp;</dt>
+            <dd>
+                <input 
+                    type="radio" name="epcValidatePendingUsers" id="epcValidatePendingUsers_Yes" 
+                    <?php echo $this->epcValidatePendingUsers == 'yes' ? 'checked="checked"' : ''; ?>
+                    value="yes" /> 
+                <label for="epcValidatePendingUsers_Yes"><?php echo get_lang ( 'Yes' ); ?></label> <em>(<?php echo get_lang('recommended'); ?>)</em>
+            </dd>
+            <dt>&nbsp;</dt>
+            <dd>
+                <input 
+                    type="radio" name="epcValidatePendingUsers" id="epcValidatePendingUsers_No"
+                    <?php echo $this->epcValidatePendingUsers == 'no' ? 'checked="checked"' : ''; ?>
+                    value="no" /> 
+                <label for="epcValidatePendingUsers_No"><?php echo get_lang ( 'No' ); ?></label>
             </dd>
         </dl>
     </fieldset>

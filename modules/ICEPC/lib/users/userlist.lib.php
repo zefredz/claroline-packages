@@ -136,7 +136,7 @@ class Claro_BatchCourseRegistration
         
         $courseUserIdListResultSet = $this->database->query( "
                 SELECT
-                    user_id, count_user_enrol, count_class_enrol
+                    user_id, count_user_enrol, count_class_enrol, isPending
                 FROM
                     `{$this->tableNames['rel_course_user']}`
                 WHERE
@@ -158,9 +158,10 @@ class Claro_BatchCourseRegistration
      * @param bool $classMode execute class registration instead of individual registration if set to true (default: false)
      * @param bool $forceClassRegistrationOfExistingClassUsers transform individual registration to class registration if set to true (default: false)
      * @param array $userListAlreadyInClass user already in class as an array of user_id => user
+     * @param bool $forceValidationOfPendingUsers pending user enrollments will be validated if set to true (default: false)
      * @return boolean
      */
-    public function addUserIdListToCourse( $userIdList, $classMode = false, $forceClassRegistrationOfExistingClassUsers = false, $userListAlreadyInClass = array() )
+    public function addUserIdListToCourse( $userIdList, $classMode = false, $forceClassRegistrationOfExistingClassUsers = false, $userListAlreadyInClass = array(), $forceValidationOfPendingUsers = false )
     {
         if ( ! count( $userIdList ) )
         {
@@ -192,11 +193,14 @@ class Claro_BatchCourseRegistration
                     $courseUser['count_class_enrol']++;
                 }
                 
+                $pending = $forceValidationOfPendingUsers ? '`isPending` = 0,' : '';
+                
                 // update user in DB
                 if ( !$this->database->exec("
                     UPDATE
                         `{$this->tableNames['rel_course_user']}`
                     SET
+                        {$pending}
                         `count_user_enrol` = " . $courseUser['count_user_enrol'] . ",
                         `count_class_enrol` = " . $courseUser['count_class_enrol'] . "
                     WHERE
@@ -205,7 +209,7 @@ class Claro_BatchCourseRegistration
                         code_cours = {$sqlCourseCode}"
                 ) )
                 {
-                    $this->failedUserList[$courseUser['user_id']];
+                    $this->failedUserList[$courseUser['user_id']] = $courseUser;
                 }
                 
                 $this->updateUserList[$courseUser['user_id']] = $courseUser;
@@ -237,7 +241,8 @@ class Claro_BatchCourseRegistration
                     $userNewRegistration = array(
                         'user_id' => $this->database->escape( $userId ),
                         'count_user_enrol' => 0,
-                        'count_class_enrol' => 1
+                        'count_class_enrol' => 1,
+                        'isPending' => 0
                     );
                 }
                 else
@@ -245,7 +250,8 @@ class Claro_BatchCourseRegistration
                     $userNewRegistration = array(
                         'user_id' => $this->database->escape( $userId ),
                         'count_user_enrol' => 1,
-                        'count_class_enrol' => 0
+                        'count_class_enrol' => 0,
+                        'isPending' => 0
                     );
                 }
 

@@ -48,7 +48,7 @@ try
 
     $userInput = Claro_UserInput::getInstance ();
 
-    $cmd = $userInput->get ( 'cmd', 'exImport' );
+    $cmd = $userInput->get ( 'cmd', 'preview' );
     $out = new Claro_StringBuffer;
     
     if ( $cmd == 'exImport' || $cmd = 'preview' )
@@ -57,6 +57,7 @@ try
         $epcAcadYear = $userInput->get ( 'epcAcadYear', epc_get_current_acad_year () );
         $epcSearchFor = $userInput->get ( 'epcSearchFor', 'course' );
         $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     elseif ( $cmd == 'exSync' )
     {
@@ -76,6 +77,7 @@ try
         $epcSearchFor = $className->getEpcClassType();
         $epcSearchString = $className->getEpcCourseOrProgramCode();
         $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     
     if ( $cmd == 'preview' )
@@ -99,7 +101,7 @@ try
         {
             $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
             $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
-            $courseUserListToUpdate = $epcLinkExistingStudentsToClass == 'yes' ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator () ) : array();
+            $courseUserListToUpdate = ($epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator () ) : array();
             
             $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
             $queryInfoTpl->assign( 'info', $users->getInfo() );
@@ -113,6 +115,7 @@ try
             $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
             $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
             $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+            $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
             $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
             $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
             
@@ -210,7 +213,7 @@ try
                     $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
                 }
                 
-                $courseUserList->addUserIdListToCourse( $claroClassUserList->getClassUserIdList (), true, $epcLinkExistingStudentsToClass == 'yes', $userAlreadyInClass );
+                $courseUserList->addUserIdListToCourse( $claroClassUserList->getClassUserIdList (), true, $epcLinkExistingStudentsToClass == 'yes', $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
             }
             
             // AFTER : new valid user list from EPC added to class and enrolled to course

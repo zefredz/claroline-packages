@@ -18,7 +18,7 @@
     <tbody>
     <?php if (count( $this->userListIterator ) ): ?>
     <?php foreach ( $this->userListIterator as $user ): ?>
-        <?php if ( ! ( isset( $this->courseUserList[$user->username] ) || isset( $this->courseUserToUpdateList[$user->username ] ) ) ): ?>
+        <?php if ( !isset( $this->courseUserList[$user->username] ) || isset( $this->courseUserToUpdateList[$user->username ] ) ): ?>
         <?php $lineAdded = true; ?>
         <tr>
             <td><?php echo $user->firstname; ?></td>
@@ -46,6 +46,7 @@
     <input type="hidden" id="epcAcadYear" name="epcAcadYear" value="<?php echo $this->epcAcadYear; ?>" />
     <input type="hidden" id="epcSearchFor" name="epcSearchFor" value="<?php echo $this->epcSearchFor; ?>" />
     <input type="hidden" id="epcLinkExistingStudentsToClass" name="epcLinkExistingStudentsToClass" value="<?php echo $this->epcLinkExistingStudentsToClass; ?>" />
+    <input type="hidden" id="epcValidatePendingUsers" name="epcValidatePendingUsers" value="<?php echo $this->epcValidatePendingUsers; ?>" />
     <?php if ( $lineAdded ): ?>
     <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Import' ); ?>" />
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">

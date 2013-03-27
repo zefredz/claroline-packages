@@ -8,7 +8,8 @@
                 epcSearchString: '<?php echo $this->epcSearchString; ?>',
                 epcAcadYear: '<?php echo $this->epcAcadYear; ?>',
                 epcSearchFor: '<?php echo $this->epcSearchFor; ?>',
-                epcLinkExistingStudentsToClass: '<?php echo $this->epcLinkExistingStudentsToClass; ?>'
+                epcLinkExistingStudentsToClass: '<?php echo $this->epcLinkExistingStudentsToClass; ?>',
+                epcValidatePendingUsers: '<?php echo $this->epcValidatePendingUsers; ?>'
             },
             function(resp){
             $('#epcAsyncQueryContainer').empty().html(resp);
