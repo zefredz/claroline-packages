@@ -127,7 +127,7 @@ $(function(){
         
         $toolTitle->setSubTitle(get_lang('List of student in class %className', array('%className' => $claroClass->getName ())));
         $toolTitle->addCommand( get_lang('Delete'), Url::Contextualize ( get_module_entry_url ( 'ICEPC' ) . '?cmd=exUnreg&classId='.$classId ), 'delete', array( 'class' => 'checkClassDeletion' ) );
-        $toolTitle->addCommand( get_lang('Update'), Url::Contextualize ( get_module_entry_url ( 'ICEPC' ) . '?cmd=exSync&classId='.$classId ), 'import' );
+        $toolTitle->addCommand( get_lang('Update'), Url::Contextualize ( get_module_entry_url ( 'ICEPC' ) . '?cmd=exSync&classId='.$classId ), 'import', array('class' => 'warnTakesTime' ) );
         
         $classUserList = new Claro_ClassUserList( $claroClass, Claroline::getDatabase() );
         $courseUserList = new Claro_CourseUserList( claro_get_current_course_id(), Claroline::getDatabase() );
