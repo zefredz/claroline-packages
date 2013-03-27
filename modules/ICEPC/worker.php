@@ -98,6 +98,8 @@ try
         if ( !empty ( $users ) )
         {
             $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
+            $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
+            $courseUserListToUpdate = $epcLinkExistingStudentsToClass == 'yes' ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator () ) : array();
             
             $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
             $userListTpl->assign( 'responseInfo', $users->getInfo () );
@@ -107,6 +109,8 @@ try
             $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
             $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
             $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+            $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
+            $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
             
             $out->appendContent( $userListTpl->render() );
         }

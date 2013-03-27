@@ -350,7 +350,7 @@ class EpcServiceStudentRecord
     {
         if ( $name == 'username' )
         {
-            return $this->xmlRecord->uidLDAP;
+            return (string) $this->xmlRecord->uidLDAP;
         }
         elseif ( $name == 'firstname' )
         {
@@ -370,11 +370,11 @@ class EpcServiceStudentRecord
         }
         elseif ( $name == 'noma' )
         {
-            return isset ( $this->xmlRecord->noma ) ? $this->xmlRecord->noma : null;
+            return isset ( $this->xmlRecord->noma ) ? (string) $this->xmlRecord->noma : null;
         }
         elseif ( $name == 'siglAnet' )
         {
-            return isset ( $this->xmlRecord->siglAnet ) ? $this->xmlRecord->siglAnet : null;
+            return isset ( $this->xmlRecord->siglAnet ) ? (string) $this->xmlRecord->siglAnet : null;
         }
         else
         {
@@ -499,5 +499,63 @@ class EpcStudentListService
     public function getRawResponse ()
     {
         return $this->epcQuery->getResponse ();
+    }
+}
+
+class EpcCourseUserListInfo
+{
+    private $database, $courseId;
+    
+    public function __construct ( $courseId, $database = null)
+    {
+        $this->course = $courseId;
+        $this->database = $database ? $database : Claroline::getDatabase();
+    }
+    
+    public function getUsernameListToUpdate( $userList )
+    {
+        $usernameList = array();
+        
+        foreach ( $userList as $user )
+        {
+            $usernameList[] = $this->database->quote( $user->username );
+        }
+        
+        $tbl_mdb_names = claro_sql_get_main_tbl ();
+        $tbl_user = $tbl_mdb_names[ 'user' ];
+        $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
+
+        $cid = $this->database->quote ( $this->courseId );
+
+        $resultSet = $this->database->query ( "
+            SELECT 
+                u.username, 
+                cu.user_id, 
+                cu.count_user_enrol, 
+                cu.count_class_enrol
+            FROM
+                `{$tbl_rel_course_user}` AS cu
+            JOIN
+                `{$tbl_user}` AS u
+            ON
+                cu.user_id = u.user_id
+            AND
+                u.username IN (".implode(',',$usernameList).")
+            WHERE
+                cu.code_cours = {$cid}
+            AND
+                cu.count_user_enrol < 1
+        " );
+
+        $resultSet->useId ( 'username' );
+        
+        $usernameListToUpdate = array();
+        
+        foreach ( $resultSet as $username => $userToUpdate )
+        {
+            $usernameListToUpdate[$username] = $userToUpdate;
+        }
+        
+        return $usernameListToUpdate;
     }
 }
