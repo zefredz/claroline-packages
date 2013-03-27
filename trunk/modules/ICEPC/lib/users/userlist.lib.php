@@ -666,7 +666,7 @@ class Claro_CourseUserList
         USE_KEY_USERNAME = 'username';
 
     protected $cid, $course, $database;
-    protected $courseUserList, $courseUserIdList;
+    protected $courseUserList, $courseUserIdList, $courseUsernameList;
     
     /**
      * 
@@ -774,6 +774,23 @@ class Claro_CourseUserList
         }
 
         return $this->courseUserIdList;
+    }
+    
+    public function getUsernameList( $forceRefresh = false )
+    {
+        if ( !is_array ( $this->courseUserList ) || $forceRefresh )
+        {
+            $resultSet = $this->getUserListIteratorUsingKey( self::USE_KEY_USERNAME );
+
+            $this->courseUsernameList = array ( );
+
+            foreach ( $resultSet as $username => $user )
+            {
+                $this->courseUsernameList[ $username ] = $user;
+            }
+        }
+
+        return $this->courseUsernameList;
     }
     
     public function is_userIdAlreadyInCourse( $userId )

@@ -1,23 +1,10 @@
-<p><?php echo get_lang('You are going to import the following students in your course continue ?'); ?></p>
-
-<form class="msform" action="<?php echo $this->actionUrl; ?>" method="post" id="epcQueryForm">
-    <?php echo claro_form_relay_context (); ?>
-    <input type="hidden" id="csrf_token" name="csrf_token" value="<?php echo $_SESSION[ 'csrf_token' ]; ?>" />
-    <input type="hidden" id="cmd" name="cmd" value="exImport" />
-    <input type="hidden" id="epcSearchString" name="epcSearchString" value="<?php echo $this->epcSearchString; ?>" />
-    <input type="hidden" id="epcAcadYear" name="epcAcadYear" value="<?php echo $this->epcAcadYear; ?>" />
-    <input type="hidden" id="epcSearchFor" name="epcSearchFor" value="<?php echo $this->epcSearchFor; ?>" />
-    <input type="hidden" id="epcLinkExistingStudentsToClass" name="epcLinkExistingStudentsToClass" value="<?php echo $this->epcLinkExistingStudentsToClass; ?>" />
-    <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Yes' ); ?>" />
-    <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'No' ); ?>" />
-    </a>
-</form>
-
 <pre>
 <?php var_dump( $this->responseInfo ); ?>
 </pre>
 
+<p><?php echo get_lang('You are going to import the following students in your course'); ?></p>
+
+<?php $lineAdded = false; ?>
 <table class="claroTable">
     <thead>
         <tr>
@@ -27,22 +14,48 @@
             <th><?php echo get_lang( 'NOMA'); ?></th>
             <th><?php echo get_lang( 'FGS'); ?></th>
             <th><?php echo get_lang( 'Year'); ?></th>
+            <th><?php echo get_lang( 'Import type'); ?>
         </tr>
     </thead>
     <tbody>
     <?php if (count( $this->userListIterator ) ): ?>
     <?php foreach ( $this->userListIterator as $user ): ?>
+        <?php if ( ! ( isset( $this->courseUserList[$user->username] ) || isset( $this->courseUserToUpdateList[$user->username ] ) ) ): ?>
+        <?php $lineAdded = true; ?>
         <tr>
             <td><?php echo $user->firstname; ?></td>
             <td><?php echo $user->lastname; ?></td>
             <td><?php echo $user->email; ?></td>
             <td><?php echo $user->noma; ?></td>
-            <td><?php echo $user->matriculeFgs; ?></td>
+            <td><?php echo $user->officialCode; ?></td>
             <td><?php echo $user->sigleAnet; ?></td>
+            <td><?php echo isset( $this->courseUserToUpdateList[ $user->username ] ) ? get_lang('Update') : get_lang('New'); ?></td>
         </tr>
+        <?php endif; ?>
     <?php endforeach; ?>
-    <?php else: ?>
+    <?php endif; ?>
+    <?php if ( ! $lineAdded ): ?>
         <tr><td colspan="5"><?php echo get_lang("No student to import"); ?></td></tr>
     <?php endif; ?>
     </tbody>
 </table>
+
+<form class="msform" action="<?php echo $this->actionUrl; ?>" method="post" id="epcQueryForm">
+    <?php echo claro_form_relay_context (); ?>
+    <input type="hidden" id="csrf_token" name="csrf_token" value="<?php echo $_SESSION[ 'csrf_token' ]; ?>" />
+    <input type="hidden" id="cmd" name="cmd" value="exImport" />
+    <input type="hidden" id="epcSearchString" name="epcSearchString" value="<?php echo $this->epcSearchString; ?>" />
+    <input type="hidden" id="epcAcadYear" name="epcAcadYear" value="<?php echo $this->epcAcadYear; ?>" />
+    <input type="hidden" id="epcSearchFor" name="epcSearchFor" value="<?php echo $this->epcSearchFor; ?>" />
+    <input type="hidden" id="epcLinkExistingStudentsToClass" name="epcLinkExistingStudentsToClass" value="<?php echo $this->epcLinkExistingStudentsToClass; ?>" />
+    <?php if ( $lineAdded ): ?>
+    <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Import' ); ?>" />
+    <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
+        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
+    </a>
+    <?php else: ?>
+    <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
+        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Back' ); ?>" />
+    </a>
+    <?php endif; ?>
+</form>
