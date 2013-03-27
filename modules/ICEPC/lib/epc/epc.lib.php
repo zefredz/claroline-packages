@@ -502,16 +502,31 @@ class EpcStudentListService
     }
 }
 
+/**
+ * Utility class to get info about user list in a course
+ */
 class EpcCourseUserListInfo
 {
     private $database, $courseId;
     
+    /**
+     * 
+     * @param string $courseId
+     * @param Database_Connection $database
+     */
     public function __construct ( $courseId, $database = null)
     {
         $this->courseId = $courseId;
         $this->database = $database ? $database : Claroline::getDatabase();
     }
     
+    /**
+     * Get the list of user to update
+     * @param EpcServiceStudentIterator $userList
+     * @param bool $askForClassRegistrationToForce retrieve user for which the class registration will be forced
+     * @param bool $askForPendingEnrollment retrieve user with pending enrolment to validate
+     * @return array username => user(username, user_id, count_user_enrol, count_class_enrol, isPending)
+     */
     public function getUsernameListToUpdate( $userList, $askForClassRegistrationToForce = true, $askForPendingEnrollment = true )
     {
         if ( !count( $userList ) )
