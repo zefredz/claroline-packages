@@ -97,6 +97,11 @@ try
             $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
         }
         
+        if ( $epcService->hasError () )
+        {
+            throw new Exception("Epc Service error : <pre>{$epcService->getInfo()}</pre>");
+        }
+        
         /* $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' ); */
 
         if ( count ( $users ) )
@@ -145,6 +150,11 @@ try
         else
         {
             $users = $epcService->getStudentsInProgram ( $epcAcadYear, $epcSearchString );
+        }
+        
+        if ( $epcService->hasError () )
+        {
+            throw new Exception("Epc Service error : <pre>{$epcService->getInfo()}</pre>");
         }
 
         if ( count( $users ) )
@@ -217,7 +227,11 @@ try
                     $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
                 }
                 
-                $courseUserList->addUserIdListToCourse( $claroClassUserList->getClassUserIdList (), true, $epcLinkExistingStudentsToClass == 'yes', $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
+                $courseUserList->addUserIdListToCourse( 
+                    $claroClassUserList->getClassUserIdList (), 
+                    true, 
+                    $epcLinkExistingStudentsToClass == 'yes', 
+                    $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
             }
             
             // AFTER : new valid user list from EPC added to class and enrolled to course
