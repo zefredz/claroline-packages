@@ -171,6 +171,11 @@ class EpcServiceQuery
     {
         return $this->info;
     }
+    
+    public function hasError()
+    {
+        return $this->info['http_code'] != '200';
+    }
 
 }
 
@@ -499,6 +504,11 @@ class EpcStudentListService
     public function getRawResponse ()
     {
         return $this->epcQuery->getResponse ();
+    }
+    
+    public function hasError()
+    {
+        return $this->epcQuery->hasError();
     }
 }
 
