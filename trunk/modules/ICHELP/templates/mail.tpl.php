@@ -50,7 +50,7 @@ Code cours concerné : <?php echo $this->userData[ 'courseId' ]; ?>
 
 
 <?php if( $this->autoMail ) : ?>
-UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UILISATEUR
+UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR
 
 <?php endif; ?>
 
