@@ -37,21 +37,31 @@ try
     include dirname(__FILE__) . '/locale.inc.php';
     
     $ticket = new TicketManager();
-    $userData = claro_get_current_user_data();
+    
     $view = null;
     $autoAnswer = null;
     
-    if( ! $userData )
+    $defaultUserData = array(
+        'userId' => null,
+        'firstName' => null,
+        'lastName' => null,
+        'mail' => null,
+        'username' => null,
+        'officialCode' => null,
+        'jsEnabled' => null,
+        'courseId' => null,
+        'UCLMember' => null,
+        'isManager' => null );
+    
+    $userData = claro_get_current_user_data();
+    
+    if( $userData )
     {
-        $userData = array(
-            'userId' => null,
-            'firstName' => null,
-            'lastName' => null,
-            'mail' => null,
-            'username' => null,
-            'officialCode' => null,
-            'jsEnabled' => null,
-            'courseId' => null );
+        $userData = array_merge( $defaultUserData , $userData );
+    }
+    else
+    {
+        $userData = $defaultUserData;
     }
     
     if ( $courseId )
@@ -119,6 +129,8 @@ try
                 if( $mailTpl )
                 {
                     $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
+                    $autoMail->assign( 'userData' , $userData );
+                    
                     
                     /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
                     $autoAnswer = $autoMail->render();

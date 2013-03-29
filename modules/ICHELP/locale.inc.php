@@ -14,58 +14,63 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 $checkList = array(
     'accountCreation' => array(
         'issueCategory' => 0,
-        'description' => 'Je ne me suis jamais connecté sur iCampus et je ne sais pas comment entrer',
+        'description' => 'Je ne me suis jamais connecté sur iCampus et j\'aimerais y avoir accès.',
         'mailTpl' => 'accountcreation' ),
     
     'firstAccessProblem' => array(
         'issueCategory' => 0,
         'description' => 'J\'ai activé mon compte global, pourtant je n\'arrive pas à entrer sur iCampus',
-        'mailTpl' => 'firstaccessproblem' ),
+        'mailTpl' => 'accessproblem' ),
     
     'accessProblem' => array(
         'issueCategory' => 1,
-        'description' => 'J\'ai déjà un compte sur iCampus, mais je n\'arrive plus à me connecter',
+        'description' => 'J\'ai déjà utilisé iCampus, mais je n\'arrive plus à m\' y connecter',
         'mailTpl' => 'accessproblem' ),
+    
+    'passwordLost' => array(
+        'issueCategory' => 1,
+        'description' => 'J\'ai perdu mon mot de passe',
+        'mailTpl' => 'passwordlost' ),
     
     'courseNotFound' => array(
         'issueCategory' => 1,
         'description' => 'Je n\'arrive pas à trouver le cours que je cherche',
-        'mailTpl' => '' ),
+        'mailTpl' => 'coursesearch' ),
     
     'courseDisappeared' => array(
         'issueCategory' => 1,
         'description' => 'Des cours ont disparu de ma liste de cours',
-        'mailTpl' => '' ),
+        'mailTpl' => 'coursesearch' ),
     
     'moreSpaceNeeded' => array(
         'issueCategory' => 2,
         'description' => 'Il n\'y a plus assez d\'espace pour les documents de mon cours',
-        'mailTpl' => '' ),
+        'mailTpl' => 'spacerequest' ),
     
     'creatorStatus' => array(
         'issueCategory' => 2,
         'description' => 'J\'aimerais créer un cours, mais je ne sais pas comment faire',
-        'mailTpl' => '' ),
+        'mailTpl' => 'coursecreate' ),
     
     'managerAdd' => array(
         'issueCategory' => 2,
         'description' => 'J\'aimerais ajouter un co-gestionnaire à mon cours',
-        'mailTpl' => '' ),
+        'mailTpl' => 'addmanager' ),
     
     'managerBecome' => array(
         'issueCategory' => 2,
         'description' => 'J\'aimerais devenir gestionnaire d\'un cours',
-        'mailTpl' => '' ),
+        'mailTpl' => 'managerBecome' ),
     
     'addExtUser' => array(
         'issueCategory' => 2,
         'description' => 'J\'aimerais inscrire à mon cours des utilisateurs extérieurs à l\'UCL',
-        'mailTpl' => '' ),
+        'mailTpl' => 'externaluser' ),
     
     'managerChange' => array(
         'issueCategory' => 2,
         'description' => 'Un cours doit changer de titulaire',
-        'mailTpl' => '' ),
+        'mailTpl' => 'managerchange' ),
     
     'bugReport' => array(
         'issueCategory' => 1,
