@@ -1,15 +1,15 @@
 Vous recherchez des cours en utilisant le formulaire qui s'affiche:
-    - sur la page d'accueil d'iCampus lorsque vous n'Ãªtes pas authentifiÃ©
-    - aprÃ¨s avoir cliquÃ© sur le lien "M'inscrire Ã  un cours" visible sur votre bureau, si vous Ãªtes connectÃ©
+    - sur la page d'accueil d'iCampus lorsque vous n'êtes pas authentifié
+    - après avoir cliqué sur le lien "M'inscrire à un cours" visible sur votre bureau, si vous êtes connecté
 
-Faites une recherche sur l'intitulÃ© du cours... ou mieux sur le code du cours.
+Faites une recherche sur l'intitulé du cours... ou mieux sur le code du cours.
 
-Si vous ne trouvez pas le cours que vous cherchez, sachez que certains cours possÃ¨dent encore leurs anciens codes, c'est Ã  dire sans la premiÃ¨re lettre dÃ©signant le site sur lequel ce cours est donnÃ© (L pour Louvain-La-Nauve et W pour WoluwÃ©).
+Si vous ne trouvez pas le cours que vous cherchez, sachez que certains cours possèdent encore leurs anciens codes, c'est à dire sans la première lettre désignant le site sur lequel ce cours est donné (L pour Louvain-La-Neuve et W pour Woluwé).
 Essayez donc de relancer votre recherche en omettant cette lettre (pas exemple: POLS1234 au lieu de LPOLS1234).
 
-Si vous ne le trouvez toujours pas, assurez-vous que ce cours existe bien sur icampus. En effet, la crÃ©ation de site de cours sur la plateforme est un initiative personnelle du titulaire, et certains ne dÃ©sirent pas utiliser iCampus.
+Si vous ne le trouvez toujours pas, assurez-vous que ce cours existe bien sur icampus. En effet, la création de site de cours sur la plateforme est un initiative personnelle du titulaire, et certains ne désirent pas utiliser iCampus.
 
-Certains cours, peuvent Ã©galement Ãªtre rendus temporairement invisibles par son gestionnaire, lorsque ce dernier dÃ©sire que ses Ã©tudiants s'y inscrivent Ã  une pÃ©riode bien prÃ©cise.
+Certains cours, peuvent également être rendus temporairement invisibles par son gestionnaire, lorsque ce dernier désire que ses étudiants s'y inscrivent à une période bien précise.
 
 Pour plus d'infos:
 http://blogs.uclouvain.be/aideicampus/manuel-etudiant/mon-espace-icampus/gerer-mes-cours/#minscrire-a-un-cours

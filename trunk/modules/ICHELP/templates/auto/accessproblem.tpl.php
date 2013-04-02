@@ -1,22 +1,22 @@
-Effectuez les vÃ©rifications suivantes:
+Effectuez les vérifications suivantes:
 
 <?php if( $this->userData[ 'UCLMember' ] ) : ?>
-Parvenez-vous Ã  vous authentifier sur le portail de l'UCL ( Ã  cette adresse : http://www.uclouvain.be ) ?
-    Dans le cas contraire, le problÃ¨me provient sans doute de votre compte global.
+Parvenez-vous à vous authentifier sur le portail de l'UCL ( à cette adresse : http://www.uclouvain.be ) ?
+    Dans le cas contraire, le problème provient sans doute de votre compte global.
     Contactez alors le service-desk de l'UCL:
         mail: service-desk@uclouvain.be
-        tÃ©l:  010 / 47 82 82
+        tél:  010 / 47 82 82
         web:  http://www.uclouvain.be/8282
 <?php endif; ?>
 
-VÃ©rifiez bien que vous respectez scrupuleusement la casse en tapant votre mot de passe.
-En effet, le systÃ¨me fait la diffÃ©rence entre les majuscules et les minuscules.
+Vérifiez bien que vous respectez scrupuleusement la casse en tapant votre mot de passe.
+En effet, le système fait la différence entre les majuscules et les minuscules.
 
-Si vous avez activÃ© l'autocomplÃ©tion des mots de passe au sein de votre navigateur, dÃ©sactivez-la.
-Il se peut que ce dernier complÃ¨te le champ avec des donnÃ©es erronÃ©es...
+Si vous avez activé l'autocomplétion des mots de passe au sein de votre navigateur, désactivez-la.
+Il se peut que ce dernier complète le champ avec des données erronées...
 
 <?php if( $this->userData[ 'issueType' ] == 'firstAccessProblem' || $this->userData[ 'UCLMember' ] ) : ?>
-Enfin, si vous pensez avoir oubliÃ© votre mot de passe, vous pouvez le rÃ©initialiser Ã  cette adresse : http://www.uclouvain.be/4040
+Enfin, si vous pensez avoir oublié votre mot de passe, vous pouvez le réinitialiser à cette adresse : http://www.uclouvain.be/4040
 <?php else : ?>
-Enfin, si vous pensez avoir oubliÃ© votre mot de passe, vous pouvez le rÃ©cupÃ©rer en entrant l'adresse mail auquel votre compte est associÃ© Ã  cette adresse: <a href="http://icampus.uclouvain.be/module/ICPASSWD/" >http://icampus.uclouvain.be/module/ICPASSWD/</a>
+Enfin, si vous pensez avoir oublié votre mot de passe, vous pouvez le récupérer en entrant l'adresse mail auquel votre compte est associé à cette adresse: <a href="http://icampus.uclouvain.be/module/ICPASSWD/" >http://icampus.uclouvain.be/module/ICPASSWD/</a>
 <?php endif; ?>

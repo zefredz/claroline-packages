@@ -1,19 +1,19 @@
-Si vous souhaitez quâ€™un utilisateur (Ã©tudiant ou enseignant) qui nâ€™a pas de compte UCL ait accÃ¨s Ã  votre espace cours dans iCampus, il faut demander aux administrateurs dâ€™iCampus de lui crÃ©er un compte iCampus extÃ©rieur. Cette demande devra Ãªtre motivÃ©e par une demande Ã©crite dâ€™un enseignant UCL.
+Si vous souhaitez qu'un utilisateur (étudiant ou enseignant) qui ne possède pas de compte UCL ait accès à votre espace cours dans iCampus, contactez administrateurs d'iCampus. Cette demande devra être motivée par une demande écrite d'un enseignant UCL.
 
-La personne devra fournir son nom, son prÃ©nom, une adresse email, le nom de lâ€™institution auquel il appartient, sa date de naissance, un numÃ©ro de tÃ©lÃ©phone, son annÃ©e dâ€™Ã©tude.
+La personne devra fournir son nom, son prénom, une adresse email, le nom de l'institution auquel elle appartient, sa date de naissance, un numéro de téléphone, son année d'étude.
 
-Si vous souhaitez quâ€™un groupe de plusieurs utilisateurs â€œextÃ©rieursâ€ obtiennent un compte sur iCampus, faites nous parvenir un fichier de type EXCEL, contenant, dans des colonnes distinctes:
+Si vous souhaitez qu'un groupe de plusieurs utilisateurs "extérieurs" obtienne un compte sur iCampus, faites nous parvenir un fichier de type EXCEL, contenant, dans des colonnes distinctes:
 
     nom,
-    prÃ©nom,
-    adresse email officielle (Ã©viter les adresses gmail, hotmail et autres autant que possible),
+    prénom,
+    adresse email officielle (éviter les adresses gmail, hotmail et autres autant que possible),
     date de naissance,
     institution,
-    annÃ©e dâ€™Ã©tude,
-    (numÃ©ro de tÃ©lÃ©phone),
-    (numÃ©ro matricule).
+    année d?étude,
+    (numéro de téléphone),
+    (numéro matricule).
 
-Pour votre facilitÃ©, nous vous fournissons un modÃ¨le de fichier Ã  complÃ©ter Ã  cette adresse :
+Pour votre facilité, nous vous fournissons un modèle de fichier à compléter à cette adresse :
 http://blogs.uclouvain.be/aideicampus/manuel-enseignant/administrer-mes-espaces-de-cours/files/2010/10/listetype1.xls
 
 
