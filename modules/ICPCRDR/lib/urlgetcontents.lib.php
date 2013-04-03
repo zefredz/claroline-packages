@@ -17,14 +17,15 @@ function url_get_first_bytes( $url, $length )
         throw new Exception("Invalid length given (must be positive int)");
     }
     
-    if( ! @file( $url ) )
-    {
-        throw new Exception( 'Bad URL' );
-    }
-    
     if ( ini_get( 'allow_url_fopen' ) )
     {
-        $fc = fopen( $url , 'r' );
+        $fc = @fopen( $url , 'r' );
+        
+        if( ! $fc )
+        {
+            return false;
+        }
+        
         $contents = fread($fc, $length);
         fclose($fc);
         
