@@ -16,54 +16,56 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
     public function __construct( $label )
     {
         parent::__construct( $label );
-        
+
         $this->name = 'My learnPath tracking';
         $this->label = 'LPUTRACK_Portlet';
     }
-    
+
     public function renderContent()
     {
         $output = '';
         $currentUserInfo = TrackingUtils::getUserFromUserId( claro_get_current_user_id() );
         $userCourseList = TrackingUtils::getAllCourseFromUser( claro_get_current_user_id() );
-        
+
         $trackingData = TrackingData::getInstance();
         $trackingData->addUser( $currentUserInfo['user_id'] );
-        
+
         $courseList = array();
-        
+
         foreach( $userCourseList as $course )
         {
             $trackingData->addCourse( $course['code'] );
             $courseList[ $course['code'] ] = $course['intitule'];
         }
-        
+
         $trackingData->generateData();
         $trackingUser = new TrackingUser( $currentUserInfo['user_id'],
                                           $currentUserInfo['prenom'],
                                           $currentUserInfo['nom']);
         $trackingUser->generateTrackingCourseList( array_keys( $courseList ) );
         $trackingUser->generateCourseTrackingList( 1 );
-        
+
         $output .= '<div class="portlet collapsible collapsed">'
                  . '<a href="#" class="doCollapse">' . get_lang( 'Show/Hide' ) . '</a>'
                  . '<div class="content collapsible-wrapper">'
                  . '<table class="claroTable" width="100%" border="0" cellspacing="2">'
                  . '<thead>'
                  . '<tr align="center" valign="top">'
-                 . '<th>' . get_lang( 'Course' ) . '</th>'
+                 . '<th colspan=2>' . get_lang( 'Course' ) . '</th>'
                  . '<th colspan="2">' . get_lang( 'Progress' ) . '</th>'
                  . '<th>' . get_lang( 'Spent time' ) . '</th>'
                  . '<th>' . get_lang( 'Last connection' ) . '</th>'
                  . '</tr>'
                  . '</thead>'
                  . '<tbody>';
-        
+
+        $totalTime = '00:00:00';
+
         foreach( $courseList as $courseCode => $courseIntitule )
         {
             $trackingCourse = $trackingUser->getTrackingCourse( $courseCode );
             $courseGeneralEntry = $trackingCourse->getGeneralTracking();
-            
+
             if( is_null( $courseGeneralEntry ) )
             {
                 $progress = 0;
@@ -75,11 +77,13 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
                 $progress = $courseGeneralEntry->getProgress();
                 $date = claro_html_localised_date( get_locale( 'dateFormatLong' ), strtotime( $courseGeneralEntry->getDate() ) );
                 $spentTime = $courseGeneralEntry->getTime();
+                $totalTime = TrackingUtils::addTime( $totalTime, $spentTime);
             }
             $courseTrackingUrl = Url::Contextualize( get_module_url( 'LPUTRACK' ) . '/currentuser.php' );
-            
+
             $output .= '<tr align="center" valign="top">'
-                     . '<td>'
+                     . '<td><img src="'. get_icon_url( 'course' ) . '" alt=""/></td>'
+                     . '<td align="left">'
                      . '<a href="' . $courseTrackingUrl
                                    . '?userId=' . $trackingUser->getUserId()
                                    . '&courseCode=' . $courseCode
@@ -94,15 +98,27 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
                      . '<td nowrap>' . $date . '</td>'
                      . '</tr>';
         }
-        
+
+        $output .= '<tr>'
+                 . '<th colspan=2>&nbsp;</th>'
+                 . '<th colspan=2>&nbsp;</th>'
+                 . '<th>&nbsp;</th>'
+                 . '<th>&nbsp;</th>'
+                 . '</tr>'
+                 . '<tr align="center" valign="top">'
+                 . '<td colspan=2><strong>' . get_lang( 'Total' ) . '</strong></td>'
+                 . '<td colspan=2><strong>-</strong></td>'
+                 . '<td><strong>' . $totalTime . '</strong></td>'
+                 . '<td><strong>-</strong></td>'
+                 . '</tr>';
         $output .= '</tbody>'
                  . '</table>'
                  . '</div>'
                  . '</div>';
-        
+
         return $output;
     }
-    
+
     public function renderTitle()
     {
         return get_lang( 'My learnPath tracking' );
