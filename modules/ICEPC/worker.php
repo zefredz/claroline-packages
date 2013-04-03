@@ -143,6 +143,8 @@ try
             get_conf ( 'epcServicePassword' )
         );
         
+        Console::debug("EPC service started");
+        
         if ( 'course' == $epcSearchFor )
         {
             $users = $epcService->getStudentsInCourse ( $epcAcadYear, $epcSearchString );
@@ -159,16 +161,22 @@ try
 
         if ( count( $users ) )
         {
-            $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
-
-            $out->appendContent ( '<pre>' . var_export ( $users->getInfo (), true ) . '</pre>' );
+            $qrTpl = new ModuleTemplate( 'ICEPC', 'epc_queryresult.tpl.php' );
+            
+            $qrTpl->assign( 'type', $epcSearchFor );
+            
+            $qrTpl->assign ( 'serviceInfo', $epcService->getInfo () );
+            $qrTpl->assign ( 'info', $users->getInfo () );
 
             $platformUserList = new Claro_PlatformUserList();
             $platformUserList->registerUserList( $users->getIterator(), 'ldap', true );
             
-            $out->appendContent ( '<pre>Number of valid users : ' . count ( $platformUserList->getValidUserIdList ()) . '</pre>' );
-            $out->appendContent ( '<pre>Number inserted : ' . count ( $platformUserList->getInsertedUserIdList ()) . '</pre>' );
-            $out->appendContent ( '<pre>Failed insertions : ' . var_export ( $platformUserList->getFailedUserInsertionList (), true ) . '</pre>' );
+            $qrTpl->assign ( 'validUsersCnt', count ( $platformUserList->getValidUserIdList () ) );
+            Console::debug("<pre>Valid users : ".var_export($platformUserList->getValidUserIdList(),true)."</pre>", 'debug');
+            $qrTpl->assign ( 'newUsersCnt', count ( $platformUserList->getInsertedUserIdList () ) );
+            Console::debug("<pre>Users added to platform : ".var_export($platformUserList->getInsertedUserIdList(),true)."</pre>", 'debug');
+            $qrTpl->assign ( 'failuresCnt', count ( $platformUserList->getFailedUserInsertionList () ) );
+            Console::debug("<pre>Failed users : ".var_export($platformUserList->getFailedUserInsertionList(),true)."</pre>", 'debug');
             
             $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
             $epcClass = new EpcClass($epcClassName);
@@ -177,8 +185,9 @@ try
             
             if ( !$epcClass->associatedClassExists() )
             {
-                $out->appendContent ( '<pre>Create associated class for ' . $epcClass->getName() . '</pre>' );
                 $epcClass->createAssociatedClass();
+                
+                Console::debug("<pre>Associated class {$epcClass->getName()} created</pre>", 'debug');
                 
                 $claroClass = $epcClass->getAssociatedClass();
                 
@@ -196,7 +205,9 @@ try
             
             // AFTER : class registered in course with previous user list enroled in course
             
-            $out->appendContent ( '<pre>Associated class : ' . var_export ( $claroClass, true ) . '</pre>' );
+            Console::debug("<pre>Associated class {$claroClass->getName()} loaded</pre>",'debug');
+            
+            $qrTpl->assign ( 'className', $claroClass->getName () );
             
             // BEFORE : class registered in course with previous user list enroled in course
             
@@ -205,12 +216,13 @@ try
             $claroClassUserList = new Claro_ClassUserList( $claroClass );
             $claroClassUserList->addUserIdList( $platformUserList->getValidUserIdList () );
             
-            $out->appendContent ( '<pre>Valid users added to class</pre>' );
+            Console::debug("<pre>Add user list to class {$claroClass->getName()}</pre>", 'debug');
+            
             
             if ( ! $claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
             {
                 $claroClass->registerToCourse( claro_get_current_course_id () );
-                $out->appendContent ( '<pre>Class registrered to current course</pre>' );
+                Console::debug("<pre>Register class {$claroClass->getName()} to current course</pre>", 'debug');
             }
             
             $courseList = $claroClass->getClassCourseList();
@@ -219,7 +231,9 @@ try
             {
                 $courseObj = new Claro_Course( $course['code'] );
                 $courseObj->load();
-                $out->appendContent ( '<pre>Register class users in course '.$course['code'].'</pre>' );
+                
+                Console::debug( '<pre>Register class users in course '.$course['code'].'</pre>', 'debug' );
+                
                 $courseUserList = new Claro_BatchCourseRegistration($courseObj);
                 
                 if ( $claroClass->isRegisteredToCourse ( $courseObj->courseId ) )
@@ -234,7 +248,13 @@ try
                     $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
             }
             
+            $qrTpl->assign ( 'courseList', $courseList );
+            
             // AFTER : new valid user list from EPC added to class and enrolled to course
+            
+            $out->appendContent( $qrTpl->render() );
+            
+            Console::debug("EPC service ended");
         }
         else
         {

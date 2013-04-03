@@ -315,11 +315,18 @@ class Claro_Class
     
         return $this->database->query("
             SELECT
-                courseId as code
+                cc.courseId AS code,
+                c.administrativeNumber,
+                c.intitule AS title,
+                c.titulaires AS titulars
             FROM 
-                `{$tbl['rel_course_class']}`
+                `{$tbl['rel_course_class']}` AS `cc`
+            JOIN
+                `{$tbl['course']}` AS `c`
+            ON
+                `c`.`code` = `cc`.`courseId`
             WHERE
-                classId = ".$this->database->escape($this->id)."
+                cc.classId = ".$this->database->escape($this->id)."
         ");
     }
     
