@@ -33,5 +33,6 @@
     $_lang['xls export'] = 'Exporter en xls';
     $_lang['My learnPath tracking'] = 'My learnPath tracking';
     $_lang['View type'] = 'View type';
+	$_lang['Total'] = 'Total';
 
 ?>
