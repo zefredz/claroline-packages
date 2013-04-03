@@ -18,9 +18,13 @@
     <?php endforeach; ?>
 </dl>
 <?php if ( claro_debug_mode () ): ?>
-<h3><?php echo get_lang('EPC service response'); ?></h3>
+<div class="collapsible collapsed">
+<h3><a href="#" class="doCollapse"><?php echo get_lang('EPC service response'); ?> [+]</a></h3>
+<div class="collapsible-wrapper">
 <pre>
 <?php echo var_export($this->serviceInfo,true); ?>
 </pre>
+</div>
+</div>
 <?php endif; ?>
 

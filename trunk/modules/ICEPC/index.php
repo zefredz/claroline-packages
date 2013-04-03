@@ -70,6 +70,12 @@ $(function(){
 });
 </script>');
     
+    Claroline::getDisplay()->body->appendContent('<script type="text/javascript">
+$(document).ajaxComplete( function() {
+    registerCollapseBehavior();
+});
+</script>');
+    
     $breadcrumbs = ClaroBreadCrumbs::getInstance();
     $breadcrumbs->setCurrent( get_lang('EPC'), php_self () );
     
