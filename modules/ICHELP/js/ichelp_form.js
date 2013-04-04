@@ -1,31 +1,31 @@
 $(document).ready(function(){
     if( $('#isManager').attr('checked') )
     {
-        $(".issueType2").show();
+        $(".issueType3").show();
     }
     else
     {
-        $(".issueType2").hide();
+        $(".issueType3").hide();
     }
     $("#isManager").click(function(){
-        $(".issueType2").show();
+        $(".issueType3").show();
     });
     $("#notManager").click(function(){
-        $(".issueType2").hide();
+        $(".issueType3").hide();
     });
     
     if( $('#isMember').attr('checked') )
     {
-        $(".issueType0").show();
+        $(".issueType1").show();
     }
     else
     {
-        $(".issueType0").hide();
+        $(".issueType1").hide();
     }
     $("#isMember").click(function(){
-        $(".issueType0").show();
+        $(".issueType1").show();
     });
     $("#notMember").click(function(){
-        $(".issueType0").hide();
+        $(".issueType1").hide();
     });
 });
