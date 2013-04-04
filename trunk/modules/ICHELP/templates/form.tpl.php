@@ -70,7 +70,7 @@
             <dt><strong><?php echo get_lang( 'Your issue is related to' ) . ' :'; ?></strong><span class="required">*</span>&nbsp;</dt>
             <dd><ul style="list-style-type: none;">
             <?php foreach( $this->checkList as $index => $check ) : ?>
-                <?php if( (int)$check[ 'issueCategory' ] != 0 || ! $this->userData[ 'userId' ] ) : ?>
+                <?php if( (int)$check[ 'issueCategory' ] > 1 || ! $this->userData[ 'userId' ] ) : ?>
                 <li class="issueType<?php echo $check[ 'issueCategory' ]; ?>">
                     <input type="radio"
                            name="data[issueType]"
