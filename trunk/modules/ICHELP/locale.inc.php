@@ -11,6 +11,13 @@
 
 if ( count( get_included_files() ) == 1 ) die( '---' );
 
+/* utilisateur concernés par les différentes "issueCategories":
+  0 = utilisateurs non authentifiés
+  1 = utilisateurs non authentifiés qui se déclarent membres de l'UCL
+  2 = utilisateurs authentifiés
+  3 = utilisateurs (authentifiés ou non) qui se déclarent gestionnaire d'un cours
+  4 = tous les utilisateurs
+  */
 $checkList = array(
     'accountCreation' => array(
         'issueCategory' => 1,
