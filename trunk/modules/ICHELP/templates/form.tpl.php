@@ -9,6 +9,9 @@
                name="data[jsEnabled]"
                value="0" />
     </noscript>
+    <input type="hidden"
+           name="data[urlOrigin]"
+           value="<?php echo $this->ticket->get( 'urlOrigin' ); ?>" />
     <fieldset>
         <legend><?php echo get_lang( 'Personnal infos' ); ?> :</legend>
         <dl>
@@ -97,7 +100,7 @@
     
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
-       href="<?php echo claro_htmlspecialchars( $this->ticket->get( 'httpReferer' ) ); ?>">
+       href="<?php echo claro_htmlspecialchars( $this->ticket->get( 'urlOrigin' ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
 </form>
