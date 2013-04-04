@@ -60,7 +60,7 @@ $checkList = array(
     'managerBecome' => array(
         'issueCategory' => 2,
         'description' => 'J\'aimerais devenir gestionnaire d\'un cours',
-        'mailTpl' => 'managerBecome' ),
+        'mailTpl' => 'managerbecome' ),
     
     'addExtUser' => array(
         'issueCategory' => 2,

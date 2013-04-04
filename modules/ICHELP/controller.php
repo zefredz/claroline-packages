@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.5 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.6 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -38,6 +38,9 @@ try
     
     $ticket = new TicketManager();
     
+    $userInput = Claro_UserInput::getInstance();
+    $formData = $userInput->get( 'data' );
+    
     $view = null;
     $autoAnswer = null;
     
@@ -51,7 +54,8 @@ try
         'jsEnabled' => null,
         'courseId' => null,
         'UCLMember' => null,
-        'isManager' => null );
+        'isManager' => null,
+        'urlOrigin' => null );
     
     $userData = claro_get_current_user_data();
     
@@ -69,15 +73,15 @@ try
         $userData[ 'courseId' ] = $courseId;
     }
     
-    $userInput = Claro_UserInput::getInstance();
-    $formData = $userInput->get( 'data' );
-    
     if( $formData )
     {
         $error = false;
         $userData = array_merge( $userData , $formData );
         
-        if( empty( $userData[ 'lastName' ] ) || empty( $userData[ 'firstName' ] ) || empty( $userData[ 'mail' ] ) )
+        if(   empty( $userData[ 'lastName' ] )
+           || empty( $userData[ 'firstName' ] )
+           || empty( $userData[ 'mail' ] )
+           || empty( $userData[ 'issueType' ] ) )
         {
             $error = get_lang( 'Required information missing' );
         }
@@ -122,7 +126,7 @@ try
             }
             // <=== REDIRECTION VERS LE SERVICE DESK
             
-            if( claro_mail( $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
+            if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {
                 $ticket->set( 'mailSent' , 1 );
                 
@@ -144,6 +148,7 @@ try
                 
                 $ticket->set( 'userInfos' , json_encode( $userData ) );
                 $ticket->save();
+                $ticket->flush();
             }
             else
             {
@@ -154,7 +159,7 @@ try
         if( ! $error )
         {
             $view = new ModuleTemplate( 'ICHELP' , 'ok.tpl.php' );
-            $view->assign( 'backUrl' , $ticket->get( 'httpReferer' ) );
+            $view->assign( 'backUrl' , $ticket->get( 'urlOrigin' ) );
             
             $dialogBox->success( get_lang( 'Your request has been succesfully sent' ) );
         }
@@ -172,6 +177,12 @@ try
     }
     else
     {
+        $encodedFrom = $userInput->get( 'from' );
+        $urlOrigin = $encodedFrom
+            ? base64_decode( $encodedFrom )
+            : get_path( 'rootWeb' );
+        $ticket->set( 'urlOrigin' , $urlOrigin );
+        
         $dialogBox->info( '<span style="color: green; font-weight: bold;">' . get_lang( 'welcome_message' ) . '</span>' );
     }
     
@@ -186,17 +197,12 @@ try
     $cmdList[] = array(
         'img'  => 'back',
         'name' => get_lang( 'back' ),
-        'url'  => claro_htmlspecialchars( $ticket->get( 'httpReferer' ) ) );
+        'url'  => claro_htmlspecialchars( $ticket->get( 'urlOrigin' ) ) );
     
     Claroline::getInstance()->display->body->appendContent(
         claro_html_tool_title( $pageTitle , null , $cmdList ) .
         $dialogBox->render() .
         $view->render() );
-    
-    if( $ticket->get( 'mailSent' ) )
-    {
-        $ticket->flush();
-    }
 }
 catch( Exception $e )
 {

@@ -15,7 +15,7 @@ En effet, le système considère les majuscules et les minuscules comme des caract
 Si vous avez activé l'autocomplétion des mots de passe au sein de votre navigateur, désactivez-la.
 Il se peut que ce dernier complète le champ avec des données erronées...
 
-<?php if( $this->userData[ 'issueType' ] == 'firstAccessProblem' || $this->userData[ 'UCLMember' ] ) : ?>
+<?php if( $this->userData[ 'UCLMember' ] ) : ?>
 Enfin, si vous pensez avoir oublié votre mot de passe, vous pouvez le réinitialiser à cette adresse : http://www.uclouvain.be/4040
 <?php else : ?>
 Enfin, si vous pensez avoir oublié votre mot de passe, vous pouvez le récupérer en entrant l'adresse mail auquel votre compte est associé à cette adresse: <a href="http://icampus.uclouvain.be/module/ICPASSWD/" >http://icampus.uclouvain.be/module/ICPASSWD/</a>

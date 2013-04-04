@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.5 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.6 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -27,19 +27,19 @@ class TicketManager
         {
             $this->data[ 'submissionDate' ] = date( 'Y-m-d H:i:s' );
             $this->data[ 'userAgent' ] = $_SERVER['HTTP_USER_AGENT'];
-            $this->data[ 'httpReferer' ] = $_SERVER['HTTP_REFERER'];
+            //$this->data[ 'httpReferer' ] = $_SERVER['HTTP_REFERER'];
             //$this->data[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
             $this->data[ 'mailSent' ] = 0;
             
             $this->data[ 'ticketId' ] = md5(
                 $this->data[ 'userAgent' ] .
-                $this->data[ 'httpReferer' ] .
+                //$this->data[ 'httpReferer' ] .
                 $this->data[ 'submissionDate' ] .
                 rand() ) .
                 '-' .
                 substr( md5( rand() ) , substr( $this->data[ 'submissionDate' ] , 11 , 2 ) , 8 );
             
-            $_SESSION[ 'ICHELP_data' ] = $this->data;
+            $this->update();
         }
     }
     
@@ -80,10 +80,16 @@ class TicketManager
     public function set( $name , $value )
     {
         $this->data[ $name ] = $value;
+        $this->update();
     }
     
     public function getData()
     {
         return $this->data;
+    }
+    
+    private function update()
+    {
+        $_SESSION[ 'ICHELP_data' ] = $this->data;
     }
 }

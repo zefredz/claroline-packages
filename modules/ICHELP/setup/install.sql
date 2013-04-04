@@ -2,7 +2,7 @@
  * $Id$
  * Online Help Form
  *
- * @version     ICHELP 0.4 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.6 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__ichelp_log`(
     courseId VARCHAR(64),
     submissionDate DATETIME,
     userAgent TEXT,
-    httpReferer TEXT,
+    urlOrigin TEXT,
     userInfos TEXT,
     issueDescription TEXT,
     mailSent BOOLEAN NOT NULL DEFAULT FALSE,
