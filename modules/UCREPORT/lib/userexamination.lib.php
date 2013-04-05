@@ -25,7 +25,7 @@ class UserExamination
      */
     public function __construct( $userId )
     {
-        $this->userId = $userId;
+        $this->userId = (int)$userId;
         
         $this->tbl = get_module_course_tbl( array( 'examination_session' , 'examination_score' ) );
     }

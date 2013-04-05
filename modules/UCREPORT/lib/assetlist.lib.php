@@ -71,7 +71,7 @@ class AssetList
         return Claroline::getDatabase()->exec( "
             UPDATE `{$this->tableName}`
             SET confidentiality = " . Claroline::getDatabase()->quote( $confidentiality ) . "
-            WHERE id = " . Claroline::getDatabase()->escape( $assetId ) );
+            WHERE id = " . Claroline::getDatabase()->escape( (int)$assetId ) );
     }
     
     /**
