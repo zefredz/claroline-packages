@@ -9,7 +9,7 @@ Si vous souhaitez qu'un groupe de plusieurs utilisateurs "extérieurs" obtienne u
     adresse email officielle (éviter les adresses gmail, hotmail et autres autant que possible),
     date de naissance,
     institution,
-    année d?étude,
+    année d'étude,
     (numéro de téléphone),
     (numéro matricule).
 

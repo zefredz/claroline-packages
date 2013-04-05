@@ -57,4 +57,4 @@ UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR
 DESCRIPTION DU PROBLEME :
 -------------------------
 
-<?php echo $this->userData[ 'message' ]; ?>
+<?php echo $this->userData[ 'issueDescription' ]; ?>
