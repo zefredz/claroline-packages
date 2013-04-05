@@ -93,7 +93,7 @@
                 <textarea   type="text"
                             rows="20"
                             cols="120"
-                            name="data[message]"></textarea>
+                            name="data[issueDescription]"></textarea>
             </dd>
         </dl>
     </fieldset>

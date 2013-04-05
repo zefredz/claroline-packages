@@ -46,7 +46,7 @@ class TicketManager
     public function save()
     {
         $sql1 = implode( ',' , array_keys( $this->data ) );
-        $sql2 = implode( "','" , $this->data);
+        $sql2 = implode( "','" , $this->data );
         $sql = "( " . $sql1 ." )\nVALUES ( '" . $sql2 . "' )";
         
         if( Claroline::getDatabase()->exec( "

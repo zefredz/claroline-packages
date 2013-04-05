@@ -1,7 +1,7 @@
 <module>
   <label>ICHELP</label>
   <name>Online Help Form</name>
-  <version>0.6</version> 
+  <version>0.7</version> 
   <license>GPL</license>
   <type>applet</type>
   <icon>icon.png</icon>

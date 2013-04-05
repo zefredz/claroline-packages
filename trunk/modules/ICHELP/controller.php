@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.6 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.7 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -55,7 +55,8 @@ try
         'courseId' => null,
         'UCLMember' => null,
         'isManager' => null,
-        'urlOrigin' => null );
+        'urlOrigin' => null,
+        'issueDescription' => null );
     
     $userData = claro_get_current_user_data();
     
@@ -91,6 +92,8 @@ try
         }
         else
         {
+            $ticket->set( 'issueDescription' , $userData[ 'issueDescription' ] );
+            
             $userData[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
             
             $mailFrom = $userData[ 'mail' ];
