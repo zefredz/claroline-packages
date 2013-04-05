@@ -92,6 +92,7 @@ try
         }
         else
         {
+            $userData[ 'issueDescription' ] = str_replace( "'" , "&acute;" , $userData[ 'issueDescription' ] );
             $ticket->set( 'issueDescription' , $userData[ 'issueDescription' ] );
             
             $userData[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );

@@ -32,7 +32,7 @@ Membre de l'UCL? : <?php echo ( ! array_key_exists( 'UCLMember' , $this->userDat
 Gestionnnaire de cours? : <?php echo $this->userData[ 'courseManager' ] ? 'Oui' : 'Non'; ?>
 
 
-Page d'origine de la demande : <?php echo $this->ticket->get( 'httpReferer' ); ?>
+Page d'origine de la demande : <?php echo $this->ticket->get( 'urlOrigin' ); ?>
 
 
 Infos système (OS, navigateur) : <?php echo $this->ticket->get( 'userAgent' ); ?>
@@ -57,4 +57,4 @@ UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR
 DESCRIPTION DU PROBLEME :
 -------------------------
 
-<?php echo $this->userData[ 'issueDescription' ]; ?>
+<?php echo str_replace( '&acute;' , "'" , $this->userData[ 'issueDescription' ] ); ?>
