@@ -11,6 +11,7 @@ $_lang['UCL member'] = 'Etes-vous membre de l\'UCL';
 $_lang['Your issue is related to'] = 'Votre problème concerne';
 $_lang['Describe your problem'] = 'Décrivez votre problème';
 $_lang['Your request has been succesfully sent'] = 'Votre demande a été envoyée au help desk';
+//$_lang['Alumni'] = 'Ancien(ne) étudiant(e) (alumni)';
 
 $_lang['Unknown issue'] = 'Problème non identifié';
 $_lang['Invalid mail'] = 'L\'adresse mail que vous nous avez fournie n\'est pas valide';

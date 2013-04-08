@@ -1,5 +1,5 @@
 Si vous être inscrit comme étudiant à l'université, vous pouvez accéder à iCampus en utilisant votre compte global UCL.
-Lors de votre première connexion, votre contre iCampus sera automatiquement créé.
+Lors de votre première connexion, votre compte iCampus sera automatiquement créé.
 
 Attention : votre compte UCL doit avoir été préalablement activé!
 Si ce n'est pas le cas, commencez par le faire, en allant à cette adresse : http://www.uclouvain.be/4040.
