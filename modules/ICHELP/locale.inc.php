@@ -29,6 +29,11 @@ $checkList = array(
         'description' => 'J\'ai activé mon compte global, pourtant je n\'arrive pas à entrer sur iCampus',
         'mailTpl' => 'accessproblem' ),
     
+    'alumni' => array(
+        'issueCategory' => 0,
+        'description' => 'Je suis un(e) ancien(ne) étudiant(e), et j\'aimerais conserver mon accès à iCampus',
+        'mailTpl' => 'alumni' ),
+    
     'accessProblem' => array(
         'issueCategory' => 0,
         'description' => 'J\'ai déjà utilisé iCampus, mais je n\'arrive plus à m\' y connecter',
