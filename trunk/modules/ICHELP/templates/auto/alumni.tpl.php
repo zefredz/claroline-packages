@@ -1,6 +1,6 @@
-En tant qu'alumni, vous pouvez accÃ©der Ã  iCampus Ã  condition d'Ãªtre en ordre de cotisation auprÃ¨s de votre association d'anciens Ã©tudiants liÃ© Ã  votre facultÃ©.
+En tant qu'alumni, vous pouvez accéder à iCampus à condition d'être en ordre de cotisation auprès de votre association d'anciens étudiants lié à votre faculté.
 
-Si vous avez besoin d'accÃ©der Ã  iCampus dans le cadre d'une formation continue ou d'une collaboration inter-universitaire, le mieux est demander la crÃ©ation d'un compte "externe".
-Pour ce faire, nous avons besoin de l'aval Ã©crit (un mail suffit) de l'un des titulaires des cours que vous devez suivre.
+Si vous avez besoin d'accéder à iCampus dans le cadre d'une formation continue ou d'une collaboration inter-universitaire, le mieux est demander la création d'un compte "externe".
+Pour ce faire, nous avons besoin de l'aval écrit (un mail suffit) de l'un des titulaires des cours que vous devez suivre.
 Par ailleurs, nous vous demandons de nous communiquer votre date de naissance.
-Un numÃ©ro de tÃ©lÃ©phone auquel vous Ãªtes joignable est Ã©galement souhaitÃ©.
+Un numéro de téléphone auquel vous êtes joignable est également souhaité.
