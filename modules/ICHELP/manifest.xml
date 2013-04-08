@@ -5,7 +5,7 @@
   <license>GPL</license>
   <type>applet</type>
   <icon>icon.png</icon>
-  <default_dock>campusBannerRight</default_dock>
+  <default_dock>campusFooterRight</default_dock>
    
   <description>
     ![CDATA[ Formulaire permetant à un utilisateur rencontrant des difficultés sur iCampus de décrire son problème, de rassembler des informations le concernant et d'envoyer un mail vers le service idoïne ]]
