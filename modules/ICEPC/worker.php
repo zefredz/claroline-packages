@@ -99,7 +99,7 @@ try
         
         if ( $epcService->hasError () )
         {
-            throw new Exception("Epc Service error : <pre>{$epcService->getInfo()}</pre>");
+            throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
         }
         
         /* $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' ); */
@@ -156,7 +156,7 @@ try
         
         if ( $epcService->hasError () )
         {
-            throw new Exception("Epc Service error : <pre>{$epcService->getInfo()}</pre>");
+            throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
         }
 
         if ( count( $users ) )
