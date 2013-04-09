@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.7 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.8 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -111,6 +111,8 @@ try
                 $subject = get_lang( 'Unknown issue' );
                 $mailTpl = false;
             }
+            
+            $ticket->set( 'shortDescription' , $subject );
             
             $mailBody = new ModuleTemplate( 'ICHELP' , 'mail.tpl.php' );
             $mailBody->assign( 'userData' , $userData );

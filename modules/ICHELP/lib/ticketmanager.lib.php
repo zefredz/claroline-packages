@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.6 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.8 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -11,14 +11,21 @@
 
 class TicketManager
 {
+    const SAVE_MODE_INSERT = false;
+    const SAVE_MODE_UPDATE = true;
+    
     protected $data = array();
     
-    public function __construct()
+    public function __construct( $ticketId = null )
     {
         $tbl = get_module_main_tbl( array( 'ichelp_log' ) );
         $this->tbl = $tbl[ 'ichelp_log' ];
         
-        if( isset( $_SESSION[ 'ICHELP_data' ] )
+        if( $ticketId )
+        {
+            $this->load( $ticketId );
+        }
+        elseif( isset( $_SESSION[ 'ICHELP_data' ] )
             && ! empty( $_SESSION[ 'ICHELP_data' ] ) )
         {
             $this->data = $_SESSION[ 'ICHELP_data' ];
@@ -43,14 +50,63 @@ class TicketManager
         }
     }
     
-    public function save()
+    public function load( $ticketId = null )
+    {
+        if( ! $ticketId )
+        {
+            if( $this->get( 'ticketId' ) )
+            {
+                $ticketId = $this->get( 'ticketId' );
+            }
+            else
+            {
+                throw new Exception( 'Missing id' );
+            }
+        }
+        
+        $data = Claroline::getDatabase()->query( "
+            SELECT
+                userId,
+                courseId,
+                submissionDate,
+                userAgent,
+                urlOrigin,
+                userInfos,
+                issueDescription,
+                shortDescription,
+                mailSent,
+                autoMailSent /*,status */
+            FROM
+                `{$this->tbl}`
+            WHERE
+                ticketId = " . Claroline::getDatabase()->quote( $ticketId )
+        )->fetch( Database_ResultSet::FETCH_ASSOC );
+        
+        if( ! empty( $data ) )
+        {
+            $this->data = $data;
+            
+            return $this->data[ 'ticketId' ] = $ticketId;
+        }
+    }
+    
+    public function save( $mode = self::SAVE_MODE_INSERT )
     {
         $sql1 = implode( ',' , array_keys( $this->data ) );
         $sql2 = implode( "','" , $this->data );
-        $sql = "( " . $sql1 ." )\nVALUES ( '" . $sql2 . "' )";
+        $sql3 = "( " . $sql1 ." )\nVALUES ( '" . $sql2 . "' )";
         
-        if( Claroline::getDatabase()->exec( "
-                INSERT INTO `{$this->tbl}`" . $sql ) )
+        if( $mode == self::SAVE_MODE_UPDATE )
+        {
+            $sql = "UPDATE `{$this->tbl}`\n" . $sql3
+                . "\nWHERE ticketId = " . Claroline::getDatabase()->quote( $this->data[ 'ticketId' ] );
+        }
+        else
+        {
+            $sql = "INSERT INTO `{$this->tbl}`\n" . $sql3;
+        }
+        
+        if( Claroline::getDatabase()->exec( $sql ) )
         {
             return $this->get( 'ticketId' );
         }
@@ -80,7 +136,11 @@ class TicketManager
     public function set( $name , $value )
     {
         $this->data[ $name ] = $value;
-        $this->update();
+        
+        if( isset( $_SESSION[ 'ICHELP_data' ] ) && ! is_null( $_SESSION[ 'ICHELP_data' ] ) )
+        {
+            $this->update();
+        }
     }
     
     public function getData()
