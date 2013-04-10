@@ -83,4 +83,15 @@ $_lang['URL of the EPC web service'] = 'URL du service EPC';
 $_lang['Unknown command'] = 'Commande inconnue';
 $_lang['Validate pending user enrollments'] = 'Valider les inscriptions en attente';
 $_lang['You are going to import the following students in your course'] = 'Vous aller ajouter les étudiants suivants dans votre cours';
-
+$_lang['Class name'] = 'Nom de la classe';
+$_lang['Class unregistered from course'] = 'Classe supprimée du cours';
+$_lang['EPC class information'] = 'Informatin sur la classe EPC';
+$_lang['EPC service response'] = 'Réponse du service EPC';
+$_lang['Number of failures'] = 'Nombre d\'échecs';
+$_lang['Number of users added to platform'] = 'Nombre d\'utilisateurs ajoutés à la plateforme';
+$_lang['Number of valid users'] = 'Nombre d\'utilisateurs valides';
+$_lang['Registered in courses'] = 'Inscrits au cours';
+$_lang['Update cached data'] = 'Mettre à jour les données en cache';
+$_lang['User processed'] = 'Utilisateurs traités';
+$_lang['Users deleted from course'] = 'Utilisateurs supprimés du cours';
+$_lang['You can still update cached data (NOMA, year of study...) about the users in your course'] = 'Vous pouvez toutefois mettre à jour les données en cache des utilisateurs (NOMA, année d\'étude...)';
