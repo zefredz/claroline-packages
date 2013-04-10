@@ -178,6 +178,10 @@ try
             $qrTpl->assign ( 'failuresCnt', count ( $platformUserList->getFailedUserInsertionList () ) );
             Console::debug("<pre>Failed users : ".var_export($platformUserList->getFailedUserInsertionList(),true)."</pre>", 'debug');
             
+            $epcUserDataCache = new EpcUserDataCache();
+            
+            $epcUserDataCache->registerUserData( $users->getIterator (), $platformUserList->getValidUserIdList () );
+            
             $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
             $epcClass = new EpcClass($epcClassName);
             
