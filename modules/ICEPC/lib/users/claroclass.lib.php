@@ -3,13 +3,14 @@
 // $Id$
 
 /**
- * CLAROLINE
+ * Set of PHP classes to manipulate Claroline user classes
  *
  * @version 1.11 $Revision$
  * @copyright (c) 2013 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package kernel
  * @author Frederic Minne <zefredz@claroline.net>
+ * @todo move to Claroline kernel
  */
 
 /**

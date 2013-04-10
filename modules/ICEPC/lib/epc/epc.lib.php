@@ -172,6 +172,11 @@ class EpcServiceQuery
         return $this->info;
     }
     
+    /**
+     * Returns true if an error has occured on the remote service (i.e. if http 
+     * return code is not 200)
+     * @return bool
+     */
     public function hasError()
     {
         return $this->info['http_code'] != '200';
@@ -221,7 +226,12 @@ class EpcQueryHelper extends EpcServiceQuery
             return $this->getInfo ();
         }
     }
-
+    
+    /**
+     * Returns true if no error occured on the remote service (i.e. http return
+     * code is 200)
+     * @return bool
+     */
     public function isSuccess ()
     {
         return $this->info[ 'http_code' ] == '200';
@@ -610,16 +620,30 @@ class EpcCourseUserListInfo
     }
 }
 
+/**
+ * Cache of some user data retreived from EPC (mainly NOMA and Year of study
+ */
 class EpcUserDataCache
 {
     private $database, $tbl;
     
+    /**
+     * Constructor
+     * @param Database_Connection $database database connection or null to use 
+     * the default Claroline database connexion
+     */
     public function __construct ( $database = null )
     {
         $this->database = $database ? $database : Claroline::getDatabase ();
         $this->tbl = get_module_main_tbl(array('epc_user_data'));
     }
     
+    /**
+     * Cache data from user list
+     * @param EpcServiceStudentsIterator $userIterator
+     * @param array $usernameToIdTranslationTable of username => user_id
+     * @return boolean
+     */
     public function registerUserData( $userIterator, $usernameToIdTranslationTable )
     {
         if ( ! count( $userIterator ) )
@@ -683,8 +707,15 @@ class EpcUserDataCache
                     {$userUpdate}");
             }
         }
+        
+        return true;
     }
     
+    /**
+     * Get cached data about all users in the given list
+     * @param array $userIdList
+     * @return array of user_id => userdata
+     */
     public function getAllUsersCachedData( $userIdList )
     {
         if ( ! count( $userIdList ) )
@@ -727,6 +758,12 @@ class EpcUserDataCache
         return $userIdListToReturn;
     }
     
+    /**
+     * Get list of users whose cached data must be updated (i.e. missing or changed) 
+     * @param EpcServiceStudentsIterator $userIterator
+     * @param array $usernameToIdTranslationTable array of username => user_id
+     * @return array
+     */
     public function getUserListToUpdate( $userIterator, $usernameToIdTranslationTable )
     {
         if ( ! count( $userIterator ) )
