@@ -3,6 +3,17 @@
 // $Id$
 
 /**
+ * String buffer
+ *
+ * @version 1.11 $Revision$
+ * @copyright (c) 2013 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package kernel
+ * @author Frederic Minne <zefredz@claroline.net>
+ * @todo move to Claroline kernel
+ */
+
+/**
  * String buffer class to easily convert Claroline page to Claroline webservice
  */
 class Claro_StringBuffer implements Display

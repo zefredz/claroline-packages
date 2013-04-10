@@ -3,14 +3,14 @@
 // $Id$
 
 /**
- * CLAROLINE
+ * Set of PHP classes for user batch registration and enrolment
  *
  * @version 0.1 $Revision$
  * @copyright (c) 2013 Universite catholique de Louvain (UCL)
  * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package kernel
  * @author Frederic Minne <zefredz@claroline.net>
- *
+ * @todo move to Claroline kernel
  */
 
 // add or remove lists of user ids from a course

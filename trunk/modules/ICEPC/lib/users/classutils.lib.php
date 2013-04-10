@@ -1,6 +1,16 @@
 <?php //$Id$
 
 /**
+ * Utility function to manipulate Claroline user classes
+ * @version 1.11 $Revision$
+ * @copyright (c) 2013 Universite catholique de Louvain (UCL)
+ * @license http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package kernel
+ * @author Frederic Minne <zefredz@claroline.net>
+ * @todo move to Claroline kernel
+ */
+
+/**
  * Get the number of users in a class. 
  * @param int $class_id id of the class
  * @param bool $include_children if set to true recursively count users in subclasses

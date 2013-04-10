@@ -13,8 +13,16 @@
  *
  */
 
+/**
+ * EPC class name to query translator helper
+ */
 class EpcClassNameToQuery extends EpcCodeToQuery
 {
+    /**
+     * Get EPC query from class name
+     * @param EpcClassName $className
+     * @return string
+     */
     public static function getQueryFromName( EpcClassName $className )
     {
         if ( $className->getEpcClassType () == EPC_TYPE_COURSE )
@@ -28,6 +36,9 @@ class EpcClassNameToQuery extends EpcCodeToQuery
     }
 }
 
+/**
+ * EPC class name
+ */
 class EpcClassName
 {
     private 
@@ -35,6 +46,12 @@ class EpcClassName
         $code, 
         $type;
     
+    /**
+     * An EPC class is given by a type ('course' or 'program'), a start of academic year year and a code
+     * @param string $epcType type of class, accepted values are 'course' or 'program'
+     * @param string $epcAcadYear year on which the wanted academic year started
+     * @param string $epcCode code of the EPC course or program corresponding to the EPC class
+     */
     public function __construct( $epcType, $epcAcadYear, $epcCode )
     {
         $this->acadYear = $epcAcadYear;
@@ -42,38 +59,48 @@ class EpcClassName
         $this->code = $epcCode;
     }
     
+    /**
+     * Get EPC class type
+     * @return string
+     */
     public function getEpcClassType()
     {
         return $this->type;
     }
     
+    /**
+     * Get year of the start of the academic year
+     * @return string
+     */
     public function getEpcAcademicYear()
     {
         return $this->acadYear;
     }
     
+    /**
+     * Get course or program code
+     * @return string
+     */
     public function getEpcCourseOrProgramCode()
     {
         return $this->code;
     }
     
+    /**
+     * Get EPC class name as a string of format epc_course|program:year:code
+     * @return string
+     */
     public function __toString ()
     {
         return "epc_{$this->type}:{$this->acadYear}:{$this->code}";
     }
     
-    /*public function toEpcQuery()
-    {
-        if ( $this->type == 'course' )
-        {
-            return EpcCodeToQuery::getCourseQuery( $this->code, $this->acadYear );
-        }
-        else
-        {
-            return EpcCodeToQuery::getProgramQuery( $this->code, $this->acadYear );
-        }
-    }*/
-    
+    /**
+     * Parse a string of format epc_course|program:year:code
+     * @param string $string
+     * @return \self
+     * @throws Exception if not a valid class name
+     */
     public static function parse( $string )
     {
         $matches = array();
@@ -90,10 +117,18 @@ class EpcClassName
     }
 }
 
+/**
+ * Represents an EPC class
+ */
 class EpcClass
 {
     protected $database, $epcName, $classId, $associatedClass;
     
+    /**
+     * 
+     * @param EpcClassName $epcName
+     * @param Database_Connection $database database connection or null
+     */
     public function __construct( $epcName, $database = null )
     {
         $this->database = $database ? $database : Claroline::getDatabase();      
@@ -102,11 +137,19 @@ class EpcClass
         $this->associatedClass = null;
     }
     
+    /**
+     * Get EPC class name
+     * @return EpcClassName
+     */
     public function getName()
     {
         return $this->epcName;
     }
     
+    /**
+     * Get the id of the associated Claroline class
+     * @return int
+     */
     protected function getAssociatedClassId()
     {
         if ( empty( $this->classId ) )
@@ -126,6 +169,10 @@ class EpcClass
         return $this->classId;
     }
     
+    /**
+     * Check if associated Claroline class already exists
+     * @return boolean
+     */
     public function associatedClassExists()
     {
         $this->getAssociatedClassId(); 
@@ -140,6 +187,10 @@ class EpcClass
         }
     }
     
+    /**
+     * Create associated Claroline class if missing
+     * @throws Exception
+     */
     public function createAssociatedClass()
     {
         if ( !empty($this->associatedClass) || $this->associatedClassExists () )
@@ -153,6 +204,10 @@ class EpcClass
         $this->associatedClass->create();
     }
     
+    /**
+     * Get the associated Claroline class
+     * @return Claro_Class
+     */
     public function getAssociatedClass()
     {
         if ( !$this->associatedClass )
@@ -165,18 +220,30 @@ class EpcClass
     }
 }
 
+/**
+ * Represents the list of EPC classes associated with a course
+ */
 class EpcCourseClassList
 {
     private
         $database,
         $courseId;
     
+    /**
+     * 
+     * @param string $courseId course code
+     * @param Database_Connection $database database connection or null
+     */
     public function __construct ( $courseId, $database = null )
     {
         $this->courseId = $courseId;
         $this->database = $database ? $database : Claroline::getDatabase();
     }
     
+    /**
+     * Get the list of EPC classes associated with a course
+     * @return Database_ResultSet
+     */
     public function getEpcClassList()
     {
         $tbl  = claro_sql_get_main_tbl();

@@ -3,7 +3,7 @@
 // $Id$
 
 /**
- * CLAROLINE
+ * AJAX backend for the EPC module
  *
  * @version 0.1 $Revision$
  * @copyright (c) 2013 Universite catholique de Louvain (UCL)
