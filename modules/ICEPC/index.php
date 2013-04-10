@@ -138,12 +138,16 @@ $(document).ajaxComplete( function() {
         $classUserList = new Claro_ClassUserList( $claroClass, Claroline::getDatabase() );
         $courseUserList = new Claro_CourseUserList( claro_get_current_course_id(), Claroline::getDatabase() );
         
+        $epcUserDataCache = new EpcUserDataCache( Claroline::getDatabase () );
+        $epcCachedUserData = $epcUserDataCache->getAllUsersCachedData( $courseUserList->getUserIdList () );
+        
         $classUserListIterator = $classUserList->getClassUserListIterator();
         $classUserListIterator->useId('user_id');
         
         $userListTemplate = new ModuleTemplate('ICEPC', 'epc_class_users.tpl.php');
         $userListTemplate->assign( 'classUserList', $classUserListIterator );
         $userListTemplate->assign( 'courseUserList', $courseUserList->getUserIdList () );
+        $userListTemplate->assign( 'epcUserData', $epcCachedUserData );
         
         Claroline::getDisplay()->body->appendContent( $userListTemplate->render() );
         

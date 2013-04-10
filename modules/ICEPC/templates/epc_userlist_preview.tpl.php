@@ -18,7 +18,8 @@
     <tbody>
     <?php if (count( $this->userListIterator ) ): ?>
     <?php foreach ( $this->userListIterator as $user ): ?>
-        <?php if ( !isset( $this->courseUserList[$user->username] ) || isset( $this->courseUserToUpdateList[$user->username ] ) ): ?>
+        <?php if ( !isset( $this->courseUserList[$user->username] ) 
+            || isset( $this->courseUserToUpdateList[$user->username ] ) ): ?>
         <?php $lineAdded = true; ?>
         <tr>
             <td><?php echo $user->firstname; ?></td>
@@ -33,7 +34,12 @@
     <?php endforeach; ?>
     <?php endif; ?>
     <?php if ( ! $lineAdded ): ?>
-        <tr><td colspan="5"><?php echo get_lang("All students are already enrolled to your course"); ?></td></tr>
+        <tr>
+            <td colspan="5">
+                <?php echo get_lang("All students are already enrolled to your course"); ?><br />
+                <?php echo get_lang("You can still update cached data (NOMA, year of study...) about the users in your course"); ?>
+            </td>
+        </tr>
     <?php endif; ?>
     </tbody>
 </table>
@@ -53,8 +59,9 @@
         <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
     <?php else: ?>
+    <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Update cached data' ); ?>" />
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Back' ); ?>" />
+        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
     <?php endif; ?>
 </form>

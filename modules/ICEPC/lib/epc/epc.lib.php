@@ -377,9 +377,9 @@ class EpcServiceStudentRecord
         {
             return isset ( $this->xmlRecord->noma ) ? (string) $this->xmlRecord->noma : null;
         }
-        elseif ( $name == 'siglAnet' )
+        elseif ( $name == 'sigleAnet' )
         {
-            return isset ( $this->xmlRecord->siglAnet ) ? (string) $this->xmlRecord->siglAnet : null;
+            return isset ( $this->xmlRecord->sigleAnet ) ? (string) $this->xmlRecord->sigleAnet : null;
         }
         else
         {
@@ -398,9 +398,9 @@ class EpcServiceStudentRecord
      * Get the FGS matricule as officialCode
      * @return string
      */
-    protected function getOfficialCode ()
+    public function getOfficialCode ()
     {
-        return ltrim ( '0', (string) $this->xmlRecord->matriculeFgs );
+        return ltrim ( (string) $this->xmlRecord->matriculeFgs, '0' );
     }
 
 }
@@ -607,5 +607,175 @@ class EpcCourseUserListInfo
         }
         
         return $usernameListToUpdate;
+    }
+}
+
+class EpcUserDataCache
+{
+    private $database, $tbl;
+    
+    public function __construct ( $database = null )
+    {
+        $this->database = $database ? $database : Claroline::getDatabase ();
+        $this->tbl = get_module_main_tbl(array('epc_user_data'));
+    }
+    
+    public function registerUserData( $userIterator, $usernameToIdTranslationTable )
+    {
+        if ( ! count( $userIterator ) )
+        {
+            return false;
+        }
+        
+        if ( ! count( $usernameToIdTranslationTable ) )
+        {
+            return false;
+        }
+        
+        $userDataSqlInsertArray = array();
+        $userDataSqlUpdateArray = array();
+        $userList = array();
+        
+        foreach ( $userIterator as $user )
+        {
+            if ( isset ( $usernameToIdTranslationTable[$user->username] ) )
+            {
+                $userList[$usernameToIdTranslationTable[$user->username]] = $user;
+            }
+        }
+        
+        $userIdList = array_keys( $userList );
+        $userAlreadyThereIdList = $this->getUserAlreadyCached($userIdList);
+        
+        foreach ( $userList as $userId => $userToProcess )
+        {
+            $sqlUserId = (int) $userId;
+            $sqlNoma = $this->database->quote( $userToProcess->noma );
+            $sqlAnet = $this->database->quote( $userToProcess->sigleAnet );
+                
+            if ( isset($userAlreadyThereIdList[$userId]) )
+            {
+                $userDataSqlUpdateArray[] = "SET noma = {$sqlNoma}, sigle_anet = {$sqlAnet}, last_sync = NOW() WHERE user_id = {$sqlUserId}";
+            }
+            else
+            {
+                
+                $userDataSqlInsertArray[] = "({$sqlUserId}, {$sqlNoma}, {$sqlAnet}, '', NOW())";
+            }
+        }
+        
+        if ( count( $userDataSqlInsertArray ) )
+        {
+            $this->database->exec("
+                INSERT INTO
+                    `{$this->tbl['epc_user_data']}` (user_id, noma, sigle_anet, other_data, last_sync)
+                VALUES
+                    ".implode(",\n",$userDataSqlInsertArray));
+        }
+        
+        if ( count( $userDataSqlUpdateArray) )
+        {
+            foreach ( $userDataSqlUpdateArray as $userUpdate )
+            {
+                $this->database->exec("
+                    UPDATE
+                        `{$this->tbl['epc_user_data']}`
+                    {$userUpdate}");
+            }
+        }
+    }
+    
+    public function getAllUsersCachedData( $userIdList )
+    {
+        if ( ! count( $userIdList ) )
+        {
+            return array();
+        }
+        
+        $userIds = implode( ',', $userIdList );
+        
+        $result = $this->database->query("SELECT user_id, noma, sigle_anet, other_data, last_sync FROM `{$this->tbl['epc_user_data']}` WHERE user_id IN ($userIds);");
+        
+        $userIdListToReturn = array();
+        
+        foreach ( $result as $user )
+        {
+            $userIdListToReturn[$user['user_id']] = $user;
+        }
+        
+        return $userIdListToReturn;
+    }
+    
+    private function getUserAlreadyCached( $userIdList )
+    {
+        if ( ! count( $userIdList ) )
+        {
+            return array();
+        }
+        
+        $userIds = implode( ',', $userIdList );
+        
+        $result = $this->database->query("SELECT user_id FROM `{$this->tbl['epc_user_data']}` WHERE user_id IN ($userIds);");
+        
+        $userIdListToReturn = array();
+        
+        foreach ( $result as $user )
+        {
+            $userIdListToReturn[$user['user_id']] = $user['user_id'];
+        }
+        
+        return $userIdListToReturn;
+    }
+    
+    public function getUserListToUpdate( $userIterator, $usernameToIdTranslationTable )
+    {
+        if ( ! count( $userIterator ) )
+        {
+            return array();
+        }
+        
+        if ( ! count( $usernameToIdTranslationTable ) )
+        {
+            return array();
+        }
+        
+        $userList = array();
+        
+        foreach ( $userIterator as $user )
+        {
+            if ( isset ( $usernameToIdTranslationTable[$user->username] ) )
+            {
+                $userList[$usernameToIdTranslationTable[$user->username]] = $user;
+            }
+        }
+        
+        $userIdList = array_keys( $userList );
+        $userAlreadyThereIdList = $this->getAllUsersCachedData($userIdList);
+        
+        $userListToUpdate = array();
+        
+        foreach ( $userList as $userId => $userMissing )
+        {
+            if ( !isset( $userAlreadyThereIdList[$userId] ) )
+            {
+                $userListToUpdate[$userMissing->username] = true;
+            }
+        }
+        
+        foreach ( $userAlreadyThereIdList as $userId => $userCached )
+        {
+            if ( isset( $userList[$userId] ) )
+            {
+                $userAlreadyThere = $userList[$userId];
+
+                if ( $userCached['sigle_anet'] != $userAlreadyThere->sigleAnet 
+                    || $userCached['noma'] != $userAlreadyThere->noma )
+                {
+                    $userListToUpdate[$userAlreadyThere->username] = true;
+                }
+            }
+        }
+        
+        return $userListToUpdate;
     }
 }
