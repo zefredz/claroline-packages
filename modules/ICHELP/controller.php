@@ -26,9 +26,6 @@ From::Module( 'ICHELP' )->uses(
     'ticketmanager.lib',
     'utils.lib' );
 
-$pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );
-$cmdList = array();
-
 $dialogBox = new DialogBox();
 JavascriptLoader::getInstance()->load('ichelp_form');
 
@@ -199,6 +196,8 @@ try
         $view->assign( 'ticket' , $ticket );
         $view->assign( 'checkList' , $checkList );
     }
+    
+    $pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );
     
     $cmdList[] = array(
         'img'  => 'back',

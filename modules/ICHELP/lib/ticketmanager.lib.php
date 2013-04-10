@@ -11,9 +11,6 @@
 
 class TicketManager
 {
-    const SAVE_MODE_INSERT = false;
-    const SAVE_MODE_UPDATE = true;
-    
     protected $data = array();
     
     public function __construct( $ticketId = null )
@@ -46,7 +43,7 @@ class TicketManager
                 '-' .
                 substr( md5( rand() ) , substr( $this->data[ 'submissionDate' ] , 11 , 2 ) , 8 );
             
-            $this->update();
+            $this->refresh();
         }
     }
     
@@ -90,21 +87,12 @@ class TicketManager
         }
     }
     
-    public function save( $mode = self::SAVE_MODE_INSERT )
+    public function save()
     {
         $sql1 = implode( ',' , array_keys( $this->data ) );
         $sql2 = implode( "','" , $this->data );
         $sql3 = "( " . $sql1 ." )\nVALUES ( '" . $sql2 . "' )";
-        
-        if( $mode == self::SAVE_MODE_UPDATE )
-        {
-            $sql = "UPDATE `{$this->tbl}`\n" . $sql3
-                . "\nWHERE ticketId = " . Claroline::getDatabase()->quote( $this->data[ 'ticketId' ] );
-        }
-        else
-        {
-            $sql = "INSERT INTO `{$this->tbl}`\n" . $sql3;
-        }
+        $sql = "INSERT INTO `{$this->tbl}`\n" . $sql3;
         
         if( Claroline::getDatabase()->exec( $sql ) )
         {
@@ -139,8 +127,18 @@ class TicketManager
         
         if( isset( $_SESSION[ 'ICHELP_data' ] ) && ! is_null( $_SESSION[ 'ICHELP_data' ] ) )
         {
-            $this->update();
+            $this->refresh();
         }
+    }
+    
+    public function update( $name , $value )
+    {
+        $this->set( $name , $value );
+        
+        return Claroline::getDatabase()->exec( "
+            UPDATE `{$this->tbl}`
+            SET " . $name . " = " . Claroline::getDatabase()->quote( $value ) . "
+            WHERE ticketId = " . Claroline::getDatabase()->quote( $this->data[ 'ticketId' ] ) );
     }
     
     public function getData()
@@ -148,7 +146,12 @@ class TicketManager
         return $this->data;
     }
     
-    private function update()
+    public function getTicketId()
+    {
+        return $this->data[ 'ticketId ' ];
+    }
+    
+    private function refresh()
     {
         $_SESSION[ 'ICHELP_data' ] = $this->data;
     }
