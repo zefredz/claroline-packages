@@ -24,3 +24,13 @@ $_lang['Abstract'] = 'Résumé';
 $_lang['Read issue description'] = 'Lire la description du problème';
 $_lang['Resend mail'] = 'Tenter de renvoyer le mail';
 $_lang['Close ticket'] = 'Clôturer le ticket';
+
+$_lang['Actions'] = 'Actions';
+$_lang['Error'] = 'Erreur';
+$_lang['FGS'] = 'FGS';
+$_lang['Mail successfully sent'] = 'Le mail a été envoyé avec succès';
+$_lang['No pending tickets'] = 'Aucun ticket perdu';
+//$_lang['Raiders of the Lost Tickets'] = 'A la recherche des tickets perdus';
+$_lang['This ticket cannot be closed'] = 'Ce ticket n\'a pus être clôturé';
+$_lang['Ticket successfully closed'] = 'Le ticket a été clôturé avec succès';
+$_lang['eMail'] = 'eMail';
