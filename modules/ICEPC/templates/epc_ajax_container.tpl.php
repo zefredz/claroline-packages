@@ -13,6 +13,7 @@
             },
             function(resp){
             $('#epcAsyncQueryContainer').empty().html(resp);
+            registerCollapseBehavior();
         });
     });
 </script>
