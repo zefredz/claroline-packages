@@ -217,12 +217,14 @@ $(document).ajaxComplete( function() {
         
         $courseBatchRegistretion->removeUserIdListFromCourse( $classUserIdList, true );
         
-        $dialogBox->success("Users deleted from course");
+        $dialogBox->success(get_lang("Users deleted from course"));
         
         // unregister class from course
         $claroClass->unregisterFromCourse( $course->courseId );
         
-        $dialogBox->success("Class unregistered from course");
+        $dialogBox->success(get_lang("Class unregistered from course"));
+        
+        $dialogBox->info('<a href="'.Url::Contextualize(get_module_url('ICEPC')).'">'.get_lang('Back').'</a>');
         
         Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
     }
