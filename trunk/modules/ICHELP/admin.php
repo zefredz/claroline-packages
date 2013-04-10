@@ -65,8 +65,7 @@ if( claro_is_platform_admin() )
                     
                     if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
                     {
-                        $ticket->set( 'mailSent' , 1 );
-                        $ticket->save( true );
+                        $ticket->update( 'mailSent' , 1 );
                         
                         $dialogBox->success( get_lang( 'Mail successfully sent' ) );
                     }
@@ -77,16 +76,32 @@ if( claro_is_platform_admin() )
                     break;
                 
                 case 'closeTicket':
-                    $ticket->set( 'mailSent' , 1 );
-                    $ticket->save( true );
+                    if( $ticket->update( 'mailSent' , 1 ) )
+                    {
+                        $dialogBox->success( get_lang( 'Ticket successfully closed' ) );
+                    }
+                    else
+                    {
+                        $dialogBox->error( get_lang( 'This ticket cannot be closed' ) );
+                    }
                     break;
             }
         }
         
         $view = new ModuleTemplate( 'ICHELP' , 'ticketlist.tpl.php' );
-        $view->assign( 'ticketList' , $ticketList->getTicketList() );
+        $view->assign( 'ticketList' , $ticketList->getTicketList( true ) );
         
-        Claroline::getInstance()->display->body->appendContent( $dialogBox->render() . $view->render() );
+        $pageTitle = array( 'mainTitle' => get_lang( 'Raiders of the Lost Tickets' ) );
+        
+        $cmdList[] = array(
+            'img'  => 'back',
+            'name' => get_lang( 'back' ),
+            'url'  => get_path( 'rootWeb' ) . '/claroline/admin/module/module_list.php?typeReq=applet' );
+        
+        Claroline::getInstance()->display->body->appendContent(
+            claro_html_tool_title( $pageTitle , null , $cmdList )
+            . $dialogBox->render()
+            . $view->render() );
     }
     catch( Exception $e )
     {

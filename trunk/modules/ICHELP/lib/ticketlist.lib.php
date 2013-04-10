@@ -11,7 +11,7 @@
 
 class TicketList
 {
-    protected $ticketList = array();
+    protected $ticketList = false;
     
     public function __construct()
     {
@@ -36,6 +36,8 @@ class TicketList
                 mailSent = 0"
         );
         
+        $this->ticketList = array();
+        
         foreach( $ticketList as $ticket )
         {
             $data = json_decode( $ticket[ 'userInfos' ] );
@@ -51,13 +53,23 @@ class TicketList
         }
     }
     
-    public function getTicketList()
+    public function getTicketList( $refresh = false )
     {
+        if( is_null( $this->ticketList ) || $refresh )
+        {
+            $this->load();
+        }
+        
         return $this->ticketList;
     }
     
     public function ticketExists( $ticketId )
     {
+        if( is_null( $this->ticketList ) )
+        {
+            $this->load();
+        }
+        
         return array_key_exists( $ticketId , $this->ticketList );
     }
     
