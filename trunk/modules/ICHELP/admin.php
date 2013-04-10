@@ -95,7 +95,7 @@ if( claro_is_platform_admin() )
         
         $cmdList[] = array(
             'img'  => 'back',
-            'name' => get_lang( 'back' ),
+            'name' => get_lang( 'Back' ),
             'url'  => get_path( 'rootWeb' ) . '/claroline/admin/module/module_list.php?typeReq=applet' );
         
         Claroline::getInstance()->display->body->appendContent(

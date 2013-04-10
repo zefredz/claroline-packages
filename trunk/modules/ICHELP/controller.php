@@ -201,7 +201,7 @@ try
     
     $cmdList[] = array(
         'img'  => 'back',
-        'name' => get_lang( 'back' ),
+        'name' => get_lang( 'Back' ),
         'url'  => claro_htmlspecialchars( $ticket->get( 'urlOrigin' ) ) );
     
     Claroline::getInstance()->display->body->appendContent(
