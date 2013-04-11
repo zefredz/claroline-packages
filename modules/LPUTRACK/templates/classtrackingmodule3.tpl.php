@@ -107,15 +107,21 @@
             echo $totalWidth;
         ?>
         ">
-            <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo $this->courseName . " : "; ?>
-            <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo $this->learnPathName; ?>
         </th>
     </tr>
     <tr class="headerX">
         <th>
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo get_lang( 'Student' ); ?>
         </th>
         <?php foreach( $this->infoModuleList as $infoModule ) : ?>
@@ -135,16 +141,18 @@
                 echo $moduleWidth;
             ?>
             ">
-            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
-                <img src="<?php echo get_icon_url( 'quiz', 'CLQWZ' ); ?>" alt=""/>
-            <?php else : ?>
-                <img src="
-                    <?php
-                        $modulePath = TrackingUtils::getPathFromModule( $this->courseCode, $infoModule->getModuleId() );
-                        echo get_icon_url( choose_image( basename( $modulePath ) ) );
-                    ?>
-                    " alt=""
-                />
+            <?php if( !$this->excelExport ) : ?>
+                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                    <img src="<?php echo get_icon_url( 'quiz', 'CLQWZ' ); ?>" alt=""/>
+                <?php else : ?>
+                    <img src="
+                        <?php
+                            $modulePath = TrackingUtils::getPathFromModule( $this->courseCode, $infoModule->getModuleId() );
+                            echo get_icon_url( choose_image( basename( $modulePath ) ) );
+                        ?>
+                        " alt=""
+                    />
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php echo $infoModule->getModuleName(); ?>
@@ -172,7 +180,9 @@
     <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
     <tr <?php if( $this->mode == 2 || $this->mode == 3 ) echo 'class="detailsModeToggle"'; ?>>
         <td class="userLabel">
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php if( $this->mode == 2 || $this->mode == 3 ) : ?>
             <a href="#">
             <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName();  ?>

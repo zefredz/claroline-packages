@@ -69,14 +69,18 @@
 <table class="claroTable emphaseLine">
     <tr class="headerX">
         <th>
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo get_lang( 'Student' ); ?>
         </th>
 
         <?php foreach( $this->infoCourseList as $infoCourse ) : ?>
 
         <th colspan="5">
-            <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php endif; ?>
             <a href="
                 <?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                         . "?cmd=classViewTrackLearnPath"
@@ -114,7 +118,9 @@
     ?>
     <tr <?php if( $this->mode == 2 ) echo 'class="detailsModeToggle"'; ?>>
         <td class="userLabel">
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php if( $this->mode == 2 ) : ?>
             <a href="#">
             <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName();  ?>
