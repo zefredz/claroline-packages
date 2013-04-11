@@ -21,7 +21,7 @@ if ( count( get_included_files() ) == 1 ) die( '---' );
 $checkList = array(
     'accountCreation' => array(
         'issueCategory' => 1,
-        'description' => 'Je ne me suis jamais connecté sur iCampus et j\'aimerais y avoir accès.',
+        'description' => 'Je ne me suis jamais connecté sur iCampus et j\'aimerais y avoir accès',
         'mailTpl' => 'accountcreation' ),
     
     'firstAccessProblem' => array(

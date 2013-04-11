@@ -1,12 +1,12 @@
-Effectuez les vérifications suivantes:
+Effectuez les vérifications suivantes :
 
 <?php if( $this->userData[ 'UCLMember' ] ) : ?>
 Parvenez-vous à vous authentifier sur le portail de l'UCL ( à cette adresse : http://www.uclouvain.be ) ?
     Dans le cas contraire, le problème provient sans doute de votre compte global.
-    Contactez alors le service-desk de l'UCL:
-        mail: service-desk@uclouvain.be
-        tél:  010 / 47 82 82
-        web:  http://www.uclouvain.be/8282
+    Contactez alors le service-desk de l'UCL :
+        mail : service-desk@uclouvain.be
+        tél :  010 / 47 82 82
+        web :  http://www.uclouvain.be/8282
 <?php endif; ?>
 
 Vérifiez bien que vous respectez scrupuleusement la casse en tapant votre mot de passe.
