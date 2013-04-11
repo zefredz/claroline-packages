@@ -90,8 +90,19 @@ class TicketManager
     public function save()
     {
         $sql1 = implode( ',' , array_keys( $this->data ) );
-        $sql2 = implode( "','" , $this->data );
+        /*$sql2 = implode( "','" , $this->data );
         $sql3 = "( " . $sql1 ." )\nVALUES ( '" . $sql2 . "' )";
+        $sql = "INSERT INTO `{$this->tbl}`\n" . $sql3;*/
+        
+        $values = array();
+        
+        foreach( $this->data as $value )
+        {
+            $values[] = Claroline::getDatabase()->quote( $value );
+        }
+        
+        $sql2 = implode( "," , $values );
+        $sql3 = "( " . $sql1 ." )\nVALUES ( " . $sql2 . " )";
         $sql = "INSERT INTO `{$this->tbl}`\n" . $sql3;
         
         if( Claroline::getDatabase()->exec( $sql ) )
