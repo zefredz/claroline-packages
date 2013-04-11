@@ -109,7 +109,9 @@
 <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
 
 <h1>
-    <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php if( !$this->excelExport ) : ?>
+        <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php endif; ?>
     <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?>
 </h1>
 
@@ -131,7 +133,9 @@
         </tr>
         <tr>
             <td class="courseLabel" colspan="3">
-                <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+                <?php if( !$this->excelExport ) : ?>
+                    <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+                <?php endif; ?>
                 <?php echo $infoCourse->getCourseCode() . ' - ' . $infoCourse->getCourseName(); ?>
             </td>
             <?php if( !is_null( $trackinCoursegEntry ) ) : ?>
@@ -161,7 +165,9 @@
             <tr>
                 <td class="emptyCell">&nbsp;</td>
                 <td class="learnpathLabel" colspan="2">
-                    <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+                    <?php if( !$this->excelExport ) : ?>
+                        <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+                    <?php endif; ?>
                     <?php echo $infoLearnPath->getLearnPathName(); ?>
                 </td>
                 <?php if( !is_null( $trackingLearnPathEntry ) ) : ?>
@@ -200,7 +206,9 @@
                     <td class="emptyCell">&nbsp;</td>
                     <td class="emptyCell">&nbsp;</td>
                     <td class="moduleLabel">
-                        <img src="<?php echo $moduleIcon; ?>" alt=""/>
+                        <?php if( !$this->excelExport ) : ?>
+                            <img src="<?php echo $moduleIcon; ?>" alt=""/>
+                        <?php endif; ?>
                         <?php echo $infoModule->getModuleName(); ?>
                     </td>
                     <?php if( !is_null( $trackingModuleEntry ) ) : ?>

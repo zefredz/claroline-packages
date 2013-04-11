@@ -72,13 +72,17 @@
     <tr class="headerX">
         <td class="emptyCell">&nbsp;</td>
         <th colspan="<?php echo ( $this->nbLearnPath * 4 ); ?>">
-            <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo $this->courseCode . ' - ' . $this->courseName; ?>
         </th>
     </tr>
     <tr class="headerX">
         <th>
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php echo get_lang( 'Student' ); ?>
         </th>
         <?php foreach( $this->infoLearnPathList as $infoLearnPath ) : ?>
@@ -93,7 +97,9 @@
                                                                         . "&learnPathId="
                                                                         . $infoLearnPath->getLearnPathId() ) ); ?>
             ">
-                <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+                <?php if( !$this->excelExport ) : ?>
+                    <img src="<?php echo get_module_icon_url( 'CLLNP', 'learnpath' ); ?>" alt=""/>
+                <?php endif; ?>
                 <?php echo $infoLearnPath->getLearnPathName(); ?>
             </a>
         </th>
@@ -113,7 +119,9 @@
     <?php foreach( $this->infoUserList as $infoUser ) : ?>
     <tr <?php if( $this->mode == 2 ) echo 'class="detailsModeToggle"'; ?>>
         <td class="userLabel">
-            <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php if( !$this->excelExport ) : ?>
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+            <?php endif; ?>
             <?php if( $this->mode == 2 ) : ?>
             <a href="#">
             <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName();  ?>

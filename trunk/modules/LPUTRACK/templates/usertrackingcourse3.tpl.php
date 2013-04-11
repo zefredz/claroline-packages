@@ -96,7 +96,9 @@
 <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
 
 <h1>
-    <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php if( !$this->excelExport ) : ?>
+        <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php endif; ?>
     <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?>
 </h1>
 
@@ -115,7 +117,9 @@
     ?>
         <tr>
             <td class="courseLabel">
-                <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+                <?php if( !$this->excelExport ) : ?>
+                    <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
+                <?php endif; ?>
                 <?php echo $infoCourse->getCourseCode() . ' - ' . $infoCourse->getCourseName(); ?>
             </td>
             <?php if( !is_null( $trackingCourseEntry ) ) : ?>
