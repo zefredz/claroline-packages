@@ -2,7 +2,7 @@
 
    <script language="javascript" type="text/javascript">
         $( document ).ready(
-            function() 
+            function()
             {
                 $( '.detailsMode' ).hide();
                 $( '.detailsModeToggle' ).click(
@@ -15,7 +15,7 @@
             }
         );
     </script>
-    
+
     <form action="" method="post">
         <input type="Submit" name="excelexport" value="<?php echo get_lang( 'xls export' ) ?>">
     </form>
@@ -36,7 +36,7 @@
             <td class="simpleLabel"><?php echo get_lang( 'Detail level' ) . ' :'; ?></td>
             <td class="simpleLabel">
                 <input type="radio" id="general_detail" name="detail_level" value="general" <?php if( $this->mode == 1 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=classViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -51,7 +51,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="daily_detail" name="detail_level" value="daily" <?php if( $this->mode == 2 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=classViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -66,7 +66,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="complete_detail" name="detail_level" value="complete" <?php if( $this->mode == 3 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=classViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -96,11 +96,11 @@
                 switch ( $infoModule->getModuleContentType() )
                 {
                     case 'EXERCISE' :
-                        $totalWidth += 4;
+                        $totalWidth += 5;
                         break;
 
                     default:
-                        $totalWidth += 3;
+                        $totalWidth += 4;
                         break;
                 }
             }
@@ -125,11 +125,11 @@
                 switch( $infoModule->getModuleContentType() )
                 {
                     case 'EXERCISE':
-                        $moduleWidth = 4;
+                        $moduleWidth = 5;
                         break;
 
                     default:
-                        $moduleWidth = 3;
+                        $moduleWidth = 4;
                         break;
                 }
                 echo $moduleWidth;
@@ -146,27 +146,28 @@
                     " alt=""
                 />
             <?php endif; ?>
-                
+
             <?php echo $infoModule->getModuleName(); ?>
-                
+
             </th>
         <?php endforeach; ?>
     </tr>
     <tr class="headerX">
         <td class="emptyCell">&nbsp;</td>
         <?php foreach( $this->infoModuleList as $infoModule ) : ?>
-                    
+
+            <th> <?php echo get_lang( 'First connection' ); ?> </th>
             <th> <?php echo get_lang( 'Last connection' ); ?> </th>
             <th> <?php echo get_lang( 'Spent time' ); ?> </th>
             <th> <?php echo get_lang( 'Progress' ); ?> </th>
-            
+
             <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
             <th> <?php echo get_lang( 'Best score' ); ?> </th>
             <?php endif; ?>
-            
+
         <?php endforeach; ?>
     </tr>
-    
+
     <?php foreach( $this->infoUserList as $infoUser ) : ?>
     <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
     <tr <?php if( $this->mode == 2 || $this->mode == 3 ) echo 'class="detailsModeToggle"'; ?>>
@@ -189,6 +190,7 @@
             ?>
             <?php if( !is_null( $trackingEntry ) ) : ?>
                 <?php if( $trackingEntry->getWarning() ) : ?>
+                <td class="warning bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
@@ -198,6 +200,7 @@
                     </td>
                     <?php endif; ?>
                 <?php else : ?>
+                <td class="bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
@@ -211,13 +214,14 @@
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
+                <td class="emptyCell bigCell">-</td>
                 <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
                     <td class="emptyCell">-</td>
                 <?php endif; ?>
             <?php endif; ?>
         <?php endforeach; ?>
     </tr>
-    
+
         <?php if( $this->mode == 2 || $this->mode == 3 ) : ?>
         <tr class="detailsMode">
             <td class="emptyCell">&nbsp;</td>
@@ -229,7 +233,7 @@
                     $trackingEntry = $trackingModule->getGeneralTracking();
                 ?>
                 <?php if( !is_null( $trackingEntry ) ) : ?>
-                    <td class="detailTable" colspan="<?php echo ( ( $infoModule->getModuleContentType() == 'EXERCISE' ) ? 4 : 3 ); ?>">
+                    <td class="detailTable" colspan="<?php echo ( ( $infoModule->getModuleContentType() == 'EXERCISE' ) ? 5 : 4 ); ?>">
                         <table class="claroTable emphaseLine detailTable" width="100%" border="0" cellspacing="2">
                             <tr class="header">
                                 <th> <?php echo get_lang( 'Date' ); ?> </th>
@@ -269,19 +273,19 @@
                             <tr><td>&nbsp;</td></tr>
                         </table>
                     </td>
- 
+
                 <?php else : ?>
                     <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
-                        <td class="emptyCell" colspan="4">&nbsp;</td>
+                        <td class="emptyCell" colspan="5">&nbsp;</td>
                     <?php else : ?>
-                        <td class="emptyCell" colspan="3">&nbsp;</td>
+                        <td class="emptyCell" colspan="4">&nbsp;</td>
                     <?php endif; ?>
                 <?php endif; ?>
             <?php endforeach; ?>
         </tr>
-        
+
         <?php endif; ?>
-    
+
     <?php endforeach; ?>
-    
+
 </table>

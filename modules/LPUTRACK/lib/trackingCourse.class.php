@@ -2,7 +2,7 @@
 
 /**
  * Tracking for a course
- * 
+ *
  * @version LPUTRACK 1.0
  * @package LPUTRACK
  * @author Anh Thao PHAM <anhthao.pham@claroline.net>
@@ -16,7 +16,7 @@ class TrackingCourse
     private $trackingList;
     private $generalTracking;
     private $mode;
-    
+
     /**
      * Constructor
      * @param string $courseCode
@@ -32,7 +32,7 @@ class TrackingCourse
         $this->generalTracking = null;
         $this->mode = 0;
     }
-    
+
     /**
      * Get code of the course
      * @return string The course code
@@ -41,7 +41,7 @@ class TrackingCourse
     {
         return $this->courseCode;
     }
-    
+
     /**
      * Get name of the course
      * @return string The name of the course
@@ -50,7 +50,7 @@ class TrackingCourse
     {
         return $this->intitule;
     }
-    
+
     /**
      * Get the number of learnPaths in the course
      * @return int The number of learnPaths
@@ -59,7 +59,7 @@ class TrackingCourse
     {
         return $this->nbLearnPath;
     }
-    
+
     /**
      * Get TrackingLearnPath for a given learnPath
      * @param int $learnPathId
@@ -74,7 +74,7 @@ class TrackingCourse
         }
         return $trackingLearnPath;
     }
-    
+
     /**
      * Get list of TrackingLearnPath associated to the TrackingCourse
      * @return array List of TrackingLearnPath
@@ -83,7 +83,7 @@ class TrackingCourse
     {
         return $this->trackingLearnPathList;
     }
-    
+
     /**
      * Get the list of Tracking for the course
      * @return array
@@ -92,7 +92,7 @@ class TrackingCourse
     {
         return $this->trackingList;
     }
-    
+
     /**
      * Get the ($id)th tracking of the tracking list
      * @param int $id
@@ -102,7 +102,7 @@ class TrackingCourse
     {
         return isset( $this->trackingList[ $id ] ) ? $this->trackingList[ $id ] : null;
     }
-    
+
     /**
      * Get the tracking for the course generated in mode 1
      * @return TrackingEntry
@@ -111,7 +111,7 @@ class TrackingCourse
     {
         return $this->generalTracking;
     }
-    
+
     /**
      * Get the tracking generation mode
      * @return int
@@ -120,7 +120,7 @@ class TrackingCourse
     {
         return $this->mode;
     }
-    
+
     /**
      * Generate the list of TrackingLearnPath for the course
      */
@@ -130,7 +130,7 @@ class TrackingCourse
         {
             $this->trackingLearnPathList = array();
             $resultSet = TrackingUtils::getLearnPathFromCourse( $this->courseCode );
-            
+
             if( !$resultSet->isEmpty() )
             {
                 $resultRow = $resultSet->fetch();
@@ -144,7 +144,7 @@ class TrackingCourse
             }
         }
     }
-    
+
     /**
      * Generate tracking for each TrackingLearnPath associated to the TrackingCourse
      * @param int $userId
@@ -157,13 +157,13 @@ class TrackingCourse
         {
             $this->generateTrackingLearnPath();
         }
-        
+
         foreach( $this->trackingLearnPathList as $trackingLearnPath )
         {
             $trackingLearnPath->generateTrackingList( $userId, $mode );
         }
     }
-    
+
     /**
      * Generate tracking for each TrackingModule associated to each TrackingLearnPath associated to the TrackingCourse
      * @param int $userId
@@ -177,13 +177,13 @@ class TrackingCourse
         {
             $this->generateTrackingLearnPath();
         }
-        
+
         foreach( $this->trackingLearnPathList as $trackingLearnPath )
         {
             $trackingLearnPath->generateModuleTrackingList( $userId, $mode );
         }
     }
-    
+
     /**
      * Generate tracking for the course
      * @param int $userId
@@ -198,7 +198,7 @@ class TrackingCourse
         $nonInitTrackingData = TrackingUtils::getNonInitLearnPathTrackingList( $userId, $this->courseCode );
         $isValidTrackingData = count( $trackingData ) > 0;
         $warning = count( $nonInitTrackingData ) > 0;
-        
+
         if( $isValidTrackingData || $warning )
         {
             switch( $mode )
@@ -209,10 +209,13 @@ class TrackingCourse
                     {
                         $dateTime = new DateTime( $trackingData[0]['date'] );
                         $latestDate = $dateTime->format( "Y-m-d" );
+                        $firstDateTime = new DateTime( $trackingData[count( $trackingData ) - 1]['date'] );
+                        $firstDate = $firstDateTime->format( "Y-m-d" );
                     }
                     else
                     {
                         $latestDate = $nonInitTrackingData[0]['date'];
+                        $firstDate = "-";
                     }
                     $totalTime = "0000:00:00";
                     $progress = 0;
@@ -234,7 +237,7 @@ class TrackingCourse
                             $progressTab[ $record['learnPathId'] ][ $record['moduleId'] ] = $record['progress'];
                         }
                     }
-                    
+
                     // inject missing tracking data with data fetched from table 'lp_user_module_progress'
                     foreach( $nonInitTrackingData as $nonInitTracking )
                     {
@@ -287,9 +290,10 @@ class TrackingCourse
                     }
 
                     $this->generalTracking = new TrackingEntry( $totalTime, $latestDate, 0, 0, 0, $progress, $warning );
-                    
+                    $this->generalTracking->setFirstConnection( $firstDate );
+
                     break;
-                
+
                 // Generate an unique entry per day
                 case 2 :
                     if( is_null( $this->generalTracking ) )
@@ -301,7 +305,7 @@ class TrackingCourse
                     {
                         $dateTime = new DateTime( $record['date'] );
                         $dateDay = $dateTime->format( "Y-m-d" );
-                        
+
                         if( !isset( $dateTab[ $dateDay ] ) )
                         {
                             $dateTab[ $dateDay ] = array();
@@ -313,7 +317,7 @@ class TrackingCourse
                         else
                         {
                             $dateTab[ $dateDay ]['totalTime'] = TrackingUtils::addTime( $dateTab[ $dateDay ]['totalTime'], $record['sessionTime'] );
-                            
+
                             if( !isset( $dateTab[ $dateDay ]['progress'][ $record['learnPathId'] ] ) )
                             {
                                 $dateTab[ $dateDay ]['progress'][ $record['learnPathId'] ] = array();
@@ -326,7 +330,7 @@ class TrackingCourse
                             }
                         }
                     }
-                    
+
                     foreach( $nonInitTrackingData as $nonInitTracking )
                     {
                         $nonInitProgress = TrackingUtils::computeProgress( $nonInitTracking['courseCode'],
@@ -343,7 +347,7 @@ class TrackingCourse
                                 $isModulePresent = true;
                             }
                         }
-                        
+
                         if( !$isModulePresent )
                         {
                             if( !isset( $dateTab[ $nonInitTracking['date'] ] ) )
@@ -391,7 +395,7 @@ class TrackingCourse
                                     $currentProgress[ $learnPathId ][ $moduleId ] = $progress;
                                 }
                             }
-                            
+
                             $learnPathProgress = 0;
                             foreach( $currentProgress[ $learnPathId ] as $moduleId => $moduleProgress )
                             {
@@ -401,7 +405,7 @@ class TrackingCourse
                                 }
                             }
                             $nbModule = TrackingUtils::getNbModuleInLearnPath( $this->courseCode, $learnPathId );
-                            
+
                             if( $nbModule > 0 )
                             {
                                 $learnPathProgress = (int)( $learnPathProgress / $nbModule );
@@ -412,7 +416,7 @@ class TrackingCourse
                             }
                             $currentProgress[ $learnPathId ]['final'] = $learnPathProgress;
                         }
-                        
+
                         $courseProgress = 0;
                         foreach( $currentProgress as $learnPathId => $progress )
                         {
@@ -428,13 +432,13 @@ class TrackingCourse
                         }
                         $dateTab[ $date ]['progress']['final'] = $courseProgress;
                     }
-                    
+
                     foreach( $dateTab as $date => $values )
                     {
                         $this->trackingList[] = new TrackingEntry( $values['totalTime'], $date, 0, 0, 0, $values['progress']['final'], $warning );
                     }
                     break;
-                
+
                 default :
                     throw new Exception( "Invalid mode : $mode" );
                     break;

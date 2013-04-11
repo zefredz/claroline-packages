@@ -2,7 +2,7 @@
 
 /**
  * A tracking information representation
- * 
+ *
  * @version LPUTRACK 1.0
  * @package LPUTRACK
  * @author Anh Thao PHAM <anhthao.pham@claroline.net>
@@ -18,7 +18,8 @@ class TrackingEntry
     // Boolean used to indicate that this tracking could have been generated with information
     // not provided by this module (LPUTRACK)
     private $warning;
-    
+    private $firstConnection;
+
     /**
      * Constructor
      * @param string $time (format -> hh:mm:ss.cc)
@@ -39,7 +40,7 @@ class TrackingEntry
         $this->progress = $progress;
         $this->warning = $warning;
     }
-    
+
     /**
      * Get spent time
      * @return string
@@ -48,7 +49,7 @@ class TrackingEntry
     {
         return $this->time;
     }
-    
+
     /**
      * Get date
      * @return date
@@ -57,7 +58,7 @@ class TrackingEntry
     {
         return $this->date;
     }
-    
+
     /**
      * Get raw score
      * @return int
@@ -66,7 +67,7 @@ class TrackingEntry
     {
         return $this->scoreRaw;
     }
-    
+
     /**
      * Get min score
      * @return int
@@ -75,7 +76,7 @@ class TrackingEntry
     {
         return $this->scoreMin;
     }
-    
+
     /**
      * Get max score
      * @return int
@@ -84,7 +85,7 @@ class TrackingEntry
     {
         return $this->scoreMax;
     }
-    
+
     /**
      * Get progress
      * @return int
@@ -93,7 +94,7 @@ class TrackingEntry
     {
         return $this->progress;
     }
-    
+
     /**
      * Get warning flag
      * @return boolean
@@ -101,6 +102,20 @@ class TrackingEntry
     public function getWarning()
     {
         return $this->warning;
+    }
+
+    public function setFirstConnection($firstConnection)
+    {
+        $this->firstConnection = $firstConnection;
+    }
+
+    /**
+     * Get first connection
+     * @return date
+     */
+    public function getFirstConnection()
+    {
+        return $this->firstConnection;
     }
 }
 
