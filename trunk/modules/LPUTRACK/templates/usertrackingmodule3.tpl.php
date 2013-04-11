@@ -20,7 +20,7 @@
             <td class="simpleLabel"><?php echo get_lang( 'View type' ) . ' :'; ?></td>
             <td class="simpleLabel">
                 <input type="radio" id="course_view" name="view_type" value="course"
-                       onchange="location.href='<?php 
+                       onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackCourse"
                                                      . "&classId=$this->classId"
@@ -33,7 +33,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="learnpath_view" name="view_type" value="learnpath"
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackLearnPath"
                                                      . "&classId=$this->classId"
@@ -46,7 +46,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="module_view" name="view_type" value="module" checked
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -62,7 +62,7 @@
             <td class="simpleLabel"><?php echo get_lang( 'Detail level' ) . ' :'; ?></td>
             <td class="simpleLabel">
                 <input type="radio" id="general_detail" name="detail_level" value="general" <?php if( $this->mode == 1 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -75,7 +75,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="daily_detail" name="detail_level" value="daily" <?php if( $this->mode == 2 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -88,7 +88,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="complete_detail" name="detail_level" value="complete" <?php if( $this->mode == 3 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -108,7 +108,10 @@
 <?php foreach( $this->infoUserList as $infoUser ) : ?>
 <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
 
-<h1> <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?> </h1>
+<h1>
+    <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?>
+</h1>
 
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <?php foreach( $this->infoCourseList as $infoCourse ) : ?>
@@ -120,6 +123,7 @@
             <th> <?php echo get_lang( 'Course' ); ?> </th>
             <th> <?php echo get_lang( 'LearnPath' ); ?> </th>
             <th> <?php echo get_lang( 'Module' ); ?> </th>
+            <th> <?php echo get_lang( 'First connection' ); ?> </th>
             <th> <?php echo get_lang( 'Last connection' ); ?> </th>
             <th> <?php echo get_lang( 'Total time' ); ?> </th>
             <th> <?php echo get_lang( 'Progress' ); ?> </th>
@@ -132,15 +136,18 @@
             </td>
             <?php if( !is_null( $trackinCoursegEntry ) ) : ?>
                 <?php if( $trackinCoursegEntry->getWarning() ) : ?>
+                <td class="warning biggestCell"> <?php echo $trackinCoursegEntry->getFirstConnection(); ?> </td>
                 <td class="warning biggestCell"> <?php echo $trackinCoursegEntry->getDate(); ?> </td>
                 <td class="warning biggestCell"> <?php echo $trackinCoursegEntry->getTime(); ?> </td>
                 <td class="warning biggestCell"> <?php echo $trackinCoursegEntry->getProgress() . "%"; ?> </td>
                 <?php else : ?>
+                <td class="biggestCell"> <?php echo $trackinCoursegEntry->getFirstConnection(); ?> </td>
                 <td class="biggestCell"> <?php echo $trackinCoursegEntry->getDate(); ?> </td>
                 <td class="biggestCell"> <?php echo $trackinCoursegEntry->getTime(); ?> </td>
                 <td class="biggestCell"> <?php echo $trackinCoursegEntry->getProgress() . "%"; ?> </td>
                 <?php endif; ?>
             <?php else : ?>
+                <td class="emptyCell biggestCell">-</td>
                 <td class="emptyCell biggestCell">-</td>
                 <td class="emptyCell biggestCell">-</td>
                 <td class="emptyCell biggestCell">-</td>
@@ -159,15 +166,18 @@
                 </td>
                 <?php if( !is_null( $trackingLearnPathEntry ) ) : ?>
                     <?php if( $trackingLearnPathEntry->getWarning() ) : ?>
+                    <td class="warning biggerCell"> <?php echo $trackingLearnPathEntry->getFirstConnection(); ?> </td>
                     <td class="warning biggerCell"> <?php echo $trackingLearnPathEntry->getDate(); ?> </td>
                     <td class="warning biggerCell"> <?php echo $trackingLearnPathEntry->getTime(); ?> </td>
                     <td class="warning biggerCell"> <?php echo $trackingLearnPathEntry->getProgress() . "%"; ?> </td>
                     <?php else : ?>
+                    <td class="biggerCell"> <?php echo $trackingLearnPathEntry->getFirstConnection(); ?> </td>
                     <td class="biggerCell"> <?php echo $trackingLearnPathEntry->getDate(); ?> </td>
                     <td class="biggerCell"> <?php echo $trackingLearnPathEntry->getTime(); ?> </td>
                     <td class="biggerCell"> <?php echo $trackingLearnPathEntry->getProgress() . "%"; ?> </td>
                     <?php endif; ?>
                 <?php else : ?>
+                    <td class="emptyCell biggerCell">-</td>
                     <td class="emptyCell biggerCell">-</td>
                     <td class="emptyCell biggerCell">-</td>
                     <td class="emptyCell biggerCell">-</td>
@@ -195,6 +205,7 @@
                     </td>
                     <?php if( !is_null( $trackingModuleEntry ) ) : ?>
                         <?php if( $trackingModuleEntry->getWarning() ) : ?>
+                            <td class="warning bigCell"> <?php echo $trackingModuleEntry->getFirstConnection(); ?> </td>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getDate(); ?> </td>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getTime(); ?> </td>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getProgress() . "%"; ?> </td>
@@ -202,6 +213,7 @@
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getScoreRaw() . "/" . $trackingModuleEntry->getScoreMax(); ?> </td>
                             <?php endif; ?>
                         <?php else : ?>
+                            <td class="bigCell"> <?php echo $trackingModuleEntry->getFirstConnection(); ?> </td>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getDate(); ?> </td>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getTime(); ?> </td>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getProgress() . "%"; ?> </td>
@@ -210,6 +222,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     <?php else : ?>
+                        <td class="emptyCell bigCell">-</td>
                         <td class="emptyCell bigCell">-</td>
                         <td class="emptyCell bigCell">-</td>
                         <td class="emptyCell bigCell">-</td>

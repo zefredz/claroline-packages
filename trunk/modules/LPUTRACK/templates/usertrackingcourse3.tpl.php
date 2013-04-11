@@ -20,7 +20,7 @@
             <td class="simpleLabel"><?php echo get_lang( 'View type' ) . ' :'; ?></td>
             <td class="simpleLabel">
                 <input type="radio" id="course_view" name="view_type" value="course" checked
-                       onchange="location.href='<?php 
+                       onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackCourse"
                                                      . "&classId=$this->classId"
@@ -33,7 +33,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="learnpath_view" name="view_type" value="learnpath"
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackLearnPath"
                                                      . "&classId=$this->classId"
@@ -46,7 +46,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="module_view" name="view_type" value="module"
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackModule"
                                                      . "&classId=$this->classId"
@@ -62,7 +62,7 @@
             <td class="simpleLabel"><?php echo get_lang( 'Detail level' ) . ' :'; ?></td>
             <td class="simpleLabel">
                 <input type="radio" id="general_detail" name="detail_level" value="general" <?php if( $this->mode == 1 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackCourse"
                                                      . "&classId=$this->classId"
@@ -75,7 +75,7 @@
             </td>
             <td class="simpleLabel">
                 <input type="radio" id="daily_detail" name="detail_level" value="daily" <?php if( $this->mode == 2 ) echo 'checked'; ?>
-                   onchange="location.href='<?php 
+                   onchange="location.href='<?php
                                                 echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                      . "?cmd=userViewTrackCourse"
                                                      . "&classId=$this->classId"
@@ -95,11 +95,15 @@
 <?php foreach( $this->infoUserList as $infoUser ) : ?>
 <?php $trackingUser = $this->trackingController->getTrackingUser( $infoUser->getUserId() ); ?>
 
-<h1> <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?> </h1>
+<h1>
+    <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
+    <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?>
+</h1>
 
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <tr class="headerX">
         <th> <?php echo get_lang( 'Course' ); ?> </th>
+        <th> <?php echo get_lang( 'First connection' ); ?> </th>
         <th> <?php echo get_lang( 'Last connection' ); ?> </th>
         <th> <?php echo get_lang( 'Total time' ); ?> </th>
         <th> <?php echo get_lang( 'Progress' ); ?> </th>
@@ -116,15 +120,18 @@
             </td>
             <?php if( !is_null( $trackingCourseEntry ) ) : ?>
                 <?php if( $trackingCourseEntry->getWarning() ) : ?>
+                <td class="warning bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
                 <?php else : ?>
+                <td class="bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
                 <?php endif; ?>
             <?php else : ?>
+                <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>

@@ -2,7 +2,7 @@
 
 /**
  * Tracking for a module
- * 
+ *
  * @version LPUTRACK 1.0
  * @package LPUTRACK
  * @author Anh Thao PHAM <anhthao.pham@claroline.net>
@@ -37,7 +37,7 @@ class TrackingModule
         $this->generalTracking = null;
         $this->mode = 0;
     }
-    
+
     /**
      * Get code of the course the module belongs to
      * @return string The course code
@@ -46,7 +46,7 @@ class TrackingModule
     {
         return $this->courseCode;
     }
-    
+
     /**
      * Get id of the learnPath the module belongs to
      * @return int
@@ -55,7 +55,7 @@ class TrackingModule
     {
         return $this->learnPathId;
     }
-    
+
     /**
      * Get the id of the module
      * @return int
@@ -64,7 +64,7 @@ class TrackingModule
     {
         return $this->moduleId;
     }
-    
+
     /**
      * Get the name of the module
      * @return string
@@ -73,7 +73,7 @@ class TrackingModule
     {
         return $this->moduleName;
     }
-    
+
     /**
      * Get the content type of the module
      * @return string
@@ -82,7 +82,7 @@ class TrackingModule
     {
         return $this->contentType;
     }
-    
+
     /**
      * Get the list of tracking generated for the module in mode 2 or 3
      * @return array
@@ -91,7 +91,7 @@ class TrackingModule
     {
         return $this->trackingList;
     }
-    
+
     /**
      * Get the ($id)th tracking of the tracking list
      * @param int $id
@@ -101,7 +101,7 @@ class TrackingModule
     {
         return isset( $this->trackingList[ $id ] ) ? $this->trackingList[ $id ] : null;
     }
-    
+
     /**
      * Get the tracking for the module generated in mode 1
      * @return TrackingEntry
@@ -110,7 +110,7 @@ class TrackingModule
     {
         return $this->generalTracking;
     }
-    
+
     /**
      * Get the tracking generation mode
      * @return int
@@ -119,7 +119,7 @@ class TrackingModule
     {
         return $this->mode;
     }
-    
+
     /**
      * Generate tracking for the module
      * @param int $userId
@@ -138,7 +138,7 @@ class TrackingModule
         $nonInitTrackingData = TrackingUtils::getNonInitLearnPathTrackingList( $userId, $this->courseCode, $this->learnPathId, $this->moduleId );
         $isValidTrackingData = count( $trackingData ) > 0;
         $warning = count( $nonInitTrackingData ) > 0;
-        
+
         if( $isValidTrackingData || $warning )
         {
             if( $warning )
@@ -163,6 +163,8 @@ class TrackingModule
                         $scoreMin = $trackingData[0]['scoreMin'];
                         $scoreMax = $trackingData[0]['scoreMax'];
                         $totalTime = "0000:00:00";
+                        $firstDateTime = new DateTime( $trackingData[count( $trackingData ) - 1]['date'] );
+                        $firstDate = $firstDateTime->format( "Y-m-d" );
                     }
                     else
                     {
@@ -171,7 +173,8 @@ class TrackingModule
                         $scoreRaw = $nonInitTrackingData[0]['scoreRaw'];
                         $scoreMin = $nonInitTrackingData[0]['scoreMin'];
                         $scoreMax = $nonInitTrackingData[0]['scoreMax'];
-                        $totalTime = $nonInitTrackingData[0]['sessionTime'];;
+                        $totalTime = $nonInitTrackingData[0]['sessionTime'];
+                        $firstDate = "-";
                     }
 
                     foreach( $trackingData as $record )
@@ -198,6 +201,7 @@ class TrackingModule
                         }
                     }
                     $this->generalTracking = new TrackingEntry( $totalTime, $latestDate, $scoreRaw, $scoreMin, $scoreMax, $progress, $warning );
+                    $this->generalTracking->setFirstConnection( $firstDate );
 
                     break;
 
@@ -234,7 +238,7 @@ class TrackingModule
                             $dateTab[ $dateDay ]['totalTime'] = TrackingUtils::addTime( $dateTab[ $dateDay ]['totalTime'], $record['sessionTime'] );
                         }
                     }
-                    
+
                     foreach( $dateTab as $date => $values )
                     {
                         $this->trackingList[] = new TrackingEntry( $values['totalTime'], $date,
@@ -274,14 +278,14 @@ class TrackingModule
                                                                    $nonInitProgress, true );
                     }
                     break;
-                    
+
                 default :
                     throw new Exception( "Invalid mode : $mode" );
                     break;
             }
         }
     }
-    
+
     /**
      * Get path of a module
      * @return string

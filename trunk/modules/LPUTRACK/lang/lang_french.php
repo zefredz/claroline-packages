@@ -34,5 +34,6 @@
     $_lang['My learnPath tracking'] = 'Mon suivi des parcours pédagogiques';
     $_lang['View type'] = 'Type de vue';
 	$_lang['Total'] = 'Total';
+	$_lang['First connection'] = 'Première connexion';
 
 ?>
