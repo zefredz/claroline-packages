@@ -109,7 +109,7 @@ if($is_allowedToEdit && get_conf('allow_export_csv'))
 	// Export CSV file of attendance
     $userMenu[] = claro_html_cmd_link( htmlspecialchars(Url::Contextualize(
                                         $_SERVER['PHP_SELF'] . '?cmd=exExport&id=' . $idList ))
-                                     , '<img src="' . get_icon_url('exExport') . '" alt="" />'
+                                     , '<img src="' . get_icon_url('export') . '" alt="" />'
                                      . ucfirst(get_lang('export attendance list'))
                                      );
 }
