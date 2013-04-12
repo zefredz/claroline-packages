@@ -26,8 +26,6 @@ $gidReset=1;
 require '../../claroline/inc/claro_init_global.inc.php';
 FromKernel::uses( 'utils/input.lib' );
 
-$context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
-
 /**
  * DB tables definition
  */
