@@ -3,7 +3,7 @@ FromKernel::uses('csv.class');
 From::module('LVSURVEY')->uses('model/result.class');
 
 
-abstract class CSVResults extends csv
+abstract class CSVResults extends CsvRecordlistExporter
 {
     
     protected $survey;
