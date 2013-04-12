@@ -15,7 +15,7 @@ require_once get_path('incRepositorySys') . '/lib/csv.class.php';
 require_once 'attendance.lib.php';
 
 
-class csvAttList extends csv
+class csvAttList extends CsvRecordlistExporter
 {
     private  $course_id;
     private  $exId;
@@ -24,7 +24,7 @@ class csvAttList extends csv
     
     function csvAttList( )
 	{
-		parent::csv(); // call constructor of parent class
+		parent::__construct(';','"'); // call constructor of parent class
 		
 		$aArgs = func_get_args ();
 		$cptArgs = count ($aArgs);
