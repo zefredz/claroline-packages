@@ -3,7 +3,7 @@
 // vim: expandtab sw=4 ts=4 sts=4:
 
 /**
-* Upgrade to 1.9 stable
+* Database upgrade tool
 *
 * @version     1.8-backport $Revision$
 * @copyright   2001-2007 Universite catholique de Louvain (UCL)
@@ -14,12 +14,12 @@
 */
 
 //Tool label
-$tlabelReq = 'UPGTO19';
+$tlabelReq = 'UPGTOOL';
 
 //Load claroline kernel
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 
-$nameTools = get_lang('Upgrade to 1.9 stable');
+$nameTools = get_lang('Database upgrade tool');
 
 if ( ! claro_is_platform_admin() )
 {
@@ -55,12 +55,12 @@ else
 }
 
 
-if ( $resetUpgradeDatabase || ! PersistantVariableStorage::module('UPGTO19')->get('upgrade.course.databaseInitialized',false) )
+if ( $resetUpgradeDatabase || ! PersistantVariableStorage::module('UPGTOOL')->get('upgrade.course.databaseInitialized',false) )
 {
     try
     {
         Upgrade_CourseDatabase::init($resetUpgradeDatabase);
-        PersistantVariableStorage::module('UPGTO19')->set('upgrade.course.databaseInitialized',true);
+        PersistantVariableStorage::module('UPGTOOL')->set('upgrade.course.databaseInitialized',true);
         $dialogBox->success(get_lang("Course upgrade database initialized"));
     }
     catch ( Exception $e )
@@ -78,7 +78,7 @@ if ( $cmd == 'setAutoUpgrade' )
 {
     if ( isset($_REQUEST['auto']) )
     {
-        PersistantVariableStorage::module('UPGTO19')->set('upgrade.course.auto', $_REQUEST['auto'] == 'true');
+        PersistantVariableStorage::module('UPGTOOL')->set('upgrade.course.auto', $_REQUEST['auto'] == 'true');
         
         echo 'Auto upgrade set to ' . $_REQUEST['auto'];
     }
@@ -115,7 +115,7 @@ if ( $cmd == 'upgradeCourseBatch' )
                     )
                 );
                 
-                Console::success( "UPGTO19::Upgrade successful for "
+                Console::success( "UPGTOOL::Upgrade successful for "
                     . count($executionResult['success']). " courses : "
                     . implode(',', array_keys($executionResult['success']) )
                 );
@@ -132,7 +132,7 @@ if ( $cmd == 'upgradeCourseBatch' )
                     )
                 );
                 
-                Console::success( "UPGTO19::Upgrade partial for "
+                Console::success( "UPGTOOL::Upgrade partial for "
                     . count($executionResult['partial']). " courses : "
                     . implode(',', array_keys($executionResult['partial']) )
                 );
@@ -149,7 +149,7 @@ if ( $cmd == 'upgradeCourseBatch' )
                     )
                 );
                 
-                Console::success( "UPGTO19::Upgrade fails for "
+                Console::success( "UPGTOOL::Upgrade fails for "
                     . count($executionResult['failure']). " courses : "
                     . implode(',', array_keys($executionResult['failure']) )
                 );
@@ -158,7 +158,7 @@ if ( $cmd == 'upgradeCourseBatch' )
     }
     catch (Exception $e )
     {
-        Console::error( "UPGTO19::Exception : {$e->getMessage()}" );
+        Console::error( "UPGTOOL::Exception : {$e->getMessage()}" );
         $dialogBox->error( get_lang("An error occurs while running the course upgrade tasks (see log for details)") );
     }
 }
@@ -182,18 +182,18 @@ elseif ( $cmd == 'upgradeCourse' )
                     if ( ! count( $errorSteps ) )
                     {
                         $dialogBox->success(get_lang("Course upgrade executed with success for course %cid", array('%cid' => htmlspecialchars( $cid ) )));
-                        Console::success( "UPGTO19::Upgrade successful for {$cid}" );
+                        Console::success( "UPGTOOL::Upgrade successful for {$cid}" );
                     }
                     else
                     {
                         $dialogBox->warning(get_lang("Course upgrade executed with errors for course %cid at step %steps", array('%cid' => htmlspecialchars( $cid ), '%steps' => implode(',',$errorSteps) )));
-                        Console::warning( "UPGTO19::Upgrade failed for {$cid} at steps " . implode( ',', $errorSteps ) );
+                        Console::warning( "UPGTOOL::Upgrade failed for {$cid} at steps " . implode( ',', $errorSteps ) );
                     }
                 }
                 else
                 {
                     $dialogBox->info(get_lang("Course %cid already upgraded with status %status",array('%cid'=>htmlspecialchars($cid),'%status'=>$course['status'])));
-                    pushClaroMessage( "UPGTO19::Upgrade already done for {$cid} with status " . $course['status'], 'info' );
+                    pushClaroMessage( "UPGTOOL::Upgrade already done for {$cid} with status " . $course['status'], 'info' );
                 }
             }
             else
@@ -204,14 +204,14 @@ elseif ( $cmd == 'upgradeCourse' )
         }
         catch (Exception $e )
         {
-            Console::error( "UPGTO19::Exception in {$cid} : {$e->getMessage()}" );
+            Console::error( "UPGTOOL::Exception in {$cid} : {$e->getMessage()}" );
             $dialogBox->error( get_lang("An error occurs while running the course upgrade tasks for course %cid (see log for details)", array('%cid' => htmlspecialchars( $cid ))) );
         }
     }
 }
 elseif ( $cmd == 'executeMainUpgrade' )
 {
-    if ( PersistantVariableStorage::module('UPGTO19')->get('upgrade.main.done',false) )
+    if ( PersistantVariableStorage::module('UPGTOOL')->get('upgrade.main.done',false) )
     {
         $dialogBox->error(get_lang("Main upgrade already done"));
     }
@@ -236,7 +236,7 @@ elseif ( $cmd == 'executeMainUpgrade' )
             {
                 $dialogBox->success(get_lang("Main upgrade executed with success"));
                 
-                PersistantVariableStorage::module('UPGTO19')->set('upgrade.main.done',true);
+                PersistantVariableStorage::module('UPGTOOL')->set('upgrade.main.done',true);
             }
         }
         catch ( Exception $e )
@@ -295,8 +295,8 @@ if ( true == $dispMainScreen )
 
     $template = new PhpTemplate( dirname(__FILE__) . '/templates/main.tpl.php' );
     
-    $template->assign('autoUpgrade', PersistantVariableStorage::module('UPGTO19')->get('upgrade.course.auto',false) );
-    $template->assign('mainupgradeDone', PersistantVariableStorage::module('UPGTO19')->get('upgrade.main.done',false) );
+    $template->assign('autoUpgrade', PersistantVariableStorage::module('UPGTOOL')->get('upgrade.course.auto',false) );
+    $template->assign('mainupgradeDone', PersistantVariableStorage::module('UPGTOOL')->get('upgrade.main.done',false) );
     $template->assign('totalNumberOfCourses', Upgrade_CourseDatabase::countCourses() );
     $template->assign('successCount', Upgrade_CourseDatabase::countCoursesByStatus('success') );
     $template->assign('partialCount', Upgrade_CourseDatabase::countCoursesByStatus('partial'));

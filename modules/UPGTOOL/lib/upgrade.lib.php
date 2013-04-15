@@ -8,7 +8,7 @@
  * @author      Frederic Minne <zefredz@claroline.net> Revision by Sokay Benjamin
  * @license     http://www.gnu.org/copyleft/gpl.html
  *              GNU GENERAL PUBLIC LICENSE version 2 or later
- * @package     UPGTO19
+ * @package     UPGTOOL
  */
 
 class UpgradeException extends Exception {};
@@ -73,7 +73,7 @@ class Upgrade_CourseLog extends Claroline_File_Log
 {
     public function __construct()
     {
-        parent::__construct( get_path('rootSys') . 'platform/upgto19.course.log' );
+        parent::__construct( get_path('rootSys') . 'platform/upgtool.course.log' );
     }
     
     public static function format( $step, $name, $courseId )
@@ -98,7 +98,7 @@ class Upgrade_MainLog extends Claroline_File_Log
 {
     public function __construct()
     {
-        parent::__construct( get_path('rootSys') . 'platform/upgto19.main.log' );
+        parent::__construct( get_path('rootSys') . 'platform/upgtool.main.log' );
     }
     
     public static function format( $step, $name )
@@ -422,7 +422,7 @@ class Upgrade_Course
         {
             $CourseUpgradeTasks = new Upgrade_TaskQueue();
             
-            include_once get_module_path('UPGTO19') .'/tasks/course.tasks.php';
+            include_once get_module_path('UPGTOOL') .'/tasks/course.tasks.php';
             
             $errorSteps = $CourseUpgradeTasks->execute( $course );
             
@@ -444,7 +444,7 @@ class Upgrade_Course
         
         $CourseUpgradeTasks = new Upgrade_TaskQueue();
         
-        include_once get_module_path('UPGTO19') .'/tasks/course.tasks.php';
+        include_once get_module_path('UPGTOOL') .'/tasks/course.tasks.php';
         
         if ( $bunch = $courseList->getNextBunchOfCourses() )
         {
