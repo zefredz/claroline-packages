@@ -1,8 +1,8 @@
 <module>
-<label>UPGTO19</label>
-<name>Upgrade to 1.9 stable</name>
+<label>UPGTOOL</label>
+<name>Database upgrade tool</name>
 <description><![CDATA[
-Upgrade Claroline 1.9 Release Candidates to 1.9.2 Stable
+Generic task-based database upgrade tool for Claroline
 ]]></description>
 <version>1.0-alpha</version>
 <license>GPL</license>

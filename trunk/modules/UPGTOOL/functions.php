@@ -8,8 +8,8 @@ if ( claro_is_in_a_course() )
     
     try
     {
-        if ( PersistantVariableStorage::module('UPGTO19')->get('upgrade.main.done') == true
-            && PersistantVariableStorage::module('UPGTO19')->get('upgrade.course.auto') == true )
+        if ( PersistantVariableStorage::module('UPGTOOL')->get('upgrade.main.done') == true
+            && PersistantVariableStorage::module('UPGTOOL')->get('upgrade.course.auto') == true )
         {
             try
             {
@@ -23,16 +23,16 @@ if ( claro_is_in_a_course() )
                         
                         if ( ! count( $errorSteps ) )
                         {
-                            Console::success( "UPGTO19::Upgrade successful for ".claro_get_current_course_id() );
+                            Console::success( "UPGTOOL::Upgrade successful for ".claro_get_current_course_id() );
                         }
                         else
                         {
-                            Console::warning( "UPGTO19::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
+                            Console::warning( "UPGTOOL::Upgrade failed for ".claro_get_current_course_id() . " at steps " . implode( ',', $errorSteps ) );
                         }
                     }
                     else
                     {
-                        pushClaroMessage( "UPGTO19::Upgrade already done for ".claro_get_current_course_id() . " with status " . $course['status'], 'info' );
+                        pushClaroMessage( "UPGTOOL::Upgrade already done for ".claro_get_current_course_id() . " with status " . $course['status'], 'info' );
                     }
                 }
                 else
@@ -42,7 +42,7 @@ if ( claro_is_in_a_course() )
             }
             catch (Exception $e )
             {
-                Console::error( "UPGTO19::Exception in ".claro_get_current_course_id()." : {$e->getMessage()}" );
+                Console::error( "UPGTOOL::Exception in ".claro_get_current_course_id()." : {$e->getMessage()}" );
             }
         }
     }

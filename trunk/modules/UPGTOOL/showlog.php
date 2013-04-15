@@ -3,7 +3,7 @@
 // vim: expandtab sw=4 ts=4 sts=4:
 
 /**
-* Upgrade to 1.9 stable
+* Database upgrade tool
 *
 * @version     1.8-backport $Revision$
 * @copyright   2001-2007 Universite catholique de Louvain (UCL)
@@ -14,7 +14,7 @@
 */
 
 //Tool label
-$tlabelReq = 'UPGTO19';
+$tlabelReq = 'UPGTOOL';
 
 //Load claroline kernel
 require_once dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
@@ -28,9 +28,9 @@ if ( isset($_REQUEST['cmd']) && $_REQUEST['cmd'] == 'showCourseUpgradeLog'  )
 {
     echo '<h1>Course upgrade log</h1>';
     
-    if ( file_exists(get_path('rootSys') . 'platform/upgto19.course.log') )
+    if ( file_exists(get_path('rootSys') . 'platform/upgtool.course.log') )
     {
-        echo '<pre>'.file_get_contents(get_path('rootSys') . 'platform/upgto19.course.log').'</pre>';
+        echo '<pre>'.file_get_contents(get_path('rootSys') . 'platform/upgtool.course.log').'</pre>';
     }
     else
     {
@@ -41,9 +41,9 @@ else
 {
     echo '<h1>Main upgrade log</h1>';
     
-    if ( file_exists(get_path('rootSys') . 'platform/upgto19.main.log') )
+    if ( file_exists(get_path('rootSys') . 'platform/upgtool.main.log') )
     {
-        echo '<pre>'.file_get_contents(get_path('rootSys') . 'platform/upgto19.main.log').'</pre>';
+        echo '<pre>'.file_get_contents(get_path('rootSys') . 'platform/upgtool.main.log').'</pre>';
     }
     else
     {
