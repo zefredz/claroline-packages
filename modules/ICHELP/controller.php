@@ -50,6 +50,7 @@ try
         'officialCode' => null,
         'jsEnabled' => null,
         'courseId' => null,
+        'courseCode' => null,
         'UCLMember' => null,
         'isManager' => null,
         'urlOrigin' => null,
@@ -68,7 +69,10 @@ try
     
     if ( $courseId )
     {
+        $courseData = claro_get_course_data( $courseId );
+        
         $userData[ 'courseId' ] = $courseId;
+        $userData[ 'courseCode' ] = $courseData[ 'officialCode' ];
     }
     
     if( $formData )
