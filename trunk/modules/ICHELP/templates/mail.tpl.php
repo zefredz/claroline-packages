@@ -44,8 +44,8 @@ Javascript activé : <?php echo $this->userData[ 'jsEnabled' ] ? 'Oui' : 'NON'; ?
 Cookies acceptés : <?php echo $this->userData[ 'cookieEnabled' ] ? 'Oui' : 'NON'; ?>
 
 
-<?php if( $this->userData[ 'courseId' ] ) : ?>
-Code cours concerné : <?php echo $this->userData[ 'courseId' ]; ?>
+<?php if( $this->userData[ 'courseCode' ] ) : ?>
+Code cours concerné : <?php echo $this->userData[ 'courseCode' ]; ?>  <?php if( $this->userData[ 'courseId' ] ) : ?> ( code système : <?php echo $this->userData[ 'courseId' ] ; ?> )<?php endif; ?>
 <?php endif; ?>
 
 

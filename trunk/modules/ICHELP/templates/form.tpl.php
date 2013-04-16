@@ -4,6 +4,9 @@
     <input type="hidden"
            name="data[jsEnabled]"
            value="1" />
+    <input type="hidden"
+           name="data[courseId]"
+           value="<?php echo $this->userData[ 'courseId' ]; ?>" />
     <noscript>
         <input type="hidden"
                name="data[jsEnabled]"
@@ -84,8 +87,8 @@
         <dl>
             <dt><strong><?php echo get_lang( 'Related course code (if relevant)' ); ?></strong></dt>
             <dd><input type="text"
-                       name="data[courseId]"
-                       value="<?php echo $this->userData[ 'courseId' ]; ?>"</dd>
+                       name="data[courseCode]"
+                       value="<?php echo $this->userData[ 'courseCode' ]; ?>"</dd>
         </dl>
         <dl>
             <dt><strong><?php echo get_lang( 'Describe your problem' ); ?></strong><span class="required">*</span>&nbsp;</dt>
