@@ -60,3 +60,13 @@ function is_manager( $userId , $courseId )
             code_cours = " . Claroline::getDatabase()->quote( $courseId )
         )->fetch( Database_ResulSet::FETCH_VALUE );
 }
+
+function getModuleRoot( $label )
+{
+    return getFullPath( get_module_url( $label ) );
+}
+
+function getFullPath( $path )
+{
+    return get_path( 'rootWeb' ) . substr( $path , strlen( $GLOBALS['urlAppend'] ) + 1 );
+}

@@ -34,3 +34,5 @@ $_lang['No pending tickets'] = 'Aucun ticket perdu';
 $_lang['This ticket cannot be closed'] = 'Ce ticket n\'a pus être clôturé';
 $_lang['Ticket successfully closed'] = 'Le ticket a été clôturé avec succès';
 $_lang['eMail'] = 'eMail';
+$_lang[ 'Thanks' ] = 'Merci! :-)';
+$_lang[ 'confirmation_message' ] = 'L\'utilisateur %name a signalé que le problème correspondant au ticket %ticket a été résolu';

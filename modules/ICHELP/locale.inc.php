@@ -112,6 +112,11 @@ $checkList = array(
 
 $header = "Bonjour,\n\n";
 
+$validator = "\n\nCe mail répond-il à votre question?\n"
+    . "Si c'est le cas, merci de nous le signaler en cliquant sur ce lien :\n"
+    . getModuleRoot( 'ICHELP' ) . '/validate.php?ticketId=' . $ticket->get( 'ticketId' )
+    . "\n\n";
+    
 $footer = "\n\nBien à vous,\n"
     . "L'équipe iCampus\n\n"
     . "=================================================================\n"

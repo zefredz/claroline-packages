@@ -31,9 +31,9 @@ JavascriptLoader::getInstance()->load('ichelp_form');
 
 try
 {
-    include dirname(__FILE__) . '/locale.inc.php';
-    
     $ticket = new TicketManager();
+    
+    include dirname(__FILE__) . '/locale.inc.php';
     
     $userInput = Claro_UserInput::getInstance();
     $formData = $userInput->get( 'data' );
@@ -147,7 +147,7 @@ try
                     $autoAnswer = $autoMail->render();
                     $content = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
                     */
-                    $content = $header . $autoMail->render() . $footer;
+                    $content = $header . $autoMail->render() . $validator . $footer;
                     
                     $mailSent = claro_mail( 'Re:' . $subject , $content , $mailFrom , $nameFrom , $mailTo , $nameTo );
                     $ticket->set( 'autoMailSent' , $mailSent );

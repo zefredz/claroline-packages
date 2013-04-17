@@ -32,7 +32,7 @@ Membre de l'UCL? : <?php echo ( ! array_key_exists( 'UCLMember' , $this->userDat
 Gestionnnaire de cours? : <?php echo $this->userData[ 'courseManager' ] ? 'Oui' : 'Non'; ?>
 
 
-Page d'origine de la demande : <?php echo $this->ticket->get( 'urlOrigin' ); ?>
+Page d'origine de la demande : <?php echo getFullPath( $this->ticket->get( 'urlOrigin' ) ); ?>
 
 
 Infos système (OS, navigateur) : <?php echo $this->ticket->get( 'userAgent' ); ?>
@@ -47,6 +47,10 @@ Cookies acceptés : <?php echo $this->userData[ 'cookieEnabled' ] ? 'Oui' : 'NON'
 <?php if( $this->userData[ 'courseCode' ] ) : ?>
 Code cours concerné : <?php echo $this->userData[ 'courseCode' ]; ?>  <?php if( $this->userData[ 'courseId' ] ) : ?> ( code système : <?php echo $this->userData[ 'courseId' ] ; ?> )<?php endif; ?>
 <?php endif; ?>
+
+
+Numéro de ticket : <?php echo $this->ticket->get( 'ticketId' ); ?>
+
 
 
 <?php if( $this->autoMail ) : ?>
