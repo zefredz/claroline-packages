@@ -43,7 +43,7 @@ try
     
     $content = get_lang( 'confirmation_message' , array( '%name' => $from , '%ticket' => $ticketId ) );
     
-    claro_mail( 'Résolu : ' . $subject , $content , 'icampus@uclouvain.be' , 'Support iCampus' , $mail , $from );
+    claro_mail( get_lang( 'Solved : ' ) . $subject , $content , 'icampus@uclouvain.be' , 'Support iCampus' , $mail , $from );
     
     $dialogBox->success( get_lang( 'Thanks' ) );
     $pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );
