@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.8 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.9 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -36,7 +36,7 @@ try
     $ticket = new TicketManager( $ticketId );
     $ticket->update( 'status' , 'solved' );
     
-    $userInfos = json_decode( $ticket->get( 'userInfos' ) , true );
+    $userInfos = unserialize( $ticket->get( 'userInfos' ) );
     $from = $userInfos[ 'firstName' ] . ' ' . $userInfos[ 'lastName' ];
     $mail = $userInfos[ 'mail' ];
     $subject = $ticket->get( 'shortDescription' );

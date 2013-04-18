@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.8 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 0.9 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -38,7 +38,7 @@ if( claro_is_platform_admin() )
         if( $ticketId && $ticketList->ticketExists( $ticketId ) )
         {
             $ticket = new TicketManager( $ticketId );
-            $ticketData = json_decode( $ticket->get( 'userInfos' ) , true );
+            $ticketData = unserialize( $ticket->get( 'userInfos' ) , true );
             
             switch( $cmd )
             {
