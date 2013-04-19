@@ -38,7 +38,7 @@ if( claro_is_platform_admin() )
         if( $ticketId && $ticketList->ticketExists( $ticketId ) )
         {
             $ticket = new TicketManager( $ticketId );
-            $ticketData = unserialize( $ticket->get( 'userInfos' ) , true );
+            $ticketData = unserialize( $ticket->get( 'userInfos' ) );
             
             switch( $cmd )
             {
