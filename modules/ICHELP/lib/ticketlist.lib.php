@@ -40,14 +40,14 @@ class TicketList
         
         foreach( $ticketList as $ticket )
         {
-            $data = json_decode( $ticket[ 'userInfos' ] );
+            $data = unserialize( $ticket[ 'userInfos' ] );
             
             $ticketData = array(
                 'submissionDate' => $ticket[ 'submissionDate' ],
                 'shortDescription' => $ticket[ 'shortDescription' ],
                 'issueDescription' => $ticket[ 'issueDescription' ],
-                'userName' => $data->firstName . ' ' . $data->lastName,
-                'mail' => $data->mail );
+                'userName' => $data[ 'firstName' ] . ' ' . $data[ 'lastName' ],
+                'mail' => $data[ 'mail' ] );
             
             $this->ticketList[ $ticket[ 'ticketId' ] ] = $ticketData;
         }
