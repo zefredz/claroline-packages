@@ -15,7 +15,7 @@ $_lang['Your request has been succesfully sent'] = 'Votre demande a été envoyée 
 
 $_lang['Unknown issue'] = 'Problème non identifié';
 $_lang['Invalid mail'] = 'L\'adresse mail que vous nous avez fournie n\'est pas valide';
-$_lang['Required information missing'] = 'Certaines informations manquent. Veillez remplir correctement tous les champs du formulaire';
+$_lang['Required information missing'] = 'Certaines informations manquent. Veuillez remplir correctement tous les champs du formulaire';
 $_lang['Mail sending failed'] = 'Un problème est survenu: pour une raison inconnue, votre message n\'a pu être transmis au help desk. Si cette erreur se reproduit, veuillez nous contacter par mail à cette adresse: <a href="mailto:icampus@uclouvain.be">icampus@uclouvain.be</a>';
 $_lang['welcome_message'] = 'Bonjour! Ce formulaire est destiné à nous signaler tout problème que vous rencontrez sur iCampus. Afin de nous aider à y apporter une réponse rapide et appropriée, nous vous demandons de le remplir de la manière la plus complète et précise possible!';
 
