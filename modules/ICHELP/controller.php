@@ -27,10 +27,18 @@ From::Module( 'ICHELP' )->uses(
     'utils.lib' );
 
 $dialogBox = new DialogBox();
-JavascriptLoader::getInstance()->load('ichelp_form');
 
 try
 {
+    $userId = claro_get_current_user_id();
+    
+    JavascriptLoader::getInstance()->load( 'ichelp_form' );
+    
+    if( ! $userId )
+    {
+        JavascriptLoader::getInstance()->load( 'antibot' );
+    }
+    
     $ticket = new TicketManager();
     
     include dirname(__FILE__) . '/locale.inc.php';
@@ -80,7 +88,11 @@ try
         $error = false;
         $userData = array_merge( $userData , $formData );
         
-        if(   empty( $userData[ 'lastName' ] )
+        if( ! $userId && ! $userInput->get( 'antibot' ) )
+        {
+            $error = get_lang( 'javascript not activated' );
+        }
+        elseif(   empty( $userData[ 'lastName' ] )
            || empty( $userData[ 'firstName' ] )
            || empty( $userData[ 'mail' ] )
            || empty( $userData[ 'issueType' ] ) )
