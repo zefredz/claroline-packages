@@ -92,7 +92,7 @@ try
         {
             $error = get_lang( 'javascript not activated' );
         }
-        elseif(   empty( $userData[ 'lastName' ] )
+        elseif( empty( $userData[ 'lastName' ] )
            || empty( $userData[ 'firstName' ] )
            || empty( $userData[ 'mail' ] )
            || empty( $userData[ 'issueType' ] ) )
@@ -135,7 +135,7 @@ try
             $mailTo = 'icampus@uclouvain.be';   // <- l'adresse iCampus
             $nameTo = 'Support iCampus';
             
-            // REDIRECTION VERS LE SERVICE DESK ===>
+            /* REDIRECTION VERS LE SERVICE DESK ===>
             if( (int)$userData['UCLMember']
                 && ( $userData[ 'issueType' ] == 'firstAccessProblem'
                     || $userData[ 'issueType' ] == 'accessProblem' ) )
@@ -143,7 +143,7 @@ try
                 $mailTo = 'icampus@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
             }
-            // <=== REDIRECTION VERS LE SERVICE DESK
+            // <=== REDIRECTION VERS LE SERVICE DESK */
             
             if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {
