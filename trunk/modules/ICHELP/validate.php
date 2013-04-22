@@ -46,10 +46,11 @@ try
     claro_mail( get_lang( 'Solved : ' ) . $subject , $content , 'icampus@uclouvain.be' , 'Support iCampus' , $mail , $from );
     
     $dialogBox->success( get_lang( 'Thanks' ) );
-    $pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );
+    $pageTitle = array( 'mainTitle' => get_lang( 'Online Help\'s solved issue notification' ) );
     
     Claroline::getInstance()->display->body->appendContent(
-        claro_html_tool_title( $pageTitle ) . $dialogBox->render() );
+        claro_html_tool_title( $pageTitle )
+        . $dialogBox->render() );
 }
 catch( Exception $e )
 {
