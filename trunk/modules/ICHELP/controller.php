@@ -136,7 +136,7 @@ try
                 && ( $userData[ 'issueType' ] == 'firstAccessProblem'
                     || $userData[ 'issueType' ] == 'accessProblem' ) )
             {
-                $mailTo = 'icampus@uclouvain.be'; // <- l'adresse du service desk
+                $mailTo = 'service-desk@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
             }
             // <=== REDIRECTION VERS LE SERVICE DESK */
@@ -160,7 +160,7 @@ try
             $mailBody = new ModuleTemplate( 'ICHELP' , 'mail.tpl.php' );
             $mailBody->assign( 'userData' , $userData );
             $mailBody->assign( 'ticket' , $ticket );
-            $mailBody->assign( 'autoMailContent' , $autoMailContent );
+            $mailBody->assign( 'autoMailContent' , $autoMailContent ? $autoMail->render() : false );
             $mailBody->assign( 'mailSent' , $mailSent );
             
             if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
@@ -189,7 +189,7 @@ try
         }
         
         /* Affiche également le contenu du mail envoyé directement dans la page
-        if( $autoMail )
+        if( $autoMailContent )
         {
             $dialogBox->info( $autoMail );
         }
