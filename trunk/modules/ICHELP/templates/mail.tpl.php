@@ -19,11 +19,16 @@ FGS : <?php echo $this->userData[ 'officialCode' ]; ?>
 Identifiant : <?php echo $this->userData[ 'username' ] ?>
 
 <?php endif; ?>
-<?php if( $this->ticket->get( 'userId' ) ) : ?>
+<?php if( array_key_exists( 'userId' , $this->userData ) && $this->userData[ 'userId' ] ) : ?>
+
+Lien vers la page d'édition du profil : <?php echo get_path( 'rootWeb' ) . 'claroline/admin/admin_profile.php?uidToEdit=' . $this->userData[ 'userId' ]; ?>
+
 
 Source d'authentification : <?php echo $this->userData[ 'authSource' ]; ?>
 
+
 Date de la dernière connexion : <?php echo date( 'Y-m-d H:i:s' , $this->userData[ 'lastLogin' ] ); ?>
+
 <?php endif; ?>
 
 Membre de l'UCL? : <?php echo ( ! array_key_exists( 'UCLMember' , $this->userData ) || $this->userData[ 'UCLMember' ] == '1' ) ? 'Oui' : 'Non'; ?>
@@ -53,12 +58,19 @@ Numéro de ticket : <?php echo $this->ticket->get( 'ticketId' ); ?>
 
 
 
-<?php if( $this->autoMail ) : ?>
-UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR
-
-<?php endif; ?>
 
 DESCRIPTION DU PROBLEME :
 -------------------------
 
 <?php echo str_replace( '&acute;' , "'" , $this->userData[ 'issueDescription' ] ); ?>
+
+
+
+
+
+<?php if( $this->autoMailContent ) : ?>
+<?php echo $this->mailSent ? "UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR" : "UN MAIL DE REPONSE AUTOMATIQUE AURAIT DU ETRE ENVOYE A L'UTILISATEUR, MAIS L'ENVOI A ECHOUE"; ?>
+
+
+<?php echo $this->autoMailContent; ?>
+<?php endif; ?>

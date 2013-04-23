@@ -47,7 +47,8 @@ try
     $formData = $userInput->get( 'data' );
     
     $view = null;
-    $autoAnswer = null;
+    $autoMailContent = null;
+    $autoMailSent = null;
     
     $defaultUserData = array(
         'userId' => null,
@@ -127,11 +128,6 @@ try
             
             $ticket->set( 'shortDescription' , $subject );
             
-            $mailBody = new ModuleTemplate( 'ICHELP' , 'mail.tpl.php' );
-            $mailBody->assign( 'userData' , $userData );
-            $mailBody->assign( 'ticket' , $ticket );
-            $mailBody->assign( 'autoMail' , (boolean)$mailTpl );
-            
             $mailTo = 'icampus@uclouvain.be';   // <- l'adresse iCampus
             $nameTo = 'Support iCampus';
             
@@ -145,26 +141,31 @@ try
             }
             // <=== REDIRECTION VERS LE SERVICE DESK */
             
+            if( $mailTpl )
+            {
+                $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
+                $autoMail->assign( 'userData' , $userData );
+                
+                
+                /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
+                $autoMail = $autoMail->render();
+                $autoMailContent = $header . strip_tags( str_replace( '<br />' , "\n" , $autoMail ) ) . $footer;
+                */
+                $autoMailContent = $header . $autoMail->render() . $validator . $footer;
+                
+                $mailSent = claro_mail( 'Re:' . $subject , $autoMailContent , $mailFrom , $nameFrom , $mailTo , $nameTo );
+                $ticket->set( 'autoMailSent' , $mailSent );
+            }
+            
+            $mailBody = new ModuleTemplate( 'ICHELP' , 'mail.tpl.php' );
+            $mailBody->assign( 'userData' , $userData );
+            $mailBody->assign( 'ticket' , $ticket );
+            $mailBody->assign( 'autoMailContent' , $autoMailContent );
+            $mailBody->assign( 'mailSent' , $mailSent );
+            
             if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {
                 $ticket->set( 'mailSent' , 1 );
-                
-                if( $mailTpl )
-                {
-                    $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
-                    $autoMail->assign( 'userData' , $userData );
-                    
-                    
-                    /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
-                    $autoAnswer = $autoMail->render();
-                    $content = $header . strip_tags( str_replace( '<br />' , "\n" , $autoAnswer ) ) . $footer;
-                    */
-                    $content = $header . $autoMail->render() . $validator . $footer;
-                    
-                    $mailSent = claro_mail( 'Re:' . $subject , $content , $mailFrom , $nameFrom , $mailTo , $nameTo );
-                    $ticket->set( 'autoMailSent' , $mailSent );
-                }
-                
                 $ticket->set( 'userInfos' , serialize( $userData ) );
                 $ticket->save();
                 $ticket->flush();
@@ -188,9 +189,9 @@ try
         }
         
         /* Affiche également le contenu du mail envoyé directement dans la page
-        if( $autoAnswer )
+        if( $autoMail )
         {
-            $dialogBox->info( $autoAnswer );
+            $dialogBox->info( $autoMail );
         }
         */
     }
