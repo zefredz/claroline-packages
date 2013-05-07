@@ -223,25 +223,53 @@ class EpcClass
 /**
  * Represents the list of EPC classes associated with a course
  */
-class EpcCourseClassList
+class EpcClassList
 {
     private
-        $database,
-        $courseId;
+        $database;
     
     /**
      * 
      * @param string $courseId course code
      * @param Database_Connection $database database connection or null
      */
-    public function __construct ( $courseId, $database = null )
+    public function __construct ( $database = null )
     {
-        $this->courseId = $courseId;
         $this->database = $database ? $database : Claroline::getDatabase();
     }
     
     /**
      * Get the list of EPC classes associated with a course
+     * @param string $courseId
+     * @return Database_ResultSet
+     */
+    public function getEpcCourseClassList( $courseId = null )
+    {
+        $courseId = $courseId ? $courseId : claro_get_current_course_id();
+        
+        $tbl  = claro_sql_get_main_tbl();
+    
+        return $this->database->query("
+            SELECT
+                c.id,
+                c.name,
+                c.class_parent_id,
+                c.class_level
+            FROM 
+                `{$tbl['rel_course_class']}` AS cc
+            LEFT JOIN 
+                `{$tbl['class']}` AS c
+            ON
+                c.id = cc.classId
+            AND
+                c.name LIKE 'epc_%:%:%'
+            WHERE
+                cc.courseId = ".$this->database->quote($courseId)."
+        ");
+    }
+    
+    /**
+     * Get the list of all EPC classes in the platform
      * @return Database_ResultSet
      */
     public function getEpcClassList()
@@ -263,7 +291,7 @@ class EpcCourseClassList
             AND
                 c.name LIKE 'epc_%:%:%'
             WHERE
-                cc.courseId = ".$this->database->quote($this->courseId)."
+                1 = 1
         ");
     }
 }

@@ -144,8 +144,8 @@ $(function(){
     if ( $cmd == 'listEpcClasses' )
     {
         // FromKernel::uses('class.lib');
-        $epcClassList = new EpcCourseClassList( claro_get_current_course_id () );
-        $epcListToDisplay = $epcClassList->getEpcClassList();
+        $epcClassList = new EpcClassList();
+        $epcListToDisplay = $epcClassList->getEpcCourseClassList(claro_get_current_course_id ());
         
         $list = new ModuleTemplate ( 'ICEPC', 'epc_classlist.tpl.php' );
         $list->assign( 'epcClassList' , $epcListToDisplay );
