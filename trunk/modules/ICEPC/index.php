@@ -44,6 +44,13 @@ try
     {
         claro_die ( get_lang ( "Not allowed!" ) );
     }
+    
+    $jsLang = new JavascriptLanguage;
+    
+    $jsLang->addLangVar("This operation could take some time, please wait until it's finished");
+    $jsLang->addLangVar("You are going to delete this class, do you want to continue ?");
+    
+    ClaroHeader::getInstance()->addInlineJavascript( $jsLang->render() );
 
     $userInput = Claro_UserInput::getInstance ();
 
@@ -52,7 +59,7 @@ try
     Claroline::getDisplay()->body->appendContent('<script type="text/javascript">
 $(function(){
     $(\'.checkClassDeletion\').click(function(){
-        return confirm("'.get_lang( "You are going to delete this class, do you want to continue ?" ).'");
+        return confirm( Claroline.getLang( "You are going to delete this class, do you want to continue ?" ) );
     });
 });
 </script>');
@@ -60,7 +67,7 @@ $(function(){
     Claroline::getDisplay()->body->appendContent('<script type="text/javascript">
 $(function(){
     $(\'.warnTakesTime\').click(function(){
-        return confirm("'.get_lang( "This operation could take some time, please wait until it's finished" ).'");
+        return confirm( Claroline.getLang( "This operation could take some time, please wait until it\'s finished" ) );
     });
 });
 </script>');
