@@ -419,7 +419,7 @@ class Claro_BatchCourseRegistration
 class Claro_PlatformUserList
 {
 
-    protected $database;
+    protected $database, $tables;
     
     protected 
         $userSuccessList = array(), 
@@ -436,6 +436,7 @@ class Claro_PlatformUserList
     public function __construct ( $database = null )
     {
         $this->database = is_null ( $database ) ? Claroline::getDatabase () : $database;
+        $this->tables = claro_sql_get_main_tbl ();
     }
     
     /**
@@ -502,9 +503,6 @@ class Claro_PlatformUserList
             return false;
         }
         
-        $tbl_mdb_names = claro_sql_get_main_tbl ();
-        $tbl_user = $tbl_mdb_names[ 'user' ];
-        
         foreach ( $userList as $user )
         {
             try
@@ -531,7 +529,7 @@ class Claro_PlatformUserList
                             
                             $this->database->exec( "
                             UPDATE
-                                `{$tbl_user}`
+                                `{$this->tables['user']}`
                             SET
                                 `authSource` = ".$this->database->quote( $overwriteAuthSourceWith )."
                                 {$emptyPassword}
@@ -555,7 +553,7 @@ class Claro_PlatformUserList
                         // disable old account by changing the username
                         $this->database->exec( "
                         UPDATE
-                            `{$tbl_user}`
+                            `{$this->tables['user']}`
                         SET
                             `authSource` = 'disabled',
                             `username` = CONCAT('*EPC*', username )
@@ -603,11 +601,8 @@ class Claro_PlatformUserList
      */
     protected function insertUserAsNew( $user )
     {
-        $tbl_mdb_names = claro_sql_get_main_tbl ();
-        $tbl_user = $tbl_mdb_names[ 'user' ];
-        
         $this->database->exec( "
-        INSERT INTO `{$tbl_user}`
+        INSERT INTO `{$this->tables['user']}`
         SET nom             = ". $this->database->quote($user->lastname) .",
             prenom          = ". $this->database->quote($user->firstname) .",
             username        = ". $this->database->quote($user->username) .",
@@ -634,9 +629,6 @@ class Claro_PlatformUserList
      */
     public function getUserIfAlreadyExists ( $user )
     {
-        $tbl_mdb_names = claro_sql_get_main_tbl ();
-        $tbl_user = $tbl_mdb_names[ 'user' ];
-
         $foundUser = $this->database->query ( "
             SELECT 
                 u.username,
@@ -644,7 +636,7 @@ class Claro_PlatformUserList
                 u.authSource,
                 u.email
             FROM 
-                `{$tbl_user}` AS u 
+                `{$this->tables['user']}` AS u 
             WHERE 
                 u.`username` = " . $this->database->quote ( $user->username )
         );
@@ -657,6 +649,48 @@ class Claro_PlatformUserList
         {
             return $foundUser->fetch();
         }
+    }
+    
+    public function deleteUserList ( $userIdList )
+    {
+        if ( ! count( $userIdList ) )
+        {
+            return false;
+        }
+        
+        $affectedRows = $this->database->exec("
+            DELETE FROM
+                `{$this->tables['user']}`
+            WHERE
+                `user_id` IN (".implode( ',', $userIdList ).")
+        ");
+                
+        // do we need to delete user tracking or not ?
+        
+        Console::info("Removed {$affectedRows} users : " . implode( ',', $userIdList ) );
+                
+        return $affectedRows;
+    }
+    
+    public function disableUserList ( $userIdList )
+    {
+        if ( ! count( $userIdList ) )
+        {
+            return false;
+        }
+        
+        $affectedRows = $this->database->exec("
+            UPDATE
+                `{$this->tables['user']}`
+            SET
+                `authSource` = 'disabled'
+            WHERE
+                `user_id` IN (".implode( ',', $userIdList ).")
+        ");
+        
+        Console::info("Disabled {$affectedRows} users : " . implode( ',', $userIdList ) );
+                
+        return $affectedRows;
     }
 
 }
@@ -671,7 +705,7 @@ class Claro_CourseUserList
         USE_KEY_USERID = 'user_id',
         USE_KEY_USERNAME = 'username';
 
-    protected $cid, $course, $database;
+    protected $cid, $course, $database, $tables;
     protected $courseUserList, $courseUserIdList, $courseUsernameList;
     
     /**
@@ -686,6 +720,8 @@ class Claro_CourseUserList
 
         $this->course = new Claro_course ( $cid );
         $this->course->load ();
+        
+        $this->tables = claro_sql_get_main_tbl ();
     }
     
     /**
@@ -716,10 +752,6 @@ class Claro_CourseUserList
         {
             throw new Exception('Invalid key : must be Claro_CourseUserList::USE_KEY_USERID or Claro_CourseUserList::USE_KEY_USERNAME');
         }
-        
-        $tbl_mdb_names = claro_sql_get_main_tbl ();
-        $tbl_user = $tbl_mdb_names[ 'user' ];
-        $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
 
         $cid = $this->database->quote ( $this->cid );
 
@@ -731,9 +763,9 @@ class Claro_CourseUserList
                 cu.count_class_enrol,
                 cu.isPending
             FROM
-                `{$tbl_rel_course_user}` AS cu
+                `{$this->tables['rel_course_user']}` AS cu
             JOIN
-                `{$tbl_user}` AS u
+                `{$this->tables['user']}` AS u
             ON
                 cu.user_id = u.user_id
             WHERE
@@ -754,21 +786,18 @@ class Claro_CourseUserList
     {
         if ( !is_array ( $this->courseUserIdList ) || $forceRefresh )
         {
-            $tbl_mdb_names = claro_sql_get_main_tbl ();
-            $tbl_rel_course_user = $tbl_mdb_names[ 'rel_course_user' ];
-
             $cid = $this->database->quote ( $this->cid );
 
             $resultSet = $this->database->query ( "
-            SELECT
-                cu.user_id
-            FROM
-                `{$tbl_rel_course_user}` AS cu
+                SELECT
+                    cu.user_id
+                FROM
+                    `{$this->tables['rel_course_user']}` AS cu
 
-            WHERE
-                cu.code_cours = {$cid}
+                WHERE
+                    cu.code_cours = {$cid}
                 
-         " );
+            " );
 
             $resultSet->useId ( 'user_id' );
 
