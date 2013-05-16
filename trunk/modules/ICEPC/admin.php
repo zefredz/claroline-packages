@@ -57,10 +57,8 @@ try
 
     $cmd = $userInput->get ( 'cmd', 'listEpcClasses' );
     
-    $jsLang = new JavascriptLanguage;
-    
-    $jsLang->addLangVar("This operation could take some time, please wait until it's finished");
-    $jsLang->addLangVar("You are going to delete this class, do you want to continue ?");
+    JavascriptLanguage::getInstance ()->addLangVar("This operation could take some time, please wait until it's finished");
+    JavascriptLanguage::getInstance ()->addLangVar("You are going to delete this class, do you want to continue ?");
     
     ClaroHeader::getInstance()->addInlineJavascript( $jsLang->render() );
     
