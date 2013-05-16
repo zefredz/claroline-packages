@@ -45,12 +45,8 @@ try
         claro_die ( get_lang ( "Not allowed!" ) );
     }
     
-    $jsLang = new JavascriptLanguage;
-    
-    $jsLang->addLangVar("This operation could take some time, please wait until it's finished");
-    $jsLang->addLangVar("You are going to delete this class, do you want to continue ?");
-    
-    ClaroHeader::getInstance()->addInlineJavascript( $jsLang->render() );
+    JavascriptLanguage::getInstance ()->addLangVar("This operation could take some time, please wait until it's finished");
+    JavascriptLanguage::getInstance ()->addLangVar("You are going to delete this class, do you want to continue ?");
 
     $userInput = Claro_UserInput::getInstance ();
 
