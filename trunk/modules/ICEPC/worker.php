@@ -15,9 +15,11 @@
 
 try
 {
-    $tlabelReq = 'ICEPC';
+    $moduleLabel = 'ICEPC';
 
     require_once dirname ( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
+    
+    set_and_load_current_module($moduleLabel);
 
     // to put into config
     /*$GLOBALS[ '_conf' ][ 'epcServiceUrl' ] = 'https://dev.epc.uclouvain.be/WebApi/resources/EtudInsc';
@@ -41,7 +43,7 @@ try
         'epc/epcclasses.lib'
     );
 
-    if ( !claro_is_course_manager () )
+    if (  ! ( claro_is_platform_admin() || ( claro_is_course_manager () && claro_is_in_a_course() ) ) )
     {
         claro_die ( get_lang ( "Not allowed!" ) );
     }
@@ -222,11 +224,14 @@ try
             
             Console::debug("<pre>Add user list to class {$claroClass->getName()}</pre>", 'debug');
             
-            
-            if ( ! $claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
+            // add condition for administration script
+            if ( claro_is_in_a_course () )
             {
-                $claroClass->registerToCourse( claro_get_current_course_id () );
-                Console::debug("<pre>Register class {$claroClass->getName()} to current course</pre>", 'debug');
+                if ( ! $claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
+                {
+                    $claroClass->registerToCourse( claro_get_current_course_id () );
+                    Console::debug("<pre>Register class {$claroClass->getName()} to current course</pre>", 'debug');
+                }
             }
             
             $courseList = $claroClass->getClassCourseList();
