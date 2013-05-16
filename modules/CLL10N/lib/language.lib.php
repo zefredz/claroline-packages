@@ -171,12 +171,12 @@ function store_lang_var($languageVarList, $sourceFileName, $languageName)
 function google_translation($from,$to,$string)
 {
     $string = urlencode($string);
-    ### recherche la source chez google avec le mot à traduire: $q
+    ### recherche la source chez google avec le mot ï¿½ traduire: $q
     pushClaroMessage(__LINE__ . '<pre>"http://translate.google.com/translate_t?text=$string&langpair=$from|$to&hl=fr&ie=UTF-8&oe=UTF-8" ='.var_export("http://translate.google.com/translate_t?text=$string&langpair=$from|$to&hl=fr&ie=UTF-8&oe=UTF-8",1).'</pre>','dbg');
     $source = implode ('', file ("http://translate.google.com/translate_t?text=$string&langpair=$from|$to&hl=fr&ie=UTF-8&oe=UTF-8"));
     ### decoupage de $source au debut
     $source = strstr($source, '<div id=result_box dir=ltr>');
-    ### decoupage de $source à la fin
+    ### decoupage de $source ï¿½ la fin
     $fin_source = strstr($source, '</div>');
     ### supprimer $fin_source de la chaine $source
     $proposition = str_replace("$fin_source","", $source);
@@ -438,7 +438,7 @@ function get_lang_vars_from_file($file)
     $fileContent = file_get_contents($file);
     
     // to speed up script to not try to detect all get_lang if there is none
-    if( preg_match('/get_lang|get_block/',$fileContent) )
+    if( preg_match('/get_lang|get_block|addLangVar/',$fileContent) )
     {
         $languageVarList = detect_get_lang($fileContent);
         $languageVarList = array_unique($languageVarList);
@@ -476,7 +476,7 @@ function detect_get_lang($fileContent)
 
             // find function 'get_lang'
 
-            if ( $thisToken[1] == 'get_lang' || $thisToken[1] == 'get_block' )
+            if ( $thisToken[1] == 'get_lang' || $thisToken[1] == 'get_block' || $thisToken[1] == 'addLangVar' )
             {
                 $varName = '';
 
