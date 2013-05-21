@@ -72,8 +72,8 @@ try
         // we should not need any javascript for normal user
         // output stuff
         JavascriptLoader::getInstance()->load('jquery');
-        //JavascriptLoader::getInstance()->load('jquery.interface');
-        JavascriptLoader::getInstance()->load('jquery.livequery');
+        // JavascriptLoader::getInstance()->load('jquery.interface');
+        // JavascriptLoader::getInstance()->load('jquery.livequery');
         JavascriptLoader::getInstance()->load('jquery.json');
         JavascriptLoader::getInstance()->load('jquery.form');
         JavascriptLoader::getInstance()->load('claroline');
