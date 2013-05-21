@@ -21,11 +21,6 @@ try
     
     set_and_load_current_module($moduleLabel);
 
-    // to put into config
-    /*$GLOBALS[ '_conf' ][ 'epcServiceUrl' ] = 'https://dev.epc.uclouvain.be/WebApi/resources/EtudInsc';
-    $GLOBALS[ '_conf' ][ 'epcServiceUser' ] = 'icampus';
-    $GLOBALS[ '_conf' ][ 'epcServicePassword' ] = '1ntelIgent';*/
-
     FromKernel::uses (
         'utils/iterators.lib', 
         'utils/input.lib', 
