@@ -2,15 +2,23 @@
 
 var openedEditors = new Array();
 
+$(document).on('click', 'a.toggleEditorCmd', rqToggleEditor);
+$(document).on('click', 'a.deleteComponentCmd', deleteComponent);
+$(document).on('click', 'a.mkVisibleCmd', mkVisible);
+$(document).on('click', 'a.mkInvisibleCmd', mkInvisible);
+$(document).on('click', 'a.mkUpCmd', mkUp);
+$(document).on('click', 'a.mkDownCmd', mkDown);
+
 $(document).ready( function () {
     // bind events
     // to cmd of each component (use livequery so that binding is automatically added on new DOM elements
-    $('a.toggleEditorCmd').livequery('click', rqToggleEditor);
+    /*$('a.toggleEditorCmd').livequery('click', rqToggleEditor);
     $('a.deleteComponentCmd').livequery('click', deleteComponent);
     $('a.mkVisibleCmd').livequery('click', mkVisible);
     $('a.mkInvisibleCmd').livequery('click', mkInvisible);
     $('a.mkUpCmd').livequery('click', mkUp);
-    $('a.mkDownCmd').livequery('click', mkDown);
+    $('a.mkDownCmd').livequery('click', mkDown);*/
+    
     $('A[rel="popup"]').click( function() {
         window.open( $(this).attr('href') );
         return false;
@@ -123,7 +131,7 @@ $.fn.toggleEditor = function(message) {
                     if( response != '' ) {   
                         
                         //add cancel button response
-                        $("#bCancel_" + id).livequery('click', buttonRqToggleEditor(id));
+                        $(document).on('click', "#bCancel_" + id, buttonRqToggleEditor(id));
                         // append response
                         $("#component_" + id + " .componentHeader").after(response);
                         // add tinymce on all textarea
