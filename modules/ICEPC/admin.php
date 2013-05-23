@@ -60,8 +60,6 @@ try
     JavascriptLanguage::getInstance ()->addLangVar("This operation could take some time, please wait until it's finished");
     JavascriptLanguage::getInstance ()->addLangVar("You are going to delete this class, do you want to continue ?");
     
-    ClaroHeader::getInstance()->addInlineJavascript( $jsLang->render() );
-    
     Claroline::getDisplay()->body->appendContent('<script type="text/javascript">
 $(function(){
     $(\'.checkClassDeletion\').click(function(){
