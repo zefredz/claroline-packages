@@ -281,7 +281,9 @@ class EpcClassList
                 c.id,
                 c.name,
                 c.class_parent_id,
-                c.class_level
+                c.class_level,
+                COUNT(*) AS numberOfCourses,
+                GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
                 `{$tbl['rel_course_class']}` AS cc
             LEFT JOIN 
@@ -292,6 +294,7 @@ class EpcClassList
                 c.name LIKE 'epc_%:%:%'
             WHERE
                 1 = 1
+            GROUP BY cc.classId
         ");
     }
 }
