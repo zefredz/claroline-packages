@@ -103,27 +103,36 @@ try
 
         if ( count ( $users ) )
         {
-            $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
-            $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
-            $courseUserListToUpdate = ( $epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) 
-                ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator (), $epcLinkExistingStudentsToClass == 'yes', $epcValidatePendingUsers == 'yes' ) 
-                : array();
-            
             $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
             $queryInfoTpl->assign( 'info', $users->getInfo() );
             $queryInfoTpl->assign( 'type', $epcSearchFor );
             
-            $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
-            $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
-            $userListTpl->assign( 'userListIterator', $users->getIterator() );
-            $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ) );
-            $userListTpl->assign( 'epcSearchString', $epcSearchString );
-            $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
-            $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
-            $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
-            $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
-            $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
-            $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
+            if ( claro_is_in_a_course () )
+            {
+                $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
+                $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
+                $courseUserListToUpdate = ( $epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) 
+                    ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator (), $epcLinkExistingStudentsToClass == 'yes', $epcValidatePendingUsers == 'yes' ) 
+                    : array();
+                
+                $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
+                $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
+                $userListTpl->assign( 'userListIterator', $users->getIterator() );
+                $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ) );
+                $userListTpl->assign( 'epcSearchString', $epcSearchString );
+                $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
+                $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
+                $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+                $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
+                $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
+                $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
+            }
+            else
+            {
+                // check user list from epc and platform user list
+                
+                // load epc_userlist_preview_admin template
+            }
             
             $out->appendContent( $userListTpl->render() );
         }
@@ -257,6 +266,8 @@ try
             // AFTER : new valid user list from EPC added to class and enrolled to course
             
             $out->appendContent( $qrTpl->render() );
+            
+            $epcClass->updateEpcClassSyncDate();
             
             Console::debug("EPC service ended");
         }
