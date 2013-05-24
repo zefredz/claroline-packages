@@ -218,6 +218,43 @@ class EpcClass
         
         return $this->associatedClass;
     }
+    
+    public function updateLastSyncDate()
+    {
+        $tbl = get_module_main_tbl( array('epc_class_data') );
+        
+        if ( 
+            $this->database->query("
+                SELECT 
+                    `class_name`
+                FROM 
+                    `{$tbl['epc_class_data']}` 
+                WHERE 
+                    `class_name` = " . $this->database->quote($this->epcName->__toString())
+            )->numRows() )
+        {
+            // update
+            return $this->database->exec( "
+                UPDATE 
+                    `{$tbl['epc_class_data']}`
+                SET
+                    `last_sync` = NOW()
+                WHERE
+                    `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
+            " );
+        }
+        else
+        {
+            // insert
+            return $this->database->exec( "
+                INSERT INTO 
+                    `{$this->tbl['epc_class_data']}`
+                SET
+                    `last_sync` = NOW(),
+                    `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
+            " );
+        }
+    }
 }
 
 /**
@@ -247,14 +284,16 @@ class EpcClassList
     {
         $courseId = $courseId ? $courseId : claro_get_current_course_id();
         
-        $tbl  = claro_sql_get_main_tbl();
+        // $tbl  = claro_sql_get_main_tbl();
+        $tbl = get_module_main_tbl( array( 'epc_class_data', 'rel_course_class', 'class' ) );
     
         return $this->database->query("
             SELECT
                 c.id,
                 c.name,
                 c.class_parent_id,
-                c.class_level
+                c.class_level,
+                cda.last_sync
             FROM 
                 `{$tbl['rel_course_class']}` AS cc
             LEFT JOIN 
@@ -263,6 +302,10 @@ class EpcClassList
                 c.id = cc.classId
             AND
                 c.name LIKE 'epc_%:%:%'
+            LEFT JOIN 
+                `{$tbl['epc_class_data']}` AS cda
+            ON
+                cda.class_name = c.name
             WHERE
                 cc.courseId = ".$this->database->quote($courseId)."
         ");
@@ -274,7 +317,8 @@ class EpcClassList
      */
     public function getEpcClassList()
     {
-        $tbl  = claro_sql_get_main_tbl();
+        // $tbl  = claro_sql_get_main_tbl();
+        $tbl = get_module_main_tbl( array( 'epc_class_data', 'rel_course_class', 'class' ) );
     
         return $this->database->query("
             SELECT
@@ -282,6 +326,7 @@ class EpcClassList
                 c.name,
                 c.class_parent_id,
                 c.class_level,
+                cda.last_sync,
                 COUNT(*) AS numberOfCourses,
                 GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
@@ -292,6 +337,10 @@ class EpcClassList
                 c.id = cc.classId
             AND
                 c.name LIKE 'epc_%:%:%'
+            LEFT JOIN 
+                `{$tbl['epc_class_data']}` AS cda
+            ON
+                cda.class_name = c.name
             WHERE
                 1 = 1
             GROUP BY cc.classId
