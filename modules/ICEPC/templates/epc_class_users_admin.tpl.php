@@ -7,6 +7,7 @@
             <th><?php echo get_lang( 'email' ); ?></th>
             <th><?php echo get_lang( 'NOMA' ); ?></th>
             <th><?php echo get_lang( 'Year' ); ?></th>
+            <th><?php echo get_lang( 'Last synced' ); ?></th>
             <th><?php echo get_lang( 'Delete' ); ?></th>
         </tr>
     </thead>
@@ -21,7 +22,9 @@
             <?php if (isset($this->epcUserData[$userId])): ?>
             <td><?php echo $this->epcUserData[$userId]['noma']; ?></td>
             <td><?php echo $this->epcUserData[$userId]['sigle_anet']; ?></td>
+            <td><?php echo $this->epcUserData[$userId]['last_sync']; ?></td>
             <?php else: ?> 
+            <td> - </td>
             <td> - </td>
             <td> - </td>
             <?php endif; ?>
