@@ -6,7 +6,7 @@
             <th><?php echo get_lang( 'Academic year' ); ?></th>
             <th><?php echo get_lang( 'Number of students' ); ?></th>
             <th><?php echo get_lang( 'Number of courses' ); ?></th>
-            <th><?php echo get_lang( 'Last synced' ); ?>
+            <th><?php echo get_lang( 'Last synced' ); ?></th>
             <th><?php echo get_lang( 'Update from EPC' ); ?></th>
             <th><?php echo get_lang( 'Delete from course' ); ?></th>
         </tr>
