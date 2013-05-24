@@ -219,9 +219,11 @@ class EpcClass
         return $this->associatedClass;
     }
     
-    public function updateLastSyncDate()
+    public function updateEpcClassSyncDate( $date = null )
     {
         $tbl = get_module_main_tbl( array('epc_class_data') );
+        
+        $sqlDate = $date ? $this->database->quote( $date ) : "NOW()";
         
         if ( 
             $this->database->query("
@@ -238,7 +240,7 @@ class EpcClass
                 UPDATE 
                     `{$tbl['epc_class_data']}`
                 SET
-                    `last_sync` = NOW()
+                    `last_sync` = {$sqlDate}
                 WHERE
                     `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
             " );
@@ -248,9 +250,9 @@ class EpcClass
             // insert
             return $this->database->exec( "
                 INSERT INTO 
-                    `{$this->tbl['epc_class_data']}`
+                    `{$tbl['epc_class_data']}`
                 SET
-                    `last_sync` = NOW(),
+                    `last_sync` = {$sqlDate},
                     `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
             " );
         }
