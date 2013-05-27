@@ -129,9 +129,19 @@ try
             }
             else
             {
-                // check user list from epc and platform user list
+                $epcUserListInfo = new EpcUserListInfo();
+                $epcUserListToUpdate = $epcUserListInfo->getUserListToUpdate( $users->getIterator (), true );
                 
-                // load epc_userlist_preview_admin template
+                $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview_admin.tpl.php' );
+                $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
+                $userListTpl->assign( 'userListIterator', $users->getIterator() );
+                $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_url('ICEPC') ) . '/admin.php' ) );
+                $userListTpl->assign( 'epcSearchString', $epcSearchString );
+                $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
+                $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
+                $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+                $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
+                $userListTpl->assign( 'platformToUpdate', $epcUserListToUpdate );
             }
             
             $out->appendContent( $userListTpl->render() );
@@ -173,6 +183,15 @@ try
             
             $qrTpl->assign ( 'serviceInfo', $epcService->getInfo () );
             $qrTpl->assign ( 'info', $users->getInfo () );
+            
+            if ( claro_is_in_a_course () )
+            {
+                $qrTpl->assign( 'backUrl', Url::Contextualize ( get_module_entry_url ( 'ICEPC') ) );
+            }
+            else
+            {
+                $qrTpl->assign( 'backUrl', Url::Contextualize ( get_module_url ( 'ICEPC') ) . '/admin.php' );
+            }
 
             $platformUserList = new Claro_PlatformUserList();
             $platformUserList->registerUserList( $users->getIterator(), 'ldap', true );

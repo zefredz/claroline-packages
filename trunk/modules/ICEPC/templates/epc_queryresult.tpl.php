@@ -17,7 +17,7 @@
     <dd><?php echo $course['administrativeNumber'] . ' - ' . $course['title'] . ' - ' . $course['titulars']; ?></dd>
     <?php endforeach; ?>
 </dl>
-<a href="<?php echo claro_htmlspecialchars(Url::Contextualize ( get_module_entry ( 'ICEPC') ) ); ?>"><?php echo get_lang('Back to list'); ?></a>
+<a href="<?php echo claro_htmlspecialchars( $this->backUrl ); ?>"><?php echo get_lang('Back to list'); ?></a>
 <?php if ( claro_debug_mode () ): ?>
 <div class="collapsible collapsed">
 <h3><a href="#" class="doCollapse"><?php echo get_lang('EPC service response'); ?> [+]</a></h3>
