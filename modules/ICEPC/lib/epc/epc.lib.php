@@ -620,6 +620,75 @@ class EpcCourseUserListInfo
     }
 }
 
+class EpcUserListInfo
+{
+    private $database;
+    
+    /**
+     * 
+     * @param string $courseId
+     * @param Database_Connection $database
+     */
+    public function __construct ( $database = null)
+    {
+        $this->database = $database ? $database : Claroline::getDatabase();
+    }
+    
+    public function getUserListToUpdate( $userList, $reEnableDisabledAccounts )
+    {
+        if ( !count( $userList ) )
+        {
+            return array();
+        }
+        
+        $usernameList = array();
+        
+        foreach ( $userList as $user )
+        {
+            $usernameList[] = $this->database->quote( $user->username );
+        }
+        
+        if ( ! $reEnableDisabledAccounts )
+        {
+            $condition = "
+            AND
+                u.authSource != 'disabled'
+            ";
+        }
+        else
+        {
+            $condition = "
+            AND
+                ( u.authSource != 'disabled' OR u.email LIKE '%uclouvain.be' )
+            ";
+        }
+        
+        $tbl_mdb_names = claro_sql_get_main_tbl ();
+        $tbl_user = $tbl_mdb_names[ 'user' ];
+        
+        $resultSet = $this->database->query ( "
+            SELECT 
+                u.username
+            FROM
+                `{$tbl_user}` AS u
+            WHERE
+                u.username IN (".implode(',',$usernameList).")
+            {$condition}
+        " );
+                
+        $resultSet->useId ( 'username' );
+        
+        $usernameListToUpdate = array();
+        
+        foreach ( $resultSet as $username => $userToUpdate )
+        {
+            $usernameListToUpdate[$username] = $userToUpdate;
+        }
+        
+        return $usernameListToUpdate;
+    }
+}
+
 /**
  * Cache of some user data retreived from EPC (mainly NOMA and Year of study
  */
