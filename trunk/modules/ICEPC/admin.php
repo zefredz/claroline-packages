@@ -78,6 +78,8 @@ $(function(){
     
     $breadcrumbs = ClaroBreadCrumbs::getInstance();
     $breadcrumbs->setCurrent( get_lang('EPC'), php_self () );
+    $breadcrumbs->prepend( get_lang( 'Modules' ), get_path('rootAdminWeb') . 'module/module_list.php' );
+    $breadcrumbs->prepend( get_lang('Administration'), get_path('rootAdminWeb') );
     
     $toolTitle = new ToolTitle( get_lang('Manage student lists from EPC') );
 
