@@ -221,6 +221,11 @@ $(function(){
         Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
     }
     
+    if ( claro_is_platform_admin () )
+    {
+        $toolTitle->addAdvancedCommand( 'EPC module administration', get_module_url('ICEPC').'/admin.php?cidReset=true&cidReq=', 'platformadmin' );
+    }
+    
     Claroline::getDisplay ()->body->prependContent ( $toolTitle->render () );
 
     echo Claroline::getDisplay ()->render ();
