@@ -83,6 +83,7 @@ $(function(){
     
     $toolTitle = new ToolTitle( get_lang('Manage student lists from EPC') );
 
+    // prepare parameters
     
     if ( $cmd == 'rqImport' || $cmd == 'preview' || $cmd == 'exImport' )
     {
@@ -94,8 +95,7 @@ $(function(){
         $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
         $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
-    
-    if ( $cmd == 'exSync' )
+    elseif ( $cmd == 'exSync' )
     {
         $breadcrumbs->append( get_lang('Synchronize students with EPC') );
         
@@ -118,10 +118,10 @@ $(function(){
         $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     
+    // business logic and prepare display
+    
     if ( $cmd == 'dispUserList' )
     {
-        $breadcrumbs->append( get_lang('List of students in Class') );
-        
         $classId = $userInput->get ( 'classId' );
         
         if ( ! $classId )
@@ -131,6 +131,9 @@ $(function(){
         
         $claroClass = new Claro_Class( Claroline::getDatabase() );
         $claroClass->load( $classId );
+        
+        $breadcrumbs->append($claroClass->getName ());
+        $breadcrumbs->append( get_lang('List of students in Class') );
         
         $toolTitle->setSubTitle(get_lang('List of student in class %className', array('%className' => $claroClass->getName ())));
         $toolTitle->addCommand( get_lang('Delete'), Url::Contextualize ( get_module_url ( 'ICEPC' ) . '/admin.php?cmd=exUnreg&classId='.$classId ), 'delete', array( 'class' => 'checkClassDeletion' ) );
@@ -151,7 +154,7 @@ $(function(){
         Claroline::getDisplay()->body->appendContent( $userListTemplate->render() );
         
     }
-    if ( $cmd == 'listEpcClasses' )
+    elseif ( $cmd == 'listEpcClasses' )
     {
         // FromKernel::uses('class.lib');
         $epcClassList = new EpcClassList();
@@ -163,6 +166,66 @@ $(function(){
         $toolTitle->addCommand( get_lang('Import student list from EPC'), Url::Contextualize ( get_module_url ( 'ICEPC' ) . 'admin.php?cmd=rqImport' ), 'class' );
         
         Claroline::getDisplay ()->body->appendContent ( $list->render () );
+    }
+    elseif ( $cmd == 'dispCourseList' )
+    {
+        
+        
+        $classId = $userInput->get ( 'classId' );
+        
+        if ( ! $classId )
+        {
+            throw new Exception("Missing class id");
+        }
+        
+        $claroClass = new Claro_Class( Claroline::getDatabase() );
+        $claroClass->load( $classId );
+        
+        $breadcrumbs->append($claroClass->getName ());
+        $breadcrumbs->append(get_lang('Course list'));
+        
+        $toolTitle->setSubTitle(get_lang('List of courses in which the class %className is registered', array('%className' => $claroClass->getName ())));
+        
+        $courseList = $claroClass->getClassCourseList();
+        $courseList->useId('code');
+        
+        $courseListTemplate = new ModuleTemplate( 'ICEPC','epc_class_courselist.tpl.php' );
+        
+        $courseListTemplate->assign( 'unregFromCourseBaseUrl', get_module_url('ICEPC').'/admin.php?cmd=exUnregFromCourse&classId='.$classId );
+        $courseListTemplate->assign( 'courseList', $courseList );
+        
+        Claroline::getDisplay()->body->appendContent( $courseListTemplate->render() );
+    }
+    elseif ( $cmd == 'exUnregFromCourse' )
+    {
+        $classId = $userInput->get ( 'classId' );
+        
+        if ( ! $classId )
+        {
+            throw new Exception(get_lang("Missing class id"));
+        }
+        
+        $courseId = $userInput->get('courseId');
+        
+        if ( ! $courseId )
+        {
+            throw new Exception(get_lang("Missing course code"));
+        }
+        
+        $claroClass = new Claro_Class( Claroline::getDatabase() );
+        $claroClass->load( $classId );
+        
+        $claroClass->unregisterFromCourse( $courseId );
+        
+        $dialogBox = new DialogBox();
+        
+        $dialogBox->success( get_lang( 'Class unregistered from course' ) );
+        
+        Console::info(get_lang( "Class {$className} {$classId}  unregistered from " . $courseId ) );
+        
+        $dialogBox->info('<a href="'.Url::Contextualize(get_module_url('ICEPC')).'/admin.php?cmd=dispCourseList&classId='.$classId.'>'.get_lang('Back').'</a>');
+        
+        Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
     }
     elseif ( $cmd == 'rqImport' )
     {
