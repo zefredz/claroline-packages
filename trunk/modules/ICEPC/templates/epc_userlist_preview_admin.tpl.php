@@ -17,8 +17,19 @@
     </thead>
     <tbody>
     <?php if (count( $this->userListIterator ) ): ?>
+        
     <?php foreach ( $this->userListIterator as $user ): ?>
-        <?php if ( ! $lineAdded ) : $lineAdded = true; endif; ?>
+        
+        <?php 
+            if ( ! $lineAdded ) : 
+                $lineAdded = true; 
+            endif;
+            
+            if (isset( $this->classUserList[$user->username] ) ) : 
+                unset ($this->classUserList[$user->username]); 
+            endif;
+        ?>
+        
         <tr>
             <td><?php echo $user->firstname; ?></td>
             <td><?php echo $user->lastname; ?></td>
@@ -28,8 +39,11 @@
             <td><?php echo $user->sigleAnet; ?></td>
             <td><?php echo isset( $this->platformToUpdate[ $user->username ] ) ? get_lang('Update') : get_lang('New'); ?></td>
         </tr>
+        
     <?php endforeach; ?>
+        
     <?php endif; ?>
+        
     <?php if ( ! $lineAdded ): ?>
         <tr>
             <td colspan="5">
@@ -37,6 +51,21 @@
             </td>
         </tr>
     <?php endif; ?>
+        
+    <?php foreach ( $this->classUserList as $user ): ?>
+        
+        <tr>
+            <td><?php echo $user->firstname; ?></td>
+            <td><?php echo $user->lastname; ?></td>
+            <td><?php echo $user->email; ?></td>
+            <td><?php echo $user->noma; ?></td>
+            <td><?php echo $user->officialCode; ?></td>
+            <td> - </td>
+            <td><?php echo get_lang('Deleted'); ?></td>
+        </tr>
+        
+    <?php endforeach;?>
+        
     </tbody>
 </table>
 

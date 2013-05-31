@@ -645,6 +645,7 @@ class Claro_ClassUserList
                     u.nom AS lastname,
                     u.prenom AS firstname,
                     u.email AS email,
+                    u.officialCode AS fgs,
                     cu.user_id AS user_id
                 FROM
                     `{$tbl_rel_class_user}` AS cu
@@ -678,6 +679,23 @@ class Claro_ClassUserList
         }
 
         return $classUserList;
+    }
+    
+    /**
+     * Get the list of user indexed by username
+     * @param bool $forceRefresh
+     * @return array
+     */
+    public function getClassUserListIndexedByUsername( $forceRefresh = false )
+    {
+        $classUsernameList = array();
+        
+        foreach ( $this->getClassUserList($forceRefresh) as $user )
+        {
+            $classUsernameList[$user['username']] = $user;
+        }
+        
+        return $classUsernameList;
     }
     
     /**

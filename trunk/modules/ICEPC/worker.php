@@ -132,6 +132,22 @@ try
                 $epcUserListInfo = new EpcUserListInfo();
                 $epcUserListToUpdate = $epcUserListInfo->getUserListToUpdate( $users->getIterator (), true );
                 
+                $classId = $userInput->get ( 'classId' );
+        
+                if ( $classId )
+                {
+                    $claroClass = new Claro_Class( Claroline::getDatabase() );
+                    $claroClass->load( $classId );
+                    
+                    $classUserList = new Claro_ClassUserList($claroClass);
+                    $classUsernameList = $classUserList->getClassUserListIndexedByUsername();
+                }
+                else
+                {
+                    $classUsernameList = array();
+                }
+                
+                
                 $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview_admin.tpl.php' );
                 $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
                 $userListTpl->assign( 'userListIterator', $users->getIterator() );
@@ -142,6 +158,7 @@ try
                 $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
                 $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
                 $userListTpl->assign( 'platformToUpdate', $epcUserListToUpdate );
+                $userListTpl->assign( 'classUserList', $classUsernameList );
             }
             
             $out->appendContent( $userListTpl->render() );

@@ -169,8 +169,6 @@ $(function(){
     }
     elseif ( $cmd == 'dispCourseList' )
     {
-        
-        
         $classId = $userInput->get ( 'classId' );
         
         if ( ! $classId )
