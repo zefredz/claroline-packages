@@ -8,7 +8,6 @@
             <th><?php echo get_lang( 'NOMA' ); ?></th>
             <th><?php echo get_lang( 'Year' ); ?></th>
             <th><?php echo get_lang( 'Last synced' ); ?></th>
-            <th><?php echo get_lang( 'Delete' ); ?></th>
         </tr>
     </thead>
     <tbody>
@@ -28,7 +27,6 @@
             <td> - </td>
             <td> - </td>
             <?php endif; ?>
-            <td> x </td>
         </tr>
     <?php endforeach; ?>
     <?php else: ?>
