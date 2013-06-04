@@ -1,6 +1,6 @@
 <script language="javascript" type="text/javascript">
     $( document ).ready(
-        function() 
+        function()
         {
             $( '.detailsMode' ).hide();
             $( '.detailsModeToggle' ).click(
@@ -78,7 +78,7 @@ else
     <tr>
         <th class="trackingLabel"><?php echo get_lang( 'Progress' ) . ' :'; ?></th>
         <td class="trackingValue" nowrap><?php echo claro_html_progress_bar( $progress, 1 ); ?></td>
-        <td class="trackingValue <?php if( $warning ) echo 'warning'; ?>" nowrap><?php echo $progress . '%'; ?></td> 
+        <td class="trackingValue <?php if( $warning ) echo 'warning'; ?>" nowrap><?php echo $progress . '%'; ?></td>
     </tr>
     <tr>
         <th class="trackingLabel"><?php echo get_lang( 'Spent time' ) . ' :'; ?></th>
@@ -137,7 +137,7 @@ else
         <td nowrap><?php echo $date; ?></td>
         <?php endif; ?>
     </tr>
-    
+
     <tr class="detailsMode">
         <td>&nbsp;</td>
         <td colspan="4">
@@ -149,11 +149,12 @@ else
                     <th><?php echo get_lang( 'Last connection' ); ?></th>
                     <th><?php echo get_lang( 'Best score' ); ?>
                 </tr>
-                
+
             <?php foreach( $trackingLearnPath->getTrackingModuleList() as $trackingModule ) : ?>
             <?php
             $generalModuleTracking = $trackingModule->getGeneralTracking();
             $isExercice = ( $trackingModule->getContentType() == 'EXERCISE' );
+            $isScorm = ( $trackingModule->getContentType() == 'SCORM' );
             if( $isExercice )
             {
                 $moduleIcon = get_icon_url( 'quiz', 'CLQWZ' );
@@ -177,11 +178,12 @@ else
                 $date = $generalModuleTracking->getDate();
                 $warning = $generalModuleTracking->getWarning();
                 $isExercice = ( $trackingModule->getContentType() == 'EXERCISE' );
-                $score = $isExercice ? ( $generalModuleTracking->getScoreRaw() . '/' . $generalModuleTracking->getScoreMax() ) : '-';
+                $isScorm = ( $trackingModule->getContentType() == 'SCORM' );
+                $score = ( $isExercice || $isScorm ) ? ( $generalModuleTracking->getScoreRaw() . '/' . $generalModuleTracking->getScoreMax() ) : '-';
                 $spentTime = $generalModuleTracking->getTime();
             }
             ?>
-            
+
             <tr class="detailsModeToggle">
                 <td class="moduleLabel">
                     <a href="#">
@@ -202,22 +204,22 @@ else
                 <td nowrap><?php echo $score; ?></td>
                 <?php endif; ?>
             </tr>
-            
+
             <?php
             $trackingList = $trackingModule->getTrackingList();
             $trackingNull = is_null( $trackingList );
             ?>
             <?php if( !$trackingNull ) : ?>
-            
+
             <tr class="detailsMode">
                 <td>&nbsp;</td>
-                <td colspan="<?php echo $isExercice ? 3 : 2; ?>">
-                    
+                <td colspan="<?php echo ( $isExercice || $isScorm ) ? 3 : 2; ?>">
+
                     <table width="100%" border="0" cellspacing="2">
                         <tr class="header">
                             <th><?php echo get_lang( 'Date' ); ?></th>
                             <th><?php echo get_lang( 'Spent time' ); ?></th>
-                            <?php if( $isExercice ) : ?>
+                            <?php if( $isExercice || $isScorm ) : ?>
                             <th><?php echo get_lang( 'Score' ); ?></th>
                             <?php endif; ?>
                         </tr>
@@ -226,27 +228,27 @@ else
                             <?php if( $trackingEntry->getWarning() ) : ?>
                                 <td class="warning" nowrap><?php echo $trackingEntry->getDate(); ?></td>
                                 <td class="warning" nowrap><?php echo $trackingEntry->getTime(); ?></td>
-                                <?php if( $isExercice ) : ?>
+                                <?php if( $isExercice || $isScorm ) : ?>
                                 <td class="warning" nowrap><?php echo $trackingEntry->getScoreRaw() . '/' . $trackingEntry->getScoreMax(); ?></td>
                                 <?php endif; ?>
                             <?php else : ?>
                                 <td nowrap><?php echo $trackingEntry->getDate(); ?></td>
                                 <td nowrap><?php echo $trackingEntry->getTime(); ?></td>
-                                <?php if( $isExercice ) : ?>
+                                <?php if( $isExercice || $isScorm ) : ?>
                                 <td nowrap><?php echo $trackingEntry->getScoreRaw() . '/' . $trackingEntry->getScoreMax(); ?></td>
                                 <?php endif; ?>
                             <?php endif; ?>
                         </tr>
                         <?php endforeach; ?>
                     </table>
-                    
+
                 </td>
             </tr>
-            
+
             <?php endif; ?>
-            
+
             <?php endforeach; ?>
-                
+
             </table>
         </td>
     </tr>

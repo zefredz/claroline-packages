@@ -217,7 +217,7 @@
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getDate(); ?> </td>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getTime(); ?> </td>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getProgress() . "%"; ?> </td>
-                            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) : ?>
                             <td class="warning bigCell"> <?php echo $trackingModuleEntry->getScoreRaw() . "/" . $trackingModuleEntry->getScoreMax(); ?> </td>
                             <?php endif; ?>
                         <?php else : ?>
@@ -225,7 +225,7 @@
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getDate(); ?> </td>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getTime(); ?> </td>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getProgress() . "%"; ?> </td>
-                            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) : ?>
                             <td class="bigCell"> <?php echo $trackingModuleEntry->getScoreRaw() . "/" . $trackingModuleEntry->getScoreMax(); ?> </td>
                             <?php endif; ?>
                         <?php endif; ?>
@@ -243,12 +243,12 @@
                     <td class="emptyCell">&nbsp;</td>
                     <td class="emptyCell">&nbsp;</td>
                     <td class="emptyCell">&nbsp;</td>
-                    <td colspan="<?php echo $infoModule->getModuleContentType() == 'EXERCISE' ? 3 : 2; ?>">
+                    <td colspan="<?php echo ( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) ? 3 : 2; ?>">
                         <table width="100%" border="0" cellspacing="2">
                             <tr class="header">
                                 <th class="subTableHeader"> <?php echo get_lang( 'Date' ); ?> </th>
                                 <th class="subTableHeader"> <?php echo get_lang( 'Time' ); ?> </th>
-                                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) : ?>
                                 <th class="subTableHeader"> <?php echo get_lang( 'Score' ); ?> </th>
                                 <?php endif; ?>
                             </tr>
@@ -257,13 +257,13 @@
                                  <?php if( $trackingEntry->getWarning() ) : ?>
                                 <td class="warning"> <?php echo $trackingEntry->getDate(); ?> </td>
                                 <td class="warning"> <?php echo $trackingEntry->getTime(); ?> </td>
-                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) : ?>
                                     <td class="warning"> <?php echo $trackingEntry->getScoreRaw() . "/" . $trackingEntry->getScoreMax(); ?> </td>
                                     <?php endif; ?>
                                 <?php else : ?>
                                 <td> <?php echo $trackingEntry->getDate(); ?> </td>
                                 <td> <?php echo $trackingEntry->getTime(); ?> </td>
-                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) : ?>
                                     <td> <?php echo $trackingEntry->getScoreRaw() . "/" . $trackingEntry->getScoreMax(); ?> </td>
                                     <?php endif; ?>
                                 <?php endif; ?>
