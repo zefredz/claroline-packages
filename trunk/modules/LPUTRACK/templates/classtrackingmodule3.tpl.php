@@ -96,6 +96,7 @@
                 switch ( $infoModule->getModuleContentType() )
                 {
                     case 'EXERCISE' :
+                    case 'SCORM' :
                         $totalWidth += 5;
                         break;
 
@@ -131,6 +132,7 @@
                 switch( $infoModule->getModuleContentType() )
                 {
                     case 'EXERCISE':
+                    case 'SCORM' :
                         $moduleWidth = 5;
                         break;
 
@@ -169,7 +171,9 @@
             <th> <?php echo get_lang( 'Spent time' ); ?> </th>
             <th> <?php echo get_lang( 'Progress' ); ?> </th>
 
-            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+            <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                $infoModule->getModuleContentType() == 'SCORM' ) :
+            ?>
             <th> <?php echo get_lang( 'Best score' ); ?> </th>
             <?php endif; ?>
 
@@ -204,7 +208,9 @@
                 <td class="warning bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
                 <td class="warning bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
-                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                        $infoModule->getModuleContentType() == 'SCORM' ) :
+                    ?>
                     <td class="warning bigCell">
                         <?php echo $trackingEntry->getScoreRaw() . "/" . $trackingEntry->getScoreMax(); ?>
                     </td>
@@ -214,7 +220,9 @@
                 <td class="bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
                 <td class="bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
-                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                        $infoModule->getModuleContentType() == 'SCORM' ) :
+                    ?>
                     <td class="bigCell">
                         <?php echo $trackingEntry->getScoreRaw() . "/" . $trackingEntry->getScoreMax(); ?>
                     </td>
@@ -225,7 +233,9 @@
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
-                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                    $infoModule->getModuleContentType() == 'SCORM' ) :
+                ?>
                     <td class="emptyCell">-</td>
                 <?php endif; ?>
             <?php endif; ?>
@@ -243,13 +253,15 @@
                     $trackingEntry = $trackingModule->getGeneralTracking();
                 ?>
                 <?php if( !is_null( $trackingEntry ) ) : ?>
-                    <td class="detailTable" colspan="<?php echo ( ( $infoModule->getModuleContentType() == 'EXERCISE' ) ? 5 : 4 ); ?>">
+                    <td class="detailTable" colspan="<?php echo ( ( $infoModule->getModuleContentType() == 'EXERCISE' || $infoModule->getModuleContentType() == 'SCORM' ) ? 5 : 4 ); ?>">
                         <table class="claroTable emphaseLine detailTable" width="100%" border="0" cellspacing="2">
                             <tr class="header">
                                 <th> <?php echo get_lang( 'Date' ); ?> </th>
                                 <th> <?php echo get_lang( 'Time' ); ?> </th>
                                 <th> <?php echo get_lang( 'Progress' ); ?> </th>
-                                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                                    $infoModule->getModuleContentType() == 'SCORM' ) :
+                                ?>
                                     <?php if( $this->mode == 2 ) : ?>
                                     <th>
                                         <?php echo get_lang( 'Best score' ); ?>
@@ -267,14 +279,18 @@
                                 <td class="warning"><?php echo $trackingEntry->getDate(); ?></td>
                                 <td class="warning"><?php echo $trackingEntry->getTime(); ?></td>
                                 <td class="warning"><?php echo $trackingEntry->getProgress() . '%'; ?></td>
-                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                                        $infoModule->getModuleContentType() == 'SCORM' ) :
+                                    ?>
                                     <td class="warning"><?php echo $trackingEntry->getScoreRaw() . '/' . $trackingEntry->getScoreMax(); ?></td>
                                     <?php endif; ?>
                                 <?php else : ?>
                                 <td><?php echo $trackingEntry->getDate(); ?></td>
                                 <td><?php echo $trackingEntry->getTime(); ?></td>
                                 <td><?php echo $trackingEntry->getProgress() . '%'; ?></td>
-                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                                        $infoModule->getModuleContentType() == 'SCORM' ) :
+                                    ?>
                                     <td><?php echo $trackingEntry->getScoreRaw() . '/' . $trackingEntry->getScoreMax(); ?></td>
                                     <?php endif; ?>
                                 <?php endif; ?>
@@ -285,7 +301,9 @@
                     </td>
 
                 <?php else : ?>
-                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ) : ?>
+                    <?php if( $infoModule->getModuleContentType() == 'EXERCISE' ||
+                        $infoModule->getModuleContentType() == 'SCORM' ) :
+                    ?>
                         <td class="emptyCell" colspan="5">&nbsp;</td>
                     <?php else : ?>
                         <td class="emptyCell" colspan="4">&nbsp;</td>
