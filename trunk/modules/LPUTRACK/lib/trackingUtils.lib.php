@@ -2,7 +2,7 @@
 
 /**
  * Collection of useful functions
- * 
+ *
  * @version LPUTRACK 1.0
  * @package LPUTRACK
  * @author Anh Thao PHAM <anhthao.pham@claroline.net>
@@ -19,14 +19,14 @@ class TrackingUtils
     public static function addTime( $totalTime, $sessionTime )
     {
         $resultTime = $totalTime;
-        
+
         $tempTime = $totalTime;
         $pattern = "/^\d{2,4}:\d{2}:\d{2}(\.\d{1,2})?$/";
         if( preg_match( $pattern, $totalTime ) === 1 && preg_match( $pattern, $sessionTime ) === 1 )
         {
             $totalTimeDetails = preg_split("/[:\.]/", $totalTime);
             $sessionTimeDetails = preg_split("/[:\.]/", $sessionTime);
-            
+
             $tempTime = array( (int)$totalTimeDetails[0], (int)$totalTimeDetails[1], (int)$totalTimeDetails[2] );
             if( isset( $totalTimeDetails[3] ) )
             {
@@ -39,11 +39,11 @@ class TrackingUtils
                     $tempTime[3] = (int)$totalTimeDetails[3];
                 }
             }
-            
+
             $tempTime[0] += (int)$sessionTimeDetails[0];
             $tempTime[1] += (int)$sessionTimeDetails[1];
             $tempTime[2] += (int)$sessionTimeDetails[2];
-            
+
             if( isset( $sessionTimeDetails[3] ) )
             {
                 if( preg_match( "/^\d{1}$/", $sessionTimeDetails[3] ) )
@@ -55,14 +55,14 @@ class TrackingUtils
                     $tempTime[3] = isset( $tempTime[3] ) ? ( $tempTime[3] + (int)$sessionTimeDetails[3] ) : (int)$sessionTimeDetails[3];
                 }
             }
-            
+
             if( isset( $tempTime[3] ) && $tempTime[3] >= 100 )
             {
                 $transfer = (int)( $tempTime[3] / 100 );
                 $tempTime[2] += $transfer;
                 $tempTime[3] %= 100;
             }
-            
+
             for( $i = 2; $i > 0; $i--)
             {
                 if( $tempTime[ $i ] > 60 )
@@ -72,7 +72,7 @@ class TrackingUtils
                     $tempTime[ $i ] %= 60;
                 }
             }
-            
+
             $resultTime = "";
             if( $tempTime[0] > 9999 )
             {
@@ -124,10 +124,10 @@ class TrackingUtils
         {
             throw new Exception( "Invalid time format : $totalTime OR $sessionTime" );
         }
-        
+
         return $resultTime;
     }
-    
+
     /**
      * Get all modules (id, name, contentType, rank in the learnPath) associated to a given learnPath
      * @param string $courseCode
@@ -137,7 +137,7 @@ class TrackingUtils
     public static function getModuleFromLearnPath( $courseCode, $learnPathId )
     {
         $tbl = get_module_course_tbl( array( 'lp_rel_learnPath_module', 'lp_module' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tm.module_id, tm.name, tm.contentType, trlpm.rank
                FROM `{$tbl['lp_module']}` AS tm
@@ -150,7 +150,7 @@ class TrackingUtils
 
         return $resultSet;
     }
-    
+
     /**
      * Get all courses (id, intitule) associated to a given user
      * @param int $userId
@@ -159,7 +159,7 @@ class TrackingUtils
     public static function getAllCourseFromUser( $userId )
     {
         $tbl = get_module_main_tbl( array( 'rel_course_user', 'cours' ) );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT c.code, c.intitule
                FROM `{$tbl['cours']}` AS c
@@ -168,10 +168,10 @@ class TrackingUtils
               WHERE rcu.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
            ORDER BY c.code"
         );
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get intutile of a course from its code
      * @param string $courseCode
@@ -180,22 +180,22 @@ class TrackingUtils
     public static function getCourseIntituleFromCourseCode( $courseCode )
     {
         $tblCourse = get_module_main_tbl( array( 'cours' ) );
-        
+
         $intitule = null;
         $resultSet = Claroline::getDatabase()->query(
             "SELECT intitule
                FROM `{$tblCourse['cours']}`
               WHERE code = " . Claroline::getDatabase()->quote( $courseCode )
         );
-               
+
         if( !$resultSet->isEmpty() )
         {
             $intitule = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-               
+
         return $intitule;
     }
-    
+
     /**
      * Get all classes
      * @return ResultSet List of all classes
@@ -203,15 +203,15 @@ class TrackingUtils
     public static function getAllClasses()
     {
         $tblClass = get_module_main_tbl( array( 'class' ) );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT id, name, class_parent_id
                FROM `{$tblClass['class']}`"
         );
-               
+
         return $resultSet;
     }
-    
+
     /**
      * Get all courses associated to a given class
      * @param int $classId
@@ -220,7 +220,7 @@ class TrackingUtils
     public static function getCourseFromClass( $classId )
     {
         $tbl = get_module_main_tbl( array( 'cours', 'rel_course_class' ) );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT tc.code,
                     tc.intitule
@@ -230,10 +230,10 @@ class TrackingUtils
               WHERE trcc.classId = " . Claroline::getDatabase()->escape( (int)$classId ) . "
            ORDER BY tc.code"
         );
-         
+
         return $resultSet;
     }
-    
+
     /**
      * Compute the number of courses in a given class
      * @param int $classId
@@ -243,7 +243,7 @@ class TrackingUtils
     {
         $nbCourse = 0;
         $tbl = get_module_main_tbl( array( 'cours', 'rel_course_class' ) );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( tc.code )
                FROM `{$tbl['cours']}` AS tc
@@ -255,10 +255,10 @@ class TrackingUtils
         {
             $nbCourse = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $nbCourse;
     }
-    
+
     /**
      * Get all users (id, first name, last name) from a given class
      * @param int $classId
@@ -267,7 +267,7 @@ class TrackingUtils
     public static function getUserFromClass( $classId )
     {
         $tbl = get_module_main_tbl( array( 'user', 'rel_class_user' ) );
-            
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT u.user_id, u.nom, u.prenom
                FROM `{$tbl['user']}` AS u
@@ -276,10 +276,10 @@ class TrackingUtils
               WHERE rcu.class_Id = " . Claroline::getDatabase()->escape( (int)$classId ) . "
            ORDER BY u.nom, u.prenom"
         );
-               
+
         return $resultSet;
     }
-    
+
     /**
      * Compute the number of users in a given class
      * @param int $classId
@@ -289,7 +289,7 @@ class TrackingUtils
     {
         $nbUser = 0;
         $tblRelClassUser = get_module_main_tbl( array( 'rel_class_user' ) );
-            
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( user_id )
                FROM `{$tblRelClassUser['rel_class_user']}`
@@ -299,10 +299,10 @@ class TrackingUtils
         {
             $nbUser = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $nbUser;
     }
-    
+
     /**
      * Get all learnPaths (id, name, rank in course) from a given course
      * @param string $courseCode
@@ -311,16 +311,16 @@ class TrackingUtils
     public static function getLearnPathFromCourse( $courseCode )
     {
         $tblLearnPath = get_module_course_tbl( array( 'lp_learnPath' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT learnPath_id, name, rank
                FROM `{$tblLearnPath['lp_learnPath']}`
            ORDER BY rank"
         );
-               
+
         return $resultSet;
     }
-    
+
     /**
      * Compute the number of learnPaths in a given course
      * @param string $courseCode
@@ -330,7 +330,7 @@ class TrackingUtils
     {
         $nbLearnPath = 0;
         $tblLearnPath = get_module_course_tbl( array( 'lp_learnPath' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( learnPath_id )
                FROM `{$tblLearnPath['lp_learnPath']}`"
@@ -339,10 +339,10 @@ class TrackingUtils
         {
             $nbLearnPath = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
-        return $nbLearnPath;      
+
+        return $nbLearnPath;
     }
-    
+
     /**
      * Computer the number of modules in a given learnPath
      * @param string $courseCode
@@ -353,7 +353,7 @@ class TrackingUtils
     {
         $nbModule = 0;
         $tbl = get_module_course_tbl( array( 'lp_rel_learnPath_module', 'lp_module' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT COUNT( trlm.module_id )
                FROM `{$tbl['lp_rel_learnPath_module']}` AS trlm
@@ -366,10 +366,10 @@ class TrackingUtils
         {
             $nbModule = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $nbModule;
     }
-    
+
     /**
      * Get the content type of a given module
      * @param string $courseCode
@@ -379,16 +379,16 @@ class TrackingUtils
     public static function getContentTypeFromModuleId( $courseCode, $moduleId )
     {
         $tblModule = get_module_course_tbl( array( 'lp_module' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT contentType
                FROM `{$tblModule['lp_module']}`
               WHERE module_id = " . Claroline::getDatabase()->escape( (int)$moduleId )
-        );     
-               
+        );
+
         return $resultSet;
     }
-    
+
     /**
      * Get the Id of the learnPath associated to an entry in the 'lp_user_module_progress' table
      * @param string $courseCode
@@ -399,7 +399,7 @@ class TrackingUtils
     {
         $learnPathModuleId = null;
         $tblUserModuleProgress = get_module_course_tbl( array( 'lp_user_module_progress' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT learnPath_module_id
                FROM `{$tblUserModuleProgress['lp_user_module_progress']}`
@@ -409,10 +409,10 @@ class TrackingUtils
         {
             $learnPathModuleId = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $learnPathModuleId;
     }
-    
+
     /**
      * Get the Id of the learnPath associated to an entry of the 'lp_rel_learnPath_module' table
      * @param string $courseCode
@@ -423,7 +423,7 @@ class TrackingUtils
     {
         $learnPathId = null;
         $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnPath_module' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT learnPath_id
                FROM `{$tblRelLearnPathModule['lp_rel_learnPath_module']}`
@@ -433,10 +433,10 @@ class TrackingUtils
         {
             $learnPathId = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $learnPathId;
     }
-    
+
     /**
      * Get the Id of the module associated to an entry of the 'lp_rel_learnPath_module' table
      * @param string $courseCode
@@ -447,7 +447,7 @@ class TrackingUtils
     {
         $moduleId = null;
         $tblRelLearnPathModule = get_module_course_tbl( array( 'lp_rel_learnPath_module' ), $courseCode );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT module_id
                FROM `{$tblRelLearnPathModule['lp_rel_learnPath_module']}`
@@ -457,10 +457,10 @@ class TrackingUtils
         {
             $moduleId = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $moduleId;
     }
-    
+
     /**
      * Get the name of a class from its Id
      * @param int $classId
@@ -469,7 +469,7 @@ class TrackingUtils
     public static function getClassNameFromClassId( $classId )
     {
         $className = null;
-        
+
         $tblClass = get_module_main_tbl( array( 'class' ) );
         $resultSet = Claroline::getDatabase()->query(
             "SELECT name
@@ -480,10 +480,10 @@ class TrackingUtils
         {
             $className = $resultSet->fetch( Database_ResultSet::FETCH_VALUE );
         }
-        
+
         return $className;
     }
-    
+
     /**
      * Get details of an user (id, first name, last name) from its Id
      * @param int $userId
@@ -492,16 +492,16 @@ class TrackingUtils
     public static function getUserFromUserId( $userId )
     {
         $tblUser = get_module_main_tbl( array( 'user' ) );
-        
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT user_id, nom, prenom
                FROM `{$tblUser['user']}`
               WHERE user_id = " . Claroline::getDatabase()->escape( (int)$userId )
         );
-        
+
         return $resultSet->fetch();
     }
-    
+
     /**
      * Get entries associated to a given user from 'lp_user_module_progress' table
      * @param int $userId
@@ -526,10 +526,10 @@ class TrackingUtils
               WHERE tump.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
            ORDER BY tump.user_id"
         );
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get entries associated to a given user and a given learnPath from 'lp_user_module_progress' table
      * @param int $userId
@@ -556,10 +556,10 @@ class TrackingUtils
                 AND tump.learnPath_id = " . Claroline::getDatabase()->escape( (int)$learnPathId ) . "
            ORDER BY tump.user_id"
         );
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get entries associated to a given user, a given learnPath and a given module from 'lp_user_module_progress' table
      * @param int $userId
@@ -588,10 +588,10 @@ class TrackingUtils
                 AND trlm.module_id = " . Claroline::getDatabase()->escape( (int)$moduleId ) . "
            ORDER BY tump.user_id"
         );
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get entries associated to a given list of users and a given list of courses in 'tracking_event' table
      * @param array $userIdList
@@ -602,7 +602,7 @@ class TrackingUtils
     public static function getLearnPathTrackingData( $userIdList, $courseCodeList )
     {
         $tblTrackingEvent = get_module_main_tbl( array( 'tracking_event' ) );
-        
+
         if( is_array( $userIdList ) && is_array( $courseCodeList ) )
         {
             $courseTextList = "";
@@ -625,10 +625,10 @@ class TrackingUtils
         {
             throw new Exception( "Arguments must be of array type" );
         }
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get initialization entries associated to a given user in 'tracking_event' table
      * @param int $userId
@@ -638,7 +638,7 @@ class TrackingUtils
     public static function getLearnPathTrackingInit( $userId, $courseCode )
     {
         $tblTrackingEvent = get_module_main_tbl( array( 'tracking_event' ) );
-            
+
         $resultSet = Claroline::getDatabase()->query(
             "SELECT course_code, user_id, date, data
                FROM `{$tblTrackingEvent['tracking_event']}`
@@ -647,10 +647,10 @@ class TrackingUtils
                 AND user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
            ORDER BY date"
         );
-        
+
         return $resultSet;
     }
-    
+
     /**
      * Get tracking for modules that had been started before installation of this module (LPUTRACK) for a given user
      * @param int $userId
@@ -679,11 +679,11 @@ class TrackingUtils
         // This date will be used for tracking generated from 'lp_user_module_pogress'
         // as it is possible that many modules had been executed before the installation of this module (LPUTRACK)
         $oldestDate = TrackingUtils::getOldestDateFromTracking();
-        
+
         $initList = array();
-        
+
         $initRow = $initLearnPathTrackingSet->fetch();
-        
+
         while( $initRow )
         {
             $extractedData = preg_split( "/;/", $initRow['data'] );
@@ -694,7 +694,7 @@ class TrackingUtils
             $initList[ $extractedData[0] ][] = $extractedData[1];
             $initRow = $initLearnPathTrackingSet->fetch();
         }
-        
+
         $nonInitList = array();
         $lpTrackRow = $learnPathTrackingSet->fetch();
         while( $lpTrackRow )
@@ -717,10 +717,10 @@ class TrackingUtils
             }
             $lpTrackRow = $learnPathTrackingSet->fetch();
         }
-        
+
         return $nonInitList;
     }
-    
+
     /**
      * Compute progress for a module from its tracking data
      * EXERCISE and DOCUMENT type have directly 100% progress once done
@@ -739,9 +739,9 @@ class TrackingUtils
     public static function computeProgress( $courseCode, $moduleId, $status, $scoreRaw, $scoreMin, $scoreMax )
     {
         $progress = 0;
-        
+
         $resultSet = TrackingUtils::getContentTypeFromModuleId( $courseCode, $moduleId );
-               
+
         if( !$resultSet->isEmpty() )
         {
             $resultRow = $resultSet->fetch();
@@ -788,10 +788,10 @@ class TrackingUtils
                     break;
             }
         }
-        
+
         return $progress;
     }
-    
+
     /**
      * Get the oldest date from logs created by this module (LPUTRACK)
      * @return date The oldest date
@@ -799,7 +799,7 @@ class TrackingUtils
     public static function getOldestDateFromTracking()
     {
         $tblTrackingEvent = get_module_main_tbl( array( 'tracking_event' ) );
-        
+
         $oldestDate = date( 'Y-m-d' );
         $resultSet = Claroline::getDatabase()->query(
             "SELECT MIN( date )
@@ -813,7 +813,7 @@ class TrackingUtils
         }
         return $oldestDate;
     }
-    
+
     /**
      * Get path of a module
      * @param string $courseCode
@@ -822,7 +822,7 @@ class TrackingUtils
     public static function getPathFromModule( $courseCode, $moduleId )
     {
         $tbl = get_module_course_tbl( array( 'lp_module', 'lp_asset' ), $courseCode );
-        
+
         $modulePath = Claroline::getDatabase()->query(
             "SELECT asset.path
                FROM `{$tbl['lp_asset']}` AS asset
@@ -830,8 +830,68 @@ class TrackingUtils
                  ON asset.module_id = module.module_id
               WHERE module.module_id = " . Claroline::getDatabase()->escape( (int)$moduleId )
         );
-        
+
         return $modulePath->fetch( Database_ResultSet::FETCH_VALUE );
+    }
+
+    /**
+     * Get list of users where name, first name, username or email contains the $search param
+     * @param string $search
+     */
+    public static function getUsersBySearch( $search = null )
+    {
+        $tbl = get_module_main_tbl( array( 'user', 'rel_course_user', 'rel_class_user' ) );
+
+        if( is_null( $search ) )
+        {
+            $resultSet = Claroline::getDatabase()->query(
+                "SELECT user.user_id, user.nom, user.prenom, user.username, user.email, COUNT( course.code_cours ) AS nbcours
+                   FROM `{$tbl['user']}` AS user
+              LEFT JOIN `{$tbl['rel_course_user']}` AS course
+                     ON user.user_id = course.user_id
+               GROUP BY user.user_id
+               ORDER BY user.user_id"
+            );
+        }
+        else
+        {
+            $upperSearch = '%' . strtoupper( $search ) . '%';
+            $resultSet = Claroline::getDatabase()->query(
+                "SELECT u.user_id, u.nom, u.prenom, u.username, u.email, COUNT( c.code_cours ) AS nbcours
+                   FROM `{$tbl['user']}` AS u
+              LEFT JOIN `{$tbl['rel_course_user']}` AS c
+                     ON u.user_id = c.user_id
+                  WHERE UPPER( u.nom ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
+                    OR UPPER( u.prenom ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
+                    OR UPPER( u.username ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
+                    OR UPPER( u.email ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
+              GROUP BY u.user_id
+              ORDER BY u.user_id"
+            );
+        }
+        return $resultSet;
+    }
+
+    /**
+     * Get all courses associated to a given user
+     * @param int $userId
+     * @return ResultSet List of courses
+     */
+    public static function getCourseFromUser( $userId )
+    {
+        $tbl = get_module_main_tbl( array( 'cours', 'rel_course_user' ) );
+
+        $resultSet = Claroline::getDatabase()->query(
+            "SELECT tc.code,
+                    tc.intitule
+               FROM `{$tbl['cours']}` AS tc
+         INNER JOIN `{$tbl['rel_course_user']}` AS trcu
+                 ON tc.code = trcu.code_cours
+              WHERE trcu.user_id = " . Claroline::getDatabase()->escape( (int)$userId ) . "
+           ORDER BY tc.code"
+        );
+
+        return $resultSet;
     }
 }
 
