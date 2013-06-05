@@ -12,6 +12,9 @@ Parvenez-vous à vous authentifier sur le portail de l'UCL ( à cette adresse : ht
 Vérifiez bien que vous respectez scrupuleusement la casse en tapant votre mot de passe.
 En effet, le système considère les majuscules et les minuscules comme des caractères distincts.
 
+Vérifiez également que votre navigateur est bien configuré pour accepter les cookies.
+Sans cela, l'authentification ne fonctionnera pas!
+
 Si vous avez activé l'autocomplétion des mots de passe au sein de votre navigateur, désactivez-la.
 Il se peut que ce dernier complète le champ avec des données erronées...
 
