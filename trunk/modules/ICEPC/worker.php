@@ -128,9 +128,17 @@ try
                     {
                         $dialogBox = new DialogBox();
 
-                        $dialogBox->error('The EPC remote service is unavailable at the moment, it\'s not possible to retreive the latest version of the user list you asked for.' );
+                        $dialogBox->error( get_lang( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive the latest version of the user list you asked for' ) );
 
-                        $dialogBox->question('Meanwhile, the following users from the requested EPC list are already registred to the platform.<br /> Do you want to add them to your course ? <br /> [yes] / [no]<br /> <em>(*) you can retry to import or update the user list later </em>');
+                        $dialogBox->question( get_lang('Meanwhile, the following users from the requested EPC list are already registred to the platform.<br /> Do you want to add them to your course ?)' )
+                            . '<br />' 
+                            . '<a href="'.claro_htmlspecialchars( 
+                                Url::Contextualize ( 
+                                    get_module_entry_url('ICEPC') 
+                                    . '?cmd=addExistingClass&classId='.$claroClass->getId () 
+                                    . '&epcLinkExistingStudentsToClass=' . $epcLinkExistingStudentsToClass 
+                                    . '&epcValidatePendingUsers=' . $epcValidatePendingUsers ) ).'">'.get_lang('yes').'</a>'
+                            . '<a href="'.claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ).'">'.get_lang('no').'</a>' );
 
                         $out->appendContent( $dialogBox->render() );
 
@@ -154,13 +162,13 @@ try
                     {
                         $dialogBox = new DialogBox();
 
-                        $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive and update this user list.'
+                        $dialogBox->error( get_lang( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive and update this user list' )
                             .'<br />'
-                            .'Please try again later.' );
+                            .get_lang( 'Please try again later' ) );
                         
                         if ( claro_is_platform_admin () )
                         {
-                            $dialogBox->info('Something can be wrong with the EPC remote service or the configuration of the module.'
+                            $dialogBox->info( get_lang( 'Something can be wrong with the EPC remote service or the configuration of the module' )
                             . '<br />'
                             . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
                         }
@@ -172,11 +180,11 @@ try
                 {
                     $dialogBox = new DialogBox();
 
-                    $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retrieve and/or update the user list you asked for.'
+                    $dialogBox->error( get_lang( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive and update this user list' )
+                        . '<br />'
+                        . get_lang( 'Please try again later' )
                         . '<br />' 
-                        . 'Please try again later.'
-                        . '<br />' 
-                        . 'Something can be wrong with the EPC remote service or the configuration of the module'
+                        . get_lang( 'Something can be wrong with the EPC remote service or the configuration of the module' )
                         . '<br />'
                         . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
 
@@ -187,13 +195,13 @@ try
             {
                 $dialogBox = new DialogBox();
 
-                $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retrieve and/or update the user list you asked for.'
-                    . '<br />' 
-                    . 'Please try again later.'
-                    . '<br />' 
-                    . 'Something can be wrong with the EPC remote service or the configuration of the module'
+                $dialogBox->error( get_lang( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive and update this user list' )
                     . '<br />'
-                    . "<pre>{$epcService->getInfo()}</pre>" );
+                    . get_lang( 'Please try again later' )
+                    . '<br />' 
+                    . get_lang( 'Something can be wrong with the EPC remote service or the configuration of the module' )
+                    . '<br />'
+                    . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
 
                 $out->appendContent( $dialogBox->render() );
             }
