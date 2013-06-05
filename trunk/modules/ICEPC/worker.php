@@ -96,76 +96,179 @@ try
         
         if ( $epcService->hasError () )
         {
-            throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
-        }
-        
-        /* $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' ); */
-
-        if ( count ( $users ) )
-        {
-            $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
-            $queryInfoTpl->assign( 'info', $users->getInfo() );
-            $queryInfoTpl->assign( 'type', $epcSearchFor );
+            // check if class exists
+            $classId = $userInput->get ( 'classId' );
             
-            if ( claro_is_in_a_course () )
+            if ( $classId )
             {
-                $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
-                $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
-                $courseUserListToUpdate = ( $epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) 
-                    ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator (), $epcLinkExistingStudentsToClass == 'yes', $epcValidatePendingUsers == 'yes' ) 
-                    : array();
-                
-                $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
-                $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
-                $userListTpl->assign( 'userListIterator', $users->getIterator() );
-                $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ) );
-                $userListTpl->assign( 'epcSearchString', $epcSearchString );
-                $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
-                $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
-                $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
-                $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
-                $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
-                $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
+                $claroClass = new Claro_Class( Claroline::getDatabase() );
+                $claroClass->load( $classId );
             }
             else
             {
-                $epcUserListInfo = new EpcUserListInfo();
-                $epcUserListToUpdate = $epcUserListInfo->getUserListToUpdate( $users->getIterator (), true );
-                
-                $classId = $userInput->get ( 'classId' );
-        
-                if ( $classId )
+                $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+                $epcClass = new EpcClass($epcClassName);
+            
+                if ( $epcClass->associatedClassExists() )
                 {
-                    $claroClass = new Claro_Class( Claroline::getDatabase() );
-                    $claroClass->load( $classId );
-                    
-                    $classUserList = new Claro_ClassUserList($claroClass);
-                    $classUsernameList = $classUserList->getClassUserListIndexedByUsername();
+                    $claroClass = $epcClass->getAssociatedClass();
                 }
                 else
                 {
-                    $classUsernameList = array();
+                    $claroClass = null;
                 }
-                
-                
-                $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview_admin.tpl.php' );
-                $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
-                $userListTpl->assign( 'userListIterator', $users->getIterator() );
-                $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_url('ICEPC') ) . '/admin.php' ) );
-                $userListTpl->assign( 'epcSearchString', $epcSearchString );
-                $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
-                $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
-                $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
-                $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
-                $userListTpl->assign( 'platformToUpdate', $epcUserListToUpdate );
-                $userListTpl->assign( 'classUserList', $classUsernameList );
             }
             
-            $out->appendContent( $userListTpl->render() );
+            if ( $claroClass )
+            {                
+                // display class user list and propose to add it to the course
+                if ( claro_is_in_a_course () )
+                {
+                    if ( !$claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
+                    {
+                        $dialogBox = new DialogBox();
+
+                        $dialogBox->error('The EPC remote service is unavailable at the moment, it\'s not possible to retreive the latest version of the user list you asked for.' );
+
+                        $dialogBox->question('Meanwhile, the following users from the requested EPC list are already registred to the platform.<br /> Do you want to add them to your course ? <br /> [yes] / [no]<br /> <em>(*) you can retry to import or update the user list later </em>');
+
+                        $out->appendContent( $dialogBox->render() );
+
+                        $classUserList = new Claro_ClassUserList( $claroClass, Claroline::getDatabase() );
+                        $courseUserList = new Claro_CourseUserList( claro_get_current_course_id(), Claroline::getDatabase() );
+
+                        $epcUserDataCache = new EpcUserDataCache( Claroline::getDatabase () );
+                        $epcCachedUserData = $epcUserDataCache->getAllUsersCachedData( $courseUserList->getUserIdList () );
+
+                        $classUserListIterator = $classUserList->getClassUserListIterator();
+                        $classUserListIterator->useId('user_id');
+
+                        $userListTemplate = new ModuleTemplate('ICEPC', 'epc_class_users.tpl.php');
+                        $userListTemplate->assign( 'classUserList', $classUserListIterator );
+                        $userListTemplate->assign( 'courseUserList', $courseUserList->getUserIdList () );
+                        $userListTemplate->assign( 'epcUserData', $epcCachedUserData );
+
+                        $out->appendContent( $userListTemplate->render() );
+                    }
+                    else
+                    {
+                        $dialogBox = new DialogBox();
+
+                        $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retreive and update this user list.'
+                            .'<br />'
+                            .'Please try again later.' );
+                        
+                        if ( claro_is_platform_admin () )
+                        {
+                            $dialogBox->info('Something can be wrong with the EPC remote service or the configuration of the module.'
+                            . '<br />'
+                            . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
+                        }
+
+                        $out->appendContent( $dialogBox->render() );
+                    }
+                }
+                else
+                {
+                    $dialogBox = new DialogBox();
+
+                    $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retrieve and/or update the user list you asked for.'
+                        . '<br />' 
+                        . 'Please try again later.'
+                        . '<br />' 
+                        . 'Something can be wrong with the EPC remote service or the configuration of the module'
+                        . '<br />'
+                        . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
+
+                    $out->appendContent( $dialogBox->render() );
+                }
+            }
+            else
+            {
+                $dialogBox = new DialogBox();
+
+                $dialogBox->error( 'The EPC remote service is unavailable at the moment, it\'s not possible to retrieve and/or update the user list you asked for.'
+                    . '<br />' 
+                    . 'Please try again later.'
+                    . '<br />' 
+                    . 'Something can be wrong with the EPC remote service or the configuration of the module'
+                    . '<br />'
+                    . "<pre>{$epcService->getInfo()}</pre>" );
+
+                $out->appendContent( $dialogBox->render() );
+            }
         }
         else
         {
-            $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
+            /* $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' ); */
+
+            if ( count ( $users ) )
+            {
+                $queryInfoTpl = new ModuleTemplate( 'ICEPC', 'epc_query_info.tpl.php' );
+                $queryInfoTpl->assign( 'info', $users->getInfo() );
+                $queryInfoTpl->assign( 'type', $epcSearchFor );
+
+                if ( claro_is_in_a_course () )
+                {
+                    $courseUserList = new Claro_CourseUserList( claro_get_current_course_id() );
+                    $epcCourseUserListInfo = new EpcCourseUserListInfo( claro_get_current_course_id() );
+                    $courseUserListToUpdate = ( $epcLinkExistingStudentsToClass == 'yes' || $epcValidatePendingUsers == 'yes' ) 
+                        ? $epcCourseUserListInfo->getUsernameListToUpdate ( $users->getIterator (), $epcLinkExistingStudentsToClass == 'yes', $epcValidatePendingUsers == 'yes' ) 
+                        : array();
+
+                    $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview.tpl.php' );
+                    $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
+                    $userListTpl->assign( 'userListIterator', $users->getIterator() );
+                    $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ) );
+                    $userListTpl->assign( 'epcSearchString', $epcSearchString );
+                    $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
+                    $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
+                    $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+                    $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
+                    $userListTpl->assign( 'courseUserToUpdateList', $courseUserListToUpdate );
+                    $userListTpl->assign( 'courseUserList', $courseUserList->getUsernameList () );
+                }
+                else
+                {
+                    $epcUserListInfo = new EpcUserListInfo();
+                    $epcUserListToUpdate = $epcUserListInfo->getUserListToUpdate( $users->getIterator (), true );
+
+                    $classId = $userInput->get ( 'classId' );
+
+                    if ( $classId )
+                    {
+                        $claroClass = new Claro_Class( Claroline::getDatabase() );
+                        $claroClass->load( $classId );
+
+                        $classUserList = new Claro_ClassUserList($claroClass);
+                        $classUsernameList = $classUserList->getClassUserListIndexedByUsername();
+                    }
+                    else
+                    {
+                        $classUsernameList = array();
+                    }
+
+
+                    $userListTpl = new ModuleTemplate( 'ICEPC', 'epc_userlist_preview_admin.tpl.php' );
+                    $userListTpl->assign( 'responseInfo', $queryInfoTpl->render() );
+                    $userListTpl->assign( 'userListIterator', $users->getIterator() );
+                    $userListTpl->assign( 'actionUrl', claro_htmlspecialchars( Url::Contextualize ( get_module_url('ICEPC') ) . '/admin.php' ) );
+                    $userListTpl->assign( 'epcSearchString', $epcSearchString );
+                    $userListTpl->assign( 'epcAcadYear', $epcAcadYear );
+                    $userListTpl->assign( 'epcSearchFor', $epcSearchFor );
+                    $userListTpl->assign( 'epcLinkExistingStudentsToClass', $epcLinkExistingStudentsToClass );
+                    $userListTpl->assign( 'epcValidatePendingUsers', $epcValidatePendingUsers );
+                    $userListTpl->assign( 'platformToUpdate', $epcUserListToUpdate );
+                    $userListTpl->assign( 'classUserList', $classUsernameList );
+                }
+
+                $out->appendContent( $userListTpl->render() );
+
+            }
+            else
+            {
+                $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
+            }
         }
     }
     elseif ( $cmd == 'exImport' || $cmd == 'exSync' )
