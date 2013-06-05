@@ -33,7 +33,10 @@
     $_lang['xls export'] = 'Exporter en xls';
     $_lang['My learnPath tracking'] = 'Mon suivi des parcours pédagogiques';
     $_lang['View type'] = 'Type de vue';
-	$_lang['Total'] = 'Total';
-	$_lang['First connection'] = 'Première connexion';
+    $_lang['Total'] = 'Total';
+    $_lang['First connection'] = 'Première connexion';
+    $_lang['Search an user'] = 'Rechercher un utilisateur';
+    $_lang['Alternative view'] = 'Vue alternative';
+    $_lang['for user'] = 'pour l\'utilisateur';
 
 ?>

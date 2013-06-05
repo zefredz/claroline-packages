@@ -35,5 +35,8 @@
     $_lang['View type'] = 'View type';
 	$_lang['Total'] = 'Total';
 	$_lang['First connection'] = 'First connection';
+    $_lang['Search an user'] = 'Search an user';
+    $_lang['Alternative view'] = 'Alternative view';
+    $_lang['for user'] = 'for user';
 
 ?>
