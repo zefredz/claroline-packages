@@ -184,6 +184,66 @@ $(function(){
         
         Claroline::getDisplay()->body->appendContent( $epcAjaxWrapper->render() );
     }
+    elseif ( $cmd == 'addExistingClass' )
+    {
+        $classId = $userInput->get( 'classId' );
+        $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
+        
+        if ( ! $classId )
+        {
+            throw new Exception( get_lang( 'Missing class id' ) );
+        }
+        
+        if ( !claro_is_in_a_course () )
+        {
+            throw new Exception( get_lang ( 'Cannot add an existing course outside of a course' ) );
+        }
+        
+        $claroClass = new Claro_Class( Claroline::getDatabase() );
+        $claroClass->load( $classId );
+        
+        $dialogBox = new DialogBox();
+        
+        if ( ! $claroClass->isRegisteredToCourse ( claro_get_current_course_id () ) )
+        {
+            $claroClass->registerToCourse( claro_get_current_course_id () );
+            
+            Console::debug("<pre>Register class {$claroClass->getName()} to current course</pre>", 'debug');
+        
+        
+            $claroClassUserList = new Claro_ClassUserList( $claroClass );
+
+            $courseObj = new Claro_Course( claro_get_current_course_id () );
+            $courseObj->load();
+
+            Console::debug( '<pre>Register class users in course '.$courseObj->courseId.'</pre>', 'debug' );
+
+            $courseUserList = new Claro_BatchCourseRegistration($courseObj);
+
+            if ( $claroClass->isRegisteredToCourse ( $courseObj->courseId ) )
+            {
+                $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
+            }
+
+            $courseUserList->addUserIdListToCourse( 
+                $claroClassUserList->getClassUserIdList (), 
+                true, 
+                $epcLinkExistingStudentsToClass == 'yes', 
+                $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
+            
+            $dialogBox->success(get_lang('User list added to course'));
+        }
+        else
+        {
+            // already registered
+            $dialogBox->info(get_lang('Nothing to do : user list already in course'));
+        }
+        
+        $dialogBox->info('<a href="'.Url::Contextualize(get_module_url('ICEPC')).'">'.get_lang('Back').'</a>');
+        
+        Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
+    }
     elseif ( $cmd == 'exUnreg' )
     {
         $dialogBox = new DialogBox();
