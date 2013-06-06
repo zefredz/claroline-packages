@@ -1,11 +1,11 @@
-<?php if( ! $this->userData[ 'jsEnabled' ] ); ?>
+<?php if( ! $this->userData[ 'cookieEnabled' ] ) : ?>
 Vous ne parvenez pas à vous authentifier sur la plateforme car votre navigateur refuse actuellement les cookies!
 Changez la configuration de celui-ci afin que les cookies soient acceptés, puis essayez de vous connecter à nouveau.
 
-Si cela ne fonctionne toujours pas, e<? php else : ?>
+Si cela ne fonctionne toujours pas, e<?php else : ?>
 E<?php endif; ?>ffectuez les vérifications suivantes :
-
 <?php if( $this->userData[ 'UCLMember' ] ) : ?>
+
 Parvenez-vous à vous authentifier sur le portail de l'UCL ( à cette adresse : http://www.uclouvain.be ) ?
     Dans le cas contraire, le problème provient sans doute de votre compte global.
     Contactez alors le service-desk de l'UCL :
