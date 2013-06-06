@@ -134,12 +134,3 @@ $footer = "\n\nBien à vous,\n"
     . "http://www.uclouvain.be/ipm\n"
     . "http://icampus.uclouvain.be\n"
     . "--------------------------------------";
-
-$defaultUserData = array(
-    'userId' => null,
-    'firstName' => null,
-    'lastName' => null,
-    'mail' => null,
-    'username' => null,
-    'officialCode' => null,
-    'jsEnabled' => null );
