@@ -2,7 +2,7 @@
 Vous ne parvenez pas à vous authentifier sur la plateforme car votre navigateur refuse actuellement les cookies!
 Changez la configuration de celui-ci afin que les cookies soient acceptés, puis essayez de vous connecter à nouveau.
 
-Si cela ne fonctionne toujours pas, e<?php else; ?>
+Si cela ne fonctionne toujours pas, e<? php else : ?>
 E<?php endif; ?>ffectuez les vérifications suivantes :
 
 <?php if( $this->userData[ 'UCLMember' ] ) : ?>
