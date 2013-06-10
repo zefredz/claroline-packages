@@ -5,10 +5,10 @@ CREATE TABLE IF NOT EXISTS `__CL_MAIN__epc_user_data` (
   `other_data` text,
   `last_sync` datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM
+) ENGINE=MyISAM;
 
 CREATE TABLE IF NOT EXISTS `__CL_MAIN__epc_class_data` (
   `class_name` varchar(255) NOT NULL,
   `last_sync` datetime DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`class_name`)
-) ENGINE=MyISAM
+) ENGINE=MyISAM;
