@@ -163,7 +163,7 @@ $(function(){
         $list = new ModuleTemplate ( 'ICEPC', 'epc_classlist_admin.tpl.php' );
         $list->assign( 'epcClassList' , $epcListToDisplay );
         
-        $toolTitle->addCommand( get_lang('Import student list from EPC'), Url::Contextualize ( get_module_url ( 'ICEPC' ) . 'admin.php?cmd=rqImport' ), 'class' );
+        $toolTitle->addCommand( get_lang('Import student list from EPC'), Url::Contextualize ( get_module_url ( 'ICEPC' ) . '/admin.php?cmd=rqImport' ), 'class' );
         
         Claroline::getDisplay ()->body->appendContent ( $list->render () );
     }
