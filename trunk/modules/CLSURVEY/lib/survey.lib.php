@@ -298,7 +298,7 @@ function survey_get_survey_visibility($surveyId, $context=null)
  * @param array $context
  * @return unknown
  */
-function get_survey_list($context)
+function get_survey_list()
 {
     $tbl = get_module_main_tbl(array('survey_list'));
 
@@ -308,7 +308,7 @@ function get_survey_list($context)
                    `description`,
                    `visibility`
             FROM `" . $tbl['survey_list'] . "`
-            WHERE cid = '" . addslashes($context[CLARO_CONTEXT_COURSE]) . "'
+            WHERE cid = '" . addslashes(claro_get_current_course_id()) . "'
             ORDER BY rank";
 
     return claro_sql_query_fetch_all_rows($sql) ;
