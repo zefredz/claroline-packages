@@ -26,8 +26,6 @@ $msgList=array();
 require '../../claroline/inc/claro_init_global.inc.php';
 FromKernel::uses( 'utils/input.lib' );
 
-$context = array(CLARO_CONTEXT_COURSE=>claro_get_current_course_id());
-
 if ( ! get_init('in_course_context')  || ! get_init('is_courseAllowed') ) claro_disp_auth_form(true);
 
 claro_set_display_mode_available(TRUE);
@@ -50,7 +48,7 @@ claro_set_display_mode_available(TRUE);
  * DB tables definition
  */
 
-$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
+$tbl = get_module_main_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'));
 
 // DEFAULT DISPLAY
 $displayList = FALSE;
@@ -68,7 +66,7 @@ $cmd        = $userInput->get( 'cmd' )        ? $cmd = $userInput->get( 'cmd' ) 
 $cmdMenu=array();
 
 // test access
-$surveyVisible =  (bool) survey_get_survey_visibility($idSurvey, $context);
+$surveyVisible =  (bool) survey_get_survey_visibility($idSurvey);
 
 if (   claro_failure::get_last_failure() == ERR_UNKNOW_SURVEY
    || (!$surveyVisible AND !$is_allowedToEdit))

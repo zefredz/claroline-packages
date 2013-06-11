@@ -693,7 +693,7 @@ function get_answer_by_question($questionId, $context)
  * @param array $context
  * @return array(title, description)
  */
-function get_survey_data($surveyId,$context=null)
+function get_survey_data($surveyId)
 {
     $tbl = get_module_main_tbl(array('survey_list'));
     $sql = "SELECT `title`,

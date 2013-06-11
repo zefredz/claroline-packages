@@ -55,7 +55,7 @@ include_once get_path('includePath') . '/lib/form.lib.php';
  * DB tables definition
  */
 
-$tbl = claro_sql_get_tbl('survey_list', $context );
+$tbl = get_module_main_tbl(array('survey_list'));
 
 $userInput = Claro_UserInput::getInstance();
 

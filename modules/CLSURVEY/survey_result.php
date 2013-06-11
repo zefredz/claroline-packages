@@ -118,7 +118,7 @@ if (!is_null($surveyId))
             $iterator ++ ;
             $questionId = $thisSurveyQuestion['questionId'];
 
-            $tbl = claro_sql_get_tbl('survey_answer', $context);
+            $tbl = get_module_main_tbl('survey_answer');
             $sql = "SELECT answer, count(answer) as qty
                     FROM `" . $tbl['survey_answer'] . "`
                     WHERE id_question = " . (int) $questionId . "
@@ -173,7 +173,7 @@ if ( $is_allowedToEdit && $displayList )
     $cmdMenu[] = claro_html_cmd_link($_SERVER['PHP_SELF'] . '?cmd=exExport&amp;surveyId=' . $surveyId, '<img src="' . get_icon_url( 'export' ) . '" border="0" alt="">&nbsp;'  . get_lang("Export results"));
 }
 
-$survey = get_survey_data($surveyId,$context);
+$survey = get_survey_data($surveyId);
 
 
 /**
