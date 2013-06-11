@@ -30,7 +30,7 @@ FromKernel::uses( 'utils/input.lib' );
  * DB tables definition
  */
 
-$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list' ), $context);
+$tbl = get_module_main_tbl(array('survey_question', 'survey_question_list' ));
 
 
 // claroline libraries
@@ -259,13 +259,12 @@ if( $displayForm )
  * @param string $description
  * @param string $option
  * @param string $type
- * @param array $context
  * @return integer
  */
 
-function survey_update_question($questionId, $title, $description, $option, $type,$context=null)
+function survey_update_question($questionId, $title, $description, $option, $type)
 {
-    $tbl = claro_sql_get_tbl('survey_question_list', $context);
+    $tbl = get_module_main_tbl('survey_question_list');
 
     $sql = "UPDATE `" . $tbl['survey_question_list'] . "` " . "\n"
     .      "SET `title` = '" . addslashes($title) . "' ," . "\n"

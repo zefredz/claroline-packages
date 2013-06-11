@@ -27,8 +27,6 @@ $gidReset  = true;
 require dirname( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
 FromKernel::uses( 'utils/input.lib' );
 
-$context = array( CLARO_CONTEXT_COURSE=> claro_get_current_course_id());
-
 add_module_lang_array($tlabelReq);
 
 if ( ! get_init('in_course_context') || ! get_init('is_courseAllowed') || !get_init('is_authenticated') ) claro_disp_auth_form(true);
@@ -44,7 +42,7 @@ $is_allowedToEdit = claro_is_allowed_to_edit();
 /**
  * DB tables definition
  */
-$tbl = claro_sql_get_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'), $context);
+$tbl = get_module_main_tbl(array('survey_question', 'survey_question_list', 'survey_answer', 'survey_list', 'survey_user'));
 
 // DEFAULT DISPLAY
 $displayList = FALSE;
@@ -143,7 +141,7 @@ else
 /////////////////////////////////////////////////////////////////////////////////////
 // PREPARE DISPLAYS
 
-$surveyList = get_survey_list($context) ;
+$surveyList = get_survey_list() ;
 
 $surveyGrid = array();
 $surveyVotedGrid = array();
