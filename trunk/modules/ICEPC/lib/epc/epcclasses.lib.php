@@ -219,11 +219,29 @@ class EpcClass
         return $this->associatedClass;
     }
     
-    public function updateEpcClassSyncDate( $date = null )
+    public function updateEpcClassSyncDate( $date = null, $details = null )
     {
-        $tbl = get_module_main_tbl( array('epc_class_data') );
+        // var_dump(__FUNCTION__);
         
-        $sqlDate = $date ? $this->database->quote( $date ) : "NOW()";
+        $syncDate = $date ? $date : 'NOW()';
+        
+        $this->updateEpcClassData( $syncDate, null, $details );
+    }
+    
+    public function updateEpcClassSyncErrorDate( $date = null, $details = null )
+    {
+        // var_dump(__FUNCTION__);
+        
+        $errorDate = $date ? $date : 'NOW()';
+        
+        $this->updateEpcClassData( null, $errorDate, $details );
+    }
+    
+    protected function updateEpcClassData ( $syncDate = null, $errorDate = null, $details = null )
+    {
+        // var_dump(__FUNCTION__);
+        
+        $tbl = get_module_main_tbl( array('epc_class_data') );
         
         if ( 
             $this->database->query("
@@ -235,27 +253,84 @@ class EpcClass
                     `class_name` = " . $this->database->quote($this->epcName->__toString())
             )->numRows() )
         {
+            // leave missing parameters unchanged
+            if ( $syncDate == 'NOW()' )
+            {
+                $sqlSyncDate = $syncDate;
+            }
+            else
+            {
+                $sqlSyncDate = $syncDate ? $this->database->quote( $syncDate ) : "`last_sync`";
+            }
+            
+            if ( $errorDate == 'NOW()' )
+            {
+                $sqlErrorDate = $errorDate;
+            }
+            else
+            {
+                $sqlErrorDate = $errorDate ? $this->database->quote( $errorDate ) : "`last_error`";
+            }
+            
+            $sqlDetails = empty($details) ? "`details`" : $this->database->quote( $details );
+            
             // update
             return $this->database->exec( "
                 UPDATE 
                     `{$tbl['epc_class_data']}`
                 SET
-                    `last_sync` = {$sqlDate}
+                    `last_sync` = {$sqlSyncDate},
+                    `last_error` = {$sqlErrorDate},
+                    `details` = {$sqlDetails}
                 WHERE
                     `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
             " );
         }
         else
         {
+            // set default values to missing parameters
+            if ( $syncDate == 'NOW()' )
+            {
+                $sqlSyncDate = $syncDate;
+            }
+            else
+            {
+                $sqlSyncDate = $syncDate ? $this->database->quote( $syncDate ) : "'0000-00-00 00:00:00'";
+            }
+            
+            if ( $errorDate == 'NOW()' )
+            {
+                $sqlErrorDate = $errorDate;
+            }
+            else
+            {
+                $sqlErrorDate = $errorDate ? $this->database->quote( $errorDate ) : "'0000-00-00 00:00:00'";
+            }
+            
+            $sqlDetails = empty($details) ? 'NULL' : $this->database->quote( $details );
+            
             // insert
             return $this->database->exec( "
                 INSERT INTO 
                     `{$tbl['epc_class_data']}`
                 SET
-                    `last_sync` = {$sqlDate},
+                    `last_sync` = {$sqlSyncDate},
+                    `last_error` = {$sqlErrorDate},
+                    `details` = {$sqlDetails},
                     `class_name` = " . $this->database->quote($this->epcName->__toString()) . "
             " );
         }
+    }
+    
+    public static function loadFromClass( $claroClass )
+    {
+        $name = $claroClass->getName();
+        
+        $epcClassName = EpcClassName::parse($name);
+        
+        $epcClass = new self( $epcClassName );
+        
+        return $epcClass;
     }
 }
 
@@ -295,7 +370,9 @@ class EpcClassList
                 c.name,
                 c.class_parent_id,
                 c.class_level,
-                cda.last_sync
+                cda.last_sync,
+                cda.last_error,
+                cda.details
             FROM 
                 `{$tbl['rel_course_class']}` AS cc
             LEFT JOIN 
@@ -329,6 +406,8 @@ class EpcClassList
                 c.class_parent_id,
                 c.class_level,
                 cda.last_sync,
+                cda.last_error,
+                cda.details,
                 COUNT(*) AS numberOfCourses,
                 GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
