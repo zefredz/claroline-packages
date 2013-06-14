@@ -35,7 +35,8 @@ try
         'connectors/adminuser.lib',
         'epc/helpers.lib',
         'epc/epc.lib',
-        'epc/epcclasses.lib'
+        'epc/epcclasses.lib',
+        'epc/epclog.lib'
     );
 
     if (  ! ( claro_is_platform_admin() || ( claro_is_course_manager () && claro_is_in_a_course() ) ) )
@@ -308,6 +309,7 @@ try
                 $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
                 $epcClass = new EpcClass($epcClassName);
                 $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>" );
+                EpcLog::syncError( $epcClassName, $epcService->getInfo(), true );
             }
             
             throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
@@ -315,6 +317,8 @@ try
 
         if ( count( $users ) )
         {
+            $epcMessage = new EpcLogMessage();
+            
             $qrTpl = new ModuleTemplate( 'ICEPC', 'epc_queryresult.tpl.php' );
             
             $qrTpl->assign( 'type', $epcSearchFor );
@@ -336,10 +340,13 @@ try
             
             $qrTpl->assign ( 'validUsersCnt', count ( $platformUserList->getValidUserIdList () ) );
             Console::debug("<pre>Valid users : ".var_export($platformUserList->getValidUserIdList(),true)."</pre>", 'debug');
+            $epcMessage->setValidUsers($platformUserList->getValidUserIdList ());
             $qrTpl->assign ( 'newUsersCnt', count ( $platformUserList->getInsertedUserIdList () ) );
             Console::debug("<pre>Users added to platform : ".var_export($platformUserList->getInsertedUserIdList(),true)."</pre>", 'debug');
+            $epcMessage->setInsertedUsers($platformUserList->getInsertedUserIdList());
             $qrTpl->assign ( 'failuresCnt', count ( $platformUserList->getFailedUserInsertionList () ) );
             Console::debug("<pre>Failed users : ".var_export($platformUserList->getFailedUserInsertionList(),true)."</pre>", 'debug');
+            $epcMessage->setFailedUsers($platformUserList->getFailedUserInsertionList());
             
             $epcUserDataCache = new EpcUserDataCache();
             
@@ -402,6 +409,8 @@ try
                 $courseObj = new Claro_Course( $course['code'] );
                 $courseObj->load();
                 
+                $epcMessage->addCourse($course['code']);
+                
                 Console::debug( '<pre>Register class users in course '.$course['code'].'</pre>', 'debug' );
                 
                 $courseUserList = new Claro_BatchCourseRegistration($courseObj);
@@ -425,11 +434,15 @@ try
             $out->appendContent( $qrTpl->render() );
             
             $epcClass->updateEpcClassSyncDate();
+            EpcLog::getInstance()->syncDone( $epcClassName, $epcMessage->__toString(), $claroClass->getId () );
             
             Console::debug("EPC service ended");
         }
         else
         {
+            $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+            $epcMessage->setMessageString(var_export ( $epcService->getInfo (), true ));
+            EpcLog::syncError( $epcClassName, var_export ( $epcService->getInfo (), true ) );
             $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
         }
     }
@@ -451,12 +464,13 @@ catch ( Exception $e )
         $out->appendContent ( $e->getTraceAsString () );
     }
     
-    if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
+    /*if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
     {
         $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
         $epcClass = new EpcClass($epcClassName);
         $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service exception : <pre>".$e->getMessage ()."</pre>" );
-    }
+        EpcLog::syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
+    }*/
     
     echo $out->render ();
 }
