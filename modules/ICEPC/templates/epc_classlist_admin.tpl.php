@@ -25,7 +25,11 @@
             <td><a href="<?php echo Url::Contextualize ( php_self () . '?cmd=dispUserList&amp;classId=' . $epcClass['id'] ); ?>"><?php echo class_get_number_of_users( $epcClass['id'] ); ?></a></td>
             <td><a class="qtip" href="<?php echo Url::Contextualize ( php_self () . '?cmd=dispCourseList&amp;classId=' . $epcClass['id'] ); ?>" title="<?php echo $epcClass['courseIdList']; ?>"><?php echo $epcClass['numberOfCourses']; ?></a></td>
             <td><?php echo $epcClass['last_sync'] ? $epcClass['last_sync'] : '-';?></td>
+            <?php if ( !empty( $epcClass['details'] ) ): ?>
             <td><a class="qtip" href="#" onclick="return false;" title="<?php echo claro_htmlspecialchars($epcClass['details']); ?>"><?php echo $epcClass['last_error'] ? $epcClass['last_error'] : '-' ; ?></a></td>
+            <?php else: ?>
+            <td><?php echo $epcClass['last_error'] ? $epcClass['last_error'] : '-' ; ?></td>
+            <?php endif; ?>
             <td><a class="warnTakesTime" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exSync&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Update'); ?></a></td>
             <td><a class="checkClassDeletion" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exUnreg&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Delete'); ?></a></td>
         </tr>
