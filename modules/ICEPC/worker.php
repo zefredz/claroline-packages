@@ -103,11 +103,14 @@ try
             {
                 $claroClass = new Claro_Class( Claroline::getDatabase() );
                 $claroClass->load( $classId );
+                $epcClass = EpcClass::loadFromClass($claroClass);
+                $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>" );
             }
             else
             {
                 $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
                 $epcClass = new EpcClass($epcClassName);
+                $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>" );
             
                 if ( $epcClass->associatedClassExists() )
                 {
@@ -300,6 +303,13 @@ try
         
         if ( $epcService->hasError () )
         {
+            if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
+            {
+                $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+                $epcClass = new EpcClass($epcClassName);
+                $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>" );
+            }
+            
             throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
         }
 
@@ -439,6 +449,13 @@ catch ( Exception $e )
     if ( claro_debug_mode() )
     {
         $out->appendContent ( $e->getTraceAsString () );
+    }
+    
+    if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
+    {
+        $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+        $epcClass = new EpcClass($epcClassName);
+        $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service exception : <pre>".$e->getMessage ()."</pre>" );
     }
     
     echo $out->render ();
