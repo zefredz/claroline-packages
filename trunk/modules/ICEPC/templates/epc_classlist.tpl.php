@@ -20,7 +20,14 @@
                 : get_lang('Program'); ?></td>
             <td><?php echo $epcClassName->getEpcCourseOrProgramCode(); ?></td>
             <td><?php echo $epcClassName->getEpcAcademicYear(); ?></td>
-            <td><a href="<?php echo Url::Contextualize ( php_self () . '?cmd=dispUserList&amp;classId=' . $epcClass['id'] ); ?>"><?php echo class_get_number_of_users( $epcClass['id'] ); ?> (<?php echo class_get_number_of_users_in_course(  claro_get_current_course_id (), $epcClass['id']); ?> <?php echo get_lang('in course'); ?>)</a></td>
+            <td>
+            <?php if ( claro_is_platform_admin() ) : ?>
+                <a href="<?php echo Url::Contextualize ( php_self () . '?cmd=dispUserList&amp;classId=' . $epcClass['id'] ); ?>"><?php echo class_get_number_of_users( $epcClass['id'] ); ?>              
+                    (<?php echo class_get_number_of_users_in_course(  claro_get_current_course_id (), $epcClass['id']); ?> <?php echo get_lang('in course'); ?>)</a>
+            <?php else: ?>
+                <a href="<?php echo Url::Contextualize ( php_self () . '?cmd=dispUserList&amp;classId=' . $epcClass['id'] ); ?>"><?php echo class_get_number_of_users_in_course(  claro_get_current_course_id (), $epcClass['id']); ?></a>
+            <?php endif; ?>
+            </td>
             <td><?php echo $epcClass['last_sync'] ? $epcClass['last_sync'] : '-';?></td>
             <td><a class="warnTakesTime" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exSync&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Update'); ?></a></td>
             <td><a class="checkClassDeletion" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exUnreg&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Delete'); ?></a></td>
