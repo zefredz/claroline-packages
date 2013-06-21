@@ -38,6 +38,9 @@ Sample course code : LBIO1111A, LMAPR2016' ); ?>
 Usualy a \'/\' is added before the orientation digits : SSSSCNLF/OR<br />
 Sample program codes : BIRA21MS/G, BIR13BA' ); ?>
                         </blockquote>
+                        <blockquote>
+                        <?php echo get_lang('You can find the list of official code on the following page <a href="http://www.uclouvain.be/programmes-etudes.html">http://www.uclouvain.be/programmes-etudes.html</a>.'); ?>
+                        </blockquote>
                     </div>
                 </div>
             </dd>

@@ -18,7 +18,7 @@ try
     $tlabelReq = 'ICEPC';
 
     require_once dirname ( __FILE__ ) . '/../../claroline/inc/claro_init_global.inc.php';
-
+    
     FromKernel::uses (
         'utils/iterators.lib', 
         'utils/input.lib', 
@@ -197,7 +197,7 @@ $(function(){
         
         if ( !claro_is_in_a_course () )
         {
-            throw new Exception( get_lang ( 'Cannot add an existing course outside of a course' ) );
+            throw new Exception( get_lang ( 'Cannot add an existing class outside of a course' ) );
         }
         
         $claroClass = new Claro_Class( Claroline::getDatabase() );
