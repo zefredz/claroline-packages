@@ -146,7 +146,15 @@ $(function(){
     }
     if ( $cmd == 'listEpcClasses' )
     {
-        // FromKernel::uses('class.lib');
+        $dialogBox = new DialogBox();
+        $dialogBox->info(
+            get_lang('This tool allows you to import student lists from the official EPC database. However, it does not ensure an automatic synchronisation of those list so if you import a list a the beginning of the academic year or quadrimester, you\'ll have to update it later to import the latest registered students.' )
+            . '<br /><em><small>' 
+            . get_lang('This is a limitation due to the current implementation of EPC and we will try to remove this limitation as soon as the EPC service allows it.') 
+            . '</small></em>');
+        
+        Claroline::getDisplay ()->body->appendContent ( $dialogBox->render () );
+        
         $epcClassList = new EpcClassList();
         $epcListToDisplay = $epcClassList->getEpcCourseClassList(claro_get_current_course_id ());
         
