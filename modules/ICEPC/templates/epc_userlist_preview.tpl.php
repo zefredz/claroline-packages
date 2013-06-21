@@ -36,8 +36,14 @@
     <?php if ( ! $lineAdded ): ?>
         <tr>
             <td colspan="5">
+                <?php if (count($this->userListIterator)): ?>
                 <?php echo get_lang("All students are already enrolled to your course"); ?><br />
                 <?php echo get_lang("You can still update cached data (NOMA, year of study...) about the users in your course"); ?>
+                <?php else: ?>
+                <strong>
+                <?php echo get_lang("No user found, please check the program or course number you have entered"); ?>
+                </strong>
+                <?php endif; ?>
             </td>
         </tr>
     <?php endif; ?>
@@ -58,10 +64,14 @@
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
         <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
-    <?php else: ?>
+    <?php elseif ( count( $this->userListIterator) ): ?>
     <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Update cached data' ); ?>" />
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
         <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
+    </a>
+    <?php else: ?>
+    <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
+        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Back' ); ?>" />
     </a>
     <?php endif; ?>
 </form>
