@@ -121,3 +121,4 @@ $_lang['You are going to unregister the class from this course, continue ?'] = '
 $_lang['You can find the list of official code on the following page <a href="http://www.uclouvain.be/programmes-etudes.html">http://www.uclouvain.be/programmes-etudes.html</a>.'] = 'You can find the list of official code on the following page <a href="http://www.uclouvain.be/programmes-etudes.html">http://www.uclouvain.be/programmes-etudes.html</a>.';
 $_lang['no'] = 'no';
 $_lang['yes'] = 'yes';
+$_lang['No user found, please check the program or course number you have entered'] = 'No user found, please check the program or course number you have entered';
