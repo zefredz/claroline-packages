@@ -264,7 +264,7 @@ if( $displayForm )
 
 function survey_update_question($questionId, $title, $description, $option, $type)
 {
-    $tbl = get_module_main_tbl('survey_question_list');
+    $tbl = get_module_main_tbl(array('survey_question_list'));
 
     $sql = "UPDATE `" . $tbl['survey_question_list'] . "` " . "\n"
     .      "SET `title` = '" . addslashes($title) . "' ," . "\n"
