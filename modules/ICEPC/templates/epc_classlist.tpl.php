@@ -29,8 +29,8 @@
             <?php endif; ?>
             </td>
             <td><?php echo $epcClass['last_sync'] ? $epcClass['last_sync'] : '-';?></td>
-            <td><a class="warnTakesTime" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exSync&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Update'); ?></a></td>
-            <td><a class="checkClassDeletion" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exUnreg&amp;classId=' . $epcClass['id'] ); ?>"><?php echo get_lang('Delete'); ?></a></td>
+            <td style="text-align: center;"><a class="warnTakesTime" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exSync&amp;classId=' . $epcClass['id'] ); ?>"><img src="<?php echo get_icon_url('refresh', 'ICEPC') ?>" alt="<?php echo get_lang('Update'); ?>" /></a></td>
+            <td style="text-align: center;"><a class="checkClassDeletion" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exUnreg&amp;classId=' . $epcClass['id'] ); ?>"><img src="<?php echo get_icon_url('delete'); ?>" alt="<?php echo get_lang('Delete'); ?>" /></a></td>
         </tr>
     <?php endforeach; ?>
     <?php else: ?>
