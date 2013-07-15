@@ -1,6 +1,6 @@
 Si vous souhaitez qu'un utilisateur (étudiant ou enseignant) qui ne possède pas de compte UCL ait accès à votre espace cours dans iCampus, contactez-nous à cette adresse: icampus@uclouvain.be.
 
-Vous devrez fournir son nom, son prénom, une adresse email, le nom de l'institution auquel il appartient, sa date de naissance, un numéro de téléphone, son année d'étude.
+Vous devrez fournir son nom, son prénom, une adresse email, le nom de l'institution à laquelle il appartient, sa date de naissance, un numéro de téléphone, son année d'étude.
 
 Si vous souhaitez qu'un groupe de plusieurs utilisateurs "extérieurs" obtienne un compte sur iCampus, faites-nous parvenir un fichier de type EXCEL, contenant, dans des colonnes distinctes :
 
