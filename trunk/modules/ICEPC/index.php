@@ -72,7 +72,6 @@ $(function(){
     $breadcrumbs->setCurrent( get_lang('EPC'), php_self () );
     
     $toolTitle = new ToolTitle( get_lang('Manage student lists from EPC') );
-
     
     if ( $cmd == 'rqImport' || $cmd == 'preview' || $cmd == 'exImport' )
     {
@@ -101,11 +100,32 @@ $(function(){
         
         $className = EpcClassName::parse( $claroClass->getName() );
         
+        $props = new EpcClassQueryProperties ( $className );
+        $properties = $props->getOptions();
+        
+        if ( is_null($properties['epcLinkExistingStudentsToClass']) )
+        {
+            $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        }
+        else
+        {
+            $epcLinkExistingStudentsToClass = $properties['epcLinkExistingStudentsToClass'] ? 'yes' : 'no';
+        }
+        
+        if ( is_null($properties['epcValidatePendingUsers']) )
+        {
+            $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
+        }
+        else
+        {
+            $epcValidatePendingUsers = $properties['epcValidatePendingUsers'] ? 'yes' : 'no';
+        }
+        
+        Console::debug("Properties loaded ".var_export($properties, true));
+        
         $epcAcadYear = $className->getEpcAcademicYear();
         $epcSearchFor = $className->getEpcClassType();
         $epcSearchString = $className->getEpcCourseOrProgramCode();
-        $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
-        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
     }
     
     if ( $cmd == 'dispUserList' )
@@ -251,6 +271,10 @@ $(function(){
         $dialogBox->info('<a href="'.Url::Contextualize(get_module_url('ICEPC')).'">'.get_lang('Back').'</a>');
         
         Claroline::getDisplay()->body->appendContent( $dialogBox->render() );
+        
+        $epcClassName = EpcClassName::parse( $claroClass->getName() );
+        $props = new EpcClassQueryProperties ( $epcClassName );
+        $props->setOptions( $epcLinkExistingStudentsToClass, $epcValidatePendingUsers );
     }
     elseif ( $cmd == 'exUnreg' )
     {

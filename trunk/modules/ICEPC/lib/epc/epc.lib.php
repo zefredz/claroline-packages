@@ -885,3 +885,110 @@ class EpcUserDataCache
         return $userListToUpdate;
     }
 }
+
+class EpcClassQueryProperties
+{
+    private $database, $tbl, $epcClassName, $properties;
+    
+    public function __construct ( $epcClassName, $courseId = null, $database = null )
+    {
+        $this->database = $database ? $database : Claroline::getDatabase();
+        
+        $this->tbl = get_module_course_tbl( array('course_properties'), $courseId );
+        
+        $this->epcClassName = $epcClassName->__toString();
+        
+        $this->properties = array(
+            'epcLinkExistingStudentsToClass' => null,
+            'epcValidatePendingUsers' => null
+        );
+        
+        $this->load();
+    }
+    
+    public function setOptions ( $epcLinkExistingStudentsToClass, $epcValidatePendingUsers )
+    {
+        if ( is_null( $this->properties['epcLinkExistingStudentsToClass'] ) )
+        {
+            $this->insert("{$this->epcClassName}.epcLinkExistingStudentsToClass", $epcLinkExistingStudentsToClass ? 1 : 0 );
+        }
+        else
+        {
+            $this->update("{$this->epcClassName}.epcLinkExistingStudentsToClass", $epcLinkExistingStudentsToClass ? 1 : 0 );
+        }
+        
+        $this->properties[$this->properties['epcLinkExistingStudentsToClass']] = $epcLinkExistingStudentsToClass;
+        
+        if ( is_null( $this->properties['epcValidatePendingUsers'] ) )
+        {
+            $this->insert("{$this->epcClassName}.epcValidatePendingUsers", $epcValidatePendingUsers ? 1 : 0 );
+        }
+        else
+        {
+            $this->update("{$this->epcClassName}.epcValidatePendingUsers", $epcValidatePendingUsers ? 1 : 0 );
+        }
+        
+        $this->properties[$this->properties['epcValidatePendingUsers']] = $epcValidatePendingUsers;
+    }
+    
+    public function getOptions()
+    {
+        return $this->properties;
+    }
+    
+    private function load()
+    {
+        $properties = $this->database->query("
+            SELECT 
+                `id`,
+                `name`, 
+                `category`, 
+                `value` 
+            FROM 
+                `{$this->tbl['course_properties']}` 
+            WHERE 
+                `category` = 'ICEPC'
+            AND
+                `name` LIKE '".$this->database->escape($this->epcClassName).".%'
+        ");
+        
+        foreach ( $properties as $property )
+        {
+            list ( $epcClass, $name ) = explode('.', $property['name'] );
+            
+            $this->properties[$name] = $property['value'] == '1' ? true : false;
+        }
+    }
+    
+    private function insert( $name, $value )
+    {
+        $sqlName = $this->database->quote( $name );
+        $sqlValue = $this->database->escape( $value );
+        
+        return $this->database->exec("
+            INSERT INTO
+                `{$this->tbl['course_properties']}`
+            SET
+                `name`= {$sqlName},
+                `category` = 'ICEPC',
+                `value` = {$sqlValue}
+        ");
+    }
+    
+    private function update( $name, $value )
+    {
+        $sqlName = $this->database->quote( $name );
+        $sqlValue = $this->database->escape( $value );
+        
+        return $this->database->exec("
+            UPDATE
+                `{$this->tbl['course_properties']}`
+            SET
+                `value` = {$sqlValue}
+            WHERE
+                `name` = {$sqlName}
+            AND
+                `category` = 'ICEPC'
+        ");
+    }
+}

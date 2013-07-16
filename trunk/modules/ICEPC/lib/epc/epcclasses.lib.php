@@ -219,7 +219,7 @@ class EpcClass
         return $this->associatedClass;
     }
     
-    public function updateEpcClassSyncDate( $date = null, $details = null )
+    public function updateEpcClassSyncDate( $date = null, $details = '' )
     {
         // var_dump(__FUNCTION__);
         
@@ -228,7 +228,7 @@ class EpcClass
         $this->updateEpcClassData( $syncDate, null, $details );
     }
     
-    public function updateEpcClassSyncErrorDate( $date = null, $details = null )
+    public function updateEpcClassSyncErrorDate( $date = null, $details = '' )
     {
         // var_dump(__FUNCTION__);
         
@@ -237,7 +237,7 @@ class EpcClass
         $this->updateEpcClassData( null, $errorDate, $details );
     }
     
-    protected function updateEpcClassData ( $syncDate = null, $errorDate = null, $details = null )
+    protected function updateEpcClassData ( $syncDate = null, $errorDate = null, $details = '' )
     {
         // var_dump(__FUNCTION__);
         

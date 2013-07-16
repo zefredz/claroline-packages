@@ -74,8 +74,29 @@ try
         $epcAcadYear = $className->getEpcAcademicYear();
         $epcSearchFor = $className->getEpcClassType();
         $epcSearchString = $className->getEpcCourseOrProgramCode();
-        $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
-        $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
+        
+        $props = new EpcClassQueryProperties ( $className );
+        $properties = $props->getOptions();
+        
+        if ( is_null($properties['epcLinkExistingStudentsToClass']) )
+        {
+            $epcLinkExistingStudentsToClass = $userInput->get ( 'epcLinkExistingStudentsToClass', 'yes' );
+        }
+        else
+        {
+            $epcLinkExistingStudentsToClass = $properties['epcLinkExistingStudentsToClass'] ? 'yes' : 'no';
+        }
+        
+        if ( is_null($properties['epcValidatePendingUsers']) )
+        {
+            $epcValidatePendingUsers = $userInput->get ( 'epcValidatePendingUsers', 'yes' );
+        }
+        else
+        {
+            $epcValidatePendingUsers = $properties['epcValidatePendingUsers'] ? 'yes' : 'no';
+        }
+        
+        Console::debug("Properties loaded ".var_export($properties, true));
     }
     
     if ( $cmd == 'preview' )
@@ -141,8 +162,13 @@ try
                                     get_module_entry_url('ICEPC') 
                                     . '?cmd=addExistingClass&classId='.$claroClass->getId () 
                                     . '&epcLinkExistingStudentsToClass=' . $epcLinkExistingStudentsToClass 
-                                    . '&epcValidatePendingUsers=' . $epcValidatePendingUsers ) ).'">'.get_lang('yes').'</a>'
+                                    . '&epcValidatePendingUsers=' . $epcValidatePendingUsers ) ).'">'.get_lang('yes').'</a> | '
                             . '<a href="'.claro_htmlspecialchars( Url::Contextualize ( get_module_entry_url('ICEPC') ) ).'">'.get_lang('no').'</a>' );
+                        
+                        if ( claro_debug_mode() )
+                        {
+                            $dialogBox->error( var_export( $epcService->getInfo (), true ) );
+                        }
 
                         $out->appendContent( $dialogBox->render() );
 
@@ -175,6 +201,11 @@ try
                             $dialogBox->info( get_lang( 'Something can be wrong with the EPC remote service or the configuration of the module' )
                             . '<br />'
                             . '<pre>'.var_export($epcService->getInfo(), true ) . '</pre>' );
+                        }
+                        
+                        if ( claro_debug_mode() )
+                        {
+                            $dialogBox->error( '<pre>' . var_export( $epcService->getInfo (), true ) . '</pre>' );
                         }
 
                         $out->appendContent( $dialogBox->render() );
@@ -309,7 +340,7 @@ try
                 $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
                 $epcClass = new EpcClass($epcClassName);
                 $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>" );
-                EpcLog::syncError( $epcClassName, $epcService->getInfo(), true );
+                EpcLog::getInstance()->syncError( $epcClassName, $epcService->getInfo(), true );
             }
             
             throw new Exception("Epc Service error : <pre>".var_export($epcService->getInfo(), true)."</pre>");
@@ -436,13 +467,18 @@ try
             $epcClass->updateEpcClassSyncDate();
             EpcLog::getInstance()->syncDone( $epcClassName, $epcMessage->__toString(), $claroClass->getId () );
             
+            $props = new EpcClassQueryProperties ( $epcClassName );
+            $props->setOptions( $epcLinkExistingStudentsToClass, $epcValidatePendingUsers );
+            
+            Console::debug("Properties stored ".var_export($props->getOptions (), true));
+            
             Console::debug("EPC service ended");
         }
         else
         {
             $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
             $epcMessage->setMessageString(var_export ( $epcService->getInfo (), true ));
-            EpcLog::syncError( $epcClassName, var_export ( $epcService->getInfo (), true ) );
+            EpcLog::getInstance()->syncError( $epcClassName, var_export ( $epcService->getInfo (), true ) );
             $out->appendContent ( '<pre>' . var_export ( $epcService->getInfo (), true ) . '</pre>' );
         }
     }
@@ -469,7 +505,7 @@ catch ( Exception $e )
         $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
         $epcClass = new EpcClass($epcClassName);
         $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service exception : <pre>".$e->getMessage ()."</pre>" );
-        EpcLog::syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
+        EpcLog::getInstance()->syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
     }*/
     
     echo $out->render ();
