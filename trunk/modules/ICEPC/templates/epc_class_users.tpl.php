@@ -25,7 +25,7 @@
             <td> - </td>
             <td> - </td>
             <?php endif; ?>
-            <td><?php echo isset( $this->courseUserList[$userId] ) ? 'yes' : 'no'; ?></td>
+            <td><?php echo isset( $this->courseUserList[$userId] ) ? get_lang('Yes') : get_lang('No'); ?></td>
         </tr>
     <?php endforeach; ?>
     <?php else: ?>
