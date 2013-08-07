@@ -25,11 +25,32 @@ try
         'utils/validator.lib' 
     );
 
+    if ( version_compare ( $GLOBALS['clarolineAPIVersion'], '1.11.9', '<' ) )
+    {
+        From::Module ( 'ICEPC' )->uses (
+            'connectors/adminuser.lib',
+            'utils/stringbuffer.lib',
+            'users/userlist.lib', 
+            'users/claroclass.lib',
+            'users/classutils.lib.php'
+        );
+        
+        pushClaroMessage('kernel libraries loaded from module','debug');
+    }
+    else
+    {
+        FromKernel::uses (
+            'connectors/adminuser.lib',
+            'utils/stringbuffer.lib',
+            'users/userlist.lib', 
+            'users/claroclass.lib',
+            'users/classutils.lib.php'
+        );
+        
+        pushClaroMessage('kernel libraries loaded from kernel','debug');
+    }
+    
     From::Module ( 'ICEPC' )->uses (
-        'users/userlist.lib', 
-        'users/claroclass.lib',
-        'users/classutils.lib.php',
-        'connectors/adminuser.lib',
         'epc/helpers.lib',
         'epc/epc.lib',
         'epc/epcclasses.lib'
