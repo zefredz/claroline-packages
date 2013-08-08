@@ -252,10 +252,7 @@ $(function(){
 
             $courseUserList = new Claro_BatchCourseRegistration($courseObj);
 
-            if ( $claroClass->isRegisteredToCourse ( $courseObj->courseId ) )
-            {
-                $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
-            }
+            $userAlreadyInClass = $claroClassUserList->getClassUserIdList( true );
 
             $courseUserList->addUserIdListToCourse( 
                 $claroClassUserList->getClassUserIdList (), 
