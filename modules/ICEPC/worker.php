@@ -453,7 +453,7 @@ try
                 
                 $courseUserList->addUserIdListToCourse( 
                     $claroClassUserList->getClassUserIdList (), 
-                    true, 
+                    $claroClass, 
                     $epcLinkExistingStudentsToClass == 'yes', 
                     $userAlreadyInClass, $epcValidatePendingUsers == 'yes' );
             }
