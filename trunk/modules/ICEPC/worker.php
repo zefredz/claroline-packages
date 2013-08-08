@@ -24,33 +24,13 @@ try
     FromKernel::uses (
         'utils/iterators.lib', 
         'utils/input.lib', 
-        'utils/validator.lib' 
+        'utils/validator.lib',
+        'connectors/adminuser.lib',
+        'utils/stringbuffer.lib',
+        'users/userlist.lib', 
+        'users/claroclass.lib',
+        'users/classutils.lib.php'
     );
-    
-    if ( version_compare ( $GLOBALS['clarolineAPIVersion'], '1.11.9', '<' ) )
-    {
-        From::Module ( 'ICEPC' )->uses (
-            'connectors/adminuser.lib',
-            'utils/stringbuffer.lib',
-            'users/userlist.lib', 
-            'users/claroclass.lib',
-            'users/classutils.lib.php'
-        );
-        
-        pushClaroMessage('kernel libraries loaded from module','debug');
-    }
-    else
-    {
-        FromKernel::uses (
-            'connectors/adminuser.lib',
-            'utils/stringbuffer.lib',
-            'users/userlist.lib', 
-            'users/claroclass.lib',
-            'users/classutils.lib.php'
-        );
-        
-        pushClaroMessage('kernel libraries loaded from kernel','debug');
-    }
 
     From::Module ( 'ICEPC' )->uses (
         'epc/helpers.lib',

@@ -22,33 +22,15 @@ try
     FromKernel::uses (
         'utils/iterators.lib', 
         'utils/input.lib', 
-        'utils/validator.lib' 
+        'utils/validator.lib',
+        'connectors/adminuser.lib',
+        'utils/stringbuffer.lib',
+        'users/userlist.lib', 
+        'users/claroclass.lib',
+        'users/classutils.lib.php'
     );
 
-    if ( version_compare ( $GLOBALS['clarolineAPIVersion'], '1.11.9', '<' ) )
-    {
-        From::Module ( 'ICEPC' )->uses (
-            'connectors/adminuser.lib',
-            'utils/stringbuffer.lib',
-            'users/userlist.lib', 
-            'users/claroclass.lib',
-            'users/classutils.lib.php'
-        );
-        
-        pushClaroMessage('kernel libraries loaded from module','debug');
-    }
-    else
-    {
-        FromKernel::uses (
-            'connectors/adminuser.lib',
-            'utils/stringbuffer.lib',
-            'users/userlist.lib', 
-            'users/claroclass.lib',
-            'users/classutils.lib.php'
-        );
-        
-        pushClaroMessage('kernel libraries loaded from kernel','debug');
-    }
+    pushClaroMessage('kernel libraries loaded from kernel','debug');
     
     From::Module ( 'ICEPC' )->uses (
         'epc/helpers.lib',
@@ -320,7 +302,7 @@ $(function(){
         
         $courseBatchRegistretion = new Claro_BatchCourseRegistration( $course );
         
-        $courseBatchRegistretion->removeUserIdListFromCourse( $classUserIdList, true );
+        $courseBatchRegistretion->removeUserIdListFromCourse( $classUserIdList, $claroClass );
         
         $dialogBox->success(get_lang("Users deleted from course"));
         
