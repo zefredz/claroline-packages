@@ -30,17 +30,19 @@ try
     FromKernel::uses (
         'utils/iterators.lib', 
         'utils/input.lib', 
-        'utils/validator.lib' 
+        'utils/validator.lib',
+        'connectors/adminuser.lib',
+        'utils/stringbuffer.lib',
+        'users/userlist.lib', 
+        'users/claroclass.lib',
+        'users/classutils.lib.php'
     );
 
     From::Module ( 'ICEPC' )->uses (
-        'users/userlist.lib', 
-        'users/claroclass.lib',
-        'users/classutils.lib.php',
-        'connectors/adminuser.lib',
         'epc/helpers.lib',
         'epc/epc.lib',
-        'epc/epcclasses.lib'
+        'epc/epcclasses.lib',
+        'epc/epclog.lib'
     );
 
     if ( !claro_is_user_authenticated () )
