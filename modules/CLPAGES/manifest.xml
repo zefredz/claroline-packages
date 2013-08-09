@@ -1,7 +1,7 @@
 <module>
   <label>CLPAGES</label>
   <name>Pages</name>
-  <version>1.0-beta</version>
+  <version>1.0</version>
   <license>AGPL3</license>
   
   <type>tool</type>
@@ -22,10 +22,11 @@
 
   <requirements>
     <claroline>
-      <version>1.11.6+</version>
+      <version>1.11.8</version>
+      <apiversion>1.11.8</apiversion>
     </claroline>
     <jquery>
-        <version>1.7+</version>
+        <version>1.10.*</version>
     </jquery>
  </requirements>
 </module>
