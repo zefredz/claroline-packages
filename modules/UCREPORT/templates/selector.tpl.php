@@ -12,8 +12,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#selectAll" ).click(function(){
-            var is_checked=$(this).attr('checked');
-            $(".itemSelect").attr('checked',is_checked);
+            var is_checked=$(this).prop('checked');
+            $(".itemSelect").prop('checked',is_checked);
         });
     });
 </script>
