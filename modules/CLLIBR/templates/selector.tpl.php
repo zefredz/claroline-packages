@@ -12,8 +12,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
         $("#selectAll" ).click(function(){
-            var is_checked=$(this).attr('checked');
-            $(".resourceSelect").attr('checked',is_checked);
+            var is_checked=$(this).prop('checked');
+            $(".resourceSelect").prop('checked',is_checked);
         });
     });
 </script>
