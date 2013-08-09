@@ -55,26 +55,17 @@ class CsvReportView extends ReportView
             $name = $reportDatas[ 'users' ][ $userId ][ 'lastname' ]
                   . ' '
                   . $reportDatas[ 'users' ][ $userId ][ 'firstname' ];
-            $nameList[ $name ] = $userId;
-        }
-        
-        ksort( $nameList );
-        
-        $resultList = array();
-        
-        foreach( $reportDatas[ 'report' ] as $userId => $datas )
-        {
-            $resultList[ $userId ] = implode( $this->delimiter , $datas );
-        }
-        
-        foreach( $nameList as $name => $userId )
-        {
-            $csv .= $name
-                 .  $this->delimiter
-                 .  $resultList[ $userId ]
-                 .  $this->delimiter
-                 .  $reportDatas[ 'users' ][ $userId ][ 'final_score' ]
-                 .  "\n";
+            
+            $userResult = array();
+            
+            foreach( array_keys( $reportDatas[ 'items' ] ) as $itemId )
+            {
+                $userResult[] = array_key_exists( $userId , $reportDatas[ 'report' ] )
+                                && array_key_exists( $itemId , $reportDatas[ 'report' ][ $userId ] )
+                                ? $reportDatas[ 'report' ][ $userId ][ $itemId ] : '';
+            }
+            
+            $csv .= $name . $this->delimiter . implode( $userResult , $this->delimiter ) . "\n";
         }
         
         return $csv;
