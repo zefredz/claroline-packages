@@ -301,15 +301,25 @@ $(function(){
         
         $courseBatchRegistretion->removeUserIdListFromCourse( $classUserIdList, $claroClass );
         
-        $dialogBox->success(get_lang("Users deleted from course"));
+        $result = $courseBatchRegistretion->getResult();
         
-        // unregister class from course
-        /*if ( $claroClass->isRegisteredToCourse( $course->courseId ) )
+        if ( !$result->hasError() )
         {
-            $claroClass->unregisterFromCourse( $course->courseId );
-        }*/
-        
-        $dialogBox->success(get_lang("Class unregistered from course"));
+            $dialogBox->success(get_lang("Users deleted from course"));
+            
+            // unregister class from course
+            /*if ( $claroClass->isRegisteredToCourse( $course->courseId ) )
+            {
+                $claroClass->unregisterFromCourse( $course->courseId );
+            }*/
+            
+            $dialogBox->success(get_lang("Class unregistered from course"));
+        }
+        else
+        {
+            $dialogBox->error(get_lang("Cannot delete users from course") . 
+                '<p>'.implode( '</p><p>', $result->getErrorLog() ) . '</p>' );
+        }
         
         $dialogBox->info('<a href="'.Url::Contextualize(get_module_url('ICEPC')).'">'.get_lang('Back').'</a>');
         
