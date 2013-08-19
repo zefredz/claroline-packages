@@ -556,4 +556,3 @@ function lpDebug($var)
     } 
 }
 // ajax output
-?>

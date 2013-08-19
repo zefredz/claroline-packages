@@ -23,11 +23,9 @@ if ( !claro_is_tool_allowed() )
     if ( claro_is_in_a_course() )
     {
         claro_die( get_lang( "Not allowed" ) );
-     
+    } 
     else
     {
         claro_disp_auth_form( true );
     }
 }
-
-?>
