@@ -1,7 +1,7 @@
 <module>
   <label>CLLP</label>
   <name>Adaptive learning path</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <license>GPL</license>
   <type>tool</type>
   <entry>index.php</entry>
@@ -12,14 +12,18 @@
   </description>
 
   <author>
-     <name>Dimitri Rambout</name>
-     <email>dim@claroline.net</email>
+     <name>Claroline Consortium</name>
+     <email>info@claroline.net</email>
      <web>http://www.claroline.net</web>
   </author>
 
   <requirements>
     <claroline>
-      <version>1.11.5</version>
+      <version>1.11.8</version>
+      <apiversion>1.11.8</apiversion>
     </claroline>
+    <jquery>
+        <version>1.10.*</version>
+    </jquery>
  </requirements>
 </module>
