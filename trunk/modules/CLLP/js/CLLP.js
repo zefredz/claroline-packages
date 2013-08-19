@@ -395,7 +395,7 @@ function makeItemActive( itemId )
         $("#item_" + lpHandler.itemId, lp_top.frames["lp_toc"].document).addClass("active");
 
         // blink the new active item
-        $(".active a", lp_top.frames["lp_toc"].document).fadeOut("fast").fadeIn("slow");
+        // $(".active a", lp_top.frames["lp_toc"].document).fadeOut("fast").fadeIn("slow");
 
     }
 
