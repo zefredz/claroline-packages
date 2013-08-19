@@ -35,7 +35,7 @@ else                                                                  $itemId = 
 header( 'Content-Type: text/javascript' );
 
 ?>
-if( ! $.browser.msie && top.window.console && top.window.console.log )
+if( top.window.console && top.window.console.log )
 {
 	var info = "API data refresh request for item #<?php echo $itemId; ?> in path #<?php echo $pathId; ?>";
         console.info(info);
@@ -126,4 +126,3 @@ if( isset( $_SESSION['thisAttempt'] ) )
 
 */
 exit;
-?>

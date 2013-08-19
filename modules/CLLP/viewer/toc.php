@@ -172,4 +172,4 @@ $claroline->display->header->addHtmlHeader($htmlHeaders);
 
 
 echo $claroline->display->render();
-?>
+
