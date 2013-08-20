@@ -1,6 +1,6 @@
 En cas de changement de gestionnaire, la procédure à suivre est la suivante :
 
-    1 - Le futur gestionnaire s'incrit au cours, comme un simple étudiant (si ce n'est déjà fait).
+    1 - Le futur gestionnaire s'inscrit au cours, comme un simple étudiant (si ce n'est déjà fait).
     2 - Il demande alors à l'actuel gestionnaire de lui donner le statut de gestionnaire.
     3 - Le nouveau gestionnaire peut alors désinscrire l'ancien du cours.
 
