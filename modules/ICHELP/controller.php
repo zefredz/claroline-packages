@@ -128,24 +128,27 @@ try
             
             $ticket->set( 'shortDescription' , $subject );
             
-            $mailTo = 'icampus@uclouvain.be';   // <- l'adresse iCampus
-            $nameTo = 'Support iCampus';
-            
-            /* REDIRECTION VERS LE SERVICE DESK ===>
-            if( (int)$userData['UCLMember']
-                && ( $userData[ 'issueType' ] == 'firstAccessProblem'
-                    || $userData[ 'issueType' ] == 'accessProblem' ) )
+            $to8282 = (int)$userData['UCLMember']
+                && (   $userData[ 'issueType' ] == 'firstAccessProblem'
+                    || $userData[ 'issueType' ] == 'accessProblem'
+                    || $userData[ 'issueType' ] == 'lostPassword' );
+                
+            // REDIRECTION VERS LE SERVICE DESK ===>
+            if( $to8282 )
             {
-                $mailTo = 'service-desk@uclouvain.be'; // <- l'adresse du service desk
+                $mailTo = 'icampus-8282@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
+            } // <=== REDIRECTION VERS LE SERVICE DESK */
+            else
+            {
+                $mailTo = 'icampus@uclouvain.be';   // <- l'adresse iCampus
+                $nameTo = 'Support iCampus';
             }
-            // <=== REDIRECTION VERS LE SERVICE DESK */
             
-            if( $mailTpl )
+            if( ! $to8282 && $mailTpl )
             {
                 $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
                 $autoMail->assign( 'userData' , $userData );
-                
                 
                 /* à décommenter si on décide d'afficher la réponse automatique directement dans la page (en plus du mail)
                 $autoMail = $autoMail->render();
@@ -162,6 +165,7 @@ try
             $mailBody->assign( 'ticket' , $ticket );
             $mailBody->assign( 'autoMailContent' , $autoMailContent ? $autoMail->render() : false );
             $mailBody->assign( 'mailSent' , $mailSent );
+            $mailBody->assign( 'to8282' , $to8282 );
             
             if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {

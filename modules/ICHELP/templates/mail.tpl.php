@@ -1,3 +1,20 @@
+<?php if( $this->to8282 ) : ?>
+Cher membre du Service Desk, 
+Pouvez-vous : 
+
+- Vérifier que le compte "identifiant" UCL de cette personne n'est pas bloqué sur le portail et le débloquer le cas échéant.
+- vérifier la validité du compte dans le ldap
+- vérifier que le compte dans le ldap dispose de la ressource "icampus.uclouvain.be"
+- réinitialiser son compte et lui demander de réactiver celui-ci sur la page 4040.
+
+Merci
+
+L'équipe iCampus
+
+
+
+<?php endif; ?>
+
 INFOS SUR L'UTILISATEUR:
 ------------------------
 
