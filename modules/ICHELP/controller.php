@@ -87,6 +87,7 @@ try
     if( $formData )
     {
         $error = false;
+        $mailSent = false;
         $userData = array_merge( $userData , $formData );
         
         if( ! $userId && ! $userInput->get( 'antibot' ) )
@@ -128,13 +129,13 @@ try
             
             $ticket->set( 'shortDescription' , $subject );
             
-            $to8282 = (int)$userData['UCLMember']
+            $toHelpDesk = (int)$userData['UCLMember']
                 && (   $userData[ 'issueType' ] == 'firstAccessProblem'
                     || $userData[ 'issueType' ] == 'accessProblem'
-                    || $userData[ 'issueType' ] == 'lostPassword' );
-                
+                    || $userData[ 'issueType' ] == 'passwordLost' );
+            
             // REDIRECTION VERS LE SERVICE DESK ===>
-            if( $to8282 )
+            if( $toHelpDesk )
             {
                 $mailTo = 'icampus-8282@uclouvain.be'; // <- l'adresse du service desk
                 $nameTo = 'Service Desk UCL';
@@ -145,7 +146,7 @@ try
                 $nameTo = 'Support iCampus';
             }
             
-            if( ! $to8282 && $mailTpl )
+            if( ! $toHelpDesk && $mailTpl )
             {
                 $autoMail = new ModuleTemplate( 'ICHELP' , 'auto/' . $mailTpl . '.tpl.php' );
                 $autoMail->assign( 'userData' , $userData );
@@ -165,7 +166,7 @@ try
             $mailBody->assign( 'ticket' , $ticket );
             $mailBody->assign( 'autoMailContent' , $autoMailContent ? $autoMail->render() : false );
             $mailBody->assign( 'mailSent' , $mailSent );
-            $mailBody->assign( 'to8282' , $to8282 );
+            $mailBody->assign( 'toHelpDesk' , $toHelpDesk );
             
             if( claro_mail( 'ICHELP: ' . $subject , $mailBody->render() , $mailTo , $nameTo , $mailFrom , $nameFrom ) )
             {
