@@ -337,12 +337,28 @@ $(function(){
 }
 catch ( Exception $e )
 {
-    Claroline::getDisplay ()->body->appendContent ( $e->getMessage () );
+    $out = new Claro_StringBuffer;
+    
+    $out->appendContent ( $e->getMessage () );
     
     if ( claro_debug_mode() )
     {
-        Claroline::getDisplay ()->body->appendContent ( $e->getTraceAsString () );
+        $out->appendContent ( $e->getTraceAsString () );
     }
+    
+    /*if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
+    {
+        $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+        $epcClass = new EpcClass($epcClassName);
+        $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service exception : <pre>".$e->getMessage ()."</pre>" );
+        EpcLog::getInstance()->syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
+    }*/
+    
+    $dialogBox = new DialogBox();
+    
+    $dialogBox->error( $out->render () );
+    
+    Claroline::getDisplay ()->body->appendContent ( $dialogBox->render() );
     
     echo Claroline::getDisplay ()->render ();
 }

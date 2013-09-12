@@ -162,6 +162,8 @@ $(function(){
         $epcClassList = new EpcClassList();
         $epcListToDisplay = $epcClassList->getEpcClassList();
         
+        var_dump($epcListToDisplay);
+        
         $list = new ModuleTemplate ( 'ICEPC', 'epc_classlist_admin.tpl.php' );
         $list->assign( 'epcClassList' , $epcListToDisplay );
         
@@ -310,12 +312,26 @@ $(function(){
 }
 catch ( Exception $e )
 {
-    Claroline::getDisplay ()->body->appendContent ( $e->getMessage () );
+    $out = new Claro_StringBuffer;
+    
+    $out->appendContent ( $e->getMessage () );
     
     if ( claro_debug_mode() )
     {
-        Claroline::getDisplay ()->body->appendContent ( $e->getTraceAsString () );
+        $out->appendContent ( $e->getTraceAsString () );
     }
     
-    echo Claroline::getDisplay ()->render ();
+    /*if ( !empty($epcSearchFor) && !empty($epcAcadYear) && !empty($epcSearchString)  )
+    {
+        $epcClassName = new EpcClassName($epcSearchFor,$epcAcadYear,$epcSearchString);
+        $epcClass = new EpcClass($epcClassName);
+        $epcClass->updateEpcClassSyncErrorDate( null, "Epc Service exception : <pre>".$e->getMessage ()."</pre>" );
+        EpcLog::getInstance()->syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
+    }*/
+    
+    $dialogBox = new DialogBox();
+    
+    $dialogBox->error($out->render ());
+    
+    echo $dialogBox->render();
 }
