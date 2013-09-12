@@ -412,13 +412,13 @@ class EpcClassList
                 GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
                 `{$tbl['rel_course_class']}` AS cc
-            LEFT JOIN 
+            INNER JOIN 
                 `{$tbl['class']}` AS c
             ON
                 c.id = cc.classId
             AND
                 c.name LIKE 'epc_%:%:%'
-            LEFT JOIN 
+            INNER JOIN 
                 `{$tbl['epc_class_data']}` AS cda
             ON
                 cda.class_name = c.name
