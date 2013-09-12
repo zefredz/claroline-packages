@@ -508,5 +508,9 @@ catch ( Exception $e )
         EpcLog::getInstance()->syncError( $epcClassName, var_export ( $e->getMessage (), true ) );
     }*/
     
-    echo $out->render ();
+    $dialogBox = new DialogBox();
+    
+    $dialogBox->error($out->render ());
+    
+    echo $dialogBox->render();
 }
