@@ -252,7 +252,12 @@ abstract class EpcServiceXmlResponse
      * @param string $queryResponse
      */
     public function __construct ( $queryResponse )
-    {
+    { 
+        if ( !preg_match( '/\<[^<]*?\>/', $queryResponse ) )
+        {
+            throw new Exception ( get_lang( "Invalid query, please check your query parameters and/or contact the administrator, returned response : %message", array( '%message' => $queryResponse ) ) );
+        }
+        
         $this->xml = simplexml_load_string ( $queryResponse );
     }
     
