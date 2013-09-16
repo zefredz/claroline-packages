@@ -13,6 +13,7 @@
     <tbody>
     <?php if (count( $this->epcClassList ) ): ?>
     <?php foreach ( $this->epcClassList as $epcClass ): ?>
+        <?php if ( $epcClass['name'] ): ?>
         <?php $epcClassName = EpcClassName::parse($epcClass['name']); ?>
         <tr>
             <td><?php echo $epcClassName->getEpcClassType() == 'course' 
@@ -32,6 +33,7 @@
             <td style="text-align: center;"><a class="warnTakesTime" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exSync&amp;classId=' . $epcClass['id'] ); ?>"><img src="<?php echo get_icon_url('refresh', 'ICEPC') ?>" alt="<?php echo get_lang('Update'); ?>" /></a></td>
             <td style="text-align: center;"><a class="checkClassDeletion" href="<?php echo Url::Contextualize ( php_self () . '?cmd=exUnreg&amp;classId=' . $epcClass['id'] ); ?>"><img src="<?php echo get_icon_url('delete'); ?>" alt="<?php echo get_lang('Delete'); ?>" /></a></td>
         </tr>
+        <?php endif;?>
     <?php endforeach; ?>
     <?php else: ?>
         <tr><td colspan="6"><?php echo get_lang("No EPC student list imported into this course yet"); ?></td></tr>
