@@ -274,13 +274,44 @@ $(function(){
         
         $className = $claroClass->getName();
         
-        $courseList = $claroClass->getClassCourseList()->useId( 'code' );
+        $courseList = $claroClass->getClassCourseList();
+        $courseList->useId( 'code' );
         
         $coursesUnreg = array();
         
         foreach ( $courseList as $courseId => $course )
         {
-            $claroClass->unregisterFromCourse( $courseId );
+            
+            $courseObj = new Claro_Course( $courseId );
+            $courseObj->load();
+
+            $classUserIdList = $claroClass->getClassUserList()->getClassUserIdList();
+
+            $courseBatchRegistretion = new Claro_BatchCourseRegistration( $courseObj );
+
+            $courseBatchRegistretion->removeUserIdListFromCourse( $classUserIdList, $claroClass );
+
+            $result = $courseBatchRegistretion->getResult();
+            
+            if ( !$result->hasError() )
+            {
+                $dialogBox->success(get_lang("Users deleted from course %course%", array('%course%' => var_export($course, true))));
+
+                // unregister class from course
+                /*if ( $claroClass->isRegisteredToCourse( $course->courseId ) )
+                {
+                    $claroClass->unregisterFromCourse( $course->courseId );
+                }*/
+
+                $dialogBox->success(get_lang("Class unregistered from course %course%", array('%course%' => var_export($course, true))));
+            }
+            else
+            {
+                $dialogBox->error(get_lang("Cannot delete users from course %course%", array('%course%' => var_export($course, true))) . 
+                    '<p>'.implode( '</p><p>', $result->getErrorLog() ) . '</p>' );
+            }
+            
+            // $claroClass->unregisterFromCourse( $courseId );
             
             $coursesUnreg[] = "{$course['administrativeNumber']} <em>({$courseId})</em> - {$course['title']} - {$course['titulars']}";
         }
