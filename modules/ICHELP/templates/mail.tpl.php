@@ -5,7 +5,7 @@ Pouvez-vous :
 - Vérifier que le compte "<?php echo $this->userData[ 'username' ] ?>" UCL de cette personne n'est pas bloqué sur le portail et le débloquer le cas échéant.
 - vérifier la validité du compte dans le ldap
 - vérifier que le compte dans le ldap dispose de la ressource "icampus.uclouvain.be"
-- réinitialiser son compte et lui demander de réactiver celui-ci sur la page 4040.
+- au besoin, réinitialiser son compte et lui demander de réactiver celui-ci sur la page 4040.
 
 Si cet utilisateur est introuvable dans le ldap, veuillez attribuer cet incident l'UDS ICAMPUS.
 
