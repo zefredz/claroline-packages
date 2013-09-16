@@ -398,6 +398,34 @@ class EpcClassList
     {
         // $tbl  = claro_sql_get_main_tbl();
         $tbl = get_module_main_tbl( array( 'epc_class_data', 'rel_course_class', 'class' ) );
+        
+        /*print_r("
+            SELECT
+                c.id,
+                c.name,
+                c.class_parent_id,
+                c.class_level,
+                cda.last_sync,
+                cda.last_error,
+                cda.details,
+                COUNT(*) AS numberOfCourses,
+                GROUP_CONCAT(cc.courseId) AS courseIdList
+            FROM 
+                `{$tbl['rel_course_class']}` AS cc
+            LEFT JOIN 
+                `{$tbl['class']}` AS c
+            ON
+                c.id = cc.classId
+            AND
+                c.name LIKE 'epc_%:%:%'
+            LEFT JOIN 
+                `{$tbl['epc_class_data']}` AS cda
+            ON
+                cda.class_name = c.name
+            WHERE
+                1 = 1
+            GROUP BY cc.classId
+        ");*/
     
         return $this->database->query("
             SELECT
@@ -412,18 +440,17 @@ class EpcClassList
                 GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
                 `{$tbl['rel_course_class']}` AS cc
-            INNER JOIN 
+            JOIN 
                 `{$tbl['class']}` AS c
             ON
                 c.id = cc.classId
-            AND
-                c.name LIKE 'epc_%:%:%'
-            INNER JOIN 
+                
+            JOIN 
                 `{$tbl['epc_class_data']}` AS cda
             ON
                 cda.class_name = c.name
             WHERE
-                1 = 1
+                c.name LIKE 'epc_%:%:%'
             GROUP BY cc.classId
         ");
     }

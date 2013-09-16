@@ -162,7 +162,7 @@ $(function(){
         $epcClassList = new EpcClassList();
         $epcListToDisplay = $epcClassList->getEpcClassList();
         
-        var_dump($epcListToDisplay);
+        //var_dump($epcListToDisplay);
         
         $list = new ModuleTemplate ( 'ICEPC', 'epc_classlist_admin.tpl.php' );
         $list->assign( 'epcClassList' , $epcListToDisplay );
