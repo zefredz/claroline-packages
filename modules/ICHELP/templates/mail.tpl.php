@@ -1,13 +1,31 @@
 <?php if( $this->toHelpDesk ) : ?>
 Cher membre du Service Desk, 
-Pouvez-vous : 
 
-- Vérifier que le compte "<?php echo $this->userData[ 'username' ] ?>" UCL de cette personne n'est pas bloqué sur le portail et le débloquer le cas échéant.
-- vérifier la validité du compte dans le ldap
-- vérifier que le compte dans le ldap dispose de la ressource "icampus.uclouvain.be"
-- au besoin, réinitialiser son compte et lui demander de réactiver celui-ci sur la page 4040.
+Voici la procédure à suivre:
 
-Si cet utilisateur est introuvable dans le ldap, veuillez attribuer cet incident l'UDS ICAMPUS.
+
+1. Vérifiez que le compte "<?php echo $this->userData[ 'username' ] ?>" figure bien dans le ldap.
+S'il est introuvable, veuillez attribuer cet incident à l'UDS ICAMPUS.
+
+
+2. S'il existe, vérifiez qu'il possède bien la ressource "icampus.*".
+C'est à dire :  icampus.student
+                icampus.uclouvain
+                icampus.extern
+                icampus.alumni
+
+Si ce n'est pas le cas, c'est qu'il n'a pas accès à iCampus.
+Cela arrive, par exemple, si l'étudiant(e) n'est pas en ordre de paiement pour son inscription.
+Vérifiez éventuellement s'il y a un problème avec son inscription dans EPC, ou renvoyez-le/la vers son secrétariat administratif.
+
+
+3. Si l'utilisateur/trice a perdu son mot de passe ou son identifiant global, suivez la procédure habituelle (http://www.uclouvain.be/4040).
+
+
+4. Si le compte est valide (càd qu'il possède la ressource "icampus.*"), demandez à l'utilisateur/trice si elle parvient à se connecter sur le portail (http://www.uclouvain.be) à l'aide du même identifiant et mot de passe que celui qu'il/elle a utilisé pour tenter d'entrer dans iCampus.
+Si cela fonctionne, c'est que le problème provient bien d'iCampus. Vous pouvez alors assigner l'incident à l'UDS iCampus.
+Sinon, il ne s'agit pas d'un problème lié à iCampus.
+
 
 Merci
 
