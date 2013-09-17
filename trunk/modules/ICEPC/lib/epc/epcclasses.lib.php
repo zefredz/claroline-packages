@@ -374,19 +374,21 @@ class EpcClassList
                 cda.last_error,
                 cda.details
             FROM 
-                `{$tbl['rel_course_class']}` AS cc
-            LEFT JOIN 
                 `{$tbl['class']}` AS c
+                    
+            JOIN 
+                `{$tbl['rel_course_class']}` AS cc
             ON
-                c.id = cc.classId
+                cc.classId = c.id
             AND
-                c.name LIKE 'epc_%:%:%'
-            LEFT JOIN 
+                cc.courseId = ".$this->database->quote($courseId)."
+                
+            JOIN 
                 `{$tbl['epc_class_data']}` AS cda
             ON
                 cda.class_name = c.name
             WHERE
-                cc.courseId = ".$this->database->quote($courseId)."
+                c.name LIKE 'epc_%:%:%'
         ");
     }
     
@@ -439,18 +441,21 @@ class EpcClassList
                 COUNT(*) AS numberOfCourses,
                 GROUP_CONCAT(cc.courseId) AS courseIdList
             FROM 
-                `{$tbl['rel_course_class']}` AS cc
-            JOIN 
                 `{$tbl['class']}` AS c
+                    
+            LEFT JOIN 
+                `{$tbl['rel_course_class']}` AS cc
             ON
-                c.id = cc.classId
+                cc.classId = c.id
                 
-            JOIN 
+            LEFT JOIN 
                 `{$tbl['epc_class_data']}` AS cda
             ON
                 cda.class_name = c.name
+                
             WHERE
                 c.name LIKE 'epc_%:%:%'
+                
             GROUP BY cc.classId
         ");
     }
