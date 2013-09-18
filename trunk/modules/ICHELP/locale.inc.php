@@ -84,6 +84,11 @@ $checkList = array(
         'description' => 'Un cours doit changer de titulaire',
         'mailTpl' => 'managerchange' ),
     
+    'courseDelete' => array(
+        'issueCategory' => 3,
+        'description' => 'Je voudrais supprimer mon cours de la plateforme',
+        'mailTpl' => 'courseDelete' ),
+    
     'bugReport' => array(
         'issueCategory' => 4,
         'description' => 'Je voudrais vous faire part d\'un bug ou d\'un comportement étrange de l\'application',

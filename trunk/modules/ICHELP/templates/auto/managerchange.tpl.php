@@ -8,8 +8,7 @@ Dans ce cas, la procédure à suivre est la suivante :
     1 - Le futur gestionnaire s'inscrit au cours, comme un simple étudiant (si ce n'est déjà fait).
     2 - Il demande alors à l'actuel gestionnaire de lui donner le statut de gestionnaire.
     3 - Le nouveau gestionnaire peut alors désinscrire l'ancien du cours.
-
-N'oubliez pas de modifier manuellement le nom du titulaire dans les paramètres du cours, car ce changement n'est pas automatique.
+    4 - N'oubliez pas de modifier manuellement le nom du titulaire dans les paramètres du cours, car ce changement n'est pas automatique.
 
 Si par contre, leurs dispositifs pédagogiques respectifs sont assez éloignés, il est préférable de créer un nouvel espace de cours et de désactiver de l'ancien afin d'éviter toute confusion dans l'esprit de vos étudiants.
 
