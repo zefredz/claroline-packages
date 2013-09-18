@@ -39,13 +39,13 @@
                         type="radio"
                         name="data[UCLMember]"
                         value="1"
-                        <?php if ( substr( $this->userData[ 'mail' ] , -12 ) == 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
+                        <?php if ( ! claro_is_user_authenticated() || substr( $this->userData[ 'mail' ] , -12 ) == 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
                 <?php echo get_lang( 'Yes' ); ?>
                 <input  id = "notMember"
                         type="radio"
                         name="data[UCLMember]"
                         value="0"
-                        <?php if ( substr( $this->userData[ 'mail' ] , -12 ) != 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
+                        <?php if ( claro_is_user_authenticated() && substr( $this->userData[ 'mail' ] , -12 ) != 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
                 <?php echo get_lang( 'No' ); ?></strong>
             </dd>
             
