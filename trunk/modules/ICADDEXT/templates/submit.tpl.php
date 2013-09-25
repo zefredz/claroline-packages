@@ -115,6 +115,7 @@
             </dt>
             <dd>
                 <select name="userData[0][authSource]">
+                    <option value="claroline">claroline</option>
                     <option value="external">external</option>
                     <option value="mailbox">mailbox</option>
                 </select>
