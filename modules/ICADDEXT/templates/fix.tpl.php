@@ -9,12 +9,12 @@
 <?php $cmd = $this->controller->importer->is_ok() ? 'exAdd' : 'exFix'; ?>
 <form method="post"
       enctype="multipart/form-data"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
+      action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
     <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
            name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
-           value="<?php echo htmlspecialchars( $value ); ?>" />
+           value="<?php echo claro_htmlspecialchars( $value ); ?>" />
         <?php endforeach; ?>
     <?php endforeach; ?>
     
@@ -121,7 +121,7 @@
             <?php if( ! array_key_exists( $field , ICADDEXT_Importer::$display_fields ) ) : ?>
     <input type="hidden"
            name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
-           value="<?php echo htmlspecialchars( $value ); ?>" />
+           value="<?php echo claro_htmlspecialchars( $value ); ?>" />
             <?php endif; ?>
         <?php endforeach; ?>
     <?php endforeach; ?>
@@ -216,7 +216,7 @@
     <?php endif; ?>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
-       href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
+       href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
 </form>
