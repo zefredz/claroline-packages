@@ -1,6 +1,6 @@
 <form method="post"
       enctype="multipart/form-data"
-      action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqFix' ) ); ?>" >
+      action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqFix' ) ); ?>" >
     <fieldset>
         <legend><?php echo get_lang( 'add_single_user' ); ?> :</legend>
         <dl>
