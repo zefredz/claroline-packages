@@ -668,7 +668,7 @@ class ICADDEXT_Importer
         }
         else // PHP < 5.2
         {
-            return preg_match( '#^[\w.-]+@[\w.-]+\.[a-zA-Z]{2,6}$#' , $string ); 
+            return preg_match( '#^[\w.-_]+@[\w.-_]+\.[a-zA-Z]{2,6}$#' , $string ); 
         }
     }
 }
