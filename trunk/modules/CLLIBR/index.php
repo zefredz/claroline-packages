@@ -1103,8 +1103,8 @@ try
                         if ( $resource->getStorageType() == Resource::TYPE_FILE )
                         {
                             $resourceViewer = new $viewName( new StoredResource( $repository
-                                                                               , null
                                                                                , $resource
+                                                                               , null
                                                                                , $secretKey ) );
                         }
                         else
