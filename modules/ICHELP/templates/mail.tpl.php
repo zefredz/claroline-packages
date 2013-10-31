@@ -80,6 +80,9 @@ Page d'origine de la demande : <?php echo getFullPath( $this->ticket->get( 'urlO
 Infos système (OS, navigateur) : <?php echo $this->ticket->get( 'userAgent' ); ?>
 
 
+Adresse IP : <?php echo $this->userData[ 'IP_address' ]; ?>
+
+
 Javascript activé : <?php echo $this->userData[ 'jsEnabled' ] ? 'Oui' : 'NON'; ?>
 
 
