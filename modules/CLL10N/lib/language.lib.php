@@ -161,7 +161,7 @@ function store_lang_var($languageVarList, $sourceFileName, $languageName)
              varFullContent  = \"". claro_sql_escape($thisVarContent) ."\",
              language   = \"".claro_sql_escape($languageName)."\",
              sourceFile = \"" . str_replace(get_path('rootSys'),"",$sourceFileName) ."\"";
-            mysql_query($sql) or die($problemMessage);
+            mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die($problemMessage);
         }
     }
 
@@ -343,7 +343,7 @@ function store_lang_used_in_script($languageVarList, $sourceFileName)
                        SET VarName    = '". claro_sql_escape($thisVar) . "',
                            langFile   = '" .$languageFileName."',
                            sourceFile = '" . $sourceFileName ."'";
-            mysql_query($sql) or die($problemMessage);
+            mysqli_query($GLOBALS["___mysqli_ston"], $sql) or die($problemMessage);
         }
     }
 
