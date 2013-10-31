@@ -111,7 +111,7 @@ try
             $ticket->set( 'issueDescription' , $userData[ 'issueDescription' ] );
             
             $userData[ 'cookieEnabled' ] = isset( $_SERVER['HTTP_COOKIE'] );
-            $userData[ 'IP_address' ] = $_SERVER['HTTP_HOST'];
+            $userData[ 'IP_address' ] = $_SERVER['REMOTE_ADDR'];
             
             $mailFrom = $userData[ 'mail' ];
             $nameFrom = $userData[ 'firstName' ] . ' ' . $userData[ 'lastName' ];
