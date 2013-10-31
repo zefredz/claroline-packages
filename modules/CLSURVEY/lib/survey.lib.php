@@ -58,7 +58,7 @@ function move_entry_survey($item_id, $cmd,$id_name, $id_survey = NULL, $context=
         $result = claro_sql_query($sql);
         $thisRankFound = false;
         $thisRank = '';
-        while ( (list ($id, $rank) = mysql_fetch_row($result)) )
+        while ( (list ($id, $rank) = mysqli_fetch_row($result)) )
         {
             if ($thisRankFound == true)
             {
@@ -132,7 +132,7 @@ function move_survey($item_id, $cmd, $context=null,$cid)
         $result = claro_sql_query($sql);
         $thisRankFound = false;
         $thisRank = '';
-        while ( (list ($id, $rank) = mysql_fetch_row($result)) )
+        while ( (list ($id, $rank) = mysqli_fetch_row($result)) )
         {
             if ($thisRankFound == true)
             {
@@ -196,7 +196,7 @@ function move_question($item_id, $cmd,$id_survey, $context=null)
         $result = claro_sql_query($sql);
         $thisRankFound = false;
         $thisRank = '';
-        while ( (list ($questionId, $rank) = mysql_fetch_row($result)) )
+        while ( (list ($questionId, $rank) = mysqli_fetch_row($result)) )
         {
             if ($thisRankFound == true)
             {
@@ -812,7 +812,7 @@ function createSurvey( $title , $description , $data )
             `date_created` = " . Claroline::getDatabase()->quote( date( 'Y-m-d' ) )
     );
     
-    $surveyId = mysql_insert_id();
+    $surveyId = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
     
     /*
     $values = array();
@@ -849,7 +849,7 @@ function createSurvey( $title , $description , $data )
                 `cid` = " . Claroline::getDatabase()->quote( $courseId )
         );
         
-        $questionId = mysql_insert_id();
+        $questionId = ((is_null($___mysqli_res = mysqli_insert_id($GLOBALS["___mysqli_ston"]))) ? false : $___mysqli_res);
         $rank++;
         
         Claroline::getDatabase()->exec( "
