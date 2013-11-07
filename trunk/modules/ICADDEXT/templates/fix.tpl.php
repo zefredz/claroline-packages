@@ -213,6 +213,7 @@
     </p>
     <?php if( $this->controller->importer->is_ok() ) : ?>
     <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
+    <input type="checkbox" name="create_class" /><strong><?php echo get_lang( 'create_class' ); ?></strong><br />
     <?php endif; ?>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"

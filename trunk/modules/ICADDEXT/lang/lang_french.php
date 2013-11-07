@@ -9,6 +9,7 @@ $_lang['autogen'] = 'indique les valeurs générées automatiquement par le système
 $_lang['birthdate'] = 'Date de naissance';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';
+$_lang['create_class'] = 'Créer une classe à partir de la liste';
 $_lang['fail_message'] = 'Erreur';
 $_lang['first_name'] = 'Prénom';
 $_lang['fix'] = 'Corriger';

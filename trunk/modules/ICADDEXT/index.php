@@ -18,7 +18,8 @@ FromKernel::uses(
     'utils/input.lib',
     'utils/validator.lib',
     'display/layout.lib',
-    'fileUpload.lib' );
+    'fileUpload.lib',
+    'users/claroclass.lib' );
 
 From::Module( 'ICADDEXT' )->uses(
     'importer.class',

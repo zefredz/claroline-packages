@@ -139,6 +139,7 @@ class ICADDEXT_Controller
         $selected = $this->userInput->get( 'selected' );
         $toForce = $this->userInput->get( 'toForce' );
         $send_mail = $this->userInput->get( 'send_mail' );
+        $create_class = $this->userInput->get( 'create_class' );
         
         $userData = array_intersect_key( (array)$userData , (array)$selected );
         $toForce = array_intersect_key( (array)$toForce , (array)$selected );
@@ -147,7 +148,7 @@ class ICADDEXT_Controller
         
         if( ! empty( $toAdd ) )
         {
-            $this->status_ok = $this->importer->add( $toAdd , $send_mail );
+            $this->status_ok = $this->importer->add( $toAdd , $send_mail , $create_class );
         }
         else
         {
