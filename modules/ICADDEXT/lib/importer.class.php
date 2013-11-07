@@ -121,7 +121,7 @@ class ICADDEXT_Importer
     /**
      * Adds selected users
      */
-    public function add( $toAdd , $send_mail = true )
+    public function add( $toAdd , $send_mail = true , $create_class = false )
     {
         if ( ! is_array( $toAdd ) )
         {
@@ -130,6 +130,31 @@ class ICADDEXT_Importer
         
         $this->_fillMissingValues( $toAdd );
         
+        if( $create_class )
+        {
+            $parentClass = new Claro_Class( Claroline::getDatabase() );
+            
+            try
+            {
+                $parentClass->loadByName( 'ICADDEXT_classes' );
+            }
+            catch( Exception $e )
+            {
+                $parentClass->setName( 'ICADDEXT_classes' );
+                $parentClass->create();
+            }
+            
+            $class = new Claro_Class( Claroline::getDatabase() );
+            $class->setParentId( $parentClass->getId() );
+            $class->setName( 'added_' . time( 'T-m-d H:i:s' ) );
+            $class->create();
+            $classList = new Claro_ClassUserList( $class , Claroline::getDatabase() );
+        }
+        else
+        {
+            $classList = null;
+        }
+        
         foreach( $this->csvParser->data as $userData )
         {
             if( $this->_insert( $userData , 'user' ) )
@@ -137,6 +162,11 @@ class ICADDEXT_Importer
                 $userData[ 'user_id' ] = $this->database->insertId();
                 $this->_insert( $userData , 'user_added' );
                 $this->added[] = $userData;
+                
+                if( $classList )
+                {
+                    $classList->addUserId( $userData[ 'user_id' ] );
+                }
                 
                 if( $send_mail )
                 {
