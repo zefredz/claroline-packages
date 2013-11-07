@@ -146,7 +146,7 @@ class ICADDEXT_Importer
             
             $class = new Claro_Class( Claroline::getDatabase() );
             $class->setParentId( $parentClass->getId() );
-            $class->setName( 'added_' . time( 'T-m-d H:i:s' ) );
+            $class->setName( 'added_' . date( 'Y-m-d H:i:s' ) );
             $class->create();
             $classList = new Claro_ClassUserList( $class , Claroline::getDatabase() );
         }
