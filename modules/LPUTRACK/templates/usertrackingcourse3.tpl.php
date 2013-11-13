@@ -99,7 +99,7 @@
     <?php if( !$this->excelExport ) : ?>
         <img src="<?php echo get_icon_url( 'user' ); ?>" alt=""/>
     <?php endif; ?>
-    <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName(); ?>
+    <?php echo $infoUser->getLastName() . " " . $infoUser->getFirstName(); ?>
 </h1>
 
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">

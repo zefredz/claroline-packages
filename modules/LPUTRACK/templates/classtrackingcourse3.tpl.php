@@ -123,10 +123,10 @@
             <?php endif; ?>
             <?php if( $this->mode == 2 ) : ?>
             <a href="#">
-            <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName();  ?>
+            <?php echo $infoUser->getLastName() . " " . $infoUser->getFirstName();  ?>
             </a>
             <?php else : ?>
-            <?php echo $infoUser->getFirstName() . " " . $infoUser->getLastName();  ?>
+            <?php echo $infoUser->getLastName() . " " . $infoUser->getFirstName();  ?>
             <?php endif; ?>
         </td>
 
