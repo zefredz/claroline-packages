@@ -66,6 +66,15 @@
 
 <?php endif; ?>
 
+<?php if( $this->excelExport ) : ?>
+    <p> <?php echo get_lang( 'Platform name' ) . ' : ' . $this->platformName; ?> </p>
+    <?php if( trim($this->institutionName) !== '' ) : ?>
+        <p> <?php echo get_lang( 'Institution' ) . ' : ' . $this->institutionName; ?> </p>
+    <?php endif; ?>
+    <p> <?php echo get_lang( 'Class' ) . ' : ' . $this->className; ?> </p>
+    <br>
+<?php endif; ?>
+
 <table class="claroTable emphaseLine">
     <tr class="headerX">
         <th>

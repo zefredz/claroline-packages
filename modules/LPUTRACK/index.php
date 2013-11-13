@@ -329,6 +329,8 @@ try
     $title = new ToolTitle( null );
     $title->setMainTitle( get_lang( 'LearnPath tracking' ) );
     $mainBody = null;
+    $platformName = get_conf('siteName');
+    $institutionName = get_conf('institution_name');
 
     switch ( $cmd )
     {
@@ -349,6 +351,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoUserList );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -361,6 +365,7 @@ try
             $trackingDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackinglearnpath3.tpl.php' );
             $trackingDisplay->assign( 'classId', $classId );
             $trackingDisplay->assign( 'mode', $mode );
+            $trackingDisplay->assign( 'className', $infoClass->getClassName() );
             $trackingDisplay->assign( 'nbLearnPath', $infoCourse->getNbLearnPath() );
             $trackingDisplay->assign( 'courseCode', $infoCourse->getCourseCode() );
             $trackingDisplay->assign( 'courseName', $infoCourse->getCourseName() );
@@ -368,6 +373,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoClass->getInfoUserList() );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'Course tracking' )
                                 . " \"" . $infoCourse->getCourseName()
@@ -388,6 +395,7 @@ try
             $trackingDisplay = new ModuleTemplate( 'LPUTRACK', 'classtrackingmodule3.tpl.php' );
             $trackingDisplay->assign( 'classId', $classId );
             $trackingDisplay->assign( 'mode', $mode );
+            $trackingDisplay->assign( 'className', $infoClass->getClassName() );
             $trackingDisplay->assign( 'courseCode', $infoCourse->getCourseCode() );
             $trackingDisplay->assign( 'courseName', $infoCourse->getCourseName() );
             $trackingDisplay->assign( 'learnPathId', $infoLearnPath->getLearnPathId() );
@@ -396,6 +404,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoClass->getInfoUserList() );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'LearnPath tracking 2' )
                                 . " \"" . $infoLearnPath->getLearnPathName()
@@ -419,6 +429,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoUserList );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -438,6 +450,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoUserList );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -459,6 +473,8 @@ try
             $trackingDisplay->assign( 'infoUserList', $infoUserList );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'platformName', $platformName );
+            $trackingDisplay->assign( 'institutionName', $institutionName );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -591,7 +607,13 @@ try
     }
     if( $excelExport )
     {
-        $fileName = 'learnPath_tracking.xls';
+        $fileName = $platformName;
+
+        if ($institutionName !== '')
+        {
+            $fileName .= '-' . $institutionName;
+        }
+        $fileName .= '_learnPath_tracking.xls';
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=$fileName");
         echo $trackingDisplay->render();
