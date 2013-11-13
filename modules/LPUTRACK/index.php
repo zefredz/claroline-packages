@@ -167,7 +167,7 @@ try
                 $trackingUser = new TrackingUser( $infoUser->getUserId(), $infoUser->getFirstName(), $infoUser->getLastName() );
                 $trackingUser->generateTrackingCourseList( array( $courseCode ) );
                 $trackingUser->generateLearnPathTrackingList( $mode );
-                $trackingController->addTrackingUser( $trackingUser );
+                $trackingController->addTrackingUser( $truackingUser );
             }
             break;
 
@@ -250,8 +250,8 @@ try
 
         case 'uniqueGlobalViewTrackLearnPath' :
             $courseCode = $userInput->getMandatory( 'courseCode' );
-            $course = TrackingUtils::getCourseIntituleFromCourseCode( $courseCode );
-            $infoCourse = new InfoCourse( $courseCode, $course['intitule'] );
+            $courseIntitule = TrackingUtils::getCourseIntituleFromCourseCode( $courseCode );
+            $infoCourse = new InfoCourse( $courseCode, $courseIntitule );
 
             $trackingData->addCourse( $courseCode );
             $trackingData->generateData();
@@ -265,8 +265,8 @@ try
         case 'uniqueGlobalViewTrackModule' :
             $courseCode = $userInput->getMandatory( 'courseCode' );
             $learnPathId = $userInput->getMandatory( 'learnPathId' );
-            $course = TrackingUtils::getCourseIntituleFromCourseCode( $courseCode );
-            $infoCourse = new InfoCourse( $courseCode, $course['intitule'] );
+            $courseIntitule = TrackingUtils::getCourseIntituleFromCourseCode( $courseCode );
+            $infoCourse = new InfoCourse( $courseCode, $courseIntitule );
             $infoLearnPath = $infoCourse->getInfoLearnPath( $learnPathId );
 
             $trackingData->addCourse( $courseCode );
