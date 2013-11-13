@@ -107,7 +107,9 @@
         <th> <?php echo get_lang( 'First connection' ); ?> </th>
         <th> <?php echo get_lang( 'Last connection' ); ?> </th>
         <th> <?php echo get_lang( 'Total time' ); ?> </th>
-        <th> <?php echo get_lang( 'Progress' ); ?> </th>
+        <?php if( $this->displayProgress ) : ?>
+            <th> <?php echo get_lang( 'Progress' ); ?> </th>
+        <?php endif; ?>
     </tr>
     <?php foreach( $this->infoCourseList as $infoCourse ) : ?>
     <?php
@@ -123,21 +125,27 @@
             </td>
             <?php if( !is_null( $trackingCourseEntry ) ) : ?>
                 <?php if( $trackingCourseEntry->getWarning() ) : ?>
-                <td class="warning bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
+                    <td class="warning bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
+                    <td class="warning bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
+                    <td class="warning bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
+                    <?php if( $this->displayProgress ) : ?>
+                        <td class="warning bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
+                    <?php endif; ?>
                 <?php else : ?>
-                <td class="bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
+                    <td class="bigCell"> <?php echo $trackingCourseEntry->getFirstConnection(); ?> </td>
+                    <td class="bigCell"> <?php echo $trackingCourseEntry->getDate(); ?> </td>
+                    <td class="bigCell"> <?php echo $trackingCourseEntry->getTime(); ?> </td>
+                    <?php if( $this->displayProgress ) : ?>
+                        <td class="bigCell"> <?php echo $trackingCourseEntry->getProgress() . "%"; ?> </td>
+                    <?php endif; ?>
                 <?php endif; ?>
             <?php else : ?>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
-                <td class="emptyCell bigCell">-</td>
+                <?php if( $this->displayProgress ) : ?>
+                    <td class="emptyCell bigCell">-</td>
+                <?php endif; ?>
             <?php endif; ?>
         </tr>
         <?php if( $this->mode == 2 && !is_null( $trackingCourseEntry ) ) : ?>

@@ -77,7 +77,7 @@
 
         <?php foreach( $this->infoCourseList as $infoCourse ) : ?>
 
-        <th colspan="5">
+        <th colspan="<?php if( $this->displayProgress ) : ?> 5 <?php else : ?> 4 <?php endif; ?>">
             <?php if( !$this->excelExport ) : ?>
                 <img src="<?php echo get_icon_url( 'course' ); ?>" alt=""/>
             <?php endif; ?>
@@ -105,7 +105,9 @@
         <th> <?php echo get_lang( 'First connection' ); ?> </th>
         <th> <?php echo get_lang( 'Last connection' ); ?> </th>
         <th> <?php echo get_lang( 'Spent time' ); ?> </th>
-        <th> <?php echo get_lang( 'Progress' ); ?> </th>
+        <?php if( $this->displayProgress ) : ?>
+            <th> <?php echo get_lang( 'Progress' ); ?> </th>
+        <?php endif; ?>
         <th> <?php echo get_lang( 'Inactivity (day)' ); ?> </th>
 
         <?php endforeach; ?>
@@ -137,38 +139,44 @@
 
             <?php if( !is_null( $trackingEntry ) ) : ?>
                 <?php if( $trackingEntry->getWarning() ) : ?>
-                <td class="warning bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
-                <td class="warning bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
-                <td class="warning bigCell">
-                    <?php
-                    $entryDate = new DateTime($trackingEntry->getDate() );
-                    $today = new DateTime( date('Y-m-d') );
-                    $interval = $today->diff( $entryDate, true );
-                    echo $interval->format('%a');
-                    ?>
-                </td>
+                    <td class="warning bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
+                    <td class="warning bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
+                    <td class="warning bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
+                    <?php if( $this->displayProgress ) : ?>
+                        <td class="warning bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
+                    <?php endif; ?>
+                    <td class="warning bigCell">
+                        <?php
+                            $entryDate = new DateTime($trackingEntry->getDate() );
+                            $today = new DateTime( date('Y-m-d') );
+                            $interval = $today->diff( $entryDate, true );
+                            echo $interval->format('%a');
+                        ?>
+                    </td>
                 <?php else : ?>
-                <td class="bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
-                <td class="bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
-                <td class="bigCell">
-                    <?php
-                    $entryDate = new DateTime($trackingEntry->getDate() );
-                    $today = new DateTime( date('Y-m-d') );
-                    $interval = $today->diff( $entryDate, true );
-                    echo $interval->format('%a');
-                    ?>
-                </td>
+                    <td class="bigCell"> <?php echo $trackingEntry->getFirstConnection(); ?> </td>
+                    <td class="bigCell"> <?php echo $trackingEntry->getDate(); ?> </td>
+                    <td class="bigCell"> <?php echo $trackingEntry->getTime(); ?> </td>
+                    <?php if( $this->displayProgress ) : ?>
+                        <td class="bigCell"> <?php echo $trackingEntry->getProgress() . "%"; ?> </td>
+                    <?php endif; ?>
+                    <td class="bigCell">
+                        <?php
+                            $entryDate = new DateTime($trackingEntry->getDate() );
+                            $today = new DateTime( date('Y-m-d') );
+                            $interval = $today->diff( $entryDate, true );
+                            echo $interval->format('%a');
+                        ?>
+                    </td>
                 <?php endif; ?>
             <?php else : ?>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
                 <td class="emptyCell bigCell">-</td>
-                <td class="emptyCell bigCell">-</td>
+                <?php if( $this->displayProgress ) : ?>
+                    <td class="emptyCell bigCell">-</td>
+                <?php endif; ?>
             <?php endif; ?>
 
         <?php endforeach; ?>
@@ -183,23 +191,29 @@
                 $trackingEntry = $trackingCourse->getGeneralTracking();
             ?>
             <?php if( !is_null( $trackingEntry ) ) : ?>
-                <td class="detailTable" colspan="4">
+                <td class="detailTable" colspan="<?php if( $this->displayProgress ) : ?> 4 <?php else : ?> 3 <?php endif; ?>">
                     <table class="claroTable emphaseLine detailTable" width="100%" border="0" cellspacing="2">
                         <tr class="header">
                             <th> <?php echo get_lang( 'Date' ); ?> </th>
                             <th> <?php echo get_lang( 'Time' ); ?> </th>
-                            <th> <?php echo get_lang( 'Progress' ); ?> </th>
+                            <?php if( $this->displayProgress ) : ?>
+                                <th> <?php echo get_lang( 'Progress' ); ?> </th>
+                            <?php endif; ?>
                         </tr>
                         <?php foreach( $trackingCourse->getTrackingList() as $trackingEntry ) : ?>
                         <tr>
                             <?php if( $trackingEntry->getWarning() ) : ?>
-                            <td class="warning"><?php echo $trackingEntry->getDate(); ?></td>
-                            <td class="warning"><?php echo $trackingEntry->getTime(); ?></td>
-                            <td class="warning"><?php echo $trackingEntry->getProgress() . '%'; ?></td>
+                                <td class="warning"><?php echo $trackingEntry->getDate(); ?></td>
+                                <td class="warning"><?php echo $trackingEntry->getTime(); ?></td>
+                                <?php if( $this->displayProgress ) : ?>
+                                    <td class="warning"><?php echo $trackingEntry->getProgress() . '%'; ?></td>
+                                <?php endif; ?>
                             <?php else : ?>
-                            <td><?php echo $trackingEntry->getDate(); ?></td>
-                            <td><?php echo $trackingEntry->getTime(); ?></td>
-                            <td><?php echo $trackingEntry->getProgress() . '%'; ?></td>
+                                <td><?php echo $trackingEntry->getDate(); ?></td>
+                                <td><?php echo $trackingEntry->getTime(); ?></td>
+                                <?php if( $this->displayProgress ) : ?>
+                                    <td><?php echo $trackingEntry->getProgress() . '%'; ?></td>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </tr>
                         <?php endforeach; ?>
@@ -208,7 +222,7 @@
                 </td>
                 <td class="emptyCell">&nbsp;</td>
             <?php else : ?>
-                <td class="emptyCell" colspan="5">&nbsp;</td>
+                <td class="emptyCell" colspan="<?php if( $this->displayProgress ) : ?> 5 <?php else : ?> 4 <?php endif; ?>">&nbsp;</td>
             <?php endif; ?>
         <?php endforeach; ?>
     </tr>

@@ -38,5 +38,6 @@
     $_lang['Search an user'] = 'Rechercher un utilisateur';
     $_lang['Alternative view'] = 'Vue alternative';
     $_lang['for user'] = 'pour l\'utilisateur';
+    $_lang['Display progress'] = 'Afficher la progression';
 
 ?>
