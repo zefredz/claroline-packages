@@ -38,5 +38,6 @@
     $_lang['Search an user'] = 'Search an user';
     $_lang['Alternative view'] = 'Alternative view';
     $_lang['for user'] = 'for user';
+    $_lang['Display progress'] = 'Display progress';
 
 ?>

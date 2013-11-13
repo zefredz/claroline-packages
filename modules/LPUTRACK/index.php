@@ -331,6 +331,7 @@ try
     $mainBody = null;
     $platformName = get_conf('siteName');
     $institutionName = get_conf('institution_name');
+    $displayProgress = get_conf('LPUTRACK_display_progress');
 
     switch ( $cmd )
     {
@@ -353,6 +354,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -375,6 +377,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Course tracking' )
                                 . " \"" . $infoCourse->getCourseName()
@@ -406,6 +409,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'LearnPath tracking 2' )
                                 . " \"" . $infoLearnPath->getLearnPathName()
@@ -431,6 +435,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -452,6 +457,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -475,6 +481,7 @@ try
             $trackingDisplay->assign( 'excelExport', $excelExport );
             $trackingDisplay->assign( 'platformName', $platformName );
             $trackingDisplay->assign( 'institutionName', $institutionName );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Class tracking' ) . " \"" . $infoClass->getClassName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -489,6 +496,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'User tracking' ) . " \"" . $infoUser->getFirstName() . " " . $infoUser->getLastName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -508,6 +516,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'Course tracking' )
                                 . " \"" . $infoCourse->getCourseName()
@@ -536,6 +545,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'LearnPath tracking 2' )
                                 . " \"" . $infoLearnPath->getLearnPathName()
@@ -558,6 +568,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'User tracking' ) . " \"" . $infoUser->getFirstName() . " " . $infoUser->getLastName() . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -576,6 +587,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'User tracking' ) . " \"" . $infoUser->getFirstName() . " " . $infoUser->getLastName()  . "\"" );
             $mainBody = $trackingDisplay->render();
@@ -596,6 +608,7 @@ try
             $trackingDisplay->assign( 'infoUser', $infoUser );
             $trackingDisplay->assign( 'trackingController', $trackingController );
             $trackingDisplay->assign( 'excelExport', $excelExport );
+            $trackingDisplay->assign( 'displayProgress', $displayProgress );
 
             $title->setSubTitle( get_lang( 'User tracking' ) . " \"" . $infoUser->getFirstName() . " " . $infoUser->getLastName()  . "\"" );
             $mainBody = $trackingDisplay->render();
