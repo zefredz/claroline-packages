@@ -167,7 +167,7 @@ try
                 $trackingUser = new TrackingUser( $infoUser->getUserId(), $infoUser->getFirstName(), $infoUser->getLastName() );
                 $trackingUser->generateTrackingCourseList( array( $courseCode ) );
                 $trackingUser->generateLearnPathTrackingList( $mode );
-                $trackingController->addTrackingUser( $truackingUser );
+                $trackingController->addTrackingUser( $trackingUser );
             }
             break;
 
