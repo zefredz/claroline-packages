@@ -1,8 +1,30 @@
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#selectAll" ).click(function(){
-            var is_checked=$(this).attr('checked');
-            $(".itemSelect").attr('checked',is_checked);
+        $("#className").hide();
+        $("#classList").hide();
+        $("#selectAll").click(function(){
+            var is_checked=$(this).prop('checked');
+            $(".itemSelect").prop('checked',is_checked);
+        });
+        $("#createClass").click(function(){
+            var is_checked=$(this).prop('checked');
+            if(is_checked===true){
+                $("#addToClass").prop('checked',false);
+                $("#className").show();
+                $("#classList").hide();
+            }else{
+                $("#className").hide();
+            }
+        });
+        $("#addToClass").click(function(){
+            var is_checked=$(this).prop('checked');
+            if(is_checked===true){
+                $("#createClass").prop('checked',false);
+                $("#classList").show();
+                $("#className").hide();
+            }else{
+                $("#classList").hide();
+            }
         });
     });
 </script>
@@ -213,7 +235,14 @@
     </p>
     <?php if( $this->controller->importer->is_ok() ) : ?>
     <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
-    <input type="checkbox" name="create_class" /><strong><?php echo get_lang( 'create_class' ); ?></strong><br />
+    <input id="createClass" type="checkbox" name="create_class" /><strong><?php echo get_lang( 'create_class' ); ?></strong>
+    <input id="className" type="text" name="class_name" size="32" value="<?php echo $this->controller->importer->defaultClassName; ?>"/><br />
+    <input id="addToClass" type="checkbox" name="add_to_class" /><strong><?php echo get_lang( 'add_to_class' ); ?></strong>
+    <select id="classList" name="class_id">
+        <?php foreach( $this->controller->importer->getClasses() as $classId => $className ) : ?>
+        <option value="<?php echo $classId; ?>"><?php echo $className; ?></option>
+        <?php endforeach; ?>
+    </select><br />
     <?php endif; ?>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
