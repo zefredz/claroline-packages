@@ -2,10 +2,12 @@
 
 $_lang['add_from_csv'] = 'Ajouter une liste d\'utilisateur à partir d\'un fichier CSV';
 $_lang['add_single_user'] = 'Ajouter un utilisateur';
+$_lang['add_to_class'] = "Ajouter la liste à une classe existante";
 $_lang['added_message'] = 'Les utilisateurs suivant ont été ajoutés :';
 $_lang['auth_source'] = 'Source d\'authentification';
 $_lang['auto_generated'] = 'généré automatiquement';
 $_lang['autogen'] = 'indique les valeurs générées automatiquement par le système';
+$_lang['bad_class_data'] = 'Informations concernant la classe incorrectes';
 $_lang['birthdate'] = 'Date de naissance';
 $_lang['comment'] = 'Remarques';
 $_lang['conflict_found'] = 'Conflits détectés';

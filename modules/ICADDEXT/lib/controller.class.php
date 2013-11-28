@@ -43,8 +43,7 @@ class ICADDEXT_Controller
         }
         else
         {
-            $this->message[] = array( 'type' => 'error'
-                                    , 'text' => 'invalid_command' );
+            $this->message[] = array( 'type' => 'error' , 'text' => 'invalid_command' );
         }
     }
     
@@ -140,6 +139,22 @@ class ICADDEXT_Controller
         $toForce = $this->userInput->get( 'toForce' );
         $send_mail = $this->userInput->get( 'send_mail' );
         $create_class = $this->userInput->get( 'create_class' );
+        $add_to_class = $this->userInput->get( 'add_to_class' );
+        $class_name = $this->userInput->get( 'class_name' );
+        $class_id = $this->userInput->get( 'class_id' );
+        
+        if( $create_class && strlen( (string)$class_name ) != 0 )
+        {
+            $addToClass = (string)$class_name;
+        }
+        elseif( $add_to_class && (int)$class_id != 0 )
+        {
+            $addToClass = (int)$class_id;
+        }
+        else
+        {
+            $this->message[] = array( 'type' => 'error' , 'text' => 'bad_class_data' );
+        }
         
         $userData = array_intersect_key( (array)$userData , (array)$selected );
         $toForce = array_intersect_key( (array)$toForce , (array)$selected );
@@ -148,7 +163,7 @@ class ICADDEXT_Controller
         
         if( ! empty( $toAdd ) )
         {
-            $this->status_ok = $this->importer->add( $toAdd , $send_mail , $create_class );
+            $this->status_ok = $this->importer->add( $toAdd , $send_mail , $addToClass );
         }
         else
         {
