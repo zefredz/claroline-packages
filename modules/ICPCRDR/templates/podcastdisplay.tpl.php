@@ -120,10 +120,10 @@
         </div>
         <?php endif; ?>
         <p>
-            <em>
+            <!-- em>
                 <?php echo get_lang('If the media doesn\'t play correctly, you can download it using the following link (right-click Save Link As or ctrl+click Save Link As)' );?>
             </em>
-            <br />
+            <br / -->
             <em>
                 <a href="<?php echo claro_htmlspecialchars( $item->enclosure['url'] );?>">
                     <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
