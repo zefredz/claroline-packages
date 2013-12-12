@@ -13,6 +13,7 @@ class TrackingUser
     private $firstName;
     private $lastName;
     private $trackingCourseList;
+    private $totalTime;
     
     /**
      * Constructor
@@ -26,6 +27,7 @@ class TrackingUser
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->trackingCourseList = null;
+        $this->totalTime = '00:00:00.00';
     }
     
     /**
@@ -54,6 +56,16 @@ class TrackingUser
     {
         return $this->lastName;
     }
+     
+    /**
+     * Get the total time spent on all courses
+     * @return string The total time spent on all courses
+     */
+    public function getTotalTime()
+    {
+        return $this->totalTime;
+    }  
+    
     
     /**
      * Get the list of TrackingCourse associated to user
@@ -167,6 +179,22 @@ class TrackingUser
         foreach( $this->trackingCourseList as $trackingCourse )
         {
             $trackingCourse->generateModuleTrackingList( $this->userId, $mode );
+        }
+    }
+    
+    public function generateTotalTime()
+    {
+        if( is_array( $this->trackingCourseList ) )
+        {
+            foreach( $this->trackingCourseList as $trackingCourse )
+            {
+                $tracking = $trackingCourse->getGeneralTracking();
+                if( !is_null($tracking) )
+                {
+                    $tempTime = $tracking->getTime();
+                    $this->totalTime = TrackingUtils::addTime($this->totalTime, $tempTime);
+                }
+            }
         }
     }
 }
