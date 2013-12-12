@@ -152,6 +152,7 @@ try
                 $trackingUser->generateTrackingCourseList( $infoClass->getCourseCodeList() );
                 $trackingUser->generateCourseTrackingList( $mode );
                 $trackingController->addTrackingUser( $trackingUser );
+                $trackingUser->generateTotalTime();
             }
 
             break;
@@ -205,6 +206,7 @@ try
                 $trackingUser->generateCourseTrackingList( $parentMode );
                 $trackingUser->generateLearnPathTrackingList( $mode );
                 $trackingController->addTrackingUser( $trackingUser );
+                $trackingUser->generateTotalTime();
             }
 
             break;
@@ -224,6 +226,7 @@ try
                 $trackingUser->generateLearnPathTrackingList( $parentMode );
                 $trackingUser->generateModuleTrackingList( $mode );
                 $trackingController->addTrackingUser( $trackingUser );
+                $trackingUser->generateTotalTime();
             }
 
             break;
@@ -245,6 +248,7 @@ try
             $trackingUser->generateTrackingCourseList( $courseCodeList );
             $trackingUser->generateCourseTrackingList( $mode );
             $trackingController->addTrackingUser( $trackingUser );
+            $trackingUser->generateTotalTime();
 
             break;
 
@@ -298,6 +302,7 @@ try
             $trackingUser->generateCourseTrackingList( $parentMode );
             $trackingUser->generateLearnPathTrackingList( $mode );
             $trackingController->addTrackingUser( $trackingUser );
+            $trackingUser->generateTotalTime();
 
             break;
 
@@ -318,6 +323,7 @@ try
             $trackingUser->generateLearnPathTrackingList( $parentMode );
             $trackingUser->generateModuleTrackingList( $mode );
             $trackingController->addTrackingUser( $trackingUser );
+            $trackingUser->generateTotalTime();
 
             break;
 

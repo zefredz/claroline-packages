@@ -101,6 +101,11 @@
     <?php echo $this->infoUser->getFirstName() . " " . $this->infoUser->getLastName(); ?>
 </h1>
 
+<h3>
+    <?php echo get_lang( 'Total time' ); ?> :
+    <?php echo $trackingUser->getTotalTime(); ?>
+</h3>
+
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <tr class="headerX">
         <th> <?php echo get_lang( 'Course' ); ?> </th>

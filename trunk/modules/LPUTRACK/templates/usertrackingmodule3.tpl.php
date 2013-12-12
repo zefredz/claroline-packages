@@ -124,6 +124,11 @@
     <?php echo $infoUser->getLastName() . " " . $infoUser->getFirstName(); ?>
 </h1>
 
+<h3>
+    <?php echo get_lang( 'Total time' ); ?> :
+    <?php echo $trackingUser->getTotalTime(); ?>
+</h3>
+
 <table class="claroTable emphaseLine" width="100%" border="0" cellspacing="2">
     <?php foreach( $this->infoCourseList as $infoCourse ) : ?>
     <?php
