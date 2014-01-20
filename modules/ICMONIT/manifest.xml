@@ -1,0 +1,21 @@
+<module>
+    <label>ICMONIT</label>
+    <name>Student Monitoring Tool</name>
+    <description><![CDATA[ Student Monitoring Tool ]]></description>
+    <version>1.0.0</version>
+    <license>GPL</license>
+    <icon>icon.png</icon>
+    <type>crsmanage</type>
+    <context>course</context>
+    <entry>index.php</entry>
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net/</web>
+    </author>
+    <requirements>
+        <claroline>
+            <version>1.10.5</version>
+        </claroline>
+    </requirements>
+</module>
