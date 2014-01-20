@@ -1,0 +1,63 @@
+/**
+ * $Id$
+ * Student Report for Claroline
+ *
+ * @version     ICMONIT 1.0.0 $Revision$ - Claroline 1.11.5
+ * @copyright   2001-2013 Universite catholique de Louvain (UCL)
+ * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
+ * @package     ICMONIT
+ * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
+ */
+
+.cell
+{
+    text-align: center;
+}
+
+.cell a
+{
+    color: #444;
+}
+
+.empty
+{
+    text-align: center;
+    font-style: italic;
+    color: silver;
+}
+
+.average
+{
+    font-weight: bold;
+    background-color: beige;
+}
+
+.final
+{
+    color: dimGrey;
+    font-weight: bold;
+    /*background-color: linen;*/
+}
+
+.exam, .noscore
+{
+    /*font-weight: bold;*/
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.toolName
+{
+    font-weight: bold;
+    background-color: mistyRose;
+}
+
+.noscore
+{
+    background-color: linen;
+}
+
+.rightSubmit
+{
+    float: right;
+}
