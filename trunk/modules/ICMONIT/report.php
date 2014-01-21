@@ -255,7 +255,7 @@ try
     }
     
     // VIEW
-    CssLoader::getInstance()->load( 'ICMONIT' , 'screen' );
+    CssLoader::getInstance()->load( 'icmonit' , 'screen' );
     $pageTitle = array( 'mainTitle' => $nameTools );
     $comment = isset( $userList[ claro_get_current_user_id() ][ 'comment' ] )
              ? $userList[ claro_get_current_user_id() ][ 'comment' ]

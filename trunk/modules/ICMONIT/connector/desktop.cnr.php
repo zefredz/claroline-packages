@@ -9,7 +9,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class UCREPORT_Portlet extends UserDesktopPortlet
+class ICMONIT_Portlet extends UserDesktopPortlet
 {
     public function __construct()
     {
