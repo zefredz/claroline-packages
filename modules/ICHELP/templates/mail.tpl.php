@@ -8,15 +8,15 @@ Voici la procédure à suivre:
 S'il est introuvable, veuillez attribuer cet incident à l'UDS ICAMPUS.
 
 
-2. S'il existe, vérifiez qu'il possède bien la ressource "icampus.*".
-C'est à dire :  icampus.student
-                icampus.uclouvain
-                icampus.extern
+2. S'il existe, vérifiez qu'il possède bien l'une des 4 ressources "icampus.*".
+C'est à dire :  icampus.student ou
+                icampus.uclouvain ou
+                icampus.extern ou
                 icampus.alumni
 
 Si ce n'est pas le cas, c'est qu'il n'a pas accès à iCampus.
 Cela arrive, par exemple, si l'étudiant(e) n'est pas en ordre de paiement pour son inscription.
-Vérifiez éventuellement s'il y a un problème avec son inscription dans EPC, ou renvoyez-le/la vers son secrétariat administratif.
+Vérifiez éventuellement s'il y a un problème avec son inscription dans EPC, ou renvoyez-le/la vers le secrétariat de sa faculté.
 
 
 3. Si l'utilisateur/trice a perdu son mot de passe ou son identifiant global, suivez la procédure habituelle (http://www.uclouvain.be/4040).

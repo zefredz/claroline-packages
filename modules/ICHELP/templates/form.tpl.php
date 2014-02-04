@@ -39,7 +39,7 @@
                         type="radio"
                         name="data[UCLMember]"
                         value="1"
-                        <?php if ( ! claro_is_user_authenticated() || substr( $this->userData[ 'mail' ] , -12 ) == 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
+                        <?php if ( claro_is_user_authenticated() && substr( $this->userData[ 'mail' ] , -12 ) == 'uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
                 <?php echo get_lang( 'Yes' ); ?>
                 <input  id = "notMember"
                         type="radio"
@@ -55,14 +55,12 @@
                 <input  id="isManager"
                         type="radio"
                         name="data[courseManager]"
-                        value="1"
-                        <?php if ( substr( $this->userData[ 'mail' ] , -13 ) == '@uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
+                        value="1" />
                 <?php echo get_lang( 'Yes' ); ?>
                 <input  id="notManager"
                         type="radio"
                         name="data[courseManager]"
-                        value="0"
-                        <?php if ( substr( $this->userData[ 'mail' ] , -13 ) != '@uclouvain.be' ) : ?>checked="checked"<?php endif; ?>/>
+                        value="0" />
                 <?php echo get_lang( 'No' ); ?></strong>
         </dl>
     </fieldset>

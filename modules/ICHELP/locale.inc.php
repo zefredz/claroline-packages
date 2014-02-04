@@ -49,6 +49,11 @@ $checkList = array(
         'description' => 'Je n\'arrive pas à trouver le cours que je cherche',
         'mailTpl' => 'coursesearch' ),
     
+    'keyRequired' => array(
+        'issueCategory' => 2,
+        'description' => 'Je n\'arrive pas à m\'inscrire à un cours car une clé m\'est demandée.',
+        'mailTpl' => 'keyrequired' ),
+    
     'courseDisappeared' => array(
         'issueCategory' => 2,
         'description' => 'Des cours ont disparu de ma liste de cours',
