@@ -63,7 +63,8 @@ try
         'UCLMember' => null,
         'isManager' => null,
         'urlOrigin' => null,
-        'issueDescription' => null );
+        'issueDescription' => null,
+        'courseManager' => null );
     
     $userData = claro_get_current_user_data();
     
@@ -97,7 +98,9 @@ try
         elseif( empty( $userData[ 'lastName' ] )
            || empty( $userData[ 'firstName' ] )
            || empty( $userData[ 'mail' ] )
-           || empty( $userData[ 'issueType' ] ) )
+           || empty( $userData[ 'issueType' ] )
+           || empty( $userData[ 'courseManager' ] )
+           || empty( $userData[ 'UCLMember' ] ) )
         {
             $error = get_lang( 'Required information missing' );
         }
