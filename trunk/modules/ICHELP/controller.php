@@ -99,8 +99,8 @@ try
            || empty( $userData[ 'firstName' ] )
            || empty( $userData[ 'mail' ] )
            || empty( $userData[ 'issueType' ] )
-           || empty( $userData[ 'courseManager' ] )
-           || empty( $userData[ 'UCLMember' ] ) )
+           || ! isset( $userData[ 'courseManager' ] )
+           || ! isset( $userData[ 'UCLMember' ] ) )
         {
             $error = get_lang( 'Required information missing' );
         }
