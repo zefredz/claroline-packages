@@ -80,8 +80,8 @@ class EpcCodeToQuery
             $programUrlFragmentArray = array ( );
             $programUrlFragmentArray[ ] = empty ( $year ) ? '-' : $year;
             $programUrlFragmentArray[ ] = empty ( $matches[ 1 ] ) ? '-' : $matches[ 1 ];
-            $programUrlFragmentArray[ ] = empty ( $matches[ 2 ] ) ? '-' : $matches[ 2 ];
-            $programUrlFragmentArray[ ] = empty ( $matches[ 3 ] ) ? '-' : $matches[ 3 ];
+            $programUrlFragmentArray[ ] = ( isset( $matches[ 2 ] ) && ! is_numeric( $matches[ 2 ] ) ) || empty ( $matches[ 2 ] ) ? '-' : $matches[ 2 ];
+            $programUrlFragmentArray[ ] = ( isset( $matches[ 3 ] ) && ! is_numeric( $matches[ 3 ] ) ) || empty ( $matches[ 2 ] ) ? '-' : $matches[ 3 ];
             $programUrlFragmentArray[ ] = empty ( $matches[ 4 ] ) ? '-' : $matches[ 4 ];
             $programUrlFragmentArray[ ] = empty ( $matches[ 5 ] ) ? '-' : $matches[ 5 ];
 
