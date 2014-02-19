@@ -6,7 +6,7 @@
     <dd>
         <?php 
         echo $this->info['programInitials']
-            .$this->info['programLevel']
+            // .$this->info['programLevel']
             .$this->info['programCycle']
             .$this->info['programLevel']
             .$this->info['programSuffix']; 
