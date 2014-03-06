@@ -25,7 +25,7 @@ class LoginListener extends EventDriven
      */
     public function __construct()
     {
-        $this->tbl = claro_sql_get_tbl('user_online' , array('course'=>null));
+        $this->tbl = get_module_main_tbl('user_online');
     }
     
     /**
@@ -35,7 +35,7 @@ class LoginListener extends EventDriven
     {
         $timeOffset = ( isset( $_COOKIE[ 'time_offset' ] ) ) ? (int)$_COOKIE[ 'time_offset' ] : 0;
         
-        $tbl = claro_sql_get_tbl('user_online', array( 'course'=>null ) );
+        $tbl = get_module_main_tbl('user_online');
         
         Claroline::getDatabase()->exec( "
             DELETE FROM
