@@ -25,7 +25,7 @@ class LoginListener extends EventDriven
      */
     public function __construct()
     {
-        $this->tbl = get_module_main_tbl('user_online');
+        $this->tbl = get_module_main_tbl(array('user_online'));
     }
     
     /**
