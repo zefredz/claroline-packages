@@ -26,7 +26,7 @@ $toolName = get_lang( 'User(s) online' );
 
 $userPerPage = get_conf( 'UCONLINE_usersPerPage' );
 
-$tbl = claro_sql_get_tbl( array( 'user_online' , 'user_property' , 'user' , 'rel_course_user' , 'cours' ), array( 'course' => null ) );
+$tbl = get_module_main_tbl( array( 'user_online' , 'user_property' , 'user' , 'rel_course_user' , 'cours' ) );
 
 $additionalRestriction = get_conf( 'UCONLINE_privacy' ) == 2 ?
     "INNER JOIN
