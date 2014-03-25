@@ -10,7 +10,7 @@
     * @package     ICPCRDR
 -->
 <?php if ( claro_is_allowed_to_edit() ) : ?>
-
+<?php include_textzone('icpcrdr_list_top.html',''); ?>
 <p>
     <a class="claroCmd" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqAddPodcast' ) ); ?>">
     <img src="<?php echo get_icon_url('feed_add'); ?>" alt="" />

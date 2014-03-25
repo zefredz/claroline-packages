@@ -9,6 +9,7 @@
     *              GNU GENERAL PUBLIC LICENSE version 2 or later
     * @package     ICPCRDR
 -->
+<?php if ( claro_is_allowed_to_edit() ) { include_textzone('icpcrdr_display_top.html',''); } ?>
 <h3 class="channelTitle">
     <?php echo claro_htmlspecialchars(claro_utf8_decode($this->channel['title']));?>
 </h3>

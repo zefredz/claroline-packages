@@ -1,0 +1,1 @@
+<?php if ( claro_is_allowed_to_edit() ) { include_textzone('icpcrdr_display_top.html',''); } ?>
