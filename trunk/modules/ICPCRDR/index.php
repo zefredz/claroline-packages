@@ -160,6 +160,8 @@ try
         case 'list':
             {
                 $dialogBox->info(get_lang('Choose a podcast in the list to start'));
+                $tpl = new ModuleTemplate( 'ICPCRDR', 'podcastnone.tpl.php' );
+                $layout->appendToRight( $tpl->render() );
             }
             break;
 
@@ -326,7 +328,7 @@ try
     
     // add the title for our module to the claroline page
     Claroline::getDisplay()->body->appendcontent( claro_html_tool_title( get_lang("Video podcast reader") ) );
-
+    
     // add the layout to the claroline page 
     Claroline::getDisplay()->body->appendcontent( $layout->render() );
 

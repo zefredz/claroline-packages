@@ -9,6 +9,7 @@
     *              GNU GENERAL PUBLIC LICENSE version 2 or later
     * @package     ICPCRDR
 -->
+<?php include_textzone('icpcrdr_form_top.html',''); ?>
 <form 
     name="editPodcast" 
     action="<?php
