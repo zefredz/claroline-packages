@@ -120,6 +120,7 @@
             <a class="sizeButton size800">800</a>
         </div>
         <?php endif; ?>
+        <?php if ( $this->downloadLink == 'visible' ): ?>
         <p>
             <!-- em>
                 <?php echo get_lang('If the media doesn\'t play correctly, you can download it using the following link (right-click Save Link As or ctrl+click Save Link As)' );?>
@@ -132,6 +133,7 @@
                 </a>
             </em>
         </p>
+        <?php endif; ?>
         
 <?php
         $videoId++;

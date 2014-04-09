@@ -45,6 +45,13 @@
                 <input type="radio" id="visibility_invisible" name="visibility" value="invisible" <?php if( $this->visibility == 'invisible' ) : echo 'checked="checked"'; endif; ?> />
                 <label for="visibility_invisible"><?php echo get_lang('Invisible'); ?>&nbsp;<img src="<?php echo get_icon_url('invisible'); ?>" alt="" /></label>
             </dd>
+            <dt><?php echo get_lang('Download link'); ?>&nbsp;:</dt>
+            <dd>
+                <input type="radio" id="download_visible" name="download_link" value="visible" <?php if( $this->downloadLink == 'visible' ) : echo 'checked="checked"'; endif; ?> />
+                <label for="download_visible"><?php echo get_lang('Visible'); ?>&nbsp;<img src="<?php echo get_icon_url('visible'); ?>" alt="" /></label><br />
+                <input type="radio" id="download_invisible" name="download_link" value="invisible" <?php if( $this->downloadLink == 'invisible' ) : echo 'checked="checked"'; endif; ?> />
+                <label for="download_invisible"><?php echo get_lang('Invisible'); ?>&nbsp;<img src="<?php echo get_icon_url('invisible'); ?>" alt="" /></label>
+            </dd>
         </dl>
         
     </fieldset>

@@ -10,6 +10,8 @@
  * @author      Frederic Minne <frederic.minne@uclouvain.be>
  */
 
+require_once __DIR__ . '/podcastproperties.lib.php';
+
 class PodcastCollection
 {
     protected $tbl;
@@ -46,9 +48,9 @@ class PodcastCollection
      * @param string $visible 'visible' or 'invisible'
      * @return boolean 
      */
-    public function update( $id, $url, $title, $visible = 'visible' )
+    public function update( $id, $url, $title, $visible = 'visible', $properties = null )
     {
-        return Claroline::getDatabase()->exec(
+        $result = Claroline::getDatabase()->exec(
             "UPDATE `{$this->tbl['icpcrdr_podcasts']}`
             SET
                 url = " . Claroline::getDatabase()->quote( $url ) . ",
@@ -57,6 +59,10 @@ class PodcastCollection
             WHERE
                 id = " . Claroline::getDatabase()->escape((int) $id)
         );
+            
+        $this->saveProperties($id, $properties);
+
+        return $result;
     }
     
     /**
@@ -66,7 +72,7 @@ class PodcastCollection
      * @param string $visible 'visible' or 'invisible'
      * @return boolean 
      */
-    public function add( $url, $title, $visible = 'visible' )
+    public function add( $url, $title, $visible = 'visible', $properties = null )
     {
         Claroline::getDatabase()->exec(
             "INSERT
@@ -77,9 +83,36 @@ class PodcastCollection
                 visibility = " . Claroline::getDatabase()->quote( $visible == 'visible' ? 'visible' : 'invisible' )
         );
         
-        return Claroline::getDatabase()->insertId();
+        $id = Claroline::getDatabase()->insertId();
+        
+        $this->saveProperties($id, $properties);
+        
+        return $id;
     }
     
+    protected  function saveProperties( $id, $properties = null )
+    {
+        
+        if ( empty ( $properties ) )
+        {
+            return;
+        }
+        
+        $propertiesObj = new PodcastProperties( $id );
+        $propertiesObj->load();
+        
+        foreach ( $properties as $name => $value )
+        {
+            $propertyFromDB = $propertiesObj->getProperty ( $name, null );
+            
+            if ( !$propertyFromDB || $propertyFromDB != $value )
+            {
+                $propertiesObj->setProperty( $name, $value );
+            }
+        }
+    }
+
+
     /**
      * Delete a podcast from the collection
      * @param type $id int
@@ -87,6 +120,9 @@ class PodcastCollection
      */
     public function delete( $id )
     {
+        $properties = new PodcastProperties( $id );
+        $properties->unsetAll();
+        
         return Claroline::getDatabase()->exec(
             "DELETE FROM `{$this->tbl['icpcrdr_podcasts']}`
             WHERE id = " . Claroline::getDatabase()->escape($id)
