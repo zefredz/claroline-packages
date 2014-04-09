@@ -31,7 +31,8 @@ FromKernel::uses(
 // load libraries from the current module (from module/MODULELABEL/lib folder)
 From::Module('ICPCRDR')->uses(
     'podcastcollection.lib',
-    'podcastparser.lib'
+    'podcastparser.lib',
+    'podcastproperties.lib'
 );
 
 // check if the module can be accessed
@@ -109,6 +110,8 @@ try
                 $url = $podcast['url'];
                 $title = $podcast['title'];
                 $visibility = $podcast['visibility'];
+                $properties = new PodcastProperties( $id );
+                $properties->load();
             }
             break;
 
@@ -137,6 +140,10 @@ try
                 $title = $userInput->getMandatory( 'title' );
                 $url = $userInput->getMandatory( 'url' );
                 $visibility = $userInput->get ( 'visibility', 'visible' );
+                
+                $properties = array(
+                    'download_link' => $userInput->get( 'download_link', 'visible' )
+                );
             }
             break;
 
@@ -191,6 +198,7 @@ try
                 $videoList->assign( 'url', $url );
                 $videoList->assign( 'rsort' , $rsort );
                 $videoList->assign( 'id' , $id );
+                $videoList->assign( 'downloadLink' , $properties->getProperty ( 'download_link', 'visible' ) );
                 // $videoList->assign( 'title', $title );
                 
                 // append the template to the layout
@@ -208,6 +216,7 @@ try
                 $form->assign( 'url', $url );
                 $form->assign( 'title', $title );
                 $form->assign( 'visibility', $visibility );
+                $form->assign( 'downloadLink', $properties->getProperty('download_link','visible') );
                 
                 // append the template to the layout
                 $layout->appendToRight( $form->render() );
@@ -225,6 +234,7 @@ try
                 $form->assign( 'url', $url );
                 $form->assign( 'title', $title );
                 $form->assign( 'visibility', $visibility );
+                $form->assign( 'downloadLink', 'visible' );
                 
                 $layout->appendToRight( $form->render() );
             }
@@ -248,7 +258,7 @@ try
 
         case 'exEditPodcast':
             {
-                if( $collection->update( $id, $url, $title, $visibility ) )
+                if( $collection->update( $id, $url, $title, $visibility, $properties ) )
                 {
                     $dialogBox->success( get_lang('Podcast edited successfully') );
                 }
@@ -261,7 +271,7 @@ try
 
         case 'exAddPodcast':
             {
-                if( $collection->add( $url, $title, $visibility ) )
+                if( $collection->add( $url, $title, $visibility, $properties ) )
                 {
                     $dialogBox->success( get_lang('The podcast has been added successfully') );
                 }
