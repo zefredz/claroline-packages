@@ -246,9 +246,6 @@ try
                 
                 if( ! $error )
                 {
-                    $view = new ModuleTemplate( 'ICHELP' , 'ok.tpl.php' );
-                    $view->assign( 'backUrl' , $ticket->get( 'urlOrigin' ) );
-                    
                     $dialogBox->success( get_lang( 'Your request has been succesfully sent' ) );
                 }
                 else
@@ -284,6 +281,8 @@ try
         $view->assign( 'profileList' , $profileList );
         $view->assign( 'addedFields' , $addedFields );
         $view->assign( 'issueList' , $issueList );
+        $view->assign( 'backUrl' , $ticket->get( 'urlOrigin' ) );
+        $view->assign( 'errorStatus' , $error );
     }
     
     $pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );
