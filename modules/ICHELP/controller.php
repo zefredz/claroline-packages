@@ -243,15 +243,16 @@ try
                 {
                     $error = get_lang( 'Mail sending failed' );
                 }
-                
-                if( ! $error )
-                {
-                    $dialogBox->success( get_lang( 'Your request has been succesfully sent' ) );
-                }
-                else
-                {
-                    $dialogBox->error( '<span style="color: red; font-weight: bold;">' . $error . '</span>' );
-                }
+            }
+            
+            if( ! $error )
+            {
+                $dialogBox->success( get_lang( 'Your request has been succesfully sent' ) );
+            }
+            else
+            {
+                $dialogBox->error( '<span style="color: red; font-weight: bold;">' . $error . '</span>' );
+                //$step = 2;
             }
             break;
         }
