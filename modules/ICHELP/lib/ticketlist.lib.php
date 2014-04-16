@@ -33,7 +33,9 @@ class TicketList
             FROM
                 `{$this->tbl}`
             WHERE
-                mailSent = 0"
+                mailSent = 0
+            AND
+                status = 'pending'"
         );
         
         $this->ticketList = array();

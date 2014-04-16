@@ -5,9 +5,11 @@ $_lang['Unknown issue'] = 'Problème non décrit';
 $_lang['useful for authentification problem'] = 'utile pour les problèmes d\'accès';
 $_lang['Related course code (if relevant)'] = 'Code cours concerné (si pertinent)';
 
-$_lang['Personnal infos'] = 'Informations vous concernant';
+$_lang['Personnal infos'] = 'Première étape : Informations vous concernant';
 $_lang['Issue infos'] = 'Informations concernant le problème que vous rencontrez';
-$_lang['UCL member'] = 'Etes-vous membre de l\'UCL';
+$_lang['UCL member'] = 'Etes-vous actuellement membre de l\'UCL?';
+$_lang['You are'] = 'Vous êtes...';
+$_lang['Teacher'] = "Enseignant";
 $_lang['Your issue is related to'] = 'Votre problème concerne';
 $_lang['Describe your problem'] = 'Décrivez votre problème';
 $_lang['Your request has been succesfully sent'] = 'Votre demande a été envoyée au help desk';

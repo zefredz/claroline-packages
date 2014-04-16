@@ -76,7 +76,7 @@ if( claro_is_platform_admin() )
                     break;
                 
                 case 'closeTicket':
-                    if( $ticket->update( 'mailSent' , 1 ) )
+                    if( $ticket->update( 'status' , 'closed' ) )
                     {
                         $dialogBox->success( get_lang( 'Ticket successfully closed' ) );
                     }
