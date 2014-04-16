@@ -156,6 +156,12 @@ try
             {
                 $error = get_lang( 'Required information missing' );
             }
+            elseif( isset( $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'required' ] )
+                   && $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'required' ] == 1
+                   && empty( $userData[ $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'name' ] ] ) )
+            {
+                $error = get_lang( 'Additionnal required information missing' );
+            }
             elseif( ! is_mail( $userData[ 'mail' ] ) )
             {
                 $error = get_lang( 'Invalid mail' );

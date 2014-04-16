@@ -76,13 +76,13 @@
                 <br />
                 <?php if( $this->addedFields[ $categoryId ][ 'type' ] == 'text' ) : ?>
                 <input type="text"
-                           name="data[courseCode]"
+                           name="data[<?php echo $this->addedFields[ $categoryId ][ 'name' ]; ?>]"
                            value="<?php echo $this->userData[ 'courseCode' ]; ?>" />
                 <?php elseif( $this->addedFields[ $categoryId ][ 'type' ] == 'textarea' ) : ?>
                 <textarea   type="text"
                             rows="20"
                             cols="120"
-                            name="data[issueDescription]"></textarea>
+                            name="data[<?php echo $this->addedFields[ $categoryId ][ 'name' ]; ?>]"></textarea>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
