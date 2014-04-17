@@ -13,12 +13,12 @@
 <author>
 <name>Frederic Minne</name>
 <email>zefredz@claroline.net</email>
-<web>http://www.claroline.net/wiki/CLVOC</web>
+<web>http://www.claroline.net/wiki/CLKRNG</web>
 </author>
 
 <requirements>
 <claroline>
-<version>1.11.5</version>
+<version>1.12</version>
 </claroline>
 </requirements>
 </module>

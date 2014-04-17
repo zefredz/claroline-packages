@@ -3,8 +3,8 @@
 /**
  * Keyring management
  *
- * @version     1.9$Revision$
- * @copyright   2001-2008 Universite catholique de Louvain (UCL)
+ * @version     1.12 $Revision$
+ * @copyright   2001-2014 Universite catholique de Louvain (UCL)
  * @author      Frederic Minne <zefredz@claroline.net> Revision by Sokay Benjamin
  * @license     http://www.gnu.org/copyleft/gpl.html
  *              GNU GENERAL PUBLIC LICENSE version 2 or later
