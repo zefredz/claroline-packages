@@ -21,4 +21,4 @@ $_lang['Service key administration'] ='Service key administration';
 $_lang['Service key added for service %service'] ='Service key added for service %service';
 $_lang['Service key already exist for service %service'] ='Service key already exist for service %service';
 $_lang['Service key changed for service %service'] ='Service key changed for service %service';
-?>
+
