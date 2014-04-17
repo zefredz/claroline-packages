@@ -256,7 +256,7 @@ if ('exEdit' == $cmd)
     {
         $keyring->update( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey );
         $successMessage = get_lang('Service key changed for service %service',
-            array( '%service', claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
+            array( '%service' => claro_htmlspecialchars( $serviceName . ':'. $serviceHost ) ) );
         $cmd = 'list';
     }
 }
@@ -300,7 +300,7 @@ if ( 'list' == $cmd )
 }
 
 // Display
-$claroline->display->header->addHtmlHeader('<script type="text/javascript">
+$GLOBALS['claroline']['display']->header->addHtmlHeader('<script type="text/javascript">
 function deleteService ( serviceName, serviceHost )
 {
     if (confirm("'. get_lang('Are you sure to delete').' "+ serviceName + ":" + serviceHost + " ?"))
@@ -315,53 +315,52 @@ function deleteService ( serviceName, serviceHost )
 }
 </script>');
 
-//$claroline->display->header->addHtmlHeader('<link rel="stylesheet" type="text/css" href="./css/form.css" media="all" />');
+//$GLOBALS['claroline']['display']->header->addHtmlHeader('<link rel="stylesheet" type="text/css" href="./css/form.css" media="all" />');
 
-$claroline->display->body->appendContent(claro_html_tool_title($nameTools));
+$GLOBALS['claroline']['display']->body->appendContent(claro_html_tool_title($nameTools));
 
 //Success message
 if ( isset($successMessage) )
 {
     $dialogBox->success($successMessage);
-    $claroline->display->body->appendContent($dialogBox->render());
+    $GLOBALS['claroline']['display']->body->appendContent($dialogBox->render());
 }
 
 //Error message
 if ( isset($errorMessage) )
 {
     $dialogBox->error($errorMessage);
-    $claroline->display->body->appendContent($dialogBox->render());
+    $GLOBALS['claroline']['display']->body->appendContent($dialogBox->render());
 }
 
 //Add execution display
 if ( 'exAdd' == $cmd && $error)
 {
-    $claroline->display->body->appendContent($form->render());
+    $GLOBALS['claroline']['display']->body->appendContent($form->render());
 }
 
 //Confirm delete display
 if ( 'rqDelete' == $cmd && !$error)
 {
     $dialogBox->question($confirmMessage);
-    $claroline->display->body->appendContent($dialogBox->render());
-    $claroline->display->body->appendContent($form->render());
+    $GLOBALS['claroline']['display']->body->appendContent($dialogBox->render());
+    $GLOBALS['claroline']['display']->body->appendContent($form->render());
 }
 
 //Form display
 if ( ('rqAdd' == $cmd || 'rqEdit' == $cmd) && !$error )
 {
-    $claroline->display->body->appendContent($form->render());
-    $claroline->display->body->appendContent($dialogBox->render());
+    $GLOBALS['claroline']['display']->body->appendContent($form->render());
+    $GLOBALS['claroline']['display']->body->appendContent($dialogBox->render());
 }
 
 //List display
 if ( 'list' == $cmd)
 {
-    $claroline->display->body->appendContent($serviceList->render());
+    $GLOBALS['claroline']['display']->body->appendContent($serviceList->render());
 }
 
 ClaroBreadCrumbs::getInstance()->prepend( get_lang('Administration'), get_path('rootAdminWeb') );
 
 //return body html required
-echo $claroline->display->render();
-?>
+echo $GLOBALS['claroline']['display']->render();
