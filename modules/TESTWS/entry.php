@@ -3,7 +3,7 @@
 // vim: expandtab sw=4 ts=4 sts=4 foldmethod=marker:
 
 // load Claroline kernel
-$tlabelReq = 'TESTLIB2';
+$tlabelReq = 'TESTWS';
 require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php';
 
 claro_set_display_mode_available(true);
