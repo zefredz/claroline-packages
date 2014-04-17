@@ -25,6 +25,14 @@ class TESTWS_AjaxRemoteService extends Ajax_Remote_Module_Service
 
     public function isMethodInvokationAllowed ( Ajax_Request $request )
     {
+        if ( file_exists( get_module_path('CLKRNG') . '/' . get_module_entry ( 'CLKRNG' ) ) 
+            && get_module_data('CLKRNG','activation') == 'activated' )
+        {
+            From::Module('CLKRNG')->uses('keyring.lib');
+            Keyring::setOption('errorMode','exception');
+            Keyring::checkForService('testws');
+        }
+        
         return true;
     }
 
