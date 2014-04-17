@@ -1,0 +1,24 @@
+<module>
+  <label>TESTWS</label>
+  <name>Test Webservices</name>
+  <version>1.0-test</version> 
+  <license>GPL</license>
+  <type>tool</type>
+  <icon>icon.png</icon>
+   
+  <description>
+    Test libraries in Claroline
+  </description>
+  
+  <author>
+     <name>Claroline Team</name>
+     <email>info@claroline.net</email>
+     <web>http://www.claroline.net</web>
+  </author> 
+
+  <requirements>  
+    <claroline>
+      <version>1.10</version>
+    </claroline>
+ </requirements>
+</module>
