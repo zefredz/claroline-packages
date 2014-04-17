@@ -8,7 +8,7 @@ require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php
 
 claro_set_display_mode_available(true);
 
-$claroline->display->header->setTitle( 'Library testing module' );
+$GLOBALS['claroline']['display']->header->setTitle( 'Library testing module' );
 
 // ------------- Business Logic ---------------------------
 
@@ -96,7 +96,7 @@ $resultset->setFetchMode(Database_ResultSet::FETCH_CLASS, 'CourseUserObject');
 
 foreach ( $resultset as $user )
 {
-    $claroline->display->body->appendContent(
+    $GLOBALS['claroline']['display']->body->appendContent(
         '<pre>'
         . $user->__toString()
         .'</pre>'
@@ -124,9 +124,9 @@ $url2 = $ajaxHandler->getExternalInvokationUrl('getUserNotifiedItems');
 $url2->relayCurrentContext();
 $urlStr2 = htmlspecialchars($url2->toUrl());
 
-$claroline->display->body->appendContent("<p><a href='$urlStr'>Call the user course list service (external)</a></p>");
-$claroline->display->body->appendContent("<p><a href='$urlStr2'>Call the notification service (external)</a></p>");
+$GLOBALS['claroline']['display']->body->appendContent("<p><a href='$urlStr'>Call the user course list service (external)</a></p>");
+$GLOBALS['claroline']['display']->body->appendContent("<p><a href='$urlStr2'>Call the notification service (external)</a></p>");
 
-$claroline->display->body->appendContent( var_export( claro_is_platform_admin(), true ) );
+$GLOBALS['claroline']['display']->body->appendContent( var_export( claro_is_platform_admin(), true ) );
 
-echo $claroline->display->render();
+echo $GLOBALS['claroline']['display']->render();
