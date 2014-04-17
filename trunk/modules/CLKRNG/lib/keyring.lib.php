@@ -172,7 +172,6 @@ class Keyring
     {
         if ( ! $this->database->exec("
             UPDATE 
-            TABLE
                 `{$this->table['clkrng_keyring']}`
             SET
                 `service` = ".$this->database->quote($serviceName).",
@@ -212,9 +211,9 @@ class Keyring
     {
         $result = $this->database->query("
             SELECT 
-                `service`,
-                `host`,
-                `key`
+                `service` AS serviceName,
+                `host` AS serviceHost,
+                `key` AS serviceKey
             FROM
                 `{$this->table['clkrng_keyring']}`
             WHERE
