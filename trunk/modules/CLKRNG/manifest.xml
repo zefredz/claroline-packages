@@ -4,7 +4,7 @@
 <description><![CDATA[
   Key Ring Manager for tool for administrator
   ]]></description>
-<version>1.1</version>
+<version>2.0</version>
 <license>GPL</license>
 <icon>icon.png</icon>
 <type>admin</type>

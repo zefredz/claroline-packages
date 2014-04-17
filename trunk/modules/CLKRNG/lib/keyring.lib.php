@@ -5,8 +5,8 @@
 /**
  * Keyring lib
  *
- * @version     1.9 $Revision$
- * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+ * @version     1.12 $Revision$
+ * @copyright   2001-2014 Universite catholique de Louvain (UCL)
  * @author      Claroline Team <info@claroline.net>
  * @author      Frederic Minne <zefredz@claroline.net>
  * @license     http://www.gnu.org/copyleft/gpl.html
@@ -17,6 +17,7 @@
 class Keyring
 {
     protected static $instance = false;
+    protected static $options = array();
     
     public static function getInstance()
     {
@@ -26,6 +27,16 @@ class Keyring
         }
         
         return self::$instance;
+    }
+    
+    public static function setOption($option, $value)
+    {
+        self::$options[$option] = $value;
+    }
+    
+    public static function getOption($option)
+    {
+        return isset( self::$options[$option]) ? self::$options[$option] : null;
     }
     
     public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
@@ -87,164 +98,179 @@ class Keyring
 
             if ( ! $checked )
             {
-                header( 'Forbidden', true, 403 );
-
-                echo '<h1>Forbidden !</h1>';
-                echo '<p>Wrong service key or host</p>';
-
-                if ( claro_debug_mode() )
+                if ( self::getOption ( 'errorMode' ) == 'exception' )
                 {
-                    var_dump( $serviceUser.'::'.$serviceKey );
+                    throw new Exception(get_lang('Wrong service key or host'));
                 }
+                else
+                {
+                    header( 'Forbidden', true, 403 );
 
-                exit();
+                    echo '<h1>Forbidden !</h1>';
+                    echo '<p>Wrong service key or host</p>';
+
+                    if ( claro_debug_mode() )
+                    {
+                        var_dump( $serviceUser.'::'.$serviceKey );
+                    }
+
+                    exit();
+                }
             }
         }
         catch ( Exception $e )
         {
-            header( 'Forbidden', true, 403 );
-
-            echo '<h1>Forbidden !</h1>';
-
-            if ( claro_debug_mode() )
+            if ( self::getOption ( 'errorMode' ) == 'exception' )
             {
-                echo '<pre>'.$e->__toString().'</pre>';
+                throw $e;
             }
             else
             {
-                echo '<p>An exception occurs : '.$e->getMessage().'</p>';
-            }        
+                header( 'Forbidden', true, 403 );
 
-            exit();
-        }
-    }
+                echo '<h1>Forbidden !</h1>';
 
+                if ( claro_debug_mode() )
+                {
+                    echo '<pre>'.$e->__toString().'</pre>';
+                }
+                else
+                {
+                    echo '<p>An exception occurs : '.$e->getMessage().'</p>';
+                }        
 
-    protected $serviceKeyring;
-    
-    protected function __construct ()
-    {
-        $this->keyring = array();
-        $this->path = get_path('rootSys'). 'platform/keyring.lst';
-        $this->load();
-    
-    }
-    
-    protected function load ()
-    {   
-        if ( file_exists( $this->path ) )
-        {
-            $serviceKeyring = file( $this->path );
-            
-            foreach ( $serviceKeyring as $line )
-            {
-            $line = trim( $line );
-            
-            if ( empty ( $line ) 
-                || preg_match( '/^\s*\#/', $line ) )
-            {
-                continue;
-            }
-            
-            if ( ! strpos( $line, ':' ) )
-            {
-                throw new Exception ("Invalid key ring file {$this->path}");
-            }
-            
-            $tmp = explode(':', $line);
-            
-            if ( count ( $tmp ) != 3 )
-            {
-                throw new Exception ("Invalid key ring file {$this->path}");
-            }
-            
-            $this->keyring[]= array( 'serviceName' => $tmp[0], 'serviceHost' => $tmp[1], 'serviceKey' => $tmp[2] );
+                exit();
             }
         }
     }
     
-    protected function save()
+    public function __construct ()
     {
-        $content = '';
-        
-        foreach ( $this->keyring as $serviceName )
-        {
-            $content .= "{$serviceName['serviceName']}:{$serviceName['serviceHost']}:{$serviceName['serviceKey']}\n";
-        } 
-        
-        file_put_contents( $this->path, $content );
+        $this->database = Claroline::getDatabase();
+        $this->table = get_module_main_tbl('clkrng_keyring');
     }
     
     public function add ( $serviceName, $serviceHost, $serviceKey )
     {
-        foreach ( $this->keyring as $idx => $value )
+        if ( ! $this->database->exec("
+            INSERT 
+            INTO
+                `{$this->table['clkrng_keyring']}`
+            SET
+                `service` = ".$this->database->quote($serviceName).",
+                `host` = ".$this->database->quote($serviceHost).",
+                `key` = ".$this->database->quote($serviceKey) ."
+        ") )
         {
-            if ( $value['serviceName'] == $serviceName
-                && $value['serviceHost'] == $serviceHost )
-            {
-                $this->keyring[$idx] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' => $serviceKey );
-                return;
-            }
+             throw new Exception(get_lang("Cannot insert key {$serviceKey} for service {$serviceName} and host {$serviceHost}"));
         }
-        
-        $this->keyring[] = array( 'serviceName' => $serviceName, 'serviceHost' => $serviceHost, 'serviceKey' =>$serviceKey );
-        
-        $this->save();
+                
+        return $this;
     }
     
     public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
     {
-        $this->delete ( $oldServiceName, $oldServiceHost );
-        $this->add ( $serviceName, $serviceHost, $serviceKey );
+        if ( ! $this->database->exec("
+            UPDATE 
+            TABLE
+                `{$this->table['clkrng_keyring']}`
+            SET
+                `service` = ".$this->database->quote($serviceName).",
+                `host` = ".$this->database->quote($serviceHost).",
+                `key` = ".$this->database->quote($serviceKey)."
+            WHERE
+                `service` = ".$this->database->quote($oldServiceName)."
+            AND
+                `host` = ".$this->database->quote($oldServiceHost)."
+        ") )
+        {
+             throw new Exception(get_lang("Cannot update key for service {$oldServiceName} and host {$oldServiceHost}"));
+        }
+                
+        return $this;
     }
     
     public function delete ( $serviceName, $serviceHost )
     {
-       foreach ( $this->keyring as $idx => $value )
+        if ( ! $this->database->exec("
+            DELETE 
+            FROM
+                `{$this->table['clkrng_keyring']}`
+            WHERE
+                `service` = ".$this->database->quote($serviceName)."
+            AND
+                `host` = ".$this->database->quote($serviceHost)."
+        ") )
         {
-            if ( $value['serviceName'] == $serviceName
-                && $value['serviceHost'] == $serviceHost )
-            {
-                unset ( $this->keyring[$idx] );
-                $this->save();
-                return;
-            }
+            throw new Exception ("no key for {$serviceName}:{$serviceHost}");
         }
-    
-        throw new Exception ("no key for {$serviceName}:{$serviceHost}");
+        
+        return $this;
     }
     
     public function get ( $serviceName, $serviceHost )
     {
-       foreach ( $this->keyring as $idx => $value )
+        $result = $this->database->query("
+            SELECT 
+                `service`,
+                `host`,
+                `key`
+            FROM
+                `{$this->table['clkrng_keyring']}`
+            WHERE
+                `service` = ".$this->database->quote($serviceName)."
+            AND
+                `host` = ".$this->database->quote($serviceHost)."
+        ")->fetch();
+                
+        if ( $result )
         {
-            if ( $value['serviceName'] == $serviceName
-                && $value['serviceHost'] == $serviceHost )
-            {
-                return $this->keyring[$idx];
-            }
+            return $result;
         }
-    
-        throw new Exception ("no key for {$serviceName}:{$serviceHost}");
+        else
+        {
+            throw new Exception ("no key for {$serviceName}:{$serviceHost}");
+        }
     }
     
     public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
     {
-       foreach ( $this->keyring as $idx => $value )
-        {
-            if ( $value['serviceName'] == $serviceName
-                && $value['serviceHost'] == $serviceHost
-                && $value['serviceKey'] == $serviceKeyToCheck )
-            {
-                return true;
-            }
-        }
-        
-        return false;
+        return $this->database->query("
+            SELECT 
+                `service`,
+                `host`,
+                `key`
+            FROM
+                `{$this->table['clkrng_keyring']}`
+            WHERE
+                `service` = ".$this->database->quote($serviceName)."
+            AND
+                `host` = ".$this->database->quote($serviceHost)."
+            AND
+                `key` = ".$this->database->quote($serviceKeyToCheck)."
+        ")->numRows() > 0;
     }
     
     public function getServiceList()
     {
-        return $this->keyring;
+        $toRet = array();
+        
+        $resultSet = $this->database->query("
+            SELECT 
+                `service` AS `serviceName`,
+                `host` AS `serviceHost`,
+                `key` AS `serviceKey`
+            FROM
+                `{$this->table['clkrng_keyring']}`
+            WHERE
+                1 = 1
+        ");
+                
+        foreach ( $resultSet as $row )
+        {
+            $toRet[] = $row;
+        }
+        
+        return $toRet;
     }
 }
