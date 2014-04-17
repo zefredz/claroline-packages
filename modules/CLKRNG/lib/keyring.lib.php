@@ -14,11 +14,18 @@
  * @package     CLKRNG
  */
 
+/**
+ * Keyring class and helper
+ */
 class Keyring
 {
     protected static $instance = false;
     protected static $options = array();
     
+    /**
+     * Get the keyring
+     * @return Keyring
+     */
     public static function getInstance()
     {
         if ( ! self::$instance )
@@ -29,16 +36,33 @@ class Keyring
         return self::$instance;
     }
     
+    /**
+     * Set an option for the keyring helper
+     * @param string $option
+     * @param mixed $value
+     */
     public static function setOption($option, $value)
     {
         self::$options[$option] = $value;
     }
     
+    /**
+     * Get the value of an option (null if not set)
+     * @param string $option
+     * @return mixed|null
+     */
     public static function getOption($option)
     {
         return isset( self::$options[$option]) ? self::$options[$option] : null;
     }
     
+    /**
+     * Check the service key for the given service and host names
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @param string $serviceKey
+     * @return boolean
+     */
     public static function checkKey ( $serviceName, $serviceHost, $serviceKey )
     {
         $mngr = self::getInstance();
@@ -46,6 +70,13 @@ class Keyring
         return $mngr->check ( $serviceName, $serviceHost, $serviceKey );
     }
     
+    /**
+     * Check the service key for the given service and host names using gethostbyaddr and gethostbyname
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @param string $serviceKey
+     * @return boolean
+     */
     public static function checkKeyForHost ( $serviceName, $serviceHost, $serviceKey )
     {
         $mngr = self::getInstance();
@@ -144,12 +175,24 @@ class Keyring
         }
     }
     
-    public function __construct ()
+    /**
+     * Constructor
+     * @param Database_Connection $database optional database connection
+     */
+    public function __construct ( $database = null )
     {
-        $this->database = Claroline::getDatabase();
+        $this->database = $database ? $database : Claroline::getDatabase();
         $this->table = get_module_main_tbl('clkrng_keyring');
     }
     
+    /**
+     * Add a key for the given service and host
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @param string $serviceKey
+     * @return \Keyring
+     * @throws Exception
+     */
     public function add ( $serviceName, $serviceHost, $serviceKey )
     {
         if ( ! $this->database->exec("
@@ -168,6 +211,16 @@ class Keyring
         return $this;
     }
     
+    /**
+     * Update a key for the given service and host
+     * @param string $oldServiceName
+     * @param string $oldServiceHost
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @param string $serviceKey
+     * @return \Keyring
+     * @throws Exception
+     */
     public function update ( $oldServiceName, $oldServiceHost, $serviceName, $serviceHost, $serviceKey )
     {
         if ( ! $this->database->exec("
@@ -189,6 +242,13 @@ class Keyring
         return $this;
     }
     
+    /**
+     * Delete the key for the given host and service
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @return \Keyring
+     * @throws Exception
+     */
     public function delete ( $serviceName, $serviceHost )
     {
         if ( ! $this->database->exec("
@@ -207,6 +267,13 @@ class Keyring
         return $this;
     }
     
+    /**
+     * Get the service (serviceKey, serviceNAme, serviceHost) triplet for the given service name and host
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @return array ['serviceName' => ..., 'serviceHost' => ..., 'serviceKey' => ...]
+     * @throws Exception
+     */
     public function get ( $serviceName, $serviceHost )
     {
         $result = $this->database->query("
@@ -232,6 +299,13 @@ class Keyring
         }
     }
     
+    /**
+     * Check if the key is associated to the given service and host
+     * @param string $serviceName
+     * @param string $serviceHost
+     * @param string $serviceKeyToCheck
+     * @return boolean
+     */
     public function check ( $serviceName, $serviceHost, $serviceKeyToCheck )
     {
         return $this->database->query("
@@ -250,6 +324,10 @@ class Keyring
         ")->numRows() > 0;
     }
     
+    /**
+     * Get the list of all registered (serviceKey, serviceNAme, serviceHost) triplets
+     * @return array [['serviceName' => ..., 'serviceHost' => ..., 'serviceKey' => ...], ...]
+     */
     public function getServiceList()
     {
         $toRet = array();
