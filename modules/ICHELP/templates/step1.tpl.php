@@ -19,11 +19,8 @@
                value="0" />
     </noscript>
     <input type="hidden"
-           name="data[ticketId]"
-           value="<?php echo $this->ticket->get( 'ticketId' ); ?>" />
-    <input type="hidden"
            name="data[urlOrigin]"
-           value="<?php echo $this->ticket->get( 'urlOrigin' ); ?>" />
+           value="<?php echo $this->userData[ 'urlOrigin' ]; ?>" />
     <input type="hidden"
            name="step"
            value="2" />
@@ -89,7 +86,7 @@
     
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Next' ); ?>" />
     <a style="text-decoration: none;"
-       href="<?php echo claro_htmlspecialchars( $this->ticket->get( 'urlOrigin' ) ); ?>">
+       href="<?php echo claro_htmlspecialchars( $this->userData[ 'urlOrigin' ] ? $this->userData[ 'urlOrigin' ] : get_path( 'rootWeb' ) ); ?>">
         <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
     </a>
 </form>

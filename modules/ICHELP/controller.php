@@ -2,7 +2,7 @@
 
 /** Online Help Form
  *
- * @version     ICHELP 0.9 $Revision$ - Claroline 1.11.5
+ * @version     ICHELP 1.0 $Revision$ - Claroline 1.11.5
  * @copyright   2001-2013 Universite catholique de Louvain (UCL)
  * @license     http://www.gnu.org/copyleft/gpl.html (GPL) GENERAL PUBLIC LICENSE
  * @package     ICHELP
@@ -37,14 +37,8 @@ try
         JavascriptLoader::getInstance()->load( 'antibot' );
     }
     
-    $ticket = new TicketManager();
-    
-    include dirname(__FILE__) . '/locale.inc.php';
-    
-    $userInput = Claro_UserInput::getInstance();
-    $formData = $userInput->get( 'data' , array() );
-    $step = $userInput->get( 'step' , 1 );
     $issueList = array();
+    $addedField = array();
     
     $view = null;
     $autoMailContent = null;
@@ -65,10 +59,20 @@ try
         'UCLMember' => null,
         'isManager' => null,
         'urlOrigin' => null,
+        'issueType' => null,
         'issueDescription' => null,
         'courseManager' => null,
-        'isCourseCreator' => null
+        'isCourseCreator' => null,
+        'urlOrigin' => null
     );
+    
+    $userInput = Claro_UserInput::getInstance();
+    $formData = $userInput->get( 'data' , array() );
+    $step = $userInput->get( 'step' , 1 );
+    
+    $ticket = new TicketManager();
+    
+    include dirname(__FILE__) . '/locale.inc.php';
     
     $userData = claro_get_current_user_data();
     
@@ -91,16 +95,45 @@ try
     
     $userData = array_merge( $userData , $formData );
     
+    if( is_null( $userData[ 'urlOrigin' ] ) )
+    {
+        $encodedFrom = $userInput->get( 'from' );
+        $userData['urlOrigin'] = $encodedFrom
+            ? base64_decode( $encodedFrom )
+            : get_path( 'rootWeb' );
+    }
+    
+    $profile = array(
+        empty( $userId ),
+        $userData['UCLMember'] === '1' && empty( $userId ),
+        ! empty( $userId ),
+        $userData['isManager'] === '1',
+        true
+    );
+    
+    foreach( $checkList as $label => $data )
+    {
+        if( $profile[ $data[ 'profile' ] ] )
+        {
+            $issueList[ $data[ 'category' ] ][ $label ] = $data[ 'description' ];
+        }
+    }
+    
+    foreach( array_keys( $categoryList ) as $categoryId )
+    {
+        foreach( $requiredFields as $fieldId => $categories )
+        {
+            if( in_array( $categoryId , $categories ) )
+            {
+                $addedField[ $categoryId ] = $fieldId;
+            }
+        }
+    }
+    
     switch( $step )
     {
         case 1 :
         {
-            $encodedFrom = $userInput->get( 'from' );
-            $urlOrigin = $encodedFrom
-                ? base64_decode( $encodedFrom )
-                : get_path( 'rootWeb' );
-            $ticket->set( 'urlOrigin' , $urlOrigin );
-            
             $dialogBox->info( '<span style="color: green; font-weight: bold;">' . get_lang( 'welcome_message' ) . '</span>' );
             break;
         }
@@ -123,24 +156,6 @@ try
             {
                 $error = get_lang( 'Invalid mail' );
             }
-            else
-            {
-                $profile = array(
-                    empty( $userId ),
-                    $userData['UCLMember'] === '1' && empty( $userId ),
-                    ! empty( $userId ),
-                    $userData['isManager'] === '1',
-                    true
-                );
-                
-                foreach( $checkList as $label => $data )
-                {
-                    if( $profile[ $data[ 'profile' ] ] )
-                    {
-                        $issueList[ $data[ 'category' ] ][ $label ] = $data[ 'description' ]; 
-                    }
-                }
-            }
             
             if( $error )
             {
@@ -152,15 +167,12 @@ try
         
         case 3 :
         {
-            if( empty( $userData[ 'issueType' ] ) )
+            if( empty( $userData[ 'issueType' ] )
+               || ( isset( $addedField[ $checkList[ $userData[ 'issueType' ] ][ 'category' ] ] )
+                  && empty( $userData[ $addedFields[ $addedField[ $checkList[ $userData[ 'issueType' ] ][ 'category' ] ] ][ 'name' ] ] ) ) )
             {
                 $error = get_lang( 'Required information missing' );
-            }
-            elseif( isset( $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'required' ] )
-                   && $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'required' ] == 1
-                   && empty( $userData[ $addedFields[ $checkList[ $userData[ 'issueType' ] ] ][ 'category'][ 'name' ] ] ) )
-            {
-                $error = get_lang( 'Additionnal required information missing' );
+                $step = 2;
             }
             elseif( ! is_mail( $userData[ 'mail' ] ) )
             {
@@ -252,7 +264,6 @@ try
             else
             {
                 $dialogBox->error( '<span style="color: red; font-weight: bold;">' . $error . '</span>' );
-                //$step = 2;
             }
             break;
         }
@@ -262,8 +273,6 @@ try
             throw new Exception ( 'Invalid command' );
         }
     }
-    
-
     
     /* Affiche également le contenu du mail envoyé directement dans la page
     if( $autoMailContent )
@@ -280,10 +289,11 @@ try
         $view->assign( 'checkList' , $checkList );
         $view->assign( 'categoryList' , $categoryList );
         $view->assign( 'profileList' , $profileList );
-        $view->assign( 'addedFields' , $addedFields );
         $view->assign( 'issueList' , $issueList );
         $view->assign( 'backUrl' , $ticket->get( 'urlOrigin' ) );
         $view->assign( 'errorStatus' , $error );
+        $view->assign( 'addedField' , $addedField );
+        $view->assign( 'addedFields' , $addedFields );
     }
     
     $pageTitle = array( 'mainTitle' => get_lang( 'Online Help Form' ) );

@@ -142,7 +142,7 @@ $checkList = array(
         'category' => 4,
         'profile' => 3,
         'description' => 'Je voudrais supprimer mon cours de la plateforme',
-        'mailTpl' => 'courseDelete' ),
+        'mailTpl' => 'coursedelete' ),
     
     'courseUnsubscribe' => array(
         'category' => 4,
@@ -211,16 +211,19 @@ $categoryList = array(
 );
 
 $addedFields = array(
-    4 => array(
+    array(
         'type' => 'text',
         'label' => 'Entrez le code du cours concerné',
-        'name' => 'courseCode',
-        'required' => 0 ),
-    99 => array(
+        'name' => 'courseCode' ),
+    array(
         'type' => 'textarea',
         'label' => 'Décrivez votre problème',
-        'name' => 'issueDescription',
-        'required' => 1 )
+        'name' => 'issueDescription' )
+);
+
+$requiredFields = array(
+    array( 2, 3, 4 ),
+    array( 99 )
 );
 
 $header = "Bonjour,\n\n";

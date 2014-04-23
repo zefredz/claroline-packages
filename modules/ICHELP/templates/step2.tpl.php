@@ -3,6 +3,23 @@
         $("#goback").click(function(){
             $("#step").attr({value:"1"});
         });
+    <?php foreach( array_keys($this->addedFields ) as $fieldId ) : ?>
+        if( $(".hasRequired<?php echo $fieldId; ?> li input").attr('checked') )
+        {
+            $("#required<?php echo $fieldId; ?>").show();
+        }
+        else
+        {
+            $("#required<?php echo $fieldId; ?>").hide();
+        }
+        $(".hasRequired<?php echo $fieldId; ?> li input").click(function(){
+            $(".required").hide();
+            $("#required<?php echo $fieldId; ?>").show();
+        });
+    <?php endforeach; ?>
+        $(".noRequired li input").click(function(){
+            $(".required").hide();
+        });
     });
 </script>
 <form method="post"
@@ -23,11 +40,8 @@
                value="0" />
     </noscript>
     <input type="hidden"
-           name="data[ticketId]"
-           value="<?php echo $this->ticket->get( 'ticketId' ); ?>" />
-    <input type="hidden"
            name="data[urlOrigin]"
-           value="<?php echo $this->ticket->get( 'urlOrigin' ); ?>" />
+           value="<?php echo $this->userData[ 'urlOrigin' ]; ?>" />
     <input id="step"
            type="hidden"
            name="step"
@@ -59,34 +73,33 @@
         <?php foreach( $this->issueList as $categoryId => $issue ) : ?>
         <div class="collapsible collapsed">
             <a class="doCollapse" href="#"><strong><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></strong></a>
-            <ul class="collapsible-wrapper" style="display: none; list-style-type: none;">
+            <ul class="collapsible-wrapper <?php if( array_key_exists( $categoryId , $this->addedField ) ) : ?> hasRequired<?php echo $this->addedField[ $categoryId ]; ?><?php else : ?> noRequired<?php endif; ?>"
+                style="display: none; list-style-type: none;">
             <?php foreach( $issue as $label => $description ) : ?>
                 <li>
                     <input type="radio"
+                        <?php if ( $this->userData[ 'issueType' ] == $label ) : ?>
+                           checked="checked"
+                        <?php endif; ?>
                            name="data[issueType]"
                            value="<?php echo $label; ?>" />
                     <?php echo $description; ?>
                 </li>
             <?php endforeach; ?>
-            <ul>
-            <?php if( isset( $this->addedFields[ $categoryId ] ) ) : ?>
-            <br />
-            <span style="font-weight: bold; color: #A55;"><?php echo get_lang( $this->addedFields[ $categoryId ][ 'label' ] ); ?></span>
-                <?php if( $this->addedFields[ $categoryId ][ 'required' ] == 1 ) : ?>&nbsp;<span class="required">*</span><?php endif; ?>
-                <br />
-                <?php if( $this->addedFields[ $categoryId ][ 'type' ] == 'text' ) : ?>
-                <input type="text"
-                           name="data[<?php echo $this->addedFields[ $categoryId ][ 'name' ]; ?>]"
-                           value="<?php echo $this->userData[ 'courseCode' ]; ?>" />
-                <?php elseif( $this->addedFields[ $categoryId ][ 'type' ] == 'textarea' ) : ?>
-                <textarea   type="text"
-                            rows="20"
-                            cols="120"
-                            name="data[<?php echo $this->addedFields[ $categoryId ][ 'name' ]; ?>]"></textarea>
-                <?php endif; ?>
-            <?php endif; ?>
+            </ul>
         </div>
         <?php endforeach; ?>
+        <br />
+        <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Enter the course code' ); ?></span>
+        <span id="required0" class="required" style="font-weight: bold;">*</span><br />
+        <input type="text"
+                   name="data[courseCode]"
+                   value="<?php echo $this->userData['courseCode']; ?>" /><br /><br />
+        <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Describe your problem' ); ?></span>
+        <span id="required1" class="required" style="font-weight: bold;">*</span><br />
+<textarea   rows="20" cols="120" name="data[issueDescription]">
+<?php echo $this->userData['issueDescription']; ?>
+</textarea>
     </fieldset>
     
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Submit' ); ?>" />

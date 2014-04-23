@@ -12,6 +12,7 @@ $_lang['You are'] = 'Vous êtes...';
 $_lang['Teacher'] = "Enseignant";
 $_lang['Your issue is related to'] = 'Votre problème concerne';
 $_lang['Describe your problem'] = 'Décrivez votre problème';
+$_lang['Enter the course code'] = 'Entrez le code du cours concerné';
 $_lang['Your request has been succesfully sent'] = 'Votre demande a été envoyée au help desk';
 //$_lang['Alumni'] = 'Ancien(ne) étudiant(e) (alumni)';
 
