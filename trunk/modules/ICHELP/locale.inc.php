@@ -144,11 +144,11 @@ $checkList = array(
         'description' => 'Je voudrais supprimer mon cours de la plateforme',
         'mailTpl' => 'coursedelete' ),
     
-    'courseUnsubscribe' => array(
+    'groupUnsubscribe' => array(
         'category' => 4,
         'profile' => 4,
         'description' => 'Je me suis inscrit(e) par erreur dans un groupe et je souhaite me désinscrire',
-        'mailTpl' => 'courseunsubscribe' ),
+        'mailTpl' => 'groupunsubscribe' ),
     
     'subscriptionChange' => array(
         'category' => 4,
@@ -159,7 +159,7 @@ $checkList = array(
     'workSubmit' => array(
         'category' => 4,
         'profile' => 4,
-        'description' => 'Je ne parviens pas à remettre un travil sur iCampus',
+        'description' => 'Je ne parviens pas à remettre un travail sur iCampus',
         'mailTpl' => 'worksubmit' ),
     
     'useQuestion' => array(

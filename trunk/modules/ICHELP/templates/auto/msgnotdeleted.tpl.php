@@ -1,0 +1,2 @@
+Les messages collectifs (càd envoyés à un groupes d'étudiants) ne peuvent être supprimés de votre boîte de réception.
+Il s'agit d'un choix d'implémentation de l'outil, visant à empêcher des tentatives de fraudes (par exemple: un étudiant affirmant de pas avoir reçu un message).
