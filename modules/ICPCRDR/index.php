@@ -348,8 +348,8 @@ try
     CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
     
     Claroline::getDisplay()->header->addHtmlHeader('
-    <script src="mediaelements/mediaelement-and-player.min.js"></script>
-    <link rel="stylesheet" href="mediaelements/mediaelementplayer.css" />
+    <script src="mediaelementjs/mediaelement-and-player.min.js"></script>
+    <link rel="stylesheet" href="mediaelementjs/mediaelementplayer.css" />
     ');
 
     // define the name of the tool to be displayed in various locations

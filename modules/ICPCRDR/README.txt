@@ -39,7 +39,7 @@ folder) :
                                     can find how to write a translation file
 [lib]                            :  the libraries of the module, sercahed by
                                     From::module('ICPCRDR')->uses(...)
-[mediaelements]                  :  this folder is not part of a standard 
+[mediaelementjs]                 :  this folder is not part of a standard 
                                     module file structure. It contains the 
                                     media player used to display audio and video
 [setup]                          :  install and uninstall php and sql scripts
