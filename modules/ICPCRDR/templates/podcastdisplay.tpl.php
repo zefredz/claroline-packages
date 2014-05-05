@@ -62,6 +62,31 @@
             <?php echo claro_utf8_decode(strip_tags($item->metadata['description'])); ?>
         </p>
         
+        <?php if (strncmp($item->enclosure['type'], 'audio/', 6) == 0): ?> <!-- audio -->
+        
+        <audio 
+            type="<?php echo $item->enclosure['type']; ?>" 
+            src="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
+            controls="controls"
+            id="player<?php echo "_{$videoId}"?>">
+        </audio>
+        
+        <?php else: ?> <!-- video -->
+        
+        <video 
+            type="<?php echo $item->enclosure['type']; ?>" 
+            src="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>" 
+            controls="controls"
+            id="player<?php echo "_{$videoId}"?>">
+        </video>
+        
+        <?php endif; ?>
+        
+        <script>
+        $('video,audio').mediaelementplayer(/* Options */);
+        </script>
+        
+        <!--
         <a
             href="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
             style="display:block;width:400px;height:300px"
@@ -120,6 +145,9 @@
             <a class="sizeButton size800">800</a>
         </div>
         <?php endif; ?>
+        
+        -->
+        
         <?php if ( $this->downloadLink == 'visible' ): ?>
         <p>
             <!-- em>
