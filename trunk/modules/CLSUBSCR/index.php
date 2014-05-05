@@ -829,7 +829,7 @@ try
                 
                 FromKernel::uses( 'csv.class' );
                 
-                $csv = new csv( ';' );
+                $csv = new CsvRecordListExporter( ';' );
                 
                 $slotsCollection = new slotsCollection();
                 
