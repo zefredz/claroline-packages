@@ -86,7 +86,7 @@
         $('video,audio').mediaelementplayer(/* Options */);
         </script>
         
-        <!-- 
+        <!-- -->
         
         <?php if( get_conf( 'displaySizeSelector' ) ) : ?>
         <script type="text/javascript">
@@ -94,7 +94,7 @@
                 $(".sizeButton").click(function(){
                     var videoWidth = parseInt($(this).attr("class").substring(15,18));
                     var videoHeight = videoWidth*0.75;
-                    $("#player<?php echo "_{$videoId}"?>").attr({style: "display: block; width: "+ videoWidth + "px; height: " + videoHeight + "px;"});
+                    $("#player<?php echo "_{$videoId}"?>").mediaelement();
                 });
             });
         </script>
@@ -106,7 +106,7 @@
         </div>
         <?php endif; ?>
         
-        -->
+        <!-- -->
         
         <?php if ( $this->downloadLink == 'visible' ): ?>
         <p>
