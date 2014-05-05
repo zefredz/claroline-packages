@@ -344,8 +344,13 @@ try
 
     // load optional javascript and css
     // see core/loader.lib for details
-    JavascriptLoader::getInstance()->load( 'flowplayer-3.2.6.min' );
+    //JavascriptLoader::getInstance()->load( 'flowplayer-3.2.6.min' );
     CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
+    
+    Claroline::getDisplay()->header->addHtmlHeader('
+    <script src="mediaelements/mediaelement-and-player.min.js"></script>
+    <link rel="stylesheet" href="mediaelements/mediaelementplayer.css" />
+    ');
 
     // define the name of the tool to be displayed in various locations
     $nameTools = get_lang("Video podcast reader");
