@@ -73,6 +73,6 @@ endif;
     ?>
         </tbody>
     </table>
-    <input type="submit" name="saveButton" value="<?php echo get_lang( 'Save' ); ?>" />
+    <input type="submit" name="saveButton" value="<?php echo get_lang( 'Save' ); ?>" <?php if ( !$this->slotsAvailable ) { echo 'disabled="disabled" style="font-style:italic; background: silver;"'; } ?> />
     <?php echo claro_html_button( php_self() , get_lang( 'Cancel' ) ); ?>
 </form>

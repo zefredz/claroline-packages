@@ -83,7 +83,7 @@ endif;
         elseif( $subscription['slotsAvailable'] > 0 ):
             echo get_lang( 'Information about the session : %slotsAvailable slot is still available on %totalSlotsAvailable', array( '%slotsAvailable' => $subscription['slotsAvailable'], '%totalSlotsAvailable' => $subscription['totalSlotsAvailable'] ) );
         else:
-            echo get_lang( 'Information about the session : no more slot available.' );
+            echo '<strong><span class="error">' . get_lang( 'Information about the session : no more slot available.' ) . '</span></strong>';
         endif;
         ?>
     </div>

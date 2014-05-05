@@ -72,6 +72,11 @@ class SubscriptionsRenderer {
         $tpl = new ModuleTemplate( 'CLSUBSCR', $tplName );
         
         $tpl->assign( 'subscriptionId', $subscription->getId() );
+        
+        $slotsCollection = new slotsCollection;
+        
+        $tpl->assign( 'slotsAvailable', $slotsCollection->getAvailableSlots ( $subscription->getId() ) );
+        
         $tpl->assign( 'slots', $slots );
         $tpl->assign( 'userChoices', $userChoices );
         $out .= $tpl->render();
