@@ -31,19 +31,17 @@ folder) :
                                     configuration options for the module
 [css]                            :  this folder contains the css style sheets 
                                     of the module. Searched by CSSLoader
-[flash]                          :  this folder is not part of a standard 
-                                    module file structure. It contains the 
-                                    flash files used by the module
 [img]                            :  contains the icons and images of our 
                                     module, searched by get_icon_url() 
-[js]                             :  contains the javascript files of the 
-                                    module, searched by JavascriptLoader
 [lang]                           :  the translation files for the module,
                                     searched by get_lang()
     lang_french.lang.php         :  the french translation file in which you 
                                     can find how to write a translation file
 [lib]                            :  the libraries of the module, sercahed by
                                     From::module('ICPCRDR')->uses(...)
+[mediaelements]                  :  this folder is not part of a standard 
+                                    module file structure. It contains the 
+                                    media player used to display audio and video
 [setup]                          :  install and uninstall php and sql scripts
     course_install.sql           :  SQL script executed when installing the
                                     module in a course
@@ -64,6 +62,11 @@ manifest.xml*                    :  the file that describes the module so it
 proxy.php                        :  a simple HTTP proxy specific to our module
 
 Files marked with * are mandatory in a module.
+
+In addition, a claroline module can have the following folders :
+
+[js]                             :  contains the javascript files of the 
+                                    module, searched by JavascriptLoader
 
 Module setup :
 --------------
