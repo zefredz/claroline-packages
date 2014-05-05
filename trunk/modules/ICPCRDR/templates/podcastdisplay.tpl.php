@@ -86,47 +86,7 @@
         $('video,audio').mediaelementplayer(/* Options */);
         </script>
         
-        <!--
-        <a
-            href="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
-            style="display:block;width:400px;height:300px"
-            id="player<?php echo "_{$videoId}"?>">
-        </a>
-        
-        <?php if( claro_debug_mode() ): ?>
-        
-        <script type="text/javascript">
-            $f( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.2.7.swf", {
-                debug: true,
-                plugins: {
-                    audio: {
-                        url: './flash/flowplayer.audio-3.2.2.swf'
-                    }
-                },
-                clip: {
-                    autoPlay: <?php echo get_conf( 'flowplayer_autoPlay', false ) ? 'true' : 'false'; ?>,
-                    autoBuffering: <?php echo get_conf( 'flowplayer_autoBuffering', false ) ? 'true' : 'false'; ?>
-                } 
-            } );
-        </script>
-        
-        <?php else: ?> 
-        
-        <script type="text/javascript">
-            $f( "player<?php echo "_{$videoId}"?>", "./flash/flowplayer-3.2.7.swf", {
-                plugins: {
-                    audio: {
-                        url: './flash/flowplayer.audio-3.2.2.swf'
-                    }
-                },
-                clip: {
-                    autoPlay: <?php echo get_conf( 'flowplayer_autoPlay', false ) ? 'true' : 'false'; ?>,
-                    autoBuffering: <?php echo get_conf( 'flowplayer_autoBuffering', false ) ? 'true' : 'false'; ?>
-                } 
-            } );
-        </script>
-        
-        <?php endif; ?>
+        <!-- 
         
         <?php if( get_conf( 'displaySizeSelector' ) ) : ?>
         <script type="text/javascript">
