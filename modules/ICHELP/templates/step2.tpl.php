@@ -20,9 +20,9 @@
         $(".noRequired li input").click(function(){
             $(".required").hide();
         });
-        $("#additionnalFields").hide();
-        $("input").click(function(){
-            $("#additionnalFields").show();
+        $(".hiddenUntilClick").hide();
+        $(".issueCase").click(function(){
+            $(".hiddenUntilClick").show();
         })
     });
 </script>
@@ -82,7 +82,8 @@
                 style="list-style-type: none;">
             <?php foreach( $issue as $label => $description ) : ?>
                 <li>
-                    <input type="radio"
+                    <input class="issueCase"
+                           type="radio"
                         <?php if ( $this->userData[ 'issueType' ] == $label ) : ?>
                            checked="checked"
                         <?php endif; ?>
@@ -100,7 +101,8 @@
                 style="display: none; list-style-type: none;">
             <?php foreach( $issue as $label => $description ) : ?>
                 <li>
-                    <input type="radio"
+                    <input class="issueCase"
+                           type="radio"
                         <?php if ( $this->userData[ 'issueType' ] == $label ) : ?>
                            checked="checked"
                         <?php endif; ?>
@@ -114,7 +116,7 @@
             <?php endif; ?>
         <?php endforeach; ?>
         <br />
-        <div id="additionnalFields">
+        <div class="hiddenUntilClick">
         <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Enter the course code' ); ?></span>
         <span id="required0" class="required" style="font-weight: bold;">*</span><br />
         <input type="text"
@@ -127,8 +129,11 @@
 </textarea>
         </div>
     </fieldset>
-    
-    <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Submit' ); ?>" />
+    <input class="hiddenUntilClick" id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Submit' ); ?>" />
     <input id="goback" type="submit" name="submit" value="<?php echo get_lang( 'Go back' ); ?>" />
+    <a style="text-decoration: none;"
+       href="<?php echo claro_htmlspecialchars( $this->userData[ 'urlOrigin' ] ? $this->userData[ 'urlOrigin' ] : get_path( 'rootWeb' ) ); ?>">
+        <input type="button" name="cancel" value="<?php echo get_lang( 'Cancel' ); ?>" />
+    </a>
 </form>
 <p><small><?php echo get_lang( '<span class="required">*</span> denotes required field' ); ?></small></p>
