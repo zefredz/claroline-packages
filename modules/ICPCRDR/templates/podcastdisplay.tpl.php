@@ -2,8 +2,8 @@
     $Id$
     
     Podcast display template
-    * @version     ICPCRDR 1.0 $Revision$ - Claroline 1.9
-    * @copyright   2001-2011 Universite catholique de Louvain (UCL)
+    * @version     ICPCRDR 1.1 $Revision$ - Claroline 1.9
+    * @copyright   2001-2014 Universite catholique de Louvain (UCL)
     * @author      Frederic Minne <zefredz@claroline.net>
     * @license     http://www.gnu.org/copyleft/gpl.html
     *              GNU GENERAL PUBLIC LICENSE version 2 or later
@@ -44,11 +44,7 @@
 </p>
 
 <!-- display the podcast list -->
-<?php
-    $videoId = 1;
-    
-    foreach( $this->items as $item ):
- ?>
+<?php foreach( $this->items as $item ): ?>
 
         <h4 class="itemTitle">
             <?php echo claro_htmlspecialchars( claro_utf8_decode($item->metadata['title']) ); ?>
@@ -62,48 +58,11 @@
             <?php echo claro_utf8_decode(strip_tags($item->metadata['description'])); ?>
         </p>
         
-        <?php if (strncmp($item->enclosure['type'], 'audio/', 6) == 0): ?> <!-- audio -->
+        <?php   
         
-        <audio 
-            type="<?php echo $item->enclosure['type']; ?>" 
-            src="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>"
-            controls="controls"
-            id="player<?php echo "_{$videoId}"?>">
-        </audio>
+            $mediaPlayer = new Claro_Html_Mediaplayer ( $item->enclosure['url'], $item->enclosure['type'], $this->downloadLink == 'visible' );
+            echo $mediaPlayer->render(); 
+            
+        ?>
         
-        <?php else: ?> <!-- video -->
-        
-        <video 
-            type="<?php echo $item->enclosure['type']; ?>" 
-            src="<?php echo claro_htmlspecialchars( str_replace( "'", rawurlencode("%27"), $item->enclosure['url'] ) ); ?>" 
-            controls="controls"
-            id="player<?php echo "_{$videoId}"?>">
-        </video>
-        
-        <?php endif; ?>
-        
-        <script>
-        $('video,audio').mediaelementplayer(/* Options */);
-        </script>
-        
-        <?php if ( $this->downloadLink == 'visible' ): ?>
-        <p>
-            <!-- em>
-                <?php echo get_lang('If the media doesn\'t play correctly, you can download it using the following link (right-click Save Link As or ctrl+click Save Link As)' );?>
-            </em>
-            <br / -->
-            <em>
-                <a href="<?php echo claro_htmlspecialchars( $item->enclosure['url'] );?>">
-                    <img src="<?php echo get_icon_url('download'); ?>" alt="download" />
-                    <?php echo get_lang( 'Download this video' ); ?>
-                </a>
-            </em>
-        </p>
-        <?php endif; ?>
-        
-<?php
-        $videoId++;
-    
-    endforeach;
-?>
-<!-- end of podcast list -->
+<?php endforeach; ?>
