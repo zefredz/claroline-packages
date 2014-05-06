@@ -43,3 +43,4 @@ $_lang[ 'Solved : ' ] = 'Résolu : ';
 $_lang[ 'confirmation_message' ] = 'L\'utilisateur %name a signalé que le problème correspondant au ticket %ticket a été résolu';
 $_lang[ 'Online Help\'s solved issue notification' ] = 'Confirmation de résolution';
 $_lang[ 'javascript not activated' ] = 'Veuillez activer javascript au sein de votre navigateur!';
+$_lang[ 'Go back' ] = 'Revenir en arrière';
