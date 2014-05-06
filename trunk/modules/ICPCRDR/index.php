@@ -32,7 +32,8 @@ FromKernel::uses(
 From::Module('ICPCRDR')->uses(
     'podcastcollection.lib',
     'podcastparser.lib',
-    'podcastproperties.lib'
+    'podcastproperties.lib',
+    'mediaplayer.lib'
 );
 
 // check if the module can be accessed
@@ -347,10 +348,7 @@ try
     //JavascriptLoader::getInstance()->load( 'flowplayer-3.2.6.min' );
     CssLoader::getInstance()->load( 'icpcrdr' , 'screen' );
     
-    Claroline::getDisplay()->header->addHtmlHeader('
-    <script src="mediaelementjs/mediaelement-and-player.min.js"></script>
-    <link rel="stylesheet" href="mediaelementjs/mediaelementplayer.css" />
-    ');
+    Claro_Html_Mediaplayer::sendHtmlHeader();
 
     // define the name of the tool to be displayed in various locations
     $nameTools = get_lang("Video podcast reader");
