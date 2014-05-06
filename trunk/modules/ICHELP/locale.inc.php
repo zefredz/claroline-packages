@@ -207,7 +207,7 @@ $categoryList = array(
     2 => 'Problème lors de la création d\'un espace de cours',
     3 => 'Problème d\'inscription à un espace de cours',
     4 => 'Problème au sein d\'un espace de cours',
-    99 => 'Autre problème'
+    99 => 'Aucune des propositions ci-dessus ne correspond à mon problème'
 );
 
 $addedFields = array(

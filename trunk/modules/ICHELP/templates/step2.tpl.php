@@ -20,6 +20,10 @@
         $(".noRequired li input").click(function(){
             $(".required").hide();
         });
+        $("#additionnalFields").hide();
+        $("input").click(function(){
+            $("#additionnalFields").show();
+        })
     });
 </script>
 <form method="post"
@@ -71,8 +75,27 @@
     <fieldset>
         <legend><?php echo get_lang( 'Issue infos' ); ?>&nbsp;<span class="required">*</span></legend>
         <?php foreach( $this->issueList as $categoryId => $issue ) : ?>
+            <?php if( $categoryId != 99 ) : ?>
+        <div>
+            <span style="font-weight: bold; color: #336699;"><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></span>
+            <ul class="<?php if( array_key_exists( $categoryId , $this->addedField ) ) : ?> hasRequired<?php echo $this->addedField[ $categoryId ]; ?><?php else : ?> noRequired<?php endif; ?>"
+                style="list-style-type: none;">
+            <?php foreach( $issue as $label => $description ) : ?>
+                <li>
+                    <input type="radio"
+                        <?php if ( $this->userData[ 'issueType' ] == $label ) : ?>
+                           checked="checked"
+                        <?php endif; ?>
+                           name="data[issueType]"
+                           value="<?php echo $label; ?>" />
+                    <?php echo $description; ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+            <?php else : ?>
         <div class="collapsible collapsed">
-            <a class="doCollapse" href="#"><strong><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></strong></a>
+            <a class="doCollapse" href="#"><span style="font-size: small;"><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></span></a>
             <ul class="collapsible-wrapper <?php if( array_key_exists( $categoryId , $this->addedField ) ) : ?> hasRequired<?php echo $this->addedField[ $categoryId ]; ?><?php else : ?> noRequired<?php endif; ?>"
                 style="display: none; list-style-type: none;">
             <?php foreach( $issue as $label => $description ) : ?>
@@ -88,8 +111,10 @@
             <?php endforeach; ?>
             </ul>
         </div>
+            <?php endif; ?>
         <?php endforeach; ?>
         <br />
+        <div id="additionnalFields">
         <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Enter the course code' ); ?></span>
         <span id="required0" class="required" style="font-weight: bold;">*</span><br />
         <input type="text"
@@ -100,6 +125,7 @@
 <textarea   rows="20" cols="120" name="data[issueDescription]">
 <?php echo $this->userData['issueDescription']; ?>
 </textarea>
+        </div>
     </fieldset>
     
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Submit' ); ?>" />
