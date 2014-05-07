@@ -1,14 +1,14 @@
-La messagerie interne d'icampus ne doit pas Ãªtre confondue avec votre boÃ®te mail UCL.
+La messagerie interne d'icampus ne doit pas être confondue avec votre boîte mail UCL.
 
-Elle est en effet totalement indÃ©pendante de cette derniÃ¨re, et doit plutÃ´t Ãªtre vue comme un outil rÃ©capitulatif des messages envoyÃ©s au sein de la plateforme.
+Elle est en effet totalement indépendante de cette dernière, et doit plutôt être vue comme un outil récapitulatif des messages envoyés au sein de la plateforme.
 
-Tois types de message sont susceptibles d'arriver dans votre boÃ®te de rÃ©ception :
+Tois types de message sont susceptibles d'arriver dans votre boîte de réception :
 
-    1. un message vous confirmant ou vous annonÃ§ant votre (dÃ©s)inscription Ã  un cours
-    2. une annonce envoyÃ©e par un enseignant dans la cadre d'un cours auquel vous Ãªtes inscrit
-    3. une annonce envoyÃ©e par les administrateurs de la plateforme
+    1. un message vous confirmant ou vous annonçant votre (dés)inscription à un cours
+    2. une annonce envoyée par un enseignant dans la cadre d'un cours auquel vous êtes inscrit
+    3. une annonce envoyée par les administrateurs de la plateforme
 
-Lors de l'envoi d'une annonce, un enseignant a la possibilitÃ© de "dÃ©doubler" son message sous la forme d'un mail, mais cela n'est pas automatique.
-C'est pourquoi, vous pouvez avoir l'impression que certains messages ne vous parviennent pas si vous vous contentez de consulter votre boÃ®te mail UCL.
+Lors de l'envoi d'une annonce, un enseignant a la possibilité de "dédoubler" son message sous la forme d'un mail, mais cela n'est pas automatique.
+C'est pourquoi, vous pouvez avoir l'impression que certains messages ne vous parviennent pas si vous vous contentez de consulter votre boîte mail UCL.
 
-VÃ©rifiez Ã©galement que vous Ãªtes inscrit au bon cours, car plusieurs cours peuvent avoir des intitulÃ©s similaires au sein d'iCampus!
+Vérifiez également que vous êtes inscrit au bon cours, car plusieurs cours peuvent avoir des intitulés similaires au sein d'iCampus!

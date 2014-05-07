@@ -108,6 +108,7 @@ try
         $userData['UCLMember'] === '1' && empty( $userId ),
         ! empty( $userId ),
         $userData['isManager'] === '1',
+        $userData['isManager'] !== '1',
         true
     );
     
@@ -290,7 +291,7 @@ try
         $view->assign( 'categoryList' , $categoryList );
         $view->assign( 'profileList' , $profileList );
         $view->assign( 'issueList' , $issueList );
-        $view->assign( 'backUrl' , $ticket->get( 'urlOrigin' ) );
+        $view->assign( 'backUrl' , $userData[ 'urlOrigin' ] );
         $view->assign( 'errorStatus' , $error );
         $view->assign( 'addedField' , $addedField );
         $view->assign( 'addedFields' , $addedFields );
