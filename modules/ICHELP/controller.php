@@ -104,12 +104,12 @@ try
     }
     
     $profile = array(
-        empty( $userId ),
-        $userData['UCLMember'] === '1' && empty( $userId ),
-        ! empty( $userId ),
-        $userData['isManager'] === '1',
-        $userData['isManager'] !== '1',
-        true
+        empty( $userId ),                                   // utilisateur non authentifié
+        $userData['UCLMember'] === '1' && empty( $userId ), // membre de l'UCL
+        ! empty( $userId ),                                 // utilisateur authentifié
+        $userData['isManager'] === '1',                     // gestionnaire de cours
+        $userData['isManager'] !== '1',                     // étudiant
+        true                                                // tous (toujours vrai)
     );
     
     foreach( $checkList as $label => $data )
@@ -289,7 +289,6 @@ try
         $view->assign( 'ticket' , $ticket );
         $view->assign( 'checkList' , $checkList );
         $view->assign( 'categoryList' , $categoryList );
-        $view->assign( 'profileList' , $profileList );
         $view->assign( 'issueList' , $issueList );
         $view->assign( 'backUrl' , $userData[ 'urlOrigin' ] );
         $view->assign( 'errorStatus' , $error );

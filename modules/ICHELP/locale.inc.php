@@ -193,14 +193,14 @@ $checkList = array(
         'mailTpl' => null )
 );
 
-$profileList = array(
+/* Liste et description des profils :
     0 => 'utilisateurs non authentifiés',
     1 => 'utilisateurs non authentifiés qui se déclarent membres de l\'UCL',
     2 => 'utilisateurs authentifiés',
     3 => 'utilisateurs (authentifiés ou non) qui se déclarent gestionnaire d\'un cours',
     4 => 'étudiants',
     5 => 'tous les utilisateurs'
-);
+*/
 
 $categoryList = array(
     0 => 'Problème d\'accès à iCampus',
