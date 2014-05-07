@@ -6,13 +6,15 @@ $_lang['useful for authentification problem'] = 'utile pour les problèmes d\'acc
 $_lang['Related course code (if relevant)'] = 'Code cours concerné (si pertinent)';
 
 $_lang['Personnal infos'] = 'Première étape : Informations vous concernant';
-$_lang['Issue infos'] = 'Informations concernant le problème que vous rencontrez';
+$_lang['Issue infos'] = 'Veuillez cocher la proposition qui correspond au problème que vous rencontrez';
 $_lang['UCL member'] = 'Etes-vous actuellement membre de l\'UCL?';
-$_lang['You are'] = 'Vous êtes...';
-$_lang['Teacher'] = "Enseignant";
+$_lang['You are'] = 'Etes-vous étudiant(e) ou enseignant(e)?';
+$_lang['Teacher'] = 'Enseignant(e)';
+$_lang['Student'] = 'Etudiant(e)';
 $_lang['Your issue is related to'] = 'Votre problème concerne';
-$_lang['Describe your problem'] = 'Décrivez votre problème';
+$_lang['Describe your problem'] = 'Décrivez le problème';
 $_lang['Enter the course code'] = 'Entrez le code du cours concerné';
+$_lang['Additionnal informations'] = 'Veuillez donner des précisions sur le problème rencontré';
 $_lang['Your request has been succesfully sent'] = 'Votre demande a été envoyée au help desk';
 //$_lang['Alumni'] = 'Ancien(ne) étudiant(e) (alumni)';
 

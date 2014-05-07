@@ -1,1 +1,1 @@
-Si vous ne pouvez modifier vous-mÃªme votre plage horaire lors d'une inscription Ã  un examen, la seule possibilitÃ© qu'il vous reste est de contacter le gestionnaire pour lui demander de le faire pour vous.
+Si vous ne pouvez modifier vous-même votre plage horaire lors d'une inscription à un examen, la seule possibilité qu'il vous reste est de contacter le gestionnaire pour lui demander de le faire pour vous.

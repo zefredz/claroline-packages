@@ -13,6 +13,15 @@
     <input type="hidden"
            name="data[isCourseCreator]"
            value="<?php echo $this->userData[ 'isCourseCreator' ]; ?>" />
+    <input type="hidden"
+           name="data[firstName]"
+           value="<?php echo $this->userData[ 'firstName' ]; ?>" />
+    <input type="hidden"
+           name="data[lastName]"
+           value="<?php echo $this->userData[ 'lastName' ]; ?>" />
+    <input type="hidden"
+           name="data[mail]"
+           value="<?php echo $this->userData[ 'mail' ]; ?>" />
     <noscript>
         <input type="hidden"
                name="data[jsEnabled]"
@@ -41,8 +50,6 @@
             <dt><strong><?php echo get_lang( 'Username' ); ?></strong></dt>
             <dd><input type="text" name="data[username]" value="<?php echo $this->userData[ 'username' ]; ?>" /></dd>
     
-            <dt><strong><?php echo get_lang( 'FGS' ); ?></strong> <span style="font-size: small; color: grey; font-style : italic;">(<?php echo get_lang( 'useful for authentification problem' ); ?>)</span></dt>
-            <dd><input type="text" name="data[officialCode]" value="<?php echo $this->userData[ 'officialCode' ]; ?>" /></dd>
         <?php endif; ?>
             <dt><strong><?php echo get_lang( 'UCL member' ); ?><span class="required">*</span>&nbsp;</strong></dt>
             <dd>
@@ -62,6 +69,9 @@
                         <?php if ( $this->userData['UCLMember'] === '0' ) : ?>checked="checked"<?php endif; ?>/>
                 <?php echo get_lang( 'No' ); ?></strong>
             </dd>
+            
+            <dt><strong><?php echo get_lang( 'FGS' ); ?></strong> <span style="font-size: small; color: grey; font-style : italic;">(<?php echo get_lang( 'useful for authentification problem' ); ?>)</span></dt>
+            <dd><input type="text" name="data[officialCode]" value="<?php echo $this->userData[ 'officialCode' ]; ?>" /></dd>
             
             <dt><strong><?php echo get_lang( 'You are' ); ?><span class="required">*</span>&nbsp;</strong>
             </dd></dt>

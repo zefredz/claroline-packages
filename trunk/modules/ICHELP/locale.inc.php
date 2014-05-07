@@ -44,19 +44,19 @@ $checkList = array(
     
     'msgNotReceived' => array(
         'category' => 1,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Certains messages ne me parviennent pas',
         'mailTpl' => 'msgnotreceived' ),
     
     'msgNotSent' => array(
         'category' => 1,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je ne parviens pas à envoyer un message',
         'mailTpl' => 'msgnotsent' ),
     
     'msgNotDeleted' => array(
         'category' => 1,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je ne parviens pas à effacer un message qui se trouve dans la corbeille',
         'mailTpl' => 'msgnotdeleted' ),
     
@@ -98,25 +98,25 @@ $checkList = array(
     
     'courseNotFound' => array(
         'category' => 3,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je n\'arrive pas à trouver le cours que je cherche',
         'mailTpl' => 'coursesearch' ),
     
     'keyRequired' => array(
         'category' => 3,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je n\'arrive pas à m\'inscrire à un cours car une clé m\'est demandée',
         'mailTpl' => 'keyrequired' ),
     
     'courseEnroll' => array(
         'category' => 3,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je n\'arrive pas à m\'inscrire à un cours pour une raison qui m\'est inconnue',
         'mailTpl' => 'courseenroll' ),
     
     'courseDisappeared' => array(
         'category' => 3,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Des cours ont disparu de ma liste de cours',
         'mailTpl' => 'coursesearch' ),
     
@@ -126,13 +126,13 @@ $checkList = array(
         'description' => 'Il n\'y a plus assez d\'espace pour les documents de mon cours',
         'mailTpl' => 'spacerequest' ),
     
-    'moreSpaceNeeded' => array(
+    'moreSpaceNeededW' => array(
         'category' => 4,
         'profile' => 3,
         'description' => 'Il n\'y a plus assez d\'espace pour les travaux',
         'mailTpl' => 'spacerequest' ),
     
-    'moreSpaceNeeded' => array(
+    'moreSpaceNeededG' => array(
         'category' => 4,
         'profile' => 3,
         'description' => 'Il n\'y a plus assez d\'espace pour les groupes',
@@ -152,31 +152,31 @@ $checkList = array(
     
     'subscriptionChange' => array(
         'category' => 4,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je souhaite modifier une inscription à une plage horaire',
         'mailTpl' => 'subscriptionchange' ),
     
     'workSubmit' => array(
         'category' => 4,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je ne parviens pas à remettre un travail sur iCampus',
         'mailTpl' => 'worksubmit' ),
     
     'useQuestion' => array(
         'category' => 99,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je me pose des questions au sujet de l\'utilisation de certains outils',
         'mailTpl' => null ),
     
     'podcastProblem' => array(
         'category' => 99,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Les vidéos ne s\'affichent pas correctement',
         'mailTpl' => null ),
     
     'bugReport' => array(
         'category' => 99,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Je voudrais vous faire part d\'un bug ou d\'un comportement étrange de l\'application',
         'mailTpl' => null ),
     
@@ -188,7 +188,7 @@ $checkList = array(
     
     'other' => array(
         'category' => 99,
-        'profile' => 4,
+        'profile' => 5,
         'description' => 'Aucune des propositions ci-dessus ne correspond à mon problème',
         'mailTpl' => null )
 );
@@ -198,7 +198,8 @@ $profileList = array(
     1 => 'utilisateurs non authentifiés qui se déclarent membres de l\'UCL',
     2 => 'utilisateurs authentifiés',
     3 => 'utilisateurs (authentifiés ou non) qui se déclarent gestionnaire d\'un cours',
-    4 => 'tous les utilisateurs'
+    4 => 'étudiants',
+    5 => 'tous les utilisateurs'
 );
 
 $categoryList = array(
@@ -207,7 +208,7 @@ $categoryList = array(
     2 => 'Problème lors de la création d\'un espace de cours',
     3 => 'Problème d\'inscription à un espace de cours',
     4 => 'Problème au sein d\'un espace de cours',
-    99 => 'Aucune des propositions ci-dessus ne correspond à mon problème'
+    99 => 'Cliquez ici si aucune des propositions ci-dessus ne correspond au problème que vous rencontrez'
 );
 
 $addedFields = array(

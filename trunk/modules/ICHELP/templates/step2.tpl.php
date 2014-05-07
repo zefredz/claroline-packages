@@ -96,7 +96,7 @@
         </div>
             <?php else : ?>
         <div class="collapsible collapsed">
-            <a class="doCollapse" href="#"><span style="font-size: small;"><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></span></a>
+            <a class="doCollapse" href="#"><span><?php echo get_lang( $this->categoryList[ $categoryId ] ); ?></span></a>
             <ul class="collapsible-wrapper <?php if( array_key_exists( $categoryId , $this->addedField ) ) : ?> hasRequired<?php echo $this->addedField[ $categoryId ]; ?><?php else : ?> noRequired<?php endif; ?>"
                 style="display: none; list-style-type: none;">
             <?php foreach( $issue as $label => $description ) : ?>
@@ -115,8 +115,9 @@
         </div>
             <?php endif; ?>
         <?php endforeach; ?>
-        <br />
-        <div class="hiddenUntilClick">
+        </fieldset>
+        <fieldset class="hiddenUntilClick">
+        <legend><?php echo get_lang( 'Additionnal informations' ); ?></legend>
         <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Enter the course code' ); ?></span>
         <span id="required0" class="required" style="font-weight: bold;">*</span><br />
         <input type="text"
@@ -127,7 +128,6 @@
 <textarea   rows="20" cols="120" name="data[issueDescription]">
 <?php echo $this->userData['issueDescription']; ?>
 </textarea>
-        </div>
     </fieldset>
     <input class="hiddenUntilClick" id="submit" type="submit" name="submit" value="<?php echo get_lang( 'Submit' ); ?>" />
     <input id="goback" type="submit" name="submit" value="<?php echo get_lang( 'Go back' ); ?>" />

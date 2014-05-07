@@ -1,2 +1,2 @@
-Les messages collectifs (cÃ d envoyÃ©s Ã  un groupes d'Ã©tudiants) ne peuvent Ãªtre supprimÃ©s de votre boÃ®te de rÃ©ception.
-Il s'agit d'un choix d'implÃ©mentation de l'outil, visant Ã  empÃªcher des tentatives de fraudes (par exemple: un Ã©tudiant affirmant de pas avoir reÃ§u un message).
+Les messages collectifs (càd envoyés à un groupes d'étudiants) ne peuvent être supprimés de votre boîte de réception.
+Il s'agit d'un choix d'implémentation de l'outil, visant à empêcher des tentatives de fraudes (par exemple: un étudiant affirmant de pas avoir reçu un message).
