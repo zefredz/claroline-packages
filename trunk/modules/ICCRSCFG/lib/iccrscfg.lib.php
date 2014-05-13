@@ -30,6 +30,8 @@ class ICCRSCFG_Configuration
             'maxFilledSpace_for_course' => isset( $GLOBALS['maxFilledSpace_for_course'] ) ? $GLOBALS['maxFilledSpace_for_course'] : null,
             'maxFilledSpace_for_groups' => isset( $GLOBALS['maxFilledSpace_for_groups'] ) ? $GLOBALS['maxFilledSpace_for_groups'] : null,
             'openNewWindowForDoc' => isset( $GLOBALS['openNewWindowForDoc'] ) ? $GLOBALS['openNewWindowForDoc'] : null,
+            'cldoc_allowAnonymousToDownloadFolder' => isset( $GLOBALS['openNewWindowForDoc'] ) ? $GLOBALS['openNewWindowForDoc'] : null,
+            'cldoc_allowNonManagersToDownloadFolder' => isset( $GLOBALS['openNewWindowForDoc'] ) ? $GLOBALS['openNewWindowForDoc'] : null,
             'max_file_size_per_works' => isset( $GLOBALS['max_file_size_per_works'] ) ? $GLOBALS['max_file_size_per_works'] : null,
             'maxFilledSpace' => isset( $GLOBALS['maxFilledSpace'] ) ? $GLOBALS['maxFilledSpace'] : null,
         );
@@ -37,6 +39,8 @@ class ICCRSCFG_Configuration
         if ( isset( $GLOBALS['maxFilledSpace_for_course'] ) ) unset ( $GLOBALS['maxFilledSpace_for_course'] );
         if ( isset( $GLOBALS['maxFilledSpace_for_groups'] ) ) unset ( $GLOBALS['maxFilledSpace_for_groups'] );
         if ( isset( $GLOBALS['openNewWindowForDoc'] ) ) unset ( $GLOBALS['openNewWindowForDoc'] );
+        if ( isset( $GLOBALS['cldoc_allowAnonymousToDownloadFolder'] ) ) unset ( $GLOBALS['cldoc_allowAnonymousToDownloadFolder'] );
+        if ( isset( $GLOBALS['cldoc_allowNonManagersToDownloadFolder'] ) ) unset ( $GLOBALS['cldoc_allowNonManagersToDownloadFolder'] );
         if ( isset( $GLOBALS['max_file_size_per_works'] ) ) unset ( $GLOBALS['max_file_size_per_works'] );
         if ( isset( $GLOBALS['maxFilledSpace_for_groups'] ) ) unset ( $GLOBALS['maxFilledSpace'] );
         
@@ -47,6 +51,8 @@ class ICCRSCFG_Configuration
             'maxFilledSpace_for_course' => $GLOBALS['maxFilledSpace_for_course'],
             'maxFilledSpace_for_groups' => $GLOBALS['maxFilledSpace_for_groups'],
             'openNewWindowForDoc' => $GLOBALS['openNewWindowForDoc'],
+            'cldoc_allowAnonymousToDownloadFolder' => $GLOBALS['cldoc_allowAnonymousToDownloadFolder'],
+            'cldoc_allowNonManagersToDownloadFolder' => $GLOBALS['cldoc_allowNonManagersToDownloadFolder'],
             'max_file_size_per_works' => $GLOBALS['max_file_size_per_works'],
             'maxFilledSpace' => isset( $GLOBALS['maxFilledSpace'] ) ? $GLOBALS['maxFilledSpace'] : 100000000,
         );
@@ -58,6 +64,8 @@ class ICCRSCFG_Configuration
             'maxFilledSpace_for_course' => $GLOBALS['maxFilledSpace_for_course'],
             'maxFilledSpace_for_groups' => $GLOBALS['maxFilledSpace_for_groups'],
             'openNewWindowForDoc' => $GLOBALS['openNewWindowForDoc'],
+            'cldoc_allowAnonymousToDownloadFolder' => $GLOBALS['cldoc_allowAnonymousToDownloadFolder'],
+            'cldoc_allowNonManagersToDownloadFolder' => $GLOBALS['cldoc_allowNonManagersToDownloadFolder'],
             'max_file_size_per_works' => $GLOBALS['max_file_size_per_works'],
             'maxFilledSpace' => isset( $GLOBALS['maxFilledSpace'] ) ? $GLOBALS['maxFilledSpace'] : 100000000,
         );

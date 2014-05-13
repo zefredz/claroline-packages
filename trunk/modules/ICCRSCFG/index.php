@@ -81,6 +81,8 @@ try
             $configurationValuesSubmitted['maxFilledSpace_for_course'] = $userInput->getMandatory('maxFilledSpace_for_course');
             $configurationValuesSubmitted['maxFilledSpace_for_groups'] = $userInput->getMandatory('maxFilledSpace_for_groups');
             $configurationValuesSubmitted['openNewWindowForDoc'] = $userInput->getMandatory('openNewWindowForDoc') == 'true' ? true : false;
+            $configurationValuesSubmitted['cldoc_allowAnonymousToDownloadFolder'] = $userInput->getMandatory('cldoc_allowAnonymousToDownloadFolder') == 'true' ? true : false;
+            $configurationValuesSubmitted['cldoc_allowNonManagersToDownloadFolder'] = $userInput->getMandatory('cldoc_allowNonManagersToDownloadFolder') == 'true' ? true : false;
             $configurationValuesSubmitted['max_file_size_per_works'] = $userInput->getMandatory('max_file_size_per_works');
             $configurationValuesSubmitted['maxFilledSpace'] = $userInput->getMandatory('maxFilledSpace');
             
@@ -90,6 +92,8 @@ try
             $configurationResetSubmitted['reset_maxFilledSpace_for_course'] = $userInput->get('reset_maxFilledSpace_for_course') == 'on' ? true : false;
             $configurationResetSubmitted['reset_maxFilledSpace_for_groups'] = $userInput->get('reset_maxFilledSpace_for_groups') == 'on' ? true : false;
             $configurationResetSubmitted['reset_openNewWindowForDoc'] = $userInput->get('reset_openNewWindowForDoc') == 'on' ? true : false;
+            $configurationResetSubmitted['reset_cldoc_allowAnonymousToDownloadFolder'] = $userInput->get('reset_cldoc_allowAnonymousToDownloadFolder') == 'on' ? true : false;
+            $configurationResetSubmitted['reset_cldoc_allowNonManagersToDownloadFolder'] = $userInput->get('reset_cldoc_allowNonManagersToDownloadFolder') == 'on' ? true : false;
             $configurationResetSubmitted['reset_max_file_size_per_works'] = $userInput->get('reset_max_file_size_per_works') == 'on' ? true : false;
             $configurationResetSubmitted['reset_maxFilledSpace'] = $userInput->get('reset_maxFilledSpace') == 'on' ? true : false;
             
@@ -99,7 +103,9 @@ try
                 'CLDOC' => array(
                     'maxFilledSpace_for_course' => $platformConfig['maxFilledSpace_for_course'],
                     'maxFilledSpace_for_groups' => $platformConfig['maxFilledSpace_for_groups'],
-                    'openNewWindowForDoc' => $platformConfig['openNewWindowForDoc']
+                    'openNewWindowForDoc' => $platformConfig['openNewWindowForDoc'],
+                    'cldoc_allowAnonymousToDownloadFolder' => $platformConfig['cldoc_allowAnonymousToDownloadFolder'],
+                    'cldoc_allowNonManagersToDownloadFolder' => $platformConfig['cldoc_allowNonManagersToDownloadFolder'],
                 ),
                 'CLWRK' => array(
                     'max_file_size_per_works' => $platformConfig['max_file_size_per_works'],
@@ -142,6 +148,32 @@ try
                 || $configurationValuesSubmitted['openNewWindowForDoc'] == $platformConfig['openNewWindowForDoc'] )
             {
                 unset( $configurationToWrite['CLDOC']['openNewWindowForDoc'] );
+            }
+            
+            ////// 
+            
+            if ( ! $configurationResetSubmitted['reset_cldoc_allowAnonymousToDownloadFolder']
+                && $configurationValuesSubmitted['cldoc_allowAnonymousToDownloadFolder'] != $platformConfig['cldoc_allowAnonymousToDownloadFolder']
+            )
+            {
+                $configurationToWrite['CLDOC']['cldoc_allowAnonymousToDownloadFolder'] = $configurationValuesSubmitted['cldoc_allowAnonymousToDownloadFolder'];
+            }
+            elseif ( $configurationResetSubmitted['reset_cldoc_allowAnonymousToDownloadFolder'] 
+                || $configurationValuesSubmitted['cldoc_allowAnonymousToDownloadFolder'] == $platformConfig['cldoc_allowAnonymousToDownloadFolder'] )
+            {
+                unset( $configurationToWrite['CLDOC']['cldoc_allowAnonymousToDownloadFolder'] );
+            }
+            
+            if ( ! $configurationResetSubmitted['reset_cldoc_allowNonManagersToDownloadFolder']
+                && $configurationValuesSubmitted['cldoc_allowNonManagersToDownloadFolder'] != $platformConfig['cldoc_allowNonManagersToDownloadFolder']
+            )
+            {
+                $configurationToWrite['CLDOC']['cldoc_allowNonManagersToDownloadFolder'] = $configurationValuesSubmitted['cldoc_allowNonManagersToDownloadFolder'];
+            }
+            elseif ( $configurationResetSubmitted['reset_cldoc_allowNonManagersToDownloadFolder'] 
+                || $configurationValuesSubmitted['cldoc_allowNonManagersToDownloadFolder'] == $platformConfig['cldoc_allowNonManagersToDownloadFolder'] )
+            {
+                unset( $configurationToWrite['CLDOC']['cldoc_allowNonManagersToDownloadFolder'] );
             }
             
             // CLWRK

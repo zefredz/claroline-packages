@@ -37,6 +37,37 @@
                 <input type="checkbox" name="reset_openNewWindowForDoc" id="reset_openNewWindowForDoc" />
                 <label for="reset_openNewWindowForDoc"><?php echo get_lang("Reset to platform value"); ?></label>
             </dd>
+            
+            <dt>
+            <label><?php echo get_lang("Allow download of folder by anonymous users"); ?></label>
+            </dt>
+            <dd>
+            <?php
+                $checked1 = $this->config['cldoc_allowAnonymousToDownloadFolder'] ? ' checked="checked"' : '';
+                $checked2 = !$this->config['cldoc_allowAnonymousToDownloadFolder'] ? ' checked="checked"' : '';
+            ?>
+                <input type="radio" name="cldoc_allowAnonymousToDownloadFolder" id="cldoc_allowAnonymousToDownloadFolder_true"<?php echo $checked1; ?> value="true" />
+                <label for="cldoc_allowAnonymousToDownloadFolder_true"><?php echo get_lang("Yes"); ?></label>
+                <input type="radio" name="cldoc_allowAnonymousToDownloadFolder" id="cldoc_allowAnonymousToDownloadFolder_false"<?php echo $checked2; ?>  value="false" />
+                <label for="cldoc_allowAnonymousToDownloadFolder_false"><?php echo get_lang("No"); ?></label>
+                <input type="checkbox" name="reset_cldoc_allowAnonymousToDownloadFolder" id="reset_cldoc_allowAnonymousToDownloadFolder" />
+                <label for="reset_cldoc_allowAnonymousToDownloadFolder"><?php echo get_lang("Reset to platform value"); ?></label>
+            </dd>
+            <dt>
+            <label><?php echo get_lang("Allow download of folder by non managers"); ?></label>
+            </dt>
+            <dd>
+            <?php
+                $checked1 = $this->config['cldoc_allowNonManagersToDownloadFolder'] ? ' checked="checked"' : '';
+                $checked2 = !$this->config['cldoc_allowNonManagersToDownloadFolder'] ? ' checked="checked"' : '';
+            ?>
+                <input type="radio" name="cldoc_allowNonManagersToDownloadFolder" id="cldoc_allowNonManagersToDownloadFolder_true"<?php echo $checked1; ?> value="true" />
+                <label for="cldoc_allowNonManagersToDownloadFolder_true"><?php echo get_lang("Yes"); ?></label>
+                <input type="radio" name="cldoc_allowNonManagersToDownloadFolder" id="cldoc_allowNonManagersToDownloadFolder_false"<?php echo $checked2; ?>  value="false" />
+                <label for="cldoc_allowNonManagersToDownloadFolder_false"><?php echo get_lang("No"); ?></label>
+                <input type="checkbox" name="reset_cldoc_allowNonManagersToDownloadFolder" id="reset_cldoc_allowNonManagersToDownloadFolder" />
+                <label for="reset_cldoc_allowNonManagersToDownloadFolder"><?php echo get_lang("Reset to platform value"); ?></label>
+            </dd>
         </dl>
     </fieldset>
     <fieldset>
