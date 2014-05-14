@@ -183,7 +183,7 @@ $checkList = array(
     'pedagogicalHelp' => array(
         'category' => 99,
         'profile' => 3,
-        'description' => 'Je sollicite un accompagnement pédagogique',
+        'description' => 'Je sollicite un accompagnement pour la mise en place de mon dispositif pédagogique',
         'mailTpl' => null ),
     
     'other' => array(
