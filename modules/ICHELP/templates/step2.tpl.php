@@ -116,7 +116,7 @@
             <?php endif; ?>
         <?php endforeach; ?>
         </fieldset>
-        <fieldset class="hiddenUntilClick">
+        <fieldset <?php if( is_null( $this->userData[ 'issueType' ] ) ) : ?>class="hiddenUntilClick"<?php endif; ?>>
         <legend><?php echo get_lang( 'Additionnal informations' ); ?></legend>
         <span style="font-weight: bold; color: #336699;"><?php echo get_lang( 'Enter the course code' ); ?></span>
         <span id="required0" class="required" style="font-weight: bold;">*</span><br />
