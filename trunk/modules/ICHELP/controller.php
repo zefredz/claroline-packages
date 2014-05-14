@@ -173,7 +173,6 @@ try
                   && empty( $userData[ $addedFields[ $addedField[ $checkList[ $userData[ 'issueType' ] ][ 'category' ] ] ][ 'name' ] ] ) ) )
             {
                 $error = get_lang( 'Required information missing' );
-                $userData[ 'issueType' ] = null;
                 $step = 2;
             }
             elseif( ! is_mail( $userData[ 'mail' ] ) )
