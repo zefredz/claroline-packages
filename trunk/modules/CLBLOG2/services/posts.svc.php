@@ -55,9 +55,11 @@
     $err                    = '';    // error string
     
     // script initalisation
-    uses ( 'html/template.class','html/datagrid/template.class'
+    From::Module('CLBLOG')->uses( 'html/template.class','html/datagrid/template.class'
         , 'blog/post.class', 'blog/comment.class', 'blog/utils.class'
-        , 'user.lib.php', 'utils/htmlsanitizer.lib' );
+        , 'user.lib.php' );
+    
+    FromKernel::uses( 'utils/htmlsanitizer.lib' );
 }
 // }}}
 // {{{ MODEL

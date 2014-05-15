@@ -20,7 +20,7 @@
     require_once dirname(__FILE__) . '/../../claroline/inc/claro_init_global.inc.php'; 
     
     // load service architecture
-    uses ( 'utils/controller.lib', 'display/dialogBox.lib' );
+    FromKernel::uses ( 'utils/controller.lib', 'display/dialogBox.lib' );
 
     // display mode
     claro_set_display_mode_available(true);
