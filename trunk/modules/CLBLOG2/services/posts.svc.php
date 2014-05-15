@@ -620,7 +620,7 @@
     {        
         if ( $dispPostForm )
         {
-            $form = '<div class="formContainer"><form method="post" action="'.$_SERVER['PHP_SELF']
+            $form = '<div class="formContainer"><form class="claroForm" method="post" action="'.$_SERVER['PHP_SELF']
                 . '?page=blog&amp;action='
                 . $nextAction.'" name="editPostForm" id="editPostForm">' . "\n"
                 . '<fieldset id="editPost">' . "\n"
@@ -749,7 +749,7 @@
         if ( $dispCommentForm )
         {
             $commentForm = '<div class="formContainer">' . "\n"
-                . '<form method="post" action="'.$_SERVER['PHP_SELF']
+                . '<form class="claroForm" method="post" action="'.$_SERVER['PHP_SELF']
                 . '?page=blog&amp;action=' . $nextAction
                 . '" name="editPostForm" id="editPostForm">' . "\n"
                 . '<fieldset id="editPost">' . "\n"

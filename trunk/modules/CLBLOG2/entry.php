@@ -36,7 +36,6 @@
     
     $cssLoader = CssLoader::getInstance();
     $cssLoader->load('blog','all');
-    $cssLoader->load('form','all');
 }
 // }}}
 // {{{ CONTROLLER    
