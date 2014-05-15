@@ -373,23 +373,23 @@
                 
                 $confirmDelPost = '<p>'
                     . get_lang( 'You are going to delete the following post : %title%'
-                        , array( '%title%' => htmlspecialchars($postTitle) ) )
+                        , array( '%title%' => claro_htmlspecialchars($postTitle) ) )
                     . '<br /><br />'
                     . "\n"
                     ;
                     
                 $confirmDelPost .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
                     . '<a href="'
-                    . $_SERVER['PHP_SELF']
+                    . Url::Contextualize($_SERVER['PHP_SELF']
                     . '?page=blog&amp;action=exDelPost&amp;postId='
-                    . (int) $postId
+                    . (int) $postId )
                     . '">'
                     . '[' 
                     . get_lang( 'Yes' ) 
                     . ']</a>&nbsp;' 
                     . '<a href="'
-                    . $_SERVER['PHP_SELF']
-                    . '?page=blog">[' 
+                    . Url::Contextualize($_SERVER['PHP_SELF']
+                    . '?page=blog').'">[' 
                     . get_lang( 'No' ) 
                     . ']</a>' . '</p>'
                     . "\n"
@@ -421,16 +421,16 @@
                     
                 $confirmDelComment .= get_lang( 'Continue ?' ) . '<br /><br />' . "\n"
                     . '<a href="'
-                    . $_SERVER['PHP_SELF']
+                    . Url::Contextualize($_SERVER['PHP_SELF']
                     . '?page=blog&amp;action=exDelComment&amp;postId='
                     . (int) $postId
-                    . '&amp;commentId='.(int)$commentId.'">'
+                    . '&amp;commentId='.(int)$commentId).'">'
                     . '[' 
                     . get_lang( 'Yes' ) 
                     . ']</a>&nbsp;' 
                     . '<a href="'
-                    . $_SERVER['PHP_SELF']
-                    . '?page=blog">[' 
+                    . Url::Contextualize($_SERVER['PHP_SELF']
+                    . '?page=blog').'">[' 
                     . get_lang( 'No' ) 
                     . ']</a>' . '</p>'
                     . "\n"
@@ -596,8 +596,8 @@
         if ( true === $dispErrorBoxBackButton )
         {
             $errorMessage .= '<p><a href="'
-                . $_SERVER['PHP_SELF']
-                . '?page=list">['.get_lang('Back').']</a></p>'
+                . claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF']
+                . '?page=list')).'">['.get_lang('Back').']</a></p>'
                 . "\n"
                 ;
         }
@@ -609,9 +609,21 @@
 // }}}
 // {{{ VIEW
 {
+    $commandList = array();
+    
+    if ( claro_is_allowed_to_edit() )
+    {
+        $commandList[] = array(
+            'img' => 'new',
+            'name' => get_lang('New post'),
+            'url' => Url::Contextualize ( $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqAddPost' ),
+            'params' => array( 'title' => get_lang('Click here to add a new post') )
+        );
+    }
+     
     $output = '';
     
-    $output .= claro_html_tool_title( get_lang('Blog') );
+    $output .= claro_html_tool_title( get_lang('Blog'), null, $commandList );
     
     $output .= $dialogBox->render();
     
@@ -629,16 +641,14 @@
                 . '</legend>' . "\n"
                 . '<dl><dt class="row">' . "\n"
                 . '<label for="postTitle">'.get_lang( 'Title' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
-                . '<dd><input name="postTitle" value="'.htmlspecialchars( $postTitle ).'" type="text" size="80" />' . "\n"
+                . '<dd><input name="postTitle" value="'.claro_htmlspecialchars( $postTitle ).'" type="text" size="80" />' . "\n"
                 . '</dd>' . "\n"
                 . '<dt class="row">' . "\n"
                 . '<label for="postChapo">'.get_lang( 'Header' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
-                // . '<dd><textarea name="postChapo" cols="60" rows="3">'.$san->sanitize( $postChapo ).'</textarea>' . "\n"
                 . '<dd>'.claro_html_simple_textarea('postChapo', $san->sanitize( $postChapo ))."\n"
                 . '</dd>' . "\n"
                 . '<dt class="row">' . "\n"
                 . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
-                // . '<dd><textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
                 . '<dd>'.claro_html_advanced_textarea( 'postContents', $san->sanitize( $postContents ) ). "\n"
                 . '</dd>' . "\n"
                 . '<dt>&nbsp;</dt><dd class="btnrow">' . "\n"
@@ -646,10 +656,11 @@
                 . ( $postId ? '<input type="hidden" value="'.$postId.'" name="postId" />' : '' )
                 . '<input name="submit" value="'.get_lang('Ok').'" type="submit" />&nbsp;'
                 . '<input name="cancel" value="'.get_lang('Cancel').'" type="button" '
-                . 'onclick="window.location=\''.$_SERVER['PHP_SELF'].'?page=blog'
+                . 'onclick="window.location=\''.Url::Contextualize($_SERVER['PHP_SELF'].'?page=blog')
                 . '\'" />' . "\n"
                 . '</dd>' . "\n"
                 . '</dl></fieldset>' . "\n"
+                . claro_form_relay_context ()
                 . '</form></div>' . "\n"
                 ;
             $output .= $form;
@@ -658,7 +669,7 @@
         if ( $dispPost )
         {
             $output .= '<p>' . claro_html_icon_button(
-                $_SERVER['PHP_SELF'] . '?page=blog'
+                Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog')
                 , 'parent'
                 , get_lang('Back') ) . '</p>' . "\n";
 
@@ -666,15 +677,15 @@
             {
                 $output .= '<p>'
                     . claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
-                            . '&amp;postId=' . (int) $postId
+                        Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
+                            . '&amp;postId=' . (int) $postId)
                         , 'edit'
                         , get_lang('Edit')
                         , get_lang('Click to edit this post') )
                     . '&nbsp;|&nbsp;'
                     . claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
-                            . '&amp;postId=' . (int) $postId
+                         Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
+                            . '&amp;postId=' . (int) $postId)
                         , 'delete'
                         , get_lang('Delete')
                         , get_lang('Click to delete this post') )
@@ -716,15 +727,15 @@
             if ( $isAllowedToEdit )
             {
                 $tpl .= claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
-                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
+                         Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId)
                         , 'edit'
                         , get_lang('Edit')
                         , get_lang('Click to edit this comment') )
                     . '&nbsp;|&nbsp;'
                     . claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
-                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
+                         Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId)
                         , 'delete'
                         , get_lang('Delete')
                         , get_lang('Click to delete this comment') )
@@ -766,14 +777,15 @@
                 . ( $action === 'rqEditComment' 
                     ? '<input type="button" value="'
                         . get_lang('Cancel')
-                        . '" onclick="window.location=\''.$_SERVER['PHP_SELF']
+                        . '" onclick="window.location=\''.Url::Contextualize($_SERVER['PHP_SELF']
                         .'?page=blog'
-                        . ( $postId ? '&amp;action=showPost&amp;postId='.(int)$postId : '')
+                        . ( $postId ? '&amp;action=showPost&amp;postId='.(int)$postId : '') )
                         . '\'" />'
                         . "\n" 
                     : '' )
                 . '</dd>' . "\n"
                 . '</dl></fieldset>' . "\n"
+                . claro_form_relay_context ()
                 . '</form></div>' . "\n"
                 ;
             
@@ -798,14 +810,14 @@
             if ( $isAllowedToEdit )
             {
                 $tpl .= claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditPost'
+                        claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=rqEditPost' ))
                             . '&amp;postId=%int(id)%'
                         , 'edit'
                         , get_lang('Edit')
                         , get_lang('Click to edit this post') )
                     . '&nbsp;|&nbsp;'
                     . claro_html_icon_button(
-                        $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelPost'
+                        claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=rqDelPost' ))
                             . '&amp;postId=%int(id)%'
                         , 'delete'
                         , get_lang('Delete')
@@ -816,13 +828,13 @@
             }
             
             $tpl .= claro_html_icon_button(
-                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=showPost'
+                    claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=showPost' ))
                         . '&amp;postId=%int(id)%'
                     , ''
                     , get_lang('Read more...') )
                 . '&nbsp;|&nbsp;'
                 . claro_html_icon_button(
-                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=showPost'
+                    claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=showPost'))
                         . '&amp;postId=%int(id)%#comments'
                     , ''
                     , get_lang('Comments (%comments%)') )
@@ -839,16 +851,19 @@
             $datagrid->setData( $postList );
             $addLink = '<p>'
                 . claro_html_icon_button(
-                    $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqAddPost'
+                    claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=rqAddPost'))
                     , 'new'
                     , get_lang('Add a post')
                     , get_lang('Click here to add a new post') )
                 . '</p>'
                 . "\n"
                 ;
-                    
-            $datagrid->setHeader( $addLink );
-            $datagrid->setFooter( $addLink );
+            
+            if ( count( $postList ) > 2 )
+            {
+                $datagrid->setFooter( $addLink );
+            }
+            
             $output .= $datagrid->render();
         }
     }
@@ -856,10 +871,6 @@
     {
         // ????
     }
-    
-    /*$claroline->display->banner->breadcrumbs->append(
-        get_lang("Blog"), 
-        $_SERVER['PHP_SELF']);*/
         
     if ( 'rqAddPost' === $action || 'rqEditPost' === $action )
     {
