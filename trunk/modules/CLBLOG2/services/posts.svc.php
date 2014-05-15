@@ -632,27 +632,27 @@
                 . '<legend>'
                 . ( $nextAction === 'exAddPost' ? get_lang('New post') : get_lang('Edit post') )
                 . '</legend>' . "\n"
-                . '<div class="row">' . "\n"
-                . '<label for="postTitle">'.get_lang( 'Title' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<input name="postTitle" value="'.htmlspecialchars( $postTitle ).'" type="text" size="80" />' . "\n"
-                . '</div>' . "\n"
-                . '<div class="row">' . "\n"
-                . '<label for="postChapo">'.get_lang( 'Header' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="postChapo" cols="60" rows="3">'.$san->sanitize( $postChapo ).'</textarea>' . "\n"
-                . '</div>' . "\n"
-                . '<div class="row">' . "\n"
-                . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
-                . '</div>' . "\n"
-                . '<div class="btnrow">' . "\n"
+                . '<dl><dt class="row">' . "\n"
+                . '<label for="postTitle">'.get_lang( 'Title' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
+                . '<dd><input name="postTitle" value="'.htmlspecialchars( $postTitle ).'" type="text" size="80" />' . "\n"
+                . '</dd>' . "\n"
+                . '<dt class="row">' . "\n"
+                . '<label for="postChapo">'.get_lang( 'Header' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
+                . '<dd><textarea name="postChapo" cols="60" rows="3">'.$san->sanitize( $postChapo ).'</textarea>' . "\n"
+                . '</dd>' . "\n"
+                . '<dt class="row">' . "\n"
+                . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
+                . '<dd><textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
+                . '</dd>' . "\n"
+                . '<dt>&nbsp;</dt><dd class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
                 . ( $postId ? '<input type="hidden" value="'.$postId.'" name="postId" />' : '' )
                 . '<input name="submit" value="'.get_lang('Ok').'" type="submit" />&nbsp;'
                 . '<input name="cancel" value="'.get_lang('Cancel').'" type="button" '
                 . 'onclick="window.location=\''.$_SERVER['PHP_SELF'].'?page=blog'
                 . '\'" />' . "\n"
-                . '</div>' . "\n"
-                . '</fieldset>' . "\n"
+                . '</dd>' . "\n"
+                . '</dl></fieldset>' . "\n"
                 . '</form></div>' . "\n"
                 ;
             $output .= $form;
@@ -756,12 +756,12 @@
                 . '?page=blog&amp;action=' . $nextAction
                 . '" name="editPostForm" id="editPostForm">' . "\n"
                 . '<fieldset id="editPost">' . "\n"
-                . '<div class="row">' . "\n"
+                . '<dl><dt class="row">' . "\n"
                 . '<label for="commentContents">'.get_lang( 'Comment' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '<textarea id="commentContents" name="commentContents" cols="60" rows="10">'.$san->sanitize( $commentContents ).'</textarea>' . "\n"
-                . '</div>' . "\n"
-                . '<div class="btnrow">' . "\n"
-                . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
+                . '</dt><dd><textarea id="commentContents" name="commentContents" cols="60" rows="10">'.$san->sanitize( $commentContents ).'</textarea>' . "\n"
+                . '</dd>' . "\n"
+                . '<dt class="btnrow">&nbsp;</dt>' . "\n"
+                . '<dd><input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
                 . ( $postId ? '<input type="hidden" value="'.$postId.'" name="postId" />' : '' )
                 . ( $action === 'rqEditComment' && $commentId ? '<input type="hidden" value="'.$commentId.'" name="commentId" />' : '' )
                 . '<input name="submit" value="'.get_lang('Ok').'" type="submit" />' . "\n"
@@ -774,8 +774,8 @@
                         . '\'" />'
                         . "\n" 
                     : '' )
-                . '</div>' . "\n"
-                . '</fieldset>' . "\n"
+                . '</dd>' . "\n"
+                . '</dl></fieldset>' . "\n"
                 . '</form></div>' . "\n"
                 ;
             
@@ -884,4 +884,3 @@
     return $output;
 }
 // }}}
-?>
