@@ -611,7 +611,7 @@
 {
     $commandList = array();
     
-    if ( claro_is_allowed_to_edit() )
+    if ( claro_is_allowed_to_edit() || claro_is_group_member() )
     {
         $commandList[] = array(
             'img' => 'new',
