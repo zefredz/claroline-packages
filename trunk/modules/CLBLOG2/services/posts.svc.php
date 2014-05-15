@@ -2,16 +2,11 @@
     
     // vim: expandtab sw=4 ts=4 sts=4:
     
-    if ( count( get_included_files() ) == 1 )
-    {
-        die( 'The file ' . basename(__FILE__) . ' cannot be accessed directly, use include instead' );
-    }
-    
     /**
      * Main Controller for Blog Application
      *
-     * @version     1.9 $Revision$
-     * @copyright   2001-2007 Universite catholique de Louvain (UCL)
+     * @version     2.0 $Revision$
+     * @copyright   2001-2014 Universite catholique de Louvain (UCL)
      * @author      Frederic Minne <zefredz@claroline.net>
      * @license     http://www.gnu.org/copyleft/gpl.html 
      *              GNU GENERAL PUBLIC LICENSE
@@ -68,8 +63,8 @@
     $blogTables = get_module_course_tbl( array( 'blog_posts', 'blog_comments' )
         , claro_get_current_course_id() );
         
-    $bp = new Blog_Post( $claroline->database, $blogTables );
-    $bc = new Blog_Comment( $claroline->database, $blogTables );
+    $bp = new Blog_Post( Claroline::getDatabase(), $blogTables );
+    $bc = new Blog_Comment( Claroline::getDatabase(), $blogTables );
     $san = new Claro_Html_Sanitizer;
     $dialogBox = new DialogBox;
 }
