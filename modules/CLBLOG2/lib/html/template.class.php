@@ -4,7 +4,7 @@
     
     /**
      * @author  Frederic Minne <zefredz@claroline.net>
-     * @copyright Copyright &copy; 2006-2007, Frederic Minne
+     * @copyright Copyright &copy; 2006-2014 Université catholique de Louvain
      * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
      * @version 1.0
      * @package HTML
