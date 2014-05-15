@@ -2,7 +2,7 @@
 
 // vim: expandtab sw=4 ts=4 sts=4:
 
-uses('utils/htmlsanitizer.lib');
+FromKernel::uses('utils/htmlsanitizer.lib');
 
 function blog_sanitize_html( $str, $key = null )
 {
