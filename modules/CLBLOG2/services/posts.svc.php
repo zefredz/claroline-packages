@@ -642,7 +642,8 @@
                 . '</dd>' . "\n"
                 . '<dt class="row">' . "\n"
                 . '<label for="postContents">'.get_lang( 'Contents' ).'&nbsp;:&nbsp;</label></dt>' . "\n"
-                . '<dd><textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
+                // . '<dd><textarea name="postContents" cols="60" rows="10">'.htmlspecialchars($san->sanitize( $postContents )).'</textarea>' . "\n"
+                . '<dd>'.claro_html_advanced_textarea( 'postContents', $san->sanitize( $postContents ) ). "\n"
                 . '</dd>' . "\n"
                 . '<dt>&nbsp;</dt><dd class="btnrow">' . "\n"
                 . '<input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
@@ -758,7 +759,8 @@
                 . '<fieldset id="editPost">' . "\n"
                 . '<dl><dt class="row">' . "\n"
                 . '<label for="commentContents">'.get_lang( 'Comment' ).'&nbsp;:&nbsp;</label>' . "\n"
-                . '</dt><dd><textarea id="commentContents" name="commentContents" cols="60" rows="10">'.$san->sanitize( $commentContents ).'</textarea>' . "\n"
+                // . '</dt><dd><textarea id="commentContents" name="commentContents" cols="60" rows="10">'.$san->sanitize( $commentContents ).'</textarea>' . "\n"
+                . '</dt><dd>'.claro_html_simple_textarea('commentContents', $san->sanitize( $commentContents ) )."\n"
                 . '</dd>' . "\n"
                 . '<dt class="btnrow">&nbsp;</dt>' . "\n"
                 . '<dd><input type="hidden" name="claroFormId" value="' . uniqid('') . '" />'
