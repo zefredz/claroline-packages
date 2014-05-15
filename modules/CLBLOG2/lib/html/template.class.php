@@ -10,15 +10,14 @@
      * @package HTML
      */
     
-    if ( count( get_included_files() ) == 1 ) die( '---' );
     
     class HTML_Template
     {
-        var $_tpl = '';
-        var $_allowCallback = false;
-        var $_callBack = array();
+        protected $_tpl = '';
+        protected $_allowCallback = false;
+        protected $_callBack = array();
         
-        function HTML_Template( $tpl )
+        function __construct( $tpl )
         {
             $this->_tpl = $tpl;
         }
@@ -63,4 +62,4 @@
             return $output;
         }
     }
-?>
+

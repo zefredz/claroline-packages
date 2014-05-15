@@ -15,11 +15,11 @@
     
     class HTML_Datagrid_Template
     {
-        var $template;
-        var $data;
-        var $footer = '';
-        var $header = '';
-        var $emptyMessage = null;
+        protected $template;
+        protected $data;
+        protected $footer = '';
+        protected $header = '';
+        protected $emptyMessage = null;
         
         function setEmptyMessage( $str )
         {
@@ -80,4 +80,3 @@
             return $output;
         }
     }
-?>
