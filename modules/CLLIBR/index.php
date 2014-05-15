@@ -40,7 +40,7 @@ From::Module( 'CLLIBR' )->uses(
     'tools.lib',
     'usernote.lib' );
 
-$claroline->currentModuleLabel( 'CLLIBR' );
+set_current_module_label( 'CLLIBR' );
 load_module_config( 'CLLIBR' );
 load_module_language( 'CLLIBR' );
 $dialogBox = new DialogBox();
