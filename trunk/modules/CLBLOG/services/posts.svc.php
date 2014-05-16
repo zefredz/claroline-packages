@@ -890,20 +890,10 @@
         
         if ( $dispPostList )
         {
-            $hotItem = Claroline::getInstance()->notification->isANotifiedRessource(
-                    claro_get_current_course_id(), 
-                    Claroline::getInstance()->notification->getNotificationDate( claro_get_current_user_id() ),
-                    claro_get_current_user_id(), 
-                    claro_get_current_group_id(), 
-                    claro_get_current_tool_id(),
-                    $postId
-                ) 
-                ? " item hot" 
-                : " item"
-                ;
+            
             
             $tpl = '<div class="post">'
-                . '<h2 class="postTitle'.$hotItem.'">%title%</h2>'."\n"
+                . '<h2 class="postTitle%apply(blog_hot_item,id)%">%title%</h2>'."\n"
                 . '<p class="postInfo">'
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>'."\n"
@@ -949,6 +939,7 @@
             $template = new HTML_Template( $tpl );
             $template->allowCallback();
             $template->registerCallback( 'chapo', 'blog_sanitize_html' );
+            $template->registerCallback( 'id', 'blog_hot_item' );
             
             $datagrid = new HTML_Datagrid_Template;
             $datagrid->setTemplate( $template );

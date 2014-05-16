@@ -25,3 +25,19 @@ function blog_sanitize_html( $str, $key = null )
     
     return $san->sanitize( $str );
 }
+
+
+function blog_hot_item( $postId )
+{
+    return $hotItem = Claroline::getInstance()->notification->isANotifiedRessource(
+                    claro_get_current_course_id(), 
+                    Claroline::getInstance()->notification->getNotificationDate( claro_get_current_user_id() ),
+                    claro_get_current_user_id(), 
+                    claro_get_current_group_id(), 
+                    claro_get_current_tool_id(),
+                    $postId
+                ) 
+                ? " item hot" 
+                : " item"
+                ;
+}
