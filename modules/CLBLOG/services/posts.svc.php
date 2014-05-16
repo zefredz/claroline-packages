@@ -691,7 +691,7 @@
         );
     }
      
-    $output = '';
+    $output = '<a name="blogTop"></a>';
     
     $output .= claro_html_tool_title( get_lang('Blog'), null, $commandList );
     
@@ -843,7 +843,7 @@
             
             if ( count( $commentList ) > 3 )
             {
-                $output .= '<p><a href="#first_comment">'.get_lang('First comment').'</a></p>';
+                $output .= '<p><a href="#first_comment">'.get_lang('First comment').'</a> | <a href="#blogTop">'.get_lang('Top').'</a></p>';
             }
             
             $output .= '</div>' . "\n";
