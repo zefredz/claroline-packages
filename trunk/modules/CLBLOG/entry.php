@@ -54,7 +54,15 @@
     catch ( Exception $e )
     {
         $dialogBox = new DialogBox;
-        $dialogBox->error( $e->getMessage() );
+        
+        if ( claro_debug_mode () )
+        {
+            $dialogBox->error( $e->__toString() );
+        }
+        else
+        {
+            $dialogBox->error( $e->getMessage() );
+        }
         
         $claroline->display->setContent( $dialogBox->render() );
     }
