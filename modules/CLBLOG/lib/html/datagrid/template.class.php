@@ -57,9 +57,35 @@
             
             if ( count( $this->data ) > 0 )
             {
+                $first = 0;
+                $last = count($this->data)-1;
+                $current = 0;
+                
                 foreach ( $this->data as $row )
                 {
-                    $output .= $this->template->render( $row );
+                    $rowOutput = $this->template->render( $row );
+                    
+                    if ( $current !== $first )
+                    {
+                        $rowOutput = preg_replace('/%ifisfirst\([^\)]*\)%/','', $rowOutput);
+                    }
+                    else
+                    {
+                        $rowOutput = preg_replace('/%ifisfirst\(([^\)]*)\)%/',"$1", $rowOutput);
+                    }
+
+                    if ( $current !== $last )
+                    {
+                        $rowOutput = preg_replace('/%ifislast\([^\)]*\)%/','', $rowOutput);
+                    }
+                    else
+                    {
+                        $rowOutput = preg_replace('/%ifislast\(([^\)]*)\)%/',"$1", $rowOutput);
+                    }
+                    
+                    $current++;
+                    
+                    $output .= $rowOutput;
                 }
             }
             else
