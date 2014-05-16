@@ -1,19 +1,24 @@
-.post{
+.post {
     border: 1px silver solid;
     margin-top: 1em;
     padding: 5px;
 }
-.postTitle{
+
+.postTitle {
 }
-.postInfo{
-    font-size: 50%;
+
+.postInfo {
+    font-size: .7em;
+    color: silver;
 }
-.postChapo{
+
+.postChapo {
     font-style: italic;
 }
-.postContents{
+.postContents {
 }
-.postComment{
+
+.postComment {
     border: 1px silver solid;
     margin-top: 1em;
     padding: 5px;

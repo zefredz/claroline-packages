@@ -4,21 +4,20 @@
     
     /**
      * @author  Frederic Minne <zefredz@claroline.net>
-     * @copyright Copyright &copy; 2006-2007, Frederic Minne
+     * @copyright Copyright &copy; 2006-2014 Université catholique de Louvain
      * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
      * @version 1.0
      * @package HTML
      */
     
-    if ( count( get_included_files() ) == 1 ) die( '---' );
     
     class HTML_Template
     {
-        var $_tpl = '';
-        var $_allowCallback = false;
-        var $_callBack = array();
+        protected $_tpl = '';
+        protected $_allowCallback = false;
+        protected $_callBack = array();
         
-        function HTML_Template( $tpl )
+        function __construct( $tpl )
         {
             $this->_tpl = $tpl;
         }
@@ -40,7 +39,7 @@
             foreach ( $data as $key => $value )
             {
                 $output = str_replace( "%$key%", $value, $output );
-                $output = str_replace( "%html($key)%", htmlspecialchars( $value ), $output );
+                $output = str_replace( "%html($key)%", claro_htmlspecialchars( $value ), $output );
                 $output = str_replace( "%uu($key)%", rawurlencode( $value ), $output );
                 $output = str_replace( "%int($key)%", (int) $value, $output );
                 
@@ -63,4 +62,4 @@
             return $output;
         }
     }
-?>
+

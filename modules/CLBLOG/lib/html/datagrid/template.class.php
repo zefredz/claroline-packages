@@ -4,9 +4,9 @@
 
     /**
      * @author  Frederic Minne <zefredz@claroline.net>
-     * @copyright Copyright &copy; 2006-2007, Frederic Minne
+     * @copyright Copyright &copy; 2006-2014, Université catholique de Louvain
      * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License
-     * @version 1.0
+     * @version 2.0
      * @package HTML.Datagrid
      */
     
@@ -15,11 +15,11 @@
     
     class HTML_Datagrid_Template
     {
-        var $template;
-        var $data;
-        var $footer = '';
-        var $header = '';
-        var $emptyMessage = null;
+        protected $template;
+        protected $data;
+        protected $footer = '';
+        protected $header = '';
+        protected $emptyMessage = null;
         
         function setEmptyMessage( $str )
         {
@@ -80,4 +80,3 @@
             return $output;
         }
     }
-?>
