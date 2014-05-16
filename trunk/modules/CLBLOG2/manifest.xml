@@ -7,7 +7,7 @@ In the future student will also be allowed to post.
 ]]></description>
 <version>2.0.0</version>
 <license>GPL</license>
-<icon>icon.gif</icon>
+<icon>icon.png</icon>
 <type>tool</type>
 <context>course</context>
 <context>group</context>
