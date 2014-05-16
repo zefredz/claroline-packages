@@ -190,10 +190,17 @@
                     $dialogBox->success(get_lang( 'Comment deleted' ));
                     $action = 'showPost';
                     
+                    Claroline::getInstance()->notifier->notifyCourseEvent( 'post_modified'
+                            , claro_get_current_course_id()
+                            , claro_get_current_tool_id()
+                            , $postId
+                            , $groupId
+                            , claro_get_current_course_id () );
+                    
                     Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_deleted'
                         , claro_get_current_course_id()
                         , claro_get_current_tool_id()
-                        , $commentId
+                        , $postId.':'.$commentId
                         , $groupId
                         , claro_get_current_course_id () );
                 }
@@ -286,9 +293,16 @@
                             Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_added'
                                 , claro_get_current_course_id()
                                 , claro_get_current_tool_id()
-                                , $commentId
+                                , $postId.':'.$commentId
                                 , $groupId
                                 , claro_get_current_course_id () );
+                            
+                            Claroline::getInstance()->notifier->notifyCourseEvent( 'post_modified'
+                            , claro_get_current_course_id()
+                            , claro_get_current_tool_id()
+                            , $postId
+                            , $groupId
+                            , claro_get_current_course_id () );
                         }
                         
                         $commentId = null;
@@ -302,10 +316,17 @@
                             , claro_get_current_user_id()
                             , $commentContents );
                         
+                        Claroline::getInstance()->notifier->notifyCourseEvent( 'post_modified'
+                            , claro_get_current_course_id()
+                            , claro_get_current_tool_id()
+                            , $postId
+                            , $groupId
+                            , claro_get_current_course_id () );
+                        
                         Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_modified'
                             , claro_get_current_course_id()
                             , claro_get_current_tool_id()
-                            , $commentId
+                            , $postId.':'.$commentId
                             , $groupId
                             , claro_get_current_course_id () );
                         
@@ -743,8 +764,20 @@
                     ;
             }
             
+            $hotItem = Claroline::getInstance()->notification->isANotifiedRessource(
+                    claro_get_current_course_id(), 
+                    Claroline::getInstance()->notification->getNotificationDate( claro_get_current_user_id() ),
+                    claro_get_current_user_id(), 
+                    claro_get_current_group_id(), 
+                    claro_get_current_tool_id(),
+                    $postId
+                ) 
+                ? " item hot" 
+                : " item"
+                ;
+            
             $tpl = '<div class="post">' 
-                . '<h2 class="postTitle">%title%</h2>'."\n"
+                . '<h2 class="postTitle'.$hotItem.'">%title%</h2>'."\n"
                 .'<p class="postInfo">'
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>'."\n"
@@ -847,8 +880,20 @@
         
         if ( $dispPostList )
         {
+            $hotItem = Claroline::getInstance()->notification->isANotifiedRessource(
+                    claro_get_current_course_id(), 
+                    Claroline::getInstance()->notification->getNotificationDate( claro_get_current_user_id() ),
+                    claro_get_current_user_id(), 
+                    claro_get_current_group_id(), 
+                    claro_get_current_tool_id(),
+                    $postId
+                ) 
+                ? " item hot" 
+                : " item"
+                ;
+            
             $tpl = '<div class="post">'
-                . '<h2 class="postTitle">%title%</h2>'."\n"
+                . '<h2 class="postTitle'.$hotItem.'">%title%</h2>'."\n"
                 . '<p class="postInfo">'
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>'."\n"
