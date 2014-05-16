@@ -614,7 +614,7 @@
     if ( claro_is_allowed_to_edit() || claro_is_group_member() )
     {
         $commandList[] = array(
-            'img' => 'new',
+            'img' => 'blognew',
             'name' => get_lang('New post'),
             'url' => Url::Contextualize ( $_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqAddPost' ),
             'params' => array( 'title' => get_lang('Click here to add a new post') )
