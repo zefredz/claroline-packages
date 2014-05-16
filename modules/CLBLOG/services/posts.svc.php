@@ -767,7 +767,7 @@
                 . "\n"
                 ;
                 
-            $tpl = '<div class="postComment"><p class="postInfo">'
+            $tpl = '<div class="postComment"><a name="comment_%int(id)%"></a><p class="postInfo">'
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>' . "\n"
                 . '<p>%apply(blog_sanitize_html,contents)%</p>'
