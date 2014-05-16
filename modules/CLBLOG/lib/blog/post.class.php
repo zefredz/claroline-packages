@@ -40,7 +40,7 @@ class Blog_Post
         return $this->connection->insertId();
     }
     
-    public function updatePost( $postId, $userId, $title, $contents, $chapo = '', $groupId )
+    public function updatePost( $postId, $userId, $title, $contents, $chapo = '', $groupId = 0 )
     {
         $sql = "UPDATE `" . $this->config['blog_posts'] . "` "
             . "SET userId = ".(int) $userId.", "

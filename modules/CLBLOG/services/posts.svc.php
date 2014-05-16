@@ -189,6 +189,13 @@
                 {
                     $dialogBox->success(get_lang( 'Comment deleted' ));
                     $action = 'showPost';
+                    
+                    Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_deleted'
+                        , claro_get_current_course_id()
+                        , claro_get_current_tool_id()
+                        , $commentId
+                        , $groupId
+                        , claro_get_current_course_id () );
                 }
                 else
                 {
@@ -201,7 +208,10 @@
                     $action = 'showPost';
                 }
                 
+                
+                
                 $commentId = null;
+                
             }
             else
             {
@@ -223,6 +233,13 @@
                     $bc->deletePostComment( $postId );
                     $dialogBox->success(get_lang( 'Post deleted' ));
                     $action = 'showList';
+                    
+                    Claroline::getInstance()->notifier->notifyCourseEvent( 'post_deleted'
+                        , claro_get_current_course_id()
+                        , claro_get_current_tool_id()
+                        , $postId
+                        , $groupId
+                        , claro_get_current_course_id () );
                 }
                 else
                 {
@@ -264,6 +281,15 @@
                         {
                             $dialogBox->error(get_lang('Cannot save comment')); 
                         }
+                        else
+                        {
+                            Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_added'
+                                , claro_get_current_course_id()
+                                , claro_get_current_tool_id()
+                                , $commentId
+                                , $groupId
+                                , claro_get_current_course_id () );
+                        }
                         
                         $commentId = null;
                     }
@@ -275,6 +301,14 @@
                             , $postId
                             , claro_get_current_user_id()
                             , $commentContents );
+                        
+                        Claroline::getInstance()->notifier->notifyCourseEvent( 'comment_modified'
+                            , claro_get_current_course_id()
+                            , claro_get_current_tool_id()
+                            , $commentId
+                            , $groupId
+                            , claro_get_current_course_id () );
+                        
                     }
                         
                     $commentContents = '';
@@ -315,6 +349,13 @@
                     if ( $postId )
                     {
                         $action = 'showPost';
+                        
+                        Claroline::getInstance()->notifier->notifyCourseEvent( 'post_added'
+                            , claro_get_current_course_id()
+                            , claro_get_current_tool_id()
+                            , $postId
+                            , $groupId
+                            , claro_get_current_course_id () );
                     }
                     else
                     {
@@ -331,6 +372,14 @@
                         , $postContents
                         , $postChapo
                         , $groupId );
+                    
+                    Claroline::getInstance()->notifier->notifyCourseEvent( 'post_modified'
+                        , claro_get_current_course_id()
+                        , claro_get_current_tool_id()
+                        , $postId
+                        , $groupId
+                        , claro_get_current_course_id () );
+                    
                         
                     $action = 'showPost';
                 }
@@ -727,15 +776,15 @@
             if ( $isAllowedToEdit )
             {
                 $tpl .= claro_html_icon_button(
-                         Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqEditComment'
-                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId)
+                         claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&action=rqEditComment'))
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
                         , 'edit'
                         , get_lang('Edit')
                         , get_lang('Click to edit this comment') )
                     . '&nbsp;|&nbsp;'
                     . claro_html_icon_button(
-                         Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'
-                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId)
+                         claro_htmlspecialchars(Url::Contextualize($_SERVER['PHP_SELF'] . '?page=blog&amp;action=rqDelComment'))
+                            . '&amp;commentId=%int(id)%&amp;postId='.(int) $postId
                         , 'delete'
                         , get_lang('Delete')
                         , get_lang('Click to delete this comment') )
