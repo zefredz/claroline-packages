@@ -799,8 +799,13 @@
                 . get_lang('Comments').'</h3>' 
                 . "\n"
                 ;
+            
+            if ( count( $commentList ) > 3 )
+            {
+                $output .= '<p><a href="#last_comment">'.get_lang('Last comment').'</a></p>';
+            }
                 
-            $tpl = '<div class="postComment"><a name="comment_%int(id)%"></a><p class="postInfo">'
+            $tpl = '<div class="postComment">%ifisfirst(<a name="first_comment"></a>)%%ifislast(<a name="last_comment"></a>)%<a name="comment_%int(id)%"></a><p class="postInfo">'
                 . get_lang('Posted on %ctime% by user %user%')
                 . '</p>' . "\n"
                 . '<p>%apply(blog_sanitize_html,contents)%</p>'
@@ -835,6 +840,11 @@
             $datagrid->setTemplate( $template );
             $datagrid->setData( $commentList );
             $output .= $datagrid->render();
+            
+            if ( count( $commentList ) > 3 )
+            {
+                $output .= '<p><a href="#first_comment">'.get_lang('First comment').'</a></p>';
+            }
             
             $output .= '</div>' . "\n";
         }
