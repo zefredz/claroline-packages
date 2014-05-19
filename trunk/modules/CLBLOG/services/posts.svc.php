@@ -239,7 +239,9 @@
                 {
                     $bc->deletePostComment( $postId );
                     $dialogBox->success(get_lang( 'Post deleted' ));
-                    $action = 'showList';
+                    // $action = 'showList';
+                    $action = 'continueLink';
+                    $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showList');
                     
                     Claroline::getInstance()->notifier->notifyCourseEvent( 'post_deleted'
                         , claro_get_current_course_id()
@@ -261,7 +263,7 @@
             }
             else
             {
-                $err = get_lang('Cannot delete comment : %s'); 
+                $err = get_lang('Cannot delete post : %s'); 
                 $reason = get_lang('missing id');
     
                 $dialogBox->error(sprintf( $err, $reason ));
@@ -305,12 +307,10 @@
                             , claro_get_current_course_id () );
                         }
                         
-                        $commentId = null;
+                        //$commentId = null;
                     }
                     else
                     {
-                        $err = get_lang('Cannot save comment : %s'); 
-                        
                         $bc->editComment( $commentId
                             , $postId
                             , claro_get_current_user_id()
@@ -341,7 +341,10 @@
                     $err = get_lang('Cannot save comment : %s'); 
                     $reason = get_lang('missing post id');
                     $dialogBox->error(sprintf( $err, $reason ));
-                    $action = 'showList';
+                    //$action = 'showList';
+                    
+                    $action = 'continueLink';
+                    $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showList');
                 }
             }
             else
@@ -351,7 +354,9 @@
     
                 $dialogBox->error(sprintf( $err, $reason ));
                 
-                $action = 'showPost';
+                // $action = 'showPost';
+                $action = 'continueLink';
+                $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showPost&postId='.(int)$postId);
             }
         }
         
@@ -369,7 +374,7 @@
                     
                     if ( $postId )
                     {
-                        $action = 'showPost';
+                        // $action = 'showPost';
                         
                         Claroline::getInstance()->notifier->notifyCourseEvent( 'post_added'
                             , claro_get_current_course_id()
@@ -377,6 +382,10 @@
                             , $postId
                             , $groupId
                             , claro_get_current_course_id () );
+                        
+                        $dialogBox->success(get_lang('Post created'));
+                        $action = 'continueLink';
+                        $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showPost&postId='.(int)$postId);
                     }
                     else
                     {
@@ -402,7 +411,11 @@
                         , claro_get_current_course_id () );
                     
                         
-                    $action = 'showPost';
+                    // $action = 'showPost';
+                    
+                    $dialogBox->success(get_lang('Post updated'));
+                    $action = 'continueLink';
+                    $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showPost&postId='.(int)$postId);
                 }
             }
             else
@@ -475,7 +488,8 @@
                 $dialogBox->error(sprintf( $err, $reason ));
         
                 
-                $action = 'showList';
+                $action = 'continueLink';
+                $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showList');
             }
         }
         
@@ -549,9 +563,7 @@
                 $err = 'Cannot load comment : %s';
                 $reason = 'missing id';
     
-                $dialogBox->error(sprintf( $err, $reason ));
-        
-                
+                $dialogBox->error(sprintf( $err, $reason ));         
                 
                 $action = 'showPost';
             }
@@ -612,9 +624,8 @@
     
                 $dialogBox->error(sprintf( $err, $reason ));
         
-                
-                
-                $action = 'showList';
+                $action = 'continueLink';
+                $continueUrl = Url::Contextualize(get_module_entry_url('CLBLOG').'?action=showList');
             }
         }
             
@@ -659,6 +670,18 @@
             }
             
             $dispPostList = true;
+        }
+        
+        if ( 'continueLink' === $action )
+        {
+            $dialogBox->info(
+                '<a href="'.claro_htmlspecialchars ( $continueUrl ).'" title="click to continue'.get_lang('Click to continue').'">'
+                .get_lang('Click to continue')
+                .'</a>'
+            );
+            
+            $dispPost = false;
+            $dispPostList = false;
         }
     }
     catch ( Exception $e )
