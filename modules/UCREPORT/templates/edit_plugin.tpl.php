@@ -27,13 +27,13 @@
     <?php if( $plugin ) : ?>
             <td align="center">
                 <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exDesactivatePlugin&plugin='. $pluginName ) );?>">
-                    <img src="<?php echo get_icon( 'plugin' ); ?>" alt="<?php echo get_lang( 'Plugin active : click to desactivate' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'plugin' ); ?>" alt="<?php echo get_lang( 'Plugin active : click to desactivate' ); ?>"/>
                 </a>
             </td>
     <?php else : ?>
             <td align="center">
                 <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exActivatePlugin&plugin='. $pluginName ) );?>">
-                    <img src="<?php echo get_icon( 'plugin_disabled' ); ?>" alt="<?php echo get_lang( 'Plugin inactive : click to activate' ); ?>"/>
+                    <img src="<?php echo get_icon_url( 'plugin_disabled' ); ?>" alt="<?php echo get_lang( 'Plugin inactive : click to activate' ); ?>"/>
                 </a>
             </td>
     <?php endif; ?>

@@ -14,7 +14,7 @@ class CLMEETNG_MeetingList
     public $courseId;
     public $groupId;
     
-    public $meetingList = array();
+    protected $meetingList = array();
     
     protected $is_manager;
     
@@ -25,7 +25,6 @@ class CLMEETNG_MeetingList
         $this->is_manager = $is_manager;
         
         $this->tbl = get_module_course_tbl( array( 'CLMEETNG_meeting' ) );
-        $this->load();
     }
     
     public function load()
@@ -57,7 +56,7 @@ class CLMEETNG_MeetingList
         }
         else
         {
-            $sql .= "\nWHERE group_id IS NULL";
+            $sql .= "\nWHERE group_id = 0";
         }
         
         if( ! $this->is_manager )
@@ -71,5 +70,15 @@ class CLMEETNG_MeetingList
         {
             $this->meetingList[ $line['id'] ] = $line;
         }
+    }
+    
+    public function getList( $refresh = false )
+    {
+        if( $refresh || empty( $this->meetingList ) )
+        {
+            $this->load();
+        }
+        
+        return $this->meetingList;
     }
 }
