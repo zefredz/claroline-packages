@@ -52,7 +52,7 @@
                 <a title="<?php echo get_lang( 'Delete' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteMeeting&id=' . $data[ 'id' ] ) );?>">
                     <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete' ); ?>"/>
                 </a>
-                <a title="<?php echo get_lang( 'Edit' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditMeeting&id='. $data[ 'id' ] ) );?>">
+                <a title="<?php echo get_lang( 'Edit' ); ?>" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqEditMeeting&meetingId='. $data[ 'id' ] ) );?>">
                     <img src="<?php echo get_icon_url( 'edit' ); ?>" alt="<?php echo get_lang( 'Edit' ); ?>"/>
                 </a>
             <?php if( $data['is_visible'] ) : ?>

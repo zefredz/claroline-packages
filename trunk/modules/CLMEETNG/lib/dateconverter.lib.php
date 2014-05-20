@@ -99,11 +99,11 @@ class CLMEETNG_DateConverter
                 if( count( $hourParts ) != 2 )
                     return false;
                 
-                foreach( $hourparts as $index => $part )
+                foreach( $hourParts as $index => $part )
                 {
                     $max = $index == 0 ? 24 : 60;
                     
-                    if( ! is_numeric( $parts ) )
+                    if( ! is_numeric( $part ) )
                         return false;
                     
                     if( strlen( $part ) != 2 )

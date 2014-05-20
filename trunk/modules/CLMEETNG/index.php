@@ -70,16 +70,15 @@ try
     
     $cmd = $userInput->get( 'cmd' , 'rqShowMeetingList' );
     $meetingId = $userInput->get( 'meetingId' );
-    $sessionId = $userInput->get( 'session_id' );
     
     // CONTROLLER
     $client = new CLMEETNG_OpenMeetingsClient(
         $openMeetingsServerUrl,
         $openMeetingsServerPort,
         $serviceName,
-        $sessionId );
+        $meetingId );
     
-    if( $sessionId )
+    if( $meetingId )
     {
         $meeting = new CLMEETNG_Meeting(
             $client,
@@ -137,6 +136,8 @@ try
             $dateConverter = new CLMEETNG_DateConverter( get_lang( '_date' ) );
             $data['date_from'] = $dateConverter->in( $data['date'] , $data['hour_from'] );
             $data['date_to'] = $dateConverter->in( $data['date'] , $data['hour_to'] );
+            $data['creation_date'] = date( 'Y-m-d H:M:s' );
+            unset( $data['date'] , $data['hour_from'] , $data['hour_to'] );
             
             $meeting->setData( $data );
             
@@ -179,7 +180,7 @@ try
                         'text' => get_lang( 'Service unavailable' ) );
     }
     
-    if( $sessionId )
+    if( $meetingId )
     {
         $template = 'meeting';
         $pageTitle[ 'subTitle' ] = get_lang( 'Meeting' );
@@ -189,13 +190,16 @@ try
     {
         $template = 'meetinglist';
         $pageTitle[ 'subTitle' ] = get_lang( 'Meetings list' );
-        $assignList[ 'meetingList' ] = $meetingList->meetingList;
+        $assignList[ 'meetingList' ] = $meetingList->getList();
         $assignList[ 'is_manager' ] = $is_allowed_to_edit;
         
-        $cmdList[] = array( 'img'  => 'icon',
-                            'name' => get_lang( 'Schedule a new meeting' ),
-                            'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLMEETNG' )
-                                      .'/index.php?cmd=rqCreateMeeting' ) ) );
+        if( $is_allowed_to_edit)
+        {
+            $cmdList[] = array( 'img'  => 'icon',
+                                'name' => get_lang( 'Schedule a new meeting' ),
+                                'url'  => htmlspecialchars( Url::Contextualize( get_module_url( 'CLMEETNG' )
+                                          .'/index.php?cmd=rqCreateMeeting' ) ) );
+        }
     }
     
     switch( $cmd )

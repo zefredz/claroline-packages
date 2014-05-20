@@ -34,7 +34,6 @@ class CLMEETNG_Meeting extends CLMEETNG_Decorator
         }
         else
         {
-            $this->data[ 'course_id' ] = $courseId;
             $this->data[ 'group_id' ] = $groupId;
             
             if( $this->is_manager )
