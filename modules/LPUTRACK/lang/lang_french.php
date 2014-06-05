@@ -39,5 +39,7 @@
     $_lang['Alternative view'] = 'Vue alternative';
     $_lang['for user'] = 'pour l\'utilisateur';
     $_lang['Display progress'] = 'Afficher la progression';
+    $_lang['Display progress in Widget'] = 'Afficher la progression dans le Widget';
+    $_lang['My learnPath time tracking'] = 'Mon suivi de temps de connexion';
 
 ?>

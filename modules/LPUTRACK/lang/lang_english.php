@@ -33,11 +33,13 @@
     $_lang['xls export'] = 'Exporter en xls';
     $_lang['My learnPath tracking'] = 'My learnPath tracking';
     $_lang['View type'] = 'View type';
-	$_lang['Total'] = 'Total';
-	$_lang['First connection'] = 'First connection';
+    $_lang['Total'] = 'Total';
+    $_lang['First connection'] = 'First connection';
     $_lang['Search an user'] = 'Search an user';
     $_lang['Alternative view'] = 'Alternative view';
     $_lang['for user'] = 'for user';
     $_lang['Display progress'] = 'Display progress';
+    $_lang['Display progress in Widget'] = 'Display progress in Widget';
+    $_lang['My learnPath time tracking'] = 'My learnPath time tracking';
 
 ?>
