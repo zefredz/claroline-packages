@@ -206,7 +206,8 @@ class TrackingUtils
 
         $resultSet = Claroline::getDatabase()->query(
             "SELECT id, name, class_parent_id
-               FROM `{$tblClass['class']}`"
+               FROM `{$tblClass['class']}`
+           ORDER BY name ASC"
         );
 
         return $resultSet;
@@ -850,7 +851,7 @@ class TrackingUtils
               LEFT JOIN `{$tbl['rel_course_user']}` AS course
                      ON user.user_id = course.user_id
                GROUP BY user.user_id
-               ORDER BY user.user_id"
+               ORDER BY user.nom, user.prenom"
             );
         }
         else
@@ -866,7 +867,7 @@ class TrackingUtils
                     OR UPPER( u.username ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
                     OR UPPER( u.email ) LIKE " . Claroline::getDatabase()->quote( $upperSearch ) . "
               GROUP BY u.user_id
-              ORDER BY u.user_id"
+              ORDER BY u.nom, u.prenom"
             );
         }
         return $resultSet;
