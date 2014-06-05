@@ -13,12 +13,16 @@ From::Module( 'LPUTRACK' )->uses(
 
 class LPUTRACK_Portlet extends UserDesktopPortlet
 {
+    private $displayProgress;
+
     public function __construct( $label )
     {
         parent::__construct( $label );
 
         $this->name = 'My learnPath tracking';
         $this->label = 'LPUTRACK_Portlet';
+
+        $this->displayProgress = get_conf('LPUTRACK_display_progress_widget');
     }
 
     public function renderContent()
@@ -51,13 +55,17 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
                  . '<table class="claroTable" width="100%" border="0" cellspacing="2">'
                  . '<thead>'
                  . '<tr align="center" valign="top">'
-                 . '<th colspan=2>' . get_lang( 'Course' ) . '</th>'
-                 . '<th colspan="2">' . get_lang( 'Progress' ) . '</th>'
-                 . '<th>' . get_lang( 'Spent time' ) . '</th>'
-                 . '<th>' . get_lang( 'Last connection' ) . '</th>'
-                 . '</tr>'
-                 . '</thead>'
-                 . '<tbody>';
+                 . '<th colspan=2>' . get_lang( 'Course' ) . '</th>';
+
+        if( $this->displayProgress )
+        {
+            $output .= '<th colspan="2">' . get_lang( 'Progress' ) . '</th>';
+        }
+        $output.= '<th>' . get_lang( 'Spent time' ) . '</th>'
+                . '<th>' . get_lang( 'Last connection' ) . '</th>'
+                . '</tr>'
+                . '</thead>'
+                . '<tbody>';
 
         $totalTime = '00:00:00';
 
@@ -91,24 +99,36 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
                      . '">'
                      . $courseIntitule
                      . '</a>'
-                     . '</td>'
-                     . '<td nowrap>' . claro_html_progress_bar( $progress, 1 ) . '</td>'
-                     . '<td nowrap><small>' . $progress . '%</small></td>'
-                     . '<td nowrap>' . $spentTime . '</td>'
+                     . '</td>';
+
+            if( $this->displayProgress )
+            {
+                $output .= '<td nowrap>' . claro_html_progress_bar( $progress, 1 ) . '</td>'
+                        . '<td nowrap><small>' . $progress . '%</small></td>';
+            }
+            $output .= '<td nowrap>' . $spentTime . '</td>'
                      . '<td nowrap>' . $date . '</td>'
                      . '</tr>';
         }
 
         $output .= '<tr>'
-                 . '<th colspan=2>&nbsp;</th>'
-                 . '<th colspan=2>&nbsp;</th>'
-                 . '<th>&nbsp;</th>'
+                 . '<th colspan=2>&nbsp;</th>';
+
+        if( $this->displayProgress )
+        {
+            $output .= '<th colspan=2>&nbsp;</th>';
+        }
+        $output .= '<th>&nbsp;</th>'
                  . '<th>&nbsp;</th>'
                  . '</tr>'
                  . '<tr align="center" valign="top">'
-                 . '<td colspan=2><strong>' . get_lang( 'Total' ) . '</strong></td>'
-                 . '<td colspan=2><strong>-</strong></td>'
-                 . '<td><strong>' . $totalTime . '</strong></td>'
+                 . '<td colspan=2><strong>' . get_lang( 'Total' ) . '</strong></td>';
+
+        if( $this->displayProgress )
+        {
+            $output .= '<td colspan=2><strong>-</strong></td>';
+        }
+        $output .= '<td><strong>' . $totalTime . '</strong></td>'
                  . '<td><strong>-</strong></td>'
                  . '</tr>';
         $output .= '</tbody>'
@@ -121,6 +141,13 @@ class LPUTRACK_Portlet extends UserDesktopPortlet
 
     public function renderTitle()
     {
-        return get_lang( 'My learnPath tracking' );
+        if ($this->displayProgress)
+        {
+            return get_lang( 'My learnPath tracking' );
+        }
+        else
+        {
+            return get_lang( 'My learnPath time tracking' );
+        }
     }
 }
