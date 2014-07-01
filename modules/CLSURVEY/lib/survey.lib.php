@@ -323,7 +323,7 @@ function get_survey_list()
  * @return unknown
  */
 
-function get_survey_question_list($surveyId, $context)
+function get_survey_question_list($surveyId)
 {
     $tbl = get_module_main_tbl(array('survey_question'));
 
@@ -343,10 +343,10 @@ function get_survey_question_list($surveyId, $context)
  * @param array $context
  * @return query result
  */
-function delete_survey($surveyId, $context)
+function delete_survey($surveyId)
 {
     $tbl = get_module_main_tbl(array( 'survey_list' , 'survey_user' ));
-    $questionList = get_survey_question_list($surveyId, $context);
+    $questionList = get_survey_question_list($surveyId);
     
     if (count($questionList))
     {
@@ -764,25 +764,12 @@ function exportSurvey( $surveyId )
  */
 function importSurvey( $file )
 {
-    FromKernel::uses( 'import_csv.lib' );
+    FromKernel::uses( 'thirdparty/parsecsv/parsecsv.lib' );
     
-    $csv = new CSV( $file, '#' , 'FIRSTLINE' );
+    $csv = new parseCSV();
+    $csv->auto( $file );
     
-    $data = array();
-    
-    foreach( $csv->new_data as $index => $line )
-    {
-        if ( ! $index )
-        {
-            if ( $line != 'title#description#type#option' ) return false;
-        }
-        elseif ( $line != "" )
-        {
-            $data[] = explode( "#" , $line );
-        }
-    }
-    
-    return $data;
+    return $csv->data;
 }
 
 /**
@@ -842,10 +829,10 @@ function createSurvey( $title , $description , $data )
             INSERT INTO
                 `{$tbl['survey_question_list']}`
             SET
-                `title` = " . Claroline::getDatabase()->quote( $line[ 0 ] ) . ",
-                `description` = " . Claroline::getDatabase()->quote( $line[ 1 ] ) . ",
-                `type` = " . Claroline::getDatabase()->quote( $line[ 2 ] ) . ",
-                `option` = " . Claroline::getDatabase()->quote( $line[ 3 ] ) . ",
+                `title` = " . Claroline::getDatabase()->quote( $line[ 'title' ] ) . ",
+                `description` = " . Claroline::getDatabase()->quote( $line[ 'description' ] ) . ",
+                `type` = " . Claroline::getDatabase()->quote( $line[ 'type' ] ) . ",
+                `option` = " . Claroline::getDatabase()->quote( $line[ 'option' ] ) . ",
                 `cid` = " . Claroline::getDatabase()->quote( $courseId )
         );
         
