@@ -112,7 +112,7 @@ $checkList = array(
         'category' => 3,
         'profile' => 5,
         'description' => 'Je n\'arrive pas à m\'inscrire à un cours pour une raison qui m\'est inconnue',
-        'mailTpl' => 'courseenroll' ),
+        'mailTpl' => 'coursesearch' ),
     
     'courseDisappeared' => array(
         'category' => 3,
