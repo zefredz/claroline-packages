@@ -63,7 +63,7 @@ if (($is_allowedToEdit) and ( !empty($cmd) )) // check teacher status
      */
     if ( 'exDelete' == $cmd )
     {
-        $return = delete_survey($idSurvey,$context);
+        $return = delete_survey($idSurvey);
 
         if ($return)
         {
