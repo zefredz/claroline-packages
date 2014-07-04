@@ -2,7 +2,7 @@ La messagerie interne d'icampus ne doit pas être confondue avec votre boîte mail
 
 Elle est en effet totalement indépendante de cette dernière, et doit plutôt être vue comme un outil récapitulatif des messages envoyés au sein de la plateforme.
 
-Tois types de message sont susceptibles d'arriver dans votre boîte de réception :
+Trois types de message sont susceptibles d'arriver dans votre boîte de réception :
 
     1. un message vous confirmant ou vous annonçant votre (dés)inscription à un cours
     2. une annonce envoyée par un enseignant dans la cadre d'un cours auquel vous êtes inscrit
