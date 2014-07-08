@@ -5,7 +5,8 @@ class ICADDEXT_Importer
     public static $required_fields = array(
           'prenom'
         , 'nom'
-        , 'email' );
+        , 'email'
+        , 'date_naissance' );
     
     public static $allowed_fields = array(
           'username'
@@ -16,7 +17,7 @@ class ICADDEXT_Importer
         , 'phoneNumber'
         , 'institution'
         , 'annee_etude'
-        , 'date_naissance'
+        //, 'date_naissance'
         , 'remarques'
         , 'authSource' );
     
@@ -325,10 +326,10 @@ class ICADDEXT_Importer
             }
         }
         
-        if( $this->fromForm && ! in_array( 'date_naissance' , $this->csvParser->titles ) )
+        /*if( $this->fromForm && ! in_array( 'date_naissance' , $this->csvParser->titles ) )
         {
             $this->output[ 'missing_fields' ][] = 'date_naissance';
-        }
+        }*/
         
         return empty( $this->output );
     }
@@ -345,7 +346,7 @@ class ICADDEXT_Importer
                 if( ! array_key_exists( $required_field , $userData ) || empty( $userData[ $required_field ] ) )
                 {
                     $this->output[ 'missing_values' ][ $index ] = $required_field;
-                    $this->incomplete[ $index ] = true;
+                    $this->incomplete[ $index ] = $required_field;
                 }
             }
         }
@@ -360,10 +361,10 @@ class ICADDEXT_Importer
         {
             if( ! ( array_key_exists( 'missing_values' , $this->output )
                    && array_key_exists( $index , $this->output[ 'missing_values' ] ) )
-                && ! self::is_mail( $userData[ 'email' ] ) )
+                && ! self::is_mail( trim( $userData[ 'email' ] ) ) )
             {
                 $this->output[ 'invalid_mail' ][ $index ] = $userData[ 'nom' ] . ' (' . $userData[ 'email' ] . ')';
-                $this->invalid[ $index ] = true;
+                $this->invalid[ $index ] = $index;
             }
         }
     }
@@ -374,11 +375,11 @@ class ICADDEXT_Importer
      */
     private function _trackDuplicates()
     {
-        foreach( $this->csvParser->data as $index => $line )
+        foreach( $this->csvParser->data as $index => $userData )
         {
-            $userName = array_key_exists( 'username' , $line )
-                    ? $line[ 'username' ]
-                    : self::username( $line[ 'prenom' ] , $line[ 'nom' ] );
+            $userName = array_key_exists( 'username' , $userData )
+                    ? $userData[ 'username' ]
+                    : self::username( $userData[ 'prenom' ] , $userData[ 'nom' ] );
             
             if( $this->database->query( "
                 SELECT
@@ -386,12 +387,13 @@ class ICADDEXT_Importer
                 FROM
                     `{$this->userTbl}`
                 WHERE
-                    nom = " . $this->database->quote( $line[ 'nom' ] ) . "
+                    nom = " . $this->database->quote( $userData[ 'nom' ] ) . "
                 AND
-                    prenom = " . $this->database->quote( $line[ 'prenom' ] )
+                    prenom = " . $this->database->quote( $userData[ 'prenom' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'nom et prenom' ] = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $this->conflict[ $index ][ 'nom' ] = $userData[ 'nom' ];
+                $this->conflict[ $index ][ 'prenom' ] = $userData[ 'prenom' ];
             }
             
             if( $this->database->query( "
@@ -412,15 +414,15 @@ class ICADDEXT_Importer
                 FROM
                     `{$this->userTbl}`
                 WHERE
-                    email = " . $this->database->quote( $line[ 'email' ] )
+                    email = " . $this->database->quote( $userData[ 'email' ] )
                 )->numRows() )
             {
-                $this->conflict[ $index ][ 'email' ] = $line[ 'email' ];
+                $this->conflict[ $index ][ 'email' ] = $userData[ 'email' ];
             }
             
             if( ! empty( $this->conflict[ $index ] ) )
             {
-                $reportLine = $line[ 'prenom' ] . ' ' . $line[ 'nom' ];
+                $reportLine = $userData[ 'prenom' ] . ' ' . $userData[ 'nom' ];
                 $reportLine .= ' (' . implode( ', ' , array_keys( $this->conflict[ $index ] ) ) . ')';
                 $this->output[ 'conflict_found' ][] = $reportLine;
             }

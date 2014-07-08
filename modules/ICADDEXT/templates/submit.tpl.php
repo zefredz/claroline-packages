@@ -115,9 +115,10 @@
             </dt>
             <dd>
                 <select name="userData[0][authSource]">
-                    <option value="claroline">claroline</option>
                     <option value="external">external</option>
+                    <option value="mailbox">ldap</option>
                     <option value="mailbox">mailbox</option>
+                    <option value="claroline">claroline</option>
                 </select>
             </dd>
         </dl>
@@ -146,7 +147,9 @@
             <dd>
                 <select name="authSource">
                     <option value="external">external</option>
+                    <option value="mailbox">ldap</option>
                     <option value="mailbox">mailbox</option>
+                    <option value="claroline">claroline</option>
                 </select>
             </dd>
         </dl>

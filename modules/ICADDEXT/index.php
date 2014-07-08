@@ -27,7 +27,7 @@ From::Module( 'ICADDEXT' )->uses(
     'view.class',
     'thirdparty/parseCsv.class' );
 
-$claroline->currentModuleLabel( 'ICADDEXT' );
+set_current_module_label( 'ICADDEXT' );
 load_module_config( 'ICADDEXT' );
 load_module_language( 'ICADDEXT' );
 
@@ -36,13 +36,14 @@ CssLoader::getInstance()->load( 'icaddext' , 'screen' );
 
 try
 {
-    $actionList = array( 'rqAdd'
+    $actionList = array( 'submit'
                        , 'rqFix'
                        , 'exFix'
+                       , 'rqAdd'
                        , 'exAdd' );
     $userInput = Claro_UserInput::getInstance();
     $userInput->setValidator( 'cmd' , new Claro_Validator_AllowedList( $actionList ) );
-    $cmd = $userInput->get( 'cmd' , 'rqAdd' );
+    $cmd = $userInput->get( 'cmd' , 'submit' );
     
     $csvParser = new ParseCsv();
     $importer = new ICADDEXT_Importer( $csvParser );

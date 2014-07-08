@@ -50,7 +50,7 @@ class ICADDEXT_Controller
     /**
      * default command... does nothing
      */
-    private function _rqAdd()
+    private function _submit()
     {
         return;
     }
@@ -116,17 +116,28 @@ class ICADDEXT_Controller
         $userData = array_intersect_key( (array)$userData , (array)$selected );
         $toFix = array_intersect_key( (array)$toFix , (array)$selected );
         
-        $toAdd = array_merge( $userData , $toFix );
-        
-        if( ! empty( $toAdd ) )
+        foreach( $toFix as $index => $data )
         {
-            $this->importer->probe( $toAdd );
+            $userData[ $index ] = array_merge( $userData[ $index ] , $data );
+        }
+        
+        if( ! empty( $userData ) )
+        {
+            $this->importer->probe( $userData );
             $this->status_ok = true;
         }
         else
         {
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
+    }
+    
+    /**
+     * Last verification before adding users
+     */
+    private function _rqAdd()
+    {
+        $this->_exFix();
     }
     
     /**
@@ -154,6 +165,7 @@ class ICADDEXT_Controller
         else
         {
             $this->message[] = array( 'type' => 'error' , 'text' => 'bad_class_data' );
+            $addToClass = null;
         }
         
         $userData = array_intersect_key( (array)$userData , (array)$selected );
