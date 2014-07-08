@@ -417,7 +417,19 @@ class EpcServiceStudentRecord
     {
         return ltrim ( (string) $this->xmlRecord->matriculeFgs, '0' );
     }
-
+    
+    public function mustBeRegistered()
+    {
+        if ( !empty( $this->xmlRecord->etatCours ) )
+        {
+            $etatCours = (string) $this->xmlRecord->etatCours;
+            return  $etatCours == 'I' || $etatCours == 'S';
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
 
 /**
@@ -563,6 +575,11 @@ class EpcCourseUserListInfo
         
         foreach ( $userList as $user )
         {
+            if ( ! $user->mustBeRegistered() )
+            {
+                continue;
+            }
+            
             $usernameList[] = $this->database->quote( $user->username );
         }
         
@@ -650,6 +667,11 @@ class EpcUserListInfo
         
         foreach ( $userList as $user )
         {
+            if ( ! $user->mustBeRegistered() )
+            {
+                continue;
+            }
+            
             $usernameList[] = $this->database->quote( $user->username );
         }
         
@@ -736,6 +758,11 @@ class EpcUserDataCache
         
         foreach ( $userIterator as $user )
         {
+            if ( ! $user->mustBeRegistered() )
+            {
+                continue;
+            }
+            
             if ( isset ( $usernameToIdTranslationTable[$user->username] ) )
             {
                 $userList[$usernameToIdTranslationTable[$user->username]] = $user;
@@ -854,6 +881,11 @@ class EpcUserDataCache
         
         foreach ( $userIterator as $user )
         {
+            if ( ! $user->mustBeRegistered() )
+            {
+                continue;
+            }
+            
             if ( isset ( $usernameToIdTranslationTable[$user->username] ) )
             {
                 $userList[$usernameToIdTranslationTable[$user->username]] = $user;

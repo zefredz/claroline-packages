@@ -9,10 +9,10 @@
     <type>crsmanage</type>
     <context>course</context>
     
-    <version>1.0</version>
+    <version>1.1</version>
     <license>GPL</license>
     
-    <description>Import users from EPC</description>
+    <description>Import users from EPC updated for the EPC web service version 2014-2015</description>
     <author>
         <name>Frederic Minne</name>
         <email>frederic.minne@uclouvain.be</email>
