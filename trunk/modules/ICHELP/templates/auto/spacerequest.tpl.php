@@ -1,4 +1,10 @@
+<?php if( $this->userData[ 'issueType' ] == 'moreSpaceNeeded' ) : ?>
 Par défaut, l'espace réservé pour les documents d'un cours sur iCampus est de 100 Mo.
+<?php elseif( $this->userData[ 'issueType' ] == 'moreSpaceNeededW' ) : ?>
+Par Défaut, l'espace réservé pour les documents d'un groupe est de 10 Mo.
+<?php elseif( $this->userData[ 'issueType' ] == 'moreSpaceNeededG' ) : ?>
+Par Défaut, la taille maximale d'un fichier soumis pour un travail est de 6 Mo, et l'espace alloué pour la totalité des soumissions d'un étudiant pour un travail donné est limité à 100 Mo.
+<?php endif; ?>
 
 Si vous pensez avoir besoin d'espace supplémentaire, nous pouvons l'augmenter (dans les limites du raisonnable) en nous envoyant une demande motivée à cette adresse : icampus@uclouvain.be
 

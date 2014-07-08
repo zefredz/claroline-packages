@@ -4,11 +4,12 @@ Dans ce cas, les inscriptions sont généralement fermées.
 
 <?php endif; ?>
 <?php if( $this->userData['issueType'] == 'courseDisappeared' ) : ?>
-Il est possible que le titulaire du cours vous a désincrit(e).
+Il est possible que le titulaire du cours vous ait désinscrit(e).
 Beaucoup d'enseignants ont pris l'habitude (sur nos recommandations) de nettoyer leurs cours en fin d'année en désinscrivant la totalité des étudiants.
 
 Ne paniquez pas : il suffit de vous ré-inscrire au cours pour retrouver toutes les traces de vos activités passées.
 Si les inscriptions sont fermées, et que vous pensez qu'il s'agit d'une erreur, nous vous invitons à prendre contact par mail avec le titulaire.
+En effet, les gestionnaires iCampus ne sont pas habilités à corriger les erreurs d'inscription dans un cours.
 
 Pour rappel,<?php else : ?>P<?php endif; ?>our vous inscrire à un cours, commencez par le rechercher des en utilisant le formulaire qui s'affiche :
     - sur la page d'accueil d'iCampus lorsque vous n'êtes pas authentifié
