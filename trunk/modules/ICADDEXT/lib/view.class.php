@@ -5,9 +5,10 @@ class ICADDEXT_View extends ModuleTemplate
     const LABEL = 'ICADDEXT';
     const ERROR = 'error';
     
-    public static $templateList  = array( 'rqAdd' => 'submit'
+    public static $templateList  = array( 'submit' => 'submit'
                                         , 'rqFix' => 'fix'
-                                        , 'exFix' => 'add'
+                                        , 'exFix' => 'fix'
+                                        , 'rqAdd' => 'add'
                                         , 'exAdd' => 'report' );
     
     public $controller;

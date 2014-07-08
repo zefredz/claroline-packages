@@ -28,11 +28,11 @@
         });
     });
 </script>
-<?php $cmd = $this->controller->importer->is_ok() ? 'exAdd' : 'exFix'; ?>
+<?php $cmd = $this->controller->importer->is_ok() ? 'rqAdd' : 'exFix'; ?>
 <form method="post"
       enctype="multipart/form-data"
       action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
-    <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
+    <?php foreach( $this->controller->importer->csvParser->data as $index => $userData ) : ?>
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
            name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
@@ -54,7 +54,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach( array_keys( $this->controller->importer->incomplete ) as $index ) : ?>
+                <?php foreach( $this->controller->importer->incomplete as $index ) : ?>
                 <tr>
                     <td align="center">
                         <input type="checkbox"
@@ -73,9 +73,6 @@
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
-                        <input type="hidden"
-                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
-                               value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>" />
                         <?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>
                             <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
                         <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
@@ -119,9 +116,6 @@
                                value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>"
                                style="color: #f00; width: 300px;" />
                         <?php else : ?>
-                        <input type="hidden"
-                               name="toFix[<?php echo $index; ?>][<?php echo $field; ?>]"
-                               value="<?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>" />
                         <?php echo $this->controller->importer->csvParser->data[$index][ $field ]; ?>
                             <?php if( $this->controller->importer->isAutoGen( $field , $index ) ) : ?>
                         <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
