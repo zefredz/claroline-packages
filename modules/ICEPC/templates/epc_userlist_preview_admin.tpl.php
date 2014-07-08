@@ -30,14 +30,22 @@
             endif;
         ?>
         
+        <?php if ( ! $user->mustBeRegistered() ) : ?>
+        <tr class="disabled">
+        <?php else: ?>
         <tr>
+        <?php endif; ?>
             <td><?php echo $user->firstname; ?></td>
             <td><?php echo $user->lastname; ?></td>
             <td><?php echo $user->email; ?></td>
             <td><?php echo $user->noma; ?></td>
             <td><?php echo $user->officialCode; ?></td>
             <td><?php echo $user->sigleAnet; ?></td>
+            <?php if ( ! $user->isValid() ) : ?>
+            <td><?php echo get_lang('Ignored'); ?></td>
+            <?php else: ?>
             <td><?php echo isset( $this->platformToUpdate[ $user->username ] ) ? get_lang('Update') : get_lang('New'); ?></td>
+            <?php endif; ?>
         </tr>
         
     <?php endforeach; ?>
@@ -82,6 +90,6 @@
     <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Import/Update' ); ?>" />
     <?php endif; ?>
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC') . '/admin.php' ); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
+        <input type="button" name="epcCancelSearch" id="epcCancelSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
 </form>

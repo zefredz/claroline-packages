@@ -18,6 +18,7 @@
     <tbody>
     <?php if (count( $this->userListIterator ) ): ?>
     <?php foreach ( $this->userListIterator as $user ): ?>
+        <?php if ( ! $user->mustBeRegistered() ) : continue; endif; ?>
         <?php if ( !isset( $this->courseUserList[$user->username] ) 
             || isset( $this->courseUserToUpdateList[$user->username ] ) ): ?>
         <?php $lineAdded = true; ?>
@@ -62,16 +63,16 @@
     <?php if ( $lineAdded ): ?>
     <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Import' ); ?>" />
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
+        <input type="button" name="epcCancelSearch" id="epcCancelSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
     <?php elseif ( count( $this->userListIterator) ): ?>
     <input type="submit" name="epcSubmitSearch" value="<?php echo get_lang ( 'Update cached data' ); ?>" />
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
+        <input type="button" name="epcCancelSearch" id="epcCancelSearch" value="<?php echo get_lang ( 'Cancel' ); ?>" />
     </a>
     <?php else: ?>
     <a href="<?php echo Url::Contextualize(get_module_url('ICEPC')); ?>">
-        <input type="button" name="epcCancelSearch" id="epcCancetSearch" value="<?php echo get_lang ( 'Back' ); ?>" />
+        <input type="button" name="epcCancelSearch" id="epcCancelSearch" value="<?php echo get_lang ( 'Back' ); ?>" />
     </a>
     <?php endif; ?>
 </form>
