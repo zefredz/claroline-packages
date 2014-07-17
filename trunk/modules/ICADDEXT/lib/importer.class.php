@@ -225,6 +225,7 @@ class ICADDEXT_Importer
     {
         if( ! empty( $data ) )
         {
+            self::_trimValues( $data );
             $this->csvParser->data = $data;
             $this->csvParser->titles = array_keys( $data[0] );
         }
@@ -601,6 +602,17 @@ class ICADDEXT_Importer
         }
         
         return $mailInfos;
+    }
+    
+    static private function _trimValues( $data )
+    {
+        foreach( $data as $lineIndex => $line )
+        {
+            foreach( $line as $index => $value )
+            {
+                $data[ $lineIndex ][ $index ] = trim( $value);
+            }
+        }
     }
     
     /**
