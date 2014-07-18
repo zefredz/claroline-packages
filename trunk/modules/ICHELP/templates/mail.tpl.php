@@ -1,4 +1,4 @@
-<?php if( $this->toHelpDesk ) : ?>
+<?php if( isset( $this->toHelpDesk) && $this->toHelpDesk === true ) : ?>
 Cher membre du Service Desk, 
 
 Voici la procédure à suivre:
@@ -108,7 +108,7 @@ DESCRIPTION DU PROBLEME :
 
 
 
-<?php if( $this->autoMailContent ) : ?>
+<?php if( ! empty( $this->autoMailContent ) ) : ?>
 <?php echo $this->mailSent ? "UN MAIL DE REPONSE AUTOMATIQUE A ETE ENVOYE A L'UTILISATEUR" : "UN MAIL DE REPONSE AUTOMATIQUE AURAIT DU ETRE ENVOYE A L'UTILISATEUR, MAIS L'ENVOI A ECHOUE"; ?>
 
 
