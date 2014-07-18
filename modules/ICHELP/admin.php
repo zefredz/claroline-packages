@@ -21,7 +21,8 @@ FromKernel::uses(
 
 From::Module( 'ICHELP' )->uses(
     'ticketmanager.lib',
-    'ticketlist.lib' );
+    'ticketlist.lib',
+    'utils.lib' );
 
 $dialogBox = new DialogBox();
 
@@ -34,6 +35,10 @@ if( claro_is_platform_admin() )
         $userInput = Claro_UserInput::getInstance();
         $cmd = $userInput->get( 'cmd' );
         $ticketId = $userInput->get( 'ticketId' );
+        $chronologicOrder = (boolean)$userInput->get( 'order' );
+        $failedOnly = (boolean)$userInput->get( 'failed' );
+        
+        $ticketList->load( $failedOnly , $chronologicOrder );
         
         if( $ticketId && $ticketList->ticketExists( $ticketId ) )
         {
@@ -97,6 +102,12 @@ if( claro_is_platform_admin() )
             'img'  => 'back',
             'name' => get_lang( 'Back' ),
             'url'  => get_path( 'rootWeb' ) . '/claroline/admin/module/module_list.php?typeReq=applet' );
+        
+        $cmdList[] = array(
+            'img' => '',
+            'name' => get_lang( 'Toggle chronology' ),
+            'url'  => claro_htmlspecialchars( Url::Contextualize( get_module_url( 'ICHELP' )
+                                              .'/admin.php?order=' . (int)(! $ticketList->chronologicOrder ) ) ) );
         
         Claroline::getInstance()->display->body->appendContent(
             claro_html_tool_title( $pageTitle , null , $cmdList )

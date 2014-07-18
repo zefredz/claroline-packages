@@ -11,6 +11,9 @@
 
 class TicketList
 {
+    public $chronologicOrder = false;
+    public $showFailedOnly = false;
+    
     protected $ticketList = false;
     
     public function __construct()
@@ -18,25 +21,50 @@ class TicketList
         $tbl = get_module_main_tbl( array( 'ichelp_log' ) );
         $this->tbl = $tbl[ 'ichelp_log' ];
         
-        $this->load();
+        //$this->load();
     }
     
-    public function load()
+    public function load( $showFailedOnly = null , $chronologicOrder = null , $all = false )
     {
-        $ticketList = Claroline::getDatabase()->query( "
-            SELECT
+        if( ! is_null( $showFailedOnly ) )
+        {
+            $this->showFailedOnly = (boolean)$showFailedOnly;
+        }
+        
+        if( ! is_null( $chronologicOrder ) )
+        {
+            $this->chronologicOrder = (boolean)$chronologicOrder;
+        }
+        
+        $sqlString = "SELECT
                 ticketId,
                 submissionDate,
                 shortDescription,
                 issueDescription,
-                userInfos
+                userInfos,
+                mailSent
             FROM
-                `{$this->tbl}`
-            WHERE
-                mailSent = 0
-            AND
-                status = 'pending'"
-        );
+                `{$this->tbl}`";
+        
+        if( ! $all )
+        {
+            $sqlString .= "\nWHERE
+                status = 'pending'";
+        
+            if( $this->showFailedOnly )
+            {
+                $sqlString .= "\nAND
+                    mailSent = 0";
+            }
+        }
+        
+        if( ! $this->chronologicOrder )
+        {
+            $sqlString .= "\nORDER BY
+                submissionDate DESC";
+        }
+        
+        $ticketList = Claroline::getDatabase()->query( $sqlString );
         
         $this->ticketList = array();
         

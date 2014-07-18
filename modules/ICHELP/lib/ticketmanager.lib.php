@@ -162,6 +162,11 @@ class TicketManager
         return $this->data[ 'ticketId ' ];
     }
     
+    public function close( $is_admin = false )
+    {
+        return $this->update( 'status' , $is_admin ? 'closed' : 'solved' );
+    }
+    
     private function refresh()
     {
         $_SESSION[ 'ICHELP_data' ] = $this->data;
