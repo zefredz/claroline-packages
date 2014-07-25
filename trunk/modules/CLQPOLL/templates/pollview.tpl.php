@@ -26,16 +26,19 @@
     <h4><?php echo get_lang( 'No vote for this poll' ); ?></h4>
     <?php endif; ?>
     
-    <!-- BEGIN Display the voting form -->
     <?php if ( $this->userRights[ 'vote' ] ) : ?>
+    <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
+    <?php endif; ?>
+    
     <table>
         <thead>
-            <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
+    <!-- BEGIN Display the voting form -->
+    <?php if ( $this->userRights[ 'vote' ] ) : ?>
                 <input id="pollId" type="hidden" value="<?php echo $this->poll->getId(); ?>" name="pollId" />
                 <tr class="userline">
-                    <th class="name">
+                    <td class="name">
                         <input class="submit" type="submit" value="<?php echo get_lang( $this->userVote->voteExists( true ) ? 'Modify your vote' : 'Vote' ); ?>"/>
-                    </th>
+                    </td>
         <?php if ( $this->poll->getOption( '_type' ) == '_multi' ) : ?>
         <!-- MULTIPLE VOTE -->
             <?php foreach ( array_keys( $this->poll->getChoiceList() ) as $choiceId ) : ?>
@@ -52,7 +55,7 @@
             <?php endforeach; ?>
         <?php endif; ?>
                 </tr>
-            </form>
+
     <?php endif; ?>
     <!-- END Display the voting form -->
     <!-- BEGIN Displays the current user vote -->
@@ -127,37 +130,46 @@
             <!-- END Displays the poll votes -->
         </tbody>
     </table>
+    
+    <?php if ( $this->userRights[ 'vote' ] ) : ?>
+    </form>
+    <?php endif; ?>
+    
     <?php if ( $this->voteList->getPageCount() > 1 && $this->userRights[ 'see_names'] ) : ?>
-    <div id="pagerNav" class="claroPager">
-        <span class="pagerBefore">
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
-                <img alt="go to first page" src="<?php echo get_icon_url( 'pager_first.png' ); ?>" />
-            </a>
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-                <img alt="go to first page" src="<?php echo get_icon_url( 'pager_previous.png' ); ?>" />
-            </a>
-        </span>
-        <span class="pagerPages">
+    <div id="pagerNav" class="pager">
+        <?php if ( $this->pageNb > 0 ) : ?>
+        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
+            <span class="enabled">&lt;&lt;</span>
+        </a>
+        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+            <span class="enabled">&lt;</span>
+        </a>
+        <?php else : ?>
+            <span class="pagerButton">&lt;&lt;</span>
+            <span class="pagerButton">&lt;</span>
+        <?php endif; ?>
         <?php for ( $i = $this->pageNb - 3; $i <= $this->pageNb + 3; $i++ ) : ?>
             <?php if ( $i >= 0 && $i < $this->voteList->getPageCount() ) : ?>
                 <?php if ( $this->pageNb != $i ) : ?>
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
-                <?php echo $i + 1; ?>
-            </a>
-                <?php else : ?>
-            <b><?php echo $i + 1; ?></b>
+        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
+            <span class="enabled"><?php echo $i + 1; ?></span>
+        </a>
+            <?php else : ?>
+        <span class="pagerButton"><?php echo $i + 1; ?></span>
                 <?php endif; ?>
             <?php endif; ?>
         <?php endfor; ?>
-        </span>
-        <span class="pagerAfter">
-            <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-                <img alt="go to first page" src="<?php echo get_icon_url( 'pager_next.png' ); ?>" />
-            </a>
-            <a  href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->voteList->getPageCount() - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
-                <img alt="go to first page" src="<?php echo get_icon_url( 'pager_last.png' ); ?>" />
-            </a>
-        </span>
+        <?php if ( $this->pageNb < $this->voteList->getPageCount() - 1 ) : ?>
+        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+            <span class="enabled">&gt;</span>
+        </a>
+        <a  class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->voteList->getPageCount() - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+            <span class="enabled">&gt;&gt;</span>
+        </a>
+        <?php else : ?>
+            <span class="pagerButton">&gt;</span>
+            <span class="pagerButton">&gt;&gt;</span>
+        <?php endif; ?>
     </div>
     <?php endif; ?>
 <?php else: ?>
