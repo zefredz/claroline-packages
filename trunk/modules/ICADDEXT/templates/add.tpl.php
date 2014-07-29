@@ -35,7 +35,7 @@
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
            name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
-           value="<?php echo $value; ?>" />
+           value="<?php echo claro_htmlspecialchars( $value ); ?>" />
         <?php endforeach; ?>
     <?php endforeach; ?>
     
