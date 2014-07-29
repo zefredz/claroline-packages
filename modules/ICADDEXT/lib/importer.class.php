@@ -225,8 +225,8 @@ class ICADDEXT_Importer
     {
         if( ! empty( $data ) )
         {
-            self::_trimValues( $data );
             $this->csvParser->data = $data;
+            $this->_cleanValues();
             $this->csvParser->titles = array_keys( $data[0] );
         }
         
@@ -567,6 +567,19 @@ class ICADDEXT_Importer
         return $this->database->exec( $sql . self::_sqlString( $data , $fields , $encrypt ) );
     }
     
+    private function _cleanValues()
+    {
+        foreach( $this->data as $lineIndex => $line )
+        {
+            $this->data[ $lineIndex ]['remarques'] = htmlspecialchars( $this->data[ $lineIndex ]['remarques'] );
+            
+            foreach( $line as $index => $value )
+            {
+                $this->data[ $lineIndex ][ $index ] = trim( $value);
+            }
+        }
+    }
+    
     static private function _sqlString( $data , $allowed_fields = null , $encrypt = false )
     {
         if( ! $allowed_fields )
@@ -602,17 +615,6 @@ class ICADDEXT_Importer
         }
         
         return $mailInfos;
-    }
-    
-    static private function _trimValues( $data )
-    {
-        foreach( $data as $lineIndex => $line )
-        {
-            foreach( $line as $index => $value )
-            {
-                $data[ $lineIndex ][ $index ] = trim( $value);
-            }
-        }
     }
     
     /**
