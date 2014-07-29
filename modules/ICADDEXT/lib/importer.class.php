@@ -569,13 +569,11 @@ class ICADDEXT_Importer
     
     private function _cleanValues()
     {
-        foreach( $this->data as $lineIndex => $line )
+        foreach( $this->csvParser->data as $lineIndex => $line )
         {
-            $this->data[ $lineIndex ]['remarques'] = htmlspecialchars( $this->data[ $lineIndex ]['remarques'] );
-            
             foreach( $line as $index => $value )
             {
-                $this->data[ $lineIndex ][ $index ] = trim( $value);
+                $this->csvParser->data[ $lineIndex ][ $index ] = trim( $value);
             }
         }
     }
