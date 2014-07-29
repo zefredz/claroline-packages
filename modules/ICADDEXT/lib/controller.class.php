@@ -164,8 +164,12 @@ class ICADDEXT_Controller
         }
         else
         {
-            $this->message[] = array( 'type' => 'error' , 'text' => 'bad_class_data' );
             $addToClass = null;
+        }
+        
+        if( is_null( $addToClass ) && ( $create_class || $add_to_class ) )
+        {
+            $this->message[] = array( 'type' => 'error' , 'text' => 'bad_class_data' );
         }
         
         $userData = array_intersect_key( (array)$userData , (array)$selected );
