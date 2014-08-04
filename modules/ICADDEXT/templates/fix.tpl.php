@@ -227,6 +227,7 @@
         <img src="<?php echo get_icon_url( 'magic' ); ?>" alt="<?php echo get_lang( 'auto_generated' ); ?>"/>
         <?php echo get_lang( 'autogen' ); ?>
     </p>
+    <input type="checkbox" name="force" /><strong><?php echo get_lang( 'force_adding' ); ?></strong><br />
     <?php if( $this->controller->importer->is_ok() ) : ?>
     <input type="checkbox" name="send_mail" checked="checked" /><strong><?php echo get_lang( 'send_mail' ); ?></strong><br />
     <input id="createClass" type="checkbox" name="create_class" /><strong><?php echo get_lang( 'create_class' ); ?></strong>
