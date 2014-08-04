@@ -111,6 +111,7 @@ class ICADDEXT_Controller
         $userData = $this->userInput->get( 'userData' );
         $selected = $this->userInput->get( 'selected' );
         $toFix = $this->userInput->get( 'toFix' );
+        $force = (boolean)$this->userInput->get( 'force' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
         $userData = array_intersect_key( (array)$userData , (array)$selected );
@@ -129,6 +130,11 @@ class ICADDEXT_Controller
         else
         {
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
+        }
+        
+        if( $force === true )
+        {
+            $this->importer->disableCheck();
         }
     }
     
