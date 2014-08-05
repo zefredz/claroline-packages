@@ -4,7 +4,6 @@ class ICADDEXT_Controller
 {
     public $importer;
     
-    public $mode;
     public $cmd;
     public $message = array();
     
@@ -111,11 +110,11 @@ class ICADDEXT_Controller
         $userData = $this->userInput->get( 'userData' );
         $selected = $this->userInput->get( 'selected' );
         $toFix = $this->userInput->get( 'toFix' );
-        $force = (boolean)$this->userInput->get( 'force' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
-        $userData = array_intersect_key( (array)$userData , (array)$selected );
-        $toFix = array_intersect_key( (array)$toFix , (array)$selected );
+        $userData = array_intersect_key( $userData , $selected );
+        $toFix = array_intersect_key( $toFix , $selected );
+        $toForce = null;
         
         foreach( $toFix as $index => $data )
         {
@@ -126,15 +125,16 @@ class ICADDEXT_Controller
         {
             $this->importer->probe( $userData );
             $this->status_ok = true;
+            $toForce = array_intersect_key( $toFix , $this->importer->conflict );
         }
         else
         {
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
         
-        if( $force === true )
+        if( ! empty( $toForce ) && $this->importer->is_ok( true ) )
         {
-            $this->importer->disableCheck();
+            $this->cmd = 'rqAdd';
         }
     }
     
