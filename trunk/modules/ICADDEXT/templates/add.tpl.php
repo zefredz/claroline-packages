@@ -134,7 +134,8 @@
                 <tr>
                     <td align="center">
                         <input type="checkbox"
-                               name="selected[<?php echo $index; ?>]" />
+                               name="selected[<?php echo $index; ?>]"
+                               checked="checked" />
                     </td>
                     <?php foreach( ICADDEXT_Importer::$display_fields as $field ) : ?>
                     <td>

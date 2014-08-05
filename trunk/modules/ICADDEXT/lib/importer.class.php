@@ -99,8 +99,6 @@ class ICADDEXT_Importer
     
     protected $classList;
     
-    protected $checkDisabled = false;
-    
     /**
      * Constructor
      * @param ParseCsv object $csvParser
@@ -121,18 +119,11 @@ class ICADDEXT_Importer
     /**
      * verifies if all is ok
      */
-    public function is_ok()
+    public function is_ok( $force = false )
     {
-        if( $this->checkDisabled === true )
-        {
-            return true;
-        }
-        else
-        {
-            return empty( $this->incomplete )
-                && empty( $this->invalid )
-                && empty( $this->conflict );
-        }
+        return empty( $this->incomplete )
+            && empty( $this->invalid )
+            && ( empty( $this->conflict ) || $force );
     }
     
     /**
@@ -236,7 +227,7 @@ class ICADDEXT_Importer
         {
             $this->csvParser->data = $data;
             $this->_cleanValues();
-            $this->csvParser->titles = array_keys( $data[0] );
+            $this->csvParser->titles = array_keys( pos( $data ) );
         }
         
         if( $this->_checkRequiredFields() )
@@ -264,14 +255,6 @@ class ICADDEXT_Importer
     public function getClasses()
     {
         return $this->classList;
-    }
-    
-    /**
-     *
-     */
-    public function disableCheck()
-    {
-        $this->checkDisabled = true;
     }
     
     /**
