@@ -298,19 +298,21 @@ class ICADDEXT_Importer
     {
         $this->toAdd = $this->csvParser->data;
         
-        if( ! empty( $this->conflict ) )
-        {
-            $this->toAdd = array_diff_key( $this->toAdd , $this->conflict );
-        }
-        
         if( ! empty( $this->incomplete ) )
         {
             $this->toAdd = array_diff_key( $this->toAdd , $this->incomplete );
+            $this->invalid = array_diff_key( $this->invalid , $this->incomplete );
         }
         
         if( ! empty( $this->invalid ) )
         {
             $this->toAdd = array_diff_key( $this->toAdd , $this->invalid );
+            $this->conflict = array_diff_key( $this->conflict , $this->invalid );
+        }
+        
+        if( ! empty( $this->conflict ) )
+        {
+            $this->toAdd = array_diff_key( $this->toAdd , $this->conflict );
         }
     }
     

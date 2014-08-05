@@ -17,7 +17,6 @@ class ICADDEXT_View extends ModuleTemplate
     public function __construct( $controller )
     {
         $this->controller = $controller;
-        $this->controller->execute();
         
         $this->templateName = array_key_exists( $this->controller->cmd , self::$templateList )
                             && $this->controller->is_ok()
