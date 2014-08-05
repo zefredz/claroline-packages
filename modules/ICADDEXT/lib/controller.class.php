@@ -14,11 +14,10 @@ class ICADDEXT_Controller
      * @param Importer object $importer
      * @param UserInput object $userInput
      */
-    public function __construct( $importer , $userInput , $cmd )
+    public function __construct( $importer , $userInput )
     {
         $this->importer = $importer;
         $this->userInput = $userInput;
-        $this->cmd = $cmd;
     }
     
     /**
@@ -33,8 +32,10 @@ class ICADDEXT_Controller
     /**
      * Executes command
      */
-    public function execute()
+    public function execute( $cmd )
     {
+        $this->cmd = $cmd;
+        
         if( method_exists( $this , '_' . $this->cmd ) )
         {
             $this->{'_' . $this->cmd}();

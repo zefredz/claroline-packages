@@ -47,7 +47,8 @@ try
     
     $csvParser = new ParseCsv();
     $importer = new ICADDEXT_Importer( $csvParser );
-    $controller = new ICADDEXT_Controller( $importer , $userInput , $cmd );
+    $controller = new ICADDEXT_Controller( $importer , $userInput );
+    $controller->execute( $cmd );
     $view = new ICADDEXT_View( $controller );
     
     foreach( $controller->message as $msg )
