@@ -108,9 +108,9 @@ class ICADDEXT_Controller
      */
     private function _exFix()
     {
-        $userData = $this->userInput->get( 'userData' );
-        $selected = $this->userInput->get( 'selected' );
-        $toFix = $this->userInput->get( 'toFix' );
+        $userData = (array)$this->userInput->get( 'userData' );
+        $selected = (array)$this->userInput->get( 'selected' );
+        $toFix = (array)$this->userInput->get( 'toFix' );
         $send_mail = $this->userInput->get( 'send_mail' );
         
         $userData = array_intersect_key( $userData , $selected );
@@ -133,7 +133,7 @@ class ICADDEXT_Controller
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
         
-        if( ! empty( $toForce ) && $this->importer->is_ok( true ) )
+        if( $this->importer->is_ok( true ) )
         {
             $this->cmd = 'rqAdd';
         }
