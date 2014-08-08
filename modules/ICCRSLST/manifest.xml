@@ -4,7 +4,7 @@
     <description><![CDATA[
 Get course list web service
 ]]></description>
-    <version>1.0-$Revision$</version>
+    <version>1.1-$Revision$</version>
     <license>GPL</license>
     <icon>icon.png</icon>
     <type>admin</type>
@@ -18,10 +18,7 @@ Get course list web service
 
     <requirements>
         <claroline>
-            <version>1.9</version>
+            <version>1.12</version>
         </claroline>
-        <module label="CLKRNG">
-            <version>1.1</version>
-        </module>
     </requirements>
 </module>
