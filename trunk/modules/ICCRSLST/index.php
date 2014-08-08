@@ -27,9 +27,9 @@ try
      * Check access rights against the keyring module 
      * 
      * You must add an entry for each of the clients in the keyring module
-     */
-    From::Module('CLKRNG')->uses('keyring.lib');
-    Keyring::checkForService('iccrslst');
+     */    
+    Claro_Keyring_Helper::setOption('errorMode','exception');
+    Claro_Keyring_Helper::checkForService('iccrslst');
     
     $cmd = $userInput->get('cmd','list');
     
