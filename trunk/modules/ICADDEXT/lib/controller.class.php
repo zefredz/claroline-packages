@@ -101,6 +101,11 @@ class ICADDEXT_Controller
         $this->status_ok = $this->importer->toAdd
                         || $this->importer->conflict
                         || $this->importer->incomplete;
+        
+        if( $this->importer->is_ok() )
+        {
+            $this->cmd = 'rqAdd';
+        }
     }
     
     /**
