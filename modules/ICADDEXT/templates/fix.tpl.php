@@ -227,6 +227,9 @@
         <?php echo get_lang( 'autogen' ); ?>
     </p>
     <br />
+    <?php if( ! empty( $this->controller->importer->conflict) ) : ?>
+    <input type="checkbox" name="ignore_conflict" /><strong><?php echo get_lang( 'force_conflict' ); ?></strong><br />
+    <?php endif; ?>
     <input id="submit" type="submit" name="submit" value="<?php echo get_lang( 'OK' ); ?>" />
     <a style="text-decoration: none;"
        href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ); ?>">

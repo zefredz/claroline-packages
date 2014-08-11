@@ -47,3 +47,4 @@ $_lang['toForce'] = 'Forcer';
 $_lang['upload_file'] = 'Soumettre un fichier (en ISO8859-1)';
 $_lang['undefined_error'] = 'Une erreur est survenue!';
 $_lang['username'] = 'Identifiant';
+$_lang['force_conflict'] = 'Forcer l\'ajout des utilisateurs présentant des conflits';

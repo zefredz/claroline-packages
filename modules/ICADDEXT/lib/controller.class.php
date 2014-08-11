@@ -117,6 +117,7 @@ class ICADDEXT_Controller
         $selected = (array)$this->userInput->get( 'selected' );
         $toFix = (array)$this->userInput->get( 'toFix' );
         $send_mail = $this->userInput->get( 'send_mail' );
+        $ignoreConflict = (boolean)$this->userInput->get( 'ignore_conflict');
         
         $userData = array_intersect_key( $userData , $selected );
         $toFix = array_intersect_key( $toFix , $selected );
@@ -138,7 +139,7 @@ class ICADDEXT_Controller
             $this->message[] = array( 'type' => 'error' , 'text' => 'no_user_selected' );
         }
         
-        if( $this->importer->is_ok( true ) )
+        if( $this->importer->is_ok( $ignoreConflict ) )
         {
             $this->cmd = 'rqAdd';
         }
