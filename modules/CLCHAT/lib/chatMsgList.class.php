@@ -193,7 +193,7 @@ class ChatMsgList
                 $sql .= " `group_id` = ".(int) $this->groupId . ", ";
             }
                     
-            $sql .= "`message` = '".addslashes(htmlspecialchars($message))."',
+            $sql .= "`message` = '".addslashes(claro_htmlspecialchars($message))."',
                         `post_time` = NOW()";
 
             return claro_sql_query($sql);
@@ -264,4 +264,3 @@ class ChatMsgList
         }
     }
 }
-?>
