@@ -6,7 +6,7 @@
   <license>GPL</license>
   <type>tool</type>
   <entry>survey_list.php</entry>
-  <icon>survey.png</icon>
+  <icon>icon.png</icon>
 
   <description><![CDATA[
      This module allows to create and manage surveys
