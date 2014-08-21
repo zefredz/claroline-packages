@@ -126,11 +126,14 @@ if (!is_null($surveyId))
                     GROUP BY answer";
             $results = claro_sql_query_fetch_all_rows($sql);
 
-            foreach ($results as $thisresult )
+            if( ! empty( $results ) )
             {
-                $content .=   $thisSurveyQuestion['title'] 	.';'
-                . $thisresult['answer'] 		.';'
-                . $thisresult['qty'] 			. "\n";
+                foreach ($results as $thisresult )
+                {
+                    $content .= $thisSurveyQuestion['title'] .';'
+                    . $thisresult['answer'] .';'
+                    . $thisresult['qty'] . "\n";
+                }
             }
         }
 
