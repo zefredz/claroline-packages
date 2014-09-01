@@ -12,9 +12,9 @@
  
 CREATE TABLE IF NOT EXISTS `__CL_COURSE__poll_polls`(
     id INT(11) NOT NULL AUTO_INCREMENT,
-    title VARCHAR(127),
+    title TEXT,
     question VARCHAR(255),
-    poll_options TEXT,
+    poll_options VARCHAR(255),
     status ENUM('open','closed') NOT NULL DEFAULT 'open',
     visibility ENUM('visible','invisible') NOT NULL DEFAULT 'invisible',
     PRIMARY KEY( id )
