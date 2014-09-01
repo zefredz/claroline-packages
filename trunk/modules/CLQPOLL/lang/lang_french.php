@@ -54,6 +54,7 @@ $_lang['Do you really want to purge this poll?'] = 'Ceci fera disparaître toutes
 $_lang['Edit poll']= 'Modifier le sondage';
 $_lang['Error'] = 'Erreur';
 $_lang['Export to csv'] = 'Exporter en csv';
+$_lang['Fields exceeded maximal amount of characters allowed'] = 'Vous avez dépassé le nombre maximal de caractères autorisé pour certains champs';
 $_lang['Modify your vote'] = 'Modifier votre vote';
 $_lang['No choices'] = 'Aucun choix';
 $_lang['No poll for this course yet'] = 'Il n\'y a pas encore de sondage pour ce cours';

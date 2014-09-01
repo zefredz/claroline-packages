@@ -196,6 +196,8 @@ try
                 $title      = $userInput->get( 'title' );
                 $question   = $userInput->get( 'question' );
                 
+                if( strlen( $question ) > 255) break;
+                
                 $visibility = $userInput->get( 'visibility' );
                 $status     = $userInput->get( 'status' );
                 
@@ -210,7 +212,7 @@ try
                     $poll->setVisibility( $visibility );
                     $poll->setStatus( $status );
                     
-                    foreach( array_keys( $poll->getOptionList() ) as $option)
+                    foreach( array_keys( $poll->getOptionList() ) as $option )
                     {
                         $value = $userInput->get( $option );
                         
@@ -224,12 +226,12 @@ try
                     
                     foreach( $toAdd as $label )
                     {
-                        if ( $label ) $poll->addChoice( $label );
+                        if ( $label && strlen( $label ) < 128 ) $poll->addChoice( $label );
                     }
                     
                     foreach( $toModify as $choiceId => $label )
                     {
-                        if ( $label ) $poll->updateChoice( $choiceId , $label );
+                        if ( $label && strlen( $label ) < 128 ) $poll->updateChoice( $choiceId , $label );
                     }
                     
                     foreach( array_keys( $toDelete ) as $choiceId )
@@ -417,19 +419,19 @@ try
             
             case 'exSubmitVote':
             {
-                if ( $has_voted )
+                if( $has_voted )
                 {
                     $dialogBox->success( get_lang( 'Your vote has been successfully added!' ) );
                 }
-                elseif ( $poll->getOption( '_answer' ) == '_required' )
+                elseif( $poll->getOption( '_answer' ) == '_required' )
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'You must validate a choice!' ) . '</strong>' );
                 }
-                elseif ( ! $userVote->getPoll()->isOpen() )
+                elseif( ! $userVote->getPoll()->isOpen() )
                 {
                     $dialogBox->error( get_lang( 'The votes for this poll are closed' ) );
                 }
-                elseif ( $poll->getOption( '_revote' ) != '_allowed' )
+                elseif( $poll->getOption( '_revote' ) != '_allowed' )
                 {
                     $dialogBox->error( get_lang( 'You have already voted!' ) );
                 }
@@ -467,9 +469,13 @@ try
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'You must fill the required fields' ) . '</strong>' );
                 }
-                else
+                elseif( empty( $poll->getChoiceList ) )
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'The poll must have at least one choice' ) . '</strong>' );
+                }
+                else
+                {
+                    $dialogBox->error( '<strong>' . get_lang( 'Fields exceeded maximal amount of characters allowed' ) . '</strong>' );
                 }
                 
                 $template = 'polledit';
@@ -501,9 +507,13 @@ try
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'Cannot modify poll' ) . '</strong>' );
                 }
-                else
+                elseif( empty( $poll->getChoiceList ) )
                 {
                     $dialogBox->error( '<strong>' . get_lang( 'The poll must have at least one choice' ) . '</strong>' );
+                }
+                else
+                {
+                    $dialogBox->error( '<strong>' . get_lang( 'Fields exceeded maximal amount of characters allowed' ) . '</strong>' );
                 }
                 
                 $template  = 'polledit';
