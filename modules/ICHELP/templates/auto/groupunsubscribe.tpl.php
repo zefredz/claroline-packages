@@ -1,1 +1,1 @@
-Si vous ne pouvez vous-même de groupe au sein d'un cours iCampus, la seule possibilité qu'il vous reste est de contacter le gestionnaire pour lui demander de le faire pour vous.
+Si vous ne pouvez vous-même de groupe au sein d'un cours iCampus, la seule possibilité qu'il vous reste est de contacter le gestionnaire du cours concerné pour lui demander de le faire pour vous.

@@ -24,17 +24,10 @@ class TicketList
         //$this->load();
     }
     
-    public function load( $showFailedOnly = null , $chronologicOrder = null , $all = false )
+    public function load( $showFailedOnly = false , $chronologicOrder = false , $all = false )
     {
-        if( ! is_null( $showFailedOnly ) )
-        {
-            $this->showFailedOnly = (boolean)$showFailedOnly;
-        }
-        
-        if( ! is_null( $chronologicOrder ) )
-        {
-            $this->chronologicOrder = (boolean)$chronologicOrder;
-        }
+        $this->showFailedOnly = (boolean)$showFailedOnly;
+        $this->chronologicOrder = (boolean)$chronologicOrder;
         
         $sqlString = "SELECT
                 ticketId,
