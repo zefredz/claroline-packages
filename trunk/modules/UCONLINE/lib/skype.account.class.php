@@ -97,7 +97,7 @@ class SkypeAccount
      */
     public function save( $newSkypeName )
     {
-        if ( $this->skypeName )
+        if ( ! empty( $this->skypeName ) )
         {
             $this->skypeName = $newSkypeName;
             
