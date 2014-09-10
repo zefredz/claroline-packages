@@ -97,7 +97,7 @@ if ( get_conf( 'UCONLINE_showUserPicture' ) )
         }
         else
         {
-            $userList[ $index ][ 'picture' ] = get_icon_url( 'nopicture' );
+            $userList[ $index ][ 'picture' ] = get_icon_url_url( 'nopicture' );
         }
     }
 }
