@@ -80,7 +80,7 @@
         <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <td>
                 <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
-                    <img src="<?php echo get_icon_url_url( 'mail_close' ); ?>" alt="send a message" />
+                    <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
                 </a>
             </td>
         <?php endif; ?>
