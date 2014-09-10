@@ -23,12 +23,12 @@
             </th>
         <?php if ( get_conf( 'UCONLINE_showUserPicture' ) ) : ?>
             <th>
-                <img src="<?php echo get_icon( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
+                <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
             </th>
         <?php endif; ?>
         <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <th>
-                <img src="<?php echo get_icon( 'mail_close' ); ?>" alt="<?php echo get_lang( 'Send a message' ); ?>" />
+                <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="<?php echo get_lang( 'Send a message' ); ?>" />
             </th>
         <?php endif; ?>
         <?php if( get_conf( 'UCONLINE_showEmail' ) ) : ?>
@@ -69,7 +69,7 @@
             <td>
                 <a href="#" id="user<?php echo $user[ 'id' ]; ?>" class="userBlock">
                     <span>
-                        <img src="<?php echo get_icon( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
+                        <img src="<?php echo get_icon_url( 'user' ); ?>" alt="<?php echo get_lang( 'user picture' ); ?>" />
                     </span>
                     <span class="userPicture">
                         <img src="<?php echo $user[ 'picture' ]; ?>" alt="<?php echo get_lang( 'user picture' ); ?>"/>
@@ -80,7 +80,7 @@
         <?php if( get_conf( 'UCONLINE_showSendMessage' ) ) : ?>
             <td>
                 <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( get_path('clarolineRepositoryWeb') . '/messaging/sendmessage.php?cmd=rqMessageToUser&amp;userId=' . $user[ 'id' ] ) ); ?>">
-                    <img src="<?php echo get_icon_url( 'mail_close' ); ?>" alt="send a message" />
+                    <img src="<?php echo get_icon_url_url( 'mail_close' ); ?>" alt="send a message" />
                 </a>
             </td>
         <?php endif; ?>
