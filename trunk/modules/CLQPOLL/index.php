@@ -808,7 +808,11 @@ else
 }
 
 // generates breadcrumbs
-ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
+if ( isset( $pageTitle[ 'subTitle' ] ) )
+{
+    ClaroBreadCrumbs::getInstance()->append( $pageTitle[ 'subTitle' ] );
+}
+
 if ( isset( $crumb ) )
 {
     ClaroBreadCrumbs::getInstance()->append( $crumb );
