@@ -46,7 +46,7 @@ try
         
         $dialogBox->info(
             get_lang('Continue to the <a href="%homePage%">home page</a>',
-                array('%homePage%' => get_path('url') . '/index.php' )
+                array('%homePage%' => get_path('rootWeb') )
             )
         );
     }
