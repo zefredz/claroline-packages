@@ -9,17 +9,17 @@ class ICADDEXT_Importer
         , 'date_naissance' );
     
     public static $allowed_fields = array(
-          'username'
-        , 'password'
-        , 'officialCode'
-        , 'officialCodePrefix'
-        , 'officialEmail'
-        , 'phoneNumber'
-        , 'institution'
-        , 'annee_etude'
-        //, 'date_naissance'
-        , 'remarques'
-        , 'authSource' );
+          'username' => 'username'
+        , 'password' =>'password'
+        , 'officialCode' => 'officialCode'
+        , 'officialCodePrefix' => 'officialCodePrefix'
+        , 'officialEmail' => 'officialEmail'
+        , 'phoneNumber' => 'phoneNumber'
+        , 'institution' => 'institution'
+        , 'annee_etude' => 'annee_etude'
+        //, 'date_naissance' => 'date_naissance'
+        , 'remarques' => 'remarques'
+        , 'authSource' => 'authSource' );
     
     public static $user_tbl_fields = array(
           'nom'
@@ -591,9 +591,9 @@ class ICADDEXT_Importer
         
         foreach( $data as $field => $value )
         {
-            if( in_array( $field , $allowed_fields ) )
+            if( array_key_exists( $field , $allowed_fields ) )
             {
-                if( $field == 'password' && $encrypt )
+                if( $field === 'password' && $encrypt )
                 {
                     $value = md5( $value );
                 }
