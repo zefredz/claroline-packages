@@ -3,10 +3,10 @@
 class ICADDEXT_Importer
 {
     public static $required_fields = array(
-          'prenom'
-        , 'nom'
-        , 'email'
-        , 'date_naissance' );
+          'prenom' => 'prenom'
+        , 'nom' => 'nom'
+        , 'email' => 'email'
+        , 'date_naissance' => 'date_naissance' );
     
     public static $allowed_fields = array(
           'username' => 'username'
@@ -22,43 +22,43 @@ class ICADDEXT_Importer
         , 'authSource' => 'authSource' );
     
     public static $user_tbl_fields = array(
-          'nom'
-        , 'prenom'
-        , 'username'
-        , 'password'
-        , 'language'
-        , 'authSource'
-        , 'email'
-        , 'officialCode'
-        , 'officialEmail'
-        , 'phoneNumber'
-        , 'pictureUri'
-        , 'creatorId'
-        , 'isPlatformAdmin'
-        , 'isCourseCreator' );
+          'nom' => 'nom'
+        , 'prenom' => 'prenom'
+        , 'username' => 'username'
+        , 'password' => 'password'
+        , 'language' => 'language'
+        , 'authSource' => 'authSource'
+        , 'email' => 'email'
+        , 'officialCode' => 'officialCode'
+        , 'officialEmail' => 'officialEmail'
+        , 'phoneNumber' => 'phoneNumber'
+        , 'pictureUri' => 'pictureUri'
+        , 'creatorId' => 'creatorId'
+        , 'isPlatformAdmin' => 'isPlatformAdmin'
+        , 'isCourseCreator' => 'isCourseCreator' );
     
     public static $user_added_tbl_fields = array(
-          'actif'
-        , 'mail_envoye'
-        , 'user_id'
-        , 'nom'
-        , 'prenom'
-        , 'email'
-        , 'date_naissance'
-        , 'phoneNumber'
-        , 'institution'
-        , 'annee_etude'
-        , 'officialCode'
-        , 'date_ajout'
-        , 'remarques' );
+          'actif' => 'actif'
+        , 'mail_envoye' => 'mail_envoye'
+        , 'user_id' => 'user_id'
+        , 'nom' => 'nom'
+        , 'prenom' => 'prenom'
+        , 'email' => 'email'
+        , 'date_naissance' => 'date_naissance'
+        , 'phoneNumber' => 'phoneNumber'
+        , 'institution' => 'institution'
+        , 'annee_etude' => 'annee_etude'
+        , 'officialCode' => 'officialCode'
+        , 'date_ajout' => 'date_ajout'
+        , 'remarques' => 'remarques' );
     
     public static $display_fields = array(
-          'nom'
-        , 'prenom'
-        , 'email'
-        , 'officialCode'
-        , 'username'
-        , 'password' );
+          'nom' => 'nom'
+        , 'prenom' => 'prenom'
+        , 'email' => 'email'
+        , 'officialCode' => 'officialCode'
+        , 'username' => 'username'
+        , 'password' => 'password' );
     
     public static $default_fields = array(
           'authSource' => 'external'
@@ -591,7 +591,7 @@ class ICADDEXT_Importer
         
         foreach( $data as $field => $value )
         {
-            if( array_key_exists( $field , $allowed_fields ) )
+            if( isset( $allowed_fields[ $fields ] ) )
             {
                 if( $field === 'password' && $encrypt )
                 {
@@ -600,6 +600,11 @@ class ICADDEXT_Importer
                 
                 $sqlArray[] = $field . " = " . Claroline::getDatabase()->quote( $value );
             }
+        }
+        
+        if( empty( $sqlArray) )
+        {
+            throw new Exception( 'Empty data' );
         }
         
         return implode( ",\n" , $sqlArray );
