@@ -33,6 +33,8 @@ try
     $userInput = Claro_UserInput::getInstance();
     $ticketId = $userInput->get( 'ticketId' );
     
+    if( ! $ticketId ) throw new Exception( 'Forbidden' );
+    
     $ticket = new TicketManager( $ticketId );
     $ticket->update( 'status' , 'solved' );
     
