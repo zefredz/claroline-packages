@@ -591,7 +591,7 @@ class ICADDEXT_Importer
         
         foreach( $data as $field => $value )
         {
-            if( isset( $allowed_fields[ $fields ] ) )
+            if( isset( $allowed_fields[ $field ] ) )
             {
                 if( $field === 'password' && $encrypt )
                 {
