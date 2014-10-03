@@ -111,7 +111,7 @@ if (!is_null($surveyId))
     {
         $iterator = 0;
         $content ='';
-        $fileExport = 'survey' . $surveyId . '.txt';
+        $fileName = 'survey' . $surveyId . '.csv';
 
         foreach ( $surveyQuestionList as $thisSurveyQuestion)
         {
@@ -136,29 +136,18 @@ if (!is_null($surveyId))
                 }
             }
         }
+        
+        $fileExportSize = strlen( $content );
 
-        file_put_contents($fileExport,$content);
-
-        if ( file_exists($fileExport) )
-        {
-            $fileExportSize = filesize($fileExport);
-
-            header('Expires: Wed, 01 Jan 1990 00:00:00 GMT');
-            header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
-            header('Cache-Control: no-cache, must-revalidate');
-            header('Pragma: no-cache');
-            header('Content-type: application/text');
-            header('Content-Length: '.$fileExportSize);
-            header('Content-Disposition: attachment; filename="'.$fileExport.'";');
-
-            readfile($fileExport);
-            unlink($fileExport);
-            exit();
-        }
-        else
-        {
-            $msgList['error'][] = get_lang("Unable to create file");
-        }
+        header('Expires: Wed, 01 Jan 1990 00:00:00 GMT');
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Pragma: no-cache');
+        header('Content-type: application/text');
+        header('Content-Length: '.$fileExportSize);
+        header('Content-Disposition: attachment; filename="'.$fileName.'";');
+        echo( $content );
+        exit();
     }
 }
 
