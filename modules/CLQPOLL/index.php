@@ -114,7 +114,7 @@ try
         if ( $poll->getOption( '_privacy' ) != '_anonymous' ) $userRights[ 'see_names' ] = true;
     }
     
-    if ( $is_allowed_to_edit )
+    if ( $is_platform_admin )
     {
         $userRights[ 'see_names' ] = true;
     }
@@ -130,9 +130,13 @@ try
     {
         $change_allowed[ '_type' ] = false;
         $change_allowed[ '_answer' ] = false;
-        //if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
         $change_allowed[ '_privacy' ] = false;
         $change_allowed[ '_revote' ] = false;
+    }
+    
+    if ( $poll->getAllVoteList() && ! $is_platform_admin )
+    {
+        if ( $poll->getOption( '_privacy' ) == '_anonymous' ) $change_allowed[ '_privacy' ] =  false;
     }
     
     // to handle in-betweens deletion
