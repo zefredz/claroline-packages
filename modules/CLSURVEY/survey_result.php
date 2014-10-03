@@ -118,7 +118,7 @@ if (!is_null($surveyId))
             $iterator ++ ;
             $questionId = $thisSurveyQuestion['questionId'];
 
-            $tbl = get_module_main_tbl('survey_answer');
+            $tbl = get_module_main_tbl( array( 'survey_answer' ) );
             $sql = "SELECT answer, count(answer) as qty
                     FROM `" . $tbl['survey_answer'] . "`
                     WHERE id_question = " . (int) $questionId . "
