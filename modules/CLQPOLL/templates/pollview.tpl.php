@@ -27,7 +27,7 @@
     <?php endif; ?>
     
     <?php if ( $this->userRights[ 'vote' ] ) : ?>
-    <form action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
+    <form action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=exSubmitVote' ) ); ?>" method="post">
     <?php endif; ?>
     
     <table>
@@ -80,7 +80,7 @@
                 <?php echo get_lang( 'Choices' ); ?>
                 </th>
     <?php foreach ( $this->poll->getChoiceList() as $label ) : ?>
-                <th class="option"><?php echo htmlspecialchars( $label ); ?></th>
+                <th class="option"><?php echo claro_htmlspecialchars( $label ); ?></th>
     <?php endforeach; ?>
             </tr>
         </thead>
@@ -104,7 +104,7 @@
                 <th class="name">
             <?php echo $vote[ 'lastName' ] . ' ' . $vote[ 'firstName' ]; ?>
                 <?php if ( claro_is_platform_admin() ) : ?>
-                        <a href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteVote&pollId='. $this->poll->getId() . '&userId=' . $vote[ 'user_id' ] ) );?>">
+                        <a href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqDeleteVote&pollId='. $this->poll->getId() . '&userId=' . $vote[ 'user_id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'delete' ); ?>" alt="<?php echo get_lang( 'Delete user\'s vote' ); ?>"/>
                         </a>
                 <?php endif; ?>
@@ -138,10 +138,10 @@
     <?php if ( $this->voteList->getPageCount() > 1 && $this->userRights[ 'see_names'] ) : ?>
     <div id="pagerNav" class="pager">
         <?php if ( $this->pageNb > 0 ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
+        <a class="pagerButton" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=0&pollId=' . $this->poll->getId() ) );?>">
             <span class="enabled">&lt;&lt;</span>
         </a>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+        <a class="pagerButton" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
             <span class="enabled">&lt;</span>
         </a>
         <?php else : ?>
@@ -151,7 +151,7 @@
         <?php for ( $i = $this->pageNb - 3; $i <= $this->pageNb + 3; $i++ ) : ?>
             <?php if ( $i >= 0 && $i < $this->voteList->getPageCount() ) : ?>
                 <?php if ( $this->pageNb != $i ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
+        <a class="pagerButton" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . $i . '&pollId=' . $this->poll->getId() ) );?>">
             <span class="enabled"><?php echo $i + 1; ?></span>
         </a>
             <?php else : ?>
@@ -160,10 +160,10 @@
             <?php endif; ?>
         <?php endfor; ?>
         <?php if ( $this->pageNb < $this->voteList->getPageCount() - 1 ) : ?>
-        <a class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+        <a class="pagerButton" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->pageNb + 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
             <span class="enabled">&gt;</span>
         </a>
-        <a  class="pagerButton" href="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->voteList->getPageCount() - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
+        <a  class="pagerButton" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqViewPoll&pageNb=' . ( $this->voteList->getPageCount() - 1 ) . '&pollId=' . $this->poll->getId() ) );?>">
             <span class="enabled">&gt;&gt;</span>
         </a>
         <?php else : ?>

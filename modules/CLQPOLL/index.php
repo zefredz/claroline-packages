@@ -638,7 +638,7 @@ if ( isset ( $template ) )
             {
                 $cmdList[] = array( 'img'  => 'poll_new',
                                     'name' => get_lang( 'Create a new poll' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqCreatePoll') ) );
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=rqCreatePoll') ) );
             }
             break;
         
@@ -682,7 +682,7 @@ if ( isset ( $template ) )
             {
                 $cmdList[] = array( 'img'  => 'poll',
                                     'name' => get_lang( 'View poll' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=rqViewPoll&pollId='
                                                                                   . $poll->getId() ) ) );
                 
@@ -690,19 +690,19 @@ if ( isset ( $template ) )
                 {
                     $cmdList[] = array( 'img'  => 'sweep',
                                         'name' => get_lang( 'Purge this poll' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=rqPurgePoll&pollId='
                                                                                       . $poll->getId() ) ) );
                     $cmdList[] = array( 'img'  => 'statistics',
                                         'name' => get_lang( 'View stats' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=rqViewStats&pollId='
                                                                                       . $poll->getId() ) ) );
                 }
                 
                 $cmdList[] = array( 'img'  => 'delete',
                                     'name' => get_lang( 'Delete this poll' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=rqDeletePoll&pollId='
                                                                                   . $poll->getId() ) ) );
             }
@@ -715,7 +715,7 @@ if ( isset ( $template ) )
             
             $cmdList[] = array( 'img'  => 'poll',
                                 'name' => get_lang( 'View poll' ),
-                                'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                               . '?cmd=rqViewPoll&pollId='
                                                                               . $poll->getId() ) ) );
             break;
@@ -734,12 +734,12 @@ if ( isset ( $template ) )
             {
                 $cmdList[] = array( 'img'  => 'edit',
                                     'name' => get_lang( 'Edit poll' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=rqEditPoll&pollId='
                                                                                   . $poll->getId() ) ) );
                 $cmdList[] = array( 'img'  => 'sweep',
                                     'name' => get_lang( 'Purge this poll' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=rqPurgePoll&pollId='
                                                                                   . $poll->getId() ) ) );
                 
@@ -747,7 +747,7 @@ if ( isset ( $template ) )
                 {
                     $cmdList[] = array( 'img'  => 'unlock',
                                         'name' => get_lang( 'Close poll' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=exClose&tpl=pollview&pollId='
                                                                                       . $poll->getId() ) ) );
                 }
@@ -755,7 +755,7 @@ if ( isset ( $template ) )
                 {
                     $cmdList[] = array( 'img'  => 'locked',
                                         'name' => get_lang( 'Open poll' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=exOpen&tpl=pollview&pollId='
                                                                                       . $poll->getId() ) ) );
                 }
@@ -764,7 +764,7 @@ if ( isset ( $template ) )
                 {
                     $cmdList[] = array( 'img'  => 'visible',
                                         'name' => get_lang( 'Make invisible' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=exMkInvisible&tpl=pollview&pollId='
                                                                                       . $poll->getId() ) ) );
                 }
@@ -772,14 +772,14 @@ if ( isset ( $template ) )
                 {
                     $cmdList[] = array( 'img'  => 'invisible',
                                         'name' => get_lang( 'Make visible' ),
-                                        'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                        'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                       . '?cmd=exMkVisible&tpl=pollview&pollId='
                                                                                       . $poll->getId() ) ) );
                 }
                 
                 $cmdList[] = array( 'img'  => 'export',
                                     'name' => get_lang( 'Export to csv' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=export&pollId='
                                                                                   . $poll->getId() ) ) );
             }
@@ -788,7 +788,7 @@ if ( isset ( $template ) )
             {
                 $cmdList[] = array( 'img'  => 'statistics',
                                     'name' => get_lang( 'View stats' ),
-                                    'url'  => htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
+                                    'url'  => claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF']
                                                                                   . '?cmd=rqViewStats&pollId='
                                                                                   . $poll->getId() ) ) );
             }
