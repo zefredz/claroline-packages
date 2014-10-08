@@ -12,7 +12,7 @@
 
 <?php $cmd = $this->poll->getId() ? 'exEditPoll' : 'exCreatePoll'; ?>
 <form   method="post"
-        action="<?php echo htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
+        action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=' . $cmd ) ); ?>" >
 <?php if ( $this->poll ) : ?>
     <input  type="hidden"
             name="pollId"
@@ -145,7 +145,7 @@
     <dl>
         <dt>
             <input id="submitPollProperties" type="submit" name="submitPoll" value="<?php echo get_lang( 'OK' ); ?>" />
-            <?php echo claro_html_button( htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
+            <?php echo claro_html_button( claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) , get_lang( 'Cancel' ) ); ?>
         </dt>
     </dl>
 </form>
