@@ -308,12 +308,14 @@ $(function(){
             $dialogBox->success(get_lang("Users deleted from course"));
             
             // unregister class from course
-            /*if ( $claroClass->isRegisteredToCourse( $course->courseId ) )
+            $claroClass->load( $classId );
+            
+            if ( $claroClass->isRegisteredToCourse( $course->courseId ) )
             {
                 $claroClass->unregisterFromCourse( $course->courseId );
-            }*/
-            
-            $dialogBox->success(get_lang("Class unregistered from course"));
+                
+                $dialogBox->success(get_lang("Class unregistered from course"));
+            }
         }
         else
         {
