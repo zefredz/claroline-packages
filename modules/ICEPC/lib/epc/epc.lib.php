@@ -319,6 +319,21 @@ class EpcServiceStudentsInCourse extends EpcServiceXmlResponse
             'numberOfStudents'  => (string) $this->xml->nombreEtudiantsInscrits
         );
     }
+    
+    /**
+     * Get students
+     * @return array of SimpleXmlElement
+     */
+    public function getStudents ()
+    {
+        // hydrate
+        if ( is_null( $this->students ) )
+        {
+            $this->students = $this->xml->xpath ( 'etudiant[etatCours = "I" or etatCours = "S"]' );
+        }
+        
+        return $this->students;
+    }
 
 }
 
@@ -445,7 +460,6 @@ class EpcServiceStudentsIterator extends RowToObjectArrayIterator
     {
         return new EpcServiceStudentRecord ( $this->collection[ $this->key () ] );
     }
-
 }
 
 /**

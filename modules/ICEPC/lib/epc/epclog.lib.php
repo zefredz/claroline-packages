@@ -42,6 +42,12 @@ class EpcLog
         $sqlAction = $this->database->quote( $action );
         $sqlUserId = $this->database->quote( $userId );
         $sqlCourseId = $courseId ? $this->database->quote( $courseId ) : 'NULL';
+        
+        if ( is_array($message) )
+        {
+            $message = var_export( $message, true );
+        }
+        
         $sqlMessage = $this->database->quote( $message );
         
         switch( $status )
