@@ -22,7 +22,7 @@ class CLLIBR_Portlet extends UserDesktopPortlet
         $output = '<div id="portletMyBookmark">' . "\n"
                 . '<img src="' . get_icon_url( 'loading' ) . '" alt="loading" />' . "\n"
                 . '</div>' . "\n"
-                . '<div style="clear: both;" ></div>' . "\n";
+                ;
         
         $output .= '<script type="text/javascript">' . "\n"
                 .  '    $(document).ready(function(){' . "\n"
