@@ -108,8 +108,10 @@ class LibraryList
             $this->load();
         }
         
+        $allowedLibraryList = array_diff( $this->allowedLibraryList , $this->userLibraryList );
+        
         return array( 'user' => $this->userLibraryList
-                    , $this->is_admin ? 'other' : 'allowed'  => $this->allowedLibraryList );
+                    , $this->is_admin ? 'other' : 'allowed'  => $allowedLibraryList );
     }
     
     /**
