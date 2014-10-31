@@ -13,6 +13,7 @@
 
 <div id="mainContent">
 <?php foreach( $this->resourceList as $category => $resourceList ) : ?>
+<?php if( $category != 'user' || ! empty( $resourceList ) ) : ?>
 <fieldset id="<?php echo $category; ?>Library">
     <legend><?php echo get_lang( ucwords( $category . ' libraries' ) ); ?></legend>
     <table class="claroTable emphaseLine" style=" width: 100%;">
@@ -87,5 +88,6 @@
         </tbody>
     </table>
 </fieldset>
+<?php endif; ?>
 <?php endforeach; ?>
 </div>
