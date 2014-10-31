@@ -74,7 +74,7 @@
                         </a>
                         -->
                     <?php if ( $this->edit_allowed ) : ?>
-                        <a title="<?php echo get_lang( 'Move this resource to another library' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqShowCatalogue&option=move&libraryId=' . $this->libraryId . '&resourceId='. $resource[ 'id' ] ) );?>">
+                        <a title="<?php echo get_lang( 'Move this resource to another library' ); ?>" href="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'].'?cmd=rqMoveResource&libraryId=' . $this->libraryId . '&resourceId='. $resource[ 'id' ] ) );?>">
                             <img src="<?php echo get_icon_url( 'move' ); ?>" alt="<?php echo get_lang( 'Move' ); ?>"/>
                         </a>
                         <?php if( $this->acl->deletionGranted( $resource['id'] ) ) : ?>
