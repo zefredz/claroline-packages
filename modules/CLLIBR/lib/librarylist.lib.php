@@ -108,7 +108,7 @@ class LibraryList
             $this->load();
         }
         
-        $allowedLibraryList = array_diff( $this->allowedLibraryList , $this->userLibraryList );
+        $allowedLibraryList = array_diff( $this->allowedLibraryList , (array)$this->userLibraryList );
         
         return array( 'user' => $this->userLibraryList
                     , $this->is_admin ? 'other' : 'allowed'  => $allowedLibraryList );
