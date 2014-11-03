@@ -183,7 +183,7 @@ class path
                         `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
                         `identifier` = '".addslashes($this->identifier)."',
-                        `allow_reinit` = ".(int) $this->allowReinit.",
+                        `allow_reinit` = ".($this->allowReinit? 'YES':'NO').",
                         `view_mode` = '".addslashes($this->viewMode)."',
                         `encoding` = '".addslashes($this->encoding)."'";
 
