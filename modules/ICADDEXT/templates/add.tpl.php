@@ -31,7 +31,7 @@
 <form method="post"
       enctype="multipart/form-data"
       action="<?php echo claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] . '?cmd=exAdd' ) ); ?>" >
-    <?php foreach( $this->controller->importer->toAdd as $index => $userData ) : ?>
+    <?php foreach( $this->controller->importer->csvParser->data as $index => $userData ) : ?>
         <?php foreach( $userData as $field => $value ) : ?>
     <input type="hidden"
            name="userData[<?php echo $index; ?>][<?php echo $field; ?>]"
@@ -109,15 +109,6 @@
     
     <?php if( ! empty( $this->controller->importer->conflict ) ) : ?>
     <br />
-    <?php foreach( array_intersect_key( $this->controller->importer->csvParser->data , $this->controller->importer->conflict ) as $index => $userData ) : ?>
-        <?php foreach( $userData as $field => $value ) : ?>
-            <?php if( ! array_key_exists( $field , ICADDEXT_Importer::$display_fields ) ) : ?>
-    <input type="hidden"
-           name="toForce[<?php echo $index; ?>][<?php echo $field; ?>]"
-           value="<?php echo claro_htmlspecialchars( $value ); ?>" />
-            <?php endif; ?>
-        <?php endforeach; ?>
-    <?php endforeach; ?>
     <fieldset>
         <legend><?php echo get_lang( 'conflict_found' ); ?> :</legend>
         <table class="claroTable emphaseLine" style="width: 100%;">
