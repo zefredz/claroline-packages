@@ -183,7 +183,7 @@ class path
                         `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
                         `identifier` = '".addslashes($this->identifier)."',
-                        `allow_reinit` = ".($this->allowReinit? 'YES':'NO').",
+                        `allow_reinit` = ".($this->allowReinit? "'YES'":"'NO'").",
                         `view_mode` = '".addslashes($this->viewMode)."',
                         `encoding` = '".addslashes($this->encoding)."'";
 
@@ -212,7 +212,7 @@ class path
                         `version` = '".addslashes($this->version)."',
                         `lock` = '".addslashes($this->lock)."',
                         `identifier` = '".addslashes($this->identifier)."',
-                        `allow_reinit` = ".($this->allowReinit? 'YES':'NO').",
+                        `allow_reinit` = ".($this->allowReinit? "'YES'":"'NO'").",
                         `view_mode` = '".addslashes($this->viewMode)."',
                         `encoding` = '".addslashes($this->encoding)."'
                     WHERE `id` = '".$this->id."'";
