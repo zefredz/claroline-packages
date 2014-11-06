@@ -923,7 +923,7 @@ try
         
         if( $libraryId )
         {
-            $template->assign( 'is_librarian' , $librarian->isLibrarian( $libraryId ) );
+            $template->assign( 'is_librarian' , $librarian->isLibrarian( $userId ) );
         }
         
         if ( $context == 'resourcetype' )
