@@ -9,7 +9,7 @@
  *
  * @package CLSURVEY
  *
- * @author Christophe Gesché <moosh@claroline.net>
+ * @author Christophe GeschÃ© <moosh@claroline.net>
  * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  *
@@ -225,7 +225,7 @@ if( $displayForm )
     if ( $cmd == 'rqEdit' ) $cmd = 'exEdit';
     
     $out .= '<form id="importSurveyForm" action="'
-            . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) )
+            . claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) )
             . '" enctype="multipart/form-data" method="post">'  . "\n"
             . '    <input type="hidden" name="cmd" value="'. $cmd . '" />' . "\n"
             . '    <input type="hidden" name="surveyId" value="' . $surveyId . '" />' . "\n"
@@ -234,7 +234,7 @@ if( $displayForm )
             . '    <h4>' . get_lang( 'Description ') . '</h4>'
             . '    <textarea id="surveyDescription" name="description" rows="8" cols="40">' . $description . '</textarea><br />'
             . '    <input type="submit" name="submitCSV" value="' . get_lang( 'Submit' ) . '" />' . "\n"
-            .      claro_html_button( htmlspecialchars( Url::Contextualize( 'survey_list.php' ) ) , get_lang( 'Cancel' ) )  . "\n"
+            .      claro_html_button( claro_htmlspecialchars( Url::Contextualize( 'survey_list.php' ) ) , get_lang( 'Cancel' ) )  . "\n"
             . '</form>';
             
     //$dialogBox->form( $form );

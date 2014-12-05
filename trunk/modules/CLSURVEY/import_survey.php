@@ -9,7 +9,7 @@
  *
  * @package CLSURVEY
  *
- * @author Christophe Gesché <moosh@claroline.net>
+ * @author Christophe GeschÃ© <moosh@claroline.net>
  * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  * @author Frederic Fervaille <frederic.fervaille@uclouvain.be>
@@ -44,7 +44,7 @@ else
         case 'rqImport':
         {
             $form = '<form id="importSurveyForm" action="'
-            . htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] .'?cmd=exImport' ) )
+            . claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] .'?cmd=exImport' ) )
             .'" enctype="multipart/form-data" method="post">'  . "\n"
             . '    <h4>' . get_lang( 'Title' ) . '</h4>'
             . '    <input id="surveyTitle" type="text" name="title" style="width: 330px;"/><br />'
@@ -53,7 +53,7 @@ else
             . '    <h4>' . get_lang( 'Select a file to import' ) . '</h4>'
             . '    <input type="file" name="CSVfile" /><br/>' . "\n"
             . '    <input type="submit" name="submitCSV" value="' . get_lang( 'Import' ) . '" />' . "\n"
-            .      claro_html_button( htmlspecialchars( Url::Contextualize( 'survey_list.php' ) ) , get_lang( 'Cancel' ) )  . "\n"
+            .      claro_html_button( claro_htmlspecialchars( Url::Contextualize( 'survey_list.php' ) ) , get_lang( 'Cancel' ) )  . "\n"
             . '</form>';
             
             $dialogBox->form( $form );
@@ -88,8 +88,8 @@ else
     }
 }
 
-ClaroBreadCrumbs::getInstance()->append( get_lang( 'Survey' ) , htmlspecialchars( Url::Contextualize( 'index.php' ) ) );
-ClaroBreadCrumbs::getInstance()->append( get_lang( 'Import' ) , htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) );
+ClaroBreadCrumbs::getInstance()->append( get_lang( 'Survey' ) , claro_htmlspecialchars( Url::Contextualize( 'index.php' ) ) );
+ClaroBreadCrumbs::getInstance()->append( get_lang( 'Import' ) , claro_htmlspecialchars( Url::Contextualize( $_SERVER['PHP_SELF'] ) ) );
 
 Claroline::getInstance()->display->body->appendContent( '<h3>' . get_lang( 'Import survey' ) . '</h3>' );
 Claroline::getInstance()->display->body->appendContent( $dialogBox->render() );
