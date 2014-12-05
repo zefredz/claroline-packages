@@ -9,7 +9,7 @@
  *
  * @package CLSURVEY
  *
- * @author Christophe Gesché <moosh@claroline.net>
+ * @author Christophe GeschÃ© <moosh@claroline.net>
  * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  *
@@ -214,7 +214,7 @@ if( $displayForm )
     // description
     /*$out .= '<tr>' . "\n"
     .	 '<td valign="top"><label for="description">'.get_lang('Commentar').'&nbsp;:</label></td>' . "\n"
-    .	 '<td>'.claro_html_textarea_editor('description',htmlspecialchars($form['description'])).'</td>' . "\n"
+    .	 '<td>'.claro_html_textarea_editor('description',claro_htmlspecialchars($form['description'])).'</td>' . "\n"
     .	 '</tr>' . "\n\n"; */
 
     // type

@@ -9,7 +9,7 @@
  *
  * @package CLSURVEY
  *
- * @author Christophe Gesché <moosh@claroline.net>
+ * @author Christophe GeschÃ© <moosh@claroline.net>
  * @author Philippe Dekimpe <dkp@ecam.be>
  * @author Claro Team <cvs@claroline.net>
  *
@@ -169,7 +169,7 @@ foreach ( $surveyList as $thisSurvey)
         $title = $thisSurvey['title'];
 
         $thisRow['title'] = '<a href="survey.php?surveyId=' . $thisSurvey['id_survey'] . '"  class="item'.$classItem . ' ' . $style . '" >'
-        .                   htmlspecialchars($title) . "\n"
+        .                   claro_htmlspecialchars($title) . "\n"
         .    '</a>'
         ;
 
@@ -178,7 +178,7 @@ foreach ( $surveyList as $thisSurvey)
         if ($is_allowedToEdit)
         {
             $thisRow['export'] =
-                claro_html_cmd_link( htmlspecialchars('survey_list.php?cmd=exExport&surveyId=') . $thisSurvey['id_survey']
+                claro_html_cmd_link( claro_htmlspecialchars('survey_list.php?cmd=exExport&surveyId=') . $thisSurvey['id_survey']
                                    , '<img src="' . get_icon_url( 'export_list' ) . '" '
                                    . 'alt="' . get_lang('Export') . '" />' );
                 
