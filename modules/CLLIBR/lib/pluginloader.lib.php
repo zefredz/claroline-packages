@@ -37,7 +37,7 @@ class PluginLoader
     {
         if ( empty( $this->pluginList ) )
         {
-            $this->getPlugins();
+            $this->loadPlugins();
         }
         
         return $this->pluginList;
@@ -92,6 +92,22 @@ class PluginLoader
      */
     public function pluginExists( $type , $name )
     {
-        return isset( $this->pluginList[ $type ][ $name ] );
+        return in_array( $name , $this->pluginList[ $type ] );
+    }
+    
+    /**
+     * Gets plugins by its name
+     * @param string $name : the plugin's name
+     * @return object : a plugin's instance
+     */
+    public function getPlugin( $name )
+    {
+        foreach( $this->pluginList as $pluginType )
+        {
+            if( $this->pluginExists( $name , $pluginType ) )
+            {
+                return new $name;
+            }
+        }
     }
 }
