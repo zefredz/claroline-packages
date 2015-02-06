@@ -167,7 +167,8 @@ class MoodleQuestion {
     }
     
     /**
-     *
+     * Formats datas for MCUA
+     * @return void
      */
     private function MCUA()
     {
@@ -177,7 +178,8 @@ class MoodleQuestion {
     }
     
     /**
-     *
+     * Formats datas for MCMA
+     * @return void
      */
     private function MCMA()
     {
@@ -237,6 +239,10 @@ class MoodleQuestion {
         );
     }
     
+    /**
+     * Converts datas from Claroline's MATCHING answers to Moodle format
+     * @return void
+     */
     private function MATCHING()
     {
         $this->moodleType = 'matching';
@@ -255,7 +261,7 @@ class MoodleQuestion {
     }
     
     /**
-     * Converts datas from Claroline's FIB to Moodle format
+     * Converts datas from Claroline's FIB answers to Moodle format
      * @return void
      */
     private function FIB()
@@ -273,10 +279,10 @@ class MoodleQuestion {
         
         foreach( $answerList[ 0 ] as $index => $option )
         {
-            //$this->answerList[ $index + 1 ][ 'option' ] = trim( $option , '[]' );
-            //$this->answerList[ $index + 1 ][ 'fraction' ] = (int)$gradeList[ $index ] / $this->grade;
+            $this->answerList[ $index + 1 ][ 'option' ] = trim( $option , '[]' );
+            $this->answerList[ $index + 1 ][ 'fraction' ] = (int)$gradeList[ $index ] / $this->grade;
             
-            $this->answerList[ $index + 1 ] = trim( $option , '[]' );
+            //$this->answerList[ $index + 1 ] = trim( $option , '[]' );
             
             if( $this->moodleType == 'cloze' )
             {
@@ -304,7 +310,12 @@ class MoodleQuestion {
         
         if( ! empty( $wrongList ) )
         {
-            $this->answerList = array_merge( $this->answerList , $wrongList );
+            //$this->answerList = array_merge( $this->answerList , $wrongList );
+            foreach( $wrongList as $wrongAnswer )
+            {
+                $this->answerList[] = array( 'option' => $wrongAnswer ,
+                                             'fraction' => '0' );
+            }
         }
         
         $this->description = MOODLEEX_clear( $this->description )

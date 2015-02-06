@@ -2,7 +2,7 @@
 <shownumcorrect/>
 <?php foreach( $this->question->answerList as $answer ) : ?>
 <selectoption>
-    <text><?php echo $answer; ?></text>
+    <text><?php echo $answer[ 'option' ]; ?></text>
     <group>1</group>
 </selectoption>
 <?php endforeach; ?>
