@@ -1,0 +1,28 @@
+<module>
+    <label>MOODLEEX</label>
+    <name>Moddle resource exporter</name>
+    <version>1.0.0</version>
+    <license>GPL</license>
+    <type>crsmanage</type>
+    <entry>index.php</entry>
+    <icon>icon.png</icon>  
+    <context>course</context>
+    
+    <description>
+        <![CDATA[
+        Before saying goodbye to Claroline, do not forget to take your money back!
+        ]]>
+    </description>
+    
+    <author>
+        <name>Frederic Fervaille</name>
+        <email>frederic.fervaille@uclouvain.be</email>
+        <web>http://www.claroline.net</web>
+    </author>
+    
+    <requirements>
+        <claroline>
+            <version>1.10</version>
+        </claroline>
+    </requirements>
+</module>
