@@ -87,9 +87,9 @@ function MOODLEEX_clear( $string )
 }
 
 /**
- * Replaces src content by base64 encoded data
- * @param string $string 
- * @return string
+ * Replaces src content for img by base64 encoded data
+ * @param string $string : the html content
+ * @return string : the 'same' html content with integrated images 
  */
 function MOODLEEX_convertImageSrc( $string )
 {
@@ -138,6 +138,10 @@ function MOODLEEX_convertImageSrc( $string )
 
 /**
  * Prepares html content in order to make if suitable for MOODLE xml
+ * i.e. : - wraps html content in CDATA tags
+ *        - removes tinyMCE shits
+ * @param string $string
+ * @return string : the baked content
  */
 function MOODLEEX_bake( $string )
 {
@@ -154,16 +158,31 @@ function MOODLEEX_bake( $string )
     }
 }
 
+/**
+ * Checks if passed string contains html tags
+ * @param string $string : the string to check
+ * @return boolean : true if has html stuff in it
+ */
 function MOODLEEX_is_html( $string )
 {
     return preg_match("/<[^<]+>/", $string, $m );
 }
 
+/**
+ * Gets the extension of a file name
+ * @param string : $fileName
+ * @return string : the isloated extension (like 'gif' or 'txt')
+ */
 function MOODLEEX_getFileExtension( $fileName )
 {
     return strtolower( pathinfo( $fileName, PATHINFO_EXTENSION ) );
 }
 
+/*
+ * Checks if the passed file name matches with an image file type (jpg, png, gif)
+ * @param $fileName
+ * @return boolean : true if it's (supposely) an image
+ */
 function MOODLEEX_is_image( $fileName )
 {
     $fileExtension = strtolower( MOODLEEX_getFileExtension( $fileName ) );
