@@ -220,4 +220,27 @@ class ResourceType
         $xmlElement = new SimpleXMLElement( claro_utf8_encode( $xml ) );
         $xmlElement->asXML( $fileName ? $fileName : $this->fileName );
     }
+    
+    /**
+     * Removes unwanted chars and accents
+     * @param string $string : the string to clean
+     * @return string : the cleaned up string
+     */
+    public static function clean( $string )
+    {
+        $string = str_replace( ' ' , '_' , $string );
+        $string = str_replace( '\'' , '' , $string );
+        $string = str_replace( '"' , '' , $string );
+        
+        $string = preg_replace( '~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i'
+            , '$1'
+            , htmlentities( claro_utf8_encode( $string ) , ENT_QUOTES , 'UTF-8' ) );
+        
+        if( strlen( $string ) > 64 )
+        {
+            $string = substr( $string , 0 , 64 );
+        }
+        
+        return strtolower( $string );
+    }
 }
