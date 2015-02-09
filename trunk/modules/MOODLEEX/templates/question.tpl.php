@@ -1,6 +1,6 @@
 <question type="<?php echo $this->question->moodleType; ?>">
     <name>
-        <?php echo MOODLEEX_bake( $this->question->title ); ?>
+        <text><?php echo MOODLEEX_bake( $this->question->title ); ?></text>
     </name>
     <questiontext <?php if( MOODLEEX_is_html( $this->question->description ) ) : ?>format="html"<?php endif; ?>>
         <text><?php echo MOODLEEX_bake( $this->question->description ); ?></text>
