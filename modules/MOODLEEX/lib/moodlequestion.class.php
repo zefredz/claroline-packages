@@ -223,9 +223,10 @@ class MoodleQuestion {
     private function TF()
     {
         $this->moodleType = 'truefalse';
-        $this->penalty = (-1) * $this->grade;
+        //$this->penalty = (-1) * $this->grade;
+        $this->penalty = 0;
         
-        $trueAnswer = ( $this->answerData[ 'correctAnswer' ] == 'TRUE' ) ? 1 : -1;
+        $trueAnswer = ( $this->answerData[ 'correctAnswer' ] == 'TRUE' ) ? 1 : 0;
         
         $this->answerList = array(
             'true' => array(
@@ -234,7 +235,7 @@ class MoodleQuestion {
             ),
             'false' => array(
                 'feedback' => $this->answerData[ 'falseFeedback' ],
-                'fraction' => abs( (int)$this->answerData[ 'falseGrade' ] ) * $trueAnswer * (-1)
+                'fraction' => abs( (int)$this->answerData[ 'falseGrade' ] ) * $trueAnswer // * (-1)
             )
         );
     }
