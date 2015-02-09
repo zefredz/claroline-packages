@@ -124,7 +124,7 @@ function MOODLEEX_bake( $string )
     
     if( MOODLEEX_is_html( $string ) )
     {
-        return '![CDATA[' . MOODLEEX_convertImageSrc( $output ) . ']]';
+        return '<![CDATA[' . MOODLEEX_convertImageSrc( $output ) . ']]>';
     }
     else
     {
