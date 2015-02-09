@@ -76,7 +76,7 @@ class MoodleQuiz
             header("Content-type: aplication/xml" );
             header('Content-Disposition: attachment; filename="' . MOODLEEX_clean( $this->title ) . '.xml"');
             header('Content-Enoding: UTF-8');
-            echo utf8_encode( $output );
+            echo claro_utf8_encode( $output );
             exit();
         }
         else
