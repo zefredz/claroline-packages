@@ -159,10 +159,8 @@ try
     $resourceList = $resourceId
                   ? array( $resourceId => 'on' )
                   : $userInput->get( 'resource' );
-    $typeName = $userInput->get( 'typeName' );
-    
+    $typeName = ResourceType::clean( $userInput->get( 'typeName' ) );
     $resourceType = $typeName ? $resourceTypeList->get( $typeName ) : false;
-    
     $library = new Library( $database , $libraryId );
     $resource = new Resource( $database , $resourceId );
     
@@ -850,8 +848,8 @@ try
                 $extensionList = explode( ',' , $userInput->get( 'extensions' ) );
                 $nameList = $userInput->get( 'name' );
                 $typeList = $userInput->get( 'type' );
-            
-                $fileName = $typeRepository . 'type.' . preg_replace( '/ /' , '_' , $typeName ) . '.xml';
+                
+                $fileName = $typeRepository . 'type.' . $typeName . '.xml';
                 
                 $resourceType = new ResourceType( $resourceTypeList->get( $typeName ) ? $fileName : null );
                 
@@ -865,9 +863,12 @@ try
                     $resourceType->addAuthorizedFile( trim( $extension ) );
                 }
                 
-                foreach( $nameList as $index => $name )
+                if( ! empty( $nameList ) && ! empty( $typeList ) )
                 {
-                    $resourceType->addMetadata( $name , $typeList[ $index ] );
+                    foreach( $nameList as $index => $name )
+                    {
+                        $resourceType->addMetadata( $name , $typeList[ $index ] );
+                    }
                 }
                 
                 $execution_ok = $resourceType->save( $fileName );
