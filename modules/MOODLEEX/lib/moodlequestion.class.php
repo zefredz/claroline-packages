@@ -256,6 +256,11 @@ class MoodleQuestion {
             else
             {
                 $this->answerList[ $answer[ 'code' ] ][ 'answer' ] = $answer[ 'answer' ];
+                
+                if( ! isset( $this->answerList[ $answer[ 'code' ] ][ 'proposition' ] ) )
+                {
+                    $this->answerList[ $answer[ 'code' ] ][ 'proposition' ] = '';
+                }
             }
         }
     }
