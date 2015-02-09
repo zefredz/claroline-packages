@@ -83,7 +83,7 @@ function MOODLEEX_clear( $string )
         '<!-- content: imsqti -->',
     );
     
-    return str_replace( $string_to_remove , '' , trim( $string ) );
+    return trim( str_replace( $string_to_remove , '' , $string ) );
 }
 
 /**
