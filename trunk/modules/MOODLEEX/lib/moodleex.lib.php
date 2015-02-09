@@ -93,44 +93,19 @@ function MOODLEEX_clear( $string )
  */
 function MOODLEEX_convertImageSrc( $string )
 {
-    return $string;
-    /*$content = new DOMDocument();
-    $content->loadHTML( $string );
-    $xpath = new DOMXPath( $content );
-    $imageSrcList = $xpath->evaluate("string(//img/@src)"); # "/images/image.jpg"*/
+    preg_match_all('/<img(.*)src(.*)=(.*)"(.*)"/U', $string, $imgTagList );
     
-    $imageSrcList = array();
-    
-    //preg_match('/<img(.*)src(.*)=(.*)"(.*)"/U', $string, $imgTagList );
-    
-    preg_match('/<img[^>]+>/i', $string , $imgTagList );
-    
-    foreach( $imgTagList as $index => $imgTag )
+    foreach( $imgTagList[ 4 ] as $imageSrc )
     {
-        preg_match('/src="([^"]+)/i', $imgTag , $image );
-        $imageSrc = str_ireplace( 'src="', '',  $image[0]);
-        
-        if( substr( $imageSrc , 0 , 5 ) != 'data:' )
+        if( substr( $imageSrc , 0 , 5 ) != 'data:'
+            && $imageData = file_get_contents( html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc ) ) )
         {
-            $imageSrcList[] = $imageScr;
+            $fileInfo = new finfo( FILEINFO_MIME );
+            $mimeType = $fileInfo->buffer( $imageData );
+            
+            $newImageSrc = 'data:' . $mimeType . ';base64,' . base64_encode( $imageData );
+            $string = str_replace( $imageSrc , $newImageSrc , $string );
         }
-    }
-    
-    if( ! empty( $imageSrcList) )
-    {
-        $newImageSrcList = array();
-        
-        foreach( $imageSrcList as $index => $imageSrc )
-        {
-            if( $imageData = file_get_contents( $imageSrc ) )
-            {
-                $extension = pathinfo( $imageSrc , PATHINFO_EXTENSION );
-                
-                $newImageSrcList[ $index ] = 'data:image/' . $imageSrc . ';base64,' . base64_encode( $imageData );
-            }
-        }
-        
-        str_replace( $imageSrcList , $newImageSrcList , $string );
     }
     
     return $string;
