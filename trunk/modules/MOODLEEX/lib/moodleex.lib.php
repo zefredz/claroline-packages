@@ -120,7 +120,6 @@ function MOODLEEX_convertImageSrc( $string )
  */
 function MOODLEEX_bake( $string )
 {
-    //return MOODLEEX_clear( $string );
     $output = MOODLEEX_clear( $string );
     
     if( MOODLEEX_is_html( $string ) )
