@@ -180,7 +180,7 @@ function MOODLEEX_clean_tex_content( $string )
     
     foreach( $imgTagList as $imgTag )
     {
-        if( preg_match( '/class="latexFormula"/i' , $imgTag[0] ) )
+        if( ! empty( $imgTag ) && preg_match( '/class="latexFormula"/i' , $imgTag[0] ) )
         {
             preg_match('/<img(.*)alt(.*)=(.*)"(.*)"/U', $imgTag[0] , $texContent );
         }
