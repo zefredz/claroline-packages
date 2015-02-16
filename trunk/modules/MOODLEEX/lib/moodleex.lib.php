@@ -77,13 +77,7 @@ function MOODLEEX_clean( $string )
  */
 function MOODLEEX_clear( $string )
 {
-    $string_to_remove = array(
-        '<br /><!-- content: html tiny_mce -->',
-        '<!-- content: html tiny_mce -->',
-        '<!-- content: imsqti -->',
-    );
-    
-    return trim( str_replace( $string_to_remove , '' , $string ) );
+    return MOODLEEX_remove_tinymce_tags( MOODLEEX_remove_spoilers( $string ) );
 }
 
 /**
@@ -194,8 +188,19 @@ function MOODLEEX_process_images( $string )
     return MOODLEEX_convert_img_src( MOODLEEX_clean_tex_content( $string ) );
 }
 
-function MOODLEEX_remove_spoiler( $string )
+function MOODLEEX_remove_spoilers( $string )
 {
     return preg_replace( '/\[spoiler.*\[\/spoiler\]/' , '' , $string );
+}
+
+function MOODLEEX_remove_tinymce_tags( $string )
+{
+    $string_to_remove = array(
+        '<br /><!-- content: html tiny_mce -->',
+        '<!-- content: html tiny_mce -->',
+        '<!-- content: imsqti -->',
+    );
+    
+    return trim( str_replace( $string_to_remove , '' , $string ) );
 }
 
