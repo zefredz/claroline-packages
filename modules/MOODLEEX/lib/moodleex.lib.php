@@ -91,20 +91,29 @@ function MOODLEEX_clear( $string )
  * @param string $string : the html content
  * @return string : the 'same' html content with integrated images 
  */
-function MOODLEEX_convertImageSrc( $string )
+function MOODLEEX_convert_img_src( $string )
 {
-    preg_match_all('/<img(.*)src(.*)=(.*)"(.*)"/U', $string, $imgTagList );
+    preg_match_all('/<img(.*)src(.*)=(.*)"(.*)"(.*)>/U', $string, $imgTagList );
     
-    foreach( $imgTagList[ 4 ] as $imageSrc )
+    foreach( $imgTagList[ 4 ] as $index => $imageSrc )
     {
-        if( substr( $imageSrc , 0 , 5 ) != 'data:'
-            && $imageData = file_get_contents( html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc ) ) )
+        if( substr( $imageSrc , 0 , 5 ) != 'data:' )
         {
-            $fileInfo = new finfo( FILEINFO_MIME );
-            $mimeType = $fileInfo->buffer( $imageData );
+            $filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
             
-            $newImageSrc = 'data:' . $mimeType . ';base64,' . base64_encode( $imageData );
-            $string = str_replace( $imageSrc , $newImageSrc , $string );
+            if( $file_exists( $filePath ) )
+            {
+                $imageData = file_get_contents( $filePath );
+                $fileInfo = new finfo( FILEINFO_MIME );
+                $mimeType = $fileInfo->buffer( $imageData );
+                
+                $newImageSrc = 'data:' . $mimeType . ';base64,' . base64_encode( $imageData );
+                $string = str_replace( $imageSrc , $newImageSrc , $string );
+            }
+            else
+            {
+                $string = str_replace( $imgTagList[ 0 ][ $index ], '' , $string );
+            }
         }
     }
     
@@ -124,7 +133,7 @@ function MOODLEEX_bake( $string )
     
     if( MOODLEEX_is_html( $string ) )
     {
-        return '<![CDATA[' . MOODLEEX_convertImageSrc( $output ) . ']]>';
+        return '<![CDATA[' . MOODLEEX_process_images( $output ) . ']]>';
     }
     else
     {
@@ -164,3 +173,29 @@ function MOODLEEX_is_image( $fileName )
     
     return in_array( $fileExtension , $extensionList );
 }
+
+function MOODLEEX_clean_tex_content( $string )
+{
+    preg_match_all('/<img[^>]+>/i', $string , $imgTagList );
+    
+    foreach( $imgTagList as $imgTag )
+    {
+        if( preg_match( '/class="latexFormula"/i' , $imgTag[0] ) )
+        {
+            preg_match('/<img(.*)alt(.*)=(.*)"(.*)"/U', $imgTag[0] , $texContent );
+        }
+    }
+    
+    return $string;
+}
+
+function MOODLEEX_process_images( $string )
+{
+    return MOODLEEX_convert_img_src( MOODLEEX_clean_tex_content( $string ) );
+}
+
+function MOODLEEX_remove_spoiler( $string )
+{
+    return preg_replace( '/\[spoiler.*\[\/spoiler\]/' , '' , $string );
+}
+
