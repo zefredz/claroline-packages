@@ -101,7 +101,7 @@ function MOODLEEX_convert_img_src( $string )
         {
             $filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
             
-            if( $file_exists( $filePath ) )
+            if( file_exists( $filePath ) )
             {
                 $imageData = file_get_contents( $filePath );
                 $fileInfo = new finfo( FILEINFO_MIME );
