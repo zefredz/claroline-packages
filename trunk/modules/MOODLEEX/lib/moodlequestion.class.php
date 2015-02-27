@@ -10,7 +10,8 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-class MoodleQuestion {
+class MoodleQuestion
+{
     const CORRECT_DEFAULT_FEEDBACK = 'Correct!';
     const WRONG_DEFAULT_FEEDBACK = 'Wrong answer!';
     
@@ -204,14 +205,14 @@ class MoodleQuestion {
             }
             else
             {
-                $fraction = (-1) * ( abs( $grade ) / $this->grade );
+                $fraction = (-1 ) * ( abs( $grade ) / $this->grade );
                 $this->penalty += $fraction;
             }
             
             $this->answerList[] = array(
                 'content' => $answer[ 'answer' ],
                 'feedback' => $answer[ 'comment' ],
-                'fraction' => $fraction,
+                'fraction' => 100 * $fraction,
             );
         }
     }
@@ -231,11 +232,11 @@ class MoodleQuestion {
         $this->answerList = array(
             'true' => array(
                 'feedback' => $this->answerData[ 'trueFeedback' ],
-                'fraction' => abs( (int)$this->answerData[ 'trueGrade'] ) * $trueAnswer
+                'fraction' => abs( (int)$this->answerData[ 'trueGrade'] ) * $trueAnswer * 100
             ),
             'false' => array(
                 'feedback' => $this->answerData[ 'falseFeedback' ],
-                'fraction' => abs( (int)$this->answerData[ 'falseGrade' ] ) * $trueAnswer // * (-1)
+                'fraction' => abs( (int)$this->answerData[ 'falseGrade' ] ) * $trueAnswer * 100// * (-1)
             )
         );
     }
@@ -286,7 +287,7 @@ class MoodleQuestion {
         foreach( $answerList[ 0 ] as $index => $option )
         {
             $this->answerList[ $index + 1 ][ 'option' ] = trim( $option , '[]' );
-            $this->answerList[ $index + 1 ][ 'fraction' ] = (int)$gradeList[ $index ] / $this->grade;
+            $this->answerList[ $index + 1 ][ 'fraction' ] = 100 * (int)$gradeList[ $index ] / $this->grade;
             
             //$this->answerList[ $index + 1 ] = trim( $option , '[]' );
             
