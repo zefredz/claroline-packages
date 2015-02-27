@@ -10,7 +10,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$_lang[ 'Moddle resource exporter' ] = 'Export vers Moodle';
+$_lang[ 'Moodle resource exporter' ] = 'Export vers Moodle';
 $_lang[ 'Excercises exporter' ] = 'Exporter les exercices';
 $_lang[ 'Export failed' ] = 'L\'export à échoué';
 $_lang[ 'Questions from quiz "%quizTitle"' ] = 'Questions du test intitulé "%quizTitle"';

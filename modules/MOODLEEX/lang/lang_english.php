@@ -10,7 +10,7 @@
  * @author      Frederic Fervaille <frederic.fervaille@uclouvain.be>
  */
 
-$_lang[ 'Moddle resource exporter' ] = 'Moddle resource exporter';
+$_lang[ 'Moodle resource exporter' ] = 'Moodle resource exporter';
 $_lang[ 'Excercises exporter' ] = 'Excercises exporter';
 $_lang[ 'Export failed' ] = 'Export failed';
 $_lang[ 'Questions from quiz "%quizTitle"' ] = 'Questions from quiz "%quizTitle"';

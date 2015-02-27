@@ -1,6 +1,6 @@
 <module>
     <label>MOODLEEX</label>
-    <name>Moddle resource exporter</name>
+    <name>Moodle resource exporter</name>
     <version>1.0.0</version>
     <license>GPL</license>
     <type>crsmanage</type>
