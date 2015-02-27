@@ -306,7 +306,7 @@ class MoodleQuestion
                 // Moodle question type : gapselect
                 $answerText = str_replace(
                     $option ,
-                    '[' . (string)( $index + 1 ) . ']' ,
+                    '[[' . (string)( $index + 1 ) . ']]' ,
                     $answerText );
             }
             else
