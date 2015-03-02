@@ -109,7 +109,7 @@ function MOODLEEX_convert_img_src( $string )
                     $filePath = $imageSrc;
                 }
             }
-            elseif( subtstr( $imageSrc , 0 , 7 ) == 'http://' )
+            elseif( substr( $imageSrc , 0 , 7 ) == 'http://' )
             {
                 $filePath = html_entity_decode( $imageSrc );
             }
@@ -224,16 +224,6 @@ function MOODLEEX_remove_tinymce_tags( $string )
         '<!-- content: imsqti -->',
     );
     
-    $string_to_replace = array(
-        '&lt;' => '<',
-        '&gt;' => '>',
-    );
-    
-    foreach( $string_to_replace as $index  => $target )
-    {
-        $string = str_replace( $index , $target , $string );
-    }
-    
-    return trim( str_replace( $string_to_remove , '' , $string ) );
+    return trim( str_replace( $string_to_remove , '' , html_entity_decode( $string  ) ) );
 }
 
