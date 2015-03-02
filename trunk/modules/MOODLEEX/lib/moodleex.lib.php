@@ -93,7 +93,27 @@ function MOODLEEX_convert_img_src( $string )
     {
         if( substr( $imageSrc , 0 , 5 ) != 'data:' )
         {
-            $filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
+            if( substr( $imageSrc , 0 , 42 ) == '/claroline/claroline/backends/download.php' )
+            {
+                preg_match('/\?url=(.*)&/U' , $imageSrc , $url );
+                
+                if( ! empty( $url ) )
+                {
+                    $filePath = get_path( 'coursesRepositorySys' )
+                    . claro_get_course_path()
+                    . '/document'
+                    .  base64_decode( $url[ 1 ] );
+                }
+                else
+                {
+                    $filePath = '';
+                }
+            }
+            else
+            {
+                $filePath = html_entity_decode( $imageSrc );
+                //$filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
+            }
             
             if( file_exists( $filePath ) )
             {
@@ -106,7 +126,7 @@ function MOODLEEX_convert_img_src( $string )
             }
             else
             {
-                $string = str_replace( $imgTagList[ 0 ][ $index ], '' , $string );
+                $string = str_replace( $imgTagList[ 0 ][ $index ], get_lang( 'MISSING IMAGE : ' . $filePath ) , $string );
             }
         }
     }
