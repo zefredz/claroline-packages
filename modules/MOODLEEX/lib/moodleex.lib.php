@@ -106,13 +106,16 @@ function MOODLEEX_convert_img_src( $string )
                 }
                 else
                 {
-                    $filePath = '';
+                    $filePath = $imageSrc;
                 }
+            }
+            elseif( subtstr( $imageSrc , 0 , 7 ) == 'http://' )
+            {
+                $filePath = html_entity_decode( $imageSrc );
             }
             else
             {
-                $filePath = html_entity_decode( $imageSrc );
-                //$filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
+                $filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
             }
             
             if( file_exists( $filePath ) )
