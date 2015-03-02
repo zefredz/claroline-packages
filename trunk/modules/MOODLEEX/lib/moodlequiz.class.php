@@ -50,7 +50,7 @@ class MoodleQuiz
                 `{$this->tbl['qwz_rel_exercise_question']}`
             WHERE
                 exerciseId = " . Claroline::getDatabase()->escape( $this->id ) . "
-            ORDER BY rank DESC"
+            ORDER BY rank ASC"
         );
         
         $this->questionList = array();
