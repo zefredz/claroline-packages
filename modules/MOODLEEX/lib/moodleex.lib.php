@@ -224,7 +224,16 @@ function MOODLEEX_remove_tinymce_tags( $string )
         '<!-- content: imsqti -->',
     );
     
+    $string_to_replace = array(
+        '&lt;' => '<',
+        '&gt;' => '>',
+    );
     
-    return trim( str_replace( $string_to_remove , '' , htmlentities_decode( $string ) ) );
+    foreach( $string_to_replace as $index  => $target )
+    {
+        $string = str_replace( $index , $target , $string );
+    }
+    
+    return trim( str_replace( $string_to_remove , '' , $string ) );
 }
 
