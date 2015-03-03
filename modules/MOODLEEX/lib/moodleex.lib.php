@@ -202,13 +202,44 @@ function MOODLEEX_clean_tex_content( $string )
             preg_match('/<img(.*)alt(.*)=(.*)"(.*)"/U', $imgTag[0] , $texContent );
         }
     }
-    
-    return $string;
+}
+
+function MOODLEEX_process_tex_content( $string , $imgEncode = false )
+{
+    if( $imgEncode == true)
+    {
+        preg_match_all( '/\[tex\](.*)\[\/tex\]/U' , $string, $texCodeList );
+        $mimeTexPath = get_conf( 'claro_texRendererUrl' );
+        $imgTagList = array();
+        
+        foreach( $texCodeList[ 1 ] as $index => $texCode )
+        {
+            $imageData = file_get_contents( $mimeTexPath . '?' . $texCode );
+            $fileInfo = new finfo( FILEINFO_MIME );
+            $mimeType = $fileInfo->buffer( $imageData );
+            $imgTagList[] = '<img src="data:'
+                . $mimeType
+                . ';base64,'
+                . base64_encode( $imageData )
+                .'" alt="'
+                . $texCode
+                . '" />';
+        }
+        
+        return str_replace( $texCodeList[ 0 ] , $imgTagList , $string );
+    }
+    else
+    {
+        $texTag = array( '[tex]' , '[/tex]' );
+        
+        return str_replace( $texTag , '$$' , $string );
+    }
+
 }
 
 function MOODLEEX_process_images( $string )
 {
-    return MOODLEEX_convert_img_src( MOODLEEX_clean_tex_content( $string ) );
+    return MOODLEEX_convert_img_src( MOODLEEX_process_tex_content( $string ) );
 }
 
 function MOODLEEX_remove_spoilers( $string )
