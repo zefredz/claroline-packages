@@ -128,6 +128,14 @@ class MoodleQuestion
                 throw new Exception( 'Invalid question type' );
             }
             
+            foreach( $this->answerList as $answer )
+            {
+                if( empty( $this->poiler ) && ! empty( $answer[ 'feedback' ] ) )
+                {
+                    $this->spoiler = implode( MOODLEEX_process_spoilers( $answer[ 'feedback' ] , true ) );
+                }
+            }
+            
             if( MOODLEEX_is_image( $this->attachment ) )
             {
                 $filePath = get_conf ( 'rootWeb' )
