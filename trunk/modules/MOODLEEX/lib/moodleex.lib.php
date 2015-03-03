@@ -93,7 +93,7 @@ function MOODLEEX_convert_img_src( $string )
     {
         if( substr( $imageSrc , 0 , 5 ) != 'data:' )
         {
-            if( substr( $imageSrc , 0 , 42 ) == '/claroline/claroline/backends/download.php' )
+            if( str_replace( '/claroline/backends/download.php' , '' , $imageSrc ) != $imageSrc )
             {
                 preg_match('/\?url=(.*)&/U' , $imageSrc , $url );
                 
