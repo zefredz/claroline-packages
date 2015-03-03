@@ -14,4 +14,9 @@
     <?php echo '<' . $option . '>' . $value . '</' . $option . '>' . "\n"; ?>
     <?php endforeach; ?>
     <?php include( 'moodletype/' . $this->question->moodleType . '.tpl.php' ); ?>
+    <?php if( ! empty( $this->question->spoiler ) ) : ?>
+    <hint <?php if( MOODLEEX_is_html( $this->question->description ) ) : ?>format="html"<?php endif; ?>>
+        <text><?php echo MOODLEEX_bake( $this->question->spoiler ); ?></text>
+    </hint>
+    <?php endif; ?>
 </question>

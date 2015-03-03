@@ -77,7 +77,7 @@ function MOODLEEX_clean( $string )
  */
 function MOODLEEX_clear( $string )
 {
-    return MOODLEEX_remove_tinymce_tags( MOODLEEX_remove_spoilers( $string ) );
+    return MOODLEEX_remove_tinymce_tags( MOODLEEX_process_spoilers( $string ) );
 }
 
 /**
@@ -202,13 +202,16 @@ function MOODLEEX_clean_tex_content( $string )
             preg_match('/<img(.*)alt(.*)=(.*)"(.*)"/U', $imgTag[0] , $texContent );
         }
     }
+    
+    return str_replace( $imgTagList, $texContent , $string );
 }
 
 function MOODLEEX_process_tex_content( $string , $imgEncode = false )
 {
-    if( $imgEncode == true)
+    if( $imgEncode === true)
     {
         preg_match_all( '/\[tex\](.*)\[\/tex\]/U' , $string, $texCodeList );
+        
         $mimeTexPath = get_conf( 'claro_texRendererUrl' );
         $imgTagList = array();
         
@@ -242,9 +245,18 @@ function MOODLEEX_process_images( $string )
     return MOODLEEX_convert_img_src( MOODLEEX_process_tex_content( $string ) );
 }
 
-function MOODLEEX_remove_spoilers( $string )
+function MOODLEEX_process_spoilers( $string , $getContent = false )
 {
-    return preg_replace( '/\[spoiler.*\[\/spoiler\]/' , '' , $string );
+    preg_match_all( '/\[spoiler \/(.*)\/\](.*)\[\/spoiler\]/Ums' , $string, $spoilerList );
+    
+    if( $getContent === true )
+    {
+        return $spoilerList[ 2 ];
+    }
+    else
+    {
+        return str_replace( $spoilerList[ 0 ] , '' , $string );
+    }
 }
 
 function MOODLEEX_remove_tinymce_tags( $string )
