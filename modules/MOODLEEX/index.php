@@ -27,19 +27,35 @@ From::Module( 'MOODLEEX' )->uses(
     'moodlequestion.class'
 );
 
+$podcastActivated = check_module( 'ICPCRDR' );
+
+if( $podcastActivated )
+{
+    From::Module( 'ICPCRDR' )->uses(
+    'podcastcollection.lib',
+    'podcastparser.lib'
+    );
+}
+
+
 $dialogBox = new DialogBox();
 
 try
 {
     $userInput = Claro_UserInput::getInstance();
     $cmd = $userInput->get( 'cmd' );
-    $pageTitle = get_lang( 'Excercises exporter' );
+    $pageTitle = get_lang( 'Things you can export' );
     $quizList = MOODLEEX_get_quiz_list();
     
-    $template = new ModuleTemplate( 'MOODLEEX' , 'exerciselist.tpl.php' );
-    $template->assign( 'quizList' , $quizList );
+    $podcastCollection = new PodcastCollection();
+    $podcastList = $podcastCollection->getAll();
     
-    if( $cmd == 'export' )
+    $template = new ModuleTemplate( 'MOODLEEX' , 'main.tpl.php' );
+    $template->assign( 'quizList' , $quizList );
+    $template->assign( 'podcastActivated' , $podcastActivated );
+    $template->assign( 'podcastList' , $podcastList );
+    
+    if( $cmd == 'exportQuiz' )
     {
         $dialog = new DialogBox();
         
@@ -55,6 +71,28 @@ try
         {
             $dialogBox->error( get_lang( 'Export failed' ) );
         }
+    }
+    elseif( $cmd == 'exportPod' )
+    {
+        $podcastId = (int)$userInput->get( 'podcastId' );
+        $podcast = $podcastCollection->get( $podcastId );
+        $podcastParser = new PodcastParser();
+        $podcastParser->parseFeed( $podcast[ 'url' ] );
+        $videoList = $podcastParser->getItems();
+        
+        $output = '';
+        
+        foreach( $videoList as $video )
+        {
+            $output .= $video->metadata[ 'title' ] . '  :  ' . $video->metadata[ 'link' ] . "\n";
+            
+        }
+        
+        header("Content-type: text/plain" );
+        header('Content-Disposition: attachment; filename="' . MOODLEEX_clean( $podcast[ 'title' ] ) . '.txt"');
+        header('Content-Enoding: UTF-8');
+        echo claro_utf8_encode( $output );
+        exit();
     }
     
     Claroline::getInstance()->display->body->appendContent(
