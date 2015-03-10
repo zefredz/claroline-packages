@@ -162,6 +162,12 @@ $checkList = array(
         'description' => 'Je ne parviens pas à remettre un travail sur iCampus',
         'mailTpl' => 'worksubmit' ),
     
+    'mailStudent' => array(
+        'category' => 99,
+        'profile' => 3,
+        'description' => 'Je possède une adresse mail "@uclouvain.be", pourtant sur iCampus, c\'est toujours mon adresse "@student.uclouvain.be" qui est mentionnée',
+        'mailTpl' => 'mailstudent' ),
+    
     'useQuestion' => array(
         'category' => 99,
         'profile' => 5,
