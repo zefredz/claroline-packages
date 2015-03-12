@@ -37,14 +37,16 @@ if( $podcastActivated )
     );
 }
 
+CssLoader::getInstance()->load( 'moodle' , 'screen' , 'print' );
 
 $dialogBox = new DialogBox();
+$dialogBox->info( get_lang( 'What is the purpose of this module?' ) );
 
 try
 {
     $userInput = Claro_UserInput::getInstance();
     $cmd = $userInput->get( 'cmd' );
-    $pageTitle = get_lang( 'Things you can export' );
+    $pageTitle = get_lang( 'Moodle resource exporter' );
     $quizList = MOODLEEX_get_quiz_list();
     
     $podcastCollection = new PodcastCollection();
