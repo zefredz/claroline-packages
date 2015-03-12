@@ -1,0 +1,13 @@
+.globalDesc
+{
+    font-weight : bold;
+    color : #080;
+}
+
+.sectionDesc
+{
+    font-weight : bold;
+    font-size : 9pt;
+    font-style : italic;
+    color : #777;
+}

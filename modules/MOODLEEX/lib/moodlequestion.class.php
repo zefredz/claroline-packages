@@ -95,7 +95,7 @@ class MoodleQuestion
             $this->title = $data['title'];
             $this->description = $data['description'];
             $this->attachment = $data['attachment'];
-            $this->grade = (int)$data['grade'];
+            $this->grade = (int)$data['grade'] ? (int)$data['grade'] : 1;
             $this->penalty = 0;
             
             $tableName = self::$answer_db_table_list[ $this->clarolineType ];
