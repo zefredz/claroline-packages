@@ -11,3 +11,18 @@
     font-style : italic;
     color : #777;
 }
+
+.addInfos
+{
+    font-weight : bold;
+    color : #544;
+    background-color: #fdd;
+    border: 1px solid #888888;
+    margin-bottom: 25px;
+}
+
+.infoTitle
+{
+    color : #a00;
+    display : block;
+}

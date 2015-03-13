@@ -1,7 +1,7 @@
 <table class="claroTable emphaseLine" style=" width: 100%;">
     <thead>
         <tr class="headerX">
-            <th><?php echo get_lang( 'Exercise' ); ?></th>
+            <th><?php echo get_lang( 'Exercises' ); ?></th>
             <th><?php echo get_lang( 'Export' ); ?></th>
         </tr>
     </thead>
