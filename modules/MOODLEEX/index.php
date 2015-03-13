@@ -49,8 +49,15 @@ try
     $pageTitle = get_lang( 'Moodle resource exporter' );
     $quizList = MOODLEEX_get_quiz_list();
     
-    $podcastCollection = new PodcastCollection();
-    $podcastList = $podcastCollection->getAll();
+    if( $podcastActivated )
+    {
+        $podcastCollection = new PodcastCollection();
+        $podcastList = $podcastCollection->getAll();
+    }
+    else
+    {
+        $podcastList = array();
+    }
     
     $template = new ModuleTemplate( 'MOODLEEX' , 'main.tpl.php' );
     $template->assign( 'quizList' , $quizList );
