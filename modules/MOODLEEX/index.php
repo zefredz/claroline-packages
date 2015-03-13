@@ -27,7 +27,7 @@ From::Module( 'MOODLEEX' )->uses(
     'moodlequestion.class'
 );
 
-$podcastActivated = check_module( 'ICPCRDR' );
+$podcastActivated = is_module_installed_in_course( 'ICPCRDR' , claro_get_current_course_id() );
 
 if( $podcastActivated )
 {
