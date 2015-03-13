@@ -39,8 +39,10 @@ if( $podcastActivated )
 
 CssLoader::getInstance()->load( 'moodle' , 'screen' , 'print' );
 
+$warningText = '<strong>If you can read this text, set your course language to "French" or "English"!</strong>';
+
 $dialogBox = new DialogBox();
-$dialogBox->info( get_lang( 'What is the purpose of this module?' ) );
+$dialogBox->info( get_lang( '[Module introduction text] %warning' , array( '%warning' => $warningText ) ) );
 
 try
 {
@@ -63,6 +65,7 @@ try
     $template->assign( 'quizList' , $quizList );
     $template->assign( 'podcastActivated' , $podcastActivated );
     $template->assign( 'podcastList' , $podcastList );
+    $template->assign( 'warningText' , $warningText );
     
     if( $cmd == 'exportQuiz' )
     {
