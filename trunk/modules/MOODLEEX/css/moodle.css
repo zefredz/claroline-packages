@@ -19,10 +19,11 @@
     background-color: #fdd;
     border: 1px solid #888888;
     margin-bottom: 25px;
+    padding : 5px;
 }
 
 .infoTitle
 {
-    color : #a00;
+    color : #444;
     display : block;
 }
