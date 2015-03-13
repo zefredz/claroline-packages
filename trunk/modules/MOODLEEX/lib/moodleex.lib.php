@@ -191,6 +191,11 @@ function MOODLEEX_is_image( $fileName )
     return in_array( $fileExtension , $extensionList );
 }
 
+/**
+ * Removes TeX code from a passed string
+ * @param string $string : the string to clean up
+ * @return string : the cleaned up string
+ */
 function MOODLEEX_clean_tex_content( $string )
 {
     preg_match_all('/<img[^>]+>/i', $string , $imgTagList );
@@ -206,6 +211,12 @@ function MOODLEEX_clean_tex_content( $string )
     return str_replace( $imgTagList, $texContent , $string );
 }
 
+/**
+ * Processes TeX code in a passed html
+ * @param string $string : the html string to process
+ * @param boolean $imgEncode : processing mode (false -> render into MoodleTex code / true -> render into a base64 image )
+ * @param $string : processed html code
+ */
 function MOODLEEX_process_tex_content( $string , $imgEncode = false )
 {
     if( $imgEncode === true)
@@ -240,11 +251,23 @@ function MOODLEEX_process_tex_content( $string , $imgEncode = false )
 
 }
 
+/**
+ * Processes links to images within html content
+ * It's an helper for two other functions : MOODLEEX_convert_img_src() and MOODLEEX_process_tex_content()
+ * @param string $string : the string to process
+ * @return string : the processed string
+ */
 function MOODLEEX_process_images( $string )
 {
     return MOODLEEX_convert_img_src( MOODLEEX_process_tex_content( $string ) );
 }
 
+/**
+ * Removes spoilers from a passed string or extract them
+ * @param string $string : the string to clean up
+ * @param boolean $getContent : treatment mode (false -> removes spoilers, true -> extracts spoilers into a array)
+ * @return string or array ...depending of second parameter
+ */
 function MOODLEEX_process_spoilers( $string , $getContent = false )
 {
     preg_match_all( '/\[spoiler \/(.*)\/\](.*)\[\/spoiler\]/Ums' , $string, $spoilerList );
@@ -259,6 +282,11 @@ function MOODLEEX_process_spoilers( $string , $getContent = false )
     }
 }
 
+/**
+ * Removes shit tinyMCE puts in its content
+ * @param string $string : the string to clean up
+ * @return string : a cleaned up string
+ */
 function MOODLEEX_remove_tinymce_tags( $string )
 {
     $string_to_remove = array(
