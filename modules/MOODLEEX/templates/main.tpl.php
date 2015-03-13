@@ -15,4 +15,11 @@
         <?php include 'videolist.tpl.php'; ?>
     </fieldset>
 <?php endif; ?>
+    <fieldset id="documents">
+        <legend><?php echo get_lang( 'Documents and links' ); ?></legend>
+        <span class="sectionDesc">
+            <?php echo get_lang( 'Obvious' ); ?>
+        </span>
+        <?php include 'documentlist.tpl.php'; ?>
+    </fieldset>
 </div>
