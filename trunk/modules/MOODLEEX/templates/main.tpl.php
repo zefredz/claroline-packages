@@ -1,4 +1,11 @@
 <div id="mainContent">
+    <fieldset id="documents">
+        <legend><?php echo get_lang( 'Documents and links' ); ?></legend>
+        <span class="sectionDesc">
+            <?php echo get_lang( 'Here, you can export all documents stored in your course into a single zip file.' ); ?>
+        </span>
+        <?php include 'documentlist.tpl.php'; ?>
+    </fieldset>
     <fieldset id="exercices">
         <legend><?php echo get_lang( 'Exercises' ); ?></legend>
         <span class="sectionDesc">
@@ -15,11 +22,10 @@
         <?php include 'videolist.tpl.php'; ?>
     </fieldset>
 <?php endif; ?>
-    <fieldset id="documents">
-        <legend><?php echo get_lang( 'Documents and links' ); ?></legend>
-        <span class="sectionDesc">
-            <?php echo get_lang( 'Obvious' ); ?>
-        </span>
-        <?php include 'documentlist.tpl.php'; ?>
-    </fieldset>
+</div>
+<div class="addInfos">
+    <?php echo get_lang( 'Additionnal info' ); ?>
+</div>
+<div class="addInfos">
+    <?php echo get_lang( 'Additionnal info 2' ); ?>
 </div>

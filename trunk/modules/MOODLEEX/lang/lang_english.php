@@ -18,4 +18,5 @@ $_lang[ 'What is the purpose of this module?' ] = 'What is the purpose of this m
 $_lang[ 'Here, you can export you exercises to MoodleXML format in order to import them in a Moodle platform.' ] = 'Here, you can export you exercises to MoodleXML format in order to import them in a Moodle platform.';
 $_lang[ 'Here, you can obtain for each video podcast a textfile with direct links of each video they contain, so you can easily copy-paste them into Moodle.' ] = 'Here, you can obtain for each video podcast a textfile with direct links of each video they contain, so you can easily copy-paste them into Moodle.';
 $_lang[ 'Documents and links' ] = 'Documents and links';
+$_lang[ 'Here, you can export all documents stored in your course into a single zip file.' ] = 'Here, you can export all documents stored in your course into a single zip file.';
 $_lang[ 'Download all course\'s documents in a single zip file' ] = 'Download all course\'s documents in a single zip file';
