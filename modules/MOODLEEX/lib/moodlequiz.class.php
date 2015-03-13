@@ -62,7 +62,7 @@ class MoodleQuiz
     }
     
     /**
-     * Exports Exercise's datas into and Moddle XML
+     * Exports Exercise's datas into and Moodle XML
      * @return bitstream (file to download)
      */
     public function export()
