@@ -26,6 +26,7 @@ class MoodleQuestion
     public $penalty;
     public $correctDefaultFeedback;
     public $wrongDefaultFeedback;
+    public $spoiler;
     
     public $optionList;
     public $answerList;
@@ -93,7 +94,7 @@ class MoodleQuestion
         {
             $this->clarolineType = $data[ 'type' ];
             $this->title = $data['title'];
-            $this->description = $data['description'];
+            $this->description = MOODLEEX_clear( $data['description'] );
             $this->attachment = $data['attachment'];
             $this->grade = (int)$data['grade'] ? (int)$data['grade'] : 1;
             $this->penalty = 0;
@@ -130,7 +131,7 @@ class MoodleQuestion
             
             foreach( $this->answerList as $answer )
             {
-                if( empty( $this->poiler ) && ! empty( $answer[ 'feedback' ] ) )
+                if( empty( $this->spoiler ) && ! empty( $answer[ 'feedback' ] ) )
                 {
                     $this->spoiler = implode( MOODLEEX_process_spoilers( $answer[ 'feedback' ] , true ) );
                 }
@@ -218,8 +219,8 @@ class MoodleQuestion
             }
             
             $this->answerList[] = array(
-                'content' => $answer[ 'answer' ],
-                'feedback' => $answer[ 'comment' ],
+                'content' => MOODLEEX_process_images( $answer[ 'answer' ] ),
+                'feedback' => MOODLEEX_process_images( $answer[ 'comment' ] ),
                 'fraction' => 100 * $fraction,
             );
         }
@@ -239,11 +240,11 @@ class MoodleQuestion
         
         $this->answerList = array(
             'true' => array(
-                'feedback' => $this->answerData[ 'trueFeedback' ],
+                'feedback' => MOODLEEX_clear( $this->answerData[ 'trueFeedback' ] ),
                 'fraction' => abs( (int)$this->answerData[ 'trueGrade'] ) * $trueAnswer * 100
             ),
             'false' => array(
-                'feedback' => $this->answerData[ 'falseFeedback' ],
+                'feedback' => MOODLEEX_clear( $this->answerData[ 'falseFeedback' ] ),
                 'fraction' => abs( (int)$this->answerData[ 'falseGrade' ] ) * $trueAnswer * 100// * (-1)
             )
         );
@@ -261,11 +262,11 @@ class MoodleQuestion
         {
             if( ! is_null( $answer[ 'match' ] ) )
             {
-                $this->answerList[ $answer[ 'match' ] ][ 'proposition' ] = $answer[ 'answer' ];
+                $this->answerList[ $answer[ 'match' ] ][ 'proposition' ] = MOODLEEX_clear( $answer[ 'answer' ] );
             }
             else
             {
-                $this->answerList[ $answer[ 'code' ] ][ 'answer' ] = $answer[ 'answer' ];
+                $this->answerList[ $answer[ 'code' ] ][ 'answer' ] = MOODLEEX_clear( $answer[ 'answer' ] );
                 
                 if( ! isset( $this->answerList[ $answer[ 'code' ] ][ 'proposition' ] ) )
                 {
@@ -283,10 +284,10 @@ class MoodleQuestion
     {
         $this->moodleType = (int)$this->answerData[ 'type' ] == 2 ? 'gapselect' : 'cloze';
         
-        $answerText = $this->answerData[ 'answer' ];
+        $answerText = MOODLEEX_clear( $this->answerData[ 'answer' ] );
         
         $gradeList = explode( ',' , $this->answerData[ 'gradeList' ] );
-        $wrongList = explode( ',' , $this->answerData[ 'wrongAnswerList' ] );
+        $wrongList = explode( ',' , MOODLEEX_clear( $this->answerData[ 'wrongAnswerList' ] ) );
         
         $this->grade = array_sum( $gradeList );
         
@@ -328,7 +329,7 @@ class MoodleQuestion
             //$this->answerList = array_merge( $this->answerList , $wrongList );
             foreach( $wrongList as $wrongAnswer )
             {
-                $this->answerList[] = array( 'option' => $wrongAnswer ,
+                $this->answerList[] = array( 'option' => MOODLEEX_clear( $wrongAnswer ),
                                              'fraction' => '0' );
             }
         }

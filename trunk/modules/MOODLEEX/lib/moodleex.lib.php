@@ -148,7 +148,7 @@ function MOODLEEX_bake( $string )
 {
     $output = MOODLEEX_clear( $string );
     
-    if( MOODLEEX_is_html( $string ) )
+    if( MOODLEEX_is_html( $output ) )
     {
         return '<![CDATA[' . MOODLEEX_process_images( $output ) . ']]>';
     }
@@ -186,7 +186,7 @@ function MOODLEEX_getFileExtension( $fileName )
 function MOODLEEX_is_image( $fileName )
 {
     $fileExtension = strtolower( MOODLEEX_getFileExtension( $fileName ) );
-    $extensionList = array( 'gif','jpg','png' );
+    $extensionList = array( 'gif','jpg', 'jpeg', 'png' );
     
     return in_array( $fileExtension , $extensionList );
 }
@@ -211,6 +211,17 @@ function MOODLEEX_clean_tex_content( $string )
     return str_replace( $imgTagList, $texContent , $string );
 }
 
+function MOODLEEX_extract_tex_content( $string )
+{
+    $mimeTexPath = get_conf( 'claro_texRendererUrl' );
+    $stringToMatch = '/' . preg_quote( $mimeTexPath , "/" ) . '?(.*)\"/U';
+    preg_match_all( '/\[tex\](.*)\[\/tex\]/U', $string, $texCodeList1 );
+    preg_match_all( $stringToMatch, $string, $texCodeList2 );
+    $texCodeList = array_merge( $texCodeList1 , $texCodeList2 );
+    
+    return $texCodeList;
+}
+
 /**
  * Processes TeX code in a passed html
  * @param string $string : the html string to process
@@ -219,7 +230,9 @@ function MOODLEEX_clean_tex_content( $string )
  */
 function MOODLEEX_process_tex_content( $string , $imgEncode = false )
 {
-    if( $imgEncode === true)
+    $texCodeList = MOODLEEX_extract_tex_content( $string );
+    
+    if( $imgEncode === true )
     {
         preg_match_all( '/\[tex\](.*)\[\/tex\]/U' , $string, $texCodeList );
         
@@ -259,7 +272,7 @@ function MOODLEEX_process_tex_content( $string , $imgEncode = false )
  */
 function MOODLEEX_process_images( $string )
 {
-    return MOODLEEX_convert_img_src( MOODLEEX_process_tex_content( $string ) );
+    return MOODLEEX_convert_img_src( MOODLEEX_process_tex_content( MOODLEEX_clear( $string ) ) );
 }
 
 /**
@@ -270,7 +283,8 @@ function MOODLEEX_process_images( $string )
  */
 function MOODLEEX_process_spoilers( $string , $getContent = false )
 {
-    preg_match_all( '/\[spoiler \/(.*)\/\](.*)\[\/spoiler\]/Ums' , $string, $spoilerList );
+    
+    preg_match_all( '/\[spoiler \/(.*)\/\](.*)\[\/spoiler\]/Ums' , $string , $spoilerList );
     
     if( $getContent === true )
     {
