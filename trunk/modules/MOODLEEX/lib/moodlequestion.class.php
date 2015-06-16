@@ -160,7 +160,7 @@ class MoodleQuestion
         }
         else
         {
-            throw new Exception( 'invalid id' );
+            throw new Exception( 'Invalid id : ' . $this->id );
         }
     }
     

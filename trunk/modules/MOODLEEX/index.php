@@ -18,13 +18,16 @@ FromKernel::uses(
     'user.lib',
     'utils/input.lib',
     'utils/validator.lib',
-    'display/layout.lib'
+    'display/layout.lib',
+    'thirdparty/pclzip/pclzip.lib'
 );
 
 From::Module( 'MOODLEEX' )->uses(
     'moodleex.lib',
+    'mbzexporter.class',
     'moodlequiz.class',
-    'moodlequestion.class'
+    'moodlequestion.class',
+    'controller.class'
 );
 
 $podcastActivated = is_module_installed_in_course( 'ICPCRDR' , claro_get_current_course_id() );
@@ -46,28 +49,20 @@ $dialogBox->info( get_lang( '[Module introduction text] %warning' , array( '%war
 
 try
 {
+    $courseId = claro_get_current_course_id();
     $userInput = Claro_UserInput::getInstance();
-    $cmd = $userInput->get( 'cmd' );
-    $pageTitle = get_lang( 'Moodle resource exporter' );
-    $quizList = MOODLEEX_get_quiz_list();
     
-    if( $podcastActivated )
-    {
-        $podcastCollection = new PodcastCollection();
-        $podcastList = $podcastCollection->getAll();
-    }
-    else
-    {
-        $podcastList = array();
-    }
+    $controller = new MOODLEEX_Controller( $userInput , $courseId , $podcastActivated );
+    $controller->execute();
+    
+    $pageTitle = get_lang( 'Moodle resource exporter' );
     
     $template = new ModuleTemplate( 'MOODLEEX' , 'main.tpl.php' );
-    $template->assign( 'quizList' , $quizList );
-    $template->assign( 'podcastActivated' , $podcastActivated );
-    $template->assign( 'podcastList' , $podcastList );
+    $template->assign( 'itemList' , $controller->output() );
     $template->assign( 'warningText' , $warningText );
+    $template->assign( 'podcastActivated' , $podcastActivated );
     
-    if( $cmd == 'exportQuiz' )
+    /*if( $cmd == 'exportQuiz' )
     {
         $dialog = new DialogBox();
         
@@ -105,7 +100,7 @@ try
         header('Content-Enoding: UTF-8');
         echo claro_utf8_encode( $output );
         exit();
-    }
+    }*/
     
     Claroline::getInstance()->display->body->appendContent(
         claro_html_tool_title( $pageTitle )

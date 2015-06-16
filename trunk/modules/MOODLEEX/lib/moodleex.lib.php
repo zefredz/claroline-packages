@@ -38,13 +38,39 @@ function MOODLEEX_get_quiz_list()
                 'shuffle' => $line['shuffle'] == '1' ? true : false,
             );
         }
-        
-        return $quizList;
     }
-    else
+    
+    return $quizList;
+}
+
+function MOODLEEX_get_document_list()
+{
+    $docRepoPath = get_path('coursesRepositorySys') . claro_get_course_path() . '/document';
+    
+    $itemList = array();
+    
+    $tbl = get_module_course_tbl ( array ( 'document' ) );
+    
+    $data = Claroline::getDatabase()->query(
+        "SELECT
+            id,path,visibility,comment
+        FROM
+            `{$tbl['document']}`"
+    );
+    
+    if( $data->numRows() )
     {
-        throw new Exception( 'Invalid id' );
+        foreach( $data as $line )
+        {
+            $documentList[ $line['id'] ] = array(
+                'id' => $line['id'],
+                'title' => $line[ 'path' ],
+                'comment' => $line['comment']
+            );
+        }
     }
+    
+    return $itemList;
 }
 
 /**

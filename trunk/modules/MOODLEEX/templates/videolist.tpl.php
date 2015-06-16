@@ -6,7 +6,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach( $this->podcastList as $podcast ) : ?>
+        <?php foreach( $this->itemList[ 'podcast' ] as $podcast ) : ?>
         <tr>
             <td><?php echo $podcast[ 'title' ]; ?></td>
             <td align="center">

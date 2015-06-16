@@ -1,7 +1,7 @@
 <module>
     <label>MOODLEEX</label>
-    <name>Moodle resource exporter</name>
-    <version>1.1.0</version>
+    <name>Moodle Course Exporter</name>
+    <version>2.0.0</version>
     <license>GPL</license>
     <type>crsmanage</type>
     <entry>index.php</entry>
