@@ -27,3 +27,18 @@
     color : #444;
     display : block;
 }
+
+.itemName
+{
+    color: #DDD;
+    background-color : #64A35B;
+    font-weight : bold;
+}
+
+.empty
+{
+    color: #666;
+    background-color : #DDD;
+    font-style: italic;
+    text-align : center;
+}

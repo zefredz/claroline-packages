@@ -6,7 +6,7 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach( $this->quizList as $quiz ) : ?>
+        <?php foreach( $this->itemList[ 'quiz' ] as $quiz ) : ?>
         <tr>
             <td><?php echo $quiz[ 'title' ]; ?></td>
             <td align="center">
