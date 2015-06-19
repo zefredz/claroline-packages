@@ -139,23 +139,30 @@ class MoodleQuestion
             
             if( MOODLEEX_is_image( $this->attachment ) )
             {
-                $filePath = get_conf ( 'rootWeb' )
+                $filePath = get_conf ( 'rootSys' )
                     . 'courses/'
                     . claro_get_current_course_id ()
                     . '/exercise/question_'
                     . $this->id
                     . '/'
                     . $this->attachment;
-                    
+                
                 $this->attachmentData = base64_encode( file_get_contents( $filePath ) );
                 
-                $this->description .= '<br /><img alt="'
-                    . $this->attachment
-                    . '" src="data:image/'
-                    . MOODLEEX_getFileExtension( $this->attachment )
-                    . ';base64,'
-                    . $this->attachmentData
-                    . '" />';
+                if( ! empty( $this->attachmentData ) )
+                {
+                    $this->description .= '<br /><img alt="'
+                        . $this->attachment
+                        . '" src="data:image/'
+                        . MOODLEEX_getFileExtension( $this->attachment )
+                        . ';base64,'
+                        . $this->attachmentData
+                        . '" />';
+                }
+                else
+                {
+                    $this->description .='<br />[!' . get_lang( 'Image not found' ) . '!]';
+                }
             }
         }
         else
