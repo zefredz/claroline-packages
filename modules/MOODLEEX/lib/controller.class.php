@@ -16,7 +16,6 @@ class MOODLEEX_Controller
     protected $podcastActivated;
     protected $output;
     protected $message;
-    protected $status_ok;
     protected $userInput;
     
     /**
@@ -29,8 +28,6 @@ class MOODLEEX_Controller
         $this->userInput = $userInput;
         $this->courseId = $courseId;
         $this->podcastActivated = $podcastActivated;
-        
-        $this->status_ok = true;
         
         $this->message = array(
             'info'    => array(),
@@ -72,17 +69,26 @@ class MOODLEEX_Controller
         }
     }
     
+    /**
+     *
+     */
     public function output()
     {
         return $this->output;
     }
     
+    /**
+     *
+     */
     public function message()
     {
         return $this->message;
     }
     
-    private function _list()
+    /**
+     *
+     */
+    private function getitemList()
     {
         $itemList = array();
         
@@ -99,18 +105,32 @@ class MOODLEEX_Controller
             $itemList[ 'podcast' ] = array();
         }
         
-        $this->output = $itemList;
+        return $itemList;
     }
     
+    /**
+     *
+     */
+    private function _list()
+    {
+        $this->output = $this->getItemList();
+    }
+    
+    /**
+     *
+     */
     private function _export()
     {
         $this->_list();
-        $selectedItemList = $this->userInput->get( 'item' );
-        $allSelected = $this->userInput->get( 'selectAll' );
+        $selectedItemList = $this->userInput->get( 'item' , 'selectAll' );
+        $allSelected = $selectedItemList == 'selectAll';
         $mbzExporter = new MbzExporter( $this->courseId );
         
     }
     
+    /**
+     *
+     */
     private function _archive()
     {
         $this->_list();

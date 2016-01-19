@@ -74,6 +74,48 @@ function MOODLEEX_get_document_list()
 }
 
 /**
+ *
+ */
+function MOODLEEX_get_forum_list()
+{
+    $forumList = array();
+    
+    $tbl = get_module_course_tbl ( array ( 'bb_forums', 'bb_categories' ) );
+    
+    $data = Claroline::getDatabase()->query(
+        "SELECT
+            F.forum_id, C.cat_title, F.forum_name, F.forum_desc
+        FROM
+            `{$tbl['bb_forums']}` AS F
+        INNER JOIN `{$tbl['bb_categories']}` AS C
+        ON C.cat_id = F.cat_id"
+    );
+    
+    if( $data->numRows() )
+    {
+        foreach( $data as $line )
+        {
+            $forumList[ $line['forum_id'] ] = array(
+                'id' => $line['forum_id'],
+                'title' => $line[ 'forum_name' ],
+                'description' => $line['forum_desc'],
+                'category' => $line['cat_name'],
+            );
+        }
+    }
+    
+    return $forumList;
+}
+
+/**
+ *
+ */
+function MOODLEEX_get_lp_list()
+{
+    
+}
+
+/**
  * Removes unwanted chars and accents
  * @param string $string : the string to clean
  * @return string : the cleaned up string
@@ -103,7 +145,7 @@ function MOODLEEX_clean( $string )
  */
 function MOODLEEX_clear( $string )
 {
-    return MOODLEEX_remove_tinymce_tags( MOODLEEX_process_spoilers( $string ) );
+    return MOODLEEX_remove_tinymce_tags( MOODLEEX_process_spoilers( MOODLEEX_convert_smart_quotes( $string ) ) );
 }
 
 /**
@@ -135,13 +177,27 @@ function MOODLEEX_convert_img_src( $string )
                     $filePath = $imageSrc;
                 }
             }
-            elseif( substr( $imageSrc , 0 , 7 ) == 'http://' )
+            else
             {
                 $filePath = html_entity_decode( $imageSrc );
             }
-            else
+            
+            if( substr( $imageSrc , 0 , 7 ) == 'http://' )
             {
-                $filePath = html_entity_decode( 'http://' . $_SERVER['HTTP_HOST'] . $imageSrc );
+                $fileName = pathinfo( $imageSrc , PATHINFO_BASENAME );
+                $filePath = get_path( 'rootSys' ) . 'tmp/' . $fileName;
+                
+                $ch = curl_init( $imageSrc );
+                
+                if( $ch !== FALSE )
+                {
+                    $fp = fopen( $filePath , 'wb' );
+                    curl_setopt( $ch , CURLOPT_FILE , $fp );
+                    curl_setopt( $ch , CURLOPT_HEADER , 0 );
+                    curl_exec( $ch );
+                    curl_close( $ch ); 
+                    fclose( $fp );
+                }
             }
             
             if( file_exists( $filePath ) )
@@ -191,7 +247,8 @@ function MOODLEEX_bake( $string )
  */
 function MOODLEEX_is_html( $string )
 {
-    return preg_match("/<[^<]+>/", $string, $m );
+    return preg_match("/<[^<]+>/", $string, $m )
+        || strpos( $string , '<' );
 }
 
 /**
@@ -309,7 +366,6 @@ function MOODLEEX_process_images( $string )
  */
 function MOODLEEX_process_spoilers( $string , $getContent = false )
 {
-    
     preg_match_all( '/\[spoiler \/(.*)\/\](.*)\[\/spoiler\]/Ums' , $string , $spoilerList );
     
     if( $getContent === true )
@@ -338,3 +394,58 @@ function MOODLEEX_remove_tinymce_tags( $string )
     return trim( str_replace( $string_to_remove , '' , html_entity_decode( $string  ) ) );
 }
 
+/**
+ * Removes M$-encoded quotes
+ * @param string $string : the string to clean up
+ * @return string : a cleaned up string
+ */
+function MOODLEEX_convert_smart_quotes( $string ) 
+{ 
+    $search = array( chr(145), chr(146), chr(147), chr(148), chr(151) );
+    $replace = array( "'", "'", '"', '"', '-' );
+    
+    return str_replace( $search, $replace, $string ); 
+}
+
+/**
+ * Check if an url does exist
+ * @param string $url
+ * @return bolean true if exists
+ */
+function MOODLEEX_url_exists( $url )
+{
+    $url = str_replace( "http://", "", $url );
+    
+    if ( strstr( $url, "/" ) )
+    {
+        $url = explode( "/", $url, 2 );
+        $url[1] = "/" . $url[1];
+    }
+    else
+    {
+        $url = array( $url, "/" );
+    }
+
+    $fh = fsockopen( $url[0] , 80 );
+    
+    if( $fh )
+    {
+        fputs( $fh, "GET " . $url[1] . " HTTP/1.1\nHost:" . $url[0] . "\n\n");
+        
+        $content = fread( $fh, 22 );
+        
+        if( $content == "HTTP/1.1 404 Not Found" )
+        {
+            return FALSE;
+        }
+        else
+        {
+            return TRUE;
+        }
+
+    }
+    else
+    {
+        return FALSE;
+    }
+}
