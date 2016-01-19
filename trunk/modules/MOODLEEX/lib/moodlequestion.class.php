@@ -264,21 +264,27 @@ class MoodleQuestion
     private function MATCHING()
     {
         $this->moodleType = 'matching';
+        $propositionList = array();
+        $matchList = array();
         
         foreach( $this->answerData as $answer )
         {
-            if( ! is_null( $answer[ 'match' ] ) )
+            $propositionList[ $answer[ 'code' ] ] = $answer[ 'answer' ];
+            
+            if( ! is_null( $answer[ 'match' ] ) && $answer[ 'match' ] != 'NULL' )
             {
-                $this->answerList[ $answer[ 'match' ] ][ 'proposition' ] = MOODLEEX_clear( $answer[ 'answer' ] );
+                $matchList[ $answer[ 'code' ] ] = $answer[ 'match' ];
             }
-            else
+        }
+        
+        foreach( $answerList as $code => $match )
+        {
+            if( array_key_exists( $match , $propositionList ) )
             {
-                $this->answerList[ $answer[ 'code' ] ][ 'answer' ] = MOODLEEX_clear( $answer[ 'answer' ] );
-                
-                if( ! isset( $this->answerList[ $answer[ 'code' ] ][ 'proposition' ] ) )
-                {
-                    $this->answerList[ $answer[ 'code' ] ][ 'proposition' ] = '';
-                }
+                $this->answerList[] = array(
+                    'proposition' => $propositionList[ $match ],
+                    'answer' => $propositionList[ $code ]
+                );
             }
         }
     }
