@@ -277,13 +277,13 @@ class MoodleQuestion
             }
         }
         
-        foreach( $answerList as $code => $match )
+        foreach( $matchList as $code => $match )
         {
             if( array_key_exists( $match , $propositionList ) )
             {
                 $this->answerList[] = array(
-                    'proposition' => $propositionList[ $match ],
-                    'answer' => $propositionList[ $code ]
+                    'proposition' => $propositionList[ $code ],
+                    'answer' => $propositionList[ $match ]
                 );
             }
         }
