@@ -228,7 +228,7 @@ class MoodleQuestion
             $this->answerList[] = array(
                 'content' => MOODLEEX_process_images( $answer[ 'answer' ] ),
                 'feedback' => MOODLEEX_process_images( $answer[ 'comment' ] ),
-                'fraction' => 100 * $fraction,
+                'fraction' => max (100 * $fraction, -100),
             );
         }
     }
